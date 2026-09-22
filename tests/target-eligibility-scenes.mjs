@@ -1,0 +1,105 @@
+import {chromium} from 'playwright';
+import {spawn} from 'node:child_process';
+import {mkdir,writeFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+
+const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4213'},stdio:['ignore','pipe','inherit']});
+await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
+let browser;
+try {
+  await mkdir('artifacts',{recursive:true});
+  browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
+  const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+  page.on('pageerror',error=>errors.push(error.stack));
+  page.on('response',response=>{if(response.status()>=400)errors.push(`${response.status()} ${response.url()}`);});
+  await page.goto('http://127.0.0.1:4213/?skipIntro');await page.waitForFunction(()=>window.__redcat);
+  await page.evaluate(async()=>{const app=window.__redcat;await app.startLevel(1);app.pause();document.getElementById('pause').hidden=true;});
+  const castle=await page.evaluate(async()=>{
+    const {targetAimPoint,targetableObject}=await import('/src/targeting.js');
+    const app=window.__redcat,w=app.world,g=app.gameplay,h=g.scripts;
+    // Keep the original initializer's skill and bridge pose. Only prevent
+    // nearby encounters from interrupting this deterministic shot fixture.
+    for(let i=0;i<40&&!h.cutscene;i++)h.update(.05);
+    if(h.cutscene)h.skipCutscene();
+    w.syncModels();w.syncActors(0);
+    for(const player of h.players.values())player.stop();
+    h.cutscene=false;h.camera=null;h.enemiesFrozen=true;
+    for(const object of g.objects)if(object.kind==='trigger')object.enabled=false;
+    w.updateTargeting(0,{});
+    const ground=w.collider.trace([-150,0,1700],[-150,-100,1700],w.player.mins,w.player.maxs,w.physicalModels);
+    w.player.position=ground.end.map((v,i)=>v+(i===1?.05:0));w.player.lastSafe=[...w.player.position];w.player.velocityY=0;w.yaw=0;w.pitch=.16;
+    w.syncModels();w.syncActors(0);w.syncPlayer(0,{});w.targeting.clear();w.updateTargeting(.05,{attack:true});w.updateCamera(1,true);w.syncTargetMarker();w.render();
+    const button=g.find('knopbridge')[0],bridge=g.find('ophaalbrug01_mc')[0],motion=h.players.get(bridge.id),aim=targetAimPoint(button);
+    const cameraDirection=w.camera.getWorldDirection(w.camera.position.clone()).toArray(),cameraAim=aim.map((v,i)=>v-w.camera.position.getComponent(i)),cameraDistance=Math.hypot(...cameraAim);
+    const before={button:button.id,selected:w.targeting.target?.id,ring:w.targetMarker.visible,locked:w.targeting.locked,skill:g.state.skill,weapons:h.weaponsEnabled,health:g.state.health,lives:g.state.lives,position:[...w.player.position],aim,distance:Math.hypot(...aim.map((v,i)=>v-w.player.position[i])),cameraAimDot:cameraDirection.reduce((sum,v,i)=>sum+v*cameraAim[i]/cameraDistance,0),bridgeOpen:bridge.open,bridgeTime:motion.time,buttonModel:button.modelIndex,actors:g.objects.filter(o=>o.kind==='actor'&&targetableObject(o)).map(o=>o.id)};
+    const image=w.renderer.domElement.toDataURL('image/png');
+    const events=[],oldEvent=g.onEvent;g.onEvent=event=>{events.push(event);oldEvent(event);};
+    for(let i=0;i<180&&!button.switchedOn;i++)w.update(1/60,{attack:true,forward:0,right:0});
+    for(let i=0;i<420&&motion.time>1e-6;i++)w.update(1/60,{attack:false,forward:0,right:0});
+    w.render();
+    return {image,before,after:{position:[...w.player.position],health:g.state.health,lives:g.state.lives,switched:button.switchedOn,count:button.switchCount,bridgeOpen:bridge.open,bridgeTime:motion.time,error:h.vm.lastError,selected:w.targeting.target?.id,events:events.filter(e=>['attack','playerProjectileImpact','button','door'].includes(e.type))}};
+  });
+  await writeFile('artifacts/castle-drawbridge-targeting.png',Buffer.from(castle.image.split(',')[1],'base64'));delete castle.image;
+  await page.screenshot({path:'artifacts/castle-drawbridge-lowered.png'});
+  await page.evaluate(async()=>{const app=window.__redcat;await app.startLevel(2);app.pause();document.getElementById('pause').hidden=true;});
+  const graveyard=await page.evaluate(async()=>{
+    const {targetAimPoint,targetableObject}=await import('/src/targeting.js');
+    const app=window.__redcat,w=app.world,g=app.gameplay,h=g.scripts;
+    for(const player of h.players.values())player.stop();h.cutscene=false;h.camera=null;h.enemiesFrozen=true;
+    for(const object of g.objects)if(object.kind==='trigger')object.enabled=false;
+    w.syncModels();w.syncActors(0);w.updateTargeting(0,{});
+    const lights=g.objects.filter(o=>o.kind==='actor'&&/torch|lamp|kandela|krnlchtr/i.test(o.entity.ActorFileName)&&o.actorSettings.canBeShot&&o.actorSettings.destroyable).map(o=>({id:o.id,actor:o.entity.ActorFileName,targetable:targetableObject(o)}));
+    const crate=g.objects.find(o=>o.id==='AdamAnyActor72');
+    w.player.position=[3568,-63.95,1590];w.player.lastSafe=[...w.player.position];w.player.velocityY=0;w.yaw=0;w.pitch=.16;
+    w.syncPlayer(0,{});w.targeting.clear();w.updateTargeting(.05,{attack:true});w.updateCamera(1,true);w.syncTargetMarker();w.render();
+    const before={id:crate.id,actor:crate.entity.ActorFileName,targetFlag:crate.entity.Targetable,health:crate.health,selected:w.targeting.target?.id,ring:w.targetMarker.visible,locked:w.targeting.locked,position:[...w.player.position],aim:targetAimPoint(crate)};
+    const image=w.renderer.domElement.toDataURL('image/png');
+    const events=[],oldEvent=g.onEvent;g.onEvent=event=>{events.push(event);oldEvent(event);};
+    for(let i=0;i<180&&crate.health>0&&crate.enabled;i++)w.update(1/60,{attack:true,forward:0,right:0});
+    const after={health:crate.health,enabled:crate.enabled,position:[...w.player.position],events:events.filter(e=>['attack','playerProjectileImpact','actorHit'].includes(e.type))};
+    w.render();
+    return {image,skill:g.state.skill,weapons:h.weaponsEnabled,crate:{before,after},lights,error:h.vm.lastError};
+  });
+  await writeFile('artifacts/graveyard-authored-crate-targeting.png',Buffer.from(graveyard.image.split(',')[1],'base64'));delete graveyard.image;
+  graveyard.lamp=await page.evaluate(async()=>{
+    const {targetAimPoint}=await import('/src/targeting.js'),w=window.__redcat.world,g=w.gameplay;
+    const lamp=g.objects.find(o=>o.id==='AdamAnyActor12');
+    w.player.position=[966,-63.95,2260];w.player.velocityY=0;w.yaw=Math.PI;w.pitch=-.2;
+    w.syncPlayer(0,{});w.targeting.clear();w.updateTargeting(.05,{attack:true});w.updateCamera(1,true);w.syncTargetMarker();w.render();
+    const hit=w.collider.trace([966,-18.95,2260],targetAimPoint(lamp),[0,0,0],[0,0,0],w.physicalModels,'blocksLOS');
+    return {id:lamp.id,actor:lamp.entity.ActorFileName,targetFlag:lamp.entity.Targetable,available:lamp.targetAvailable,selected:w.targeting.target?.id??null,ring:w.targetMarker.visible,locked:w.targeting.locked,losHit:hit.actorId,losModel:hit.modelIndex,losFraction:hit.fraction};
+  });
+  await page.screenshot({path:'artifacts/graveyard-lamp-not-targeted.png'});
+  graveyard.enemy=await page.evaluate(()=>{
+    const w=window.__redcat.world,g=w.gameplay,enemy=g.objects.find(o=>o.id==='StandingEnemy1');
+    w.player.position=[1083,-63.95,20];w.player.velocityY=0;w.yaw=0;w.pitch=.16;
+    w.syncPlayer(0,{});w.targeting.clear();w.updateTargeting(.05,{attack:true});w.updateCamera(1,true);w.syncTargetMarker();w.render();
+    return {id:enemy.id,selected:w.targeting.target?.id??null,ring:w.targetMarker.visible,locked:w.targeting.locked,health:enemy.health};
+  });
+  await page.screenshot({path:'artifacts/graveyard-enemy-targeting.png'});
+  await writeFile('artifacts/target-eligibility-scenes.json',JSON.stringify({castle,graveyard,errors},null,2)+'\n');
+  assert.equal(castle.before.skill,1,'The native castle initializer grants the basic shot');
+  assert.deepEqual(castle.before.actors,[],'The castle has no authored Targetable crates');
+  assert.equal(castle.before.selected,castle.before.button);assert.ok(castle.before.ring&&castle.before.locked);
+  assert.ok(castle.before.distance>480&&castle.before.distance<4320);assert.ok(castle.before.cameraAimDot>.9999);
+  assert.equal(castle.before.bridgeOpen,true);assert.equal(castle.before.bridgeTime,3);
+  assert.equal(castle.after.switched,true);assert.equal(castle.after.count,1);
+  assert.equal(castle.after.bridgeOpen,false);assert.ok(castle.after.bridgeTime<1e-6);
+  assert.equal(castle.after.health,castle.before.health);assert.equal(castle.after.lives,castle.before.lives);
+  assert.ok(Math.hypot(...castle.after.position.map((v,i)=>v-castle.before.position[i]))<.1,'The shot is fired from stable dry ground');
+  assert.equal(castle.after.events.find(e=>e.type==='playerProjectileImpact')?.target,castle.before.button);
+  const shot=castle.after.events.find(e=>e.type==='attack');assert.ok(shot);
+  assert.ok(Math.abs(shot.origin[2]-castle.before.position[2])>10,'The pellet releases from the animated hand, not the fallback feet/eye origin');
+  assert.notEqual(castle.after.selected,castle.before.button);assert.equal(castle.after.error,null);
+  assert.equal(graveyard.crate.before.actor,'brcrate.act');assert.equal(graveyard.crate.before.targetFlag,'1');
+  assert.equal(graveyard.crate.before.selected,graveyard.crate.before.id);assert.ok(graveyard.crate.before.ring&&graveyard.crate.before.locked);
+  assert.equal(graveyard.crate.after.events.find(e=>e.type==='playerProjectileImpact')?.target,graveyard.crate.before.id);
+  assert.equal(graveyard.crate.after.health,0);assert.equal(graveyard.crate.after.enabled,false);
+  assert.equal(graveyard.lights.length,99);assert.ok(graveyard.lights.every(lamp=>lamp.targetable===false));
+  assert.ok(graveyard.lamp.available&&(graveyard.lamp.losFraction>=1||graveyard.lamp.losHit===graveyard.lamp.id),'The rejected light fixture is visible in the aiming cone');
+  assert.equal(graveyard.lamp.selected,null);assert.equal(graveyard.lamp.ring,false);assert.equal(graveyard.lamp.locked,false);
+  assert.equal(graveyard.enemy.selected,graveyard.enemy.id);assert.ok(graveyard.enemy.ring&&graveyard.enemy.locked);
+  assert.equal(graveyard.error,null);
+  assert.deepEqual(errors,[]);
+  console.log('PASS original castle button lock at 659 units, camera aim and animated-hand pellet lower drawbridge; authored graveyard crate target/destruction, 99 decorative light rejections, visible lamp without target ring, and enemy lock retained; no browser or HTTP errors.');
+} finally {await browser?.close();server.kill();}

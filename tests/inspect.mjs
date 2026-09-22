@@ -1,0 +1,12 @@
+import { chromium } from 'playwright';
+const browser=await chromium.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--no-sandbox','--use-angle=gl']});
+const page=await browser.newPage({viewport:{width:1440,height:900}});
+page.on('response',r=>{if(r.status()>=400)console.log('HTTP ERROR',r.status(),r.url());});
+page.on('pageerror',e=>console.log('PAGE ERROR',e.stack));page.on('console',e=>{if(e.type()==='error')console.log('CONSOLE',e.text());});
+await page.goto('http://127.0.0.1:4173/?skipIntro');await page.waitForFunction(()=>window.__redcat);
+await page.screenshot({path:'artifacts/menu.png'});
+await page.evaluate(()=>window.__redcat.startLevel(0));
+await page.waitForTimeout(700);
+console.log(await page.evaluate(()=>({mode:window.__redcat.mode,error:document.getElementById('fatal-message').textContent,position:window.__redcat.world?.player.position,redcat:!!window.__redcat.world?.redcat,actors:window.__redcat.world?.actorInstances.size,render:window.__redcat.world?.renderer.info.render})));
+await page.screenshot({path:'artifacts/forest.png'});
+await browser.close();

@@ -1,0 +1,43 @@
+{
+  "name": "redcat-spookkasteel-port",
+  "version": "0.9.1",
+  "description": "An independent portable reconstruction using the original RedCat Spookkasteel assets",
+  "private": true,
+  "type": "module",
+  "main": "electron/main.cjs",
+  "author": "RedCat portable reconstruction contributors",
+  "scripts": {
+    "start": "electron .",
+    "serve": "node tools/serve.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:smoke": "node tests/smoke.mjs",
+    "test:scripts": "node tests/script-scenes.mjs",
+    "test:audio": "node tests/audio-scenes.mjs",
+    "test:gameplay-audio": "node tests/gameplay-audio-scenes.mjs",
+    "test:enemies": "node tests/enemy-scenes.mjs",
+    "test:bosses": "node tests/boss-scenes.mjs",
+    "test:boss-phases": "node tests/boss-phase-scenes.mjs",
+    "test:environment": "node tests/environment-scenes.mjs",
+    "test:graveyard": "node tests/graveyard-scenes.mjs",
+    "test:bats": "node tests/bat-scenes.mjs",
+    "test:effects": "node tests/effects-scenes.mjs",
+    "test:cheats": "node tests/cheat-scenes.mjs",
+    "test:doors": "node tests/door-scenes.mjs",
+    "test:actor-placement": "node tests/actor-placement-scenes.mjs",
+    "test:portals": "node tests/portal-beam-scenes.mjs",
+    "test:desktop": "node tests/desktop.mjs",
+    "build:linux": "electron-builder --linux dir --x64",
+    "build:windows": "electron-builder --win dir --x64"
+  },
+  "dependencies": { "three": "0.186.0" },
+  "devDependencies": { "electron": "44.3.0", "electron-builder": "26.15.3", "playwright": "1.58.2" },
+  "build": {
+    "appId": "local.redcat.spookkasteel",
+    "productName": "RedCat Spookkasteel",
+    "asar": true,
+    "directories": { "output": "dist" },
+    "files": ["index.html", "src/**/*", "electron/**/*", "assets/**/*", "data/**/*", "node_modules/three/**/*", "package.json", "README.md", "docs/**/*"],
+    "linux": { "target": "dir", "category": "Game", "executableName": "redcat-spookkasteel" },
+    "win": { "target": "dir", "signAndEditExecutable": false }
+  }
+}

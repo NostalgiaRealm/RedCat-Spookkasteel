@@ -1,0 +1,782 @@
+{
+  "source": "ScriptGameObject.ds",
+  "declarations": [
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "AddCode",
+      "parametersSource": "String code"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "AddDefaultCommand",
+      "parametersSource": "String command, String argument, Int talkScheme"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "AddFrequency",
+      "parametersSource": "Double freq"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "AddMissionCommand",
+      "parametersSource": "String command, String argument, Int talkScheme"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "Close",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "Destroy",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "Disable",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "DisableShadow",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "Drop",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "Enable",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "EnableShadow",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "Fire",
+      "parametersSource": "Double nr"
+    },
+    {
+      "extern": false,
+      "kind": "Function",
+      "returnType": "CAdamScriptGameObject",
+      "name": "GetOne",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "Hide",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "Lock",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "MoveTo",
+      "parametersSource": "Double targetTime"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "SetTo",
+      "parametersSource": "Double targetTime"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "MultiplyMotionSpeed",
+      "parametersSource": "Double nr"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "MultiplyVolume",
+      "parametersSource": "Double nr"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "Open",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "PlayAction",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "PlayAmbient",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "PlayCareful",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "PlayEerie",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "PlayShock",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "PlayShockAction",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "PlaySpecial",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "PlayVictory",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "PlayVictoryAmbient",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "PlayVictoryCareful",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "PlayVictoryEerie",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "PlayVictoryNone",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "RemoveAllPlanetoids",
+      "parametersSource": "Double fadetime"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "RemovePlanetoid",
+      "parametersSource": "Double fadetime"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "ResetCode",
+      "parametersSource": "String code"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "Reset",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "RotateX",
+      "parametersSource": "Double angle"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "RotateY",
+      "parametersSource": "Double angle"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "RotateZ",
+      "parametersSource": "Double angle"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "SetFollowDaviName",
+      "parametersSource": "String daviname"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "SetFollowOffset",
+      "parametersSource": "Double offsetX, Double offsetY, Double offsetZ"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "SetFriction",
+      "parametersSource": "Double seconds"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "SetMotionSpeed",
+      "parametersSource": "Double timefactor"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "SetRadius",
+      "parametersSource": "Double radius"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "SetRadiusTime",
+      "parametersSource": "Double time"
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "Show",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "StartMission",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "StopPlaying",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "switch",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "SwitchOff",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "SwitchOn",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "Trigger",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "Unlock",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "AfterDestroyCommand",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "AfterFlashCommand",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "AfterSwitchOffCommand",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "AfterSwitchOnCommand",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "CommandOnEnter",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "CommandOnLeave",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "DoorAfterCloseCommand",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "DoorAfterOpenCommand",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "DoorBeforeCloseCommand",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "DoorBeforeOpenCommand",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "DoorIsLockedCommand",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "MotionCommand",
+      "parametersSource": "string a_Description, double a_Time"
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "OnFlashCommand",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "OnHitCommand",
+      "parametersSource": "double a_Damage, int a_Weapon"
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "OnInitCommand",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "OnTouchCommand",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "OnPlayerRespawnCommand",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "PickupCommand",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "RepeatCommand",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "RepeatCommand2",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "RepeatCommand3",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "RotateCommands",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "StartCommand",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "StopCommand",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "SwitchOffCommand",
+      "parametersSource": ""
+    },
+    {
+      "extern": false,
+      "kind": "Event",
+      "returnType": "void",
+      "name": "SwitchOnCommand",
+      "parametersSource": ""
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "StartCutScene",
+      "parametersSource": "Double a_Time"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "StopCutScene",
+      "parametersSource": "Double a_Time"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "CutSceneSay",
+      "parametersSource": "String a_Text"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "RcHide",
+      "parametersSource": ""
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "RcShow",
+      "parametersSource": ""
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "FreezeEnemies",
+      "parametersSource": ""
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "UnFreezeEnemies",
+      "parametersSource": ""
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "RcShowAtSpawnPoint",
+      "parametersSource": "string a_RespawnPointName, Int a_Angle"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "RcSetSavePoint",
+      "parametersSource": "string a_RespawnPointName, Int a_Angle"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "RcHintMotion",
+      "parametersSource": "Int a_Motion"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "PlayWavSound",
+      "parametersSource": "String a_WavFileName"
+    },
+    {
+      "extern": true,
+      "kind": "Function",
+      "returnType": "Int",
+      "name": "RcHasAllPotions",
+      "parametersSource": "Int a_Skill"
+    },
+    {
+      "extern": true,
+      "kind": "Function",
+      "returnType": "Int",
+      "name": "RcEnableSkill",
+      "parametersSource": "Int a_Skill"
+    },
+    {
+      "extern": true,
+      "kind": "Function",
+      "returnType": "Int",
+      "name": "GetGameType",
+      "parametersSource": ""
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "AddMission",
+      "parametersSource": "Int a_MissionNr, String a_TextID, String a_Portrait, Int a_SoundNr"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "CompleteMission",
+      "parametersSource": "Int a_MissionNr"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "ShowMission",
+      "parametersSource": "Int a_MissionNr"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "ShowMissions",
+      "parametersSource": ""
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "CommunicatorEnable",
+      "parametersSource": "Int a_Enable"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "CommunicatorSay",
+      "parametersSource": "String a_TextID, String a_Portrait, Int a_SoundNr"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "Say",
+      "parametersSource": "String a_Text"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "DebugMessage",
+      "parametersSource": "String a_Message"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "LoadCommPortrait",
+      "parametersSource": "String a_Name, Int a_NrOfImages"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "LoadCommSounds",
+      "parametersSource": "Int a_From, Int a_Till"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "SetCommPortraitAnim",
+      "parametersSource": "String a_Name, Int a_IsStatic, Int a_AnimType, Double a_FrameTimeSeconds"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "PlayerVisible",
+      "parametersSource": "Int a_Visible"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "KillPlayer",
+      "parametersSource": ""
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "RespawnPlayer",
+      "parametersSource": "string a_RespawnPointName"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "GivePlayerKeyItem",
+      "parametersSource": "string a_KeyItemName"
+    },
+    {
+      "extern": true,
+      "kind": "Function",
+      "returnType": "int",
+      "name": "PlayerHasKeyItem",
+      "parametersSource": "string a_KeyItemName"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "EnableWeapons",
+      "parametersSource": "Int a_Enable"
+    },
+    {
+      "extern": true,
+      "kind": "Procedure",
+      "returnType": "void",
+      "name": "LooseAllWeapons",
+      "parametersSource": ""
+    }
+  ]
+}

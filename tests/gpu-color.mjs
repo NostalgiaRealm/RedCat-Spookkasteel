@@ -1,0 +1,9 @@
+import {_electron as electron,chromium} from 'playwright';import {mkdtemp,rm} from 'node:fs/promises';import os from 'node:os';import path from 'node:path';
+const profile=await mkdtemp(path.join(os.tmpdir(),'redcat-color-'));
+const app=await electron.launch({args:['.',`--user-data-dir=${profile}`]});
+try{const page=await app.firstWindow();await page.waitForFunction(()=>window.__redcat);console.log(await page.evaluate(async()=>{
+ const {WebGLRenderer,Scene,OrthographicCamera,PlaneGeometry,Mesh,MeshBasicMaterial,Color,SRGBColorSpace,TextureLoader,NearestFilter}=await import('three');
+ const canvas=document.createElement('canvas');canvas.style.cssText='position:fixed;top:0;left:0;width:256px;height:256px;z-index:9999';document.body.append(canvas);canvas.width=canvas.height=64;const r=new WebGLRenderer({canvas,preserveDrawingBuffer:true});r.setSize(64,64);r.outputColorSpace=SRGBColorSpace;const scene=new Scene(),camera=new OrthographicCamera(-1,1,1,-1,.1,10);camera.position.z=2;
+ const texture=await new TextureLoader().loadAsync('assets/actors/textures/redcat-0.png');texture.colorSpace=SRGBColorSpace;texture.minFilter=texture.magFilter=NearestFilter;const material=new MeshBasicMaterial({map:texture});scene.add(new Mesh(new PlaneGeometry(2,2),material));r.render(scene,camera);const gl=r.getContext(),pixel=new Uint8Array(4);gl.readPixels(32,32,1,1,gl.RGBA,gl.UNSIGNED_BYTE,pixel);
+ const cpu=document.createElement('canvas');cpu.width=cpu.height=256;const ctx=cpu.getContext('2d');ctx.drawImage(texture.image,0,0);const sample=[...ctx.getImageData(130,126,1,1).data];const ext=gl.getExtension('WEBGL_debug_renderer_info');return{pixel:[...pixel],sample,renderer:ext?gl.getParameter(ext.UNMASKED_RENDERER_WEBGL):null,space:gl.drawingBufferColorSpace};
+}));await page.screenshot({path:'artifacts/gpu-color.png'});}finally{await app.close();await rm(profile,{recursive:true,force:true});}

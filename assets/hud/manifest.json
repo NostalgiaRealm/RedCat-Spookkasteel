@@ -1,0 +1,180 @@
+{
+  "format": "redcat-hud-v1",
+  "width": 640,
+  "height": 480,
+  "atlas": "icons.png",
+  "target": "target.png",
+  "sprites": {
+    "LIFE": {
+      "BaseX": 84,
+      "BaseY": 126,
+      "SizeX": 42,
+      "SizeY": 42,
+      "TotalPerLine": 1,
+      "Total": 1,
+      "Type": 0
+    },
+    "NUMBER": {
+      "BaseX": 42,
+      "BaseY": 210,
+      "SizeX": 14,
+      "SizeY": 20,
+      "TotalPerLine": 10,
+      "Total": 10,
+      "Type": 1
+    },
+    "NUMBERSMALL": {
+      "BaseX": 42,
+      "BaseY": 233,
+      "SizeX": 14,
+      "SizeY": 20,
+      "TotalPerLine": 10,
+      "Total": 10,
+      "Type": 1
+    },
+    "HEALTH": {
+      "BaseX": 126,
+      "BaseY": 126,
+      "SizeX": 42,
+      "SizeY": 42,
+      "TotalPerLine": 3,
+      "Total": 3,
+      "Type": 5
+    },
+    "POTION": {
+      "BaseX": 0,
+      "BaseY": 210,
+      "SizeX": 42,
+      "SizeY": 42,
+      "TotalPerLine": 1,
+      "Total": 1,
+      "Type": 0
+    },
+    "SCORE": {
+      "BaseX": 168,
+      "BaseY": 168,
+      "SizeX": 42,
+      "SizeY": 42,
+      "TotalPerLine": 1,
+      "Total": 1,
+      "Type": 0
+    },
+    "PORTRAITS": {
+      "BaseX": 0,
+      "BaseY": 0,
+      "SizeX": 42,
+      "SizeY": 42,
+      "TotalPerLine": 6,
+      "Total": 20,
+      "Type": 3
+    },
+    "ENEMYHEALTH": {
+      "BaseX": 0,
+      "BaseY": 168,
+      "SizeX": 42,
+      "SizeY": 42,
+      "TotalPerLine": 3,
+      "Total": 3,
+      "Type": 5
+    },
+    "SLASH": {
+      "BaseX": 185,
+      "BaseY": 210,
+      "SizeX": 7,
+      "SizeY": 20,
+      "TotalPerLine": 1,
+      "Total": 1,
+      "Type": 0
+    },
+    "HEALTHICON": {
+      "BaseX": 126,
+      "BaseY": 168,
+      "SizeX": 42,
+      "SizeY": 42,
+      "TotalPerLine": 1,
+      "Total": 1,
+      "Type": 0
+    }
+  },
+  "positions": {
+    "LifeIcon": {
+      "sprite": "LIFE",
+      "x": 9,
+      "y": 55,
+      "disabled": false
+    },
+    "LifeNumber": {
+      "sprite": "NUMBER",
+      "x": 65,
+      "y": 68,
+      "disabled": false
+    },
+    "HealthContainer": {
+      "sprite": "HEALTH",
+      "x": 45,
+      "y": 5,
+      "disabled": false
+    },
+    "HealthIcon": {
+      "sprite": "HEALTHICON",
+      "x": 5,
+      "y": 5,
+      "disabled": false
+    },
+    "ScoreIcon": {
+      "sprite": "SCORE",
+      "x": 510,
+      "y": 55,
+      "disabled": false
+    },
+    "ScoreNumber": {
+      "sprite": "NUMBERSMALL",
+      "x": 560,
+      "y": 68,
+      "disabled": false
+    },
+    "PotionIcon": {
+      "sprite": "POTION",
+      "x": 510,
+      "y": 5,
+      "disabled": false
+    },
+    "PotionNumber": {
+      "sprite": "NUMBER",
+      "x": 560,
+      "y": 18,
+      "disabled": false
+    },
+    "Slash": {
+      "sprite": "SLASH",
+      "x": 588,
+      "y": 18,
+      "disabled": false
+    },
+    "TotalPotionNumber": {
+      "sprite": "NUMBERSMALL",
+      "x": 596,
+      "y": 18,
+      "disabled": false
+    },
+    "EnemyPortrait": {
+      "sprite": "PORTRAITS",
+      "x": 5,
+      "y": 435,
+      "disabled": false
+    },
+    "EnemyHealth": {
+      "sprite": "ENEMYHEALTH",
+      "x": 55,
+      "y": 435,
+      "disabled": false
+    }
+  },
+  "sources": {
+    "hudicon.bmp": "39491bc17d6098c6f4641bb1d6be87db58a8ea34ee9969b1c626b0a4fcd5b3fa",
+    "hudicona.bmp": "2199fb5b3524f63b65ec66df50e7af385b4faf4632b659c3f5cbb4086fa46d6b",
+    "crosshair.bmp": "e050a64da51c0f48a306fd8b0528026a04d9b120279c4a5e3f6515a623b87b29",
+    "crosshair_a.bmp": "e050a64da51c0f48a306fd8b0528026a04d9b120279c4a5e3f6515a623b87b29",
+    "HUDIcon.ini": "64fcae7d36879ff91ec042e24f3659b41fb0b53044dac9dd6da698ae4659a55a"
+  }
+}
