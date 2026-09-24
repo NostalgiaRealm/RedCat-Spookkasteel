@@ -31,6 +31,8 @@ export class EnemyNavigation {
     }));
     this.names=new Map();for(const p of this.points)for(const name of [p.id,p.name])if(name)this.names.set(name.toLowerCase(),p);
     this.links=new Map();this.ready=false;
+    // Search iterators are transient: completed routes alone belong in saves.
+    this.pursuitJobs=new Map();this.searchFrame=null;this.searchCredits=new Map();this.searchUnassigned=0;this.searchTraces=0;this.searchCursor=0;
   }
 
   find(id){return this.names.get(String(id||'').toLowerCase());}
@@ -96,6 +98,133 @@ export class EnemyNavigation {
     }
   }
 
+  *routeChecks(start,goal,excluded) {
+    // Native 0x59c630 floods from the destination with integer hop labels.
+    // Once the start is labelled, all lower-hop labels needed by the route
+    // already exist; flooding the remainder cannot improve that route.
+    if(!start||!goal||start.subsystem!==goal.subsystem)return null;
+    const hops=new Map([[goal.id,0]]),queue=[goal];
+    search: for(let i=0;i<queue.length&&!hops.has(start.id);i++)for(const id of this.links.get(queue[i].id)||[]) {
+      const next=this.find(id);
+      if(hops.has(id)||excluded.has(id)||!(yield [next,queue[i]]))continue;
+      hops.set(id,hops.get(queue[i].id)+1);queue.push(next);
+      if(id===start.id)break search;
+    }
+    if(!hops.has(start.id))return null;
+    const route=[];let current=start;
+    while(current!==goal) {
+      let next=null;
+      for(const id of this.links.get(current.id)||[]) {
+        const p=this.find(id);
+        if(hops.get(id)===hops.get(current.id)-1&&(yield [current,p])){next=p;break;}
+      }
+      if(!next)return null;
+      route.push(next.id);current=next;
+    }
+    return route;
+  }
+
+  route(start,goal,{excluded=new Set(),canTravel=()=>true}={}) {
+    const search=this.routeChecks(start,goal,excluded);let step=search.next();
+    while(!step.done)step=search.next(canTravel(...step.value));
+    return step.value;
+  }
+
+  *pursuitChecks(object,position,goal) {
+    const start=this.find(object.patrol.current)||this.find(object.patrol.start);
+    if(!start)return [];
+    const excluded=new Set(number(object.entity.UnlinkStartPoint)&&object.patrol.leftStart?[object.patrol.start]:[]);
+    const points=this.points.filter(p=>p.subsystem===start.subsystem&&!excluded.has(p.id));
+    const nearest=target=>points.map(p=>({p,d:(p.position[0]-target[0])**2+(p.position[1]-target[1])**2+(p.position[2]-target[2])**2}))
+      .sort((a,b)=>a.d-b.d).map(entry=>entry.p);
+    // Previously every one of 370 points was swept before keeping just four
+    // origins/eight terminals. Stop as soon as those nearest candidates exist.
+    const candidates=nearest(position),origins=[];let candidateIndex=0;
+    const edgeClearance=new Map();let ends=0;
+    for(const end of nearest(goal)) {
+      if(!(yield [end.position,goal]))continue;
+      for(let index=0;index<4;index++) {
+        // Discover further origins only if the nearer one has no route to
+        // this terminal. This preserves candidate order without sweeping the
+        // rest of the level just to fill four slots before trying any route.
+        while(index>=origins.length&&candidateIndex<candidates.length) {
+          const p=candidates[candidateIndex++];
+          if(yield [position,p.position])origins.push(p);
+        }
+        const origin=origins[index];if(!origin)break;
+        const search=this.routeChecks(origin,end,excluded);let step=search.next();
+        while(!step.done) {
+          const [a,b]=step.value,key=[a.id,b.id].sort().join('\0');
+          if(!edgeClearance.has(key))edgeClearance.set(key,(yield [a.position,b.position])&&(yield [b.position,a.position]));
+          step=search.next(edgeClearance.get(key));
+        }
+        if(!step.value)continue;
+        if(Math.hypot(position[0]-origin.position[0],position[2]-origin.position[2])>=.1)step.value.unshift(origin.id);
+        return step.value;
+      }
+      if(!origins.length||++ends===8)break;
+    }
+    return [];
+  }
+
+  pursuitTarget(object,goal,lineOfSight,trace,now) {
+    if(!trace||!object.patrol)return goal;
+    const mins=object.collisionMins||[-12,0,-12],maxs=object.collisionMaxs||[12,45,12];
+    // RedCat jumping must not aim a grounded enemy's horizontal sweep upward.
+    const clear=(a,b)=>{const hit=trace(a,[b[0],a[1],b[2]],mins,maxs);return !hit.startSolid&&hit.fraction>.999;};
+    if(clear(object.position,goal)){object.pursuit=null;this.pursuitJobs.delete(object);return goal;}
+    this.build(lineOfSight);
+    const nextTarget=()=>{
+      const route=object.pursuit?.route;
+      while(route?.length&&Math.hypot(object.position[0]-this.find(route[0]).position[0],object.position[2]-this.find(route[0]).position[2])<.1)route.shift();
+      const next=this.find(route?.[0]);
+      return next&&clear(object.position,next.position)?next.position:goal;
+    };
+    // A blocked next edge or a moving target must not bypass the retry timer.
+    // Local collision still runs every frame; direct pursuit resumes at once
+    // when its sweep clears (including when a door opens).
+    if(object.pursuit?.until>now)return nextTarget();
+    let job=this.pursuitJobs.get(object);
+    // A paused/abandoned pursuit or a substantially changed endpoint must
+    // not install an old route. Keep short searches stable while RedCat moves.
+    if(job&&(now-job.lastRequestedAt>.25||now-job.startedAt>4||distance(job.goal,goal)>96||distance(job.position,object.position)>48)) {
+      this.pursuitJobs.delete(object);job=null;
+    }
+    if(!job) {
+      const position=[...object.position],search=this.pursuitChecks(object,position,[...goal]);
+      job={search,step:search.next(),goal:[...goal],position,startedAt:now,lastRequestedAt:now};this.pursuitJobs.set(object,job);
+    }
+    job.lastRequestedAt=now;
+    if(this.searchFrame!==now) {
+      this.searchFrame=now;this.searchTraces=0;this.searchCredits.clear();this.searchUnassigned=48;
+      for(const [enemy,pending] of this.pursuitJobs)if(now-pending.lastRequestedAt>.25||enemy.enabled===false||enemy.health<=0)this.pursuitJobs.delete(enemy);
+      const waiting=[...this.pursuitJobs.keys()];
+      // Reserve each waiting enemy's share; fixed object iteration order must
+      // not let the first three searches take all the collision checks.
+      for(let round=0;round<16&&this.searchUnassigned>0;round++)for(let i=0;i<waiting.length&&this.searchUnassigned>0;i++) {
+        const enemy=waiting[(i+this.searchCursor)%waiting.length];
+        this.searchCredits.set(enemy,(this.searchCredits.get(enemy)||0)+1);this.searchUnassigned--;
+      }
+      this.searchCursor=waiting.length?(this.searchCursor+1)%waiting.length:0;
+    }
+    if(!this.searchCredits.has(object)) {
+      const credit=Math.min(16,this.searchUnassigned);this.searchCredits.set(object,credit);this.searchUnassigned-=credit;
+    }
+    // The old route/direct goal still uses the normal collision controller
+    // while pending work continues next frame. No enemy update is skipped.
+    let credit=this.searchCredits.get(object);
+    while(!job.step.done&&credit>0) {
+      credit--;this.searchTraces++;
+      job.step=job.search.next(clear(...job.step.value));
+    }
+    this.searchCredits.set(object,credit);
+    if(job.step.done) {
+      object.pursuit={goal:job.goal,route:job.step.value,until:now+.5};
+      this.pursuitJobs.delete(object);
+    }
+    return nextTarget();
+  }
+
   choose(object,{relocate=false,player=null,canTravel=null}={}) {
     const state=object.patrol;if(!state)return null;
     const current=this.find(state.current)||this.find(state.start);if(!current)return null;
@@ -115,7 +244,11 @@ export class EnemyNavigation {
   target(object,lineOfSight,{relocate=false,player=null}={}) {
     this.build(lineOfSight);const state=object.patrol;if(!state)return null;
     let target=this.find(state.target);
-    const atTarget=target&&(object.flying?distance(object.position,target.position):Math.hypot(object.position[0]-target.position[0],object.position[2]-target.position[2]))<5;
+    // Native cursor 0x59c049–0x59c08a reaches the exact waypoint before
+    // selecting another edge. A five-unit shortcut cuts grounded hulls into
+    // corners, notably the graveyard frogs' point265 -> point124 turn.
+    // Allow only the BSP sweep's .05-unit separation margin at the endpoint.
+    const atTarget=target&&(object.flying?distance(object.position,target.position)<5:Math.hypot(object.position[0]-target.position[0],object.position[2]-target.position[2])<.1);
     if(atTarget){
       const finishedRelocation=state.relocating;
       state.previous=state.current;state.current=target.id;state.target=null;

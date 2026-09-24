@@ -18,6 +18,12 @@ def import_projectiles(installation, output):
         ('power', range(6), 'psht{}.bmp', 'psht{}_a.bmp'),
         ('super', range(6), 'sshlo{}.bmp', 'sshlo{}_a.bmp'),
         ('mushroom', range(4), 'msh{}.bmp', 'msh{}a.bmp'),
+        ('bone', range(4), 'bn{}.bmp', 'bn{}a.bmp'),
+        ('goo', range(6), 'snot{}.bmp', 'snot{}_a.bmp'),
+        ('jesterBall', range(4), 'jb{}.bmp', 'jb{}a.bmp'),
+        ('magma', range(4), 'mb{}.bmp', 'mb{}a.bmp'),
+        ('magicBall', range(6), 'eball{}.bmp', 'eball{}_a.bmp'),
+        ('skull', range(4), 'skl_{}.bmp', 'skl_{}a.bmp'),
     ]
     for key, numbers, color_pattern, alpha_pattern in definitions:
         frames = []
@@ -36,15 +42,23 @@ def import_projectiles(installation, output):
             frames.append(filename)
             for name in [color_name, alpha_name]:
                 originals[name] = hashlib.sha256(files[name].read_bytes()).hexdigest()
-        # The native projectile factory uses sprite scale .8 (0x44d30f).
-        scale = .3 if key == 'mushroom' else .8
-        sequences[key] = {'frames': frames, 'framesPerSecond': 20,
+        # The factory starts at .8 (0x44d30f); enemy subtype initialization
+        # then replaces that value with Projectile*.ini's Size field.
+        scale = {'mushroom': .3, 'goo': .4, 'jesterBall': .4,
+                 'magicBall': .3, 'skull': .5}.get(key, .8)
+        # 20 is the nominal rate of the authored 50 ms interval. The runtime
+        # reproduces the native strict-expiry timer and its next-update rearm.
+        sequences[key] = {'frames': frames, 'framesPerSecond': 20, 'frameIntervalMs': 50,
+                          'nativeScale': scale,
                           'width': color.width * scale, 'height': color.height * scale,
                           'color': [255, 255, 255], 'opacity': 1}
     result = {'format': 'redcat-projectiles-v1', 'sources': originals,
               'enemyShot': {**sequences['spark'], 'width': 32 * .8, 'height': 32 * .8},
               'shot': sequences['spark'], 'powerShot': sequences['power'],
-              'superShot': sequences['super'], 'mushRoom': sequences['mushroom']}
+              'superShot': sequences['super'], 'mushRoom': sequences['mushroom'],
+              **{key: sequences[key] for key in ['bone', 'goo', 'jesterBall', 'magma', 'magicBall', 'skull']},
+              'poison': {**sequences['goo'], 'nativeScale': .1, 'width': sequences['goo']['width'] / 4,
+                         'height': sequences['goo']['height'] / 4}}
     (output / 'manifest.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
     return result
 

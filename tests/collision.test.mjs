@@ -10,7 +10,8 @@ for(let index=0;index<5;index++)test(`original level ${index+1}: spawn settles a
  const c=new BspCollider(level.collision),spawn=level.spawn.position.map((v,i)=>i===1?v+1:v),p=new PlayerController(c,spawn);
  for(let i=0;i<120;i++)p.update(1/60,{forward:0,right:0},0);
  assert.ok(p.grounded);assert.ok(Math.abs(p.position[1]-spawn[1])<100);assert.equal(c.trace(p.position,p.position,p.mins,p.maxs).startSolid,false);
- const start=[...p.position];p.update(1/60,{forward:0,right:0,jump:true},0);assert.ok(p.position[1]>start[1]);
+ const start=[...p.position];p.update(1/60,{forward:0,right:0,jump:true},0);assert.ok(p.velocityY>0);
+ p.update(1/60,{forward:0,right:0},0);assert.ok(p.position[1]>start[1]);
  for(let i=0;i<100;i++)p.update(1/60,{forward:0,right:0},0);assert.ok(p.grounded);
  for(let i=0;i<20;i++)p.update(1/60,{forward:1,right:0},level.spawn.orientation*Math.PI/6);
  assert.ok(Math.hypot(p.position[0]-start[0],p.position[2]-start[2])>0.1);

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Gameplay} from '../src/gameplay.js';
 import {PLAYER_SHOOT_MOTION,advancePlayerProjectile} from '../src/player-projectiles.js';
+import {PLAYER_REACTIONS} from '../src/player-lifecycle.js';
 
 const clear=(start,end)=>({fraction:1,end});
 const make=()=>{const events=[];const game=new Gameplay({id:'lvl00a',spawn:{position:[0,0,0]},entities:[]},{onEvent:e=>events.push({...e,time:game.time})});return {game,events};};
@@ -70,7 +71,9 @@ test('death cancels an unreleased pellet so it cannot fire after checkpoint resp
   assert.equal(game.pendingPlayerAttack,null);assert.equal(game.playerAttackUntil,0);assert.equal(game.attackCooldown,0);
   game.respawn();tick(game,1);
   assert.equal(game.projectiles.length,0);assert.equal(events.filter(e=>e.type==='attack').length,0);
-  assert.equal(game.attack([0,0,0],[0,0,-1]),true,'Respawning does not leave the weapon locked');
+  assert.equal(game.attack([0,0,0],[0,0,-1]),false,'The native respawn animation still owns input');
+  tick(game,PLAYER_REACTIONS.respawn.duration-1+.01);
+  assert.equal(game.attack([0,0,0],[0,0,-1]),true,'Completing respawn releases the weapon');
 });
 
 test('all three original animated player pellet sequences are packaged with alpha',()=>{

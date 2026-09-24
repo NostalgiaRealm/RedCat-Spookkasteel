@@ -35,7 +35,7 @@ test('original castle and cave StandingEnemy enums create their respective bosse
   }
 });
 
-test('0.2.5 swapped Max saves retain progress while discarding incompatible phases and ammunition',()=>{
+test('legacy swapped Max saves retain progress while discarding incompatible phases and ammunition',()=>{
   for(const type of ['maxd','maxj']) {
     const {game,o}=fixture(type),oldType=type==='maxd'?'maxj':'maxd';
     const oldStats=game.settings[oldType==='maxd'?'dungeonmax':'jestermax'].Normal;
@@ -56,18 +56,18 @@ test('0.2.5 swapped Max saves retain progress while discarding incompatible phas
 test('Dungeon Max completes native turret salvo, rise, look, lower and second salvo',()=>{
   const f=fixture('maxd'),{o,game,until}=f,home=o.position[1];
   until(()=>o.boss.phase==='rise');
-  assert.equal(game.projectiles.length,3);assert.ok(game.projectiles.every(p=>p.kind==='magma'));
+  assert.equal(game.projectiles.length,o.salvoSize);assert.ok(game.projectiles.every(p=>p.kind==='magma'));
   assert.equal(o.boss.machineMotion,'litopen');
   until(()=>o.boss.phase==='look');assert.equal(o.position[1],home+40);
   const lookAt=game.time;until(()=>o.boss.phase==='lower');assert.ok(game.time-lookAt>=2-1e-8);
   assert.equal(o.boss.machineMotion,'litclose');until(()=>o.boss.phase==='idle');assert.equal(o.position[1],home);
-  until(()=>game.projectiles.length===4);assert.equal(o.boss.phase,'shoot');
+  until(()=>game.projectiles.length===o.salvoSize+1);assert.equal(o.boss.phase,'shoot');
 });
 
-test('Dungeon Max uses difficulty salvo counts and original rise time',()=>{
+test('Dungeon Max uses sampled difficulty salvo counts and original rise time',()=>{
   for(const [difficulty,count,rise] of [['Easy',1,1],['Normal',3,2],['Hard',4,1]]) {
     const {o,game,until}=fixture('maxd',{difficulty});until(()=>o.boss.phase==='rise');
-    assert.equal(game.projectiles.length,count);assert.equal(o.boss.duration,rise);
+    assert.equal(game.projectiles.length,o.salvoSize);assert.ok(o.salvoSize>=1&&o.salvoSize<=Math.max(1,count-1));assert.equal(o.boss.duration,rise);
   }
 });
 
@@ -85,7 +85,7 @@ test('Jester follows disappearance, InvisibleTime, reappearance, salvo, protecte
   const t=f.game.time;f.until(()=>f.o.boss.phase==='teleportIn');assert.ok(f.game.time-t>=1-1e-8);
   assert.equal(f.o.boss.hidden,false);assert.equal(bossCanTakeDamage(f.o),false);
   f.until(()=>f.o.boss.phase==='shoot');assert.equal(bossCanTakeDamage(f.o),true);
-  f.until(()=>f.o.boss.phase==='teleportOut');assert.equal(f.game.projectiles.length,2);
+  f.until(()=>f.o.boss.phase==='teleportOut');assert.equal(f.game.projectiles.length,f.o.salvoSize);
   assert.ok(f.game.projectiles.every(p=>p.kind==='jesterBall'));
 });
 

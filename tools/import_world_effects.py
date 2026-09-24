@@ -12,9 +12,12 @@ def import_effects(installation, output, levels):
     pairs = {('blast.bmp','blast_a.bmp'), ('fleuri.bmp','fleuri_a.bmp'), ('fleurl7.bmp','fleurl7_a.bmp'), ('fleurl8.bmp','fleurl8_a.bmp'), ('star.bmp','star_a.bmp'), ('spark8.bmp','spark8_a.bmp'), ('coreff.bmp','coreff_a.bmp'), ('energybeam.bmp','energybeam_a.bmp'), ('beam.bmp','beam_a.bmp')}
     for frame in range(1,9):
         pairs.add((f'expl_gen{frame:02}.bmp',f'expl_gen_a_{frame:02}.bmp'))
+        pairs.add((f'expl_gen{frame:02}_red.bmp',f'expl_gen_a_{frame:02}.bmp'))
+        pairs.add((f'expl_gen{frame:02}_yel.bmp',f'expl_gen_a_{frame:02}.bmp'))
         pairs.add((f'explosie{frame:02}.bmp',f'explosie{frame:02}_a.bmp'))
     pairs.add(('smoke_05.bmp','smoke_green_a.bmp'))
     pairs.add(('strail.bmp','strail_a.bmp'))
+    pairs.add(('electricwave.bmp','electricwave_a.bmp'))
     for file in Path(levels).glob('*/level.json'):
         for entity in json.loads(file.read_text())['entities']:
             if entity.get('classname') in {'EffectSpoutEntity', 'EffectDecalEntity'}:

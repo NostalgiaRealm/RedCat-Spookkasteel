@@ -1,3 +1,4 @@
+import {moveEnemy} from './enemies.js';
 // Spider ceiling/floor setup: RcShootSpider::Initialize (0x413a90),
 // RcSpiderMoveToStart (0x409440 / 0x409a60). Skeletons hold the first
 // frame of their original start motion until the room/perception wakes them.
@@ -48,7 +49,8 @@ export function placeSpider(game,object,trace) {
 
 /** Returns true while the ambush owns movement/animation this frame. */
 export function updateEnemyAmbush(game,object,dt,playerPosition,lineOfSight,trace) {
-  const state=object.ambush;if(!state||state.phase==='awake')return false;
+  const state=object.ambush;if(!state)return false;
+  if(state.phase==='awake')return updateSpiderReturn(game,object,dt,playerPosition,lineOfSight,trace);
   placeSpider(game,object,trace);
   if(state.phase==='unplaced'){state.phase='awake';return false;}
   if(state.phase==='awake')return false;
@@ -89,16 +91,17 @@ export function updateEnemyAmbush(game,object,dt,playerPosition,lineOfSight,trac
     if(object.position[1]<=state.lower[1]+1e-6){state.phase='awake';object.grounded=true;object.velocityY=0;}
     return true;
   }
+  if(['returning','ascending'].includes(state.phase))return updateSpiderReturn(game,object,dt,playerPosition,lineOfSight,trace);
   return false;
 }
 
 export function restoreEnemyAmbush(object,saved) {
   if(!object.ambush)return;
-  if(saved?.version===1&&saved.type===object.enemyType&&['unplaced','dormant','descending','waking','awake'].includes(saved.phase)) {
+  if(saved?.version===1&&saved.type===object.enemyType&&['unplaced','dormant','descending','returning','ascending','waking','awake'].includes(saved.phase)) {
     const state={version:1,type:saved.type,phase:saved.phase,elapsed:Math.max(0,n(saved.elapsed))};
     for(const key of ['lower','upper','anchor'])if(valid(saved[key]))state[key]=[...saved[key]];
     if(Number.isFinite(saved.duration))state.duration=Math.max(0,saved.duration);
-    if(state.type==='spider'&&['dormant','descending'].includes(state.phase)&&!['lower','upper','anchor'].every(key=>valid(state[key])))state.phase='unplaced';
+    if(state.type==='spider'&&['dormant','descending','returning','ascending'].includes(state.phase)&&!['lower','upper','anchor'].every(key=>valid(state[key])))state.phase='unplaced';
     object.ambush=state;
   } else {
     // Do not rewind enemies already fought or moved in a pre-ambush save.
@@ -106,4 +109,39 @@ export function restoreEnemyAmbush(object,saved) {
     if(object.health<=0||object.alerted||object.health<object.maxHealth||moved||object.attackTimer>0)object.ambush.phase='awake';
   }
   if(object.ambush.phase==='dormant'&&object.enemyType==='skeleton')object.animationState='dormant';
+}
+
+
+function updateSpiderReturn(game,object,dt,player,lineOfSight,trace) {
+  const state=object.ambush;
+  if(state.type!=='spider'||!valid(state.lower)||!valid(state.upper))return false;
+  if(state.phase==='awake') {
+    // SpiderAttack's generic attack child finishes on loss of its target,
+    // then both spider variants enter MoveToStart (0x408f12 / 0x409122).
+    const horizontal=Math.hypot(object.position[0]-player[0],object.position[2]-player[2]);
+    const eye=[object.position[0],object.position[1]+25,object.position[2]];
+    const visible=horizontal<Math.max(n(object.stats.VisualRange,250),n(object.stats.SenseRange))&&
+      (lineOfSight(eye,player)||lineOfSight(eye,[player[0],player[1]+56,player[2]]));
+    if(visible||game.time-n(object.lastSeenAt,game.time)<=n(object.stats.TimeToRememberVisual,2)||game.time<object.animationUntil)return false;
+    state.phase='returning';state.elapsed=0;object.pendingAttack=null;object.alerted=false;object.pursuit=null;
+  }
+  if(state.phase==='returning') {
+    const remaining=Math.hypot(object.position[0]-state.lower[0],object.position[2]-state.lower[2]);
+    if(remaining>.1) {
+      const target=game.navigation?.pursuitTarget(object,state.lower,lineOfSight,trace,game.time)||state.lower;
+      const dx=target[0]-object.position[0],dz=target[2]-object.position[2],length=Math.hypot(dx,dz);
+      const step=Math.min(length,n(object.stats.Speed,50)*dt);
+      if(length){object.yaw=Math.atan2(dx,dz);moveEnemy(object,[dx/length*step,0,dz/length*step],dt,trace);}
+      game.enemyAnimation(object,'walk');return true;
+    }
+    state.phase='ascending';object.velocityY=0;object.pursuit=null;game.enemyAnimation(object,'idle');
+  }
+  if(state.phase==='ascending') {
+    // 0x40950d–0x409553: the same FallSpeed is added for the return ascent.
+    object.position[1]=Math.min(state.upper[1],object.position[1]+n(object.stats.FallSpeed,130)*dt);
+    object.velocityY=0;object.grounded=false;
+    if(object.position[1]>=state.upper[1]){state.phase='dormant';object.alerted=false;state.elapsed=0;}
+    return true;
+  }
+  return false;
 }

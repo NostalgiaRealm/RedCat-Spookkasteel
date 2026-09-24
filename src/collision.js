@@ -1,5 +1,11 @@
 // Genesis3D BSP convex leaf sweeps. All values remain in the original Y-up units.
 import { traceActors } from './actor-collision.js';
+import { GAMEPLAY_SETTINGS } from './gameplay-settings.js';
+import { PLAYER_MOVEMENT, playerInputVelocity } from './player-movement.js';
+const jumpSettings=GAMEPLAY_SETTINGS.game.Player;
+export const PLAYER_JUMP={gravity:jumpSettings.Gravitation*32,height:jumpSettings.JumpHeight*32,
+  minTapTime:jumpSettings.SJumpMinTapTime/1000,maxTapTime:jumpSettings.SJumpMaxTapTime/1000,
+  superSpeedFactor:jumpSettings.SJumpHeightFactor};
 const dot = (n, p) => n[0]*p[0]+n[1]*p[1]+n[2]*p[2];
 const lerp = (a,b,t) => a.map((v,i)=>v+(b[i]-v)*t);
 const boxFaces=(min,max)=>{
@@ -57,8 +63,26 @@ const makeTransform = value => {
   };
   return {plane,bounds};
 };
+
+// Brush render bounds are nearly, but not always, the collision bounds: the
+// cave's model 108 has a solid leaf extending slightly beyond its render box.
+// Enlarge once from the reachable collision leaves so rejection stays
+// conservative. The world model can represent exterior solids and is not
+// rejected by its finite render bounds. Missing bounds retain the full trace.
+const collisionModelBounds = ({models,nodes,leaves}) => models.map((model,index)=>{
+  if(index===0||!model.min||!model.max)return null;
+  const min=[...model.min],max=[...model.max],pending=[model.root],seen=new Set();
+  while(pending.length) {
+    const id=pending.pop();if(seen.has(id))continue;seen.add(id);
+    if(id>=0){const node=nodes[id];if(node)pending.push(node[0],node[1]);continue;}
+    const leaf=leaves[-id-1];if(!leaf||!(leaf.contents&67)||!leaf.numSides)continue;
+    if(!leaf.min||!leaf.max)return null;
+    for(let axis=0;axis<3;axis++){min[axis]=Math.min(min[axis],leaf.min[axis]);max[axis]=Math.max(max[axis],leaf.max[axis]);}
+  }
+  return [min,max];
+});
 export class BspCollider {
-  constructor(data) { this.data = data; this.disabledModels = new Set(); this.modelTransforms = new Map(); this.actors=[]; }
+  constructor(data) { this.data = data; this.disabledModels = new Set(); this.modelTransforms = new Map(); this.actors=[];this.modelBounds=collisionModelBounds(data); }
   /** Contents of the actual intersected BSP cells, including non-solid liquid
    * leaves without collision sides. Clipping the query hull along the tree
    * avoids treating a concave moat's enclosing bounds as one damaging box. */
@@ -95,6 +119,12 @@ export class BspCollider {
       if(!models[modelIndex] || this.disabledModels.has(modelIndex)) continue;
       // Model zero is the stationary world, even if a caller supplies a transform.
       const transform=modelIndex===0?null:makeTransform(this.modelTransforms.get(modelIndex));
+      const bounds=this.modelBounds[modelIndex];
+      if(bounds) {
+        const [min,max]=transform?transform.bounds(...bounds):bounds;
+        // Include touching boxes and roundoff at rotated corners.
+        if(min.some((v,i)=>v>boxMax[i]+1e-7||max[i]<boxMin[i]-1e-7))continue;
+      }
       const visited = new Set(), transformedPlanes = new Map();
       const plane = index => {
         if(!transform) return planes[index];
@@ -168,11 +198,28 @@ export class PlayerController {
     this.collider=collider; this.position=[...position]; this.velocityY=0;
     this.launchVelocityXZ=[0,0];
     this.grounded=false; this.modelIndices=modelIndices; this.mins=[-11,0,-11]; this.maxs=[11,56,11];
-    this.lastSafe=[...position];this.noClip=false;this.environmentVelocity=[0,0,0];
+    this.lastSafe=[...position];this.noClip=false;this.environmentVelocity=[0,0,0];this.platformVelocity=[0,0,0];
+    this.skill=0;this.previousJump=false;this.jumpAge=Infinity;this.superJumpUsed=false;this.jumpSerial=0;this.jumpKind=null;
   }
-  resetVelocity(){this.velocityY=0;this.launchVelocityXZ=[0,0];}
+  resetVelocity(){this.velocityY=0;this.launchVelocityXZ=[0,0];this.platformVelocity=[0,0,0];this.jumpAge=Infinity;this.superJumpUsed=false;this.jumpKind=null;}
+  snapshotMotion() {
+    return {velocityY:this.velocityY,launchVelocityXZ:[...this.launchVelocityXZ],grounded:this.grounded,
+      jumpAge:Number.isFinite(this.jumpAge)?this.jumpAge:null,superJumpUsed:this.superJumpUsed,jumpSerial:this.jumpSerial,jumpKind:this.jumpKind};
+  }
+  restoreMotion(state) {
+    this.resetVelocity();this.grounded=false;this.previousJump=false;this.didJump=null;
+    if(!state||!Number.isFinite(state.velocityY)||!Array.isArray(state.launchVelocityXZ)||
+      state.launchVelocityXZ.length!==2||!state.launchVelocityXZ.every(Number.isFinite))return;
+    this.velocityY=state.velocityY;this.launchVelocityXZ=[...state.launchVelocityXZ];this.grounded=state.grounded===true;
+    this.jumpAge=Number.isFinite(state.jumpAge)&&state.jumpAge>=0?state.jumpAge:Infinity;
+    this.superJumpUsed=state.superJumpUsed===true;this.jumpSerial=Number.isSafeInteger(state.jumpSerial)?state.jumpSerial:0;
+    this.jumpKind=['normal','super'].includes(state.jumpKind)?state.jumpKind:null;
+    if(this.grounded||this.noClip)this.resetVelocity();
+  }
   update(dt, input, yaw, pitch=0) {
     dt=Math.min(dt,0.05);
+    const pressedJump=!!input.jump&&!this.previousJump;this.previousJump=!!input.jump;this.didJump=null;
+    this.jumpAge+=dt;
     if(this.noClip) {
       const forward=input.forward||0,right=input.right||0,vertical=Number(!!input.jump)-Number(!!input.descend);
       const direction=[-Math.sin(yaw)*Math.cos(pitch)*forward+Math.cos(yaw)*right,
@@ -182,20 +229,30 @@ export class PlayerController {
       this.resetVelocity();this.grounded=false;this.contacts=new Set();
       return this.position;
     }
-    const speed=input.walk ? 96:156.8;
-    const length=Math.max(1,Math.hypot(input.forward,input.right));
-    const forward=input.forward/length, right=input.right/length;
+    const inputVelocity=playerInputVelocity(input,yaw,this.grounded);
     const wind=this.environmentVelocity||[0,0,0];
-    // Native 0x4d7aed refreshes the whole airborne launch vector every tick
+    // Native RC override 0x435507 refreshes the airborne launch every tick
     // inside a positive-Y stream, even when already rising or falling.
     // The external vector below is a separate, volume-bound contribution.
     if(wind[1]>0){this.velocityY=wind[1];this.launchVelocityXZ=[wind[0],wind[2]];this.grounded=false;}
-    const dx=((-Math.sin(yaw)*forward+Math.cos(yaw)*right)*speed+wind[0]+this.launchVelocityXZ[0])*dt;
-    const dz=((-Math.cos(yaw)*forward-Math.sin(yaw)*right)*speed+wind[2]+this.launchVelocityXZ[1])*dt;
+    const wasGrounded=this.grounded,jumpSpeed=Math.sqrt(2*PLAYER_JUMP.gravity*PLAYER_JUMP.height);
+    const boost=pressedJump&&!wasGrounded&&(this.skill&8)&&!this.superJumpUsed&&
+      this.jumpAge+1e-8>=PLAYER_JUMP.minTapTime&&this.jumpAge<=PLAYER_JUMP.maxTapTime+1e-8;
+    if(boost) {
+      this.velocityY=jumpSpeed*PLAYER_JUMP.superSpeedFactor;this.superJumpUsed=true;
+      this.jumpKind='super';this.didJump='super';this.jumpSerial++;
+    }
+    // Ground travel has an additional RC-specific 1.4 factor. In flight the
+    // takeoff vector persists; only the small air-control vector changes with
+    // input/camera yaw. The jump2 trigger reduces X/Z for its release tick,
+    // before the animation selector consumes it (not for the entire flight).
+    const factor=wasGrounded?PLAYER_MOVEMENT.groundFactor:boost?PLAYER_MOVEMENT.boostFrameFactor:1;
+    const dx=(inputVelocity[0]+wind[0]+(wasGrounded?0:this.launchVelocityXZ[0]))*factor*dt;
+    const dz=(inputVelocity[2]+wind[2]+(wasGrounded?0:this.launchVelocityXZ[1]))*factor*dt;
     const before=[...this.position];
     let move=this.collider.slide(before,[dx,0,dz],this.mins,this.maxs,this.modelIndices);
     if(this.grounded && move.hits.length && (dx || dz)) {
-      const up=this.collider.trace(before,[before[0],before[1]+16,before[2]],this.mins,this.maxs,this.modelIndices);
+      const up=this.collider.trace(before,[before[0],before[1]+PLAYER_MOVEMENT.stepHeight,before[2]],this.mins,this.maxs,this.modelIndices);
       if(up.fraction===1) {
         const step=this.collider.slide(up.end,[dx,0,dz],this.mins,this.maxs,this.modelIndices);
         const down=this.collider.trace(step.position,[step.position[0],step.position[1]-18,step.position[2]],this.mins,this.maxs,this.modelIndices);
@@ -205,15 +262,32 @@ export class PlayerController {
     }
     this.contacts=new Set(move.models);
     this.position=move.position;
-    if(input.jump && this.grounded) { this.velocityY=Math.sqrt(2*800*41.6); this.launchVelocityXZ=[0,0]; this.grounded=false; }
+    if(wasGrounded) {
+      const platform=this.platformVelocity||[0,0,0];
+      const down=this.collider.trace(this.position,[this.position[0],this.position[1]-PLAYER_MOVEMENT.walkOther*dt,this.position[2]],this.mins,this.maxs,this.modelIndices);
+      this.position=down.end;this.grounded=down.fraction<1&&down.normal[1]>.65;
+      if(down.modelIndex!=null&&down.fraction<1)this.contacts.add(down.modelIndex);
+      if(pressedJump) {
+        // Native launch records the unscaled input/external velocity after
+        // ground travel. Gravity and upward travel start on the next tick.
+        this.velocityY=jumpSpeed+platform[1];this.launchVelocityXZ=[inputVelocity[0]+wind[0]+platform[0],inputVelocity[2]+wind[2]+platform[2]];this.grounded=false;
+        this.jumpAge=0;this.superJumpUsed=false;this.jumpKind='normal';this.didJump='normal';this.jumpSerial++;
+      } else if(this.grounded) {
+        this.resetVelocity();this.lastSafe=[...this.position];
+      } else {
+        this.velocityY=-PLAYER_MOVEMENT.walkOther+platform[1];
+        this.launchVelocityXZ=[inputVelocity[0]+wind[0]+platform[0],inputVelocity[2]+wind[2]+platform[2]];
+      }
+      return this.position;
+    }
     // Native airborne motion applies half the gravity step before computing
-    // displacement and the other half afterward (0x4d82c1–0x4d8334).
-    const verticalSpeed=this.velocityY+wind[1]-400*dt;
-    this.velocityY-=800*dt;
+    // displacement and the other half afterward (0x435b38–0x435b90).
+    const verticalSpeed=this.velocityY+wind[1]-PLAYER_JUMP.gravity*.5*dt;
+    this.velocityY-=PLAYER_JUMP.gravity*dt;
     const fall=this.collider.trace(this.position,[this.position[0],this.position[1]+verticalSpeed*dt,this.position[2]],this.mins,this.maxs,this.modelIndices);
     this.position=fall.end; this.grounded=false;
     if(fall.fraction<1) { if(fall.modelIndex!==null)this.contacts.add(fall.modelIndex);this.grounded=fall.normal[1]>0.65 && verticalSpeed<=0; this.velocityY=0; }
-    if(this.grounded) {this.launchVelocityXZ=[0,0];this.lastSafe=[...this.position];}
+    if(this.grounded) {this.launchVelocityXZ=[0,0];this.lastSafe=[...this.position];this.jumpAge=Infinity;this.jumpKind=null;this.superJumpUsed=false;}
     return this.position;
   }
 }

@@ -152,14 +152,15 @@ Resolve test failures before creating packages. Some original-file comparison te
 
 ## 5. Generate portable packages when ready
 
-**Only run this section when you intend to create new builds.** Close the game first. These commands update the corresponding directories under `dist/`; copy an older build elsewhere first if you want to preserve it. They do not change the version number automatically.
+**Only run this section when you intend to create new builds.** Close the game first. These commands update the corresponding directories under `dist/`; copy an older build elsewhere first if you want to preserve it. The source and game menu have no release number. Electron-builder requires a numeric package version when creating desktop distributions, so supply `REDCAT_PACKAGE_VERSION` only for that packaging command. It is injected into the generated package metadata without modifying the source or lockfile. Use three dot-separated integers chosen for your distribution; no default version is maintained. Without this value, the packaging command stops before creating a build.
 
 ### Linux x64
 
 Build on a Linux host:
 
 ```sh
-npm run build:linux
+read -r -p "Desktop package metadata version (three dot-separated integers): " REDCAT_PACKAGE_VERSION
+REDCAT_PACKAGE_VERSION="$REDCAT_PACKAGE_VERSION" npm run build:linux
 ./Start-RedCat.sh
 ```
 
@@ -173,10 +174,18 @@ The root project's `Start-RedCat.sh` also selects X11/XWayland and finds the bui
 
 ### Windows x64
 
-Build on Windows, or generate the current Windows directory target from Linux:
+Build on Windows in PowerShell:
+
+```powershell
+$env:REDCAT_PACKAGE_VERSION = Read-Host 'Desktop package metadata version (three dot-separated integers)'
+npm run build:windows
+```
+
+Or generate the Windows directory target from Linux:
 
 ```sh
-npm run build:windows
+read -r -p "Desktop package metadata version (three dot-separated integers): " REDCAT_PACKAGE_VERSION
+REDCAT_PACKAGE_VERSION="$REDCAT_PACKAGE_VERSION" npm run build:windows
 ```
 
 The output is `dist/win-unpacked/`. Copy the **whole directory** to Windows, then double-click `RedCat Spookkasteel.exe`. From PowerShell at the project root:

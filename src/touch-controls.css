@@ -1,0 +1,194 @@
+/* Only game controls suppress native gestures; menus retain normal scrolling. */
+#touch-controls {
+  --touch-size: 56px;
+  --touch-gap: 8px;
+  --touch-stick: 140px;
+  position: fixed;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  color: #fff3d9;
+}
+.touch-control, #game-menu {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+  pointer-events: auto;
+}
+#touch-move {
+  position: absolute;
+  left: max(20px, env(safe-area-inset-left));
+  bottom: max(22px, env(safe-area-inset-bottom));
+  width: var(--touch-stick);
+  height: var(--touch-stick);
+  display: grid;
+  place-items: center;
+  border: 2px solid #e6d5b84d;
+  border-radius: 50%;
+  background: radial-gradient(circle, #121c2480 40%, #121c2438 41%, #121c2466 68%);
+  box-shadow: 0 3px 18px #0003;
+}
+#touch-move::before, #touch-move::after {
+  content: '';
+  position: absolute;
+  background: #fff2;
+  pointer-events: none;
+}
+#touch-move::before { width: 1px; height: 75%; }
+#touch-move::after { height: 1px; width: 75%; }
+.touch-move-knob {
+  width: 34%;
+  height: 34%;
+  border-radius: 50%;
+  border: 2px solid #ffe0ad99;
+  background: #d1a96b66;
+  box-shadow: 0 2px 9px #0005;
+  pointer-events: none;
+}
+#touch-move.is-pressed { border-color: #ffe0ad99; }
+#touch-look {
+  position: absolute;
+  top: max(110px, 19%);
+  right: max(12px, env(safe-area-inset-right));
+  bottom: calc(max(22px, env(safe-area-inset-bottom)) + var(--touch-size) * 2 + var(--touch-gap) + 68px);
+  width: 49%;
+  border-radius: 24px;
+}
+.touch-look-hint {
+  position: absolute;
+  right: 10px;
+  bottom: 14px;
+  padding: 7px 10px;
+  color: #fff9;
+  background: #10202755;
+  border-radius: 16px;
+  font-size: 11px;
+  text-shadow: 0 1px 4px #000;
+  pointer-events: none;
+}
+#touch-look.is-pressed { background: #ffffff06; }
+#touch-look.is-pressed .touch-look-hint { opacity: .3; }
+.touch-actions {
+  position: absolute;
+  right: max(20px, env(safe-area-inset-right));
+  bottom: max(22px, env(safe-area-inset-bottom));
+  display: grid;
+  grid-template-columns: repeat(3, var(--touch-size));
+  grid-template-rows: repeat(2, var(--touch-size));
+  gap: var(--touch-gap);
+  pointer-events: none;
+}
+.touch-actions button, .touch-tools button {
+  padding: 3px;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #e6d5b866;
+  border-radius: 18px;
+  background: #152a34b8;
+  color: #fff2d8;
+  text-shadow: 0 1px 4px #0009;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+  box-shadow: 0 3px 12px #0003;
+  transition: background .1s, border-color .1s;
+}
+.touch-actions button.is-pressed, .touch-tools button.is-pressed {
+  background: #b58e49da;
+  border-color: #ffe0a2;
+}
+#touch-walk { grid-column: 1; grid-row: 1; }
+#touch-camera { grid-column: 2; grid-row: 1; }
+#touch-descend { grid-column: 3; grid-row: 1; }
+#touch-use { grid-column: 1; grid-row: 2; background-color: #284638b8; }
+#touch-attack { grid-column: 2; grid-row: 2; background-color: #753c31b8; }
+#touch-jump { grid-column: 3; grid-row: 2; background-color: #826338b8; }
+#touch-options {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  width: 68px;
+  height: 44px;
+  border-radius: 22px;
+}
+.touch-tools {
+  position: absolute;
+  right: calc(max(20px, env(safe-area-inset-right)) + 76px);
+  bottom: calc(max(22px, env(safe-area-inset-bottom)) + var(--touch-size) * 2 + var(--touch-gap) + 8px);
+  display: flex;
+  gap: 6px;
+  pointer-events: none;
+}
+.touch-tools button { width: 64px; height: 44px; border-radius: 16px; }
+.touch-actions #touch-use.is-pressed,
+.touch-actions #touch-attack.is-pressed,
+.touch-actions #touch-jump.is-pressed { background-color: #b58e49ed; }
+.touch-cutscene .touch-actions {
+  display: block;
+  bottom: max(20px, env(safe-area-inset-bottom));
+}
+.touch-cutscene #touch-use { width: 148px; height: 48px; border-radius: 24px; }
+.touch-input #cutscene-skip {
+  right: calc(max(20px, env(safe-area-inset-right)) + 158px);
+  bottom: calc(max(20px, env(safe-area-inset-bottom)) + 2px);
+}
+.touch-input #cutscene-skip > span:first-child,
+.touch-input #cutscene-skip .skip-circle b { display: none; }
+.touch-input.in-cutscene #subtitle { bottom: max(86px, 11vh); }
+.touch-input #toast {
+  top: max(132px, 25vh);
+  bottom: auto;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  text-align: center;
+  font-size: 12px;
+}
+#game-menu {
+  position: fixed;
+  top: max(8px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  min-width: 76px;
+  min-height: 44px;
+  padding: 8px 15px;
+  border: 1px solid #e6d5b866;
+  border-radius: 22px;
+  background: #152a34d9;
+  color: #fff2d8;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 2px 12px #0004;
+}
+#game-menu:active { transform: translateX(-50%) translateY(1px); }
+@media (orientation: portrait) {
+  #touch-controls { --touch-stick: 132px; --touch-size: 52px; --touch-gap: 7px; }
+  #touch-move { left: max(14px, env(safe-area-inset-left)); }
+  .touch-actions { right: max(14px, env(safe-area-inset-right)); }
+  .touch-tools { right: calc(max(14px, env(safe-area-inset-right)) + 76px); }
+  #touch-look { top: max(110px, 22%); width: 48%; }
+}
+@media (max-width: 360px), (max-height: 400px) {
+  #touch-controls { --touch-stick: 112px; --touch-size: 46px; --touch-gap: 6px; }
+  #touch-move { left: max(12px, env(safe-area-inset-left)); bottom: max(12px, env(safe-area-inset-bottom)); }
+  .touch-actions { right: max(12px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); }
+  .touch-tools {
+    right: calc(max(12px, env(safe-area-inset-right)) + 76px);
+    bottom: calc(max(12px, env(safe-area-inset-bottom)) + var(--touch-stick) + 8px);
+  }
+  .touch-actions button { border-radius: 14px; font-size: 10px; }
+  #touch-look { top: 90px; bottom: calc(max(12px, env(safe-area-inset-bottom)) + var(--touch-size) * 2 + var(--touch-gap) + 60px); }
+  .touch-look-hint { bottom: 4px; font-size: 10px; }
+}
+@media (max-height: 320px) {
+  #touch-controls { --touch-stick: 100px; --touch-size: 44px; }
+  #touch-look { top: 76px; }
+  .touch-look-hint { padding: 4px 7px; }
+  #game-menu { top: max(4px, env(safe-area-inset-top)); }
+}
+@media (orientation: portrait) {
+  /* The original heart/counter strip uses the upper part of narrow viewports. */
+  #game-menu { top: calc(72px + env(safe-area-inset-top)); }
+}

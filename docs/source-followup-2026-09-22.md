@@ -2,7 +2,7 @@
 
 These changes address the next reported issues after
 [the earlier source pass](source-fixes-2026-09-22.md). They change source and
-imported assets only; the existing 0.2.5 Linux and Windows packages have not
+imported assets only; the existing Linux and Windows packages have not
 been rebuilt.
 
 | Report | Change |

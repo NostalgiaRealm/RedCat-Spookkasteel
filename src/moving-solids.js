@@ -12,7 +12,7 @@ const movedPoint=(point,previous,next)=>{
  * brush move. Sampling the original path catches both translation and the arc
  * of a hinged door; it does not invent new endpoints or move the player through
  * the static world. The caller commits its timeline only after this succeeds. */
-export function moveSolidPlayer(collider,player,modelIndex,previous,next,{sample=null,from=0,to=0}={}) {
+export function moveSolidPlayer(collider,player,modelIndex,previous,next,{sample=null,from=0,to=0,onCarry=null}={}) {
   if(player.noClip||modelIndex===0||!player.modelIndices.includes(modelIndex)||collider.disabledModels.has(modelIndex))return true;
   const model=collider.data.models[modelIndex];if(!model)return true;
   const oldStored=collider.modelTransforms.get(modelIndex),original=[...player.position];
@@ -39,7 +39,7 @@ export function moveSolidPlayer(collider,player,modelIndex,previous,next,{sample
     const r=previous.rotation.map((v,i)=>v+(q[i]-v)*t),length=Math.hypot(...r);
     return {origin:previous.origin,translation:previous.translation.map((v,i)=>v+(next.translation[i]-v)*t),rotation:r.map(v=>v/length)};
   };
-  let position=original,pose=previous;
+  let position=original,pose=previous;const carry=[0,0,0];
   collider.modelTransforms.set(modelIndex,previous);
   for(let step=1;step<=steps;step++) {
     const destination=step===steps?next:interpolate(step/steps);
@@ -52,6 +52,7 @@ export function moveSolidPlayer(collider,player,modelIndex,previous,next,{sample
       // and unrelated actor props retain their normal collision rules.
       const hit=collider.trace(position,carried,player.mins,player.maxs,others,{mask:'blocksPlayer',ignoreSupportModelIndex:modelIndex});
       if(hit.startSolid||hit.fraction<1)return restore();
+      for(let axis=0;axis<3;axis++)carry[axis]+=carried[axis]-position[axis];
       position=carried;
     }
     collider.modelTransforms.set(modelIndex,destination);
@@ -70,6 +71,7 @@ export function moveSolidPlayer(collider,player,modelIndex,previous,next,{sample
     pose=destination;
   }
   player.position=position;
+  if(carry.some(v=>v!==0))onCarry?.(carry);
   if(distance(original,position)>.001)player.contacts?.add?.(modelIndex);
   return true;
 }

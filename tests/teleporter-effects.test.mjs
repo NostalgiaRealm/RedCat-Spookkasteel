@@ -15,6 +15,7 @@ function effects(game) {
   for(const key of Object.keys(manifest.textures)){
     const batch={count:0,add(){this.count++;},addDisc(){this.count++;},flush(){},mesh:new THREE.Object3D()};
     (/beam|blast|fleuri/.test(key)?renderer.beamBatches:renderer.batches).set(key,batch);
+    if(key.startsWith('fleuri.'))renderer.batches.set(key,{...batch});
   }
   return renderer;
 }
@@ -39,7 +40,25 @@ test('all 13 authored teleport effects support their original waypoint layouts d
   }
 });
 
-test('Show ignores a disabled effect and repeated calls while its seven-second sequence is active',()=>{
+test('native terminal flash uses a billboard and its one-shot survives completion without duplicate player-transition cues',()=>{
+  const events=[],game=new Gameplay(level,{deferInit:true,onEvent:e=>events.push(e)}),host=new ScriptHost(game,json('data/davi/lvl04a.json'));
+  const renderer=effects(game),object=game.find('telepfx01')[0];game.command(object,'show');
+  for(let i=0;i<69;i++)renderer.update(.1);
+  const state=renderer.entries.get(object.id),startup=events.find(e=>e.sound==='Magiev18.wav');
+  assert.equal(startup.volume,1);assert.equal(startup.playbackRate,.5);assert.equal(startup.nativeFrequency,true);
+  assert.equal(state.teleporterGeometry.stage,'terminal');assert.equal(state.teleporterGeometry.rays.length,0);
+  assert.equal(renderer.batches.get('fleuri.bmp|fleuri_a.bmp').count,1);
+  const cues=()=>events.filter(e=>e.sound==='Magiev1.wav');assert.equal(cues().length,1);
+  host.playerVisible=true;host.portalTransition={id:object.id,serial:object.teleportEffectSerial,fromVisible:true};host.portalPlayerVisibility(false);
+  assert.equal(cues().length,1,'same native cue is not replayed by script visibility');
+  const save=JSON.parse(JSON.stringify(game.snapshot())),restored=new Gameplay(level,{save,deferInit:true,onEvent:e=>events.push(e)}),loaded=effects(restored);
+  loaded.update(0);loaded.update(.25);assert.equal(cues().length,1,'loading a terminal flash neither replays nor stops its cue');
+  assert.equal(loaded.entries.get(object.id).teleporterGeometry.active,false);
+  assert.ok(!events.some(e=>e.id===cues()[0].id&&e.stop),'the WAV can finish after the visual flash');
+  loaded.dispose();renderer.dispose();
+});
+
+test('Show ignores a disabled effect and repeated calls while its native sequence is active',()=>{
   const object={enabled:false};assert.equal(showTeleporter(object),false);object.enabled=true;
   assert.equal(showTeleporter(object),true);assert.equal(object.teleportEffectSerial,1);
   object.teleportEffectAge=2;assert.equal(showTeleporter(object),false);assert.equal(object.teleportEffectAge,2);
@@ -59,13 +78,37 @@ test('authored tower motion event starts portal Show, with original artwork, mov
   assert.equal(state.teleporterGeometry.active,false);assert.equal(state.teleporterGeometry.rays.length,0);assert.ok(state.teleporterGeometry.sparks.length>0);
 });
 
-test('portal save/load resumes the analytic particle pose and active age without repeating audio',()=>{
+test('portal save/load resumes particle pose and looping layer without replaying startup',()=>{
   const events=[],game=new Gameplay(level,{deferInit:true,onEvent:e=>events.push(e)}),renderer=effects(game),object=game.find('telepfx01')[0];
   game.command(object,'show');for(let i=0;i<25;i++)renderer.update(.1);
   const geometry=renderer.entries.get(object.id).teleporterGeometry,save=JSON.parse(JSON.stringify(game.snapshot()));
   const restored=new Gameplay(level,{save,deferInit:true,onEvent:e=>events.push(e)}),loaded=effects(restored),before=events.length;
-  loaded.update(0);assert.deepEqual(loaded.entries.get(object.id).teleporterGeometry,geometry);assert.equal(events.length,before);
+  loaded.update(0);assert.deepEqual(loaded.entries.get(object.id).teleporterGeometry,geometry);assert.equal(events.length,before+1);assert.equal(events.at(-1).sound,'LV2snd7.wav');assert.equal(events.at(-1).loop,true);
   for(const entry of loaded.entries.values())if(entry.object.entity.classname==='TeleporterFX')restored.command(entry.object,'disable');
   loaded.update(.1);assert.equal(loaded.entries.get(object.id).active,false);
   assert.equal(loaded.batches.get('spark8.bmp|spark8_a.bmp').count,0);
+});
+
+
+test('native portal looping layer starts once and stops on completion, disable and disposal',()=>{
+  const events=[],game=new Gameplay(level,{deferInit:true,onEvent:e=>events.push(e)}),renderer=effects(game),object=game.find('telepfx01')[0];
+  game.command(object,'show');renderer.update(.1);renderer.update(.1);
+  const loops=()=>events.filter(e=>e.id===`teleporter-loop:${object.id}`);
+  assert.equal(loops().length,1);assert.equal(loops()[0].volume,1.9);assert.equal(loops()[0].playbackRate,.075);assert.equal(loops()[0].nativeFrequency,true);assert.equal(loops()[0].loop,true);
+  for(let i=0;i<70;i++)renderer.update(.1);
+  assert.equal(loops().length,2);assert.equal(loops().at(-1).stop,true);
+  game.command(object,'show');renderer.update(.1);game.command(object,'disable');renderer.update(.1);
+  assert.equal(loops().length,4);assert.equal(loops().at(-1).stop,true);
+  game.command(object,'enable');for(let i=0;i<75;i++)renderer.update(.1);game.command(object,'show');renderer.update(.1);renderer.dispose();
+  assert.equal(loops().length,8);assert.equal(loops().at(-1).stop,true);
+});
+
+test('a completed seven-second legacy save does not revive the portal loop or terminal flash',()=>{
+  const events=[],game=new Gameplay(level,{deferInit:true,onEvent:e=>events.push(e)}),object=game.find('telepfx01')[0];
+  object.teleportEffectAge=7;object.teleportEffectSerial=1;object.effectAge=3600;
+  const renderer=effects(game);renderer.update(0);
+  assert.equal(renderer.entries.get(object.id).teleporterGeometry.active,false);
+  assert.equal(object.teleportEffectAge,TELEPORT_EFFECT_SECONDS);
+  assert.ok(!events.some(e=>e.sound==='LV2snd7.wav'||e.sound==='Magiev1.wav'||e.sound==='Magiev18.wav'));
+  renderer.dispose();
 });

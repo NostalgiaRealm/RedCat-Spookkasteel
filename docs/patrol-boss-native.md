@@ -59,6 +59,53 @@ relocation candidates. The per-enemy random state, route, last observation,
 salvo/animation state and pending projectile timing persist through saves.
 Cutscene/freeze handling pauses movement and animation deadlines.
 
+## Graveyard frog corner recovery
+
+The graveyard frogs are `MovingEnemy41/42/43` (`frog01/02/03`), with original
+start waypoints 269, 265 and 267. They were already active when RedCat was far
+away. A longer reproduction found a separate defect: frogs 02 and 03 eventually
+stopped at `[2672.05,528.05,-291.9]` while following point 265 to point 124. They
+moved again during player pursuit because it supplied a different destination.
+
+Point 265 is `[2716,528,-396]`; point 124 is `[2640,528,-208]`. The complete
+edge clears the frog's collision hull. The former five-unit arrival radius
+could select that edge from x=2712 instead, cutting inside the stone corner.
+The first blocked trace then discarded the remaining tangential movement.
+
+The native `CAdamWayPointCursor` updater computes speed times elapsed seconds
+at `0x59c049–0x59c058` and compares that travel with the remaining distance.
+When the step reaches the destination, `0x59c070–0x59c08a` copies the destination
+coordinates and sets the at-waypoint flag. The shorter-step branch interpolates
+at `0x59c091–0x59c0a9` and leaves that flag false. Grounded patrols now reach the
+waypoint before choosing another edge, allowing only 0.1 unit for the portable
+BSP sweep's 0.05-unit separation margin. The existing flying-enemy tolerance
+has not been changed in this bounded repair.
+
+Grounded movement against a wall also retains its collision-tested tangent,
+as flight already did. This repairs frogs already saved at the blocked corner
+without teleporting them, changing their route or narrowing their body. This
+slide response is a portable collision refinement, not a claim of recovered
+native actor collision parity. Direct movement into the wall still stops.
+
+Focused tests use the actual graveyard BSP and waypoint network: all three
+frogs patrol for 100 simulated seconds with a distant player, and a saved frog
+at the former stall resumes through point 124. A source-browser scene exercises
+40 seconds with the loaded actor hulls and prop collisions, then reloads the
+stuck frog through the production save loader. Artifacts are
+`artifacts/graveyard-frog-patrol-scenes.json` and
+`artifacts/graveyard-frog-patrol.png`.
+
+```sh
+node --test tests/graveyard-frog-patrol.test.mjs tests/patrol-boss.test.mjs tests/enemy-behavior.test.mjs tests/enemy-ambush-flight.test.mjs
+node tests/graveyard-frog-patrol-scenes.mjs
+```
+
+The older behavior fixtures now explicitly specify clock-face orientation 6,
+because they place their player south of the enemy. Their previously omitted
+orientation means north in the recovered native convention, which made seven
+unrelated expectations fail before this patrol change. No gameplay orientation
+was changed to accommodate those fixtures. No package build was run.
+
 ## Boss ammunition
 
 The generic native factory at `0x44d570` uses one-based enums. The old remake
@@ -84,10 +131,12 @@ Mushroom sprite setup is at `0x448b70`–`0x448e67`. Its table at
 `0x64cec4`–`0x64cee0` references `msh0.bmp`/`msh0a.bmp` through
 `msh3.bmp`/`msh3a.bmp`. The float at `0x64ceec` is 0.05 seconds; `0x448e47`
 converts this to milliseconds for the animation duration setter at `0x4041b0`.
-Thus the projectile sprite has four original frames at 20 fps. Normal `Size`
-is 0.3. The mushroom constructor sets a colored dynamic light; that color is
-not a tint for the underlying sprite. `mshTrail.bmp` and `mshTrailA.bmp` are
-referenced separately at `0x64cee4` / `0x64cee8`.
+The four-frame sprite uses a 50 ms timer with strict expiry and a separate
+rearm update, as recovered in [native-projectile-animation.md](native-projectile-animation.md).
+Normal `Size` is 0.3. The mushroom constructor sets a colored dynamic light;
+that color is not a tint for the underlying sprite. Although `mshTrail.bmp`
+and `mshTrailA.bmp` pointers exist at `0x64cee4` / `0x64cee8`, live setup loads
+`STrail.bmp` and `STrail_a.bmp`; see [mushroom-trail-native.md](mushroom-trail-native.md).
 
 ## Bone Brutus charge phase
 
@@ -111,24 +160,18 @@ generic post-salvo pause before another shot.
 
 ## Remaining fidelity limits
 
-- Native route scoring and complete pursuit routing have not been reproduced.
-  The current destination choices and local avoidance can differ from the
-  original despite the recovered automatic graph-pruning rules.
-- Native random-number sequences are not reproduced. A saved deterministic
-  per-enemy generator is used. `AverageShotsPerSalvo` is currently used as the
-  salvo count. Native shooter-property initialization at `0x426905`–`0x426948`
-  stores `trunc(1 + (AverageShotsPerSalvo - 1) * (rand % 10000) * 0.0001)`.
-  Constants are `0x64a354 = 1` and `0x64a2c4 = 0.0001`; `0x60ab20` truncates
-  toward zero. The relevant property-object lifetime and whether/how other
-  states adjust this stored count still need recovery before integrating it.
+- Native minimum-hop pursuit routing and sampled per-enemy salvo properties
+  are now implemented; see [native follow-up](native-completion-followup.md).
+  The portable route endpoint selection, body clearance and saved per-enemy RNG
+  can still differ from the original's path cursor and global CRT random stream.
 - Generic attack timing uses actor clip duration and the configured draw
   fraction. Per-enemy timing randomization, interruption transitions and all
-  attack states have not been recovered. Muzzle positions and collision radii
-  remain approximations.
+  attack states have not been recovered. Enemy muzzle positions remain reconstructed; the shared native projectile
+  collision hull is now recovered in [projectile contact](player-reactions-and-projectile-contact-native.md).
 - Mushroom Brutus now leaves the original flight-path ribbon; the earlier
   floor-trail description was incorrect. Its collision/damage inference and
   confirmed visual behavior are documented in `mushroom-trail-native.md`.
-  Other projectile-specific bounce, targeting and lifetime rules remain open.
+  Projectile-specific bouncing and exact engine collision remain open.
 - Dungeon Max's machine/rise/look cycle, Jester's teleport/invisibility, and
   the Witch's takeoff/flight/attack/defeat phases are implemented and documented
   with their remaining limits in `boss-phases-native.md`. Guardian-specific

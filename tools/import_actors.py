@@ -262,6 +262,25 @@ def actor_settings(path):
     if ini.exists():
         p=configparser.ConfigParser(interpolation=None,inline_comment_prefixes=(';',),strict=False)
         p.read(ini,encoding='cp1252')
+        # AdamActor reads these independently of the Actor geometry section.
+        # Keep colours in their authored 0..255 space, including animated
+        # ambient colours; the renderer converts them to its working space.
+        if p.has_section('ActorLighting'):
+            settings['lighting']={key[0].lower()+key[1:]:p.getboolean('ActorLighting','ActorLighting'+key,fallback=default)
+                for key,default in [('UseSun',True),('UseAmbient',True),('OverrideAmbient',False),('UseDefaultSun',False),('UseDefaultSunOnly',False)]}
+            settings['lighting'].update({
+                'ambientColor':[p.getfloat('ActorLighting','ActorLightingOverrideAmbient'+axis,fallback=155) for axis in ('Red','Green','Blue')],
+                'sunColor':[p.getfloat('ActorLighting','ActorLightingDefaultSun'+axis,fallback=155) for axis in ('Red','Green','Blue')],
+                'sunNormal':[p.getfloat('ActorLighting','ActorLightingDefaultSunNormal'+axis,fallback=default) for axis,default in zip('XYZ',[0,1,0])],
+                'sunIntensityFactor':p.getfloat('ActorLighting','ActorLightingSunIntensityFactor',fallback=1),
+                'maxDynamicLights':p.getint('ActorLighting','ActorLightingMaxNrDynLights',fallback=2)})
+        if p.has_section('ActorLightAnimation'):
+            settings['lightAnimation']={
+                'enabled':p.getboolean('ActorLightAnimation','AnimateColorEnabled',fallback=False),
+                'start':[p.getfloat('ActorLightAnimation','AnimateColorStart'+axis,fallback=default) for axis,default in zip(('Red','Green','Blue'),[90,90,255])],
+                'end':[p.getfloat('ActorLightAnimation','AnimateColorEnd'+axis,fallback=default) for axis,default in zip(('Red','Green','Blue'),[255,90,90])],
+                'pattern':p.get('ActorLightAnimation','AnimateColorString',fallback='adhkruxurkhd'),
+                'duration':p.getfloat('ActorLightAnimation','AnimateColorTimeSeconds',fallback=2)}
         if p.has_section('Actor'):
             settings['scale']=p.getfloat('Actor','ActorScale',fallback=1.0)
             settings['initialRotationDegrees']=[p.getfloat('Actor','ActorInitialRotation'+axis,fallback=default) for axis,default in zip('XYZ',initial_rotation)]
@@ -273,7 +292,7 @@ def actor_settings(path):
         if p.has_section('Explosion'):
             settings['explosion']={key:p.getfloat('Explosion','Explode'+key,fallback=0) for key in ('DamagePercentage','SizePercentage','NrExplosions','Electric','SmokeOnly','Green')}
         if p.has_section('Particle'):
-            settings['debris']={key:p.getfloat('Particle','Particle'+key,fallback=0) for key in ('Gravity','MustFade','TestCollision','MustRotate','RotationSpeed','FloorOffset','MinLifeTimeSeconds','MaxLifeTimeSeconds','Elasticity','Friction','AirFriction')}
+            settings['debris']={key:p.getfloat('Particle','Particle'+key,fallback=0) for key in ('Gravity','MustFade','TestCollision','MustRotate','RotationSpeed','SizeX','SizeY','SizeZ','FloorOffset','MinLifeTimeSeconds','MaxLifeTimeSeconds','Elasticity','Friction','AirFriction')}
             settings['debris']['types']=[]
             for section in p.sections():
                 if re.fullmatch(r'ParticleType\d+',section,re.IGNORECASE):

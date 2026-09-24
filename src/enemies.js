@@ -41,9 +41,10 @@ export function moveEnemy(object,delta,dt,trace) {
   const end=start.map((v,i)=>v+delta[i]);
   const hit=trace(start,end,mins,maxs);
   let position=hit.end;
-  if(object.flying&&hit.fraction<1&&!hit.startSolid&&hit.normal) {
-    // Continue the tangential part of the flight instead of discarding the
-    // whole step at a fence or wall. Grounded enemies retain their step logic.
+  if((object.flying||object.grounded&&Math.abs(hit.normal?.[1]??1)<.65)&&hit.fraction<1&&!hit.startSolid&&hit.normal) {
+    // Keep the unblocked tangent instead of discarding the whole movement.
+    // This also lets grounded patrols saved beside a corner reach their next
+    // waypoint without waiting for pursuit to choose a different direction.
     const remaining=delta.map(v=>v*(1-hit.fraction));
     const inward=remaining.reduce((sum,v,i)=>sum+v*hit.normal[i],0);
     if(inward<0){

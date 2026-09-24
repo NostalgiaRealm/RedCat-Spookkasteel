@@ -52,6 +52,42 @@ export class NativeFairyEffect {
     this.trails=[];this.serial=0;
     this.activate({origin,waypoints,lifeTime});
   }
+  snapshot() {
+    // Inactive slots retain only their oscillator; their old position/birth
+    // never participates in reuse. Keep every live particle and trail segment,
+    // plus the random stream and fractional tick, without replaying elapsed time.
+    const pool=this.pool.map(p=>p.active?p:p.wiggle===0&&p.wiggleUp?null:[p.wiggle,p.wiggleUp]);
+    return structuredClone({...this,pool});
+  }
+  static restore(saved) {
+    const vector=v=>Array.isArray(v)&&v.length===3&&v.every(Number.isFinite);
+    const number=k=>Number.isFinite(saved?.[k]);
+    if(!saved||!vector(saved.origin)||!Array.isArray(saved.waypoints)||saved.waypoints.length>10||!saved.waypoints.every(vector)||
+      !['time','remainder','lifeTime','age','startedAt','nextSlow','nextBurst','angle','pulse','otherPulse'].every(number)||
+      saved.time<0||saved.age<0||saved.startedAt<0||saved.startedAt>saved.time||saved.lifeTime<0||
+      saved.remainder<0||saved.remainder>=FAIRY_STEP||
+      !Number.isInteger(saved.randomState)||saved.randomState<0||saved.randomState>0xffffffff||
+      !Number.isSafeInteger(saved.serial)||saved.serial<0||!vector(saved.color)||
+      !Number.isInteger(saved.channel)||saved.channel<0||saved.channel>2||
+      !['colorUp','pulseUp','active','stopRequested'].every(k=>typeof saved[k]==='boolean')||
+      !vector(saved.centre?.position)||!vector(saved.centre?.velocity)||typeof saved.centre.seeking!=='boolean'||
+      !Number.isInteger(saved.centre.waypoint)||saved.centre.waypoint<0||saved.centre.waypoint>=Math.max(1,saved.waypoints.length)||
+      !vector(saved.lastCentre)||!Array.isArray(saved.lastTips)||saved.lastTips.length!==5||!saved.lastTips.every(vector)||
+      !Array.isArray(saved.pool)||saved.pool.length!==50||!Array.isArray(saved.trails)||saved.trails.length>240)return null;
+    for(const p of saved.pool) {
+      if(p===null)continue;
+      if(Array.isArray(p)) {if(p.length!==2||!Number.isFinite(p[0])||typeof p[1]!=='boolean')return null;continue;}
+      if(!p||p.active!==true||!vector(p.position)||!vector(p.velocity)||!Number.isFinite(p.wiggle)||typeof p.wiggleUp!=='boolean'||
+        !Number.isFinite(p.born)||p.born<0||p.born>saved.time||!Number.isSafeInteger(p.serial)||p.serial<1||p.serial>saved.serial||
+        !['slow','burst'].includes(p.kind))return null;
+    }
+    if(saved.trails.some(t=>!t||!vector(t.start)||!vector(t.end)||!Number.isFinite(t.born)||t.born<0||t.born>saved.time))return null;
+    const effect=new NativeFairyEffect(saved);
+    for(const key of Object.keys(effect))effect[key]=structuredClone(saved[key]);
+    effect.pool=effect.pool.map(p=>p===null?{active:false,wiggle:0,wiggleUp:true}:
+      Array.isArray(p)?{active:false,wiggle:p[0],wiggleUp:p[1]}:p);
+    return effect;
+  }
   random() {
     // Original MSVC CRT rand(), 0x60a4a0, including its modulo10000 bias.
     this.randomState=(Math.imul(this.randomState,214013)+2531011)>>>0;

@@ -24,6 +24,14 @@ export function actorOrientation(object,settings,modelPose) {
 
 export function attachedActorVisible(object,game) {
   if(object.modelIndex===undefined)return true;
+  // The cave introduction withdraws its separate Max double 73 units below
+  // the pedestal. Its tall mesh still peeks through the floor when the combat
+  // assembly vanishes. Retire the double at that authored handoff, including
+  // restored motion endpoints; disabling other model actors remains a pause.
+  if(game.level.id==='lvl03a'&&object.entity.DaviName?.toLowerCase()==='max_actor') {
+    const controllers=game.modelObjects.get(object.modelIndex)||[];
+    if(controllers.some(o=>o.entity.DaviName?.toLowerCase()==='max_model'&&game.scripts?.players.get(o.id)?.finished))return false;
+  }
   // Disable pauses the owning controller. Hide removes both its brush and
   // the actor mounted on it, as used by the castle's rolling-ball switch.
   return (game.modelObjects.get(object.modelIndex)||[])

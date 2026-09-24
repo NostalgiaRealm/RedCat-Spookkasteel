@@ -1,4 +1,4 @@
-# Gameplay and Davi-Script status (0.2)
+# Gameplay and Davi-Script status
 
 The application now executes the original compiled level scripts, using a portable
 Davi-Script interpreter and game-command adapter. It does not execute the original
@@ -62,7 +62,7 @@ precedence over the generic player-target flag. Moving cameras visit authored
 waypoints at 150 world units per second; exact original final-approach acceleration
 and smoothing remain approximate. Offset camera framing is reconstructed.
 
-## Regular enemy and action feedback (0.2.3)
+## Regular enemy and action feedback
 
 Enemies now select original idle, walk, attack, hurt and death motions, with
 one-shot playback and original motion-speed factors. Ground enemies follow
@@ -74,21 +74,19 @@ have their original sounds. Details and fidelity limits are in `enemy-gameplay.m
 
 ## Remaining native engine work
 
-- Enemies still use reconstructed visibility/chase and attack state machines.
-  Patrol links, sense/view ranges, remembered targets and salvo relocation are
-  implemented, but exact flight steering, route simplification, aiming randomness,
-  some projectile effects, vulnerabilities and boss-specific combat states remain incomplete. Executing a
-  boss's original defeat handler is not proof of an identical boss fight.
-- Shooting respects initial chapter abilities and script-granted skills, but exact
-  special-shot charging, super-jump and shove behavior are still incomplete.
-- Trigger and liquid overlap use transformed convex BSP cells. Moving solid
-  collision is implemented; crush damage and moving-brush pushes from the side
-  need further work.
-- Original spouts, coronas, light styles, beams and save beacons are rendered;
-  particle randomness, exact dynamic-light falloff, fairy effects, camera fades
-  and some actor choreography remain approximate or incomplete.
-- Hidden drops, some breakable prop behavior and original secret handling need work.
-- Original RCR saves are not imported. This application has its own save format.
+The [current native parity audit](native-parity-audit.md) supersedes older broad
+TODO lists. The [native follow-up](native-completion-followup.md) connects player
+hurt/death/respawn, breadth-first pursuit, sampled salvos and enemy state rules,
+projectile/actor lighting, directional sound and wall obstruction. The earlier
+shove-action claim was not supported by the recovered executable. Route endpoint
+selection, collision and some particle/audio envelopes retain documented
+approximations; a normal complete campaign playthrough remains outstanding.
+
+[SuperSkippie and BIG BENG](player-abilities-native.md), boss phase machines,
+enemy death effects and the latest original projectile frames/timing are already
+implemented. Original RCR save import remains optional compatibility work; the
+remake has its own saves and recovery history. Executing all script handlers in
+fixtures is not proof of identical native gameplay.
 
 ## Verification
 
@@ -103,7 +101,7 @@ are not a full campaign playthrough or a comparison against native game footage.
 Format and execution details: `davi-format.md`, `davi-vm-opcodes.md`, `motions.md`.
 Numeric settings come from 26 original INI files via `import_gameplay_settings.py`.
 
-## Patrol, projectiles and boss scenes (0.2.4)
+## Patrol, projectiles and boss scenes
 
 `patrol-boss-native.md`, `player-projectiles-native.md` and
 `boss-script-regressions.md` record the native evidence and remaining limits.
@@ -120,7 +118,7 @@ checks the castle WhizKitty scene's position. This test also runs in the package
 Linux application. Other mirror routes and the tower's fifth placement are
 covered by original-script tests.
 
-## Liquids, mushroom ribbons and remaining boss cycles (0.2.5)
+## Liquids, mushroom ribbons and remaining boss cycles
 
 Translucent water survives the renderer’s palette cutout threshold. Visible
 water faces on trigger brushes render without making the water solid. Contact
@@ -141,7 +139,7 @@ cycle now run as specialized, saveable state machines. These changes do not
 establish exact parity for every native transition or projectile behavior.
 See `boss-phases-native.md` for evidence and limits.
 
-## Graveyard, bats and original effects (0.2.5)
+## Graveyard, bats and original effects
 
 The paired courtyard doors accept the original explicit Open commands even
 when their interaction controllers start disabled. Both button callbacks and
@@ -162,7 +160,7 @@ with their original sound stages, and restore their activation clock. Actual
 checkpoints remain controlled by the original Davi-Script calls. Recovered
 constants and rendering approximations are documented in `world-effects-native.md`.
 
-## Optional cheats (0.2.5)
+## Optional cheats
 
 Settings → Cheats fills the native inventory caps (5 mirror pieces, 100 potions)
 and adds 9000 points, capped at 999999. This changes inventory only: it does not
@@ -208,5 +206,5 @@ The effect trajectories and some sound stages remain approximate; see
 `test:doors`, `test:actor-placement` and `test:portals` add actual rendered-level
 regressions to `test:desktop`. The asset audit resolves 710 placed actors, 29
 model attachments and 56 explicitly named motions. These are source checks;
-the prepared Linux/Windows 0.2.5 directories remain unchanged. Follow
+the prepared Linux/Windows directories remain unchanged. Follow
 [building.md](building.md) to run source or package it yourself.

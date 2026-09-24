@@ -1,4 +1,4 @@
-# Gameplay sounds and enemy movement (0.2.3)
+# Gameplay sounds and enemy movement
 
 The previous frontend played BulletHitWall at a placeholder 0.25 gain for every
 player shot, and applied the same extra reduction to jumping. After restoring
@@ -64,16 +64,21 @@ decoded playback for the player and the six requested enemy families.
 skeletal mesh, its attack emits a visible original sprite, and its projectile
 damages the player. Both checks also run in the packaged Linux desktop test.
 
-Version 0.2.4 adds original patrol graphs, saved route/random state, view cones,
+The patrol update adds original patrol graphs, saved route/random state, view cones,
 salvo relocation and boss projectile classes; see `patrol-boss-native.md`.
 `player-projectiles-native.md` also corrects the earlier orange sprite tint:
 the native orange values configure a light; the bitmap vertices use white.
 
 This is still a reconstruction of native enemy behavior. Exact navigation
 selection, every enemy vulnerability and all native interruption rules are
-not complete. Version 0.2.5 adds the Dungeon Max, Jester Max and Witch phase
-controllers and mushroom ribbons; see `boss-phases-native.md`. Projectile visuals beyond the player, red spider and mushroom, some collision dimensions and
-knight-fragment physics are approximations. The tests are controlled scenes, not a complete campaign
+not complete. The boss-phase update adds the Dungeon Max, Jester Max and Witch phase
+controllers and mushroom ribbons; see `boss-phases-native.md`. The later
+[projectile animation recovery](native-projectile-animation.md) adds the original
+frames and native bitmap timing for all imported projectile kinds. The later
+[native follow-up](native-completion-followup.md) adds pursuit/combat refinements,
+projectile lighting and the recovered shared collision hull. Enemy muzzle
+placement and fragment physics retain approximations; see the
+[current audit](native-parity-audit.md). The tests are controlled scenes, not a complete campaign
 playthrough or frame-by-frame comparison with the original executable.
 
 The later [ambush and flight update](enemy-ambush-flight.md) documents original

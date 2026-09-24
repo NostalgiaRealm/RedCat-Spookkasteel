@@ -1,6 +1,13 @@
 // Scripted preview cameras must not silently change the independent weapon
 // pitch. Offset-camera input uses one shared pitch for viewing and aiming.
 const clamp=value=>Math.max(-1.2,Math.min(1.2,Number.isFinite(value)?value:.16));
+// A mode shortcut has no visible effect while an authored overview owns the
+// view. Ignore it then instead of silently selecting first person for expiry.
+export function canTogglePlayerCamera(world) {
+  const host=world?.gameplay?.scripts;
+  return !host?.cutscene&&(!host?.camera||host.camera.mode===0||host.camera.mode===1);
+}
+
 export class PlayerCameraControl {
   constructor(){this.active=null;}
   restore(world) {

@@ -57,9 +57,11 @@ test('fan flight respects ceiling and floor collision, clears carry on landing a
 });
 
 test('midpoint gravity retains the original ordinary jump height of 1.3 metres',()=>{
-  const player=new PlayerController(clear,[0,0,0]);player.grounded=true;
+  const floor={...clear,trace(a,b){return b[1]<0?{fraction:0,end:[...a],normal:[0,1,0],modelIndex:0}:clear.trace(a,b);}};
+  const player=new PlayerController(floor,[0,0,0]);player.grounded=true;
   const speed=Math.sqrt(2*800*41.6),dt=speed/800/20;
-  for(let i=0;i<20;i++)player.update(dt,{...idle,jump:i===0},0);
+  player.update(dt,{...idle,jump:true},0);close(player.position[1],0,'native launch starts flight on the following tick');
+  for(let i=0;i<20;i++)player.update(dt,idle,0);
   close(player.position[1],41.6);close(player.velocityY,0);
   assert.deepEqual(player.launchVelocityXZ,[0,0]);
 });

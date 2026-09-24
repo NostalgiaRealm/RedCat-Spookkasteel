@@ -5,6 +5,17 @@ export const LEVEL_IDS=Object.freeze(['lvl00a','lvl01a','lvl02a','lvl03a','lvl04
 export const CHAPTER_ART_SIZE=Object.freeze({width:150,height:171});
 const validIndex=value=>Number.isInteger(value)&&value>=0&&value<LEVEL_IDS.length;
 const highest=progress=>progress?.version===1&&validIndex(progress.highestUnlocked)?progress.highestUnlocked:0;
+const validSkills=value=>Number.isInteger(value)&&value>=0&&value<=31?value:0;
+
+export function campaignSkills(progress) {
+  return progress?.version===1?validSkills(progress.earnedSkills):0;
+}
+
+export function earnCampaignSkill(progress,skill) {
+  const result=readCampaignProgress(progress);
+  if(Number.isInteger(skill)&&skill>=0&&skill<=4)result.earnedSkills=campaignSkills(result)|(1<<skill);
+  return result;
+}
 
 export function validAdventureSave(save) {
   return save?.version===1&&LEVEL_IDS.includes(save.level)&&Array.isArray(save.position)&&save.position.length===3&&
@@ -15,14 +26,16 @@ export function validAdventureSave(save) {
 
 export function readCampaignProgress(stored,legacySave=null) {
   let unlocked=highest(stored);
+  let skills=campaignSkills(stored);
   // Earlier source releases exposed every chapter. Keep a valid existing
   // adventure playable; its current chapter is the available migration proof.
   // Inventory cheats, difficulty choice and a mere menu selection are not proof.
   if(validAdventureSave(legacySave)) {
+    skills|=validSkills(legacySave.game.state.skill);
     const index=LEVEL_IDS.indexOf(legacySave.level);
     unlocked=Math.max(unlocked,Math.min(LEVEL_IDS.length-1,index+(legacySave.game.completed===true?1:0)));
   }
-  return {version:1,highestUnlocked:unlocked};
+  return {version:1,highestUnlocked:unlocked,...(skills?{earnedSkills:skills}:{})};
 }
 
 export function canStartCampaignLevel(progress,index) {

@@ -2,9 +2,7 @@
 
 A runnable, independent reconstruction in `/home/rick/RCSPOOK_NEW`, using the assets from your installed copy of the 2000 game. It does not launch the old Windows executables, Direct3D DLLs, or Wine. The renderer is Three.js/WebGL 2; the desktop application is Electron.
 
-**Status: playable development version 0.9.1, with the original Davi-Script logic running.** All five original worlds load, and their compiled puzzle, cutscene and boss-event scripts execute in the new runtime. Original motion timelines, Dutch dialogue and script state saving are integrated. Patrol routes, Dungeon Max’s turret cycle, Jester Max’s teleport phases, the Witch’s flight cycle, mushroom trails and damaging water are implemented. Exact native navigation, some projectile effects and special abilities remain unfinished; the whole campaign has not yet been verified end to end.
-
-**Unpackaged source updates (0.9.1):** moving-door collision, visible rolling balls, the corrected castle/cave Max variants, cave gate damage and portal effects have been updated since the prepared 0.2.5 packages. No new packages have been generated. Use the [build guide](docs/building.md) to run the updated source or make your own packages when ready.
+**Status: playable development source, with the original Davi-Script logic running.** All five original worlds load, and their compiled puzzle, cutscene and boss-event scripts execute in the new runtime. Original motion timelines, Dutch dialogue and script state saving are integrated. Patrol routes, boss phases, original projectile animation, mushroom trails, damaging water, SuperSkippie and BIG BENG are implemented. RedCat's hit/death/respawn clips, authored pursuit routing, additional enemy attack states, projectile/actor lighting and directional sound with wall obstruction are also connected. Exact parity still needs further reference comparisons and hardware validation. The whole campaign has not yet been verified end to end. See the [current native parity audit](docs/native-parity-audit.md) for confirmed gaps, approximations and validation work.
 
 ## Run the prepared builds
 
@@ -42,7 +40,7 @@ The original installation, ISO, CD files, and original saves are unchanged. This
 - Third-person and first-person cameras, mouse look, walking, jumping, step climbing and sliding against original BSP collision geometry.
 - A selectable render resolution: automatic, 720p, 1080p, 1440p, 4K, 2560×1080, 3440×1440 and classic 1024×768.
 - Correct camera aspect ratios with constant vertical field of view. Mismatched window/render aspect ratios are letterboxed instead of stretched; the original 4:3 videos also retain their aspect ratio.
-- Desktop fullscreen and windowed modes, saved graphics/audio preferences, pause, manual saves, quick saves and [automatic saves every minute of active play](docs/autosave.md). Starting a new adventure warns before replacing an existing save.
+- Desktop fullscreen and windowed modes, saved graphics/audio preferences, pause, manual saves, quick saves and [automatic saves every minute of active play](docs/autosave.md). The game menu also offers recovery points from roughly 2, 5 and 10 minutes of playing time ago; older history is discarded. Starting a new adventure warns before replacing an existing save and its recovery history.
 - Earned chapter access with the original chained/unlocked menu artwork; existing saves retain their current chapter. See [campaign menu](docs/campaign-menu-native.md).
 - Settings difficulty choices **Makkelijk / Normaal / Moeilijk** select the original enemy, boss and projectile tables for new/restarted levels. Saves retain their encounter difficulty; older saves remain Normal. See [native difficulty](docs/difficulty-native.md).
 - Settings → Cheats can immediately unlock all five levels, fill the original inventory limits (5 mirror pieces, 100 potions), add 9000 points, or enable free flight through geometry. Level unlocks are saved immediately; rewards and flight state survive saves.
@@ -120,7 +118,7 @@ On Linux, use `npm start -- --ozone-platform=x11`. `Start-RedCat.sh` prefers an 
 
 For the browser frontend, run `npm run serve` and open `http://127.0.0.1:4173`. It works offline once dependencies/data are present. Do not open `index.html` directly with a `file:` URL.
 
-To host version 0.9.1 at **https://games.nostalgiarealm.com/redcatspookkasteel/**,
+To host the game at **https://games.nostalgiarealm.com/redcatspookkasteel/**,
 follow the [Nginx hosting guide](docs/nginx-hosting.md) and its
 [location configuration](docs/nginx-redcatspookkasteel.conf). The browser release
 uses static source/assets; uploading it does not require an Electron build.
@@ -168,11 +166,15 @@ On Windows, run the same command using Windows paths and put it on one line. `--
 
 Imported game assets are kept in `assets/` and `data/` and excluded from source control. They belong to the original game's rights holders. The output is prepared locally from your supplied copy; no game assets have been published or downloaded from third parties.
 
+## Touch controls
+
+Mobile browsers automatically enable the touch overlay. Choose **Instellingen → Aanraakbediening → Automatisch · mobiel / Aan / Uit** to override this; your preference is saved. The left stick moves RedCat, dragging on the right controls the camera, and buttons cover jumping, attacking, interaction, two-second cutscene skipping, slow walking, camera changes and no-clip flight. **Meer** provides quick save/load; **Menu** provides pause, settings, cheats and the other game menus. See the [touch control guide](docs/touch-controls.md).
+
 ## Portability
 
 The Davi-Script VM, gameplay, animation, collision and rendering code contains no Windows APIs and no Node dependencies. `electron/` contains the desktop-only window/quit bridge. Browser input is translated into frame actions before reaching movement/gameplay.
 
-Apple Silicon macOS can use the same frontend in an Electron arm64 build. It still requires a macOS build/signing/test pass; there is no tested Mac build in this delivery. Android needs an Android WebView shell, touch/controller input, lifecycle/audio handling and device performance testing. Electron does not run on Android. See `docs/portability.md` for the concrete remaining work.
+Apple Silicon macOS can use the same frontend in an Electron arm64 build. It still requires a macOS build/signing/test pass; there is no tested Mac build in this delivery. Android packaging still needs an Android WebView shell, controller input, lifecycle/audio handling and device performance testing; browser touch controls are available. Electron does not run on Android. See `docs/portability.md` for the concrete remaining work.
 
 ## Format references
 

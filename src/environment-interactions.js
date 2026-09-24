@@ -18,6 +18,21 @@ export function buttonTouched(game,object,position,contacts=[]) {
   return [...contacts].includes(object.modelIndex)||game.contains(object,position,.1);
 }
 
+export function withinTriggerRadius(object,position) {
+  const radius=Number(object.entity.TriggerRadius);
+  if(!(radius>0))return false;
+  // The native model radius check (0x4d14f0) uses the authored
+  // entity origin, not its brush pivot, and the player's full box dimensions.
+  // Radius expands X/Z only. Offset origins deliberately make one-way doors.
+  const size=[22,56,22];
+  return object.position.every((value,index)=>Math.abs(value-position[index])<size[index]+(index===1?0:radius));
+}
+
+export function playerActivatesModel(game,object,position,contacts=[]) {
+  const touch=object.kind==='door'?object.entity.TouchToOpen:object.entity.TouchToSwitch;
+  return withinTriggerRadius(object,position)||Number(touch)>0&&buttonTouched(game,object,position,contacts);
+}
+
 export function discoverSecret(game,object) {
   if(Number(object.entity.IsSecret)!==1||object.secretFound)return false;
   object.secretFound=true;

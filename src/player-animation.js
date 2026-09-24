@@ -7,14 +7,17 @@ export function playerMotion(state,player,input,dt,groundDistance=0) {
   state.groundDistance=gap;
   if(!airborne){state.jumping=false;state.falling=false;state.age=0;}
   else {
-    if(!wasAirborne){state.age=0;state.jumping=player.velocityY>0;state.falling=false;}
+    if(!wasAirborne||state.jumpSerial!==player.jumpSerial){state.age=0;state.jumping=player.velocityY>0;state.falling=false;}
     // 0x4363a0 compares the downward floor probe with its previous value;
     // only a >80-unit increase starts fall1, not a negative Y velocity.
     if(!state.jumping&&!state.falling&&gap-previousGap>80){state.falling=true;state.age=0;}
     state.age=(state.age||0)+Math.max(0,dt);
   }
   state.airborne=airborne;
-  if(state.jumping)return {name:'jump1',speed:1.4,loop:false,time:state.age*1.4};
+  state.jumpSerial=player.jumpSerial;
+  if(state.jumping){const speed=player.jumpKind==='super'?1.3:1.4;return {name:player.jumpKind==='super'?'jump2':'jump1',speed,loop:false,time:state.age*speed};}
   if(state.falling)return {name:'fall1',speed:1.5,loop:false,time:state.age*1.5};
-  return {name:player.noClip?'idle':input.forward>0?'walkfw':input.forward<0?'walkbw':input.right>0?'strafer':input.right<0?'strafel':'idle',speed:1,loop:true};
+  // CRcPlayer 0x432c91 plays the longer backward clip at 2.2x; forward
+  // locomotion remains 1x (0x432d1f), independently of the Wobble sound clock.
+  return {name:player.noClip?'idle':input.forward>0?'walkfw':input.forward<0?'walkbw':input.right>0?'strafer':input.right<0?'strafel':'idle',speed:!player.noClip&&input.forward<0?2.2:1,loop:true};
 }

@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {PlayerCameraControl} from '../src/camera-control.js';
+import {PlayerCameraControl,canTogglePlayerCamera} from '../src/camera-control.js';
 const fixture=()=>({yaw:0,pitch:.16,settings:{sensitivity:1},targeting:{locked:false},gameplay:{scripts:{camera:null,cutscene:false}}});
 test('authored regional offset initializes viewing pitch, then accepts mouse pitch and restores free view',()=>{
  const world=fixture(),control=new PlayerCameraControl(),host=world.gameplay.scripts;
@@ -32,4 +32,13 @@ test('old offset-camera saves recover hidden pitch and new saves preserve delibe
  const restored=fixture();restored.gameplay.scripts.camera=saved;
  new PlayerCameraControl().restore(restored);assert.equal(restored.pitch,manual);
  host.camera=null;control.sync(world);assert.equal(world.pitch,.16);
+});
+
+test('camera shortcut changes only a player-owned view, never a hidden overview preference',()=>{
+ const world=fixture(),host=world.gameplay.scripts;
+ assert.equal(canTogglePlayerCamera(world),true);
+ for(const mode of [0,1]){host.camera={mode};assert.equal(canTogglePlayerCamera(world),true);}
+ for(const mode of [2,3,4]){host.camera={mode};assert.equal(canTogglePlayerCamera(world),false);}
+ host.camera=null;host.cutscene=true;assert.equal(canTogglePlayerCamera(world),false);
+ host.cutscene=false;assert.equal(canTogglePlayerCamera(world),true);
 });

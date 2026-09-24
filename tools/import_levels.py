@@ -299,6 +299,13 @@ def export_level(source: Path, output: Path):
                   'entityClasses': dict(sorted(Counter(e.get('classname', 'worldSettings') for e in entities).items()))},
         'chunks': inventory,
     }
+    # Preserve the native BSP dynamic-light texture frame in both the regular
+    # import workflow and the standalone lighting-only upgrade tool.
+    from import_world_lighting import LIGHT_FRAME_METADATA, light_frames
+    (out / LIGHT_FRAME_METADATA['framesFile']).write_bytes(light_frames(source, result, bytes(mesh_data)))
+    result['mesh']['lightmap'].update(LIGHT_FRAME_METADATA)
+    from import_actor_floor_lighting import write_actor_floor
+    write_actor_floor(out, source, result)
     (out / 'level.json').write_text(json.dumps(result, separators=(',', ':'), ensure_ascii=False), encoding='utf-8')
     return result
 

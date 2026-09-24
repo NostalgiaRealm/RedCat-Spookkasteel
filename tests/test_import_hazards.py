@@ -15,8 +15,8 @@ class HazardImportTest(unittest.TestCase):
             root = Path(directory)
             bitmaps = root / 'Bitmaps'
             bitmaps.mkdir()
-            color = bitmaps / 'MSHTRAIL.BMP'
-            alpha = bitmaps / 'mshTrailA.bmp'
+            color = bitmaps / 'STRAIL.BMP'
+            alpha = bitmaps / 'STrail_a.bmp'
             Image.new('RGB', (2, 1), (91, 123, 17)).save(color)
             mask = Image.new('L', (2, 1))
             mask.putdata([0, 191])
@@ -25,16 +25,16 @@ class HazardImportTest(unittest.TestCase):
             manifest = import_hazards(root, root / 'out')
             with Image.open(root / 'out' / manifest['mushroomTrail']['texture']) as result:
                 self.assertEqual(list(result.getdata()), [(91, 123, 17, 0), (91, 123, 17, 191)])
-            self.assertEqual(manifest['sources']['mshtrail.bmp'], hashlib.sha256(before[0]).hexdigest())
-            self.assertEqual(manifest['sources']['mshtraila.bmp'], hashlib.sha256(before[1]).hexdigest())
+            self.assertEqual(manifest['sources']['strail.bmp'], hashlib.sha256(before[0]).hexdigest())
+            self.assertEqual(manifest['sources']['strail_a.bmp'], hashlib.sha256(before[1]).hexdigest())
             self.assertEqual(before, (color.read_bytes(), alpha.read_bytes()))
 
     def test_mismatched_artwork_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / 'Bitmaps').mkdir()
-            Image.new('RGB', (2, 1)).save(root / 'Bitmaps/mshTrail.bmp')
-            Image.new('L', (1, 1)).save(root / 'Bitmaps/mshTrailA.bmp')
+            Image.new('RGB', (2, 1)).save(root / 'Bitmaps/STrail.bmp')
+            Image.new('L', (1, 1)).save(root / 'Bitmaps/STrail_a.bmp')
             with self.assertRaisesRegex(ValueError, 'dimensions differ'):
                 import_hazards(root, root / 'out')
 

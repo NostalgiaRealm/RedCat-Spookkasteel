@@ -5,6 +5,7 @@ import {BspCollider,PlayerController} from '../src/collision.js';
 import {MotionPlayer} from '../src/motions.js';
 import {moveSolidPlayer} from '../src/moving-solids.js';
 import {triangleCollider} from '../src/actor-collision.js';
+import {CastleWorld} from '../src/world.js';
 
 const pose=(translation=[0,0,0],angle=0)=>({origin:[0,0,0],translation,rotation:[0,Math.sin(angle/2),0,Math.cos(angle/2)]});
 function boxes(...bounds) {
@@ -48,6 +49,34 @@ test('the same brush transaction carries moving floors and refuses a ceiling cru
   const before=[...p.position];
   assert.equal(moveSolidPlayer(c,p,1,pose([5,4,0]),pose([5,15,0])),false);
   assert.deepEqual(p.position,before);clear(c,p);
+});
+
+test('only committed support carrying contributes to takeoff momentum, never rejected moves or side pushes',()=>{
+  const c=boxes([[-20,-4,-20],[20,0,20]], [[-50,12,-50],[50,15,50]]),p=player(c,[0,.05,0]),carried=[];
+  p.grounded=true;c.modelTransforms.set(1,pose());
+  assert.equal(moveSolidPlayer(c,p,1,pose(),pose([5,4,0]),{onCarry:delta=>carried.push(delta)}),true);
+  assert.equal(carried.length,1);carried[0].forEach((v,i)=>assert.ok(Math.abs(v-[5,4,0][i])<1e-8));
+  assert.equal(moveSolidPlayer(c,p,1,pose([5,4,0]),pose([5,15,0]),{onCarry:delta=>carried.push(delta)}),false);
+  assert.equal(carried.length,1,'failed carry must not add momentum');
+  const door=boxes([[-.2,0,-8],[.2,10,8]]),beside=player(door,[20,1,0]);beside.grounded=true;
+  assert.equal(moveSolidPlayer(door,beside,1,pose(),pose([50,0,0]),{onCarry:delta=>carried.push(delta)}),true);
+  assert.equal(carried.length,1,'door side push is not platform velocity');
+});
+
+test('world motion handoff adds actual platform carry to a jump and resets support velocity on the next frame',()=>{
+  const collider=boxes([[-20,-4,-20],[20,0,20]]),p=player(collider,[0,.05,0]);p.grounded=true;
+  const world=new CastleWorld({}, {fov:65,camera:'third'}),motion={motion:{origin:[0,0,0]},sample:t=>pose([40*t,0,0])};
+  let time=0;
+  const host={modelTransforms:collider.modelTransforms,update(dt){
+    this.beforeMotionAdvance({modelIndex:1},motion,time,time+dt);time+=dt;
+  }};
+  world.gameplay={state:{health:10},scripts:host,objects:[],projectiles:[],time:0,
+    environmentVelocity:()=>[0,0,0],emit(){},update(dt){this.time+=dt;}};
+  Object.assign(world,{player:p,collider,physicalModels:p.modelIndices,level:{bounds:{min:[-1000,-1000,-1000]}},updateCamera(){},updateTargeting(){}});
+  world.update(.025,{forward:0,right:0,jump:true});
+  assert.ok(Math.abs(p.position[0]-1)<1e-8);assert.ok(Math.abs(p.launchVelocityXZ[0]-40)<1e-8);
+  world.update(.025,{forward:0,right:0,jump:false});
+  assert.ok(Math.abs(p.position[0]-2)<1e-8);assert.deepEqual(p.platformVelocity,[0,0,0]);
 });
 
 test('carrying ignores the floor own mounted prop at its previous pose while unrelated props still block',()=>{

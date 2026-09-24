@@ -4,30 +4,37 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self'; object-src 'none'">
 <link rel="icon" href="assets/menu/10000000.png"><title>RedCat Spookkasteel</title><link rel="stylesheet" href="src/style.css">
+<link rel="stylesheet" href="src/touch-controls.css">
 <script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
 </head>
 <body>
 <canvas id="game" aria-label="Spelwereld"></canvas>
+<button id="game-menu" type="button" aria-label="Spel pauzeren en menu openen" hidden>Menu</button>
 <div id="menu" class="screen">
-  <header><a class="brand" href="#"><span class="paw">✦</span> REDCAT <span class="brand-divider"></span><span class="brand-sub">SPOOKKASTEEL</span></a><span class="edition">PORTABLE EDITION <b>0.9.1</b></span></header>
   <main class="menu-main">
-    <section class="hero"><div class="eyebrow"><span class="spark"></span> HET AVONTUUR UIT 2000, OPNIEUW ONTDEKT</div><img class="logo" src="assets/menu/menu-logo.png" alt="RedCat Spookkasteel"><h1>Durf jij naar binnen?</h1><p>Een geheimzinnig kasteel. Een gebroken spiegel.<br>En één kat die nergens bang voor is.</p>
+    <section class="hero"><img class="logo" src="assets/menu/menu-logo.png" alt="RedCat Spookkasteel"><h1>Durf jij naar binnen?</h1>
     <div class="hero-actions"><button id="start" class="primary">Start avontuur <span>➜</span></button><button id="continue" class="secondary" hidden>Verder spelen</button></div>
+    <button id="open-recovery" class="text-button" type="button">Eerder opgeslagen avontuur laden</button>
     <button id="play-intro" class="text-button">▷ &nbsp; Bekijk de originele intro</button>
-    <div class="build-note">Speelbare reconstructie in ontwikkeling.<br>Met originele levelscripts, puzzels en tussenfilmpjes.</div>
     </section>
     <aside class="cover"><img src="assets/menu/cover.jpg" alt="Originele RedCat Spookkasteel omslag"><div class="cover-caption"><span>HET ORIGINELE AVONTUUR</span><b>RedCat · Davilex · 2000</b></div></aside>
   </main>
   <section class="chapters"><div class="section-top"><h2>Kies je bestemming</h2><span>5 originele werelden <span class="thin">/ speel ze één voor één vrij</span></span></div><div id="level-list"></div></section>
-  <footer><div class="platform-indicator"><span></span> Klaar voor avontuur</div><div><button id="open-help">Besturing</button><button id="open-settings">⚙ &nbsp; Instellingen</button><button id="quit">Afsluiten</button></div></footer>
+  <footer><div><button id="open-help">Besturing</button><button id="open-settings">⚙ &nbsp; Instellingen</button><button id="quit">Afsluiten</button></div></footer>
 </div>
 <dialog id="new-adventure-warning" class="panel new-adventure-warning" aria-labelledby="new-adventure-title" aria-describedby="new-adventure-message">
 <h2 id="new-adventure-title">Opgeslagen avontuur overschrijven?</h2>
-<p id="new-adventure-message">Er is al een opgeslagen avontuur. Als je een nieuw avontuur start, wordt dit overschreven. Wil je doorgaan?</p>
+<p id="new-adventure-message">Er is al een opgeslagen avontuur. Als je een nieuw avontuur start, worden dit avontuur en de bijbehorende herstelpunten overschreven. Wil je doorgaan?</p>
 <div class="new-adventure-actions"><button id="cancel-new-adventure" class="secondary" type="button" autofocus>Annuleren</button><button id="confirm-new-adventure" class="primary" type="button">Nieuw avontuur starten</button></div>
+</dialog>
+<dialog id="recovery-saves" class="panel recovery-panel" aria-labelledby="recovery-title" aria-describedby="recovery-description">
+<div class="panel-top"><h2 id="recovery-title">Eerder avontuur laden</h2><button id="close-recovery" class="close" type="button" aria-label="Sluiten">×</button></div>
+<p id="recovery-description">Zit je vast? Ga terug naar ongeveer 2, 5 of 10 minuten speeltijd geleden. Pauzes tellen niet mee. Oudere herstelpunten worden automatisch verwijderd.</p>
+<div id="recovery-options"></div><p id="recovery-status" class="settings-note" role="status"></p>
 </dialog>
 <div id="loading" class="overlay" hidden><div class="panel loading-panel"><div class="spinner"></div><div class="eyebrow">EVEN GEDULD</div><h2 id="loading-title">Het kasteel wordt wakker…</h2><p id="loading-detail">De originele wereld wordt geladen.</p></div></div>
 <div id="intro" class="screen intro" hidden><video id="intro-video" playsinline preload="none"></video><button id="skip-intro" class="secondary">Overslaan →</button></div>
+<section id="debriefing" aria-label="Overzicht van het level" hidden><div class="debriefing-frame"><canvas aria-hidden="true"></canvas><p class="accessible-hud" role="status"></p><button type="button">Druk op SCHIETEN om verder te gaan</button></div></section>
 <div id="hud" hidden>
 <canvas id="original-hud" aria-label="Gezondheid, levens, toverdrank, punten en gezondheid van de vijand"></canvas>
 <div class="accessible-hud"><span>Gezondheid <b id="health"></b></span><span>Levens <b id="lives"></b></span><span>Punten <b id="score"></b></span><span>Toverdrank <b id="potions"></b></span><span>Spiegelstukken <b id="mirror"></b></span><span id="level-name"></span><span id="objective"></span><span id="render-info"></span><span id="controls-hint"></span></div>
@@ -37,14 +44,15 @@
 <span>Overslaan</span><span class="skip-circle"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="skip-track" cx="22" cy="22" r="19"/><circle id="skip-progress" cx="22" cy="22" r="19" pathLength="100"/></svg><b>E</b></span>
 </div>
 <div id="cinema-top" class="cinema-bar"></div><div id="cinema-bottom" class="cinema-bar"></div><div id="subtitle" role="status" hidden></div><div id="script-flash"></div>
-<div id="pause" class="overlay" hidden><section class="panel pause-panel"><div class="eyebrow">HAAL EVEN ADEM</div><h2>Avontuur gepauzeerd</h2><button id="resume" class="primary">Verder spelen →</button><button id="save" class="secondary">Voortgang opslaan</button><button id="pause-settings" class="secondary">Instellingen</button><button id="restart" class="secondary">Level opnieuw starten</button><button id="return-menu" class="text-button">Terug naar het hoofdmenu</button></section></div>
+<div id="pause" class="overlay" hidden><section class="panel pause-panel"><div class="eyebrow">HAAL EVEN ADEM</div><h2>Avontuur gepauzeerd</h2><button id="resume" class="primary">Verder spelen →</button><button id="save" class="secondary">Voortgang opslaan</button><button id="load-save" class="secondary" disabled>Opgeslagen avontuur laden</button><button id="pause-recovery" class="secondary">Eerder opgeslagen avontuur laden</button><button id="pause-settings" class="secondary">Instellingen</button><button id="restart" class="secondary">Level opnieuw starten</button><button id="return-menu" class="text-button">Terug naar het hoofdmenu</button></section></div>
 <div id="settings" class="overlay" hidden><section class="panel settings-panel"><div class="panel-top"><div><div class="eyebrow">MAAK HET JOUW AVONTUUR</div><h2>Instellingen</h2></div><button id="close-settings" class="close" aria-label="Sluiten">×</button></div>
+<label class="setting"><span><b>Aanraakbediening</b><small>Stick en knoppen op het scherm. Automatisch aan op mobiele browsers; je keuze wordt bewaard.</small></span><select id="touch-controls-setting" aria-label="Aanraakbediening"><option value="auto">Automatisch · mobiel</option><option value="on">Aan</option><option value="off">Uit</option></select></label>
 <label class="setting"><span><b>Moeilijkheid</b><small>Geldt bij het starten of herstarten van een level. Verder spelen behoudt de moeilijkheid van je opgeslagen spel.</small></span><select id="difficulty" aria-label="Moeilijkheid"></select></label>
 <label class="setting"><span><b>Resolutie</b><small>Werkelijke 3D-renderresolutie</small></span><select id="resolution"><option value="native">Automatisch · vensterresolutie</option><option value="1280x720">1280 × 720 · HD</option><option value="1920x1080">1920 × 1080 · Full HD</option><option value="2560x1440">2560 × 1440 · QHD</option><option value="3840x2160">3840 × 2160 · 4K UHD</option><option value="2560x1080">2560 × 1080 · Ultrawide</option><option value="3440x1440">3440 × 1440 · Ultrawide</option><option value="1024x768">1024 × 768 · Klassiek 4:3</option></select></label>
 <label class="setting"><span><b>Volledig scherm</b><small>Vult het beeldscherm</small></span><input id="fullscreen" type="checkbox"></label>
 <label class="setting"><span><b>Camera</b><small>Wissel tijdens het spelen met V</small></span><select id="camera-mode"><option value="third">Achter RedCat</option><option value="first">Eerste persoon</option></select></label>
 <label class="setting"><span><b>Gezichtsveld</b><small>Verticale kijkhoek, zonder uitrekken</small></span><input id="fov" type="range" min="45" max="90" step="1"><output id="fov-value"></output></label>
-<label class="setting"><span><b>Muisgevoeligheid</b></span><input id="sensitivity" type="range" min="0.2" max="2" step="0.1"></label>
+<label class="setting"><span><b>Kijkgevoeligheid</b><small>Muis en aanraken</small></span><input id="sensitivity" type="range" min="0.2" max="2" step="0.1"></label>
 <label class="setting"><span><b>Geluid</b></span><input id="volume" type="range" min="0" max="1" step="0.05"></label>
 <label class="setting"><span><b>Originele intro bij opstarten</b></span><input id="auto-intro" type="checkbox"></label>
 <button id="open-cheats" class="secondary cheats-link">Cheats <span>→</span></button>
@@ -54,10 +62,10 @@
 <button id="cheat-supplies" class="primary">Spiegels, toverdrank & +9000 punten <span>✦</span></button>
 <button id="cheat-unlock-levels" class="secondary cheats-link" aria-describedby="cheat-unlock-description">Alle levels vrijspelen <span>→</span></button>
 <p id="cheat-unlock-description" class="settings-note">Ontgrendel direct alle vijf levels in het hoofdmenu. Dit wordt meteen bewaard.</p>
-<label class="setting"><span><b>Vrij vliegen (no-clip)</b><small>Vlieg door muren en buiten het level. WASD volgt je kijkrichting; Spatie omhoog, Shift omlaag.</small></span><input id="cheat-noclip" type="checkbox"></label>
+<label class="setting"><span><b>Vrij vliegen (no-clip)</b><small>Vlieg door muren en buiten het level. WASD of de stick volgt je kijkrichting; Spatie / Omhoog stijgt, Shift / Omlaag daalt.</small></span><input id="cheat-noclip" type="checkbox"></label>
 <p class="settings-note">Uitschakelen in een muur of buiten het level brengt je terug naar een veilige plek.</p><p id="cheat-status" class="cheat-status" role="status"></p>
 <button id="back-cheats" class="secondary cheats-link">← Terug naar instellingen</button></section></div>
-<div id="help" class="overlay" hidden><section class="panel"><div class="panel-top"><h2>Op avontuur</h2><button id="close-help" class="close" aria-label="Sluiten">×</button></div><dl class="key-guide"><dt>W A S D / pijlen</dt><dd>Bewegen</dd><dt>Muis</dt><dd>Rondkijken</dd><dt>Spatie</dt><dd>Springen</dd><dt>Shift</dt><dd>Rustig lopen</dd><dt>Linkermuisknop / Ctrl</dt><dd>Aanvallen</dd><dt>E</dt><dd>Deur gebruiken</dd><dt>V</dt><dd>Camera wisselen</dd><dt>F5 / F9</dt><dd>Opslaan / laden</dd><dt>Esc</dt><dd>Pauzeren</dd></dl><p>Je avontuur wordt elke minuut automatisch opgeslagen. Je kunt ook zelf opslaan met F5.</p><p>Verzamel schatten, toverdrank en spiegelstukken. Klik in het spel om met de muis rond te kijken.</p><p class="settings-note">Deze versie hergebruikt de originele werelden en modellen. De oorspronkelijke scripts sturen het verhaal. Vijandgedrag en enkele effecten zijn nog in ontwikkeling.</p></section></div>
+<div id="help" class="overlay" hidden><section class="panel"><div class="panel-top"><h2>Op avontuur</h2><button id="close-help" class="close" aria-label="Sluiten">×</button></div><p><b>Aanraakbediening:</b> beweeg met de stick links en veeg rechts om rond te kijken. Spring, Vuur en Gebruik werken zolang je ze aanraakt. Houd Overslaan twee seconden vast tijdens een tussenfilmpje. Lopen schakelt rustig lopen in of uit; Camera wisselt de weergave. Meer bevat Opslaan en Laden; Menu opent pauze, instellingen en cheats. Bij vrij vliegen zijn Omhoog en Omlaag beschikbaar.</p><dl class="key-guide"><dt>W A S D / pijlen</dt><dd>Bewegen</dd><dt>Muis</dt><dd>Rondkijken</dd><dt>Spatie</dt><dd>Springen</dd><dt>Shift</dt><dd>Rustig lopen</dd><dt>Linkermuisknop / Ctrl</dt><dd>Aanvallen</dd><dt>E</dt><dd>Deur gebruiken</dd><dt>V</dt><dd>Camera wisselen</dd><dt>F5 / F9</dt><dd>Opslaan / laden</dd><dt>Esc</dt><dd>Pauzeren</dd></dl><p>Je avontuur wordt elke minuut automatisch opgeslagen. Je kunt ook zelf opslaan met F5. Zit je vast? Kies in het menu Eerder opgeslagen avontuur laden om ongeveer 2, 5 of 10 minuten speeltijd terug te gaan.</p><p>Verzamel schatten, toverdrank en spiegelstukken. Klik in het spel om met de muis rond te kijken.</p></section></div>
 <div id="fatal" class="overlay" hidden><section class="panel"><h2>Het avontuur kon niet starten</h2><p id="fatal-message"></p><button id="fatal-close" class="primary">Terug naar het menu</button></section></div>
 <script type="module" src="src/main.js"></script>
 </body></html>

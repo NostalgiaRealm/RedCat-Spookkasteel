@@ -2,7 +2,7 @@
 
 Target address: **https://games.nostalgiarealm.com/redcatspookkasteel/**.
 
-Version **0.9.1** runs directly as a static website. Upload its prepared source,
+The game runs directly as a static website. Upload its prepared source,
 imported game data and Three.js dependency. Nginx serves the files; visitors run
 the game in their browsers. No Electron package, build command, Node server,
 PHP or database is needed on the webhost. These are instructions for you to
@@ -43,7 +43,7 @@ test -f node_modules/three/build/three.core.js
 test -f assets/media/intronl.webm
 test -f data/levels/lvl00a/level.json
 
-REDCAT_STAGE=$(mktemp -d /tmp/redcat-web-0.9.1.XXXXXX)
+REDCAT_STAGE=$(mktemp -d /tmp/redcat-web.XXXXXX)
 mkdir -p "$REDCAT_STAGE/redcatspookkasteel/node_modules"
 cp -a index.html src assets data "$REDCAT_STAGE/redcatspookkasteel/"
 cp -a node_modules/three "$REDCAT_STAGE/redcatspookkasteel/node_modules/"
@@ -212,10 +212,10 @@ and a 206 byte-range response for the video. Avoid a catch-all rewrite or proxy
 that returns `index.html` for missing `.js`, `.json` or binary files.
 
 Open **https://games.nostalgiarealm.com/redcatspookkasteel/** in a desktop browser
-with WebGL 2. Check the **0.9.1** menu badge, start the forest, and verify image,
+with WebGL 2. Start the forest and verify image,
 sound, mouse look and pause. Click the page if the browser asks for a gesture to
 start audio/video, mouse capture or fullscreen. Browser window controls differ
-from the Electron desktop app; mobile controls are still future work.
+from the Electron desktop app. Mobile browsers automatically enable the [touch overlay](touch-controls.md); visitors can choose Automatisch, Aan or Uit in Instellingen → Aanraakbediening. Upload the updated `index.html` and complete `src/` directory together when adding touch support to an existing deployment.
 
 ## Updates, saves and troubleshooting
 
@@ -229,7 +229,7 @@ from the Electron desktop app; mobile controls are still future work.
   Keep the hostname and protocol stable across updates. Another copy of this
   game on the same origin shares the same RedCat storage keys, even at another
   URL path.
-- If the badge still shows 0.2.5, check that you uploaded current source rather
+- If the menu still shows a release number, check that you uploaded current source rather
   than a prepared desktop package. Revalidate browser/CDN caches after updates.
 - If the console reports a module MIME error or `Unexpected token '<'`, inspect
   the failing URL: a missing file is likely being replaced by an HTML error or
@@ -257,6 +257,6 @@ It does not contact your domain, publish files, or replace `nginx -t` and browse
 verification on your actual host. No Nginx binary is available in the current
 development environment, so the actual server configuration has not been run
 here. The focused local check passed with 215 browser resource URLs remaining
-under the prefix, the 0.9.1 menu, original forest, scripts, intro/effect/voice
+under the prefix, the menu, original forest, scripts, intro/effect/voice
 playback, redirect/query handling, missing-file 404s and media range responses.
 No release packages were generated for these instructions.

@@ -12,6 +12,7 @@ try {
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
   page.on('pageerror',e=>errors.push(e.stack));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
   await page.goto('http://127.0.0.1:4222/?skipIntro');await page.waitForFunction(()=>window.__redcat);
+  await page.evaluate(()=>document.getElementById('cheat-unlock-levels').click());
   const reports=[];
   for(const hz of [20,60,120]){
   const result=await page.evaluate(async hz=>{

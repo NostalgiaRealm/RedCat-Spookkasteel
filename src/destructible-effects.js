@@ -1,29 +1,19 @@
 import * as THREE from 'three';
-
-const mix=(a,b,t)=>a+(b-a)*t;
-const number=(value,fallback=0)=>Number.isFinite(Number(value))?Number(value):fallback;
-function random(seed){let state=2166136261;for(const c of seed)state=Math.imul(state^c.charCodeAt(0),16777619);return()=>{state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296;};}
+import {createNativeDebris,stepNativeDebris} from './debris-native.js';
+import {createNativeBlasts,nativeSmokeState} from './explosion-native.js';
+import {createActorLighting,applyActorLighting} from './actor-lighting.js';
+import {projectileImpactSprite,projectileImpactWave,IMPACT_WAVE_TEXTURE} from './projectile-impacts.js';
 
 export function explosionFrame(age) {
   return age>=0&&age<.8?(age>=.699?8:Math.min(6,Math.floor(age*10))+1):null;
 }
 
-export function debrisParticles(effect) {
-  const conf=effect.settings.debris||{},rnd=random(effect.id),particles=[];
-  for(const type of conf.types||[]){
-    const count=Math.floor(mix(number(type.MinNr),number(type.MaxNr)+1,rnd()));
-    for(let i=0;i<count;i++){
-      const angle=rnd()*Math.PI*2,y=.25+rnd()*.75,radius=Math.sqrt(1-y*y),speed=mix(number(type.MinVelocity),number(type.MaxVelocity),rnd());
-      particles.push({actor:type.actor.toLowerCase().replace(/\.act$/,''),position:[...effect.position],velocity:[Math.sin(angle)*radius*speed,y*speed,Math.cos(angle)*radius*speed],
-        age:0,life:mix(number(conf.MinLifeTimeSeconds,3),number(conf.MaxLifeTimeSeconds,4),rnd()),rotation:[rnd()*6.28,rnd()*6.28,rnd()*6.28],conf});
-    }
-  }
-  return particles;
-}
+export const debrisParticles=createNativeDebris;
 
 // RcHcGame 0x58dd70: Explosie01..08 at 0/100/.../600/699 ms,
 // with SizePercentage * .01 * 20 and this sequence of sprite scales.
 const EXPLOSION_SCALE=[.5,.6,.8,.9,.95,.9,.8,.7];
+const WHITE=[1,1,1],GREEN=[.5,1,.5];
 
 /** Uses the actor's original fragment meshes, sprites and INI properties.
  * Fragment ballistic integration uses the portable collider. */
@@ -34,44 +24,87 @@ export class DestructibleEffects {
     await Promise.all([...names].map(async name=>{const actor=await world.makeActor(name);if(actor)effect.prototypes.set(name,actor);}));
     return effect;
   }
-  constructor(world,game){this.world=world;this.game=game;this.seen=new Set();this.particles=[];this.prototypes=new Map();}
+  constructor(world,game){this.world=world;this.game=game;this.seen=new Set();this.present=new Set();this.particles=[];this.blasts=[];this.prototypes=new Map();}
   update(dt,batches) {
     const {world,game}=this;
+    let waveCount=0;
+    for(const effect of game.projectileImpacts||[]) {
+      const sprite=projectileImpactSprite(effect,game.time);
+      if(sprite)batches.get(sprite.texture)?.add(sprite.position,sprite.size,sprite.size,WHITE,sprite.opacity);
+      const wave=projectileImpactWave(effect,game.time,world.camera?.position.toArray(),
+        (start,end)=>world.collider.trace(start,end,[0,0,0],[0,0,0],world.physicalModels,null));
+      if(wave) {
+        const map=batches.get(IMPACT_WAVE_TEXTURE)?.mesh.material.uniforms.map.value;
+        if(map&&!this.impactWaves)this.createImpactWaves(map);
+        if(this.impactWaves)for(const quad of wave.quads) {
+          if(waveCount>=256)break;
+          for(let vertex=0;vertex<4;vertex++) {
+            const index=waveCount*4+vertex;
+            this.impactWaves.positions.setXYZ(index,...quad.points[vertex]);
+            this.impactWaves.uvs.setXY(index,quad.uvs[vertex][0],1-quad.uvs[vertex][1]);
+            this.impactWaves.colors.setXYZW(index,1,1,1,wave.opacity);
+          }
+          waveCount++;
+        }
+      }
+    }
+    if(this.impactWaves) {
+      const wave=this.impactWaves;wave.mesh.visible=waveCount>0;wave.mesh.geometry.setDrawRange(0,waveCount*6);
+      wave.positions.needsUpdate=wave.uvs.needsUpdate=wave.colors.needsUpdate=true;
+    }
+    this.present.clear();
     for(const effect of game.explosions||[]) {
-      const age=game.time-effect.birth,conf=effect.settings.explosion||{};
+      this.present.add(effect.id);
       if(!this.seen.has(effect.id)) {
         this.seen.add(effect.id);
-        for(const particle of debrisParticles(effect)) {
+        this.blasts.push(...createNativeBlasts(effect));
+        for(const particle of debrisParticles(effect,name=>this.prototypes.get(name)?.userData.template?.data.settings)) {
           const prototype=this.prototypes.get(particle.actor);if(!prototype)continue;
           const original=prototype.userData.mesh,materials=(Array.isArray(original.material)?original.material:[original.material]).map(m=>{const copy=m.clone();copy.transparent=true;return copy;});
           const root=new THREE.Group(),mesh=new THREE.Mesh(original.geometry,materials);mesh.position.copy(original.position);mesh.rotation.copy(original.rotation);mesh.scale.copy(original.scale);root.add(mesh);
+          mesh.userData.actorLighting=createActorLighting(prototype.userData.template?.data.settings||{});
+          for(const material of materials)applyActorLighting(material,mesh.userData.actorLighting);
+          if(effect.scale)mesh.scale.fromArray(effect.scale);
+          particle.materialOpacity=materials.map(m=>m.opacity);
           root.position.fromArray(particle.position);world.scene.add(root);particle.mesh=root;particle.materials=materials;this.particles.push(particle);
         }
       }
-      const frame=explosionFrame(age),count=Math.min(16,Math.max(0,number(conf.NrExplosions,1))),diameter=32*20*Math.max(0,number(conf.SizePercentage,25))/100;
-      if(frame&&diameter>0&&!conf.SmokeOnly)for(let i=0;i<count;i++) {
-        const key=`explosie${String(frame).padStart(2,'0')}.bmp|explosie${String(frame).padStart(2,'0')}_a.bmp`,size=diameter*EXPLOSION_SCALE[frame-1];
-        const offset=count===1?[0,0,0]:[Math.sin(i*2.4)*diameter*.2,i*diameter*.05,Math.cos(i*2.4)*diameter*.2];
-        batches.get(key)?.add(effect.position.map((v,k)=>v+offset[k]),size,size,conf.Green?[.5,1,.5]:[1,1,1],1);
+    }
+    // Gameplay removes consumed explosion events after six seconds. Keep
+    // no permanent ID history while finite smoke cohorts finish separately.
+    for(const id of this.seen)if(!this.present.has(id))this.seen.delete(id);
+    for(let i=this.blasts.length-1;i>=0;i--) {
+      const blast=this.blasts[i];
+      if(game.time>=blast.expires){this.blasts.splice(i,1);continue;}
+      const frame=explosionFrame(game.time-blast.birth);
+      if(frame&&!blast.smokeOnly) {
+        const key=`explosie${String(frame).padStart(2,'0')}.bmp|explosie${String(frame).padStart(2,'0')}_a.bmp`,size=blast.diameter*EXPLOSION_SCALE[frame-1];
+        batches.get(key)?.add(blast.position,size,size,blast.green?GREEN:WHITE,1);
       }
-      if(age<1.6&&diameter>0)batches.get('smoke_05.bmp|smoke_green_a.bmp')?.add([effect.position[0],effect.position[1]+age*16,effect.position[2]],diameter*(.5+age),diameter*(.5+age),[.7,.65,.6],Math.max(0,.45*(1-age/1.6)));
+      const smokeBatch=batches.get(`${blast.green?'smoke_green':'smoke_05'}.bmp|smoke_green_a.bmp`);
+      if(smokeBatch)for(const particle of blast.smoke){const state=nativeSmokeState(particle,game.time);if(state)smokeBatch.add(state.position,state.size,state.size,WHITE,state.opacity);}
     }
     const active=[];
     for(const particle of this.particles) {
-      particle.age+=dt;
-      if(particle.age>=particle.life){particle.mesh.removeFromParent();particle.materials.forEach(m=>m.dispose());continue;}
-      const {conf}=particle;
-      particle.velocity[1]-=number(conf.Gravity,9.8)*32*dt;
-      const target=particle.position.map((v,i)=>v+particle.velocity[i]*dt);
-      const hit=conf.TestCollision?world.collider.trace(particle.position,target,[-2,-2,-2],[2,2,2],world.physicalModels,false):{fraction:1,end:target};
-      particle.position=hit.end;
-      if(hit.fraction<1&&!hit.startSolid){const speed=particle.velocity.reduce((sum,v,i)=>sum+v*hit.normal[i],0);particle.velocity=particle.velocity.map((v,i)=>(v-number(conf.Elasticity,1.6)*speed*hit.normal[i])*number(conf.Friction,.8));}
-      if(conf.MustRotate)particle.rotation=particle.rotation.map((v,i)=>v+(i===1?-1:1)*number(conf.RotationSpeed,100)*Math.PI/180*dt);
-      particle.mesh.position.fromArray(particle.position);particle.mesh.rotation.fromArray(particle.rotation);
-      if(conf.MustFade)for(const material of particle.materials)material.opacity=Math.min(1,Math.max(0,(particle.life-particle.age)/.75));
+      if(!stepNativeDebris(particle,dt,(start,end,min,max)=>world.collider.trace(start,end,min,max,world.physicalModels,false))) {
+        particle.mesh.removeFromParent();particle.materials.forEach(m=>m.dispose());continue;
+      }
+      particle.mesh.position.fromArray(particle.position);particle.mesh.quaternion.fromArray(particle.orientation);
+      for(let i=0;i<particle.materials.length;i++)particle.materials[i].opacity=particle.materialOpacity[i]*particle.opacity;
       active.push(particle);
     }
     this.particles=active;
   }
-  dispose(){for(const particle of this.particles){particle.mesh.removeFromParent();particle.materials.forEach(m=>m.dispose());}this.particles=[];this.seen.clear();this.prototypes.clear();}
+  createImpactWaves(map) {
+    const geometry=this.world.track(new THREE.BufferGeometry()),indices=[];
+    const positions=new THREE.BufferAttribute(new Float32Array(256*12),3).setUsage(THREE.DynamicDrawUsage);
+    const uvs=new THREE.BufferAttribute(new Float32Array(256*8),2).setUsage(THREE.DynamicDrawUsage);
+    const colors=new THREE.BufferAttribute(new Float32Array(256*16),4).setUsage(THREE.DynamicDrawUsage);
+    for(let q=0;q<256;q++)for(const corner of [0,1,2,0,2,3])indices.push(q*4+corner);
+    geometry.setAttribute('position',positions);geometry.setAttribute('uv',uvs);geometry.setAttribute('color',colors);geometry.setIndex(indices);geometry.setDrawRange(0,0);
+    const material=this.world.track(new THREE.MeshBasicMaterial({map,vertexColors:true,transparent:true,depthWrite:false,side:THREE.DoubleSide}));
+    const mesh=new THREE.Mesh(geometry,material);mesh.frustumCulled=false;mesh.renderOrder=2;this.world.scene.add(mesh);
+    this.impactWaves={mesh,positions,uvs,colors};
+  }
+  dispose(){this.impactWaves?.mesh.removeFromParent();this.impactWaves=null;for(const particle of this.particles){particle.mesh.removeFromParent();particle.materials.forEach(m=>m.dispose());}this.particles=[];this.blasts=[];this.seen.clear();this.present.clear();this.prototypes.clear();}
 }

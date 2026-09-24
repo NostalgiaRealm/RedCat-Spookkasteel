@@ -2,6 +2,7 @@
 // Rendering and collision stay in the host; elapsed phase time is saveable and
 // advances only when updateBoss is called, so script freezes pause every phase.
 import { enemyRandom } from './enemy-navigation.js';
+import {enemySalvoSize} from './enemy-combat-native.js';
 const n=(v,f=0)=>Number.isFinite(Number(v))?Number(v):f;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const distance=(a,b)=>Math.hypot(...a.map((v,i)=>v-b[i]));
@@ -35,12 +36,17 @@ function shoot(game,o) {
   if(o.enemyType==='maxd')machine(o,'shoot1');
 }
 function salvo(game,o) {
-  o.boss.shots=Math.max(1,Math.round(n(o.stats.AverageShotsPerSalvo,2)));
+  o.boss.shots=enemySalvoSize(o);
   shoot(game,o);
 }
 function teleport(game,o) {
   o.boss.invulnerable=true;o.boss.hidden=false;
   enter(game,o,'teleportOut',duration(game,o,'teleport',.9333379864692688),'teleport');
+  teleportEffect(game,o,'departure');
+}
+function teleportEffect(game,o,phase) {
+  o.boss.teleportEffects=[...(o.boss.teleportEffects||[]),{phase,age:0,position:[...o.position]}].slice(-2);
+  game.emit('bossTeleportEffect',{id:o.id,phase,position:[...o.position]});
 }
 function chooseTeleport(game,o,player) {
   // CRcJesterMax appends its own spawn after authored JesterMaxPoint entities.
@@ -74,6 +80,7 @@ export function updateBoss(game,o,dt,context) {
   if(!o.boss)initializeBoss(game,o);
   if(!o.enabled||o.health<=0||game.scripts?.cutscene||game.scripts?.enemiesFrozen)return true;
   const b=o.boss;
+  b.teleportEffects=(b.teleportEffects||[]).map(effect=>({...effect,age:effect.age+dt})).filter(effect=>effect.age<1.5);
   if(!b.started){
     b.started=true;
     if(o.enemyType==='witch')enter(game,o,'start',duration(game,o,'start',3.2666831016540527),'start');
@@ -128,7 +135,7 @@ function updateJester(game,o,c) {
     case 'teleportOut':
       if(b.elapsed>=b.duration){b.hidden=true;enter(game,o,'invisible',n(o.stats.InvisibleTime,1));}break;
     case 'invisible':
-      if(b.elapsed>=b.duration){chooseTeleport(game,o,c.playerPosition);b.hidden=false;enter(game,o,'teleportIn',duration(game,o,'teleport',.9333379864692688),'teleport');}break;
+      if(b.elapsed>=b.duration){chooseTeleport(game,o,c.playerPosition);b.hidden=false;enter(game,o,'teleportIn',duration(game,o,'teleport',.9333379864692688),'teleport');teleportEffect(game,o,'arrival');}break;
     case 'teleportIn':
       if(b.elapsed>=b.duration){
         b.invulnerable=false;
@@ -181,7 +188,7 @@ function updateWitch(game,o,c) {
         // The first explicitly linked flight segment rises through the
         // cauldron from witch110 to witch100. Its decorative BSP top must
         // not turn that authored takeoff route into a permanent wall.
-        c.walk(target.position,{authoredFlight:takeoff});
+        c.walk(target.position,{authoredFlight:takeoff,authoredRoute:true});
       }
       else {
         if(target&&o.patrol){o.patrol.previous=o.patrol.current;o.patrol.current=target.id;o.patrol.target=null;o.patrol.leftStart=target.id!==o.patrol.start;o.patrol.relocating=false;}
@@ -236,5 +243,9 @@ export function restoreBossState(game,o,saved) {
   if(Array.isArray(saved.home)&&saved.home.length===3&&saved.home.every(Number.isFinite))b.home=[...saved.home];
   if(['still','shoot1','litopen','litclose'].includes(saved.machineMotion))b.machineMotion=saved.machineMotion;
   b.phase=saved.phase;
+  b.teleportEffects=(Array.isArray(saved.teleportEffects)?saved.teleportEffects:[]).filter(effect=>
+    ['departure','arrival'].includes(effect.phase)&&Number.isFinite(effect.age)&&effect.age>=0&&effect.age<1.5&&
+    Array.isArray(effect.position)&&effect.position.length===3&&effect.position.every(Number.isFinite))
+    .slice(-2).map(effect=>({phase:effect.phase,age:effect.age,position:[...effect.position]}));
   if(saved.target===null||game.navigation.find(saved.target))b.target=saved.target;
 }

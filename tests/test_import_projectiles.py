@@ -26,9 +26,23 @@ class ProjectileImportTest(unittest.TestCase):
             for number in range(4):
                 Image.new('RGB', (2, 1), (30, 40, number)).save(bitmaps / f'MSH{number}.BMP')
                 Image.new('L', (2, 1), 63).save(bitmaps / f'msh{number}a.bmp')
+            for count, color_pattern, alpha_pattern in [
+                (4, 'bn{}.bmp', 'bn{}a.bmp'),
+                (6, 'snot{}.bmp', 'snot{}_a.bmp'),
+                (4, 'jb{}.bmp', 'jb{}a.bmp'),
+                (4, 'mb{}.bmp', 'mb{}a.bmp'),
+                (6, 'eball{}.bmp', 'eball{}_a.bmp'),
+                (4, 'skl_{}.bmp', 'skl_{}a.bmp'),
+            ]:
+                for number in range(count):
+                    Image.new('RGB', (2, 1), (30, 40, number)).save(bitmaps / color_pattern.format(number))
+                    Image.new('L', (2, 1), 63).save(bitmaps / alpha_pattern.format(number))
             manifest = import_projectiles(root, root / 'out')
             self.assertEqual(manifest['enemyShot']['framesPerSecond'], 20)
-            self.assertEqual(len(manifest['sources']), 40)
+            self.assertEqual(len(manifest['sources']), 96)
+            for style in manifest.values():
+                if isinstance(style, dict) and 'frames' in style:
+                    self.assertEqual(style['frameIntervalMs'], 50)
             self.assertEqual(len(manifest['mushRoom']['frames']), 4)
             self.assertEqual(manifest['mushRoom']['framesPerSecond'], 20)
             image = Image.open(root / 'out' / manifest['mushRoom']['frames'][0])

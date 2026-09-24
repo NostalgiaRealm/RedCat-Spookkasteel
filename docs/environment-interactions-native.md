@@ -19,6 +19,10 @@ RedCat steps away. Buttons without `TouchToSwitch` retain their authored
 interaction requirements. The original Davi-Script handlers still determine
 which doors, lights and moving models react.
 
+Door brush contacts and automatic door/button proximity now use the recovered
+[native activation rules](door-activation-native.md), including offset origins
+that preserve one-way passages and the chapel's walk-on floor lift.
+
 ## Fans and spring boxes
 
 The cave fans and spring boxes are original `Trigger` brush volumes with

@@ -65,8 +65,8 @@ try {
   page.on('pageerror',e=>errors.push(e.stack));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});page.on('request',r=>browserRequests.push(r.url()));
   await page.goto(origin+prefix.slice(0,-1)+'?skipIntro&source=subpath-check');await page.waitForFunction(()=>window.__redcat);
   assert.equal(page.url(),base+'?skipIntro&source=subpath-check');
-  report.menu=await page.evaluate(()=>({version:document.querySelector('.edition b').textContent,cards:document.querySelectorAll('.level-card').length,logo:document.querySelector('.logo').currentSrc,style:document.querySelector('link[rel="stylesheet"]').href,main:document.querySelector('script[type="module"]').src}));
-  assert.equal(report.menu.version,'0.9.1');assert.equal(report.menu.cards,5);for(const field of ['logo','style','main'])assert.ok(report.menu[field].startsWith(base),field);
+  report.menu=await page.evaluate(()=>({headers:document.querySelectorAll('#menu header').length,cards:document.querySelectorAll('.level-card').length,logo:document.querySelector('.logo').currentSrc,style:document.querySelector('link[rel="stylesheet"]').href,main:document.querySelector('script[type="module"]').src}));
+  assert.equal(report.menu.headers,0);assert.equal(report.menu.cards,5);for(const field of ['logo','style','main'])assert.ok(report.menu[field].startsWith(base),field);
   report.addon=await page.evaluate(async()=>{const {ImprovedNoise}=await import('three/addons/math/ImprovedNoise.js');return new ImprovedNoise().noise(.1,.2,.3);});assert.ok(Number.isFinite(report.addon));
   await page.screenshot({path:path.join(root,'artifacts/web-subpath-menu.png')});
   await page.locator('#play-intro').click();await page.waitForFunction(()=>{const v=document.getElementById('intro-video');return v.readyState>=2&&v.videoWidth>0;},{},{timeout:30000});
@@ -95,5 +95,5 @@ try {
   report.network={uniqueRequests:networkPaths.length,outsidePrefix:networkPaths.filter(url=>!url.startsWith(base)&&!url.includes('?skipIntro&source=subpath-check')),paths:networkPaths.map(url=>url.replace(origin,''))};
   assert.deepEqual(errors,[]);
   await writeFile(path.join(root,'artifacts/web-subpath-scenes.json'),JSON.stringify({report,errors},null,2)+'\n');
-  console.log('PASS local /redcatspookkasteel/ static-prefix fixture: query-preserving canonical redirect; 0.9.1 menu; Three core/addon importmap; original intro and audio; actual forest geometry/actors/scripts; media byte ranges; missing module404; no application requests escaped the prefix. Nginx itself was not run.');
+  console.log('PASS local /redcatspookkasteel/ static-prefix fixture: query-preserving canonical redirect; unversioned menu; Three core/addon importmap; original intro and audio; actual forest geometry/actors/scripts; media byte ranges; missing module404; no application requests escaped the prefix. Nginx itself was not run.');
 }finally{await browser?.close();server.closeAllConnections();await new Promise(resolve=>server.close(resolve));}

@@ -39,7 +39,7 @@ test('health loss selects native reaction thresholds from VoiceNL and death repl
   audio.reset();router.handle({type:'damage',amount:1,health:0});assert.equal(audio.sounds.size,0);
   router.handle({type:'death'});assert.equal(audio.snapshot()[0].sound,'rcgen7.wav');
   assert.ok([...audio.sounds][0].element.src.startsWith('assets/voices/'));
-  audio.pause();assert.equal(audio.snapshot()[0].paused,false,'The game-over menu must not suppress the death cue');
+  audio.pause();assert.equal(audio.snapshot()[0].paused,true,'Pause now includes every voice, including the death cue');
 });
 
 test('each enemy family uses native alert, attack, hurt and death samples with spatial playback',()=>{

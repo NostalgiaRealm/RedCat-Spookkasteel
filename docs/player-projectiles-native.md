@@ -53,10 +53,13 @@ enemies still allows RedCat's projectiles to operate shootable puzzles.
 | RcPowerShot | `0x44a330` | `psht0.bmp`–`psht5.bmp`, `psht0_a.bmp`–`psht5_a.bmp` |
 | RcSuperShot | `0x450370` | `sshlo0.bmp`–`sshlo5.bmp`, `sshlo0_A.bmp`–`sshlo5_A.bmp` |
 
-All three use a 50 ms frame interval (20 fps), from constants at `0x64d0f0`,
-`0x64cfa4`, and `0x64d244`. `tools/import_projectiles.py` combines each original
-pair into an RGBA PNG and records source hashes. Each projectile's animation
-follows its own elapsed flight time.
+All three use a 50 ms frame timer, from constants at `0x64d0f0`,
+`0x64cfa4`, and `0x64d244`. Its actual rate depends on update cadence: strict
+expiry advances one frame, then the next update rearms the timer. The renderer
+reads saved timer state rather than computing `floor(age * 20)`; see
+[native-projectile-animation.md](native-projectile-animation.md).
+`tools/import_projectiles.py` combines each original pair into an RGBA PNG and
+records source hashes.
 
 The emitter sets sprite scale 0.8 at `0x44d30f`. The ordinary and power textures
 are 32×32 and the super textures 64×64. The manifest provides their scaled
@@ -70,8 +73,9 @@ second sprite tint was incorrect.
 The native emitter obtains the position of `RCHC_BIP01 R HAND` at `0x434e80`.
 The renderer now supplies that animated bone's world position at release, and
 the simulation retains a fallback muzzle offset for headless tests or missing
-actor data. The original super-shot branch also has a charge/release phase; importing
-its sprite and flight properties does not establish parity for that input mode.
+actor data. The original super-shot charge/release phase is now reconstructed
+as described in [player-abilities-native.md](player-abilities-native.md), including
+the held pose, 1.5-second charge, release timing and scaled damage.
 The current hit hull and continuous integration are portable reconstructions,
 not a claim of bit-identical Genesis3D collision or frame stepping.
 

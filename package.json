@@ -1,6 +1,5 @@
 {
   "name": "redcat-spookkasteel-port",
-  "version": "0.9.1",
   "description": "An independent portable reconstruction using the original RedCat Spookkasteel assets",
   "private": true,
   "type": "module",
@@ -26,8 +25,8 @@
     "test:actor-placement": "node tests/actor-placement-scenes.mjs",
     "test:portals": "node tests/portal-beam-scenes.mjs",
     "test:desktop": "node tests/desktop.mjs",
-    "build:linux": "electron-builder --linux dir --x64",
-    "build:windows": "electron-builder --win dir --x64"
+    "build:linux": "node tools/package.mjs linux",
+    "build:windows": "node tools/package.mjs windows"
   },
   "dependencies": { "three": "0.186.0" },
   "devDependencies": { "electron": "44.3.0", "electron-builder": "26.15.3", "playwright": "1.58.2" },

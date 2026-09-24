@@ -1,5 +1,6 @@
 // Flight uses the authored waypoint network when a straight pursuit is
 // obstructed. A point visibility ray alone is not clearance for a bat's body.
+import {usesTouchPursuit} from './enemy-combat-native.js';
 import {sweepActor} from './player-projectiles.js';
 const distance=(a,b)=>Math.hypot(...a.map((v,i)=>v-b[i]));
 
@@ -11,7 +12,7 @@ export function batOverlapsPlayer(object,player,position=object.position) {
 // Enemy world traces omit RedCat. Clip flight against his actual body too,
 // and recover overlaps when he moves into a bat or loads an older save.
 export function clipBatPlayerContact(object,before,player,trace) {
-  if(object.enemyType!=='bat')return false;
+  if(object.enemyType!=='bat'&&!usesTouchPursuit(object))return false;
   const mins=object.collisionMins||[-10,5,-10],maxs=object.collisionMaxs||[10,40,10];
   const lo=player.map((v,i)=>v+(i===1?0:-11)-maxs[i]),hi=player.map((v,i)=>v+(i===1?56:11)-mins[i]);
   if(batOverlapsPlayer(object,player,before)) {

@@ -1,4 +1,6 @@
 import {FootstepClock} from './locomotion-audio.js';
+import {playerInputVelocity} from './player-movement.js';
+import {doorMovementSound} from './door-audio.js';
 // Sound choices for gameplay actions, separate from level-script ambience.
 // Original filename/health thresholds are documented in docs/gameplay-sound-native.md.
 export const PLAYER_SOUNDS = {
@@ -17,23 +19,47 @@ const ENEMY_ACTION_SUFFIX = {alert:3, attack:4, hurt:5, death:6};
 const BAT_IDLE = {batg:'bafxi1.wav',baty:'baiifx1.wav',batr:'baiiifx1.wav'};
 
 export class GameplayAudio {
-  constructor(audio, {random = Math.random} = {}) { this.audio=audio; this.random=random;this.steps=new FootstepClock();this.previousWorld=null;this.previousPosition=null; }
+  constructor(audio, {random = Math.random} = {}) { this.audio=audio; this.random=random;this.steps=new FootstepClock();this.previousWorld=null;this.previousPosition=null;this.authoredDoorSounds=new Map(); }
   update(dt,world,gameplay,input={}) {
     const player=world.player,position=player.position;
-    if(this.previousWorld!==world){this.steps=new FootstepClock();this.previousPosition=null;this.previousWorld=world;}
-    const moved=this.previousPosition?Math.hypot(position[0]-this.previousPosition[0],position[2]-this.previousPosition[2]):0;
+    this.audio.setPlayerListener(position);
+    // A save can restore a held charge without emitting a fresh input event.
+    if(gameplay.playerCharge&&!this.audio.keyed.has('player:charge'))this.handle({type:'player-charge',active:true});
+    else if(!gameplay.playerCharge&&this.audio.keyed.has('player:charge'))this.handle({type:'player-charge',active:false});
+    if(this.previousWorld!==world){this.steps=new FootstepClock(gameplay.footstepState);this.previousPosition=null;this.previousWorld=world;this.authoredDoorSounds.clear();}
+    const moved=Number.isFinite(player.stepDisplacement)?player.stepDisplacement:this.previousPosition?Math.hypot(position[0]-this.previousPosition[0],position[2]-this.previousPosition[2]):0;
     this.previousPosition=[...position];
-    const enabled=!player.noClip&&!gameplay.scripts?.cutscene&&gameplay.state.health>0&&!!(input.forward||input.right)&&dt>0&&moved<256*dt;
+    const enabled=!player.noClip&&!gameplay.scripts?.cutscene&&gameplay.state.health>0&&!!(input.forward||input.right)&&dt>0&&moved>.001&&moved<256*dt;
     const contents=enabled?world.collider.contents(position,[0,0,0],[0,1,0],[...new Set([0,...gameplay.liquidModels])]):0;
-    for(const sound of this.steps.update(dt,{speed:dt>0?moved/dt/32:0,grounded:player.grounded,enabled,contents,settings:gameplay.settings.game}))this.audio.play({sound,key:'player:step'});
+    // Native Wobble samples live input/environment velocity before the 1.4x
+    // ground multiplier. Moving-platform displacement is not in this vector.
+    const wind=player.environmentVelocity||[0,0,0];
+    const speed=Math.hypot(...playerInputVelocity(input,world.yaw||0,true).map((v,i)=>v+(wind[i]||0)))/32;
+    for(const sound of this.steps.update(dt,{speed,grounded:player.grounded,enabled,contents,settings:gameplay.settings.game}))this.audio.play({sound,key:'player:step'});
+    gameplay.footstepState=this.steps.snapshot();
   }
   handle(event, gameplay=null) {
     const play = options => this.audio.play(options);
+    if(event.type==='scriptSound'&&event.doorId&&!event.stop)this.authoredDoorSounds.set(event.doorId,{open:event.doorOpen,time:gameplay?.time});
+    if(event.type==='button') {
+      const object=gameplay?.objects.find(o=>o.id===event.id);
+      // CAdamButtonModel 0x4cb180 selects the same cue on switch-on/off.
+      const sound={1:'switchpushbutton.wav',2:'switchhandle.wav',3:'switchtrigger.wav'}[Number(object?.entity.ButtonType)];
+      if(sound)play({sound,sourceId:object.id,spatial:true,position:()=>gameplay.objectPosition(object)});
+    }
+    if(event.type==='player-charge') {
+      // Type 11 selects 0x6b52e0 (rcshoot3.WAV) in 0x436b40;
+      // releasing/cancelling stops that instance through 0x436a30.
+      if(event.active)play({sound:'rcshoot3.wav',key:'player:charge',loop:true});
+      else this.audio.stop('player:charge');
+    }
     if(event.type==='door') {
-      const object=gameplay?.objects.find(o=>o.id===event.id),type=Number(object?.entity.DoorType);
-      // CAdamDoorModel 0x4cc140, called when opening and closing. Type 4
-      // deliberately selects empty.wav; its authored motion may play a sound.
-      const sound={1:'opendoornormal.wav',2:'opendoorkey.wav',3:'opendoorsecret.wav'}[type];
+      const object=gameplay?.objects.find(o=>o.id===event.id),authored=this.authoredDoorSounds.get(event.id);
+      this.authoredDoorSounds.delete(event.id);
+      const explicit=authored&&authored.open===event.open&&authored.time===gameplay?.time;
+      // A BeforeOpen/Close script can supply its own native cue. Preserve it
+      // once, instead of layering an automatic fallback over the same action.
+      const sound=explicit?null:doorMovementSound(object,gameplay?.level);
       if(sound)play({sound,key:`door:${event.id}`,sourceId:event.id,spatial:true,position:()=>gameplay.objectPosition(object)});
     }
     if(event.type==='attack')play({sound:PLAYER_SOUNDS.shot});
@@ -43,9 +69,15 @@ export class GameplayAudio {
       const variant=event.amount>=40?2:event.amount>=10?1:0;
       play({sound:PLAYER_SOUNDS.hurt[variant],channel:'voices',key:'player:reaction'});
     }
-    // The game-over menu pauses simulation immediately; let its short death cue finish.
-    if(event.type==='death')play({sound:PLAYER_SOUNDS.death,channel:'voices',key:'player:reaction',pauseWithGame:false});
-    if(event.type==='pickup' && event.sound)play({sound:event.sound});
+    if(event.type==='death')play({sound:PLAYER_SOUNDS.death,channel:'voices',key:'player:reaction'});
+    if(event.type==='pickup' && event.sound) {
+      const object=gameplay?.objects.find(o=>o.id===event.id),kind=object?.subtype??event.subtype;
+      const suffix=['s','m','l'][Math.max(0,Math.min(2,(Number(object?.entity.Type)||1)-1))];
+      // Native item resources distinguish S/M/L. ICoinS is longer than M;
+      // substituting M for every bag clipped the audible small-bag flourish.
+      const sound=object&&kind==='coin'?`icoin${suffix}.wav`:object&&kind==='health'?`ihealth${suffix}.wav`:event.sound;
+      play({sound,group:'pickup'}); // Independent one-shots: another pickup cannot replace its tail.
+    }
     if(event.type==='enemyAction') {
       if(['brutusm','brutusb'].includes(event.actorFile)) {
         // Both native Brutus sound functions select localized combat voices.

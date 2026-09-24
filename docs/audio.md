@@ -1,4 +1,4 @@
-# Audio mix restoration (0.2.2)
+# Audio mix restoration
 
 The earlier runtime started every active EffectSound at the master volume,
 ignoring Volume.ini and Use3DSound. Forest level 1 has 17 simultaneous looping
@@ -36,7 +36,26 @@ Spatial sounds follow the camera position. Each level inherits Computer.ini's
 The supplied five levels use a minimum distance of 50 meters and a maximum
 distance factor of 150; one meter is 32 world units. The native logarithmic
 distance curve is converted to amplitude along with the other gains. Dialogue
-and music remain nonspatial.
+and music remain nonspatial. Positioned effects (including spatial enemy
+voices) now use the original stereo balance: the camera's local azimuth lowers
+the opposite channel by up to 10 dB, without changing the near channel. Web
+Audio routes media-element sound through stereo channel gains; mono samples
+are copied to both channels before balancing. Browsers without Web Audio keep
+the existing distance-volume playback path.
+
+Sound visibility uses the imported original leaf/cluster bitsets and connected
+door areas, independently of render visibility. A solid BSP obstruction applies
+the recovered 1.5 effective-distance multiplier, including moving door poses;
+actors do not obstruct this trace. Obstruction refreshes at 10 Hz or after a
+source/listener moves over one meter; panning updates each frame. Audio nodes
+disconnect when a sound ends/stops, and changing levels releases the bound
+world. The same media elements retain their pause/resume position, replay
+delays and full-length dialogue sequencing.
+
+Preserved user choices include local Castle/Cave ambience ranges, quieter tower
+fire, and Fleurifee's threefold radius/player listener. Her active idle is
+exempt from camera-PVS muting. A no-clip camera outside the map retains
+distance/pan rather than silencing everything.
 
 The mixer also retains gain factors when the master changes, stops replaced
 voices/loops, pauses all active sounds, handles authored replay delay bounds,
@@ -55,9 +74,18 @@ written to `artifacts/audio-forest.json`.
 
 The detailed executable evidence, including its hash and function addresses,
 is in `audio-native.md`. No original-versus-port audio recording comparison has
-been completed. Stereo panning, native BSP sound occlusion, authored fade
-envelopes and sample-exact replay/voice timing remain unfinished. The mixer
-currently uses portable HTML media elements and no operating-system audio API.
+been completed. Native stereo and BSP obstruction are implemented; authored
+effect-specific fade envelopes and sample-exact replay/voice timing are not
+claimed. In particular, the teleporter terminal sound's native volume envelope
+still needs complete recovery. The mixer uses portable HTML media and Web Audio,
+without an operating-system-specific audio API.
 
-Version 0.2.3 also restores player action/health and regular-enemy sound routing;
+`node --test tests/spatial-audio.test.mjs` covers the native centibel balance,
+camera rotation, obstruction distance, PVS/door state, nonspatial dialogue,
+the fairy exception and original castle visibility. `node
+tests/spatial-audio-scenes.mjs` measures the actual left/right waveform RMS of
+a mono WAV in Chrome, checks rotation and pause/resume, and exercises real
+castle PVS mixing. Its measured report is `artifacts/spatial-audio-scenes.json`.
+
+The action-audio update also restores player action/health and regular-enemy sound routing;
 see `enemy-gameplay.md` and `gameplay-sound-native.md`.

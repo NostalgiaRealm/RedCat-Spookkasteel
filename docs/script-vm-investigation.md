@@ -1,5 +1,11 @@
 # Davi-Script investigation
 
+Historical research note, written before the interpreter was implemented. The
+statements below about missing parsing/execution describe that earlier state.
+For current implementation coverage and remaining work, see
+[gameplay status](gameplay-reconstruction.md) and the
+[native parity audit](native-parity-audit.md).
+
 Executable address references are version-specific; see [reference build notes](native-reference-builds.md) before relying on native addresses.
 
 This bounded, read-only investigation examines the supplied `Levels/*.dso`, `Script/ScriptGameObject.ds` and `RcHcGame.dat`. **The original campaign code is present in serialized form with useful names and signatures. No DSO interpreter, complete parser or decompiler has been implemented.** The existing portable gameplay module still skips unsupported script behavior.

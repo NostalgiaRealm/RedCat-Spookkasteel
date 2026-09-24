@@ -10,10 +10,12 @@ const isBoss=object=>object.kind==='enemy'&&['brutusm','brutusb','maxd','maxj','
 /** The portable game side of Davi-Script. The VM knows nothing about rendering,
  * DOM, files or operating systems. Names bind both single objects and groups. */
 export class ScriptHost {
-  constructor(gameplay,program,{motions={motions:[]},dialogue={}}={}) {
+  constructor(gameplay,program,{motions={motions:[]},dialogue={},isDialoguePlaying=()=>false}={}) {
     this.game=gameplay;this.dialogue=dialogue;this.bindings=new Map();this.players=new Map();
     this.modelTransforms=new Map();this.keyItems=new Set();this.missions=new Map();
     this.cutscene=false;this.playerVisible=true;this.enemiesFrozen=false;this.weaponsEnabled=true;
+    this.isDialoguePlaying=isDialoguePlaying;this.pendingCutsceneStop=null;
+    this.portalTransition=null;
     this.camera=null;this.subtitle=null;this.musicState=null;this.afterBossMusicId=null;this.combatThreats=false;this.combatBoss=false;this.errors=[];this.time=0;this.initialized=false;
     this.vm=new DaviVM(program,this);gameplay.scripts=this;
     const clips=new Map(motions.motions.map(m=>[m.model,m]));
@@ -28,9 +30,14 @@ export class ScriptHost {
     }
   }
   initialize(save=null) {
+    // The two initially enabled Fairy editor entities are also activated by
+    // later encounter scripts. Do not display those future lantern encounters
+    // at level load, before their own trigger has run.
+    if(!save)for(const object of this.game.objects)if(object.kind==='fairy')object.enabled=false;
     this.vm.initialize();this.initialized=true;
     if(save){
       this.restore(save);
+      this.normalizeFairies(this.game.playerPosition);
       // Resume enabled ambience without replaying completed one-shot effects.
       for(const object of this.game.objects)if(object.enabled&&object.entity.classname==='EffectSound'&&number(object.entity.Replay))this.sound(object,true);
       return;
@@ -48,18 +55,24 @@ export class ScriptHost {
   }
   targets(binding) {return binding?.id?this.game.objects.filter(o=>o.id===binding.id):this.game.find(binding?.daviName??binding);}
   dispatch(object,event,args=[]) {
-    let count=0;
-    for(const name of new Set([object.entity.DaviName,object.entity.DaviNameGroup,object.entity['%name%']].filter(Boolean))) {
-      if(this.vm.hasHandler(name,event))count+=this.vm.dispatch(name,event,args);
-    }
-    return count;
+    let count=0;const previous=this.dispatchContext;this.dispatchContext={object,event};
+    try {
+      for(const name of new Set([object.entity.DaviName,object.entity.DaviNameGroup,object.entity['%name%']].filter(Boolean))) {
+        if(this.vm.hasHandler(name,event))count+=this.vm.dispatch(name,event,args);
+      }
+      return count;
+    } finally {this.dispatchContext=previous;}
   }
   callMethod(binding,name,args=[]) {
     const targets=this.targets(binding),verb=name.toLowerCase();
     if(!targets.length)throw new Error(`Davi-Script object not found: ${binding?.daviName??binding}`);
     if(verb==='getone')return {id:targets[0].id,daviName:targets[0].entity.DaviName||targets[0].id};
     for(const object of targets) {
-      if(['open','close','lock','unlock','enable','disable','show','hide','switch','switchon','switchoff','trigger','destroy'].includes(verb))this.game.command(object,verb);
+      if(verb==='show'&&object.entity.classname==='TeleporterFX') {
+        const before=object.teleportEffectSerial;this.game.command(object,verb);
+        if(object.teleportEffectSerial!==before)this.portalTransition={id:object.id,serial:object.teleportEffectSerial,fromVisible:this.playerVisible};
+      }
+      else if(['open','close','lock','unlock','enable','disable','show','hide','switch','switchon','switchoff','trigger','destroy'].includes(verb))this.game.command(object,verb);
       else if(verb==='setto') {const p=this.players.get(object.id);if(p){p.seek(number(args[0]));this.applyMotion(object,p);}}
       else if(verb==='moveto')this.startMotion(object,number(args[0]));
       else if(verb==='setmotionspeed'||verb==='multiplymotionspeed') {
@@ -94,15 +107,18 @@ export class ScriptHost {
   callNative(name,args=[]) {
     const game=this.game,a=args[0];
     switch(name.toLowerCase()) {
-      case 'startcutscene':this.cutscene=true;this.game.emit('cutscene',{active:true,fade:number(a)});return 0;
-      case 'stopcutscene':this.cutscene=false;this.camera=null;this.subtitle=null;this.game.emit('cutscene',{active:false,fade:number(a)});return 0;
+      case 'startcutscene':this.pendingCutsceneStop=null;this.cutscene=true;this.game.emit('cutscene',{active:true,fade:number(a)});return 0;
+      case 'stopcutscene':
+        if(!this.skippingCutscene&&this.isDialoguePlaying())this.pendingCutsceneStop={fade:number(a)};
+        else this.finishCutscene(number(a));
+        return 0;
       case 'cutscenesay':case 'say':case 'communicatorsay':this.say(String(a));return 0;
-      case 'rchide':this.playerVisible=false;return 0;
-      case 'rcshow':this.playerVisible=true;return 0;
+      case 'rchide':this.portalPlayerVisibility(false);return 0;
+      case 'rcshow':this.portalPlayerVisibility(true);return 0;
       case 'playervisible':this.playerVisible=!!a;return 0;
       case 'freezeenemies':this.enemiesFrozen=true;return 0;
       case 'unfreezeenemies':this.enemiesFrozen=false;return 0;
-      case 'rcshowatspawnpoint':this.teleport(String(a),number(args[1]));this.playerVisible=true;return 0;
+      case 'rcshowatspawnpoint':this.teleport(String(a),number(args[1]));this.portalPlayerVisibility(true);return 0;
       case 'rcsetsavepoint': {
         const target=game.find(a)[0];if(!target)throw new Error(`Missing Davi-Script savepoint: ${a}`);
         game.setCheckpoint(target.position,number(args[1]),target.id);return 0;
@@ -114,7 +130,13 @@ export class ScriptHost {
         const keys=['ReqPotionShot','ReqPotionPowerShot','ReqPotionSuperShot','ReqPotionSuperJump','ReqPotionPowerMove'];
         return Number(game.state.potions>=number(conf[keys[number(a)]],[10,20,30,30,0][number(a)]??999));
       }
-      case 'rcenableskill':game.state.skill|=1<<clamp(number(a),0,4);game.emit('skill',{skill:number(a)});return 0;
+      case 'rcenableskill': {
+        let skill=clamp(number(a),0,4);
+        // The cave BIG BENG gate checks potion skill 2 but its original DSO
+        // passes 4 to EnableSkill. Repair that one authored reward typo.
+        if(game.level.id==='lvl03a'&&this.dispatchContext?.object.entity.DaviName==='trigger_cuts04'&&this.dispatchContext.event==='CommandOnEnter'&&skill===4)skill=2;
+        game.state.skill|=1<<skill;game.emit('skill',{skill});return 0;
+      }
       case 'getgametype':return 0;
       case 'giveplayerkeyitem':this.keyItems.add(String(a).toLowerCase());return 0;
       case 'playerhaskeyitem':return Number(this.keyItems.has(String(a).toLowerCase()));
@@ -138,6 +160,24 @@ export class ScriptHost {
     // Resource keys are never player-facing dialogue.
     this.subtitle={text:entry?.text??'',voice:entry?.voice||null,until:this.time+Math.max(3,number(entry?.duration,5))};
     this.game.emit('dialogue',{id:key,...this.subtitle});
+  }
+  finishCutscene(fade=0) {
+    this.pendingCutsceneStop=null;this.portalTransition=null;this.cutscene=false;this.camera=null;this.subtitle=null;
+    this.game.emit('cutscene',{active:false,fade});
+  }
+  portalPlayerVisibility(visible) {
+    const changed=this.playerVisible!==visible;this.playerVisible=visible;
+    const transition=this.portalTransition;
+    if(!changed||!transition||transition.fromVisible===visible)return;
+    this.portalTransition=null;
+    const portal=this.game.objects.find(o=>o.id===transition.id&&o.entity.classname==='TeleporterFX');
+    if(!portal||portal.teleportEffectSerial!==transition.serial||this.skippingCutscene)return;
+    if(portal.teleportTerminalSoundSerial===transition.serial)return;
+    portal.teleportTerminalSoundSerial=transition.serial;
+    // Native TeleporterFX's terminal sound slot 1 is Magiev1.wav
+    // (0x47216d, 0x475976). Align it to the original script's player transition.
+    this.game.emit('scriptSound',{id:`portal-player:${portal.id}:${transition.serial}`,sound:'Magiev1.wav',volume:1,
+      spatial:true,position:[...portal.position],portalPhase:visible?'arrival':'departure'});
   }
   teleport(name,orientation=0) {
     // RcShowAtSpawnPoint enumerates EffectEndPoint entities, not PlayerStart.
@@ -179,11 +219,21 @@ export class ScriptHost {
     if(this.musicState?.id!==music.id||this.musicState?.mode!==mode)this.selectMusic(music,mode);
   }
   sound(object,active) {
-    const e=object.entity;
-    this.game.emit('scriptSound',{id:object.id,sound:e.SoundFileName,stop:!active,loop:number(e.Replay)!==0,volume:number(object.volume,1),
-      spatial:number(e.Use3DSound)!==0,position:[...object.position],minReplayDelay:number(e.MinReplayDelaySeconds),maxReplayDelay:number(e.MaxReplayDelaySeconds)});
+    const e=object.entity,loop=number(e.Replay)!==0,context=this.dispatchContext;
+    const door=!loop&&context?.object.kind==='door'&&['DoorBeforeOpenCommand','DoorBeforeCloseCommand'].includes(context.event)?context.object:null;
+    // Shared, nonspatial door cues have one editor position for many doors.
+    // Localize that cue at the invoking panel when applying the castle mix.
+    const position=door&&!number(e.Use3DSound)?this.game.objectPosition(door):object.position;
+    this.game.emit('scriptSound',{id:object.id,sound:e.SoundFileName,stop:!active,loop,volume:number(object.volume,1),
+      doorId:door?.id,doorOpen:door?context.event==='DoorBeforeOpenCommand':undefined,
+      spatial:number(e.Use3DSound)!==0,position:[...position],minReplayDelay:number(e.MinReplayDelaySeconds),maxReplayDelay:number(e.MaxReplayDelaySeconds)});
   }
   objectEnabled(object,enabled,changed) {
+    if(enabled&&object.kind==='fairy') {
+      // A new lantern encounter supersedes the preceding fairy, including
+      // legacy saves whose old name lookup had activated several instances.
+      for(const other of this.game.objects)if(other!==object&&other.kind==='fairy'&&other.enabled)this.game.command(other,'disable');
+    }
     if(changed&&enabled&&isBoss(object)) {
       this.afterBossMusicId=null;this.combatBoss=true;
       const music=this.game.objects.find(o=>o.enabled&&o.entity.classname==='EffectMusic');
@@ -193,10 +243,18 @@ export class ScriptHost {
       const p=this.players.get(object.id);
       if(enabled&&changed){if(p&&!p.finished&&object.motionStarted)p.resume();else this.startMotion(object);}else if(!enabled)p?.stop();
     }
-    if(changed&&object.entity.classname==='EffectSound')this.sound(object,enabled);
+    if(object.entity.classname==='EffectSound'&&(changed||enabled&&!number(object.entity.Replay)))this.sound(object,enabled);
     if(changed&&enabled&&object.entity.classname==='FlashEffect')this.game.emit('flash',{id:object.id});
     if(changed&&enabled)object.activatedAt=this.time;
     if(!enabled&&this.camera?.id===object.id)this.camera=null;
+  }
+  normalizeFairies(position) {
+    if(!Array.isArray(position)||position.length!==3||!position.every(Number.isFinite))return;
+    const active=this.game.objects.filter(o=>o.kind==='fairy'&&o.enabled);
+    if(active.length<2)return;
+    const distance=o=>Math.hypot(...o.position.map((v,i)=>v-position[i]));
+    active.sort((a,b)=>distance(a)-distance(b));
+    for(const object of active.slice(1)){this.game.command(object,'disable');object.effectAge=0;}
   }
   activateCamera(object) {
     const e=object.entity,points=[];
@@ -239,6 +297,7 @@ export class ScriptHost {
       if(player.playing){player.update(dt);this.applyMotion(object,player);}
     }
     if(this.camera?.duration>0&&this.time-this.camera.start>=this.camera.duration)this.camera=null;
+    if(this.pendingCutsceneStop&&!this.isDialoguePlaying())this.finishCutscene(this.pendingCutsceneStop.fade);
     if(this.subtitle&&this.time>=this.subtitle.until){this.subtitle=null;this.game.emit('dialogue',{text:''});}
   }
   skipCutscene({onStep=()=>{},maximumSeconds=300}={}) {
@@ -247,6 +306,7 @@ export class ScriptHost {
     // teleports and StopCutScene must run just as during ordinary playback.
     this.skippingCutscene=true;
     try {
+      if(this.pendingCutsceneStop)this.finishCutscene(this.pendingCutsceneStop.fade);
       for(let elapsed=0;this.cutscene&&elapsed<maximumSeconds;elapsed+=.05){
         if(![...this.players.values()].some(p=>p.playing))break;
         this.update(.05);onStep();
@@ -256,7 +316,7 @@ export class ScriptHost {
   }
   snapshot() {
     return {version:1,vm:this.vm.snapshot(),time:this.time,cutscene:this.cutscene,playerVisible:this.playerVisible,enemiesFrozen:this.enemiesFrozen,weaponsEnabled:this.weaponsEnabled,
-      poses:copy([...this.modelTransforms]),camera:copy(this.camera),subtitle:copy(this.subtitle),musicState:copy(this.musicState),afterBossMusicId:this.afterBossMusicId,combatThreats:this.combatThreats,combatBoss:this.combatBoss,keyItems:[...this.keyItems],missions:[...this.missions],
+      poses:copy([...this.modelTransforms]),camera:copy(this.camera),subtitle:copy(this.subtitle),pendingCutsceneStop:copy(this.pendingCutsceneStop),portalTransition:copy(this.portalTransition),musicState:copy(this.musicState),afterBossMusicId:this.afterBossMusicId,combatThreats:this.combatThreats,combatBoss:this.combatBoss,keyItems:[...this.keyItems],missions:[...this.missions],
       motions:[...this.players].map(([id,p])=>({id,started:!!p.object.motionStarted,time:p.time,from:p.from,to:p.to,speed:p.speed,loop:p.loop,playing:p.playing,finished:p.finished,includeStart:p.includeStart,loopFrom:p.loopFrom,loopTo:p.loopTo}))};
   }
   restore(save) {
@@ -264,6 +324,8 @@ export class ScriptHost {
     this.vm.restore(save.vm);this.time=number(save.time);
     for(const key of ['cutscene','playerVisible','enemiesFrozen','weaponsEnabled'])if(typeof save[key]==='boolean')this[key]=save[key];
     this.camera=save.camera||null;this.subtitle=save.subtitle||null;this.keyItems=new Set(save.keyItems||[]);this.missions=new Map(save.missions||[]);
+    this.pendingCutsceneStop=save.pendingCutsceneStop||null;
+    this.portalTransition=save.portalTransition||null;
     const correctedPoses=new Set();
     for(const s of save.motions||[]) {
       const p=this.players.get(s.id);if(!p)continue;

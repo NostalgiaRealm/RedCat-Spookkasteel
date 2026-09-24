@@ -1,8 +1,8 @@
 {
-  "format": "redcat-hazards-v1",
+  "format": "redcat-hazards-v2",
   "sources": {
-    "mshtrail.bmp": "62e68c119a673b79a431b458b016ad01b06badd549592493cb258a94bfca4b24",
-    "mshtraila.bmp": "a34d06c9f39b885b19941bebd0e1306745eb0b0e9919a65502b1cec4b0ea2fa2"
+    "strail.bmp": "b9606be2e7d1965d2061d0766a5fa8bdbad615316cd0bee045922f025098f023",
+    "strail_a.bmp": "eb2df9e194d581e2e325e2b8720a7c103130265f2783fc03b20681d5274233a5"
   },
   "mushroomTrail": {
     "texture": "mushroom-trail.png",
@@ -12,8 +12,11 @@
       255,
       127
     ],
-    "opacity": 0.4980392156862745,
+    "opacity": 0.8,
     "fadeTime": 1.5,
+    "sampleDistance": 9.6,
+    "sampleIntervalMs": 100,
+    "alphaCutoff": 0.0196078431372549,
     "textureWidth": 64,
     "textureHeight": 64
   }

@@ -62,9 +62,10 @@ case does not affect the supplied campaign.
 Catmull–Rom interpolation distributed over `CamTimeInMode` is a reconstruction
 approximation, not verified native choreography. A closer implementation starts
 at the first waypoint, visits the points in order at the recovered speed, looks
-at the player, and treats the time as a separate lifetime. Exact final-approach
-lookup behavior and camera collision adjustment need further work before exact
-camera parity can be claimed.
+at the player, and treats the time as a separate lifetime. The final-approach
+lookup is now recovered and implemented (see the current-build details below).
+Camera collision adjustment still needs further work before exact camera parity
+can be claimed.
 
 ## Duplicate model-controller enable commands
 
@@ -85,6 +86,41 @@ choice, not assumed native semantics.
 This investigation verifies dispatch, field precedence and bounded timing
 behavior. It is not a native/portable visual comparison or a campaign
 playthrough.
+
+## Recovered final-approach lookup (current installed build)
+
+The installed executable with SHA-256
+`e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5`
+places the mode-4 route updater at `0x45a130`, not the earlier build's
+`0x459f20`. The route updater compares the current waypoint with the camera
+position and selects the next point at `0x45a1cc..0x45a266`. Intermediate points
+pass `true` to movement helper `0x45a470`; the final point passes `false`.
+
+That helper contains the following verified rules:
+
+- Intermediate movement uses 150 world units/second (`0x45a586`).
+- Final movement starts with the same 150-unit speed. If the remaining distance
+  exceeds 50, `0x45a516..0x45a537` truncates `distance - 50`, clamps the index to
+  0..99, and reads a float from the table at `0x64d460`.
+- `0x45a53e..0x45a57a` clamps the result to 150..470. Consequently the effective
+  speed is 150 below distance 59, changes in one-unit bands from 59 through 77,
+  and is 470 at distance 78 or greater. The 19 unclamped float values are kept
+  exactly in `src/script-camera.js`; this is a lookup, not a generic easing curve.
+- Below five units, `0x45a4e4..0x45a4f3` skips the movement overwrite and retains
+  the target position. The remake also snaps this final arrival distance.
+
+The portable sampler integrates the piecewise constant distance bands directly
+from elapsed route time. This preserves the original speed law without the
+original frame-step rounding/overshoot and makes save restoration deterministic
+at different render rates. It does not change intermediate waypoints, camera
+lifetimes, script handoffs or the input lock during an overview. Collision
+correction and native per-frame camera compensation are separate outstanding
+details; this recovery does not claim complete camera parity.
+
+Focused verification: `node --test tests/script-camera.test.mjs
+tests/camera-control.test.mjs` (10 passing checks), including all five authored
+routes, lookup boundaries, final deceleration/arrival, saved elapsed time and
+fixed-overview mouse locking. No build or native executable execution is needed.
 
 ## Fixed-overview input regression
 

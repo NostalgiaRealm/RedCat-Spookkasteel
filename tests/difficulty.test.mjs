@@ -67,7 +67,7 @@ test('saved difficulty restores health limits, projectile rules, boss progress a
   }
   const custom=structuredClone(GAMEPLAY_SETTINGS);custom.projectileeasy.RcMushRoom.TrailDamage=2;custom.projectilehard.RcMushRoom.TrailDamage=8;
   const hazardHard=new Gameplay(source,{settings:custom,difficulty:'Hard'}),hazardSave=hazardHard.snapshot();
-  const hazardEasy=new Gameplay(source,{settings:custom,difficulty:'Easy'});hazardEasy.restore(hazardSave);assert.equal(hazardEasy.hazards.definition.damage,8,'restored ribbon definitions follow the saved section');
+  const hazardEasy=new Gameplay(source,{settings:custom,difficulty:'Easy'});hazardEasy.restore(hazardSave);assert.equal(hazardEasy.hazards.definition.damage,0,'unused TrailDamage never enables ribbon damage');
 });
 
 test('legacy saves retain Normal difficulty and incompatible saves do not change a running encounter',()=>{

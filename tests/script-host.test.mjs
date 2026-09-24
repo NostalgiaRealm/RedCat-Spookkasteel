@@ -150,8 +150,8 @@ test('original castle boss door self-open callback does not recurse and paired d
   assert.equal(events.filter(e => e.type === 'door' && e.open).length, 2);
 });
 
-test('later level initial weapon skills follow the original StandardSkill settings', () => {
-  assert.deepEqual(levels.map((_, i) => boot(i).game.state.skill), [0, 1, 3, 7, 15]);
+test('initial weapon skills retain chapter defaults with the corrected Caves BIG BENG gate', () => {
+  assert.deepEqual(levels.map((_, i) => boot(i).game.state.skill), [0, 1, 3, 3, 15]);
 });
 
 test('tower witch trigger waits for all five mirrors and persists its counter', () => {

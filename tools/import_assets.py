@@ -21,6 +21,7 @@ def main():
     args=parser.parse_args()
     if not (args.installation/'Levels').is_dir():parser.error('Installation needs a Levels directory')
     run('import_levels.py','--source',args.installation)
+    run('import_visibility.py','--installation',args.installation)
     run('import_actor_overrides.py','--installation',args.installation)
     run('import_scripts.py','--source',args.installation)
     run('import_motions.py')
@@ -31,6 +32,7 @@ def main():
     run('import_hazards.py','--installation',args.installation)
     run('import_world_effects.py','--installation',args.installation)
     run('import_hud.py','--installation',args.installation)
+    run('import_debriefing.py','--installation',args.installation)
     run('import_gameplay_settings.py','--source',args.installation/'Settings')
     run('import_audio_settings.py','--source',args.installation/'Settings')
     menu=['--installation',args.installation]

@@ -1,6 +1,9 @@
 // RcShot/RcPowerShot/RcSuperShot settings and shoot1 timing from the original
 // executable and actor. See docs/player-projectiles-native.md.
 export const PLAYER_SHOOT_MOTION = {duration:1.9333430528640747,rate:1.9,releaseFraction:.46};
+// Native 0x436720 fills the BIG BENG charge in 1500 ms. While held,
+// 0x434bda freezes shoot1 at 26%; releasing resumes that same motion.
+export const PLAYER_SUPER_CHARGE={duration:1.5,holdFraction:.26};
 
 export function playerShotDefinition(skill,settings,difficulty) {
   const key=skill&4?'RcSuperShot':skill&2?'RcPowerShot':'RcShot';

@@ -7,12 +7,13 @@ export function footstepSound(side,contents=0,running=false) {
   return side?'rcwalk2.wav':'rcwalk1.wav';
 }
 export class FootstepClock {
-  constructor(){this.phase=0;this.side=0;}
+  constructor(saved){this.phase=Number.isFinite(saved?.phase)&&saved.phase>=0&&saved.phase<1?saved.phase:0;this.side=saved?.side===1?1:0;}
+  snapshot(){return {phase:this.phase,side:this.side};}
   update(dt,{speed=0,grounded=false,enabled=true,contents=0,settings={}}={}) {
     if(!enabled||!grounded||speed<=.01)return [];
     const player=settings.Player||{},reference=(Number(player.RunForwardSpeed||4.9)+Number(player.WalkForwardSpeed||3))/2;
     const rate=Math.sqrt(speed/reference)*Number(settings.Wobble?.RunLoopSpeed??.5)*4;
-    this.phase+=Math.max(0,dt)*rate;
+    this.phase+=Math.max(0,Number.isFinite(dt)?dt:0)*rate;
     const sounds=[];
     while(this.phase>=1){this.phase--;sounds.push(footstepSound(this.side,contents,speed>reference));this.side^=1;}
     return sounds;

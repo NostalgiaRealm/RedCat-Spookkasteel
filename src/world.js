@@ -6,15 +6,24 @@ import { sampleCameraRoute } from './script-camera.js';
 import { PlayerCameraControl } from './camera-control.js';
 import { visibleLiquidGroup, surfaceAlphaTest } from './liquids.js';
 import { trailOpacity } from './projectile-hazards.js';
+import { projectileVisibilityScale } from './projectile-visibility.js';
+import { projectileAnimationFrame } from './projectile-animation.js';
 import { triangleCollider, traceActors } from './actor-collision.js';
 import { WorldEffects } from './world-effects.js';
 import { EnemyTargeting, targetAimPoint, targetDirection, targetableObject, transformedTargetBounds, targetMarkerPose } from './targeting.js';
 import { actorOrientation, attachedActorVisible, nativePlayerYaw } from './actor-placement.js';
 import { playerMotion } from './player-animation.js';
+import { playerReactionMotion } from './player-lifecycle.js';
+import { PLAYER_SUPER_CHARGE, PLAYER_SHOOT_MOTION } from './player-projectiles.js';
 import { actorOverrideKey, actorOverrideColor } from './actor-materials.js';
 import { placeSpider } from './enemy-ambush.js';
 import { isGhostEnemy, ghostMaterials } from './ghost-materials.js';
 import { enemyDeathOpacity, applyEnemyDeathOpacity } from './enemy-death-effects.js';
+import { posedEnemyProjectileOrigins } from './enemy-projectile-origins.js';
+import { createActorLighting, updateActorLighting, applyActorLighting } from './actor-lighting.js';
+import { ActorWorldLighting } from './actor-world-lighting.js';
+import { createActorFloorLighting } from './actor-floor-lighting.js';
+import { ActorLightVisibility } from './actor-light-visibility.js';
 const json = async url => { const response=await fetch(url); if(!response.ok) throw new Error(`Ontbrekend spelbestand: ${url}`); return response.json(); };
 const binary = async url => {const response=await fetch(url);if(!response.ok)throw new Error(`Ontbrekend spelbestand: ${url}`);return response.arrayBuffer();};
 const point = e => (e.Origin || e.origin || '0 0 0').trim().split(/\s+/).map(Number);
@@ -74,15 +83,24 @@ export class CastleWorld {
     this.id=id;const base=`data/levels/${id}/`;this.level=await json(base+'level.json');const data=this.level;
     [this.scriptProgram,this.motions,this.dialogue]=await Promise.all([json(`data/davi/${id}.json`),json(`data/motions/${id}.json`),json('data/dialogue/nl.json')]);
     onProgress('Originele geometrie en belichting laden…');
-    const [meshBuffer,textures,lm,lmUv]=await Promise.all([
+    const [meshBuffer,textures,lm,lmUv,lmFrames,floorMetadata,floorBytes,lightVisibility,lightPvs]=await Promise.all([
       binary(base+data.mesh.file),Promise.all(data.textures.map(t=>this.texture(base+t.file))),
       data.mesh.lightmap?this.texture(base+data.mesh.lightmap.file,true):null,
-      data.mesh.lightmap?binary(base+data.mesh.lightmap.uvFile):null
+      data.mesh.lightmap?binary(base+data.mesh.lightmap.uvFile):null,
+      data.mesh.lightmap?.framesFile?binary(base+data.mesh.lightmap.framesFile):null,
+      data.mesh.lightmap?.actorFloorFile?json(base+data.mesh.lightmap.actorFloorFile):null,
+      data.mesh.lightmap?.actorFloorFile?binary(base+data.preserved.lightmaps):null,
+      json(`data/visibility/${id}.json`),binary(`data/visibility/${id}.bin`)
     ]);
     if(lm){lm.channel=1;lm.generateMipmaps=false;lm.minFilter=THREE.LinearFilter;lm.wrapS=lm.wrapT=THREE.ClampToEdgeWrapping;}
     const interleaved=new THREE.InterleavedBuffer(new Float32Array(meshBuffer),11);
     const position=new THREE.InterleavedBufferAttribute(interleaved,3,0),normal=new THREE.InterleavedBufferAttribute(interleaved,3,3),uv=new THREE.InterleavedBufferAttribute(interleaved,2,6),color=new THREE.InterleavedBufferAttribute(interleaved,3,8);
     const uv1=lmUv?new THREE.BufferAttribute(new Float32Array(lmUv),2):null;
+    const lightFrame=lmFrames?new THREE.InterleavedBuffer(new Float32Array(lmFrames),8):null;
+    if(lightFrame&&lightFrame.count!==position.count)throw new Error('Onjuiste belichtingsgegevens voor '+id);
+    const lightU=lightFrame?new THREE.InterleavedBufferAttribute(lightFrame,3,0):null;
+    const lightV=lightFrame?new THREE.InterleavedBufferAttribute(lightFrame,3,3):null;
+    const lightMinUV=lightFrame?new THREE.InterleavedBufferAttribute(lightFrame,2,6):null;
     const names=new Map(data.entities.filter(e=>e.classname==='%Model%').map(e=>[e['%name%'],Number(e.Model)]));
     this.modelNames=names;
     const triggerModels=triggerOnlyModels(data.entities,names);
@@ -95,13 +113,16 @@ export class CastleWorld {
       const geometry=this.track(new THREE.BufferGeometry());
       geometry.setAttribute('position',position);geometry.setAttribute('normal',normal);geometry.setAttribute('uv',uv);geometry.setAttribute('color',color);
       if(uv1)geometry.setAttribute('uv1',uv1);geometry.setDrawRange(group.start,group.count);
+      if(lightFrame){geometry.setAttribute('nativeLightU',lightU);geometry.setAttribute('nativeLightV',lightV);geometry.setAttribute('nativeLightMinUV',lightMinUV);}
       const fullbright=Boolean(group.flags&2),gouraud=Boolean(group.flags&32);
       // The graveyard stacks rooms above authored SKY boundaries. Preserve
       // their depth before drawing scenery, with the original cube background
       // supplying their color. Dropping these polygons exposes the upper map.
+      // BSP faces already have outward normals and CCW winding. Rendering
+      // their backs exposes the far face through cutout gates as a second fence.
       const material=this.track(new THREE.MeshBasicMaterial(skyBoundary?
         {colorWrite:false,depthWrite:true,side:THREE.DoubleSide}:
-        {map:textures[group.texture],vertexColors:(!lm || gouraud)&&!fullbright,lightMap:fullbright || gouraud?null:lm,lightMapIntensity:1,side:THREE.DoubleSide,transparent:group.alpha<1,opacity:group.alpha,depthWrite:group.alpha>=1,alphaTest:surfaceAlphaTest(group,data.textures[group.texture])}));
+        {map:textures[group.texture],vertexColors:(!lm || gouraud)&&!fullbright,lightMap:fullbright || gouraud?null:lm,lightMapIntensity:1,side:THREE.FrontSide,transparent:group.alpha<1,opacity:group.alpha,depthWrite:group.alpha>=1,alphaTest:surfaceAlphaTest(group,data.textures[group.texture])}));
       const mesh=new THREE.Mesh(geometry,material);mesh.frustumCulled=false;mesh.visible=!invisibleModels.has(group.model);mesh.userData.model=group.model;
       if(skyBoundary){mesh.renderOrder=-100;this.skyBoundaryMeshes.push(mesh);}
       this.scene.add(mesh);if(!this.modelMeshes.has(group.model))this.modelMeshes.set(group.model,[]);this.modelMeshes.get(group.model).push(mesh);
@@ -112,6 +133,9 @@ export class CastleWorld {
     }
     this.collider=new BspCollider(data.collision);
     invisibleModels.forEach(i=>this.collider.disabledModels.add(i));
+    this.actorWorldLighting=new ActorWorldLighting(data.entities);
+    this.actorLightVisibility=new ActorLightVisibility(this,lightVisibility,new Uint8Array(lightPvs));
+    this.actorFloorLighting=floorMetadata?createActorFloorLighting(data.collision,floorMetadata,new Uint8Array(floorBytes),this.collider):null;
     this.player=new PlayerController(this.collider,[...data.spawn.position],this.physicalModels);
     this.yaw=nativePlayerYaw(data.spawn.orientation);
     // Spawn points are placed at foot height. Lift slightly before settling to avoid plane rounding.
@@ -167,7 +191,7 @@ export class CastleWorld {
         const map=m.texture?await this.texture('assets/actors/'+m.texture):null;
         // Actor importer flips V for the conventional Three.js texture origin.
         if(map){map.flipY=true;map.needsUpdate=true;}
-        return this.track(new THREE.MeshLambertMaterial({map,color:m.texture?0xffffff:new THREE.Color(...m.color),side:THREE.DoubleSide,alphaTest:0.3}));
+        return this.track(new THREE.MeshLambertMaterial({map,color:m.texture?0xffffff:new THREE.Color().setRGB(...m.color,THREE.SRGBColorSpace),side:THREE.DoubleSide,alphaTest:0.3}));
       }));
       return {geometry,materials,data};
     })();
@@ -185,11 +209,13 @@ export class CastleWorld {
   instantiateActor(template,options={}) {
     const animated=template.data.animations?.length>0;
     const geometry=animated?this.track(template.geometry.clone()):template.geometry;
-    const materials=options.overrideMap?template.materials.map(original=>{
-      const material=this.track(original.clone());material.map=options.overrideMap;
-      material.color.setRGB(...actorOverrideColor(options.entity),THREE.SRGBColorSpace);
-      material.transparent=true;material.alphaTest=.01;material.depthWrite=false;return material;
-    }):template.materials;
+    const materials=template.materials.map(original=>{
+      const material=this.track(original.clone());
+      if(options.overrideMap){material.map=options.overrideMap;
+        material.color.setRGB(...actorOverrideColor(options.entity),THREE.SRGBColorSpace);
+        material.transparent=true;material.alphaTest=.01;material.depthWrite=false;}
+      return material;
+    });
     const root=new THREE.Group(),mesh=new THREE.Mesh(geometry,materials);
     const defaults=template.data.settings || {};
     const rotate=defaults.initialRotationDegrees || [-90,0,0];
@@ -198,11 +224,23 @@ export class CastleWorld {
     mesh.scale.setScalar(scale);root.add(mesh);
     if(options.rotation)root.rotation.set(...options.rotation.map(v=>v*Math.PI/180),'ZYX');
     root.userData.template=template;root.userData.mesh=mesh;
+    mesh.userData.actorLighting=createActorLighting(defaults);
+    // Corner trees intersect the authored walls. Their buried origin cannot
+    // receive floor lighting, so permit a bounded local lighting probe only
+    // for this decorative asset, without moving the tree or its collision.
+    if(template.data.source?.toLowerCase()==='tree.act')mesh.userData.actorLighting.floorRecoveryBounds=new Float64Array(6);
+    for(const material of materials)applyActorLighting(material,mesh.userData.actorLighting);
     if(animated){const animator=new ActorAnimator(template.data,geometry);animator.play('idle')||animator.play(template.data.animations[0].name);root.userData.animator=animator;}
+    if(!geometry.boundingBox)geometry.computeBoundingBox();
+    // AdamActor caches its lighting bounds at setup. Breathing or a death
+    // pose must not move the Sun reference or retrigger stationary searches.
+    mesh.userData.actorLighting.bounds=geometry.boundingBox.clone();
     return root;
   }
   async attachGameplay(gameplay) {
     this.gameplay=gameplay;
+    // Read the live controller flag, including restored saves and blocked exits.
+    gameplay.isPlayerInvulnerable=()=>this.player.noClip===true;
     // Route topology uses stationary world geometry. Doors are tested by the
     // movement sweep instead: opening one must not require reloading a save
     // to discover a link rejected while the door was closed.
@@ -233,6 +271,7 @@ export class CastleWorld {
             const stateAnimator=new ActorStateAnimator(actor.userData.animator,obj.stats);
             actor.userData.stateAnimator=stateAnimator;obj.animationDurations={...stateAnimator.durations};
           }
+          obj.projectileOrigins=()=>this.enemyProjectileOrigins(obj,actor);
           // Rest-pose feet are at the actor origin. Use its imported dimensions
           // for body height, with a narrow movement hull so long legs and spears
           // do not prevent crossing the original level's doorways.
@@ -295,6 +334,12 @@ export class CastleWorld {
       actor.updateWorldMatrix(true,true);
       return new THREE.Box3().setFromObject(actor).getCenter(new THREE.Vector3()).toArray();
     };
+    object.effectBounds=position=>{
+      actor.updateWorldMatrix(true,true);
+      const box=new THREE.Box3().setFromObject(actor),center=new THREE.Vector3().fromArray(position);
+      return box.isEmpty()?{min:[0,0,0],max:[0,0,0]}:{min:box.min.sub(center).toArray(),max:box.max.sub(center).toArray()};
+    };
+    object.effectScale=()=>actor.userData.mesh?.scale.toArray()||[1,1,1];
   }
   registerActorCollision(object,actor,overrideFlags={}) {
     const record=this.actorCollisionRecord(object,actor,overrideFlags);
@@ -322,6 +367,7 @@ export class CastleWorld {
     return record;
   }
   syncModels() {
+    this.syncModelStates();
     const host=this.gameplay?.scripts;if(!host)return;
     this.collider.modelTransforms=host.modelTransforms;
     const origin=new THREE.Vector3(),rotation=new THREE.Quaternion(),offset=new THREE.Vector3();
@@ -329,6 +375,43 @@ export class CastleWorld {
       rotation.fromArray(t.rotation);origin.fromArray(t.origin);
       offset.copy(origin).add(new THREE.Vector3(...t.translation)).sub(origin.clone().applyQuaternion(rotation));
       for(const mesh of this.modelMeshes.get(index)||[]){mesh.position.copy(offset);mesh.quaternion.copy(rotation);}
+    }
+  }
+  syncActorLighting(lights=[]) {
+    // Traversal also reaches mounted machine parts and temporary breakup
+    // actors; their INI settings apply just like regular level actors.
+    this.scene.updateMatrixWorld(true);
+    this.actorFloorLighting?.beginFrame();this.actorLightVisibility?.beginFrame();
+    const position=new THREE.Vector3(),bounds=new THREE.Box3();
+    this.scene.traverseVisible(mesh=>{
+      const state=mesh.userData.actorLighting;if(!state)return;
+      mesh.getWorldPosition(position);
+      const root=position.toArray(),lighting=state.settings.lighting||{};
+      if(!mesh.geometry.boundingBox)mesh.geometry.computeBoundingBox();
+      state.bounds??=mesh.geometry.boundingBox.clone();
+      bounds.copy(state.bounds).applyMatrix4(mesh.matrixWorld);
+      const floorBounds=state.floorRecoveryBounds;
+      if(floorBounds){bounds.min.toArray(floorBounds,0);bounds.max.toArray(floorBounds,3);}
+      // Native Sun updates are actor-dirty, not world-dirty. A remote rolling
+      // brush must not re-light every stationary prop in the level each tick.
+      // Moving actors still query the current brush/PVS state immediately.
+      const sun=lighting.useSun!==false&&!lighting.useDefaultSunOnly?this.actorWorldLighting?.sample(root,bounds.max.y-bounds.min.y,
+        (from,to,entity)=>this.actorLightVisibility.visible(from,to,entity),state):null;
+      const ambient=lighting.useAmbient!==false?this.actorFloorLighting?.sample(root,lights,state,floorBounds):null;
+      updateActorLighting(state,root,this.gameplay?.time||0,lights,{sun,ambient});
+      for(const material of Array.isArray(mesh.material)?mesh.material:[mesh.material])applyActorLighting(material,state);
+    });
+  }
+  syncModelStates() {
+    if(!this.gameplay?.modelState)return;
+    // Native brushes can have collision but zero render faces (for example
+    // the rotating cave doorway's hidden lock). Their state still applies.
+    const indices=new Set([...this.physicalModels,...this.modelMeshes.keys()]);
+    for(const index of indices) {
+      if(index===0)continue;
+      const state=this.gameplay.modelState(index);if(!state)continue;
+      for(const mesh of this.modelMeshes.get(index)||[])mesh.visible=state.visible;
+      if(state.solid)this.collider.disabledModels.delete(index);else this.collider.disabledModels.add(index);
     }
   }
   setModel(index,visible) {
@@ -349,6 +432,40 @@ export class CastleWorld {
       actor.position.fromArray(game.objectPosition(object));
       actor.quaternion.copy(actorOrientation(object,actor.userData.template?.data.settings||{},game.scripts?.modelTransforms.get(object.modelIndex)));
       this.registerActorCollision(object,actor);
+    }
+  }
+  enemyProjectileOrigins(object,actor) {
+    // Gameplay releases ammunition before the end-of-frame actor update.
+    // Sample the current attack clock here, including the first frame after
+    // loading, so the shot cannot inherit the previous frame's hand/head pose.
+    actor.position.fromArray(this.gameplay.objectPosition(object));
+    if(object.yaw!==undefined)actor.rotation.y=object.yaw;
+    if(object.rotation)actor.rotation.fromArray(object.rotation);
+    const states=actor.userData.stateAnimator,animator=actor.userData.animator;
+    if(states&&animator) {
+      states.update(object,0,false,this.gameplay.time);
+      if(object.animationState==='attack'&&Number.isFinite(object.animationUntil)&&animator.clip) {
+        animator.time=Math.max(0,animator.clip.duration-(object.animationUntil-this.gameplay.time)*animator.timeScale);
+        animator.update(0);
+        actor.userData.projectilePoseTime=this.gameplay.time;
+      }
+    }
+    const machine=this.bossMachines.get(object.id);
+    if(machine)this.syncBossMachine(object,machine,false);
+    return posedEnemyProjectileOrigins(object,actor,machine);
+  }
+  syncBossMachine(object,machine,collision=true) {
+    machine.root.position.fromArray(object.boss.home);machine.root.rotation.y=object.yaw||0;
+    machine.root.visible=object.visible!==false&&object.health>0;
+    const animator=machine.top?.userData.animator;
+    if(animator) {
+      const restart=machine.serial!==object.boss.machineSerial;
+      animator.play(object.boss.machineMotion,object.boss.machineMotion==='still',restart);
+      machine.serial=object.boss.machineSerial;animator.time=object.boss.machineElapsed;animator.update(0);
+    }
+    if(collision) {
+      for(const part of machine.shields)this.registerActorCollision(object,part,{blocksPlayer:true,canBeShot:true,blocksLOS:false});
+      if(machine.top)this.registerActorCollision(object,machine.top,{blocksPlayer:true,canBeShot:true,blocksLOS:false});
     }
   }
   syncActors(dt) {
@@ -379,7 +496,9 @@ export class CastleWorld {
       if(actor.userData.stateAnimator) {
         // Advance state clocks even off-screen so an attack or death cannot
         // resume from its first frame when the camera returns to the actor.
-        actor.userData.stateAnimator.update(obj,dt,frozen,game.time);
+        const poseWasSampled=actor.userData.projectilePoseTime===game.time;
+        actor.userData.stateAnimator.update(obj,poseWasSampled?0:dt,frozen&&!(corpse&&game.scripts?.cutscene),game.time);
+        delete actor.userData.projectilePoseTime;
       } else if(actor.userData.animator) {
         // Advance off-screen clocks too. Rendering may be culled, but a
         // chandelier's or cutscene double's pose must not depend on the camera.
@@ -390,24 +509,12 @@ export class CastleWorld {
       if(obj.enemyType==='spider')this.syncSpiderWeb(obj,actor);
       if(obj.kind==='actor'&&actor.userData.collisionRecord)this.registerActorCollision(obj,actor);
       const machine=this.bossMachines.get(obj.id);
-      if(machine) {
-        machine.root.position.fromArray(obj.boss.home);machine.root.rotation.y=obj.yaw||0;
-        machine.root.visible=obj.visible!==false&&obj.health>0;
-        for(const part of machine.shields)this.registerActorCollision(obj,part,{blocksPlayer:true,canBeShot:true,blocksLOS:false});
-        const animator=machine.top?.userData.animator;
-        if(animator) {
-          const restart=machine.serial!==obj.boss.machineSerial;
-          animator.play(obj.boss.machineMotion,obj.boss.machineMotion==='still',restart);
-          machine.serial=obj.boss.machineSerial;animator.time=obj.boss.machineElapsed;
-          animator.update(0);
-        }
-        if(machine.top)this.registerActorCollision(obj,machine.top,{blocksPlayer:true,canBeShot:true,blocksLOS:false});
-      }
+      if(machine)this.syncBossMachine(obj,machine);
     }
     this.updateEnemyDebris(frozen?0:dt);
   }
   syncSpiderWeb(object,actor) {
-    const state=object.ambush,visible=actor.visible&&object.health>0&&state?.phase==='descending'&&state.anchor;
+    const state=object.ambush,visible=actor.visible&&object.health>0&&['descending','ascending'].includes(state?.phase)&&state.anchor;
     let line=this.spiderWebs.get(object.id);
     if(!visible){if(line)line.visible=false;return;}
     if(!line){
@@ -473,6 +580,7 @@ export class CastleWorld {
   }
   syncProjectiles() {
     const active=new Set();this.projectileMeshes??=new Map();
+    this.camera.updateMatrixWorld();
     for(const projectile of this.gameplay?.projectiles||[]) {
       active.add(projectile.id);let mesh=this.projectileMeshes.get(projectile.id);
       if(!mesh) {
@@ -495,8 +603,14 @@ export class CastleWorld {
       }
       const style=mesh.userData.style;
       const size=style?.size??Math.max(2,projectile.radius||3)*(mesh.isSprite?4:1);
-      mesh.position.fromArray(projectile.position);mesh.scale.set(style?.width??size,style?.height??size,size);
-      if(mesh.isSprite)mesh.material.map=style.textures[Math.floor((projectile.age||0)*style.framesPerSecond)%style.textures.length];
+      const scale=style?.nativeScale&&Number.isFinite(projectile.spriteScale)?projectile.spriteScale/style.nativeScale:1;
+      mesh.position.fromArray(projectile.position);mesh.scale.set((style?.width??size)*scale,(style?.height??size)*scale,size);
+      if(mesh.isSprite) {
+        const depth=-mesh.position.clone().applyMatrix4(this.camera.matrixWorldInverse).z;
+        const visibility=projectileVisibilityScale(Math.max(mesh.scale.x,mesh.scale.y),depth,this.camera.projectionMatrix.elements[5]);
+        mesh.scale.x*=visibility;mesh.scale.y*=visibility;
+      }
+      if(mesh.isSprite)mesh.material.map=style.textures[projectileAnimationFrame(projectile,style.textures.length)];
     }
     for(const [id,mesh] of this.projectileMeshes)if(!active.has(id)){
       this.scene.remove(mesh);this.projectileMeshes.delete(id);
@@ -510,15 +624,19 @@ export class CastleWorld {
       if(!mesh) {
         const geometry=this.track(new THREE.BufferGeometry());
         geometry.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(12),3));
-        geometry.setAttribute('uv',new THREE.Float32BufferAttribute([0,0,0,1,1,0,1,1],2));geometry.setIndex([0,1,2,2,1,3]);
+        geometry.setAttribute('uv',new THREE.Float32BufferAttribute([0,1,0,0,1,1,1,0],2));geometry.setIndex([0,1,2,2,1,3]);
         const material=this.track(new THREE.MeshBasicMaterial({map:this.trailTexture,color:new THREE.Color(...segment.color.map(v=>v/255)),transparent:true,depthWrite:false,side:THREE.DoubleSide}));
         mesh=new THREE.Mesh(geometry,material);mesh.frustumCulled=false;this.scene.add(mesh);this.hazardMeshes.set(segment.id,mesh);
       }
       const a=new THREE.Vector3(...segment.from),b=new THREE.Vector3(...segment.to),direction=b.clone().sub(a);
-      const view=this.camera.position.clone().sub(a.clone().add(b).multiplyScalar(.5));
+      // Native ribbon cross product uses camera direction, not a per-segment
+      // camera-position vector (0x58785d and 0x587938).
+      const view=this.camera.getWorldDirection(new THREE.Vector3());
       const side=new THREE.Vector3().crossVectors(direction,view);
       if(side.lengthSq()<1e-10)side.setFromMatrixColumn(this.camera.matrixWorld,0);
-      side.normalize().multiplyScalar(segment.width/2);
+      const depth=-a.clone().add(b).multiplyScalar(.5).applyMatrix4(this.camera.matrixWorldInverse).z;
+      const visibility=projectileVisibilityScale(segment.width,depth,this.camera.projectionMatrix.elements[5],'trail');
+      side.normalize().multiplyScalar(segment.width*visibility/2);
       const vertices=[a.clone().sub(side),a.clone().add(side),b.clone().sub(side),b.clone().add(side)];
       const position=mesh.geometry.attributes.position;vertices.forEach((v,i)=>position.setXYZ(i,v.x,v.y,v.z));position.needsUpdate=true;
       mesh.material.opacity=trailOpacity(segment);
@@ -534,6 +652,18 @@ export class CastleWorld {
     this.redcat.visible=(this.settings.camera==='third'||!!host?.camera)&&host?.playerVisible!==false;
     this.redcat.position.fromArray(this.player.position);this.redcat.rotation.y=this.yaw+Math.PI;
     if(!animator)return;
+    if(host?.cutscene) {
+      // Scripted conversations leave RedCat breathing in his ordinary idle
+      // pose, even when entered during a jump or a pending shot.
+      this.redcat.userData.motionState={};
+      animator.timeScale=1;animator.play('idle',true);animator.update(dt);return;
+    }
+    const reaction=playerReactionMotion(game?.playerReaction);
+    if(reaction) {
+      this.redcat.userData.motionState={};
+      animator.timeScale=reaction.speed;animator.play(reaction.name,false);
+      animator.time=reaction.time;animator.update(0);return;
+    }
     let gap=0;
     if(!this.player.grounded&&!this.player.noClip) {
       const origin=this.player.position,down=[origin[0],origin[1]-10000,origin[2]];
@@ -542,7 +672,10 @@ export class CastleWorld {
     }
     const motion=playerMotion(this.redcat.userData.motionState||={},this.player,input,host?.cutscene?0:dt,gap);
     const shooting=game?.playerAttackUntil>game?.time;
-    if(shooting) {
+    if(game?.playerCharge) {
+      animator.timeScale=0;animator.play('shoot1',false);
+      animator.time=PLAYER_SHOOT_MOTION.duration*PLAYER_SUPER_CHARGE.holdFraction;animator.update(0);
+    } else if(shooting) {
       const restart=this.redcat.userData.attackSerial!==game.playerAttackSerial;
       this.redcat.userData.attackSerial=game.playerAttackSerial;
       animator.timeScale=1.9;animator.play('shoot1',false,restart);
@@ -597,24 +730,33 @@ export class CastleWorld {
     this.elapsed+=dt;
     const host=this.gameplay?.scripts;
     const before=[...this.player.position];
+    this.player.platformVelocity=[0,0,0];
     if(host) {
       this.collider.modelTransforms=host.modelTransforms;
       host.beforeMotionAdvance=(object,motion,from,to)=>{
         const sample=time=>({...motion.sample(time),origin:motion.motion.origin});
-        return moveSolidPlayer(this.collider,this.player,object.modelIndex,sample(from),sample(to),{sample,from,to});
+        return moveSolidPlayer(this.collider,this.player,object.modelIndex,sample(from),sample(to),{sample,from,to,
+          onCarry:delta=>{if(dt>0)for(let i=0;i<3;i++)this.player.platformVelocity[i]+=delta[i]/dt;}});
       };
       host.update(dt);
     }
     this.syncModels();
     this.syncMountedActorCollisions();
     this.cameraControl.sync(this);
-    if(host?.cutscene)input={forward:0,right:0,turn:0,jump:false,attack:false,use:false};
+    // Hurt is a presentation/weapon reaction, not a freeze of the physics
+    // controller. Keep falling, riding platforms and escaping water possible.
+    const playerFrozen=host?.cutscene||this.gameplay?.completed||this.gameplay?.playerReaction?.phase==='respawn'||this.gameplay?.state.health<=0;
+    if(playerFrozen)input={forward:0,right:0,turn:0,jump:false,attack:false,use:false};
     if(input.turn&&!this.targeting.locked)this.yaw+=input.turn*dt*1.7;
     this.updateTargeting(dt,input);
-    const jumping=!host?.cutscene&&!this.player.noClip&&input.jump&&this.player.grounded;
-    this.player.environmentVelocity=!host?.cutscene&&this.gameplay?.state.health>0?this.gameplay.environmentVelocity(this.player.position):[0,0,0];
-    if(!host?.cutscene)this.player.update(dt,input,this.yaw,this.pitch);
-    if(jumping)this.gameplay?.emit('jump',{position:[...this.player.position]});
+    this.player.skill=this.gameplay?.state.skill||0;
+    this.player.environmentVelocity=!playerFrozen&&this.gameplay?.state.health>0?this.gameplay.environmentVelocity(this.player.position):[0,0,0];
+    const stepStart=[...this.player.position];
+    if(!playerFrozen)this.player.update(dt,input,this.yaw,this.pitch);
+    // Scripted support carrying happened earlier in the frame. Only RedCat's
+    // own horizontal step participates in footstep contact feedback.
+    this.player.stepDisplacement=playerFrozen?0:Math.hypot(this.player.position[0]-stepStart[0],this.player.position[2]-stepStart[2]);
+    if(!playerFrozen&&this.player.didJump)this.gameplay?.emit('jump',{position:[...this.player.position],kind:this.player.didJump});
     const p=this.player.position;
     if(!this.player.noClip&&p[1]<this.level.bounds.min[1]-350) {this.player.position=[...this.player.lastSafe];this.player.position[1]+=4;this.player.resetVelocity();this.gameplay?.damage?.(2);}
     if(this.gameplay){
@@ -638,14 +780,10 @@ export class CastleWorld {
         traceEnemy:(a,b,mins,maxs)=>this.collider.trace(a,b,mins,maxs,this.physicalModels),
         traceProjectile:(a,b,radius=0,projectile)=>this.collider.trace(a,b,[-radius,-radius,-radius],[radius,radius,radius],this.physicalModels,{mask:'canBeShot',ignoreId:projectile?.sourceId}),
         lineOfSight:(a,b)=>this.collider.trace(a,b,[0,0,0],[0,0,0],this.physicalModels,'blocksLOS').fraction>0.98});
-      this.syncActors(dt);this.syncProjectiles();
-      if(this.gameplay.modelState)for(const index of this.modelMeshes.keys()){
-        if(index===0)continue;const state=this.gameplay.modelState(index);if(!state)continue;
-        this.modelMeshes.get(index).forEach(mesh=>mesh.visible=state.visible);
-        if(state.solid)this.collider.disabledModels.delete(index);else this.collider.disabledModels.add(index);
-      }
+      this.syncActors(dt);
+      this.syncModelStates();
     }
-    this.syncPlayer(dt,input);this.updateCamera(dt);this.syncTargetMarker();this.syncHazards();this.effects?.update(dt);return p;
+    this.syncPlayer(dt,input);this.updateCamera(dt);this.syncProjectiles();this.syncTargetMarker();this.syncHazards();this.effects?.update(dt);return p;
   }
   updateCamera(dt,snap=false) {
     const scripted=this.cameraControl.sync(this);

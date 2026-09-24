@@ -28,22 +28,30 @@ export function hudCommands(manifest,state,totalPotions,enemy,width=640,height=4
   if(enemy&&(enemy.kind===undefined||enemy.kind==='enemy')&&enemy.health>0){sprite('EnemyPortrait',enemyPortrait(enemy));hearts('EnemyHealth',enemy.health,enemy.maxHealth||enemy.health);}
   return out;
 }
+
+// Fit the original HUD in both dimensions: height-only scaling overflows
+// portrait phones. Touch controls reserve space below the enemy health meter.
+export function hudViewport(manifest,width,height,viewWidth,viewHeight,{bottomInset=0,pixelRatio=1}={}) {
+  const fit=Math.min(width/viewWidth,height/viewHeight),drawWidth=viewWidth*fit,drawHeight=viewHeight*fit;
+  const scale=Math.min(drawHeight/manifest.height,drawWidth/manifest.width);
+  const inset=Math.min(Math.max(0,bottomInset*pixelRatio),Math.max(0,drawHeight-scale*150));
+  return {scale,x:(width-drawWidth)/2,y:(height-drawHeight)/2,logicalWidth:drawWidth/scale,logicalHeight:(drawHeight-inset)/scale};
+}
 export class OriginalHud {
   constructor(canvas){this.canvas=canvas;this.context=canvas.getContext('2d');this.ready=this.load();}
   async load(){
     const response=await fetch('assets/hud/manifest.json');if(!response.ok)throw new Error('Originele HUD ontbreekt. Voer tools/import_hud.py uit.');
     this.manifest=await response.json();this.atlas=new Image();this.atlas.src='assets/hud/'+this.manifest.atlas;await this.atlas.decode();
   }
-  render(state,totalPotions,enemy,viewWidth,viewHeight){
+  render(state,totalPotions,enemy,viewWidth,viewHeight,{bottomInset=0}={}){
     if(!this.atlas?.complete||!this.manifest)return;
     const canvas=this.canvas,rect=canvas.getBoundingClientRect(),pixelRatio=window.devicePixelRatio||1;
     const width=Math.max(1,Math.round(rect.width*pixelRatio)),height=Math.max(1,Math.round(rect.height*pixelRatio));
     if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}
     const ctx=this.context;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,width,height);
     // The game canvas is fitted without stretching, including fixed 4:3 modes.
-    const fit=Math.min(width/viewWidth,height/viewHeight),drawWidth=viewWidth*fit,drawHeight=viewHeight*fit;
-    const scale=drawHeight/this.manifest.height,logicalWidth=drawWidth/scale;
-    ctx.setTransform(scale,0,0,scale,(width-drawWidth)/2,(height-drawHeight)/2);ctx.imageSmoothingEnabled=true;
-    for(const c of hudCommands(this.manifest,state,totalPotions,enemy,logicalWidth,480))ctx.drawImage(this.atlas,c.sx,c.sy,c.w,c.h,c.x,c.y,c.w,c.h);
+    const {scale,x,y,logicalWidth,logicalHeight}=hudViewport(this.manifest,width,height,viewWidth,viewHeight,{bottomInset,pixelRatio});
+    ctx.setTransform(scale,0,0,scale,x,y);ctx.imageSmoothingEnabled=true;
+    for(const c of hudCommands(this.manifest,state,totalPotions,enemy,logicalWidth,logicalHeight))ctx.drawImage(this.atlas,c.sx,c.sy,c.w,c.h,c.x,c.y,c.w,c.h);
   }
 }

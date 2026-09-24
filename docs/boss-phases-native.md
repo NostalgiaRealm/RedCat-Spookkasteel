@@ -15,7 +15,7 @@ FreezeEnemies suspends the machine. Terminal hits pass through the existing
 `destroy` and Davi-Script hooks exactly once.
 
 - The original `StandingEnemy` enum is **4 = Jester Max** in the castle and
-  **5 = Dungeon Max** in the caves. This was reversed in 0.2.5, which gave the
+  **5 = Dungeon Max** in the caves. This was reversed in earlier saves, which gave the
   cave battle a jester body and omitted its vehicle. Existing saves migrate
   the incompatible phase/pose/ammunition while preserving enabled state,
   defeated state, damage proportion and script progress.
@@ -101,8 +101,10 @@ refined against the rendered mesh so invisible hull corners cannot be hit.
 See [Enemy ambushes and flight](enemy-ambush-flight.md) for the updated behavior
 and focused regressions.
 The Witch uses the existing reconstructed graph with full body-clearance
-checks after her explicitly authored cauldron takeoff, so route choices may differ. Projectile-specific homing, bounce and
-lifetime rules are outside this phase implementation.
+checks after her explicitly authored cauldron takeoff, so route choices may differ.
+The later [projectile flight recovery](native-enemy-projectile-flight.md) implements
+Witch homing and native lifetime variation in the shared projectile module.
+Subclass impact/bounce behavior and exact collision fidelity still need research.
 
 `tests/boss-phases.test.mjs` tests complete cycles, original difficulty values,
 freeze/save behavior, animation restarts, hidden collision rejection, and

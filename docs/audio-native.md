@@ -129,6 +129,33 @@ Native BSP visibility/collision checks in `0x5c7ba0` can also suppress a sound,
 and a blocked sound path multiplies effective distance by 1.5 at `0x5c7c86`.
 Those occlusion/visibility checks are separate from the basic distance curve.
 
+## Recovered stereo balance and BSP sound visibility
+
+The listener transform is inverted at `0x5c7bcb`, and the source is transformed
+to its local coordinates at `0x5c7be2`. `0x5c7cbf–0x5c7cd2` computes the local
+X/Z azimuth. The helper `0x5c7d80` returns `sin(angle) * 0.1`, using the float
+0.1 at `0x64d0c8`. The DirectSound driver multiplies this by 10000 at
+`0x5c8dfe–0x5c8e12` (float constant `0x64dc6c`) and calls buffer `SetPan`.
+Therefore an entirely right-hand source leaves the right channel unchanged
+and lowers the left channel by 1000 centibels / 10 dB: amplitude
+`10 ** (-1000 / 2000)`, approximately 0.31623. Left-hand sources mirror that
+balance. This is not an equal-power crossfade or hard left/right panner.
+
+`0x5b9be0` traverses world-model BSP nodes to locate each point's leaf. Sound
+calls `0x5b9c40` with those leaves at `0x5c7c2d`. The helper reads their cluster
+indices at leaf offset `+0x2c`; either -1 cluster rejects visibility. An absent
+PVS row (-1 offset) returns true. Otherwise it checks the source cluster bit
+in the listener cluster's PVS row (`0x5b9c92–0x5b9cb0`), followed by connected
+areas using leaf offset `+0x30` (`0x5b9cb2–0x5b9cc6`). Failure zeros sound
+volume at `0x5c7c39–0x5c7c3d`.
+
+If potentially audible, `0x5c7c5c–0x5c7c7a` traces listener to source with
+contents mask `0x43`, collision flags 2 (BSP models), and no actor callback.
+A hit multiplies distance by 1.5 at `0x5c7c86`. It does not introduce an
+unrecovered low-pass filter, physical sound diffraction, or arbitrary extra
+gain reduction. The port now uses these recovered rules with its existing
+imported visibility data/current model collision transforms.
+
 ## Forest entity evidence and remaining uncertainties
 
 `data/levels/lvl00a/level.json` contains 17 initially active looping sounds,
@@ -140,6 +167,8 @@ The original binaries contain an invalid min/max replay-delay assertion in
 `CAdamEffectSound::CreateFromEntity` at `0x58530e`. Exact scheduling of nonzero
 delay bounds was not fully traced. Nor was a complete original-versus-port
 audio capture comparison performed. The evidence above establishes gains,
-conversion, current profile application, basic distance curve and camera
-listener; it does not establish perfect parity for occlusion, sound onset
-scheduling, stereo panning, or all menu/voice paths.
+conversion, current profile application, distance curve, stereo balance, BSP
+visibility/obstruction and camera listener. The port retains deliberate local
+ambience/fairy mix changes, and uses a bounded obstruction refresh interval.
+This does not establish sample-exact onset/replay scheduling, every sound's
+subclass-specific fade envelope, or all menu/voice paths.

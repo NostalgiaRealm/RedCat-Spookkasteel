@@ -1,11 +1,16 @@
 import * as THREE from 'three';
+import { projectileLight } from './projectile-lighting.js';
 import { transformMotionPoint } from './motions.js';
-import { teleporterGeometry, TELEPORT_EFFECT_SECONDS } from './teleporter-effects.js';
+import { NativeTeleporterEffect, TELEPORT_EFFECT_SECONDS, TELEPORT_FLIGHT_SECONDS } from './teleporter-effects.js';
 import { beamEndpoints } from './beam-contacts.js';
 import { DestructibleEffects } from './destructible-effects.js';
 import { NativeFairyEffect, FAIRY_TEXTURES } from './fairy-effects.js';
 import { EnemyDeathEffects } from './enemy-death-effects.js';
+import { EnemyCombatEffects } from './enemy-combat-effects.js';
 import { DecalEffects, decalTextureKey } from './decal-effects.js';
+import { nativeCoronaRadius, saveBeaconUv, CoronaVisibilityCache } from './presentation-native.js';
+import { impactLight } from './projectile-impacts.js';
+import { patchWorldLightShader } from './world-lighting-material.js';
 
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
 const number=(e,key,fallback=0)=>Number.isFinite(Number(e[key]))&&e[key]!==''?Number(e[key]):fallback;
@@ -43,7 +48,7 @@ export function saveBeaconGeometry(origin,age,ceilingY=origin[1]+200) {
     const angle=(i+1)*Math.PI/3;
     const start=i<6?[origin[0]+Math.sin(angle)*11,origin[1]-23.5,origin[2]+Math.cos(angle)*11]:crystal;
     const target=i<6?crystal:[origin[0],ceilingY,origin[2]];
-    rays.push({start,end:start.map((v,j)=>mix(v,target[j],progress)),width:5,color:[1,1,1],opacity:150/255});
+    rays.push({start,end:start.map((v,j)=>mix(v,target[j],progress)),width:5,color:[1,1,1],opacity:150/255,...saveBeaconUv(age,i)});
   }
   const flashAge=age-4;
   const glowRadius=flashAge<0?0:flashAge<=.2?mix(.8,50,flashAge/.2):25;
@@ -75,7 +80,7 @@ export function sampleParticle(entity,particle,time) {
 
 // All flames with the same artwork share one draw call; no per-particle lights.
 class BillboardBatch {
-  constructor(world,map,additive=false,capacity=8192) {
+  constructor(world,map,additive=false,capacity=8192,depthTest=true) {
     this.world=world;this.capacity=capacity;this.count=0;
     const source=new THREE.PlaneGeometry(1,1),geometry=world.track(new THREE.InstancedBufferGeometry());
     geometry.index=source.index;geometry.attributes.position=source.attributes.position;geometry.attributes.uv=source.attributes.uv;
@@ -86,7 +91,7 @@ class BillboardBatch {
     this.diagonalScales=new THREE.InstancedBufferAttribute(new Float32Array(capacity*2),2).setUsage(THREE.DynamicDrawUsage);
     geometry.setAttribute('effectDiagonal',this.diagonalScales);geometry.setAttribute('effectRotation',this.rotations);
     geometry.setAttribute('effectPosition',this.positions);geometry.setAttribute('effectSize',this.sizes);geometry.setAttribute('effectColor',this.colors);geometry.instanceCount=0;
-    const material=world.track(new THREE.ShaderMaterial({uniforms:{map:{value:map}},transparent:true,depthWrite:false,blending:additive?THREE.AdditiveBlending:THREE.NormalBlending,
+    const material=world.track(new THREE.ShaderMaterial({uniforms:{map:{value:map}},transparent:true,depthWrite:false,depthTest,blending:additive?THREE.AdditiveBlending:THREE.NormalBlending,
       vertexShader:`attribute vec3 effectPosition;attribute vec2 effectSize;attribute vec4 effectColor;attribute float effectRotation;attribute vec2 effectDiagonal;varying vec2 effectUv;varying vec4 effectTint;void main(){effectUv=uv;effectTint=effectColor;vec4 p=modelViewMatrix*vec4(effectPosition,1.);float c=cos(effectRotation),s=sin(effectRotation);p.xy+=mat2(c,s,-s,c)*(position.xy*effectSize*(position.x*position.y<0.?effectDiagonal.x:effectDiagonal.y));gl_Position=projectionMatrix*p;}`,
       fragmentShader:`uniform sampler2D map;varying vec2 effectUv;varying vec4 effectTint;void main(){gl_FragColor=texture2D(map,effectUv)*effectTint;if(gl_FragColor.a<.003)discard;
 #include <tonemapping_fragment>
@@ -105,7 +110,8 @@ class BeamBatch {
     this.positions=new THREE.BufferAttribute(new Float32Array(capacity*18),3).setUsage(THREE.DynamicDrawUsage);
     this.colors=new THREE.BufferAttribute(new Float32Array(capacity*24),4).setUsage(THREE.DynamicDrawUsage);
     const uv=new Float32Array(capacity*12);for(let i=0;i<capacity;i++)uv.set([0,0,1,0,0,1,1,0,1,1,0,1],i*12);
-    geometry.setAttribute('position',this.positions);geometry.setAttribute('color',this.colors);geometry.setAttribute('uv',new THREE.BufferAttribute(uv,2));geometry.setDrawRange(0,0);
+    this.uvs=new THREE.BufferAttribute(uv,2).setUsage(THREE.DynamicDrawUsage);
+    geometry.setAttribute('position',this.positions);geometry.setAttribute('color',this.colors);geometry.setAttribute('uv',this.uvs);geometry.setDrawRange(0,0);
     this.mesh=new THREE.Mesh(geometry,world.track(new THREE.MeshBasicMaterial({map,vertexColors:true,transparent:true,depthWrite:false,side:THREE.DoubleSide})));
     this.mesh.frustumCulled=false;this.mesh.renderOrder=1;world.scene.add(this.mesh);
   }
@@ -114,18 +120,18 @@ class BeamBatch {
     const start=new THREE.Vector3(...ray.start),end=new THREE.Vector3(...ray.end),side=new THREE.Vector3().crossVectors(end.clone().sub(start),camera.clone().sub(start));
     if(side.lengthSq()<1e-10)side.set(1,0,0);side.normalize().multiplyScalar(ray.width/2);
     const points=[start.clone().sub(side),start.clone().add(side),end.clone().sub(side),start.clone().add(side),end.clone().add(side),end.clone().sub(side)];
-    this.addPoints(points,ray.color,ray.opacity);
+    this.addPoints(points,ray.color,ray.opacity,ray.uvStart,ray.uvEnd);
   }
   addDisc(position,radius,color,opacity) {
     const [x,y,z]=position,points=[[-1,-1],[1,-1],[-1,1],[1,-1],[1,1],[-1,1]].map(([a,b])=>new THREE.Vector3(x+a*radius,y,z+b*radius));
     this.addPoints(points,color,opacity);
   }
-  addPoints(points,color,opacity) {
+  addPoints(points,color,opacity,uvStart=0,uvEnd=1) {
     if(this.count>=this.capacity)return;
-    for(let i=0;i<6;i++){const index=this.count*6+i;this.positions.setXYZ(index,...points[i].toArray());this.colors.setXYZW(index,...color,opacity);}
+    for(let i=0;i<6;i++){const index=this.count*6+i;this.positions.setXYZ(index,...points[i].toArray());this.colors.setXYZW(index,...color,opacity);this.uvs.setXY(index,[0,1,0,1,1,0][i],[uvStart,uvStart,uvEnd,uvStart,uvEnd,uvEnd][i]);}
     this.count++;
   }
-  flush(){this.mesh.geometry.setDrawRange(0,this.count*6);this.mesh.visible=this.count>0;this.positions.needsUpdate=this.colors.needsUpdate=true;}
+  flush(){this.mesh.geometry.setDrawRange(0,this.count*6);this.mesh.visible=this.count>0;this.positions.needsUpdate=this.colors.needsUpdate=this.uvs.needsUpdate=true;}
 }
 
 export class WorldEffects {
@@ -134,6 +140,7 @@ export class WorldEffects {
     const manifest=await response.json(),effects=new WorldEffects(world,gameplay,manifest);
     const textures=await Promise.all(Object.entries(manifest.textures).map(async([key,entry])=>{
       const map=await world.texture('assets/effects/'+entry.file);map.flipY=true;map.wrapS=map.wrapT=THREE.ClampToEdgeWrapping;
+      if(key===ENERGY)map.wrapT=THREE.RepeatWrapping;
       return [key,map];
     }));
     const decals=new Set(gameplay.objects.filter(o=>o.entity.classname==='EffectDecalEntity').map(o=>decalTextureKey(o.entity)));
@@ -141,58 +148,81 @@ export class WorldEffects {
       if(decals.has(key))continue;
       if([BEAM,ENERGY,BLAST,FLEURI].includes(key))effects.beamBatches.set(key,new BeamBatch(world,map));
       if(![BEAM,ENERGY,BLAST].includes(key))effects.batches.set(key,new BillboardBatch(world,map,key===CORONA||key===SPARK));
+      // Native coronas trace visibility and fade their radius; they bypass
+      // the depth test so an occluded halo can finish fading. Beacons retain
+      // their separate depth-tested CORONA batch.
+      if(key===CORONA)effects.coronaBatch=new BillboardBatch(world,map,true,512,false);
     }
     // CFairy draws L7 twice, then L8, then its white core. Keeping manifest
     // alphabetical order covered the white centre with the coloured rays.
     [FAIRY_TEXTURES.rays,FAIRY_TEXTURES.halo,FAIRY_TEXTURES.core,FAIRY_TEXTURES.star].forEach((key,i)=>{const batch=effects.batches.get(key);if(batch)batch.mesh.renderOrder=3+i;});
     effects.destructibles=await DestructibleEffects.create(world,gameplay);
     effects.enemyDeaths=new EnemyDeathEffects(world,gameplay);
+    effects.enemyCombat=new EnemyCombatEffects(world,gameplay);
     effects.decals=new DecalEffects(world,gameplay,new Map(textures));
     effects.attachLights();effects.update(0);return effects;
   }
   constructor(world,gameplay,manifest) {
     this.world=world;this.gameplay=gameplay;this.manifest=manifest;this.entries=new Map();this.batches=new Map();this.beamBatches=new Map();this.beams=[];this.lights=[];
-    for(const object of gameplay.objects)if(EFFECT_CLASSES.has(object.entity.classname))this.entries.set(object.id,{object,active:false,age:Math.max(0,object.effectAge||0),particles:[],nextSpawn:0,serial:0,opacity:0});
+    this.coronaVisibility=new CoronaVisibilityCache();this.cameraForward=new THREE.Vector3();
+    for(const object of gameplay.objects)if(EFFECT_CLASSES.has(object.entity.classname)) {
+      const state={object,active:false,age:Math.max(0,object.effectAge||0),particles:[],nextSpawn:0,serial:0,opacity:0};
+      if(object.entity.classname==='Fairy') {
+        state.fairy=NativeFairyEffect.restore(object.fairyState);
+        if(state.fairy){state.active=state.fairy.active;state.age=state.fairy.age;state.resumeFairyAudio=state.active;}
+        object.fairySnapshot=()=>state.fairy?.snapshot();
+      }
+      this.entries.set(object.id,state);
+    }
   }
   position(object) {const pose=this.gameplay.scripts?.modelTransforms.get(object.modelIndex);return pose?transformMotionPoint(object.position,pose.origin,pose):object.position;}
   endpoint(name,fallback) {const object=this.gameplay.find(name)[0];return object?this.position(object):fallback;}
   attachLights() {
     // Fixed slots avoid shader recompiles as Davi-Script switches lamps on/off.
     this.lightPositions=Array.from({length:8},()=>new THREE.Vector3());this.lightColors=Array.from({length:8},()=>new THREE.Color(0));this.lightRadii=new Float32Array(8);
+    const atlas=this.world.level?.mesh.lightmap;
+    this.lightCount={value:0};this.lightUniforms={effectLightPosition:{value:this.lightPositions},effectLightColor:{value:this.lightColors},
+      effectLightRadius:{value:this.lightRadii},effectLightCount:this.lightCount,effectAtlasSize:{value:new THREE.Vector2(atlas?.width||1,atlas?.height||1)}};
     this.pointLights=Array.from({length:8},()=>{const light=new THREE.PointLight(0,0,1,1);this.world.scene.add(light);return light;});
     this.patchedMaterials=[];
     for(const meshes of this.world.modelMeshes?.values()||[])for(const mesh of meshes) {
-      const material=mesh.material;if(!material?.isMeshBasicMaterial||this.patchedMaterials.some(p=>p.material===material))continue;
+      const material=mesh.material;if(!material?.isMeshBasicMaterial||!material.lightMap||!mesh.geometry.attributes.nativeLightU||this.patchedMaterials.some(p=>p.material===material))continue;
       const previous=material.onBeforeCompile,cacheKey=material.customProgramCacheKey;
       this.patchedMaterials.push({material,previous,cacheKey});
       material.onBeforeCompile=(shader,renderer)=>{
         previous.call(material,shader,renderer);
-        Object.assign(shader.uniforms,{effectLightPosition:{value:this.lightPositions},effectLightColor:{value:this.lightColors},effectLightRadius:{value:this.lightRadii}});
-        shader.vertexShader='varying vec3 effectWorldPosition;\n'+shader.vertexShader;
-        shader.vertexShader=shader.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\neffectWorldPosition=(modelMatrix*vec4(transformed,1.)).xyz;');
-        shader.fragmentShader='varying vec3 effectWorldPosition;uniform vec3 effectLightPosition[8];uniform vec3 effectLightColor[8];uniform float effectLightRadius[8];\n'+shader.fragmentShader;
-        shader.fragmentShader=shader.fragmentShader.replace('#include <opaque_fragment>',`vec3 effectLight=vec3(0.);for(int i=0;i<8;i++){float radius=effectLightRadius[i];float fade=max(0.,1.-distance(effectWorldPosition,effectLightPosition[i])/max(radius,.001));effectLight+=effectLightColor[i]*fade;}outgoingLight+=diffuseColor.rgb*effectLight;\n#include <opaque_fragment>`);
+        patchWorldLightShader(shader,this.lightUniforms);
       };
-      material.customProgramCacheKey=()=>cacheKey.call(material)+'-original-dynamic-lights-v1';material.needsUpdate=true;
+      material.customProgramCacheKey=()=>cacheKey.call(material)+'-original-bsp-lightmaps-v2';material.needsUpdate=true;
     }
   }
   update(dt) {
     dt=Math.max(0,Math.min(.25,dt));this.beams=[];this.lights=[];
     for(const batch of [...this.batches.values(),...this.beamBatches.values()])batch.count=0;
+    if(this.coronaBatch)this.coronaBatch.count=0;
+    const eye=this.world.camera.position.toArray(),direction=(this.world.camera.getWorldDirection?.(this.cameraForward)||this.cameraForward.set(0,0,-1)).toArray(),coronas=[];
+    for(const state of this.entries.values())if(state.object.entity.classname==='EffectCoronaEntity') {
+      const {object}=state,origin=this.position(object);
+      coronas.push({id:object.id,origin,enabled:object.enabled!==false&&object.visible!==false,
+        inFront:origin.reduce((sum,value,i)=>sum+(value-eye[i])*direction[i],0)>=0});
+    }
+    this.coronaVisibility.update(dt,coronas,candidate=>
+      this.world.collider.trace(eye,candidate.origin,[0,0,0],[0,0,0],this.world.physicalModels,null).fraction>=1);
     for(const state of this.entries.values()) {
       const {object}=state,e=object.entity;
       if(e.classname==='Fairy'){this.updateFairy(state,dt);continue;}
       const enabled=object.enabled!==false&&object.visible!==false,previousAge=state.age;
       if(enabled&&!state.active){state.nextSpawn=state.clock||0;state.serial=0;}
       if(!enabled&&state.active){state.age=0;state.nextSpawn=0;object.effectAge=0;if(e.classname==='SavePoint')this.beaconSound(object,true);}
+      if(!enabled&&e.classname==='TeleporterFX')this.teleporterLoop(state,false);
       state.active=enabled;if(enabled){state.age+=dt;object.effectAge=state.age;}
       const origin=this.position(object);
       if(e.classname==='EffectSpoutEntity')this.updateSpout(state,origin,dt);
       else if(e.classname==='EffectCoronaEntity') {
-        const fade=Math.max(.001,number(e,'FadeTime',.2)),target=enabled?1:0;state.opacity+=clamp(target-state.opacity,-dt/fade,dt/fade);
-        // Depth testing prevents coronas from being visible through walls.
-        const radius=coronaRadius(e,this.world.camera.position.distanceTo(new THREE.Vector3(...origin)));
-        this.batches.get(CORONA)?.add(origin,radius*2,radius*2,color(e.Color),state.opacity);
+        if(dt>0)state.radius=nativeCoronaRadius(state.radius||0,e,Math.hypot(...origin.map((value,i)=>value-eye[i])),
+          enabled&&this.coronaVisibility.visible(object.id),dt);
+        const radius=state.radius||0;
+        if(radius>0)this.coronaBatch?.add(origin,radius*2,radius*2,color(e.Color),1);
       } else if(enabled&&e.classname==='EffectBeamEntity') {
         const endpoints=beamEndpoints(this.gameplay,object,(a,b)=>this.world.collider.trace(a,b,[0,0,0],[0,0,0],this.world.physicalModels,null));
         if(endpoints)this.addBeam({...endpoints,width:number(e,'Width',5),color:color(e.Color),opacity:number(e,'ColorAlpha',255)/255},BEAM);
@@ -212,15 +242,26 @@ export class WorldEffects {
         const f=lightFunction(e.ColorFunction,state.age,number(e,'ColorTime'),e.ColorInterpolateValues==='1',e.StartZValues==='1'?1:0);
         const r=lightFunction(e.RadiusFunction,state.age,number(e,'RadiusTime'),e.RadiusInterpolateValues==='1',e.StartZValues==='1'?1:0);
         const a=color(e.ColorA),z=color(e.ColorZ);
-        this.lights.push({position:origin,color:a.map((v,i)=>mix(v,z[i],f)),radius:mix(number(e,'RadiusA'),number(e,'RadiusZ'),r)});
+        this.lights.push({position:origin,color:a.map((v,i)=>mix(v,z[i],f)),radius:mix(number(e,'RadiusA'),number(e,'RadiusZ'),r),castShadow:number(e,'CastShadow')!==0});
       }
     }
     this.destructibles?.update(dt,this.batches);
     this.enemyDeaths?.update(this.batches);
+    this.enemyCombat?.update(this.batches);
     this.decals?.update();
+    for(const projectile of this.gameplay.projectiles||[]) {
+      const light=projectileLight(projectile,this.gameplay.settings,this.gameplay.difficulty);
+      if(light)this.lights.push(light);
+    }
+    for(const impact of this.gameplay.projectileImpacts||[]) {
+      const light=impactLight(impact,this.gameplay.time);if(light)this.lights.push(light);
+    }
+    this.world.syncActorLighting?.(this.lights);
     for(const batch of [...this.batches.values(),...this.beamBatches.values()])batch.flush();
-    const camera=this.world.camera.position,nearest=this.lights.slice().sort((a,b)=>camera.distanceToSquared(new THREE.Vector3(...a.position))-camera.distanceToSquared(new THREE.Vector3(...b.position))).slice(0,8);
-    for(let i=0;i<8;i++){const lamp=nearest[i],light=this.pointLights[i];if(!light)continue;this.lightRadii[i]=lamp?.radius||0;light.intensity=lamp?1:0;if(lamp){this.lightPositions[i].fromArray(lamp.position);this.lightColors[i].fromArray(lamp.color).convertSRGBToLinear();light.position.copy(this.lightPositions[i]);light.color.copy(this.lightColors[i]);light.distance=lamp.radius;}}
+    this.coronaBatch?.flush();
+    const camera=this.world.camera.position,nearest=this.lights.filter(lamp=>lamp.radius>0).sort((a,b)=>camera.distanceToSquared(new THREE.Vector3(...a.position))-camera.distanceToSquared(new THREE.Vector3(...b.position))).slice(0,8);
+    if(this.lightCount)this.lightCount.value=nearest.length;
+    for(let i=0;i<8;i++){const lamp=nearest[i],light=this.pointLights[i];if(!light)continue;this.lightRadii[i]=lamp?.radius||0;light.intensity=lamp?1:0;if(lamp){this.lightPositions[i].fromArray(lamp.position);this.lightColors[i].fromArray(lamp.color);light.position.copy(this.lightPositions[i]);light.color.copy(this.lightColors[i]).convertSRGBToLinear();light.distance=lamp.radius;}}
   }
   updateSpout(state,origin,dt) {
     const e=state.object.entity,key=textureKey(e.BitmapFileName,e.BitmapAlphaFileName),batch=this.batches.get(key),entry=this.manifest.textures[key];if(!batch||!entry)return;
@@ -243,23 +284,65 @@ export class WorldEffects {
       state.teleporterBounds={floorY:floor.fraction<1?floor.end[1]:origin[1]-30,ceilingY:ceiling.fraction<1?ceiling.end[1]:origin[1]+200};
     }
     const before=object.teleportEffectAge;
-    if(Number.isFinite(before))object.teleportEffectAge=Math.min(TELEPORT_EFFECT_SECONDS,before+dt);
-    const waypoints=Array.from({length:4},(_,i)=>this.gameplay.find(e['TeleporterFXWP'+i])[0]).filter(Boolean).map(o=>this.position(o));
-    const geometry=teleporterGeometry({origin,...state.teleporterBounds,waypoints,age:state.age,showAge:object.teleportEffectAge});
+    let startup=false;
+    if(!state.teleporter) {
+      const waypoints=Array.from({length:4},(_,i)=>this.gameplay.find(e['TeleporterFXWP'+i])[0]).filter(Boolean).map(o=>this.position(o));
+      state.teleporter=NativeTeleporterEffect.restore(object.teleporterState);
+      if(!state.teleporter) {
+        state.teleporter=new NativeTeleporterEffect({origin,...state.teleporterBounds,waypoints,seed:hash(object.id)});
+        // Legacy saves lack the bounded particle pool. Warm at most two
+        // lifetimes, never replay an entire level's elapsed time on load.
+        state.teleporter.advance(clamp(state.age-dt-(before||0),0,6));
+        if(Number.isFinite(before)) {
+          // The previous renderer clamped completed sequences to exactly7.
+          // Loading one must not revive the newly recovered closing flash.
+          const legacyAge=before===7?TELEPORT_EFFECT_SECONDS:before;
+          state.teleporter.show();state.teleporter.advance(clamp(legacyAge,0,TELEPORT_EFFECT_SECONDS+3));
+          startup=before===0;
+          if(before>=TELEPORT_FLIGHT_SECONDS)object.teleportTerminalSoundSerial=object.teleportEffectSerial;
+        }
+      }
+      state.teleportSerial=object.teleportEffectSerial;
+      object.teleporterSnapshot=()=>state.teleporter.snapshot();
+      delete object.teleporterState;
+    } else if(state.teleportSerial!==object.teleportEffectSerial) {
+      state.teleportSerial=object.teleportEffectSerial;startup=state.teleporter.show();
+    }
+    state.teleporter.advance(dt);
+    if(state.teleporter.showAge!==null)object.teleportEffectAge=Math.min(TELEPORT_EFFECT_SECONDS,state.teleporter.showAge);
+    const geometry=state.teleporter.geometry(this.world.camera.position.toArray());
     state.teleporterGeometry=geometry;
     for(const spark of geometry.sparks)this.batches.get(SPARK)?.add(spark.position,spark.size,spark.size,spark.color,spark.opacity);
     for(const ray of geometry.rays)this.addBeam(ray,ENERGY);
-    for(const disc of geometry.discs)this.beamBatches.get(disc.texture==='blast'?BLAST:FLEURI)?.addDisc(disc.position,disc.radius,[1,1,1],disc.opacity);
-    if(geometry.light)this.lights.push(geometry.light);
-    if(state.teleportSerial!==object.teleportEffectSerial) {
-      state.teleportSerial=object.teleportEffectSerial;
-      if(before===0)this.gameplay.emit?.('scriptSound',{id:`teleporter:${object.id}`,sound:'Magiev18.wav',volume:.5,spatial:true,position:[...origin]});
+    for(const disc of geometry.discs) {
+      const texture=disc.texture==='blast'?BLAST:FLEURI;
+      if(disc.billboard)this.batches.get(texture)?.add(disc.position,disc.radius*2,disc.radius*2,[1,1,1],disc.opacity);
+      else this.beamBatches.get(texture)?.addDisc(disc.position,disc.radius,[1,1,1],disc.opacity);
     }
+    if(geometry.light)this.lights.push(geometry.light);
+    if(startup)this.gameplay.emit?.('scriptSound',{id:`teleporter:${object.id}`,sound:'Magiev18.wav',volume:1,playbackRate:.5,nativeFrequency:true,spatial:true,position:[...origin]});
+    if(geometry.stage==='terminal'&&object.teleportTerminalSoundSerial!==object.teleportEffectSerial) {
+      object.teleportTerminalSoundSerial=object.teleportEffectSerial;
+      this.gameplay.emit?.('scriptSound',{id:`portal-player:${object.id}:${object.teleportEffectSerial}`,sound:'Magiev1.wav',volume:1,playbackRate:1,nativeFrequency:true,spatial:true,position:[...origin],portalPhase:'terminal'});
+    }
+    this.teleporterLoop(state,geometry.active);
+  }
+  teleporterLoop(state,active) {
+    if(!!state.teleporterLoopActive===active)return;
+    state.teleporterLoopActive=active;
+    // Native Show starts sound slot 2 alongside slot 0 at 0x4758d8;
+    // sequence completion stops slot 2 at 0x475c94. Resume only the loop
+    // after loading, without replaying its already-heard startup one-shot.
+    this.gameplay.emit?.('scriptSound',{id:`teleporter-loop:${state.object.id}`,sound:'LV2snd7.wav',stop:!active,loop:true,volume:1.9,playbackRate:.075,nativeFrequency:true,spatial:true,position:[...this.position(state.object)]});
   }
   updateFairy(state,dt) {
     const {object}=state,e=object.entity,enabled=object.enabled!==false&&object.visible!==false,origin=this.position(object);
     const sound=(file,options={})=>this.gameplay.emit?.('scriptSound',{id:`fairy:${object.id}:${file}`,sound:file,volume:1,spatial:true,position:[...origin],...options});
     if(dt>0) {
+      if(state.resumeFairyAudio) {
+        state.resumeFairyAudio=false;
+        if(enabled&&state.fairy?.active&&!state.fairy.stopRequested)sound('idlefee1.wav',{loop:true});
+      }
       if(enabled&&!state.active) {
         const count=Math.max(0,Math.min(10,number(e,'NumberOfWayPoints')));
         const waypoints=Array.from({length:10},(_,i)=>e['FairyWP'+i]?this.gameplay.find(e['FairyWP'+i])[0]:null).filter(Boolean).slice(0,count).map(o=>this.position(o));
@@ -275,9 +358,14 @@ export class WorldEffects {
       }
       if(!state.fairy)return;
       if(!enabled)state.fairy.requestStop();
+      // Let buffered dialogue finish with its fairy still present. A script
+      // Disable remains immediate; only the automatic lifetime is held.
+      state.fairy.lifeTime=this.gameplay.scripts?.cutscene&&this.gameplay.scripts.isDialoguePlaying?.()?0:number(e,'LifeTime');
       for(const event of state.fairy.advance(dt)) {
         if(event==='departure') {
-          object.enabled=false;sound('idlefee1.wav',{stop:true});sound('Magiev12.wav');
+          object.enabled=false;
+          for(const file of ['gri5fx11.wav','ihealthl.wav','idlefee1.wav','Gri5fx11.wav','FairySprinkle1.wav'])sound(file,{stop:true});
+          sound('Magiev12.wav');
         }
       }
       state.active=state.fairy.active;state.age=state.fairy.age;
@@ -301,7 +389,7 @@ export class WorldEffects {
   finishSkippedFairies(ids) {
     for(const id of ids) {
       const state=this.entries.get(id);if(!state||state.object.entity.classname!=='Fairy')continue;
-      const {object}=state;object.enabled=false;object.effectAge=0;state.active=false;state.age=0;
+      const {object}=state;object.enabled=false;object.effectAge=0;state.active=false;state.age=0;state.resumeFairyAudio=false;
       if(state.fairy) {
         state.fairy.active=false;state.fairy.stopRequested=false;state.fairy.trails=[];
         for(const particle of state.fairy.pool)particle.active=false;
@@ -316,10 +404,15 @@ export class WorldEffects {
   addBeam(ray,key) {this.beams.push(ray);this.beamBatches.get(key)?.add(ray,this.world.camera.position);}
   beaconSound(object,stop=false,playbackRate=1) {this.gameplay.emit?.('scriptSound',{id:`beacon:${object.id}`,sound:'Magiev10.wav',stop,volume:.75,playbackRate,spatial:true,position:[...this.position(object)]});}
   dispose() {
+    for(const state of this.entries.values()) {
+      if(state.object.entity.classname==='TeleporterFX')this.teleporterLoop(state,false);
+      if(state.object.entity.classname==='Fairy')delete state.object.fairySnapshot;
+    }
     this.destructibles?.dispose();
     this.decals?.dispose();
     for(const {material,previous,cacheKey}of this.patchedMaterials||[]){material.onBeforeCompile=previous;material.customProgramCacheKey=cacheKey;material.needsUpdate=true;}
     for(const batch of [...this.batches.values(),...this.beamBatches.values()])batch.mesh.removeFromParent();
+    this.coronaBatch?.mesh.removeFromParent();
     for(const light of this.pointLights||[])light.removeFromParent();
     this.entries.clear();this.batches.clear();this.beamBatches.clear();this.beams=[];this.lights=[];
   }

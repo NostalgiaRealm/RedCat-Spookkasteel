@@ -18,7 +18,7 @@ The portable renderer evaluates the continuous form of that acceleration, `posit
 
 Fading multiplies each instance's existing material opacity and alpha texture, preserving translucent ghosts and unrelated actors that share a template. The cutout threshold is reduced during fading to prevent a second abrupt disappearance. Dead enemies remain non-colliding and do not become targetable again. The scripted witch's immediate retirement stays separate. Knights keep their existing detached-armour animation, with a final fade and a one-shot guard that prevents pieces from reappearing while the generic corpse deadline remains active. Their existing breakup trajectory and lifetime are not claimed to be a newly recovered native implementation.
 
-Save data includes the death start and smoke launch positions/velocities. Loading during the effect resumes its existing age; loading an expired corpse does not restart it. Older saves retain their existing corpse expiry and do not acquire a new smoke burst. Pausing enemy simulation also pauses these clocks, and rendering the same time repeatedly does not advance or emit particles.
+Save data includes the death start and smoke launch positions/velocities. Loading during the effect resumes its existing age; loading an expired corpse does not restart it. Older saves retain their existing corpse expiry and do not acquire a new smoke burst. An explicit enemy freeze outside a cutscene pauses these clocks. During a cutscene, already defeated enemies finish their death animation, fade and smoke while living combatants remain frozen. Rendering the same time repeatedly does not advance or emit particles.
 
 Focused verification (no packages built):
 

@@ -49,8 +49,10 @@ The production frame loop supplies actual player positions and input to the
 footstep clock. Grounding and displacement stop footfalls in the air, against
 walls, during cutscenes, in no-clip, when riding a platform without walking,
 and across teleports. Pause retains phase without advancing it. Movement
-physics are portable, so exact foot-to-animation synchronization remains
-limited by the existing controller/animation timing.
+physics are portable. The follow-up [presentation recovery](presentation-native-recovery.md)
+uses the native pre-multiplier input velocity, excludes platform carry from
+movement gating and preserves the footstep clock in saves. Native footsteps
+use this separate Wobble clock rather than animation contact events.
 
 ## Brutus combat voices
 

@@ -12,7 +12,8 @@ def import_hazards(installation, output):
     files = {path.name.lower(): path for path in source.iterdir() if path.is_file()}
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
-    names = ['mshtrail.bmp', 'mshtraila.bmp']
+    # Live mushroom setup overrides its unused mshTrail references with these.
+    names = ['strail.bmp', 'strail_a.bmp']
     with Image.open(files[names[0]]) as original:
         color = original.convert('RGBA')
     with Image.open(files[names[1]]) as original:
@@ -22,11 +23,12 @@ def import_hazards(installation, output):
     color.putalpha(alpha)
     color.save(output / 'mushroom-trail.png')
     manifest = {
-        'format': 'redcat-hazards-v1',
+        'format': 'redcat-hazards-v2',
         'sources': {name: hashlib.sha256(files[name].read_bytes()).hexdigest() for name in names},
         'mushroomTrail': {'texture': 'mushroom-trail.png', 'width': 6.4,
-                          'color': [255, 255, 127], 'opacity': 127 / 255,
-                          'fadeTime': 1.5, 'textureWidth': color.width,
+                          'color': [255, 255, 127], 'opacity': .8,
+                          'fadeTime': 1.5, 'sampleDistance': 9.6, 'sampleIntervalMs': 100,
+                          'alphaCutoff': 5 / 255, 'textureWidth': color.width,
                           'textureHeight': color.height},
     }
     (output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')

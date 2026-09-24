@@ -4,7 +4,7 @@ import { Gameplay } from '../src/gameplay.js';
 import { GAMEPLAY_SETTINGS } from '../src/gameplay-settings.js';
 import { sweepPlayer } from '../src/enemies.js';
 
-const enemy=(subtype=1,extra={})=>({classname:'MovingEnemy','%name%':'spider',DaviName:'spider',Type:'1',SubType:String(subtype),Origin:'0 0 0',...extra});
+const enemy=(subtype=1,extra={})=>({classname:'MovingEnemy','%name%':'spider',DaviName:'spider',Type:'1',SubType:String(subtype),Origin:'0 0 0',StartOrientation:'6',...extra});
 const level=(entities=[])=>({id:'lvl01a',spawn:{position:[0,0,0],orientation:0},entities});
 function fixture(entities=[enemy()],options={}) {
   const events=[],game=new Gameplay(level(entities),{onEvent:e=>events.push(e),...options});

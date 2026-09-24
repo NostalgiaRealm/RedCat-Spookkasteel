@@ -111,19 +111,20 @@ export async function verifyEnvironmentScenes(page) {
     const frozen=JSON.stringify(game.hazards.snapshot())===beforeFreeze;game.scripts.enemiesFrozen=false;
     const save=JSON.parse(JSON.stringify(game.snapshot())),expected=JSON.stringify(game.hazards.snapshot());
     game.hazards.clear();game.restore(save);world.syncHazards();const restored=expected===JSON.stringify(game.hazards.snapshot());
-    // Hit only the detached trail, with the projectile removed from the arena.
-    game.projectiles=[];game.state.health=10;game.hitCooldown=0;
-    const contact=game.hazards.segments.at(-1).from;fixture.place([contact[0],contact[1]-25,contact[2]]);
+    // Cross an older harmless ribbon while its owning projectile continues
+    // flying. Native impact/expiry destroys the complete ribbon.
+    game.state.health=10;game.hitCooldown=0;
+    const contact=game.hazards.segments[0].from;fixture.place([contact[0],contact[1]-25,contact[2]]);
     world.update(.025,{forward:0,right:0});const damage=10-game.state.health;
     world.update(.025,{forward:0,right:0});const overlappingDamage=10-game.state.health;
     // Keep the diagnostic view on the surviving ribbon after measuring damage.
     fixture.place([boss.position[0]+150,boss.position[1],boss.position[2]+80]);
     world.camera.position.set(focus[0]+100,focus[1]+20,focus[2]);world.camera.lookAt(...focus);world.syncHazards();world.render();
-    return {segments:segments.length,meshes:meshes.length,pixels,width,frozen,restored,damage,overlappingDamage,texture:meshes[0].material.map.image.src};
+    return {segments:segments.length,meshes:meshes.length,pixels,width,physicsWidth:segments[0].width,frozen,restored,damage,overlappingDamage,texture:meshes[0].material.map.image.src};
   });
   assert.ok(mushroom.segments>2);assert.equal(mushroom.meshes,mushroom.segments);assert.ok(mushroom.pixels>5);
-  assert.ok(Math.abs(mushroom.width-6.4)<.001);assert.equal(mushroom.frozen,true);assert.equal(mushroom.restored,true);
-  assert.equal(mushroom.damage,5);assert.equal(mushroom.overlappingDamage,5);assert.match(mushroom.texture,/mushroom-trail\.png$/);
+  assert.equal(mushroom.physicsWidth,6.4);assert.ok(mushroom.width>=6.4-.001);assert.equal(mushroom.frozen,true);assert.equal(mushroom.restored,true);
+  assert.equal(mushroom.damage,0);assert.equal(mushroom.overlappingDamage,0);assert.match(mushroom.texture,/mushroom-trail\.png$/);
   await page.screenshot({path:'artifacts/brutus-mushroom-trail.png'});
   const cleared=await page.evaluate(()=>{
     const world=window.__redcat.world,game=world.gameplay;game.respawn();world.syncHazards();

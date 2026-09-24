@@ -5,7 +5,7 @@ import { Gameplay } from '../src/gameplay.js';
 import { EnemyNavigation } from '../src/enemy-navigation.js';
 
 const waypoint=(name,position,extra={})=>({classname:'GrobberPathPoint','%name%':name,Origin:position.join(' '),SubSystemId:'0',...extra});
-const enemy=(extra={})=>({classname:'MovingEnemy','%name%':'guard',DaviName:'guard',Origin:'0 0 0',Type:'10',StartPoint:'a',...extra});
+const enemy=(extra={})=>({classname:'MovingEnemy','%name%':'guard',DaviName:'guard',Origin:'0 0 0',Type:'10',StartPoint:'a',StartOrientation:'6',...extra});
 const makeLevel=entities=>({id:'lvl01a',spawn:{position:[0,0,0],orientation:0},entities});
 const advance=(game,seconds,player=[5000,0,5000],options={})=>{for(let t=0;t<seconds-1e-8;t+=.05)game.update(Math.min(.05,seconds-t),player,options);};
 
@@ -99,7 +99,7 @@ test('view cone and remembered position replace omnidirectional player tracking'
 
 test('Brutus launches original mushrooms, then moves on arena points between salvos',()=>{
   const level=makeLevel([enemy({Type:'7',StartPoint:'a'}),waypoint('a',[0,0,0]),waypoint('b',[150,0,0]),waypoint('c',[0,0,-150])]);
-  const game=new Gameplay(level),brutus=game.objects[0];brutus.stats={...brutus.stats,ChanceToMoveAfterSalvo:1,AverageShotsPerSalvo:1};
+  const game=new Gameplay(level),brutus=game.objects[0];brutus.stats={...brutus.stats,ChanceToMoveAfterSalvo:1,AverageShotsPerSalvo:1};brutus.salvoSize=1;
   brutus.animationDurations={attack:1};game.update(.05,[0,0,400]);advance(game,.55,[0,0,400]);
   assert.equal(game.projectiles.length,1);const projectile=game.projectiles[0];
   assert.equal(projectile.kind,'mushRoom');assert.equal(projectile.damage,2);assert.ok(Math.abs(Math.hypot(...projectile.velocity)-250)<1e-6);
@@ -118,7 +118,7 @@ test('boss projectile classes and difficulty values come from original settings'
 
 test('Bone Brutus charges between bone and skull salvos and restores the charge phase',()=>{
   const level=makeLevel([enemy({Type:'8',StartPoint:''})]),game=new Gameplay(level),brutus=game.objects[0];
-  brutus.stats={...brutus.stats,AverageShotsPerSalvo:1,ChanceToMoveAfterSalvo:0};
+  brutus.stats={...brutus.stats,AverageShotsPerSalvo:1,ChanceToMoveAfterSalvo:0};brutus.salvoSize=1;
   brutus.animationDurations={attack:1,charge:1.933343};
   advance(game,1.1,[0,0,300]);
   assert.equal(brutus.animationState,'charge');assert.equal(brutus.boneSkullPhase,true);
