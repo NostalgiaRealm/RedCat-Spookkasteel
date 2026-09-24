@@ -1,8 +1,12 @@
 # RedCat Spookkasteel — portable reconstruction
 
-A runnable, independent reconstruction in `/home/rick/RCSPOOK_NEW`, using the assets from your installed copy of the 2000 game. It does not launch the old Windows executables, Direct3D DLLs, or Wine. The renderer is Three.js/WebGL 2; the desktop application is Electron.
+Runnable, independent reconstruction of the game, It does not launch the old Windows executables, Direct3D DLLs, or Wine. The renderer is Three.js/WebGL 2; the desktop application is Electron.
 
-**Status: playable development source, with the original Davi-Script logic running.** All five original worlds load, and their compiled puzzle, cutscene and boss-event scripts execute in the new runtime. Original motion timelines, Dutch dialogue and script state saving are integrated. Patrol routes, boss phases, original projectile animation, mushroom trails, damaging water, SuperSkippie and BIG BENG are implemented. RedCat's hit/death/respawn clips, authored pursuit routing, additional enemy attack states, projectile/actor lighting and directional sound with wall obstruction are also connected. Exact parity still needs further reference comparisons and hardware validation. The whole campaign has not yet been verified end to end. See the [current native parity audit](docs/native-parity-audit.md) for confirmed gaps, approximations and validation work.
+**Status: playable game from start to end, with the original Davi-Script logic running.** All five original worlds load, and their compiled puzzle, cutscene and boss-event scripts execute in the new runtime. Original motion timelines, Dutch dialogue and script state saving are integrated. Patrol routes, boss phases, original projectile animation, mushroom trails, damaging water, SuperSkippie and BIG BENG are implemented. RedCat's hit/death/respawn clips, authored pursuit routing, additional enemy attack states, projectile/actor lighting and directional sound with wall obstruction are also connected. 
+
+Exact parity is still tbd. But manual runs of build 0.9.3 on 2026-09-04 confirm that the game campaign can be finished from start to finish. There are some bugs that can cause RedCat to get stuck in an item, but it's exactly why automatic saves are done and can be recovered from the menu. Other problems are: not complete parity with respect to enemy behavior and visual bugs.
+
+See the [current native parity audit](docs/native-parity-audit.md) for confirmed gaps, approximations and validation work.
 
 ## Run the prepared builds
 
