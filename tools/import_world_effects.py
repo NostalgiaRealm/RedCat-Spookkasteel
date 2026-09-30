@@ -18,6 +18,10 @@ def import_effects(installation, output, levels):
     pairs.add(('smoke_05.bmp','smoke_green_a.bmp'))
     pairs.add(('strail.bmp','strail_a.bmp'))
     pairs.add(('electricwave.bmp','electricwave_a.bmp'))
+    pairs.add(('kaboom.bmp','kaboom_a.bmp'))
+    pairs.add(('kaboom2.bmp','kaboom2_a.bmp'))
+    for score in range(5):
+        pairs.add((f'score{score}.bmp',f'score{score}_a.bmp'))
     for file in Path(levels).glob('*/level.json'):
         for entity in json.loads(file.read_text())['entities']:
             if entity.get('classname') in {'EffectSpoutEntity', 'EffectDecalEntity'}:

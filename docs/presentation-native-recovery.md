@@ -42,6 +42,41 @@ oldest checks first to prevent starvation. This introduces a small bounded
 sampling delay while the radius itself advances each frame. It avoids
 bringing back the graveyard's per-frame collision-query hitches.
 
+### Fixture halo dimensions
+
+Button indicators, candles and other authored fixture coronas use the
+64×64 `Coreff.bmp` artwork. The native constructor initializes the extra
+scale multiplier to one at `0x57a05a`. At `0x57add3–0x57adde`, the draw
+routine submits `currentRadius * 0.25` as a textured-point **scale**.
+The executable's renderer multiplies that scale by the bitmap width and
+height (`0x5b669d–0x5b66fe`), then halves the resulting dimensions to
+position the quad's edges (`0x5b6702–0x5b6710`).
+
+Consequently the full halo width and height are `64 * radius * 0.25`, or
+`16 * radius`. The remake previously used `2 * radius`, making these
+lights eight times too small in each dimension. `WorldEffects` now uses
+the imported artwork dimensions and the native scale. Distance-dependent
+radius, color, visibility checks and fading retain their existing behavior.
+Particle spouts already scale by their artwork dimensions; their flames
+and the separate save-beacon glow do not need this correction.
+
+Focused verification covers all 233 authored coronas across the five
+levels (4, 36, 68, 92 and 33 respectively), at both near and far distances,
+plus disabling an indicator. Run only the relevant cases with:
+
+```sh
+node --test --test-name-pattern='corona' tests/presentation-native.test.mjs tests/presentation-renderer.test.mjs
+TMPDIR=current_work node tests/fixture-light-scenes.mjs
+```
+
+The scene check uses an isolated browser profile and compares the old and
+corrected halo sizes against actual castle and graveyard scenery. It
+isolates the selected halo, checks the production batch dimensions and
+retains screenshots and reports under
+`current_work/fixture-lights-2026-09-30/`. Native executable excerpts and
+the sizing evidence are retained in that same directory. These checks
+passed without generating packages or running unrelated tests.
+
 ## Footsteps
 
 The native footstep routine (`0x4d9d40`) uses the independent Wobble phase,

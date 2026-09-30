@@ -7,6 +7,27 @@ const manifest=JSON.parse(readFileSync(new URL('../assets/hud/manifest.json',imp
 const entity=(classname,name,Type='1')=>({classname,'%name%':name,Origin:'0 0 0',Type});
 const level={id:'lvl00a',spawn:{position:[0,0,0]},entities:[entity('ItemHart','container'),entity('ItemHealth','small'),entity('ItemHealth','medium','2'),entity('ItemHealth','large','3')]};
 const hearts=game=>hudCommands(manifest,game.state,0).filter(c=>c.name==='HealthContainer').map(c=>c.frame);
+test('capacity pickups use the original golden heart actor in every authored level and restored saves',()=>{
+  const actors=JSON.parse(readFileSync(new URL('../assets/actors/manifest.json',import.meta.url))).actors;
+  const asset=JSON.parse(readFileSync(new URL('../assets/actors/'+actors.hartcontainer.file,import.meta.url)));
+  assert.equal(asset.source,'hartcontainer.act');
+  assert.equal(asset.materials[0].texture,'textures/hartcontainer-0.png');
+  assert.equal(asset.settings.scale,3);assert.deepEqual(asset.settings.rotationDegreesPerSecond,[0,100,0]);
+  assert.equal(asset.settings.lighting.overrideAmbient,true);assert.deepEqual(asset.settings.lighting.ambientColor,[255,255,255]);
+  let count=0;
+  for(const id of ['lvl00a','lvl01a','lvl02a','lvl03a','lvl04a']){
+    const data=JSON.parse(readFileSync(new URL(`../data/levels/${id}/level.json`,import.meta.url)));
+    const game=new Gameplay(data,{deferInit:true}),restored=new Gameplay(data,{save:game.snapshot()});
+    for(const item of restored.objects.filter(o=>o.subtype==='hart')){
+      count++;assert.equal(item.actorFile,'hartcontainer',`${id}: ${item.id}`);
+    }
+    for(const item of restored.objects.filter(o=>o.subtype==='health'))
+      assert.equal(item.actorFile,['ihealths','ihealthm','ihealthl'][Number(item.entity.Type||1)-1]);
+  }
+  assert.equal(count,4);
+  const alias=new Gameplay({...level,entities:[entity('ItemHartContainer','alias')]});
+  assert.equal(alias.find('alias')[0].actorFile,'hartcontainer');
+});
 test('native container adds two max HP without healing; a lost half-heart can be refilled',()=>{
   const g=new Gameplay(level);g.pickup(g.find('container')[0]);
   assert.equal(g.state.maxHealth,12);assert.equal(g.state.health,10);assert.deepEqual(hearts(g),[0,0,0,0,0,2]);

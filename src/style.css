@@ -37,8 +37,8 @@
 .debriefing-frame button:disabled{opacity:.45;cursor:default}
 .debriefing-frame button:focus-visible{outline:2px solid #ffe168;outline-offset:2px}
 
-.recovery-panel{color:inherit;max-width:min(580px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow-y:auto}
-.recovery-panel::backdrop{background:#070e14cc;backdrop-filter:blur(12px)}
+.recovery-panel,.about-panel{color:inherit;max-width:min(580px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow-y:auto}
+.recovery-panel::backdrop,.about-panel::backdrop{background:#070e14cc;backdrop-filter:blur(12px)}
 .recovery-panel h2{margin:0;font-size:clamp(22px,5vw,30px)}
 #recovery-options{display:grid;gap:12px;margin:22px 0 12px}
 .recovery-choice{display:flex;flex-direction:column;gap:7px;text-align:left;min-height:70px;width:100%}

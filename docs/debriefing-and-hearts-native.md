@@ -45,6 +45,22 @@ grey half-heart. Capacity now increases by two, leaving current health unchanged
 as in the original: 6/10 becomes 6/12. The following native call `0x4699f0` is
 the pickup particle/icon effect, not a heal. Its original sound is `IHart.wav`.
 
+The native `ItemHart` constructor at `0x43cd70` selects `hartcontainer.act`
+(filename at `0x690a60`, references at `0x43ce12`/`0x43ce3b`). This is the
+golden/yellow heart, with scale 3, a 100-degree-per-second Y rotation and white
+ambient override from `Actors/hartcontainer.ini`. The remake had incorrectly
+selected `IHart.act`, a small red heart with scale 1. Both `ItemHart` and the
+`ItemHartContainer` compatibility alias now select the already-imported original
+golden model, including when loading existing saves. Healing hearts retain
+their separate red `IHealthS/M/L` actors.
+
+The focused artwork check covers all four authored containers across the castle,
+graveyard, caves and tower. A separate rendered check loaded a copy of the
+2026-09-28 tower autosave beside `ItemHart1`, verified its yellow texture,
+scale/rotation, and pickup from 10 to 12 maximum HP with 75 points. Evidence,
+before/after images and native findings are retained in
+`current_work/health-extension-2026-09-28/`; no build was produced.
+
 Saved games now include `healthVersion:2`. Earlier capacities above the initial
 10 HP are converted once from one HP per container to two, preserving missing
 health and never reviving a dead player. Existing saved healing is not undone;

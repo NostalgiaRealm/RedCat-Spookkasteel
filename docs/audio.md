@@ -89,3 +89,61 @@ castle PVS mixing. Its measured report is `artifacts/spatial-audio-scenes.json`.
 
 The action-audio update also restores player action/health and regular-enemy sound routing;
 see `enemy-gameplay.md` and `gameplay-sound-native.md`.
+
+## Complete music loops and encounter continuity
+
+The five original background tracks remain mapped to their authored levels:
+
+| Level | Original WAV | Complete PCM duration |
+| --- | --- | --- |
+| Het Bos | `Level 1 - The Forest.wav` | 61.714558 s |
+| Het Kasteel | `Level 2- -The Castle.wav` | 59.306712 s |
+| Het Kerkhof | `Level 3 - The Graveyard.wav` | 72.486168 s |
+| De Grotten | `Level 4 - The Caves.wav` | 71.168390 s |
+| De Kasteeltoren | `Level 5 - The CastleTowerr.wav` | 64.226349 s |
+
+These assets are byte-identical to the original installation. Music now uses
+the complete decoded Web Audio buffer, looping indefinitely on a single source.
+There is no timer cutting off a track or media-element seek/rebuffer at each
+repeat. Platforms without Web Audio retain the HTML media loop and end-event
+replay fallback. Music stays nonspatial and uses the existing volume controls.
+
+The desktop HTML-media baseline repeated every file, but reported durations
+3–46 ms shorter than the PCM sample counts and briefly entered a waiting state
+at each wrap. Buffered playback includes the entire decoded sequence. Its loop
+boundary is rounded infinitesimally inward (much less than one sample), still
+including the last frame. Using either the exact floating-point duration or an
+implicit buffer end produced one incorrect sample at a wrap in Chromium: the
+tower track at 22.05/44.1 kHz and both battle tracks at 48 kHz. The inward bound
+avoids that conversion error without trimming any complete sample.
+
+Combat and scripted music changes still happen. Previously, every return to
+background music began at zero; frequent encounters prevented hearing its later
+sections. Interrupted tracks now resume their last playhead. Returning during
+an outgoing fade reverses that same voice's fade instead of playing a duplicate
+copy. Pause freezes the playhead and fades. Explicit music stops and level
+resets clear remembered positions; these positions are not added to save files.
+
+Decoded music has a separate two-buffer cache, cleared when changing levels.
+Short native effects retain their own bounded cache. Pending decodes cannot
+restart a stopped track or play through a game pause.
+
+Focused checks for this change:
+
+```sh
+node --test tests/music-loop.test.mjs tests/portal-audio-native.test.mjs
+node tests/music-loop-scenes.mjs
+node tests/music-loop-scenes.mjs --electron
+```
+
+The 14 music tests and four shared buffered-effect tests passed. After the final
+boundary correction, the relevant loop test was rerun. Actual PCM rendering in
+both Chrome and Electron covered all five background tracks plus `Endbosses.wav`
+and `spookkort3.wav`, each at 22.05, 44.1 and 48 kHz. Every case rendered two full
+cycles plus 256 frames of the third cycle, with no missing frames, extra sources,
+premature end events or sample mismatches above 1e-6. Electron also verified
+playhead preservation, quick fade reversal and pause/resume on the HTML fallback.
+
+Logs, isolated profiles and earlier failed probes are retained under
+`current_work/music-loop-2026-09-28/`; full render reports are in timestamped
+`current_work/music-loop-render-*/` directories. No release builds were made.

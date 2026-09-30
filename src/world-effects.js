@@ -6,7 +6,9 @@ import { beamEndpoints } from './beam-contacts.js';
 import { DestructibleEffects } from './destructible-effects.js';
 import { NativeFairyEffect, FAIRY_TEXTURES } from './fairy-effects.js';
 import { EnemyDeathEffects } from './enemy-death-effects.js';
+import {GARGOYLE_BLAST_TEXTURE,gargoyleBlastQuads} from './gargoyle-blast.js';
 import { EnemyCombatEffects } from './enemy-combat-effects.js';
+import {SCORE_TEXTURES,PICKUP_TEXTURE,rewardScoreQuad,pickupTrailQuads} from './reward-effects.js';
 import { DecalEffects, decalTextureKey } from './decal-effects.js';
 import { nativeCoronaRadius, saveBeaconUv, CoronaVisibilityCache } from './presentation-native.js';
 import { impactLight } from './projectile-impacts.js';
@@ -126,9 +128,9 @@ class BeamBatch {
     const [x,y,z]=position,points=[[-1,-1],[1,-1],[-1,1],[1,-1],[1,1],[-1,1]].map(([a,b])=>new THREE.Vector3(x+a*radius,y,z+b*radius));
     this.addPoints(points,color,opacity);
   }
-  addPoints(points,color,opacity,uvStart=0,uvEnd=1) {
+  addPoints(points,color,opacity,uvStart=0,uvEnd=1,uvs=null,colors=null) {
     if(this.count>=this.capacity)return;
-    for(let i=0;i<6;i++){const index=this.count*6+i;this.positions.setXYZ(index,...points[i].toArray());this.colors.setXYZW(index,...color,opacity);this.uvs.setXY(index,[0,1,0,1,1,0][i],[uvStart,uvStart,uvEnd,uvStart,uvEnd,uvEnd][i]);}
+    for(let i=0;i<6;i++){const index=this.count*6+i;this.positions.setXYZ(index,...points[i].toArray());this.colors.setXYZW(index,...(colors?.[i]||color),opacity);this.uvs.setXY(index,uvs?.[i][0]??[0,1,0,1,1,0][i],uvs?.[i][1]??[uvStart,uvStart,uvEnd,uvStart,uvEnd,uvEnd][i]);}
     this.count++;
   }
   flush(){this.mesh.geometry.setDrawRange(0,this.count*6);this.mesh.visible=this.count>0;this.positions.needsUpdate=this.colors.needsUpdate=this.uvs.needsUpdate=true;}
@@ -139,13 +141,18 @@ export class WorldEffects {
     const response=await fetch('assets/effects/manifest.json');if(!response.ok)throw new Error('Ontbrekende originele effecten');
     const manifest=await response.json(),effects=new WorldEffects(world,gameplay,manifest);
     const textures=await Promise.all(Object.entries(manifest.textures).map(async([key,entry])=>{
-      const map=await world.texture('assets/effects/'+entry.file);map.flipY=true;map.wrapS=map.wrapT=THREE.ClampToEdgeWrapping;
+      const map=await world.texture('assets/effects/'+entry.file);
+      // Blast UVs are copied from Genesis: V=1 is the translucent bottom
+      // of kaboom_a at the red tail, V=0 the bright yellow head. Billboard
+      // effects use the opposite convention; flipping this map hides its fade.
+      map.flipY=key!==GARGOYLE_BLAST_TEXTURE;map.wrapS=map.wrapT=THREE.ClampToEdgeWrapping;
       if(key===ENERGY)map.wrapT=THREE.RepeatWrapping;
       return [key,map];
     }));
     const decals=new Set(gameplay.objects.filter(o=>o.entity.classname==='EffectDecalEntity').map(o=>decalTextureKey(o.entity)));
     for(const [key,map]of textures) {
       if(decals.has(key))continue;
+      if(SCORE_TEXTURES.includes(key)||key===PICKUP_TEXTURE||key===GARGOYLE_BLAST_TEXTURE){effects.beamBatches.set(key,new BeamBatch(world,map,key===PICKUP_TEXTURE?640:128));continue;}
       if([BEAM,ENERGY,BLAST,FLEURI].includes(key))effects.beamBatches.set(key,new BeamBatch(world,map));
       if(![BEAM,ENERGY,BLAST].includes(key))effects.batches.set(key,new BillboardBatch(world,map,key===CORONA||key===SPARK));
       // Native coronas trace visibility and fade their radius; they bypass
@@ -222,7 +229,11 @@ export class WorldEffects {
         if(dt>0)state.radius=nativeCoronaRadius(state.radius||0,e,Math.hypot(...origin.map((value,i)=>value-eye[i])),
           enabled&&this.coronaVisibility.visible(object.id),dt);
         const radius=state.radius||0;
-        if(radius>0)this.coronaBatch?.add(origin,radius*2,radius*2,color(e.Color),1);
+        // 0x57add3 submits radius * .25 as a Genesis textured-point SCALE.
+        // Its full extent is bitmap dimensions * scale, not radius * 2.
+        // Coreff is 64x64: button/candle halos were eight times too small.
+        const artwork=this.manifest.textures[CORONA],scale=radius*.25;
+        if(radius>0&&artwork)this.coronaBatch?.add(origin,artwork.width*scale,artwork.height*scale,color(e.Color),1);
       } else if(enabled&&e.classname==='EffectBeamEntity') {
         const endpoints=beamEndpoints(this.gameplay,object,(a,b)=>this.world.collider.trace(a,b,[0,0,0],[0,0,0],this.world.physicalModels,null));
         if(endpoints)this.addBeam({...endpoints,width:number(e,'Width',5),color:color(e.Color),opacity:number(e,'ColorAlpha',255)/255},BEAM);
@@ -248,6 +259,10 @@ export class WorldEffects {
     this.destructibles?.update(dt,this.batches);
     this.enemyDeaths?.update(this.batches);
     this.enemyCombat?.update(this.batches);
+    const blastBatch=this.beamBatches.get(GARGOYLE_BLAST_TEXTURE);
+    if(blastBatch)for(const effect of this.gameplay.gargoyleBlasts||[])for(const quad of gargoyleBlastQuads(effect,this.world.camera.position.toArray()))
+      blastBatch.addPoints(quad.points.map(p=>new THREE.Vector3(...p)),[1,1,1],quad.opacity,0,1,quad.uvs,quad.colors);
+    this.updateRewards(eye);
     this.decals?.update();
     for(const projectile of this.gameplay.projectiles||[]) {
       const light=projectileLight(projectile,this.gameplay.settings,this.gameplay.difficulty);
@@ -262,6 +277,16 @@ export class WorldEffects {
     const camera=this.world.camera.position,nearest=this.lights.filter(lamp=>lamp.radius>0).sort((a,b)=>camera.distanceToSquared(new THREE.Vector3(...a.position))-camera.distanceToSquared(new THREE.Vector3(...b.position))).slice(0,8);
     if(this.lightCount)this.lightCount.value=nearest.length;
     for(let i=0;i<8;i++){const lamp=nearest[i],light=this.pointLights[i];if(!light)continue;this.lightRadii[i]=lamp?.radius||0;light.intensity=lamp?1:0;if(lamp){this.lightPositions[i].fromArray(lamp.position);this.lightColors[i].fromArray(lamp.color);light.position.copy(this.lightPositions[i]);light.color.copy(this.lightColors[i]).convertSRGBToLinear();light.distance=lamp.radius;}}
+  }
+  updateRewards(camera) {
+    // Gameplay owns the clock and records: redraws cannot emit twice, pause
+    // freezes the effect and a saved game resumes its remaining lifetime.
+    for(const effect of this.gameplay.rewardEffects||[]) {
+      const score=rewardScoreQuad(effect,this.gameplay.time,camera);
+      if(score)this.beamBatches.get(score.texture)?.addPoints(score.points.map(p=>new THREE.Vector3(...p)),[1,1,1],score.opacity);
+      for(const trail of pickupTrailQuads(effect,this.gameplay.time))
+        this.beamBatches.get(trail.texture)?.addPoints(trail.points.map(p=>new THREE.Vector3(...p)),trail.color,trail.opacity,0,1,trail.uvs);
+    }
   }
   updateSpout(state,origin,dt) {
     const e=state.object.entity,key=textureKey(e.BitmapFileName,e.BitmapAlphaFileName),batch=this.batches.get(key),entry=this.manifest.textures[key];if(!batch||!entry)return;

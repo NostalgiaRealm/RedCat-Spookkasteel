@@ -160,7 +160,7 @@ function handleGameEvent(event){
   if(event.type==='scriptSound')scriptedSound(event);
   if(event.type==='scriptMusic')audio.playMusic(event);
   if(event.type==='scriptVolume')audio.setScriptVolume(event.id,event.volume);
-  if(event.type==='teleport'&&world){world.player.position=[...event.position];world.player.position[1]+=1;world.player.lastSafe=[...world.player.position];world.player.resetVelocity();if(world.redcat)delete world.redcat.userData.motionState;world.yaw=nativePlayerYaw(event.orientation);world.updateCamera(1,true);}
+  if(event.type==='teleport'&&world){world.player.position=[...event.position];world.player.position[1]+=1;world.player.lastSafe=[...world.player.position];world.player.resetVelocity();world.player.movementRecovery.reset();if(world.redcat)delete world.redcat.userData.motionState;world.yaw=nativePlayerYaw(event.orientation);world.updateCamera(1,true);}
   if(event.type==='flash'){$('script-flash').classList.remove('flash');void $('script-flash').offsetWidth;$('script-flash').classList.add('flash');}
   if(event.type==='message')toast(event.message || event.text || '');
   if(event.type==='pickup'){const label={coin:'Geldzakje verzameld',potion:'Toverdrank verzameld',health:'Een hartje erbij',mirror:'Spiegelstuk gevonden!',life:'Een extra leven!',hart:'Meer levenskracht!'}[event.subtype] || 'Voorwerp verzameld';toast(event.message || `${label} · +${event.score||0}`);}
@@ -171,6 +171,7 @@ function handleGameEvent(event){
   if(event.type==='respawn'&&world){
     world.player.position=[...event.position];world.player.position[1]+=1;
     world.player.lastSafe=[...world.player.position];world.player.resetVelocity();
+    world.player.movementRecovery.reset();
     world.yaw=nativePlayerYaw(event.orientation);world.updateCamera(1,true);
     toast(`Je bent terug bij het bewaarpunt. Nog ${event.lives} levens.`);
   }
@@ -251,7 +252,7 @@ function showCheats(){
 }
 function closeCheats(){$('cheats').hidden=true;$('settings').hidden=false;$('open-cheats').focus();}
 function updateCheatControls(){
-  if(touchEnabled){$('controls-hint').textContent=settings.noClip?'Stick · vliegen · Omhoog / Omlaag · Vuur · Menu':'Stick · bewegen · veeg rechts · kijken · Spring · Vuur · Gebruik · Menu';return;}
+  if(touchEnabled){$('controls-hint').textContent=settings.noClip?'Stick · vliegen · Omhoog / Omlaag · Schieten · Menu':'Stick · bewegen · veeg rechts · kijken · Spring · Schieten · Gebruik · Menu';return;}
   $('controls-hint').textContent=settings.noClip?'NO-CLIP · WASD / pijlen · vliegen · SPATIE · omhoog · SHIFT · omlaag · CTRL / klik · aanval · ESC · menu':'WASD / pijlen · bewegen · SPATIE · springen · CTRL / klik · aanval · E · gebruiken · ESC · menu';
 }
 function applyNoClip(){
@@ -314,6 +315,7 @@ async function playIntro(outro=false){introReturn=outro?'menu':mode;mode='intro'
 function finishIntro(){const video=$('intro-video');video.pause();video.removeAttribute('src');video.load();$('intro').hidden=true;if(introReturn==='playing' || introReturn==='paused'){mode='paused';$('pause').hidden=false;}else returnMenu();}
 $('start').onclick=requestAdventureStart;$('continue').onclick=loadSave;$('resume').onclick=resume;$('restart').onclick=()=>startLevel(selected);$('save').onclick=()=>saveGame();$('return-menu').onclick=returnMenu;
 $('game-menu').onclick=pause;$('load-save').onclick=loadSave;
+$('open-about').onclick=()=>$('about').showModal();$('close-about').onclick=()=>$('about').close();
 $('open-recovery').onclick=showRecoverySaves;$('pause-recovery').onclick=showRecoverySaves;$('close-recovery').onclick=()=>$('recovery-saves').close();
 $('cancel-new-adventure').onclick=cancelAdventureStart;$('confirm-new-adventure').onclick=confirmAdventureStart;
 $('new-adventure-warning').addEventListener('cancel',event=>{event.preventDefault();cancelAdventureStart();});
@@ -323,7 +325,7 @@ $('open-help').onclick=()=>$('help').hidden=false;$('close-help').onclick=()=>$(
 $('quit').onclick=()=>{saveGame(true);if(window.desktop)window.desktop.quit();else{stopAudio();toast('Je kunt dit venster nu sluiten.');}};
 $('game').addEventListener('click',requestLook);
 window.addEventListener('keydown',e=>{
-  if($('new-adventure-warning').open||$('recovery-saves').open)return;
+  if($('new-adventure-warning').open||$('recovery-saves').open||$('about').open)return;
   if(mode==='debriefing'){if(['ControlLeft','ControlRight','Space','Enter'].includes(e.code)){e.preventDefault();if(!e.repeat)continueDebriefing();}return;}
   if(e.code==='Escape'){if(mode==='intro'){finishIntro();return;}if(!$('cheats').hidden){closeCheats();return;}if(!$('settings').hidden){closeSettings();return;}if(!$('help').hidden){$('help').hidden=true;return;}if(mode==='playing')pause();else if(mode==='paused')resume();return;}
   if(mode!=='playing')return;e.preventDefault();keys.add(e.code);

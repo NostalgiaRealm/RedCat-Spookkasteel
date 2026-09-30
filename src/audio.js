@@ -12,8 +12,9 @@ export const nativeGainToAmplitude = gain => gain <= 0 ? 0 : 10 ** (.5 * Math.lo
 
 // HTML media can mute very slow playback. Native portal audio instead needs
 // actual sample-rate conversion down to .075x, including the matching pitch.
-// Keep this small media-compatible voice exclusive to those native effects.
-class BufferedEffectVoice {
+// Music also uses the complete decoded buffer: repeating a WAV media element
+// seeks/rebuffers at its end and can estimate a slightly shorter duration.
+class BufferedAudioVoice {
   constructor(context, loadBuffer) {
     this.context=context;this.loadBuffer=loadBuffer;this.output=context.createGain();this.output.connect(context.destination);
     this.buffer=null;this.source=null;this.offset=0;this.startedAt=0;this.wanted=false;this.disposed=false;
@@ -21,6 +22,7 @@ class BufferedEffectVoice {
   }
   get paused(){return !this.wanted;}
   get readyState(){return this.buffer?4:0;}
+  get duration(){return this.buffer?.duration??NaN;}
   get volume(){return this._volume;}
   set volume(value){this._volume=value;this.output.gain.value=value;}
   get currentTime(){
@@ -36,6 +38,10 @@ class BufferedEffectVoice {
     if(this.context.state!=='running')await this.context.resume();
     if(this.disposed||!this.wanted||this.source)return;
     const source=this.context.createBufferSource();source.buffer=this.buffer;source.playbackRate.value=this.playbackRate;source.loop=this.loop;
+    // Duration -> sample-index rounding can put the boundary just past the
+    // buffer and repeat a stale sample (battle music at 48 kHz, tower at
+    // 22.05/44.1 kHz). Round infinitesimally inward, retaining the last frame.
+    source.loopStart=0;source.loopEnd=this.buffer.duration*(1-Number.EPSILON);
     source.connect(this.output);this.source=source;this.startedAt=this.context.currentTime;
     source.onended=()=>{
       if(this.source!==source)return;
@@ -66,23 +72,28 @@ export class GameAudio {
     this.createContext=createContext;this.context=null;this.contextAttempted=false;this.world=null;this.environment=null;
     this.listenerQuaternion=[0,0,0,1];this.clock=0;this.worldEpoch=0;
     this.fetchAudio=fetchAudio;this.bufferCache=new Map();
+    this.musicPositions=new Map();
+    this.musicBufferCache=new Map();
   }
   play({sound, key = null, sourceId = null, group = null, channel = 'effects', volume = 1, position = null,
-    spatial = false, loop = false, minReplayDelay = 0, maxReplayDelay = 0, playbackRate = 1, nativeFrequency = false, onEnded = null} = {}) {
+    spatial = false, loop = false, minReplayDelay = 0, maxReplayDelay = 0, playbackRate = 1, nativeFrequency = false, startTime = 0, onEnded = null} = {}) {
     if (key) this.stop(key);
     const name = soundName(sound); if (!name) return null;
     const url=`assets/${channel === 'voices' ? 'voices' : 'audio'}/${encodeURIComponent(name)}`;
     // DirectSound frequency zero selects the original sample frequency.
     const rate=nativeFrequency?(nonnegative(playbackRate)||1):nonnegative(playbackRate);
-    const buffered=nativeFrequency&&rate<.25&&this.ensureContext();
-    const element=buffered?new BufferedEffectVoice(this.context,()=>this.loadEffectBuffer(url)):this.createAudio(url);
-    element.playbackRate = buffered?rate:Math.max(.25, Math.min(4, rate));
+    const buffered=(channel==='music'||nativeFrequency&&rate<.25)&&this.ensureContext();
+    const element=buffered?new BufferedAudioVoice(this.context,()=>this.loadAudioBuffer(url,channel==='music')):this.createAudio(url);
+    element.playbackRate = buffered&&nativeFrequency?rate:Math.max(.25, Math.min(4, rate));
     element.preservesPitch = false;
     const minDelay = nonnegative(minReplayDelay, 0), maxDelay = Math.max(minDelay, nonnegative(maxReplayDelay, 0));
     const record = {key, sourceId, group, channel, name, element, volume: nonnegative(volume),
       authoredGain: this.settings.gains[name] ?? 1, position, spatial, loop, minDelay, maxDelay, wait: null};
     element.preload = 'auto';
     element.loop = loop && maxDelay === 0;
+    // Set the media's pending start position before play(), so resuming a
+    // background track never briefly plays its introduction a second time.
+    if(nonnegative(startTime,0)>0)element.currentTime=nonnegative(startTime,0);
     if((spatial||ambienceRange(this.levelId,record))&&position)this.attachStereo(record);
     this.sounds.add(record); if (key) this.keyed.set(key, record);
     this.applyGain(record);
@@ -118,13 +129,22 @@ export class GameAudio {
   get pickupsPending() { return [...this.sounds].some(record=>record.group==='pickup'); }
   playMusic({sound,id=null,volume=1,stop=false,crossFade=false,fadeInTimeSeconds=0,fadeOutTimeSeconds=0}={}) {
     const current=this.keyed.get('music'),name=soundName(sound);
-    if(stop||!name){for(const record of this.sounds)if(record.channel==='music')this.release(record);return null;}
+    if(stop||!name){for(const record of this.sounds)if(record.channel==='music')this.release(record);this.musicPositions.clear();return null;}
     if(current?.name===name){current.volume=nonnegative(volume);current.sourceId=id;this.applyGain(current);return current;}
     const fadeIn=Math.max(0,Number(fadeInTimeSeconds)||0),fadeOut=Math.max(0,Number(fadeOutTimeSeconds)||0);
+    // A short encounter can end while the ambient track is still fading out.
+    // Reverse that same voice instead of starting a second copy from zero.
+    const returning=[...this.sounds].find(record=>record.channel==='music'&&record.name===name);
     if(current&&crossFade&&fadeOut>0){this.keyed.delete('music');current.key=null;current.fade={from:current.fadeGain??1,to:0,duration:fadeOut,elapsed:0,release:true};}
     else this.stop('music');
-    const record=this.play({key:'music',sourceId:id,channel:'music',sound,volume,loop:true});
-    if(record&&fadeIn>0){record.fadeGain=0;record.fade={from:0,to:1,duration:fadeIn,elapsed:0};this.applyGain(record);}
+    const record=returning||this.play({key:'music',sourceId:id,channel:'music',sound,volume,loop:true,startTime:this.musicPositions.get(name)||0});
+    if(record){
+      record.key='music';record.sourceId=id;record.volume=nonnegative(volume);this.keyed.set('music',record);
+      record.fadeGain=returning?(record.fadeGain??1):(fadeIn>0?0:1);
+      record.fade=fadeIn>0?{from:record.fadeGain,to:1,duration:fadeIn,elapsed:0}:null;
+      if(!record.fade)record.fadeGain=1;
+      this.applyGain(record);
+    }
     return record;
   }
   start(record) {
@@ -137,6 +157,10 @@ export class GameAudio {
     });
   }
   release(record) {
+    if(record.channel==='music') {
+      const time=nonnegative(record.element.currentTime,0),duration=Number(record.element.duration);
+      this.musicPositions.set(record.name,duration>0&&Number.isFinite(duration)?time%duration:time);
+    }
     record.element.onended = null; record.element.onerror = null; record.element.pause();
     record.stereo?.disconnect();record.stereo=null;
     record.element.dispose?.();
@@ -144,7 +168,7 @@ export class GameAudio {
     if (record.key && this.keyed.get(record.key) === record) this.keyed.delete(record.key);
   }
   stop(key) { const record = this.keyed.get(key); if (record) this.release(record); }
-  reset() { this.stopDialogue(); for (const record of this.sounds) this.release(record); this.bufferCache.clear();this.playerListener=null; this.world=null;this.environment=null;this.worldEpoch++;this.paused = false; }
+  reset() { this.stopDialogue(); for (const record of this.sounds) this.release(record); this.musicPositions.clear();this.musicBufferCache.clear();this.bufferCache.clear();this.playerListener=null; this.world=null;this.environment=null;this.worldEpoch++;this.paused = false; }
   pause() { this.paused = true; for (const {element} of this.sounds) element.pause(); }
   resume() {
     this.paused = false;
@@ -165,22 +189,23 @@ export class GameAudio {
     if(!this.contextAttempted){this.contextAttempted=true;try{this.context=this.createContext();}catch{this.context=null;}}
     return this.context;
   }
-  loadEffectBuffer(url) {
-    if(!this.bufferCache.has(url)) {
-      // A few repeated portal pads share one short WAV. Bound retained decode
-      // data rather than caching every sound visited throughout an adventure.
-      if(this.bufferCache.size>=8)this.bufferCache.delete(this.bufferCache.keys().next().value);
+  loadAudioBuffer(url,music=false) {
+    const cache=music?this.musicBufferCache:this.bufferCache,limit=music?2:8;
+    if(!cache.has(url)) {
+      // Retain at most two music buffers (ambient/combat), separately from the
+      // small shared portal sounds. Changing levels clears both caches.
+      if(cache.size>=limit)cache.delete(cache.keys().next().value);
       const pending=this.fetchAudio(url).then(response=>{if(!response.ok)throw new Error(`Cannot load ${url}`);return response.arrayBuffer();})
         .then(bytes=>this.context.decodeAudioData(bytes));
-      this.bufferCache.set(url,pending);
-      pending.catch(()=>{if(this.bufferCache.get(url)===pending)this.bufferCache.delete(url);});
+      cache.set(url,pending);
+      pending.catch(()=>{if(cache.get(url)===pending)cache.delete(url);});
     }
-    return this.bufferCache.get(url);
+    return cache.get(url);
   }
   attachStereo(record) {
     this.ensureContext();
     // Embedded browsers without Web Audio keep the existing media mixer.
-    // Dialogue/music/UI stay on that direct path even when Web Audio exists.
+    // Dialogue/UI keep their media path; nonspatial music connects directly.
     if(this.context) {
       const context=this.context;
       if(record.element.nativeBuffered) {

@@ -4,9 +4,10 @@ import * as THREE from 'three';
 import {WorldEffects} from '../src/world-effects.js';
 import {Gameplay} from '../src/gameplay.js';
 import {FootstepClock} from '../src/locomotion-audio.js';
+import {readFileSync} from 'node:fs';
 
 const CORONA='coreff.bmp|coreff_a.bmp',ENERGY='energybeam.bmp|energybeam_a.bmp';
-const manifest={textures:{[CORONA]:{file:'core.png'},[ENERGY]:{file:'energy.png'}}};
+const manifest={textures:{[CORONA]:{file:'core.png',width:64,height:64},[ENERGY]:{file:'energy.png'}}};
 const corona=(id,z=-300)=>({id,kind:'effect',entity:{classname:'EffectCoronaEntity',RadiusMin:'2',RadiusMax:'10',RadiusDistanceMin:'0',RadiusDistanceMax:'300',FadeTime:'.5',Color:'173 235 255'},position:[0,0,z],enabled:true,visible:true});
 async function fixture(objects) {
   const queries=[],resources=new Set(),world={scene:new THREE.Scene(),camera:new THREE.PerspectiveCamera(),physicalModels:[0,4],modelMeshes:new Map(),
@@ -27,7 +28,7 @@ test('real corona batch fades size on world occlusion and keeps beacon glow dept
     assert.equal(effects.batches.get(CORONA).mesh.material.depthTest,true);
     assert.equal(queries.length,0,'initial zero-time buffer refresh does not query visibility');
     effects.update(.1);assert.equal(state.radius,2);assert.equal(effects.coronaBatch.count,1);
-    assert.equal(effects.coronaBatch.sizes.getX(0),4);assert.equal(effects.coronaBatch.colors.getW(0),1);
+    assert.equal(effects.coronaBatch.sizes.getX(0),32);assert.equal(effects.coronaBatch.colors.getW(0),1);
     assert.deepEqual(queries[0].slice(2),[[0,0,0],[0,0,0],[0,4],null],'visibility is a zero-hull world/model-only ray');
     effects.update(.2);assert.equal(state.radius,6);
     const saved={age:state.age,radius:state.radius,queries:queries.length,cacheTime:effects.coronaVisibility.time};
@@ -48,6 +49,40 @@ test('real corona update excludes behind-camera lamps and bounds visibility work
     world.camera.lookAt(0,0,300);effects.update(.1);
     assert.ok(effects.entries.get('behind').radius>0);
     assert.ok(lamps.every(o=>effects.entries.get(o.id).radius===0));
+  }finally{app.dispose();}
+});
+
+test('all five levels use native textured-point dimensions for their button and fixture coronas',async()=>{
+  const objects=[],counts=[];
+  for(const level of ['lvl00a','lvl01a','lvl02a','lvl03a','lvl04a']){
+    const data=JSON.parse(readFileSync(new URL(`../data/levels/${level}/level.json`,import.meta.url)));
+    const entities=data.entities.filter(e=>e.classname==='EffectCoronaEntity');counts.push(entities.length);
+    for(const e of entities){
+      assert.equal(e.BitmapAlphaFileName.toLowerCase(),'coreff_a.bmp');
+      objects.push({id:level+e['%name%'],entity:e,position:[0,0,-1],enabled:true,visible:true});
+    }
+  }
+  assert.deepEqual(counts,[4,36,68,92,33]);
+  const asset=JSON.parse(readFileSync(new URL('../assets/effects/manifest.json',import.meta.url))).textures[CORONA];
+  assert.deepEqual([asset.width,asset.height],[64,64]);
+  const app=await fixture(objects);
+  try{
+    const {effects}=app;
+    for(const [distance,key]of [[1,'RadiusMin'],[10000,'RadiusMax']]){
+      for(const o of objects)o.position[2]=-distance;
+      for(let tick=0;tick<120;tick++)effects.update(.1);
+      assert.equal(effects.coronaBatch.count,233);
+      objects.forEach((o,i)=>{
+        // Native 64px bitmap * .25 * authored radius = full 16*r extent.
+        const expected=16*Number(o.entity[key]);
+        assert.ok(Math.abs(effects.coronaBatch.sizes.getX(i)-expected)<.0001,`${o.id} ${key}`);
+        assert.ok(Math.abs(effects.coronaBatch.sizes.getY(i)-expected)<.0001,`${o.id} ${key}`);
+      });
+    }
+    // A scripted switch off still removes its indicator after the native fade.
+    objects[0].enabled=false;
+    for(let tick=0;tick<10;tick++)effects.update(.1);
+    assert.equal(effects.coronaBatch.count,232);
   }finally{app.dispose();}
 });
 

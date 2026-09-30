@@ -32,6 +32,9 @@ export function touchControlsEnabled(preference, environment) {
 
 const EMPTY_INPUT = Object.freeze({forward:0,right:0,jump:false,descend:false,walk:false,attack:false,use:false});
 const HELD_ACTIONS = new Set(['jump', 'attack', 'use', 'descend']);
+// Finger travel is limited by the screen; keep swipes faster than mouse input.
+// The camera still applies the user's sensitivity setting to these deltas.
+const TOUCH_LOOK_GAIN = 3;
 
 export class TouchControls {
   constructor({onLook = () => {}, onAction = () => {}, onGesture = () => {}} = {}) {
@@ -76,7 +79,7 @@ export class TouchControls {
     this.buttons = {};
     for (const [name, label] of [
       ['walk','Lopen'], ['camera','Camera'], ['descend','Omlaag'],
-      ['use','Gebruik'], ['attack','Vuur'], ['jump','Spring'],
+      ['use','Gebruik'], ['attack','Schieten'], ['jump','Spring'],
       ['options','Meer'], ['save','Opslaan'], ['load','Laden'],
     ]) {
       const button = this.createControl(name, 'button', label,
@@ -217,7 +220,7 @@ export class TouchControls {
       const dx = event.clientX - pointer.x, dy = event.clientY - pointer.y;
       pointer.x = event.clientX;
       pointer.y = event.clientY;
-      if (dx || dy) this.onLook(dx, dy);
+      if (dx || dy) this.onLook(dx * TOUCH_LOOK_GAIN, dy * TOUCH_LOOK_GAIN);
     }
   }
 

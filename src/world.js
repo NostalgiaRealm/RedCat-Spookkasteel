@@ -256,7 +256,7 @@ export class CastleWorld {
       }
       if(e.classname==='DoorModel' && obj.open&&!obj.hasMotion)this.setModel(obj.modelIndex,false);
       let name=obj.actor || obj.actorFile;
-      if(!name && obj.kind==='pickup')name={ItemCoin:['imoneys','imoneym','imoneyl'][Math.max(0,Math.min(2,Number(e.Type)-1))],ItemHealth:['ihealths','ihealthm','ihealthl'][Math.max(0,Math.min(2,Number(e.Type)-1))],ItemPotion:'ipotion',ItemMirror:'imirror',ItemLife:'ilife',ItemHart:'ihart'}[e.classname];
+      if(!name && obj.kind==='pickup')name={ItemCoin:['imoneys','imoneym','imoneyl'][Math.max(0,Math.min(2,Number(e.Type)-1))],ItemHealth:['ihealths','ihealthm','ihealthl'][Math.max(0,Math.min(2,Number(e.Type)-1))],ItemPotion:'ipotion',ItemMirror:'imirror',ItemLife:'ilife',ItemHart:'hartcontainer',ItemHartContainer:'hartcontainer'}[e.classname];
       if(!name)return;
       const actor=await this.makeActor(name,{entity:e,scale:Number(e.Scale)>0?Number(e.Scale):undefined});
       if(actor){
@@ -272,6 +272,23 @@ export class CastleWorld {
             actor.userData.stateAnimator=stateAnimator;obj.animationDurations={...stateAnimator.durations};
           }
           obj.projectileOrigins=()=>this.enemyProjectileOrigins(obj,actor);
+          obj.recoverySafePosition=position=>{
+            const mins=obj.collisionMins||[-12,0,-12],maxs=obj.collisionMaxs||[12,45,12];
+            if(this.collider.contents(position,mins,maxs,this.physicalModels)&0x60000)return false;
+            const overlaps=(p,lo,hi)=>position.every((v,i)=>v+maxs[i]+2>p[i]+lo[i]&&v+mins[i]-2<p[i]+hi[i]);
+            if(overlaps(this.player.position,this.player.mins,this.player.maxs))return false;
+            return !gameplay.objects.some(other=>other!==obj&&other.kind==='enemy'&&other.enabled&&other.visible&&other.health>0&&
+              overlaps(other.position,other.collisionMins||[-12,0,-12],other.collisionMaxs||[12,45,12]));
+          };
+          obj.rewardPosition=()=>{
+            // Evaluate once at defeat, before the death animation changes
+            // the pose. Avoid a per-frame actor-bound scan for score effects.
+            actor.position.fromArray(gameplay.objectPosition(obj));
+            if(obj.yaw!==undefined)actor.rotation.y=obj.yaw;
+            if(obj.rotation)actor.rotation.fromArray(obj.rotation);
+            const mesh=actor.userData.mesh;actor.updateWorldMatrix(true,true);mesh.geometry.computeBoundingBox();
+            return mesh.geometry.boundingBox.getCenter(new THREE.Vector3()).applyMatrix4(mesh.matrixWorld).toArray();
+          };
           // Rest-pose feet are at the actor origin. Use its imported dimensions
           // for body height, with a narrow movement hull so long legs and spears
           // do not prevent crossing the original level's doorways.
@@ -582,6 +599,7 @@ export class CastleWorld {
     const active=new Set();this.projectileMeshes??=new Map();
     this.camera.updateMatrixWorld();
     for(const projectile of this.gameplay?.projectiles||[]) {
+      if(projectile.visualEffect==='gargoyleBlast')continue;
       active.add(projectile.id);let mesh=this.projectileMeshes.get(projectile.id);
       if(!mesh) {
         if(!this.projectileGeometry)this.projectileGeometry=this.track(new THREE.SphereGeometry(1,10,8));
@@ -755,14 +773,14 @@ export class CastleWorld {
     if(!playerFrozen)this.player.update(dt,input,this.yaw,this.pitch);
     // Scripted support carrying happened earlier in the frame. Only RedCat's
     // own horizontal step participates in footstep contact feedback.
-    this.player.stepDisplacement=playerFrozen?0:Math.hypot(this.player.position[0]-stepStart[0],this.player.position[2]-stepStart[2]);
+    this.player.stepDisplacement=playerFrozen||this.player.recoveredThisStep?0:Math.hypot(this.player.position[0]-stepStart[0],this.player.position[2]-stepStart[2]);
     if(!playerFrozen&&this.player.didJump)this.gameplay?.emit('jump',{position:[...this.player.position],kind:this.player.didJump});
+    if(!this.player.noClip&&this.player.position[1]<this.level.bounds.min[1]-350) {this.player.position=[...this.player.lastSafe];this.player.position[1]+=4;this.player.resetVelocity();this.player.movementRecovery.reset();this.gameplay?.damage?.(2);}
     const p=this.player.position;
-    if(!this.player.noClip&&p[1]<this.level.bounds.min[1]-350) {this.player.position=[...this.player.lastSafe];this.player.position[1]+=4;this.player.resetVelocity();this.gameplay?.damage?.(2);}
     if(this.gameplay){
       const forward=[-Math.sin(this.yaw)*Math.cos(this.pitch),-Math.sin(this.pitch),-Math.cos(this.yaw)*Math.cos(this.pitch)];
       this.gameplay.update(dt,p,{attack:input.attack,use:input.use,forward,touchedModels:this.player.contacts||[],
-        previousPlayerPosition:before,
+        previousPlayerPosition:this.player.recoveredThisStep?p:before,
         aimTarget:()=>this.targeting.locked&&targetableObject(this.targeting.target)?targetAimPoint(this.targeting.target):null,
         attackTarget:()=>this.targeting.locked&&targetableObject(this.targeting.target)?this.targeting.target:null,
         environmentContents:this.collider.contents(p,this.player.mins,this.player.maxs,this.physicalModels),
@@ -777,7 +795,7 @@ export class CastleWorld {
         },
         traceShot:(a,b)=>this.collider.trace(a,b,[0,0,0],[0,0,0],this.physicalModels,'canBeShot'),
         traceBeam:(a,b)=>this.collider.trace(a,b,[0,0,0],[0,0,0],this.physicalModels,null),
-        traceEnemy:(a,b,mins,maxs)=>this.collider.trace(a,b,mins,maxs,this.physicalModels),
+        traceEnemy:(a,b,mins,maxs,object)=>this.collider.trace(a,b,mins,maxs,this.physicalModels,{mask:'blocksPlayer',ignoreId:object?.id}),
         traceProjectile:(a,b,radius=0,projectile)=>this.collider.trace(a,b,[-radius,-radius,-radius],[radius,radius,radius],this.physicalModels,{mask:'canBeShot',ignoreId:projectile?.sourceId}),
         lineOfSight:(a,b)=>this.collider.trace(a,b,[0,0,0],[0,0,0],this.physicalModels,'blocksLOS').fraction>0.98});
       this.syncActors(dt);

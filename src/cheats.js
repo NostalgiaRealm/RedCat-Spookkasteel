@@ -40,5 +40,6 @@ export function setNoClip(world,enabled) {
     player.position=[...safe];player.lastSafe=[...safe];returned=true;
   }
   player.noClip=!!enabled;player.resetVelocity();player.grounded=false;player.contacts=new Set();
+  player.movementRecovery?.reset();
   return {enabled:player.noClip,returned,blocked:false};
 }

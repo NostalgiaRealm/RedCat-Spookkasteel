@@ -2,6 +2,7 @@
 import { traceActors } from './actor-collision.js';
 import { GAMEPLAY_SETTINGS } from './gameplay-settings.js';
 import { PLAYER_MOVEMENT, playerInputVelocity } from './player-movement.js';
+import { MovementRecovery } from './movement-recovery.js';
 const jumpSettings=GAMEPLAY_SETTINGS.game.Player;
 export const PLAYER_JUMP={gravity:jumpSettings.Gravitation*32,height:jumpSettings.JumpHeight*32,
   minTapTime:jumpSettings.SJumpMinTapTime/1000,maxTapTime:jumpSettings.SJumpMaxTapTime/1000,
@@ -179,10 +180,11 @@ export class BspCollider {
     result.end=lerp(start,end,result.fraction); return result;
   }
   slide(position, delta, mins, maxs, modelIndices) {
-    let pos=[...position], remaining=[...delta]; const hits=[],models=new Set();
+    let pos=[...position], remaining=[...delta],startSolid=false; const hits=[],models=new Set();
     for(let i=0;i<4;i++) {
       if(Math.hypot(...remaining)<0.001) break;
       const hit=this.trace(pos,pos.map((v,j)=>v+remaining[j]),mins,maxs,modelIndices);
+      startSolid||=hit.startSolid;
       pos=hit.end;
       if(hit.fraction===1) break;
       hits.push(hit.normal);if(hit.modelIndex!==null)models.add(hit.modelIndex); remaining=remaining.map(v=>v*(1-hit.fraction));
@@ -190,7 +192,7 @@ export class BspCollider {
       if(into<0) remaining=remaining.map((v,j)=>v-hit.normal[j]*into);
       if(hit.startSolid && hit.fraction===0) break;
     }
-    return {position:pos,hits,models:[...models]};
+    return {position:pos,hits,models:[...models],startSolid};
   }
 }
 export class PlayerController {
@@ -200,6 +202,7 @@ export class PlayerController {
     this.grounded=false; this.modelIndices=modelIndices; this.mins=[-11,0,-11]; this.maxs=[11,56,11];
     this.lastSafe=[...position];this.noClip=false;this.environmentVelocity=[0,0,0];this.platformVelocity=[0,0,0];
     this.skill=0;this.previousJump=false;this.jumpAge=Infinity;this.superJumpUsed=false;this.jumpSerial=0;this.jumpKind=null;
+    this.movementRecovery=new MovementRecovery();
   }
   resetVelocity(){this.velocityY=0;this.launchVelocityXZ=[0,0];this.platformVelocity=[0,0,0];this.jumpAge=Infinity;this.superJumpUsed=false;this.jumpKind=null;}
   snapshotMotion() {
@@ -207,6 +210,7 @@ export class PlayerController {
       jumpAge:Number.isFinite(this.jumpAge)?this.jumpAge:null,superJumpUsed:this.superJumpUsed,jumpSerial:this.jumpSerial,jumpKind:this.jumpKind};
   }
   restoreMotion(state) {
+    this.movementRecovery.reset();
     this.resetVelocity();this.grounded=false;this.previousJump=false;this.didJump=null;
     if(!state||!Number.isFinite(state.velocityY)||!Array.isArray(state.launchVelocityXZ)||
       state.launchVelocityXZ.length!==2||!state.launchVelocityXZ.every(Number.isFinite))return;
@@ -218,9 +222,11 @@ export class PlayerController {
   }
   update(dt, input, yaw, pitch=0) {
     dt=Math.min(dt,0.05);
+    this.recoveredThisStep=false;
     const pressedJump=!!input.jump&&!this.previousJump;this.previousJump=!!input.jump;this.didJump=null;
     this.jumpAge+=dt;
     if(this.noClip) {
+      this.movementRecovery.reset();
       const forward=input.forward||0,right=input.right||0,vertical=Number(!!input.jump)-Number(!!input.descend);
       const direction=[-Math.sin(yaw)*Math.cos(pitch)*forward+Math.cos(yaw)*right,
         -Math.sin(pitch)*forward+vertical,-Math.cos(yaw)*Math.cos(pitch)*forward-Math.sin(yaw)*right];
@@ -273,12 +279,12 @@ export class PlayerController {
         this.velocityY=jumpSpeed+platform[1];this.launchVelocityXZ=[inputVelocity[0]+wind[0]+platform[0],inputVelocity[2]+wind[2]+platform[2]];this.grounded=false;
         this.jumpAge=0;this.superJumpUsed=false;this.jumpKind='normal';this.didJump='normal';this.jumpSerial++;
       } else if(this.grounded) {
-        this.resetVelocity();this.lastSafe=[...this.position];
+        this.resetVelocity();
       } else {
         this.velocityY=-PLAYER_MOVEMENT.walkOther+platform[1];
         this.launchVelocityXZ=[inputVelocity[0]+wind[0]+platform[0],inputVelocity[2]+wind[2]+platform[2]];
       }
-      return this.position;
+      return this.recoverMovement(dt,before,[dx,0,dz],move.startSolid||down.startSolid);
     }
     // Native airborne motion applies half the gravity step before computing
     // displacement and the other half afterward (0x435b38–0x435b90).
@@ -287,7 +293,19 @@ export class PlayerController {
     const fall=this.collider.trace(this.position,[this.position[0],this.position[1]+verticalSpeed*dt,this.position[2]],this.mins,this.maxs,this.modelIndices);
     this.position=fall.end; this.grounded=false;
     if(fall.fraction<1) { if(fall.modelIndex!==null)this.contacts.add(fall.modelIndex);this.grounded=fall.normal[1]>0.65 && verticalSpeed<=0; this.velocityY=0; }
-    if(this.grounded) {this.launchVelocityXZ=[0,0];this.lastSafe=[...this.position];this.jumpAge=Infinity;this.jumpKind=null;this.superJumpUsed=false;}
+    if(this.grounded) {this.launchVelocityXZ=[0,0];this.jumpAge=Infinity;this.jumpKind=null;this.superJumpUsed=false;}
+    return this.recoverMovement(dt,before,[dx,this.grounded?0:verticalSpeed*dt,dz],move.startSolid||fall.startSolid);
+  }
+  recoverMovement(dt,before,intended,embedded) {
+    const result=this.movementRecovery.update({dt,before,position:this.position,intended,embedded,
+      mins:this.mins,maxs:this.maxs,grounded:this.grounded,
+      trace:(a,b,mins,maxs)=>this.collider.trace(a,b,mins,maxs,this.modelIndices),
+      safe:p=>!this.collider.contents||!(this.collider.contents(p,this.mins,this.maxs,this.modelIndices)&0x60000)});
+    if(result){
+      this.recoveredThisStep=true;
+      this.position=result.position;this.grounded=result.grounded;this.resetVelocity();this.didJump=null;
+      this.contacts=new Set();this.lastSafe=[...this.position];
+    } else if(this.movementRecovery.history.length)this.lastSafe=[...this.movementRecovery.history.at(-1)];
     return this.position;
   }
 }

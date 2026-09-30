@@ -21,6 +21,7 @@ export function jesterTeleportParticles(effect,floorY=effect.position[1]) {
 // 0x44aef0 (null). Their animated projectile artwork is the complete flight
 // effect; strail belongs to Jester's teleport and enemy death effects here.
 // Mushroom's separate, explicitly created ribbon lives in ProjectileHazards.
+// Gargoyle bypasses that factory with its own CRcBlastEffect (gargoyle-blast.js).
 export class EnemyCombatEffects {
   constructor(world,gameplay){this.world=world;this.gameplay=gameplay;}
   update(batches) {

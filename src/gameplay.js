@@ -23,6 +23,8 @@ import { beginPlayerReaction, advancePlayerReaction, restorePlayerReaction } fro
 import { NATIVE_PROJECTILE_RADIUS, restoreProjectileCollision } from './projectile-collision.js';
 import { enemyProjectileOrigins } from './enemy-projectile-origins.js';
 import {createProjectileImpact,retainProjectileImpacts,restoreProjectileImpacts} from './projectile-impacts.js';
+import {createGargoyleBlast,advanceGargoyleBlasts,restoreGargoyleBlasts} from './gargoyle-blast.js';
+import {createRewardEffect,retainRewardEffects,restoreRewardEffects} from './reward-effects.js';
 
 const n = (value, fallback=0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
 const clamp = (value,min,max) => Math.max(min,Math.min(max,value));
@@ -48,7 +50,9 @@ function enemyDefinition(entity,settings,difficulty) {
 
 function itemActor(e) {
   const suffix=['s','m','l'][clamp(n(e.Type,1)-1,0,2)];
-  return {ItemCoin:'imoney'+suffix,ItemHealth:'ihealth'+suffix,ItemPotion:'ipotion',ItemMirror:'imirror',ItemLife:'ilife',ItemHart:'ihart',ItemHartContainer:'ihart'}[e.classname];
+  // Capacity pickups use the larger golden hartcontainer actor, not IHart's
+  // small red heart. Its imported INI supplies the size, lighting and spin.
+  return {ItemCoin:'imoney'+suffix,ItemHealth:'ihealth'+suffix,ItemPotion:'ipotion',ItemMirror:'imirror',ItemLife:'ilife',ItemHart:'hartcontainer',ItemHartContainer:'hartcontainer'}[e.classname];
 }
 
 /** Portable, deterministic reconstruction of common original entity behavior.
@@ -59,7 +63,8 @@ export class Gameplay {
     difficulty=normalizeDifficulty(save?.version===1&&save.level===level.id?save.difficulty:difficulty);
     this.level=level;this.onEvent=onEvent;this.settings=settings;this.difficulty=difficulty;
     this.time=0;this.hitCooldown=0;this.attackCooldown=0;this.previousUse=false;this.completed=false;
-    this.projectiles=[];this.nextProjectileId=1;this.projectileImpacts=[];
+    this.projectiles=[];this.gargoyleBlasts=[];this.nextProjectileId=1;this.projectileImpacts=[];
+    this.rewardEffects=[];
     this.hazards=new ProjectileHazards(settings,difficulty);this.environmentFeedbackCooldown=0;
     this.volumeCollider=level.collision?.nodes?new BspCollider(level.collision):null;
     this.liquidModels=new Set((level.groups||[]).filter(g=>visibleLiquidGroup(g,level.textures)).map(g=>g.model));
@@ -259,7 +264,7 @@ export class Gameplay {
   respawn() {
     this.cancelPlayerCharge();
     this.state.health=this.state.maxHealth;this.hitCooldown=2;this.completed=false;
-    this.hazards.clear();this.projectiles=[];this.environmentFeedbackCooldown=0;
+    this.hazards.clear();this.projectiles=[];this.gargoyleBlasts=[];this.environmentFeedbackCooldown=0;
     this.pendingPlayerAttack=null;this.playerAttackUntil=0;this.attackCooldown=0;
     this.playerReaction=beginPlayerReaction('respawn');
     for(const object of this.triggers)object.inside=false;
@@ -293,9 +298,19 @@ export class Gameplay {
     // container (2 max HP); the separate current-health value is unchanged.
     if(object.subtype==='hart'){this.state.maxHealth=Math.min(20,this.state.maxHealth+2);score=75;}
     this.state.score=Math.min(limits.score,this.state.score+score);if(n(object.entity.IsSecret))this.state.secrets++;
+    this.addRewardEffect('pickup',object,score);
     const feedback={coin:['Geldzak gevonden!','ICoinM.wav'],health:['Je voelt je weer beter.','IHealthM.wav'],potion:['Toverdrank gevonden!','IPotion.wav'],mirror:['Een stuk van de spiegel gevonden!','IMirror.wav'],life:['Een extra leven!','ILife.wav'],hart:['Een extra hart!','IHart.wav']}[object.subtype];
     this.emit('pickup',{id:object.id,kind:object.subtype,subtype:object.subtype,score,message:feedback?.[0],sound:feedback?.[1],state:{...this.state}});
     this.runEvent(object,'PickupCommand');
+  }
+
+  addRewardEffect(kind,object,score) {
+    const origin=this.objectPosition(object);
+    // Pickup callers use the entity origin; enemy smoke/score uses the
+    // defeated actor's bounding-box centre (native 0x49bc80).
+    const position=kind==='enemy'?(object.rewardPosition?.()||origin.map((v,i)=>v+((object.collisionMins?.[i]||0)+(object.collisionMaxs?.[i]||0))/2)):origin;
+    const effect=createRewardEffect(kind,score,position,this.time);
+    if(effect)this.rewardEffects=retainRewardEffects([...this.rewardEffects,effect],this.time);
   }
 
   destroy(object,depth=0) {
@@ -308,6 +323,7 @@ export class Gameplay {
     }
     if(object.kind==='enemy'){
       this.state.kills++;this.state.score=Math.min(playerInventoryLimits(this.settings).score,this.state.score+n(object.stats.PlayerScore,15));
+      this.addRewardEffect('enemy',object,n(object.stats.PlayerScore,15));
       object.pendingAttack=null;this.enemyAnimation(object,'death',this.enemyDuration(object,'death'));
       object.deathStartedAt=this.time;
       delete object.deathSmokeAnchors;
@@ -381,12 +397,16 @@ export class Gameplay {
       const kind=key.slice(2).replace(/^./,s=>s.toLowerCase());
       this.projectiles.push({id:`enemy-projectile-${this.nextProjectileId++}`,sourceId:object.id,kind,
         position,velocity,radius,collisionProfile:'native',life,damage:n(stats.Damage,1),gravity:n(stats.Gravity)*ENEMY_PROJECTILE_GRAVITY_SCALE,gravityUnits:'world',
+        ...(object.enemyType==='gargoyle'?{visualEffect:'gargoyleBlast'}:{}),
         ...(kind==='magicBall'?{homingSpeed:speed}:{}),age:0,spriteScale:n(stats.Size,.8)});
+      if(object.enemyType==='gargoyle'&&!this.gargoyleBlasts.some(e=>e.sourceId===object.id))
+        this.gargoyleBlasts.push(createGargoyleBlast(object.id,position,velocity,playerPosition.map((v,i)=>v+(i===1?28:0)),object.aiRandomState));
       this.emit('enemyProjectile',{id:object.id,kind,position:[...position]});
     }
   }
 
   updateProjectiles(dt,playerPosition,traceProjectile,lineOfSight=()=>true) {
+    if(!this.scripts?.enemiesFrozen)this.gargoyleBlasts=advanceGargoyleBlasts(this.gargoyleBlasts,dt);
     this.projectileImpacts=retainProjectileImpacts(this.projectileImpacts,this.time);
     const active=[];
     for(const projectile of this.projectiles) {
@@ -437,7 +457,7 @@ export class Gameplay {
         const lives=this.state.lives;
         if(hitPlayer)this.damage(projectile.damage,projectile.sourceId);
         this.emit('enemyProjectileImpact',{sourceId:projectile.sourceId,kind:projectile.kind,position:[...projectile.position],hitPlayer});
-        if(this.state.lives!==lives||this.state.health<=0){this.projectiles=[];this.hazards.retainProjectiles([]);return;}
+        if(this.state.lives!==lives||this.state.health<=0){this.projectiles=[];this.gargoyleBlasts=[];this.hazards.retainProjectiles([]);return;}
       } else if(projectile.age<projectile.life-1e-8)active.push(projectile);
     }
     this.projectiles=active;
@@ -452,6 +472,10 @@ export class Gameplay {
   }
 
   updateEnemy(object,dt,playerPosition,lineOfSight,traceEnemy) {
+    const recoveries=object.movementRecovery?.recoveries||0;
+    if(recoveries!==(object.lastMovementRecovery||0)){
+      this.navigation.pursuitJobs.delete(object);object.lastMovementRecovery=recoveries;
+    }
     object.attackTimer=Math.max(0,object.attackTimer-dt);
     resolveZombieSpawn(object,traceEnemy);
     if(updateEnemyAmbush(this,object,dt,playerPosition,lineOfSight,traceEnemy))return;
@@ -568,12 +592,14 @@ export class Gameplay {
         const strike=object.ranged?n(object.stats.DrawMotionPart,.5):n(object.stats.ShootMotionCollisionStart,.5);
         object.pendingAttack={at:this.time+duration*clamp(strike,0,1)};
         if(object.enemyType==='knight')object.pendingAttack.until=this.time+duration*clamp(n(object.stats.ShootMotionCollisionEnd,strike),clamp(strike,0,1),1);
-        let wait=n(object.stats.WaitTimeBetweenShots,.4);
+        // Native standing-shooter state 0x40a5ee repeats shoot1 immediately
+        // within a salvo; only its completed salvo enters the wait state.
+        let wait=object.enemyType==='gargoyle'?0:n(object.stats.WaitTimeBetweenShots,.4);
         if(object.ranged) {
           if(object.salvoRemaining<=0)object.salvoRemaining=enemySalvoSize(object);
           object.salvoRemaining--;
           if(object.salvoRemaining===0){
-            wait=n(object.stats.WaitTimeAfterSalvo,wait);object.relocateAfterSalvo=true;
+            wait=n(object.stats.WaitTimeAfterSalvo,wait);object.relocateAfterSalvo=object.enemyType!=='gargoyle';
             if(object.enemyType==='brutusb'){object.boneChargePending=true;wait=0;}
           }
         }
@@ -676,6 +702,7 @@ export class Gameplay {
 
   update(dt,playerPosition,{attack=false,use=false,forward=[0,0,-1],lineOfSight=()=>true,traceShot=null,traceEnemy=null,traceProjectile=null,traceBeam=null,releaseOrigin=null,aimTarget=null,attackTarget=null,touchedModels=[],environmentContents=0,previousPlayerPosition=playerPosition}={}) {
     dt=clamp(n(dt),0,0.1);this.time+=dt;this.playerPosition=v3(playerPosition);
+    this.rewardEffects=retainRewardEffects(this.rewardEffects,this.time);
     const wasRecovering=this.playerReaction?.phase==='death'||this.playerReaction?.phase==='respawn';
     this.updatePlayerReaction(dt);
     this.hitCooldown=Math.max(0,this.hitCooldown-dt);if(!this.scripts?.cutscene)this.attackCooldown=Math.max(0,this.attackCooldown-dt);
@@ -760,8 +787,10 @@ export class Gameplay {
       playerReaction:this.playerReaction?{...this.playerReaction}:null,
       playerCharge:this.playerCharge?{age:this.playerCharge.age}:null,
       pendingPlayerAttack:this.pendingPlayerAttack?{...this.pendingPlayerAttack,position:[...this.pendingPlayerAttack.position],forward:[...this.pendingPlayerAttack.forward]}:null,
+      gargoyleBlasts:restoreGargoyleBlasts(this.gargoyleBlasts),
       nextProjectileId:this.nextProjectileId,projectiles:this.projectiles.map(p=>({...p,position:[...p.position],velocity:[...p.velocity]})),
       projectileImpacts:restoreProjectileImpacts(this.projectileImpacts,this.time),
+      rewardEffects:restoreRewardEffects(this.rewardEffects,this.time),
       scripts:this.scripts?.snapshot(),checkpoint:{...this.checkpoint,position:[...this.checkpoint.position]},variables:[...this.variables],
       objects:this.objects.map(o=>({id:o.id,position:[...o.position],enabled:o.enabled,visible:o.visible,collected:o.collected,health:o.health,open:o.open,locked:o.locked,switchedOn:o.switchedOn,triggerCount:o.triggerCount,switchCount:o.switchCount,openFraction:o.openFraction,closeAt:o.closeAt,inside:o.inside,volume:o.volume,motionSpeed:o.motionSpeed,
         animationState:o.animationState,animationSerial:o.animationSerial,animationUntil:o.animationUntil,animationRate:o.animationRate,corpseUntil:o.corpseUntil,deathStartedAt:o.deathStartedAt,deathSmokeAnchors:o.deathSmokeAnchors?.map(p=>[...p]),deathSmokeVelocities:o.deathSmokeVelocities?.map(p=>[...p]),effectAge:o.effectAge,teleportEffectAge:o.teleportEffectAge,teleportEffectSerial:o.teleportEffectSerial,teleportTerminalSoundSerial:o.teleportTerminalSoundSerial,teleporterState:o.teleporterSnapshot?.()||o.teleporterState,beamContactDelay:o.beamContactDelay,beamTriggered:o.beamTriggered,secretFound:o.secretFound,actorAge:o.actorAge,lastAttackedAt:o.lastAttackedAt,rotation:o.rotation?[...o.rotation]:undefined,
@@ -798,6 +827,8 @@ export class Gameplay {
     this.hazards.restore(save.hazards);this.environmentFeedbackCooldown=Math.max(0,n(save.environmentFeedbackCooldown));this.hitCooldown=Math.max(0,n(save.hitCooldown));
     this.footstepState=save.footstepState?{phase:save.footstepState.phase,side:save.footstepState.side}:undefined;
     this.projectileImpacts=restoreProjectileImpacts(save.projectileImpacts,this.time);
+    this.rewardEffects=restoreRewardEffects(save.rewardEffects,this.time);
+    this.gargoyleBlasts=restoreGargoyleBlasts(save.gargoyleBlasts);
     this.nextProjectileId=Math.max(1,n(save.nextProjectileId,1));
     this.attackCooldown=Math.max(0,n(save.attackCooldown));this.playerAttackSerial=n(save.playerAttackSerial);this.playerAttackUntil=n(save.playerAttackUntil);
     this.playerReaction=restorePlayerReaction(save.playerReaction,this.state.health,this.state.lives);
@@ -809,6 +840,7 @@ export class Gameplay {
     const saved=new Map((save.objects||[]).map(o=>[o.id,o]));
     for(const object of this.objects) {
       const value=saved.get(object.id);if(!value)continue;
+      object.movementRecovery?.reset();delete object.lastMovementRecovery;
       if(Number.isFinite(value.health))object.restoredHealth=true;
       for(const key of ['enabled','visible','collected','open','locked','switchedOn','inside','grounded','alerted','relocateAfterSalvo','boneSkullPhase','boneChargePending','beamTriggered','secretFound'])if(typeof value[key]==='boolean')object[key]=value[key];
       for(const key of ['health','triggerCount','switchCount','openFraction','closeAt','volume','motionSpeed','animationSerial','animationUntil','corpseUntil','attackTimer','salvoRemaining','velocityY','lastSeenAt','lastAttackedAt','nextIdleAt','yaw','aiRandomState'])if(Number.isFinite(value[key]))object[key]=value[key];

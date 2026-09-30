@@ -1,5 +1,7 @@
 // Small collision helpers shared by enemy movement and projectile simulation.
 // Coordinates use the original world's Y-up units, like PlayerController.
+import {MovementRecovery} from './movement-recovery.js';
+
 export function resolveZombieSpawn(object,trace) {
   if(object.enemyType!=='zombie'||!object.enabled||!trace||object.patrol?.leftStart)return;
   const origin=String(object.entity.Origin||'').trim().split(/\s+/).map(Number);
@@ -11,7 +13,7 @@ export function resolveZombieSpawn(object,trace) {
   // by a few units. Resolve only a shallow overlap at the authored spawn;
   // do not change the original route or let zombies pass through grave walls.
   for(let i=0;i<12;i++) {
-    const hit=trace(position,position,mins,maxs);
+    const hit=trace(position,position,mins,maxs,object);
     if(!hit.startSolid){object.position=position;return;}
     const exit=hit.penetrations?.filter(p=>p.normal&&p.distance>0).sort((a,b)=>a.distance-b.distance)[0];
     if(!exit)return;
@@ -36,11 +38,14 @@ export function sweepPlayer(start,end,player,radius=0) {
 
 export function moveEnemy(object,delta,dt,trace) {
   const start=[...object.position];
-  if(!trace){object.position=start.map((v,i)=>v+delta[i]);return;}
+  // Explicit flight through authored scenery (for example the witch's
+  // cauldron takeoff) must not leave a recovery anchor inside that scenery.
+  if(!trace){object.movementRecovery?.reset();object.position=start.map((v,i)=>v+delta[i]);return;}
+  const sweep=(from,to,mins,maxs)=>trace(from,to,mins,maxs,object);
   const mins=object.collisionMins||[-12,0,-12],maxs=object.collisionMaxs||[12,45,12];
   const end=start.map((v,i)=>v+delta[i]);
-  const hit=trace(start,end,mins,maxs);
-  let position=hit.end;
+  const hit=sweep(start,end,mins,maxs);
+  let position=hit.end,embedded=!!hit.startSolid;
   if((object.flying||object.grounded&&Math.abs(hit.normal?.[1]??1)<.65)&&hit.fraction<1&&!hit.startSolid&&hit.normal) {
     // Keep the unblocked tangent instead of discarding the whole movement.
     // This also lets grounded patrols saved beside a corner reach their next
@@ -49,23 +54,41 @@ export function moveEnemy(object,delta,dt,trace) {
     const inward=remaining.reduce((sum,v,i)=>sum+v*hit.normal[i],0);
     if(inward<0){
       const slide=remaining.map((v,i)=>v-hit.normal[i]*inward);
-      position=trace(position,position.map((v,i)=>v+slide[i]),mins,maxs).end;
+      const slideHit=sweep(position,position.map((v,i)=>v+slide[i]),mins,maxs);
+      position=slideHit.end;embedded||=!!slideHit.startSolid;
     }
   }
   if(!object.flying&&object.grounded&&hit.fraction<1&&Math.hypot(delta[0],delta[2])>0) {
-    const up=trace(start,[start[0],start[1]+16,start[2]],mins,maxs);
+    const up=sweep(start,[start[0],start[1]+16,start[2]],mins,maxs);
     if(up.fraction===1) {
-      const over=trace(up.end,up.end.map((v,i)=>v+delta[i]),mins,maxs);
-      const down=trace(over.end,[over.end[0],over.end[1]-18,over.end[2]],mins,maxs);
+      const over=sweep(up.end,up.end.map((v,i)=>v+delta[i]),mins,maxs);
+      const down=sweep(over.end,[over.end[0],over.end[1]-18,over.end[2]],mins,maxs);
       const progress=p=>(p[0]-start[0])**2+(p[2]-start[2])**2;
       if(down.fraction<1&&down.normal[1]>.65&&progress(down.end)>progress(position))position=down.end;
     }
   }
   if(!object.flying) {
-    object.velocityY=Math.max(-(Number(object.stats.FallSpeed)||160),(object.velocityY||0)-800*dt);
-    const fall=trace(position,[position[0],position[1]+object.velocityY*dt,position[2]],mins,maxs);
+    object.velocityY=Math.max(-(Number(object.stats?.FallSpeed)||160),(object.velocityY||0)-800*dt);
+    const fall=sweep(position,[position[0],position[1]+object.velocityY*dt,position[2]],mins,maxs);
+    embedded||=!!fall.startSolid;
     position=fall.end;object.grounded=fall.fraction<1&&fall.normal[1]>.65&&object.velocityY<=0;
     if(fall.fraction<1)object.velocityY=0;
   }
   object.position=position;
+  // Scripted entrances, hanging spiders, turret anchors and retired actors
+  // deliberately hold poses that cannot be treated as ordinary locomotion.
+  const heldPhase=['unplaced','dormant','waking','descending','ascending'].includes(object.ambush?.phase)||
+    ['start','teleport','dormant','death'].includes(object.animationState)||
+    (object.boss&&object.boss.phase!=='fly');
+  const stationary=object.entity?.classname==='StandingEnemy'&&!delta.some(v=>Math.abs(v)>.001);
+  if(object.enabled===false||object.visible===false||object.health<=0||object.boss?.hidden||heldPhase||stationary) {
+    object.movementRecovery?.reset();return;
+  }
+  const recovery=object.movementRecovery??=new MovementRecovery();
+  const rescued=recovery.update({before:start,position,intended:delta,dt,mins,maxs,trace:sweep,
+    grounded:!!object.grounded,flying:!!object.flying,embedded,autonomous:true,safe:object.recoverySafePosition});
+  if(rescued) {
+    object.position=[...rescued.position];object.grounded=rescued.grounded;object.velocityY=0;
+    object.pursuit=null;object.flightDetour=null;
+  }
 }

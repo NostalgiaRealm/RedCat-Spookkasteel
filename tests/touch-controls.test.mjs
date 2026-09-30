@@ -122,7 +122,7 @@ test('move, look, attack and jump can be held independently with multiple pointe
     pointer(element('touch-jump'),'pointerdown',4);
     pointer(element('touch-attack'),'pointerdown',5);
     pointer(element('touch-look'),'pointermove',2,95,18);
-    assert.deepEqual(looks,[[25,-12]]);
+    assert.deepEqual(looks,[[75,-36]],'touch camera swipes receive the 3x sensitivity boost');
     assert.equal(controls.readInput().forward,1);
     assert.equal(controls.readInput().jump,true);
     assert.equal(controls.readInput().attack,true);
