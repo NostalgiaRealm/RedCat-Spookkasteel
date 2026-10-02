@@ -31,7 +31,8 @@ export function touchControlsEnabled(preference, environment) {
 }
 
 const EMPTY_INPUT = Object.freeze({forward:0,right:0,jump:false,descend:false,walk:false,attack:false,use:false});
-const HELD_ACTIONS = new Set(['jump', 'attack', 'use', 'descend']);
+// Skipping is a cutscene-only control, mapped to the existing hold-to-skip input.
+const HELD_ACTIONS = new Map([['jump','jump'], ['attack','attack'], ['skip','use'], ['descend','descend']]);
 // Finger travel is limited by the screen; keep swipes faster than mouse input.
 // The camera still applies the user's sensitivity setting to these deltas.
 const TOUCH_LOOK_GAIN = 3;
@@ -47,7 +48,6 @@ export class TouchControls {
     this.input = {...EMPTY_INPUT};
     this.listeners = [];
     this.disposed = false;
-    this.optionsOpen = false;
 
     this.element = document.createElement('div');
     this.element.id = 'touch-controls';
@@ -71,19 +71,12 @@ export class TouchControls {
     this.actions = document.createElement('div');
     this.actions.className = 'touch-actions';
     this.element.append(this.actions);
-    this.toolbar = document.createElement('div');
-    this.toolbar.className = 'touch-tools';
-    this.toolbar.id = 'touch-tools';
-    this.toolbar.hidden = true;
-    this.element.append(this.toolbar);
     this.buttons = {};
     for (const [name, label] of [
       ['walk','Lopen'], ['camera','Camera'], ['descend','Omlaag'],
-      ['use','Gebruik'], ['attack','Schieten'], ['jump','Spring'],
-      ['options','Meer'], ['save','Opslaan'], ['load','Laden'],
+      ['skip','Overslaan · 2 s'], ['attack','Schieten'], ['jump','Spring'],
     ]) {
-      const button = this.createControl(name, 'button', label,
-        name === 'save' || name === 'load' ? this.toolbar : this.actions);
+      const button = this.createControl(name, 'button', label, this.actions);
       button.type = 'button';
       button.textContent = label;
       button.setAttribute('aria-pressed', 'false');
@@ -97,8 +90,6 @@ export class TouchControls {
         }
       });
     }
-    this.buttons.options.setAttribute('aria-controls', this.toolbar.id);
-    this.buttons.options.setAttribute('aria-expanded', 'false');
 
     this.listen(window, 'pointerup', event => this.release(event));
     this.listen(window, 'pointercancel', event => this.cancel(event));
@@ -131,10 +122,9 @@ export class TouchControls {
 
   canUse(name) {
     return !this.disposed && this.enabled && this.context.playing &&
-      (!this.context.cutscene || name === 'use') &&
+      (this.context.cutscene ? name === 'skip' : name !== 'skip') &&
       (name !== 'descend' || this.context.noClip) &&
-      (name !== 'walk' || !this.context.noClip) &&
-      (!['save','load'].includes(name) || this.optionsOpen);
+      (name !== 'walk' || !this.context.noClip);
   }
 
   setEnabled(enabled) {
@@ -164,15 +154,11 @@ export class TouchControls {
     this.element.classList.toggle('touch-noclip', noClip);
     this.move.hidden = this.look.hidden = cutscene;
     for (const [name, button] of Object.entries(this.buttons)) {
-      button.hidden = (cutscene && name !== 'use') || (name === 'descend' && !noClip) || (name === 'walk' && noClip);
+      button.hidden = (cutscene ? name !== 'skip' : name === 'skip') || (name === 'descend' && !noClip) || (name === 'walk' && noClip);
     }
-    for (const [name, label] of [
-      ['use',cutscene ? 'Overslaan · 2 s' : 'Gebruik'],
-      ['jump',noClip ? 'Omhoog' : 'Spring'],
-    ]) {
-      this.buttons[name].textContent = label;
-      this.buttons[name].setAttribute('aria-label', label);
-    }
+    const jumpLabel = noClip ? 'Omhoog' : 'Spring';
+    this.buttons.jump.textContent = jumpLabel;
+    this.buttons.jump.setAttribute('aria-label', jumpLabel);
   }
 
   press(event, name, control) {
@@ -190,7 +176,7 @@ export class TouchControls {
     this.pointers.set(event.pointerId, pointer);
     try { control.setPointerCapture(event.pointerId); } catch { /* Global release still clears state. */ }
     if (name === 'move') this.updateMove(pointer, event);
-    else if (HELD_ACTIONS.has(name)) this.input[name] = true;
+    else if (HELD_ACTIONS.has(name)) this.input[HELD_ACTIONS.get(name)] = true;
     else this.activate(name);
     this.renderPressed();
   }
@@ -199,16 +185,7 @@ export class TouchControls {
     if (name === 'walk') {
       this.input.walk = !this.input.walk;
       this.renderPressed();
-    } else if (name === 'options') {
-      this.optionsOpen = !this.optionsOpen;
-      this.toolbar.hidden = !this.optionsOpen;
-      this.buttons.options.setAttribute('aria-expanded', String(this.optionsOpen));
-      this.renderPressed();
     } else if (name === 'camera') this.onAction('camera');
-    else if (name === 'save' || name === 'load') {
-      this.reset();
-      this.onAction(name);
-    }
   }
 
   drag(event) {
@@ -245,7 +222,7 @@ export class TouchControls {
       this.input.forward = this.input.right = 0;
       this.knob.style.transform = '';
     } else if (HELD_ACTIONS.has(pointer.name)) {
-      this.input[pointer.name] = [...this.pointers.values()].some(other => other.name === pointer.name);
+      this.input[HELD_ACTIONS.get(pointer.name)] = [...this.pointers.values()].some(other => other.name === pointer.name);
     }
     // Delete first: releasePointerCapture can dispatch lostpointercapture synchronously.
     try { pointer.control.releasePointerCapture(event.pointerId); } catch { /* Already released. */ }
@@ -262,7 +239,7 @@ export class TouchControls {
     this.move.classList.toggle('is-pressed', [...this.pointers.values()].some(pointer => pointer.name === 'move'));
     this.look.classList.toggle('is-pressed', [...this.pointers.values()].some(pointer => pointer.name === 'look'));
     for (const [name, button] of Object.entries(this.buttons)) {
-      const pressed = !!this.input[name] || (name === 'options' && this.optionsOpen) ||
+      const pressed = !!this.input[HELD_ACTIONS.get(name) || name] ||
         [...this.pointers.values()].some(pointer => pointer.name === name);
       button.classList.toggle('is-pressed', pressed);
       button.setAttribute('aria-pressed', String(pressed));
@@ -273,9 +250,6 @@ export class TouchControls {
     const pointers = [...this.pointers];
     this.pointers.clear();
     this.input = {...EMPTY_INPUT};
-    this.optionsOpen = false;
-    this.toolbar.hidden = true;
-    this.buttons.options.setAttribute('aria-expanded', 'false');
     this.knob.style.transform = '';
     for (const [id, pointer] of pointers) {
       try { pointer.control.releasePointerCapture(id); } catch { /* No active capture. */ }

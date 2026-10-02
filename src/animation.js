@@ -79,7 +79,7 @@ function compose(out, p, q) {
 export class ActorAnimator {
   constructor(data, geometry) {
     this.data=data;this.geometry=geometry;this.time=0;this.timeScale=1;this.loop=true;this.finished=false;this.enabled=true;
-    this.clip=null;this.name=null;
+    this.clip=null;this.name=null;this.sampledClip=null;this.sampledTime=NaN;
     this.transforms=data.bones.map(()=>new Float64Array(12));
     this.prepared=new Map((data.animations||[]).map(clip=>{
       const byName=new Map(clip.tracks.map(track=>[track.bone,track]));
@@ -98,6 +98,7 @@ export class ActorAnimator {
     // explicitly restarts it; selecting a state every frame must not replay it.
     if(this.clip===entry.clip && !restart){this.loop=loop;return true;}
     this.clip=entry.clip;this.tracks=entry.tracks;this.name=entry.clip.name;
+    this.sampledClip=null;
     this.loop=loop;this.time=0;this.finished=false;this.update(0);return true;
   }
 
@@ -108,6 +109,11 @@ export class ActorAnimator {
     this.time+=advance;
     if(duration>0 && this.loop)this.time=((this.time%duration)+duration)%duration;
     else {this.time=Math.max(0,Math.min(this.time,duration));this.finished=this.time>=duration;}
+    // Frozen, dormant and completed motions retain exactly the same pose.
+    // Keep their geometry version stable so GPU uploads and triangle collision
+    // caches are only invalidated by an actual pose change. Direct time seeks
+    // (saved poses and projectile origins) still sample their requested pose.
+    if(this.sampledClip===this.clip&&this.sampledTime===this.time)return;
     for(let i=0;i<this.data.bones.length;i++) {
       const bone=this.data.bones[i],track=this.tracks[i];
       translation(this.p,track?.translation,track?.tangents,this.time);
@@ -134,6 +140,7 @@ export class ActorAnimator {
     }
     position.needsUpdate=true;if(normal)normal.needsUpdate=true;
     this.geometry.computeBoundingBox();this.geometry.computeBoundingSphere();
+    this.sampledClip=this.clip;this.sampledTime=this.time;
   }
 }
 

@@ -15,6 +15,7 @@ import { RecoverySaves } from './recovery-saves.js';
 import { DIFFICULTIES, normalizeDifficulty } from './difficulty.js';
 import { validAdventureSave, readCampaignProgress, completeCampaignLevel, canStartCampaignLevel, chapterArtwork, campaignSkills, earnCampaignSkill } from './campaign-progress.js';
 import { TouchControls, normalizeTouchPreference, isMobileWeb, touchControlsEnabled } from './touch-controls.js';
+import { IntroPlayback } from './intro-playback.js';
 const $=id=>document.getElementById(id);
 const LEVELS=[{id:'lvl00a',name:'Het spookbos',subtitle:'Waar het avontuur begint'},{id:'lvl01a',name:'Het kasteel',subtitle:'Achter de kasteeldeur'},{id:'lvl02a',name:'Het kerkhof',subtitle:'Tussen de oude graven'},{id:'lvl03a',name:'De grotten',subtitle:'Diep onder het kasteel'},{id:'lvl04a',name:'De toren',subtitle:'Het geheim van de heks'}];
 const DEFAULTS={resolution:'native',fullscreen:false,fov:65,sensitivity:1,volume:0.6,autoIntro:true,camera:'third',noClip:false,difficulty:'Normal',touchControls:'auto'};
@@ -35,6 +36,7 @@ const mobileWeb=isMobileWeb(touchEnvironment);
 $('difficulty').replaceChildren(...DIFFICULTIES.map(({value,label})=>new Option(label,value)));
 if(![...$('resolution').options].some(o=>o.value===settings.resolution))settings.resolution='native';
 let selected=0,world=null,gameplay=null,mode='menu',pausedFromSettings=false,toastTimer,lastFrame=performance.now(),chapterTransition=null;
+let streamingWait=null;
 const autosave=new AutosaveClock();
 let recoveryError=false;
 const recovery=new RecoverySaves({onError:()=>{recoveryError=true;toast('Herstelpunten konden niet worden bewaard. Controleer de beschikbare lokale opslag.');if($('recovery-saves').open)renderRecoveryChoices();}});
@@ -43,7 +45,7 @@ let touchControls=null,touchEnabled=false;
 const gameplayAudio=new GameplayAudio(audio);
 const originalHud=new OriginalHud($('original-hud')),skipHold=new CutsceneSkipHold();
 originalHud.ready.catch(showError);
-const debriefing=new OriginalDebriefing($('debriefing'),continueDebriefing);
+const debriefing=new OriginalDebriefing($('debriefing'),continueDebriefing,{mobile:mobileWeb});
 debriefing.ready.catch(showError);
 try {renderer=new THREE.WebGLRenderer({canvas:$('game'),antialias:true,powerPreference:'high-performance'});renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.setPixelRatio(1);}catch(error){showError(new Error('WebGL 2 is niet beschikbaar. Controleer je grafische stuurprogramma. '+error.message));}
 function showError(error){console.error(error);$('fatal-message').textContent=error.message||String(error);$('fatal').hidden=false;$('loading').hidden=true;mode='error';touchControls?.reset();syncTouchUI();}
@@ -226,16 +228,17 @@ async function startLevel(index,save=null,progress=null,{resetRecovery=false}={}
     world.player.noClip=settings.noClip;if(save)world.player.restoreMotion(save.playerMotion);store(SETTINGS_KEY,settings);
     gameplay.playerPosition=[...world.player.position];
     const scripts=new ScriptHost(gameplay,world.scriptProgram,{motions:world.motions,dialogue:world.dialogue,isDialoguePlaying:()=>audio.dialoguePending});
-    await world.attachGameplay(gameplay);audio.setLevel(world.id);await audio.setSpatialWorld(world);audio.update(0,world.camera.position.toArray());startMusic();scripts.initialize(save?.game.scripts);world.syncModels();world.syncActors(0);
+    await world.attachGameplay(gameplay);audio.setLevel(world.id);await audio.setSpatialWorld(world);audio.pause();audio.update(0,world.camera.position.toArray());startMusic();scripts.initialize(save?.game.scripts);world.syncModels();world.syncActors(0);
     if(save)world.cameraControl.restore(world);
     world.updateCamera(1,true);audio.update(0,world.camera.position.toArray());selected=index;resize();updateCheatControls();renderHud();
+    await world.geometryStream.settle();world.updateRenderResidency();world.effects?.update(0);
     $('level-name').textContent=LEVELS[index].name;$('objective').textContent='Verzamel toverdrank en vind het spiegelstuk.';
     // A successful new adventure replaces its own recovery timeline only now,
     // after assets and scripts loaded. Other level transitions keep history.
     const initialSave=adventureSnapshot();
     if(await recovery.capture(initialSave,{reset:resetRecovery}))recoveryError=false;
     if(resetRecovery){store(SAVE_KEY,initialSave);refreshContinue();}
-    mode='playing';$('loading').hidden=true;$('hud').hidden=false;lastFrame=performance.now();autosave.reset();syncTouchUI();requestLook();
+    mode='playing';streamingWait=null;audio.resume();$('loading').hidden=true;$('hud').hidden=false;lastFrame=performance.now();autosave.reset();syncTouchUI();requestLook();
     toast(touchEnabled?'Stick links: bewegen · veeg rechts: kijken · Menu: pauzeren':'Klik om rond te kijken · WASD om te bewegen · Esc voor het menu');
     return true;
   }catch(error){next?.dispose();world=null;gameplay=null;showError(error);}
@@ -252,7 +255,7 @@ function showCheats(){
 }
 function closeCheats(){$('cheats').hidden=true;$('settings').hidden=false;$('open-cheats').focus();}
 function updateCheatControls(){
-  if(touchEnabled){$('controls-hint').textContent=settings.noClip?'Stick · vliegen · Omhoog / Omlaag · Schieten · Menu':'Stick · bewegen · veeg rechts · kijken · Spring · Schieten · Gebruik · Menu';return;}
+  if(touchEnabled){$('controls-hint').textContent=settings.noClip?'Stick · vliegen · Omhoog / Omlaag · Schieten · Menu':'Stick · bewegen · veeg rechts · kijken · Spring · Schieten · Menu';return;}
   $('controls-hint').textContent=settings.noClip?'NO-CLIP · WASD / pijlen · vliegen · SPATIE · omhoog · SHIFT · omlaag · CTRL / klik · aanval · ESC · menu':'WASD / pijlen · bewegen · SPATIE · springen · CTRL / klik · aanval · E · gebruiken · ESC · menu';
 }
 function applyNoClip(){
@@ -311,8 +314,10 @@ async function applySettings(){
   }catch(error){toast('Beeldinstellingen konden niet worden toegepast.');console.error(error);}
 }
 let introReturn='menu';
-async function playIntro(outro=false){introReturn=outro?'menu':mode;mode='intro';clearInputs();syncTouchUI();document.exitPointerLock?.();audio.pause();$('intro').hidden=false;const video=$('intro-video');video.controls=false;video.src=`assets/media/${outro?'outronl':'intronl'}.webm`;video.volume=settings.volume;try{await video.play();}catch{video.controls=true;}}
-function finishIntro(){const video=$('intro-video');video.pause();video.removeAttribute('src');video.load();$('intro').hidden=true;if(introReturn==='playing' || introReturn==='paused'){mode='paused';$('pause').hidden=false;}else returnMenu();}
+const introPlayback=new IntroPlayback($('intro-video'),$('intro-play'),{mutedAutoplay:!window.desktop,onError:introFailed});
+function playIntro(outro=false){introReturn=outro?'menu':mode;mode='intro';clearInputs();syncTouchUI();document.exitPointerLock?.();audio.pause();$('intro').hidden=false;const format=$('intro-video').canPlayType('video/webm; codecs="vp9, opus"')?'webm':'mp4';return introPlayback.start(`assets/media/${outro?'outronl':'intronl'}.${format}`,settings.volume);}
+function finishIntro(){introPlayback.stop();$('intro').hidden=true;if(introReturn==='playing' || introReturn==='paused'){mode='paused';$('pause').hidden=false;}else returnMenu();}
+function introFailed(){if(mode!=='intro')return;finishIntro();showError(new Error('Het filmpje kon niet worden afgespeeld. Controleer of de CD-media zijn geïmporteerd met tools/import_assets.py.'));}
 $('start').onclick=requestAdventureStart;$('continue').onclick=loadSave;$('resume').onclick=resume;$('restart').onclick=()=>startLevel(selected);$('save').onclick=()=>saveGame();$('return-menu').onclick=returnMenu;
 $('game-menu').onclick=pause;$('load-save').onclick=loadSave;
 $('open-about').onclick=()=>$('about').showModal();$('close-about').onclick=()=>$('about').close();
@@ -321,7 +326,7 @@ $('cancel-new-adventure').onclick=cancelAdventureStart;$('confirm-new-adventure'
 $('new-adventure-warning').addEventListener('cancel',event=>{event.preventDefault();cancelAdventureStart();});
 $('open-settings').onclick=showSettings;$('pause-settings').onclick=showSettings;$('close-settings').onclick=closeSettings;$('apply-settings').onclick=applySettings;$('fov').oninput=()=>$('fov-value').textContent=$('fov').value+'°';
 $('open-cheats').onclick=showCheats;$('close-cheats').onclick=closeCheats;$('back-cheats').onclick=closeCheats;$('cheat-supplies').onclick=applyCheatSupplies;$('cheat-noclip').onchange=applyNoClip;$('cheat-unlock-levels').onclick=applyUnlockAllLevels;
-$('open-help').onclick=()=>$('help').hidden=false;$('close-help').onclick=()=>$('help').hidden=true;$('fatal-close').onclick=()=>{$('fatal').hidden=true;returnMenu();};$('play-intro').onclick=()=>playIntro();$('skip-intro').onclick=finishIntro;$('intro-video').onended=finishIntro;$('intro-video').onerror=()=>{finishIntro();showError(new Error('Intro ontbreekt. Importeer de CD-media met tools/import_assets.py.'));};
+$('open-help').onclick=()=>$('help').hidden=false;$('close-help').onclick=()=>$('help').hidden=true;$('fatal-close').onclick=()=>{$('fatal').hidden=true;returnMenu();};$('play-intro').onclick=()=>playIntro();$('skip-intro').onclick=finishIntro;$('intro-video').onended=finishIntro;$('intro-video').onerror=introFailed;
 $('quit').onclick=()=>{saveGame(true);if(window.desktop)window.desktop.quit();else{stopAudio();toast('Je kunt dit venster nu sluiten.');}};
 $('game').addEventListener('click',requestLook);
 window.addEventListener('keydown',e=>{
@@ -341,14 +346,38 @@ document.addEventListener('pointerlockchange',()=>{if(!touchEnabled&&!document.p
 window.addEventListener('blur',pause);document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
 window.addEventListener('resize',()=>{clearInputs();resize();});window.addEventListener('beforeunload',()=>saveGame(true));
 function readInput(){const touch=touchControls?.readInput()||{},clamp=value=>Math.max(-1,Math.min(1,value));return {forward:clamp(Number(keys.has('KeyW')||keys.has('ArrowUp'))-Number(keys.has('KeyS')||keys.has('ArrowDown'))+(touch.forward||0)),right:clamp(Number(keys.has('KeyD'))-Number(keys.has('KeyA'))+(touch.right||0)),turn:Number(keys.has('ArrowLeft'))-Number(keys.has('ArrowRight')),jump:keys.has('Space')||!!touch.jump,descend:keys.has('ShiftLeft')||keys.has('ShiftRight')||!!touch.descend,walk:keys.has('ShiftLeft')||keys.has('ShiftRight')||!!touch.walk,attack:mouseAttack||keys.has('ControlLeft')||keys.has('ControlRight')||!!touch.attack,use:(keys.has('KeyE')||!!touch.use)&&!skipHold.consumed};}
-function frame(now){requestAnimationFrame(frame);const realDt=Math.max(0,(now-lastFrame)/1000),dt=Math.min(realDt,0.05);lastFrame=now;syncTouchUI();if(world&&mode==='playing'){
+function waitForWorldView(now){
+  if(!world||mode!=='playing'){
+    if(streamingWait?.overlay&&mode!=='loading')$('loading').hidden=true;
+    streamingWait=null;return false;
+  }
+  const stream=world.geometryStream;if(!stream)return false;
+  // The world updates residency after moving the camera. Only poll it here
+  // while that view is incomplete; scanning twice on ordinary frames adds
+  // work without preparing any additional camera position.
+  if(!stream.readyForView)stream.update();
+  if(stream.error){showError(stream.error);streamingWait=null;return true;}
+  if(!stream.readyForView){
+    if(!streamingWait){streamingWait={since:now,overlay:false};audio.pause();}
+    if(now-streamingWait.since>250){
+      streamingWait.overlay=true;$('loading-title').textContent='De omgeving laden…';
+      $('loading-detail').textContent='Je avontuur gaat zo verder.';$('loading').hidden=false;
+    }
+    // No simulation, dialogue, recovery clock or autosave advances behind a
+    // loading view. The frame clock still advances, avoiding a catch-up step.
+    return true;
+  }
+  if(streamingWait){if(streamingWait.overlay)$('loading').hidden=true;streamingWait=null;audio.resume();}
+  return false;
+}
+function frame(now){requestAnimationFrame(frame);const realDt=Math.max(0,(now-lastFrame)/1000),dt=Math.min(realDt,0.05);lastFrame=now;syncTouchUI();if(waitForWorldView(now))return;if(world&&mode==='playing'){
   recovery.advance(realDt);
   try{if(skipHold.update(realDt,keys.has('KeyE')||!!touchControls?.readInput().use,!!gameplay.scripts?.cutscene))skipDialogue();updateSkipIndicator();const input=readInput();world.update(dt,input);syncTouchUI();gameplayAudio.update(dt,world,gameplay,input);audio.update(dt,world.camera.position.toArray());}catch(error){showError(error);return;}
   if(mode==='playing'){autosave.update(realDt,()=>saveGame(true));if(recovery.needsCapture)saveGame(true);}
   renderHud();
   advanceChapterTransition(realDt);
 }if(mode==='debriefing')debriefing.update(realDt);if(world&&['playing','paused'].includes(mode))world.render();}
-touchControls=new TouchControls({onLook:(dx,dy)=>{if(mode==='playing')world?.look(dx,dy);},onGesture:()=>{if(mode==='playing')audio.resume();},onAction:action=>{if(mode!=='playing')return;if(action==='camera')toggleCamera();if(action==='save')saveGame();if(action==='load')loadSave();}});
+touchControls=new TouchControls({onLook:(dx,dy)=>{if(mode==='playing')world?.look(dx,dy);},onGesture:()=>{if(mode==='playing'&&!streamingWait)audio.resume();},onAction:action=>{if(mode!=='playing')return;if(action==='camera')toggleCamera();}});
 syncTouchSettings();
 window.__redcat={get world(){return world;},get gameplay(){return gameplay;},get mode(){return mode;},get settings(){return settings;},get audio(){return audio;},get touchEnabled(){return touchEnabled;},recovery,touchControls,readInput,startLevel,pause,resume,saveGame,loadSave,resize,renderHud};
 store(PROGRESS_KEY,campaign);renderChapters();refreshContinue();resize();requestAnimationFrame(frame);

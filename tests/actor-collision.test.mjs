@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import {BspCollider,PlayerController} from '../src/collision.js';
 import {triangleCollider} from '../src/actor-collision.js';
 import {CastleWorld} from '../src/world.js';
+import {ActorAnimator,ActorStateAnimator} from '../src/animation.js';
 const empty=()=>new BspCollider({planes:[],nodes:[],leaves:[],leafSides:[],models:[]});
 function plane(collider) {
   collider.actors.push({id:'wall',blocksPlayer:true,canBeShot:true,blocksLOS:false,min:[0,-100,-100],max:[0,100,100],triangles:[
@@ -44,6 +45,27 @@ test('original rotated graveyard statue blocks its pedestal while a disabled blo
   const start=[1824,-63.95,3510],end=[1824,-63.95,3300];
   const hit=c.trace(start,end,[-11,0,-11],[11,56,11]);assert.ok(hit.fraction<1);assert.equal(hit.actorId,'statue');
   object.visible=false;assert.equal(c.trace(start,end,[-11,0,-11],[11,56,11]).fraction,1);world.dispose();geometry.dispose();
+});
+
+test('a dormant graveyard zombie reuses its triangle collision until its pose or placement changes',()=>{
+  const data=JSON.parse(readFileSync(new URL('../assets/actors/zombie.json',import.meta.url)));
+  const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(data.positions,3));geometry.setIndex(data.indices);
+  const mesh=new THREE.Mesh(geometry),actor=new THREE.Group();actor.add(mesh);actor.userData={mesh,template:{data}};
+  const animator=new ActorAnimator(data,geometry),states=new ActorStateAnimator(animator),world=new CastleWorld({},{});
+  world.gameplay={time:0};const object={id:'zombie',kind:'enemy',health:6,animationState:'dormant'};
+  try {
+    states.update(object,0);
+    const first=world.actorCollisionRecord(object,actor,{canBeShot:true}).triangles;
+    for(let i=0;i<120;i++){
+      states.update(object,1/120);
+      assert.equal(world.actorCollisionRecord(object,actor,{canBeShot:true}).triangles,first);
+    }
+    actor.position.x=100;
+    const moved=world.actorCollisionRecord(object,actor,{canBeShot:true}).triangles;assert.notEqual(moved,first);
+    object.animationState='walk';states.update(object,.3);
+    const walking=world.actorCollisionRecord(object,actor,{canBeShot:true}).triangles;assert.notEqual(walking,moved);
+    assert.notDeepEqual(walking,moved);
+  } finally {world.dispose();geometry.dispose();}
 });
 
 const dungeon=JSON.parse(readFileSync(new URL('../data/levels/lvl03a/level.json',import.meta.url)));

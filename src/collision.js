@@ -38,10 +38,11 @@ function clipFaces(faces,plane,sign) {
 }
 // Motions use an explicit pivot. Collision remains a world-axis-aligned player
 // box; rotating that box into model space would change its shape and clearance.
+const ZERO_TRANSLATION=[0,0,0],IDENTITY_ROTATION=[0,0,0,1];
 const makeTransform = value => {
   if (!value) return null;
-  const origin=value.origin ?? [0,0,0], translation=value.translation ?? [0,0,0];
-  const rotation=value.rotation ?? [0,0,0,1];
+  const origin=value.origin ?? ZERO_TRANSLATION, translation=value.translation ?? ZERO_TRANSLATION;
+  const rotation=value.rotation ?? IDENTITY_ROTATION;
   if(origin.length!==3 || translation.length!==3 || rotation.length!==4 ||
     ![...origin,...translation,...rotation].every(Number.isFinite)) throw new TypeError('Invalid BSP model transform');
   const length=Math.hypot(...rotation);
@@ -53,14 +54,22 @@ const makeTransform = value => {
   };
   const pivot=rotate(origin), offset=origin.map((v,i)=>v-pivot[i]+translation[i]);
   const point = p => rotate(p).map((v,i)=>v+offset[i]);
-  const plane = p => { const n=rotate(p); return [...n,p[3]+dot(n,offset)]; };
+  // BSP geometry is immutable after loading. Cache these derived surfaces for
+  // this pose so player, enemy, lighting and contents queries share the work.
+  const planes=new Map(),boxes=new Map();
+  const plane = p => {
+    let transformed=planes.get(p);
+    if(!transformed){const n=rotate(p);transformed=[...n,p[3]+dot(n,offset)];planes.set(p,transformed);}
+    return transformed;
+  };
   const bounds = (min,max) => {
+    const cached=boxes.get(min);if(cached?.max===max)return cached.bounds;
     const low=[Infinity,Infinity,Infinity], high=[-Infinity,-Infinity,-Infinity];
     for(let mask=0;mask<8;mask++) {
       const corner=point(min.map((v,i)=>mask&(1<<i)?max[i]:v));
       for(let i=0;i<3;i++) { low[i]=Math.min(low[i],corner[i]); high[i]=Math.max(high[i],corner[i]); }
     }
-    return [low,high];
+    const bounds=[low,high];boxes.set(min,{max,bounds});return bounds;
   };
   return {plane,bounds};
 };
@@ -83,7 +92,28 @@ const collisionModelBounds = ({models,nodes,leaves}) => models.map((model,index)
   return [min,max];
 });
 export class BspCollider {
-  constructor(data) { this.data = data; this.disabledModels = new Set(); this.modelTransforms = new Map(); this.actors=[];this.modelBounds=collisionModelBounds(data); }
+  constructor(data) { this.data = data; this.disabledModels = new Set(); this.modelTransforms = new Map(); this.actors=[];this.modelBounds=collisionModelBounds(data);this.modelTransformCache=new Map(); }
+  transformForModel(index) {
+    // Motion samples replace their objects frequently; moving-solid traces
+    // also temporarily set old/destination poses and then restore them. Compare
+    // all components, including the pivot, instead of object or Map identity.
+    if(index===0)return null;
+    const value=this.modelTransforms.get(index);
+    if(!value){this.modelTransformCache.delete(index);return null;}
+    const origin=value.origin??ZERO_TRANSLATION,translation=value.translation??ZERO_TRANSLATION,rotation=value.rotation??IDENTITY_ROTATION;
+    const cached=this.modelTransformCache.get(index),values=cached?.values;
+    if(values&&origin.length===3&&translation.length===3&&rotation.length===4) {
+      let same=true;
+      for(let i=0;i<3;i++)if(origin[i]!==values[i]||translation[i]!==values[i+3]){same=false;break;}
+      if(same)for(let i=0;i<4;i++)if(rotation[i]!==values[i+6]){same=false;break;}
+      if(same)return cached.transform;
+    }
+    // Validate before caching. Bad or zero quaternions must keep throwing even
+    // if the model previously had a valid cached pose.
+    const transform=makeTransform(value);
+    this.modelTransformCache.set(index,{values:[...origin,...translation,...rotation],transform});
+    return transform;
+  }
   /** Contents of the actual intersected BSP cells, including non-solid liquid
    * leaves without collision sides. Clipping the query hull along the tree
    * avoids treating a concave moat's enclosing bounds as one damaging box. */
@@ -93,7 +123,7 @@ export class BspCollider {
     const isPoint=mins.every((v,i)=>v===maxs[i]);let contents=0;
     for(const index of modelIndices) {
       const model=models[index];if(!model||this.disabledModels.has(index))continue;
-      const transform=index===0?null:makeTransform(this.modelTransforms.get(index));
+      const transform=this.transformForModel(index);
       const [boundsMin,boundsMax]=transform&&model.min&&model.max?transform.bounds(model.min,model.max):[model.min,model.max];
       if(boundsMin&&boundsMax&&boundsMin.some((v,i)=>v>high[i]||boundsMax[i]<low[i]))continue;
       const visit=(id,faces)=>{
@@ -119,19 +149,15 @@ export class BspCollider {
     for(const modelIndex of modelIndices) {
       if(!models[modelIndex] || this.disabledModels.has(modelIndex)) continue;
       // Model zero is the stationary world, even if a caller supplies a transform.
-      const transform=modelIndex===0?null:makeTransform(this.modelTransforms.get(modelIndex));
+      const transform=this.transformForModel(modelIndex);
       const bounds=this.modelBounds[modelIndex];
       if(bounds) {
         const [min,max]=transform?transform.bounds(...bounds):bounds;
         // Include touching boxes and roundoff at rotated corners.
         if(min.some((v,i)=>v>boxMax[i]+1e-7||max[i]<boxMin[i]-1e-7))continue;
       }
-      const visited = new Set(), transformedPlanes = new Map();
-      const plane = index => {
-        if(!transform) return planes[index];
-        if(!transformedPlanes.has(index)) transformedPlanes.set(index,transform.plane(planes[index]));
-        return transformedPlanes.get(index);
-      };
+      const visited = new Set();
+      const plane = index => transform?transform.plane(planes[index]):planes[index];
       const checkLeaf = index => {
         if (visited.has(index)) return; visited.add(index);
         const leaf=leaves[index];

@@ -50,6 +50,7 @@ export class DecalEffects {
     for(const mesh of surfaces)mesh.updateWorldMatrix(true,false);
     const ray=new THREE.Raycaster(),normalMatrix=new THREE.Matrix3();
     const trace=(start,end)=>{
+      if(world.geometryStream)return world.geometryStream.traceSurface(start,end);
       const a=new THREE.Vector3(...start),direction=new THREE.Vector3(...end).sub(a),length=direction.length();direction.normalize();
       ray.set(a,direction);ray.far=length;
       const hit=ray.intersectObjects(surfaces,false)[0];if(!hit)return null;

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {BspCollider,PlayerController} from '../src/collision.js';
 import {Gameplay} from '../src/gameplay.js';
-import {visibleLiquidGroup,surfaceAlphaTest,liquidDamageRate} from '../src/liquids.js';
+import {visibleLiquidGroup,visibleLiquidGroups,surfaceAlphaTest,liquidDamageRate} from '../src/liquids.js';
 
 const WATER=0x1000c,OOZE=0x2000c;
 const playerMins=[-11,0,-11],playerMaxs=[11,56,11];
@@ -137,6 +137,40 @@ test('original water surfaces remain visible, keyed and nonblocking',()=>{
   assert.equal(visibleLiquidGroup({texture:17,alpha:1},forest.textures),false,'an opaque editor brush is not water artwork');
   assert.equal(visibleLiquidGroup({texture:0,alpha:.5},[{name:'stone'}]),false);
   assert.equal(surfaceAlphaTest({alpha:1},{colorKey:true}),.5,'foliage retains the original cutout');
+});
+
+test('graveyard moving-platform moat renders its opaque authored damage-trigger water',()=>{
+  const data=level('lvl02a'),groups=data.groups.filter(g=>g.model===135),visible=visibleLiquidGroups(data);
+  assert.equal(groups.length,1);
+  assert.equal(data.textures[groups[0].texture].name,'Air_Wtr00');
+  assert.equal(groups[0].alpha,1);
+  assert.equal(visible.has(groups[0]),true);
+  const game=new Gameplay(data,{deferInit:true});
+  assert.equal(game.modelState(135).visible,true);
+  assert.equal(game.modelState(135).solid,false);
+  const restored=new Gameplay(data,{deferInit:true});restored.restore(game.snapshot());
+  assert.equal(restored.modelState(135).visible,true);
+  assert.equal(restored.modelState(135).solid,false);
+  const collider=new BspCollider(data.collision);
+  assert.equal(collider.trace([2500,550,-700],[2500,480,-700],playerMins,playerMaxs,[135]).fraction,1,'water is not a solid platform');
+  const contact=new Gameplay({...data,entities:data.entities.filter(e=>e.classname==='%Model%'||e.Model==='killwater')},{deferInit:true});
+  contact.update(.02,[2500,508,-700]);close(contact.state.health,8,'original 100 damage per second remains');
+  contact.update(.02,[2659,528.71,-743]);close(contact.state.health,8,'standing above water on a platform is safe');
+});
+
+test('opaque liquid visibility leaves editor helpers and zero-alpha triggers hidden',()=>{
+  const newlyVisible=[];
+  for(const id of ['lvl00a','lvl01a','lvl02a','lvl03a','lvl04a']){
+    const data=level(id),visible=visibleLiquidGroups(data);
+    for(const group of data.groups){
+      if(group.alpha===0)assert.equal(visible.has(group),false,`${id} model ${group.model}: invisible face`);
+      if(visibleLiquidGroup(group,data.textures))assert.equal(visible.has(group),true,'existing translucent water remains visible');
+      if(visible.has(group)&&group.alpha===1)newlyVisible.push([id,group.model]);
+    }
+    if(id==='lvl02a')for(const model of [42,43])assert.equal(data.groups.some(g=>g.model===model&&visible.has(g)),false);
+    if(id==='lvl03a')for(const model of [168,176,180])assert.equal(data.groups.some(g=>g.model===model&&visible.has(g)),false);
+  }
+  assert.deepEqual(newlyVisible,[['lvl02a',135]]);
 });
 
 test('contents damage uses ooze and death flags independently of plain water',()=>{

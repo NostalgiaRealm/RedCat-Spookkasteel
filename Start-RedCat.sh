@@ -1,6 +1,18 @@
 #!/usr/bin/env sh
 set -eu
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+# Let Chromium follow the display refresh instead of inheriting MangoHud's
+# global FPS cap. Keep an explicit per-launch cap and all other HUD settings.
+case "${MANGOHUD-}:${LD_PRELOAD-}" in
+  1:*|*libMangoHud*)
+    hud_options=$(printf '%s' "${MANGOHUD_CONFIG-}" | tr -d '[:space:]')
+    case ",$hud_options," in
+      *,fps_limit=*) ;;
+      *) MANGOHUD_CONFIG="${MANGOHUD_CONFIG:-read_cfg},fps_limit=0"
+         export MANGOHUD_CONFIG ;;
+    esac
+    ;;
+esac
 # The display backend must be selected before Electron loads the main script.
 # Preserve an explicit user override (for example --ozone-platform=wayland).
 has_platform=false

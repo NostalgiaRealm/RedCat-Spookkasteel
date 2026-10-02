@@ -6,7 +6,7 @@ import { EnemyNavigation, enemyRandom } from './enemy-navigation.js';
 import {initializeEnemySalvo,enemySalvoSize,usesTouchPursuit,chooseTouchPursuit} from './enemy-combat-native.js';
 import { PLAYER_SHOOT_MOTION, PLAYER_SUPER_CHARGE, playerShotDefinition, sweepActor, advancePlayerProjectile } from './player-projectiles.js';
 import { BspCollider } from './collision.js';
-import { visibleLiquidGroup, liquidDamageRate } from './liquids.js';
+import { visibleLiquidGroups, liquidDamageRate } from './liquids.js';
 import { ProjectileHazards, mushroomTrailDefinition } from './projectile-hazards.js';
 import { advanceProjectileAnimation } from './projectile-animation.js';
 import { ENEMY_PROJECTILE_GRAVITY_SCALE, enemyProjectileLifetime, restoreEnemyProjectileFlight, retargetMagicProjectile } from './enemy-projectiles.js';
@@ -67,7 +67,7 @@ export class Gameplay {
     this.rewardEffects=[];
     this.hazards=new ProjectileHazards(settings,difficulty);this.environmentFeedbackCooldown=0;
     this.volumeCollider=level.collision?.nodes?new BspCollider(level.collision):null;
-    this.liquidModels=new Set((level.groups||[]).filter(g=>visibleLiquidGroup(g,level.textures)).map(g=>g.model));
+    this.liquidModels=new Set([...visibleLiquidGroups(level)].map(g=>g.model));
     this.playerAttackSerial=0;this.playerAttackUntil=0;this.pendingPlayerAttack=null;
     this.navigation=new EnemyNavigation(level,settings.game?.WayPointSystem);
     this.objects=[];this.names=new Map();this.modelObjects=new Map();this.unsupportedCommands=new Set();this.variables=new Map();

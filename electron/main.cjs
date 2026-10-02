@@ -1,6 +1,11 @@
-const { app, BrowserWindow, ipcMain, protocol, net, screen, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain, protocol, net, screen, Menu, shell } = require('electron');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
+const aboutLinks = new Set([
+  'https://ko-fi.com/nostalgiarealm',
+  'https://www.nostalgiarealm.com/',
+  'https://www.youtube.com/@Nostalgia_Realm'
+]);
 // A local secure origin lets the same frontend run in desktop and future mobile shells.
 protocol.registerSchemesAsPrivileged([{ scheme: 'redcat', privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true } }]);
 // The original artwork is sRGB; use the same output space on every desktop.
@@ -28,7 +33,10 @@ app.whenReady().then(() => {
     title: 'RedCat Spookkasteel', backgroundColor: '#101920',
     webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true }
   });
-  win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    if (aboutLinks.has(url)) shell.openExternal(url).catch(error => console.error('Could not open About link:', error));
+    return { action: 'deny' };
+  });
   win.webContents.on('will-navigate', (event, url) => { if (!url.startsWith('redcat://game/')) event.preventDefault(); });
   ipcMain.handle('display:apply', async (_event, options) => {
     if (!options || typeof options.fullscreen !== 'boolean') throw new Error('Invalid display options');

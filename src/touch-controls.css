@@ -52,7 +52,7 @@
   position: absolute;
   top: max(110px, 19%);
   right: max(12px, env(safe-area-inset-right));
-  bottom: calc(max(22px, env(safe-area-inset-bottom)) + var(--touch-size) * 2 + var(--touch-gap) + 68px);
+  bottom: calc(max(22px, env(safe-area-inset-bottom)) + var(--touch-size) * 2 + var(--touch-gap) + 20px);
   width: 49%;
   border-radius: 24px;
 }
@@ -75,12 +75,12 @@
   right: max(20px, env(safe-area-inset-right));
   bottom: max(22px, env(safe-area-inset-bottom));
   display: grid;
-  grid-template-columns: repeat(3, var(--touch-size));
+  grid-template-columns: repeat(2, var(--touch-size));
   grid-template-rows: repeat(2, var(--touch-size));
   gap: var(--touch-gap);
   pointer-events: none;
 }
-.touch-actions button, .touch-tools button {
+.touch-actions button {
   padding: 3px;
   width: 100%;
   height: 100%;
@@ -95,41 +95,24 @@
   box-shadow: 0 3px 12px #0003;
   transition: background .1s, border-color .1s;
 }
-.touch-actions button.is-pressed, .touch-tools button.is-pressed {
+.touch-actions button.is-pressed {
   background: #b58e49da;
   border-color: #ffe0a2;
 }
 #touch-walk { grid-column: 1; grid-row: 1; }
 #touch-camera { grid-column: 2; grid-row: 1; }
-#touch-descend { grid-column: 3; grid-row: 1; }
-#touch-use { grid-column: 1; grid-row: 2; background-color: #284638b8; }
-#touch-attack { grid-column: 2; grid-row: 2; background-color: #753c31b8; }
-#touch-jump { grid-column: 3; grid-row: 2; background-color: #826338b8; }
-#touch-options {
-  position: absolute;
-  right: 0;
-  bottom: calc(100% + 8px);
-  width: 68px;
-  height: 44px;
-  border-radius: 22px;
-}
-.touch-tools {
-  position: absolute;
-  right: calc(max(20px, env(safe-area-inset-right)) + 76px);
-  bottom: calc(max(22px, env(safe-area-inset-bottom)) + var(--touch-size) * 2 + var(--touch-gap) + 8px);
-  display: flex;
-  gap: 6px;
-  pointer-events: none;
-}
-.touch-tools button { width: 64px; height: 44px; border-radius: 16px; }
-.touch-actions #touch-use.is-pressed,
+#touch-descend { grid-column: 1; grid-row: 1; }
+#touch-skip { background-color: #284638b8; }
+#touch-attack { grid-column: 1; grid-row: 2; background-color: #753c31b8; }
+#touch-jump { grid-column: 2; grid-row: 2; background-color: #826338b8; }
+.touch-actions #touch-skip.is-pressed,
 .touch-actions #touch-attack.is-pressed,
 .touch-actions #touch-jump.is-pressed { background-color: #b58e49ed; }
 .touch-cutscene .touch-actions {
   display: block;
   bottom: max(20px, env(safe-area-inset-bottom));
 }
-.touch-cutscene #touch-use { width: 148px; height: 48px; border-radius: 24px; }
+.touch-cutscene #touch-skip { width: 148px; height: 48px; border-radius: 24px; }
 .touch-input #cutscene-skip {
   right: calc(max(20px, env(safe-area-inset-right)) + 158px);
   bottom: calc(max(20px, env(safe-area-inset-bottom)) + 2px);
@@ -167,19 +150,14 @@
   #touch-controls { --touch-stick: 132px; --touch-size: 52px; --touch-gap: 7px; }
   #touch-move { left: max(14px, env(safe-area-inset-left)); }
   .touch-actions { right: max(14px, env(safe-area-inset-right)); }
-  .touch-tools { right: calc(max(14px, env(safe-area-inset-right)) + 76px); }
   #touch-look { top: max(110px, 22%); width: 48%; }
 }
 @media (max-width: 360px), (max-height: 400px) {
   #touch-controls { --touch-stick: 112px; --touch-size: 46px; --touch-gap: 6px; }
   #touch-move { left: max(12px, env(safe-area-inset-left)); bottom: max(12px, env(safe-area-inset-bottom)); }
   .touch-actions { right: max(12px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); }
-  .touch-tools {
-    right: calc(max(12px, env(safe-area-inset-right)) + 76px);
-    bottom: calc(max(12px, env(safe-area-inset-bottom)) + var(--touch-stick) + 8px);
-  }
   .touch-actions button { border-radius: 14px; font-size: 10px; }
-  #touch-look { top: 90px; bottom: calc(max(12px, env(safe-area-inset-bottom)) + var(--touch-size) * 2 + var(--touch-gap) + 60px); }
+  #touch-look { top: 90px; bottom: calc(max(12px, env(safe-area-inset-bottom)) + var(--touch-size) * 2 + var(--touch-gap) + 12px); }
   .touch-look-hint { bottom: 4px; font-size: 10px; }
 }
 @media (max-height: 320px) {

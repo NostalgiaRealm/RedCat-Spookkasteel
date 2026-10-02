@@ -152,17 +152,37 @@ test('repeated frame context preserves a hold; actual transitions clear it and u
   assert.equal(controls.readInput().descend,true);
   controls.setContext({cutscene:true});
   assert.deepEqual(controls.readInput(),idle);
-  assert.equal(element('touch-use').textContent,'Overslaan · 2 s');
+  assert.equal(element('touch-skip').textContent,'Overslaan · 2 s');
   assert.equal(element('touch-move').hidden,true);
   assert.equal(element('touch-look').hidden,true);
   assert.equal(element('touch-attack').hidden,true);
   pointer(element('touch-jump'),'pointerdown',3);
   assert.equal(controls.readInput().jump,false);
-  pointer(element('touch-use'),'pointerdown',4);
+  pointer(element('touch-skip'),'pointerdown',4);
   assert.equal(controls.readInput().use,true,'skip remains held for the existing two-second timer');
   controls.setContext({playing:false});
   assert.deepEqual(controls.readInput(),idle);
   assert.equal(controls.element.hidden,true);
+}));
+
+test('skip is available only in cutscenes and clears use when leaving them', () => withControls(({controls,element}) => {
+  const skip=element('touch-skip');
+  assert.equal(skip.hidden,true);
+  pointer(skip,'pointerdown',1);
+  assert.equal(controls.readInput().use,false);
+  controls.setContext({cutscene:true});
+  assert.equal(skip.hidden,false);
+  pointer(skip,'pointerdown',2);
+  pointer(skip,'pointerdown',3);
+  assert.equal(controls.readInput().use,true);
+  pointer(skip,'pointerup',2);
+  assert.equal(controls.readInput().use,true,'another finger still owns the skip hold');
+  pointer(skip,'pointerup',3);
+  assert.equal(controls.readInput().use,false);
+  pointer(skip,'pointerdown',4);
+  controls.setContext({cutscene:false});
+  assert.equal(skip.hidden,true);
+  assert.deepEqual(controls.readInput(),idle);
 }));
 
 test('cancel, capture loss, blur, visibility, resize, disable, and reset clear every held action', () => {
@@ -190,7 +210,7 @@ test('cancel, capture loss, blur, visibility, resize, disable, and reset clear e
   });
 });
 
-test('camera, walk, and save/load toolbar actions respond once per gesture', () => {
+test('camera and walk respond once per gesture without obsolete use or save/load controls', () => {
   const actions = [];
   let gestures = 0;
   withControls(({controls,element}) => {
@@ -202,17 +222,8 @@ test('camera, walk, and save/load toolbar actions respond once per gesture', () 
     }
     assert.deepEqual(actions,['camera']);
     assert.equal(controls.readInput().walk,true);
-    for (const name of ['save','load']) {
-      pointer(element('touch-options'),'pointerdown',2);
-      pointer(element('touch-options'),'pointerup',2);
-      assert.equal(element('touch-tools').hidden,false);
-      assert.equal(element('touch-options').getAttribute('aria-expanded'),'true');
-      pointer(element(`touch-${name}`),'pointerdown',3);
-      assert.equal(element('touch-tools').hidden,true);
-      assert.deepEqual(controls.readInput(),idle);
-    }
-    assert.deepEqual(actions,['camera','save','load']);
-    assert.equal(gestures,6);
+    for (const name of ['use','options','tools','save','load']) assert.equal(element(`touch-${name}`),undefined);
+    assert.equal(gestures,2);
   },{onAction:name => actions.push(name),onGesture:() => gestures++});
 });
 

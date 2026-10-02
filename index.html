@@ -24,7 +24,20 @@
 </div>
 <dialog id="about" class="panel about-panel" aria-labelledby="about-title">
 <div class="panel-top"><h2 id="about-title">Over</h2><button id="close-about" class="close" type="button" aria-label="Terug naar het hoofdmenu" autofocus>×</button></div>
-<p>RedCat Spookkasteel</p><p>Versie <strong>0.9.4</strong></p>
+<p>RedCat Spookkasteel</p><p>Versie <strong>0.9.5</strong></p>
+<section class="about-section" aria-labelledby="about-donations-title">
+<h3 id="about-donations-title">🫰 Doneren</h3>
+<p>Doneer om dit project te ondersteunen via: <a href="https://ko-fi.com/nostalgiarealm" target="_blank" rel="noopener noreferrer">https://ko-fi.com/nostalgiarealm</a></p>
+<p>Of met cryptovaluta:</p>
+<dl class="donation-addresses">
+<dt>Ethereum:</dt><dd>0xd2489447b93d2925ec7bfc8da96130547bac4167</dd>
+<dt>Bitcoin:</dt><dd>1B1XsKaiJzdW4mFtvkpbyTyuTAvc53MTah</dd>
+<dt>Ethereum Classic:</dt><dd>0xbd1bd031e9da5fd509bf1e8b2adaab895dfd606c</dd>
+<dt>Litecoin:</dt><dd>LMMp1yyS2iwhESkh633a6SzmFA3mEHhzXT</dd>
+</dl>
+</section>
+<section class="about-section" aria-labelledby="about-website-title"><h3 id="about-website-title">💾 Website</h3><p><a href="https://www.nostalgiarealm.com/" target="_blank" rel="noopener noreferrer">https://www.nostalgiarealm.com/</a></p></section>
+<section class="about-section" aria-labelledby="about-youtube-title"><h3 id="about-youtube-title">📺 YouTube</h3><p><a href="https://www.youtube.com/@Nostalgia_Realm" target="_blank" rel="noopener noreferrer">https://www.youtube.com/@Nostalgia_Realm</a></p></section>
 </dialog>
 <dialog id="new-adventure-warning" class="panel new-adventure-warning" aria-labelledby="new-adventure-title" aria-describedby="new-adventure-message">
 <h2 id="new-adventure-title">Opgeslagen avontuur overschrijven?</h2>
@@ -37,8 +50,8 @@
 <div id="recovery-options"></div><p id="recovery-status" class="settings-note" role="status"></p>
 </dialog>
 <div id="loading" class="overlay" hidden><div class="panel loading-panel"><div class="spinner"></div><div class="eyebrow">EVEN GEDULD</div><h2 id="loading-title">Het kasteel wordt wakker…</h2><p id="loading-detail">De originele wereld wordt geladen.</p></div></div>
-<div id="intro" class="screen intro" hidden><video id="intro-video" playsinline preload="none"></video><button id="skip-intro" class="secondary">Overslaan →</button></div>
-<section id="debriefing" aria-label="Overzicht van het level" hidden><div class="debriefing-frame"><canvas aria-hidden="true"></canvas><p class="accessible-hud" role="status"></p><button type="button">Druk op SCHIETEN om verder te gaan</button></div></section>
+<div id="intro" class="screen intro" hidden><video id="intro-video" playsinline preload="none"></video><div class="intro-actions"><button id="intro-play" class="secondary" type="button" hidden>Geluid inschakelen</button><button id="skip-intro" class="secondary" type="button">Overslaan →</button></div></div>
+<section id="debriefing" aria-label="Overzicht van het level" hidden><div class="debriefing-frame"><canvas aria-hidden="true"></canvas><p class="accessible-hud" role="status"></p><button type="button">KLIK/TIK hier om verder te gaan</button></div></section>
 <div id="hud" hidden>
 <canvas id="original-hud" aria-label="Gezondheid, levens, toverdrank, punten en gezondheid van de vijand"></canvas>
 <div class="accessible-hud"><span>Gezondheid <b id="health"></b></span><span>Levens <b id="lives"></b></span><span>Punten <b id="score"></b></span><span>Toverdrank <b id="potions"></b></span><span>Spiegelstukken <b id="mirror"></b></span><span id="level-name"></span><span id="objective"></span><span id="render-info"></span><span id="controls-hint"></span></div>
@@ -69,7 +82,7 @@
 <label class="setting"><span><b>Vrij vliegen (no-clip)</b><small>Vlieg door muren en buiten het level. WASD of de stick volgt je kijkrichting; Spatie / Omhoog stijgt, Shift / Omlaag daalt.</small></span><input id="cheat-noclip" type="checkbox"></label>
 <p class="settings-note">Uitschakelen in een muur of buiten het level brengt je terug naar een veilige plek.</p><p id="cheat-status" class="cheat-status" role="status"></p>
 <button id="back-cheats" class="secondary cheats-link">← Terug naar instellingen</button></section></div>
-<div id="help" class="overlay" hidden><section class="panel"><div class="panel-top"><h2>Op avontuur</h2><button id="close-help" class="close" aria-label="Sluiten">×</button></div><p><b>Aanraakbediening:</b> beweeg met de stick links en veeg rechts om rond te kijken. Spring, Schieten en Gebruik werken zolang je ze aanraakt. Houd Overslaan twee seconden vast tijdens een tussenfilmpje. Lopen schakelt rustig lopen in of uit; Camera wisselt de weergave. Meer bevat Opslaan en Laden; Menu opent pauze, instellingen en cheats. Bij vrij vliegen zijn Omhoog en Omlaag beschikbaar.</p><dl class="key-guide"><dt>W A S D / pijlen</dt><dd>Bewegen</dd><dt>Muis</dt><dd>Rondkijken</dd><dt>Spatie</dt><dd>Springen</dd><dt>Shift</dt><dd>Rustig lopen</dd><dt>Linkermuisknop / Ctrl</dt><dd>Aanvallen</dd><dt>E</dt><dd>Deur gebruiken</dd><dt>V</dt><dd>Camera wisselen</dd><dt>F5 / F9</dt><dd>Opslaan / laden</dd><dt>Esc</dt><dd>Pauzeren</dd></dl><p>Je avontuur wordt elke minuut automatisch opgeslagen. Je kunt ook zelf opslaan met F5. Zit je vast? Kies in het menu Eerder opgeslagen avontuur laden om ongeveer 2, 5 of 10 minuten speeltijd terug te gaan.</p><p>Verzamel schatten, toverdrank en spiegelstukken. Klik in het spel om met de muis rond te kijken.</p></section></div>
+<div id="help" class="overlay" hidden><section class="panel"><div class="panel-top"><h2>Op avontuur</h2><button id="close-help" class="close" aria-label="Sluiten">×</button></div><p><b>Aanraakbediening:</b> beweeg met de stick links en veeg rechts om rond te kijken. Spring en Schieten werken zolang je ze aanraakt. Houd Overslaan twee seconden vast tijdens een tussenfilmpje. Lopen schakelt rustig lopen in of uit; Camera wisselt de weergave. Menu opent pauze, instellingen en cheats. Bij vrij vliegen zijn Omhoog en Omlaag beschikbaar.</p><dl class="key-guide"><dt>W A S D / pijlen</dt><dd>Bewegen</dd><dt>Muis</dt><dd>Rondkijken</dd><dt>Spatie</dt><dd>Springen</dd><dt>Shift</dt><dd>Rustig lopen</dd><dt>Linkermuisknop / Ctrl</dt><dd>Aanvallen</dd><dt>E</dt><dd>Deur gebruiken</dd><dt>V</dt><dd>Camera wisselen</dd><dt>F5 / F9</dt><dd>Opslaan / laden</dd><dt>Esc</dt><dd>Pauzeren</dd></dl><p>Je avontuur wordt elke minuut automatisch opgeslagen. Je kunt ook zelf opslaan met F5. Zit je vast? Kies in het menu Eerder opgeslagen avontuur laden om ongeveer 2, 5 of 10 minuten speeltijd terug te gaan.</p><p>Verzamel schatten, toverdrank en spiegelstukken. Klik in het spel om met de muis rond te kijken.</p></section></div>
 <div id="fatal" class="overlay" hidden><section class="panel"><h2>Het avontuur kon niet starten</h2><p id="fatal-message"></p><button id="fatal-close" class="primary">Terug naar het menu</button></section></div>
 <script type="module" src="src/main.js"></script>
 </body></html>

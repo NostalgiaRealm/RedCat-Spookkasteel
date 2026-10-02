@@ -1,13 +1,15 @@
 import {chromium, devices} from 'playwright';
 import {spawn} from 'node:child_process';
-import {mkdir, rm, writeFile} from 'node:fs/promises';
+import {mkdir, writeFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
 import assert from 'node:assert/strict';
 
 // Focused browser smoke: one forest scene, real Chromium multi-touch input,
 // and the menus needed to operate it without a physical keyboard or mouse.
 const port = Number(process.env.TOUCH_TEST_PORT || 4197);
 const origin = `http://127.0.0.1:${port}`;
-const artifacts = 'artifacts';
+process.env.TMPDIR = 'current_work';
+const artifacts = resolve(`current_work/touch-scenes-${Date.now()}`);
 const report = {errors: [], checks: []};
 const server = spawn(process.execPath, ['tools/serve.mjs'], {
   env: {...process.env, PORT: String(port)}, stdio: ['ignore', 'pipe', 'inherit'],
@@ -80,7 +82,7 @@ async function setting(page, value, fromPause = false, touch = true) {
 async function layout(page, name) {
   const result = await page.evaluate(() => {
     const vertical = window.__redcat.settings.noClip ? 'touch-descend' : 'touch-walk';
-    const ids = ['touch-move', 'touch-jump', 'touch-attack', 'touch-use', vertical, 'touch-camera', 'game-menu'];
+    const ids = ['touch-move', 'touch-jump', 'touch-attack', vertical, 'touch-camera', 'game-menu'];
     return {
       viewport: [innerWidth, innerHeight],
       overflow: document.documentElement.scrollWidth > innerWidth + 1,
@@ -122,10 +124,11 @@ async function targetMeterScreenshot(page, name) {
 
 try {
   await mkdir(artifacts, {recursive: true});
-  browser = await chromium.launch({
+  const profile = await chromium.launchPersistentContext(resolve(artifacts, 'browser-profile'), {
     executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome', headless: true,
     args: ['--use-angle=gl'],
   });
+  browser = profile.browser();
   const context = await browser.newContext({
     ...devices['Pixel 7'], viewport: {width: 390, height: 844}, deviceScaleFactor: 1,
   });
@@ -173,18 +176,18 @@ try {
   await tap(page, '#resume');
   await page.locator('#touch-controls').waitFor({state: 'visible'});
   await page.locator('#cutscene-skip').waitFor({state: 'visible'});
-  const use = await center(page, '#touch-use');
-  await fingers.down(1, use);
+  const skip = await center(page, '#touch-skip');
+  await fingers.down(1, skip);
   await page.waitForFunction(() => Number(document.getElementById('cutscene-skip').getAttribute('aria-valuenow')) >= 25);
   assert.equal(await page.evaluate(() => window.__redcat.gameplay.scripts.cutscene), true);
   await fingers.release();
   await page.waitForFunction(() => document.getElementById('cutscene-skip').getAttribute('aria-valuenow') === '0');
   await page.evaluate(() => {
     const host = window.__redcat.gameplay.scripts, skip = host.skipCutscene.bind(host);
-    document.getElementById('touch-use').addEventListener('pointerdown', () => {window.__touchSkipStart = performance.now();});
+    document.getElementById('touch-skip').addEventListener('pointerdown', () => {window.__touchSkipStart = performance.now();});
     host.skipCutscene = (...args) => {window.__touchSkipMilliseconds = performance.now() - window.__touchSkipStart; return skip(...args);};
   });
-  await fingers.down(1, use);
+  await fingers.down(1, skip);
   await page.waitForFunction(() => Number(document.getElementById('cutscene-skip').getAttribute('aria-valuenow')) >= 45);
   await page.screenshot({path: `${artifacts}/touch-cutscene-hold.png`});
   await page.waitForFunction(() => !window.__redcat.gameplay.scripts.cutscene, {}, {timeout: 15000});
@@ -242,24 +245,24 @@ try {
   const before = await page.evaluate(() => ({position: [...window.__redcat.world.player.position], yaw: window.__redcat.world.yaw, pitch: window.__redcat.world.pitch}));
   await fingers.down(1, move); await fingers.move(1, {x: move.x + 22, y: move.y - 42});
   await fingers.down(2, look); await fingers.move(2, {x: look.x - 35, y: look.y + 22});
-  await fingers.down(3, jump); await fingers.down(4, attack); await fingers.down(5, await center(page, '#touch-use'));
+  await fingers.down(3, jump); await fingers.down(4, attack);
   const held = await page.evaluate(() => window.__redcat.readInput());
   assert.ok(held.forward > .3 && held.right > .1, JSON.stringify(held));
-  assert.equal(held.jump, true); assert.equal(held.attack, true); assert.equal(held.use, true);
+  assert.equal(held.jump, true); assert.equal(held.attack, true); assert.equal(held.use, false);
   assert.ok(Math.hypot(held.forward, held.right) <= 1.001, 'joystick diagonal is normalized');
   await page.waitForFunction(() => window.__touchAttacks > 0);
-  assert.equal(await page.evaluate(() => window.__redcat.gameplay.previousUse), true, 'touch Use reaches the real gameplay update');
+  assert.equal(await page.locator('#touch-use, #touch-options, #touch-tools, #touch-save, #touch-load').count(), 0, 'obsolete touch controls are absent');
   const after = await page.evaluate(() => ({position: [...window.__redcat.world.player.position], yaw: window.__redcat.world.yaw, pitch: window.__redcat.world.pitch, attacks: window.__touchAttacks}));
   assert.ok(Math.hypot(...after.position.map((v, i) => v - before.position[i])) > 5, 'real player movement');
   assert.ok(after.position[1] > before.position[1], 'jump button flies upward in no-clip');
   assert.notEqual(after.yaw, before.yaw); assert.notEqual(after.pitch, before.pitch);
   await fingers.up(3);
   const partial = await page.evaluate(() => window.__redcat.readInput());
-  assert.equal(partial.jump, false); assert.equal(partial.attack, true); assert.equal(partial.use, true);
+  assert.equal(partial.jump, false); assert.equal(partial.attack, true); assert.equal(partial.use, false);
   assert.ok(partial.forward > .3, 'releasing jump keeps another finger moving');
-  await fingers.release(); await neutral(page, 'all five fingers released');
+  await fingers.release(); await neutral(page, 'all four fingers released');
   report.multitouch = {held, before, after};
-  check('five simultaneous fingers move/look/jump/fire/use and release independently');
+  check('four simultaneous fingers move/look/jump/fire and release independently');
 
   const descend = await center(page, '#touch-descend');
   const high = await page.evaluate(() => window.__redcat.world.player.position[1]);
@@ -282,20 +285,6 @@ try {
   assert.deepEqual(await page.evaluate(() => [window.__redcat.world.yaw, window.__redcat.world.pitch]), fixedBefore);
   await page.evaluate(() => {window.__redcat.gameplay.scripts.camera = null; window.__redcat.world.updateCamera(1, true);});
   check('no-clip descend, pointercancel and authored fixed-camera look suppression');
-
-  await tap(page, '#touch-options');
-  await tap(page, '#touch-save');
-  assert.equal(await page.locator('#touch-tools').isVisible(), false);
-  const directSave = await page.evaluate(() => JSON.parse(localStorage.getItem('redcat.save.v1')));
-  await page.evaluate(() => {window.__redcat.world.player.position[0] += 700;});
-  await tap(page, '#touch-options');
-  await tap(page, '#touch-load');
-  await page.waitForFunction(() => window.__redcat.mode === 'playing', {}, {timeout: 90000});
-  const directLoaded = await page.evaluate(() => [...window.__redcat.world.player.position]);
-  assert.ok(Math.hypot(...directLoaded.map((v, i) => v - directSave.position[i])) < 2,
-    'direct touch load restores an earlier checkpoint without pausing and overwriting it');
-  await neutral(page, 'direct load clears input');
-  check('More tray saves and restores a checkpoint directly without pause autosave');
 
   await fingers.down(1, move); await fingers.move(1, {x: move.x, y: move.y - 42});
   await fingers.down(2, attack); await page.evaluate(() => window.__redcat.pause());
@@ -377,9 +366,8 @@ try {
   await electron.close();
   check('desktop detection, persistent forced On and Electron auto suppression');
   assert.deepEqual(report.errors, []);
-  await rm(`${artifacts}/touch-failure.png`, {force: true});
   await writeFile(`${artifacts}/touch-scenes.json`, JSON.stringify(report, null, 2) + '\n');
-  console.log(`PASS ${report.checks.length} focused touch integration groups; artifacts/touch-scenes.json`);
+  console.log(`PASS ${report.checks.length} focused touch integration groups; ${artifacts}/touch-scenes.json`);
 } catch(error) {
   report.failure = error.stack || String(error);
   const failedPage = browser?.contexts().flatMap(context => context.pages()).find(page => !page.isClosed());

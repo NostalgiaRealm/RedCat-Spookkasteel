@@ -47,7 +47,7 @@ try{
   assert.equal(await page.evaluate(()=>window.__redcat.mode),'debriefing');
   assert.equal(await page.evaluate(()=>window.__redcat.gameplay.state.score),summary.score);
   await page.waitForTimeout(1100);
-  await page.getByRole('button',{name:'Druk op SCHIETEN om verder te gaan'}).click();
+  await page.getByRole('button',{name:'KLIK/TIK hier om verder te gaan'}).click();
   await page.waitForFunction(()=>window.__redcat.mode==='playing'&&window.__redcat.world.id==='lvl01a',null,{timeout:20000});
   const result=await page.evaluate(()=>({...window.__mirrorResult,finalLevel:window.__redcat.world.id}));
   assert.equal(result.completed,true);assert.equal(result.initialPending,true);assert.equal(result.ended,true);

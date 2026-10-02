@@ -4,7 +4,7 @@ import { moveSolidPlayer } from './moving-solids.js';
 import { ActorAnimator, ActorStateAnimator } from './animation.js';
 import { sampleCameraRoute } from './script-camera.js';
 import { PlayerCameraControl } from './camera-control.js';
-import { visibleLiquidGroup, surfaceAlphaTest } from './liquids.js';
+import { visibleLiquidGroups, surfaceAlphaTest } from './liquids.js';
 import { trailOpacity } from './projectile-hazards.js';
 import { projectileVisibilityScale } from './projectile-visibility.js';
 import { projectileAnimationFrame } from './projectile-animation.js';
@@ -24,6 +24,8 @@ import { createActorLighting, updateActorLighting, applyActorLighting } from './
 import { ActorWorldLighting } from './actor-world-lighting.js';
 import { createActorFloorLighting } from './actor-floor-lighting.js';
 import { ActorLightVisibility } from './actor-light-visibility.js';
+import { WorldGeometryStream } from './world-streaming.js';
+import { ActorRenderResidency } from './actor-render-residency.js';
 const json = async url => { const response=await fetch(url); if(!response.ok) throw new Error(`Ontbrekend spelbestand: ${url}`); return response.json(); };
 const binary = async url => {const response=await fetch(url);if(!response.ok)throw new Error(`Ontbrekend spelbestand: ${url}`);return response.arrayBuffer();};
 const point = e => (e.Origin || e.origin || '0 0 0').trim().split(/\s+/).map(Number);
@@ -83,8 +85,8 @@ export class CastleWorld {
     this.id=id;const base=`data/levels/${id}/`;this.level=await json(base+'level.json');const data=this.level;
     [this.scriptProgram,this.motions,this.dialogue]=await Promise.all([json(`data/davi/${id}.json`),json(`data/motions/${id}.json`),json('data/dialogue/nl.json')]);
     onProgress('Originele geometrie en belichting laden…');
-    const [meshBuffer,textures,lm,lmUv,lmFrames,floorMetadata,floorBytes,lightVisibility,lightPvs]=await Promise.all([
-      binary(base+data.mesh.file),Promise.all(data.textures.map(t=>this.texture(base+t.file))),
+    const [meshBuffer,lm,lmUv,lmFrames,floorMetadata,floorBytes,lightVisibility,lightPvs]=await Promise.all([
+      binary(base+data.mesh.file),
       data.mesh.lightmap?this.texture(base+data.mesh.lightmap.file,true):null,
       data.mesh.lightmap?binary(base+data.mesh.lightmap.uvFile):null,
       data.mesh.lightmap?.framesFile?binary(base+data.mesh.lightmap.framesFile):null,
@@ -93,42 +95,36 @@ export class CastleWorld {
       json(`data/visibility/${id}.json`),binary(`data/visibility/${id}.bin`)
     ]);
     if(lm){lm.channel=1;lm.generateMipmaps=false;lm.minFilter=THREE.LinearFilter;lm.wrapS=lm.wrapT=THREE.ClampToEdgeWrapping;}
-    const interleaved=new THREE.InterleavedBuffer(new Float32Array(meshBuffer),11);
-    const position=new THREE.InterleavedBufferAttribute(interleaved,3,0),normal=new THREE.InterleavedBufferAttribute(interleaved,3,3),uv=new THREE.InterleavedBufferAttribute(interleaved,2,6),color=new THREE.InterleavedBufferAttribute(interleaved,3,8);
-    const uv1=lmUv?new THREE.BufferAttribute(new Float32Array(lmUv),2):null;
-    const lightFrame=lmFrames?new THREE.InterleavedBuffer(new Float32Array(lmFrames),8):null;
-    if(lightFrame&&lightFrame.count!==position.count)throw new Error('Onjuiste belichtingsgegevens voor '+id);
-    const lightU=lightFrame?new THREE.InterleavedBufferAttribute(lightFrame,3,0):null;
-    const lightV=lightFrame?new THREE.InterleavedBufferAttribute(lightFrame,3,3):null;
-    const lightMinUV=lightFrame?new THREE.InterleavedBufferAttribute(lightFrame,2,6):null;
+    const vertices=new Float32Array(meshBuffer),frames=lmFrames?new Float32Array(lmFrames):null;
+    if(frames&&frames.length/8!==vertices.length/11)throw new Error('Onjuiste belichtingsgegevens voor '+id);
     const names=new Map(data.entities.filter(e=>e.classname==='%Model%').map(e=>[e['%name%'],Number(e.Model)]));
     this.modelNames=names;
     const triggerModels=triggerOnlyModels(data.entities,names);
     const invisibleModels=new Set();
     this.physicalModels=[0];
     for(let i=1;i<data.collision.models.length;i++)if(!triggerModels.has(i))this.physicalModels.push(i);
-    for(const group of data.groups) {
+    const liquidGroups=visibleLiquidGroups(data);
+    const groups=data.groups.filter(group=>{
       const skyBoundary=id==='lvl02a'&&Boolean(group.flags&4);
-      if(triggerModels.has(group.model)&&!visibleLiquidGroup(group,data.textures) || group.flags&4&&!skyBoundary)continue;
-      const geometry=this.track(new THREE.BufferGeometry());
-      geometry.setAttribute('position',position);geometry.setAttribute('normal',normal);geometry.setAttribute('uv',uv);geometry.setAttribute('color',color);
-      if(uv1)geometry.setAttribute('uv1',uv1);geometry.setDrawRange(group.start,group.count);
-      if(lightFrame){geometry.setAttribute('nativeLightU',lightU);geometry.setAttribute('nativeLightV',lightV);geometry.setAttribute('nativeLightMinUV',lightMinUV);}
-      const fullbright=Boolean(group.flags&2),gouraud=Boolean(group.flags&32);
-      // The graveyard stacks rooms above authored SKY boundaries. Preserve
-      // their depth before drawing scenery, with the original cube background
-      // supplying their color. Dropping these polygons exposes the upper map.
-      // BSP faces already have outward normals and CCW winding. Rendering
-      // their backs exposes the far face through cutout gates as a second fence.
-      const material=this.track(new THREE.MeshBasicMaterial(skyBoundary?
-        {colorWrite:false,depthWrite:true,side:THREE.DoubleSide}:
-        {map:textures[group.texture],vertexColors:(!lm || gouraud)&&!fullbright,lightMap:fullbright || gouraud?null:lm,lightMapIntensity:1,side:THREE.FrontSide,transparent:group.alpha<1,opacity:group.alpha,depthWrite:group.alpha>=1,alphaTest:surfaceAlphaTest(group,data.textures[group.texture])}));
-      const mesh=new THREE.Mesh(geometry,material);mesh.frustumCulled=false;mesh.visible=!invisibleModels.has(group.model);mesh.userData.model=group.model;
-      if(skyBoundary){mesh.renderOrder=-100;this.skyBoundaryMeshes.push(mesh);}
-      this.scene.add(mesh);if(!this.modelMeshes.has(group.model))this.modelMeshes.set(group.model,[]);this.modelMeshes.get(group.model).push(mesh);
-    }
+      return !(triggerModels.has(group.model)&&!liquidGroups.has(group) || group.flags&4&&!skyBoundary);
+    });
+    this.geometryStream=new WorldGeometryStream(this,{
+      vertices,uv:lmUv?new Float32Array(lmUv):null,frames,visibility:lightVisibility,pvs:new Uint8Array(lightPvs),groups,
+      textureFor:index=>this.texture(base+data.textures[index].file),
+      materialFor:group=>{
+        const skyBoundary=id==='lvl02a'&&Boolean(group.flags&4),fullbright=Boolean(group.flags&2),gouraud=Boolean(group.flags&32);
+        // Preserve the graveyard's authored sky masks and one-sided fence
+        // artwork. Only resource residency changes; brush state is separate.
+        return this.track(new THREE.MeshBasicMaterial(skyBoundary?
+          {colorWrite:false,depthWrite:true,side:THREE.DoubleSide}:
+          {vertexColors:(!lm || gouraud)&&!fullbright,lightMap:fullbright || gouraud?null:lm,lightMapIntensity:1,side:THREE.FrontSide,transparent:group.alpha<1,opacity:group.alpha,depthWrite:group.alpha>=1,alphaTest:surfaceAlphaTest(group,data.textures[group.texture])}));
+      }
+    });
     if(data.sky?.textures?.some(i=>i>=0)) {
-      const faces=data.sky.textures.map(i=>textures[i<0?data.sky.textures.find(j=>j>=0):i].image);
+      // The six tiny sky faces are global scenery, independent of room chunks.
+      const sky=new Map();
+      await Promise.all([...new Set(data.sky.textures.filter(i=>i>=0))].map(async i=>sky.set(i,await this.texture(base+data.textures[i].file))));
+      const faces=data.sky.textures.map(i=>sky.get(i<0?data.sky.textures.find(j=>j>=0):i).image);
       const cube=this.track(new THREE.CubeTexture(faces));cube.colorSpace=THREE.SRGBColorSpace;cube.needsUpdate=true;this.scene.background=cube;
     }
     this.collider=new BspCollider(data.collision);
@@ -172,7 +168,7 @@ export class CastleWorld {
     }));
     this.redcat=await this.makeActor('redcat.act');
     if(this.redcat){this.scene.add(this.redcat);this.redcat.position.fromArray(this.player.position);}
-    this.updateCamera(1,true);return this;
+    this.updateCamera(1,true);await this.geometryStream.settle();return this;
   }
   async loadActor(name) {
     const stem=name?.replace(/^.*[\\/]/,'').replace(/\.act$/i,'').toLowerCase();if(!stem)return null;
@@ -338,6 +334,8 @@ export class CastleWorld {
     if(gameplay.objects.some(obj=>obj.kind==='enemy'&&obj.actorFile==='knight'))this.knightParts=await Promise.all(KNIGHT_PARTS.map(name=>this.loadActor(name)));
     this.syncModels();
     if(this.level)this.effects=await WorldEffects.create(this,gameplay);
+    this.actorResidency=new ActorRenderResidency({scene:this.scene,protectedRoots:[this.redcat],boundsVisible:box=>this.geometryStream.boundsVisible(box)});
+    this.updateRenderResidency();
   }
   configureDestructible(object,actor) {
     object.actorSettings=actor.userData.template?.data.settings||{};
@@ -401,7 +399,7 @@ export class CastleWorld {
     this.actorFloorLighting?.beginFrame();this.actorLightVisibility?.beginFrame();
     const position=new THREE.Vector3(),bounds=new THREE.Box3();
     this.scene.traverseVisible(mesh=>{
-      const state=mesh.userData.actorLighting;if(!state)return;
+      const state=mesh.userData.actorLighting;if(!state||this.actorResidency&&!this.actorResidency.isRendered(mesh))return;
       mesh.getWorldPosition(position);
       const root=position.toArray(),lighting=state.settings.lighting||{};
       if(!mesh.geometry.boundingBox)mesh.geometry.computeBoundingBox();
@@ -711,10 +709,13 @@ export class CastleWorld {
     for(const object of game?.objects||[]){
       if(object.kind==='enemy')continue;
       if(object.kind==='actor'){
+        // Decorative props can receive damage without belonging to the native
+        // aiming list. Only crates opted in by the level need aiming bounds.
+        if(!(Number(object.entity?.Targetable)>0&&object.actorSettings?.canBeShot===true))continue;
         const actor=this.actorInstances.get(object.id),record=actor?.userData.collisionRecord;
         object.targetAvailable=!!actor&&actorVisible(object,game.time)&&attachedActorVisible(object,game);
         if(record)object.targetBounds={min:[...record.min],max:[...record.max]};
-      }else if(object.modelIndex!==undefined){
+      }else if(object.kind==='button'&&Number(object.entity?.ShootToSwitch)>0&&object.modelIndex!==undefined){
         object.targetAvailable=game.modelState(object.modelIndex).visible;
         object.targetBounds=transformedTargetBounds(this.level.collision.models[object.modelIndex],host?.modelTransforms.get(object.modelIndex));
       }
@@ -745,6 +746,7 @@ export class CastleWorld {
     marker.material.rotation=pose.rotation;marker.material.color.setRGB(...pose.color,THREE.SRGBColorSpace);
   }
   update(dt,input) {
+    if(this.geometryStream?.error)throw this.geometryStream.error;
     this.elapsed+=dt;
     const host=this.gameplay?.scripts;
     const before=[...this.player.position];
@@ -801,7 +803,7 @@ export class CastleWorld {
       this.syncActors(dt);
       this.syncModelStates();
     }
-    this.syncPlayer(dt,input);this.updateCamera(dt);this.syncProjectiles();this.syncTargetMarker();this.syncHazards();this.effects?.update(dt);return p;
+    this.syncPlayer(dt,input);this.updateCamera(dt);this.syncProjectiles();this.syncTargetMarker();this.syncHazards();this.updateRenderResidency();this.residencyPrepared=true;this.effects?.update(dt);return p;
   }
   updateCamera(dt,snap=false) {
     const scripted=this.cameraControl.sync(this);
@@ -827,6 +829,16 @@ export class CastleWorld {
       this.camera.lookAt(locked?new THREE.Vector3(...targetAimPoint(locked)):p.clone().addScaledVector(direction,80));
     }
   }
-  render(){this.renderer.render(this.scene,this.camera);}
-  dispose(){this.effects?.dispose();for(const resource of this.resources)resource.dispose();this.resources.clear();this.scene.clear();this.enemyDebris?.clear();this.projectileMeshes?.clear();this.hazardMeshes.clear();this.bossMachines.clear();this.spiderWebs.clear();}
+  updateRenderResidency(){
+    this.geometryStream?.update();
+    this.actorResidency?.update([...this.actorInstances.values(),...Array.from(this.bossMachines.values(),machine=>machine.root)],this.camera,performance.now()/1000);
+  }
+  render(){
+    if(!this.residencyPrepared)this.updateRenderResidency();this.residencyPrepared=false;
+    // Retain the completed frame during an unexpected camera cut until the
+    // new view is ready, instead of displaying holes or untextured walls.
+    if(this.geometryStream&&!this.geometryStream.readyForView)return;
+    this.renderer.render(this.scene,this.camera);
+  }
+  dispose(){this.actorResidency?.dispose();this.geometryStream?.dispose();this.effects?.dispose();for(const resource of this.resources)resource.dispose();this.resources.clear();this.scene.clear();this.enemyDebris?.clear();this.projectileMeshes?.clear();this.hazardMeshes.clear();this.bossMachines.clear();this.spiderWebs.clear();}
 }

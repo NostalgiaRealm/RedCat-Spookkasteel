@@ -16,12 +16,26 @@ texture is necessary.
 | Forest first shallow stream | 56 (`water`) | 17, `Air_Wtr001` | 125/255 | `lichtwater`, 1 health/second |
 | Forest second shallow stream | 57 (`water2`) | 17, `Air_Wtr001` | 125/255 | `lichtwater2`, 1 health/second |
 | Castle moat | 0, static world | 53, `Air_Wtr000` | 115/255 | BSP ooze contents, 3 health/second |
+| Graveyard moving-platform moat | 135 (`killwater`) | 18, `Air_Wtr00` | 255/255 | `Trigger45`, 100 health/second |
+
+The graveyard moat is deliberately opaque. Its original brush occupies
+`[2288,496,-824]` to `[2896,520,-472]`, beneath `froggerplatform_1/2/3`.
+Its non-solid BSP leaf has contents `4`, without a water-contents bit. The
+`Trigger45` entity supplies contact damage independently of rendering.
+
+The renderer and gameplay share `visibleLiquidGroups`: positive-alpha water
+artwork on a damaging trigger can be opaque as well as translucent. Ordinary
+opaque camera/puzzle helper brushes remain hidden, even when they use a water
+texture; zero-alpha faces remain hidden too. Across the five imported levels,
+this exception adds only the graveyard's model 135. It restores the authored
+mesh, texture, UVs and lighting without creating a replacement plane or making
+the water solid. Saved games recompute this visibility when loaded.
 
 The two forest brushes also serve as nonblocking triggers. Suppressing the
 rendering of every trigger model suppressed their deliberately visible faces.
 Collision exclusion and visible-face rendering must be separate decisions.
 
-All three surfaces have texinfo flag `16` (transparent). Their texture PNGs have
+The forest and castle surfaces have texinfo flag `16` (transparent). Their texture PNGs have
 opaque water pixels and a zero-alpha palette-index-255 color key. Testing the
 final fragment alpha against a fixed `0.5` rejects every pixel because the authored
 whole-surface opacities are below that threshold. The key test must operate on

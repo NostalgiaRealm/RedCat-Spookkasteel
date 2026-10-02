@@ -82,3 +82,21 @@ test('original level target flags select the twelve crates and reject decorative
  assert.equal(entity.ShootToSwitch,'1');assert.equal(entity.OnHitCommand,'');
  assert.ok(targetableObject({kind:'button',health:1,switchCount:0,entity}));
 });
+
+test('world aiming updates shootable bounds without sampling decorative models and recovers hidden buttons',()=>{
+ const shoot=button({modelIndex:1}),door={kind:'door',modelIndex:2},touch=button({id:'touch',modelIndex:3,entity:{TouchToSwitch:'1'}});
+ const lamp={id:'lamp',kind:'actor',entity:{Targetable:'0'},actorSettings:{canBeShot:true}};
+ const crate={id:'crate',kind:'actor',health:2,position:[0,0,-200],entity:{Targetable:'1'},actorSettings:{canBeShot:true}};
+ const bounds={min:[-10,0,-210],max:[10,30,-190]},models=[];models[1]={min:[-10,35,-105],max:[10,55,-95]};
+ let visible=false;const queried=[];
+ const world={gameplay:{objects:[door,touch,lamp,shoot,crate],time:0,settings:{},state:{health:10,skill:1},
+   modelState:index=>{queried.push(index);assert.equal(index,1);return {visible};}},
+  actorInstances:new Map([['crate',{userData:{collisionRecord:bounds}}]]),
+  level:{collision:{models}},player:{position:[0,0,0]},yaw:0,targeting:new EnemyTargeting(),
+  collider:{trace:()=>({fraction:1})},physicalModels:[0,1]};
+ const tick=()=>{world.targeting.clear();CastleWorld.prototype.updateTargeting.call(world,0,{attack:false});};
+ tick();assert.equal(shoot.targetAvailable,false);assert.deepEqual(crate.targetBounds,bounds);assert.equal(world.targeting.target,crate);
+ visible=true;crate.health=0;tick();assert.equal(shoot.targetAvailable,true);assert.equal(world.targeting.target,shoot);
+ assert.deepEqual(queried,[1,1]);
+ for(const object of [door,touch,lamp])assert.equal(object.targetBounds,undefined);
+});
