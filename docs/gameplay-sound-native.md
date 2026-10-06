@@ -12,6 +12,30 @@ The user identified `Sounds/rcshoot1.WAV` for an ordinary shot,
 The executable corroborates these assets: ordinary-shot selection is at
 `0x436b84`, impact at `0x44f479`, and jump at `0x4dc847`.
 
+The 2026-10-03 audit also recovered the upgraded-shot choices:
+
+| Projectile | Firing / charging | Impact |
+| --- | --- | --- |
+| Ordinary | `rcshoot1.WAV` at pellet release | `rcshoot4.WAV` |
+| Power shot | `rcshoot2.WAV` at pellet release | `rcshoot5.wav` |
+| BIG BENG | `rcshoot3.WAV` while charging; stop on release | `rcshoot6.wav` |
+
+The selector at `0x436b40` uses resource `0x6b5308` for type 8 (power),
+initialized from `rcshoot2.WAV` at `0x6902a4` by `0x430865`. Power and super
+impact factories pass resources `0x6b69d8` (`0x44af48`) and `0x6b6fc8`
+(`0x450f78`), initialized from `rcshoot5.wav` at `0x6914d0` and `rcshoot6.wav`
+at `0x691850`. Native normal/power release calls the selector at `0x434d4a`
+after normalized motion time .46. Super release instead calls the stop entry
+`0x436a30` at `0x434d43`, without an additional ordinary-shot sound.
+
+The portable router now selects these cues from each projectile event's kind,
+including projectiles already in flight when the player's abilities change.
+Impacts play only on actual contact, not lifetime expiry. Independent one-shot
+instances preserve earlier firing and impact tails. The existing charge-loop
+and pause/resume behavior are unchanged. Audit evidence is retained in
+`current_work/shooting-audio-audit-2026-10-03/`; focused regression coverage is
+`tests/player-projectile-audio.test.mjs`.
+
 Damage selection at `0x433d97`–`0x433df3` uses damage amount, rather than
 remaining health: `RcGen1.wav` below 10, `RcGen2.wav` from 10 to below 40,
 and `RcGen3.wav` from 40 upwards. The constants are 0, 10 and 40 at
@@ -86,9 +110,14 @@ RcEnemyShot's constructor `0x4437f0` loads light RGBA `(250,175,20,225)` from
 `Spark_01.bmp` through `Spark_04.bmp` and corresponding `Spark_a_*.bmp`
 alpha images. At `0x443b7d`, it loads 0.05 seconds from `0x64ca54`,
 converts to 50 milliseconds and stores the animation interval at object
-offset `+0x20c` (`0x443bfe`), corresponding to 20 frames per second.
-Exact sprite size and particle behavior need separate verification; a green
-poison orb is not supported by this constructor.
+offset `+0x20c` (`0x443bfe`). The recovered clock uses a strict 50 ms deadline,
+advances at most one frame per update, then rearms on the next update; it is not
+a continuous 20-fps clock. The later [animation audit](native-projectile-animation.md)
+implements those rules. Sprite dimensions now use the original bitmap size
+and INI scale, with an intentional bounded enlargement for distant-shot
+[visibility](projectile-visibility.md). The
+[effect-factory audit](enemy-combat-effects-native.md) found null particle/trail
+factories for RcEnemyShot, so it has no invented smoke or green poison trail.
 
 Door movement, player footfalls, Brutus combat voices and ambient/action/special
 selection are documented in [audio-completion-native.md](audio-completion-native.md).

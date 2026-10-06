@@ -34,7 +34,7 @@ try {
     for(const p of world.effects.destructibles.particles)meshes.push(p.mesh);
     const visible=meshes.map(m=>m.visible);meshes.forEach(m=>m.visible=false);renderer.render(world.scene,world.camera);renderer.readRenderTargetPixels(target,0,0,320,180,b);meshes.forEach((m,i)=>m.visible=visible[i]);renderer.setRenderTarget(previous);target.dispose();world.render();
     let pixels=0;for(let i=0;i<a.length;i+=4)if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>3)pixels++;
-    return {tileResult,crate:crate.id,before,after:crate.health,frame1,frame3,particles:world.effects.destructibles.particles.length,pixels,sounds:window.__interactions.events.filter(e=>e.sound==='Explosion.wav').length,explosions:game.explosions.length};
+    return {tileResult,crate:crate.id,before,after:crate.health,frame1,frame3,particles:world.effects.destructibles.particles.length,pixels,sounds:window.__interactions.events.filter(e=>e.sound==='expl6.wav').length,explosions:game.explosions.length};
   });
   assert.equal(graveyard.tileResult.pieceEnabled,true);assert.equal(graveyard.tileResult.switchCount,2);assert.equal(graveyard.before,1);assert.equal(graveyard.after,0);assert.ok(graveyard.particles>=10);assert.equal(graveyard.frame3,1);assert.ok(graveyard.pixels>25,JSON.stringify(graveyard));assert.equal(graveyard.sounds,graveyard.explosions);
   await mkdir('artifacts',{recursive:true});await page.screenshot({path:'artifacts/graveyard-original-crate-explosion.png'});

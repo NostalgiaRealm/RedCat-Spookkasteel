@@ -1,0 +1,834 @@
+{
+  "player": {
+    "grounded": true,
+    "jumps": 1,
+    "events": [
+      {
+        "type": "jump",
+        "position": [
+          -416,
+          -41.11015504108893,
+          2648
+        ]
+      },
+      {
+        "type": "damage",
+        "amount": 1,
+        "source": "sound-regression",
+        "health": 9
+      },
+      {
+        "type": "attack",
+        "id": "player-projectile-1",
+        "kind": "shot",
+        "origin": [
+          -421.5684033856664,
+          8.603057511285957,
+          2626.400936516996
+        ],
+        "direction": [
+          -0.4936136416878134,
+          -0.15931820661424598,
+          -0.8549639067123918
+        ]
+      },
+      {
+        "type": "playerProjectileImpact",
+        "id": "player-projectile-1",
+        "kind": "shot",
+        "target": null,
+        "position": [
+          -466.7088632089308,
+          -5.966428615949765,
+          2548.21536662608
+        ],
+        "end": [
+          -466.7088632089308,
+          -5.966428615949765,
+          2548.21536662608
+        ]
+      },
+      {
+        "type": "attack",
+        "id": "player-projectile-2",
+        "kind": "shot",
+        "origin": [
+          -421.5684033856664,
+          -16.393066461490857,
+          2626.400936516996
+        ],
+        "direction": [
+          -3.0616169978683824e-17,
+          -1,
+          -5.3028761936245346e-17
+        ]
+      },
+      {
+        "type": "playerProjectileImpact",
+        "id": "player-projectile-2",
+        "kind": "shot",
+        "target": null,
+        "position": [
+          -421.5684033856664,
+          -42.95,
+          2626.400936516996
+        ],
+        "end": [
+          -421.5684033856664,
+          -42.95,
+          2626.400936516996
+        ]
+      }
+    ],
+    "sounds": [
+      {
+        "key": "player:jump",
+        "sourceId": null,
+        "channel": "effects",
+        "sound": "rcjump1.wav",
+        "authoredGain": 1,
+        "scriptVolume": 1,
+        "distanceGain": 1,
+        "volume": 0.6,
+        "spatial": false,
+        "position": null,
+        "loop": false,
+        "paused": true,
+        "waiting": null,
+        "readyState": 0,
+        "currentTime": 0
+      },
+      {
+        "key": "player:reaction",
+        "sourceId": null,
+        "channel": "voices",
+        "sound": "rcgen1.wav",
+        "authoredGain": 1,
+        "scriptVolume": 1,
+        "distanceGain": 1,
+        "volume": 0.6,
+        "spatial": false,
+        "position": null,
+        "loop": false,
+        "paused": true,
+        "waiting": null,
+        "readyState": 0,
+        "currentTime": 0
+      },
+      {
+        "key": null,
+        "sourceId": null,
+        "channel": "effects",
+        "sound": "rcshoot1.wav",
+        "authoredGain": 1,
+        "scriptVolume": 1,
+        "distanceGain": 1,
+        "volume": 0.6,
+        "spatial": false,
+        "position": null,
+        "loop": false,
+        "paused": true,
+        "waiting": null,
+        "readyState": 0,
+        "currentTime": 0
+      },
+      {
+        "key": null,
+        "sourceId": null,
+        "channel": "effects",
+        "sound": "rcshoot4.wav",
+        "authoredGain": 1,
+        "scriptVolume": 1,
+        "distanceGain": 1,
+        "volume": 0.6,
+        "spatial": true,
+        "position": [
+          -466.7088632089308,
+          -5.966428615949765,
+          2548.21536662608
+        ],
+        "loop": false,
+        "paused": true,
+        "waiting": null,
+        "readyState": 0,
+        "currentTime": 0
+      },
+      {
+        "key": null,
+        "sourceId": null,
+        "channel": "effects",
+        "sound": "rcshoot1.wav",
+        "authoredGain": 1,
+        "scriptVolume": 1,
+        "distanceGain": 1,
+        "volume": 0.6,
+        "spatial": false,
+        "position": null,
+        "loop": false,
+        "paused": true,
+        "waiting": null,
+        "readyState": 0,
+        "currentTime": 0
+      },
+      {
+        "key": null,
+        "sourceId": null,
+        "channel": "effects",
+        "sound": "rcshoot4.wav",
+        "authoredGain": 1,
+        "scriptVolume": 1,
+        "distanceGain": 1,
+        "volume": 0.6,
+        "spatial": true,
+        "position": [
+          -421.5684033856664,
+          -42.95,
+          2626.400936516996
+        ],
+        "loop": false,
+        "paused": true,
+        "waiting": null,
+        "readyState": 0,
+        "currentTime": 0
+      }
+    ]
+  },
+  "playerDecoded": [
+    {
+      "key": "player:jump",
+      "sourceId": null,
+      "channel": "effects",
+      "sound": "rcjump1.wav",
+      "authoredGain": 1,
+      "scriptVolume": 1,
+      "distanceGain": 1,
+      "volume": 0.6,
+      "spatial": false,
+      "position": null,
+      "loop": false,
+      "paused": true,
+      "waiting": null,
+      "readyState": 4,
+      "currentTime": 0
+    },
+    {
+      "key": "player:reaction",
+      "sourceId": null,
+      "channel": "voices",
+      "sound": "rcgen1.wav",
+      "authoredGain": 1,
+      "scriptVolume": 1,
+      "distanceGain": 1,
+      "volume": 0.6,
+      "spatial": false,
+      "position": null,
+      "loop": false,
+      "paused": true,
+      "waiting": null,
+      "readyState": 4,
+      "currentTime": 0
+    },
+    {
+      "key": null,
+      "sourceId": null,
+      "channel": "effects",
+      "sound": "rcshoot1.wav",
+      "authoredGain": 1,
+      "scriptVolume": 1,
+      "distanceGain": 1,
+      "volume": 0.6,
+      "spatial": false,
+      "position": null,
+      "loop": false,
+      "paused": true,
+      "waiting": null,
+      "readyState": 4,
+      "currentTime": 0
+    },
+    {
+      "key": null,
+      "sourceId": null,
+      "channel": "effects",
+      "sound": "rcshoot4.wav",
+      "authoredGain": 1,
+      "scriptVolume": 1,
+      "distanceGain": 1,
+      "volume": 0.6,
+      "spatial": true,
+      "position": [
+        -466.7088632089308,
+        -5.966428615949765,
+        2548.21536662608
+      ],
+      "loop": false,
+      "paused": true,
+      "waiting": null,
+      "readyState": 4,
+      "currentTime": 0
+    },
+    {
+      "key": null,
+      "sourceId": null,
+      "channel": "effects",
+      "sound": "rcshoot1.wav",
+      "authoredGain": 1,
+      "scriptVolume": 1,
+      "distanceGain": 1,
+      "volume": 0.6,
+      "spatial": false,
+      "position": null,
+      "loop": false,
+      "paused": true,
+      "waiting": null,
+      "readyState": 4,
+      "currentTime": 0
+    },
+    {
+      "key": null,
+      "sourceId": null,
+      "channel": "effects",
+      "sound": "rcshoot4.wav",
+      "authoredGain": 1,
+      "scriptVolume": 1,
+      "distanceGain": 1,
+      "volume": 0.6,
+      "spatial": true,
+      "position": [
+        -421.5684033856664,
+        -42.95,
+        2626.400936516996
+      ],
+      "loop": false,
+      "paused": true,
+      "waiting": null,
+      "readyState": 4,
+      "currentTime": 0
+    }
+  ],
+  "enemies": [
+    {
+      "action": "alert",
+      "sounds": [
+        {
+          "key": "enemy:sound-test-spiderg",
+          "sourceId": "sound-test-spiderg",
+          "channel": "effects",
+          "sound": "spiderl3.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-spidery",
+          "sourceId": "sound-test-spidery",
+          "channel": "effects",
+          "sound": "spiderll3.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-spiderr",
+          "sourceId": "sound-test-spiderr",
+          "channel": "effects",
+          "sound": "spiderlll3.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-knight",
+          "sourceId": "sound-test-knight",
+          "channel": "effects",
+          "sound": "knight3.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-guardian",
+          "sourceId": "sound-test-guardian",
+          "channel": "effects",
+          "sound": "wachter3.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-zombie",
+          "sourceId": "sound-test-zombie",
+          "channel": "effects",
+          "sound": "zombie3.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        }
+      ]
+    },
+    {
+      "action": "attack",
+      "sounds": [
+        {
+          "key": "enemy:sound-test-spiderg",
+          "sourceId": "sound-test-spiderg",
+          "channel": "effects",
+          "sound": "spiderl4.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-spidery",
+          "sourceId": "sound-test-spidery",
+          "channel": "effects",
+          "sound": "spiderll4.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-spiderr",
+          "sourceId": "sound-test-spiderr",
+          "channel": "effects",
+          "sound": "spiderlll4.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-knight",
+          "sourceId": "sound-test-knight",
+          "channel": "effects",
+          "sound": "knight4.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-guardian",
+          "sourceId": "sound-test-guardian",
+          "channel": "effects",
+          "sound": "wachter4.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-zombie",
+          "sourceId": "sound-test-zombie",
+          "channel": "effects",
+          "sound": "zombie4.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        }
+      ]
+    },
+    {
+      "action": "hurt",
+      "sounds": [
+        {
+          "key": "enemy:sound-test-spiderg",
+          "sourceId": "sound-test-spiderg",
+          "channel": "effects",
+          "sound": "spiderl5.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-spidery",
+          "sourceId": "sound-test-spidery",
+          "channel": "effects",
+          "sound": "spiderll5.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-spiderr",
+          "sourceId": "sound-test-spiderr",
+          "channel": "effects",
+          "sound": "spiderlll5.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-knight",
+          "sourceId": "sound-test-knight",
+          "channel": "effects",
+          "sound": "knight5.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-guardian",
+          "sourceId": "sound-test-guardian",
+          "channel": "effects",
+          "sound": "wachter5.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-zombie",
+          "sourceId": "sound-test-zombie",
+          "channel": "effects",
+          "sound": "zombie5.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        }
+      ]
+    },
+    {
+      "action": "death",
+      "sounds": [
+        {
+          "key": "enemy:sound-test-spiderg",
+          "sourceId": "sound-test-spiderg",
+          "channel": "effects",
+          "sound": "spiderl6.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-spidery",
+          "sourceId": "sound-test-spidery",
+          "channel": "effects",
+          "sound": "spiderll6.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-spiderr",
+          "sourceId": "sound-test-spiderr",
+          "channel": "effects",
+          "sound": "spiderlll6.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-knight",
+          "sourceId": "sound-test-knight",
+          "channel": "effects",
+          "sound": "knight6.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-guardian",
+          "sourceId": "sound-test-guardian",
+          "channel": "effects",
+          "sound": "wachter6.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "enemy:sound-test-zombie",
+          "sourceId": "sound-test-zombie",
+          "channel": "effects",
+          "sound": "zombie6.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0.6,
+          "spatial": true,
+          "position": [
+            -415.9996540680322,
+            155.049410853082,
+            2648.0005991717444
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        }
+      ]
+    }
+  ]
+}

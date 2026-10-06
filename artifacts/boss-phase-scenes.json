@@ -1,0 +1,322 @@
+{
+  "maxd": {
+    "initial": {
+      "position": [
+        1,
+        1,
+        -2183
+      ],
+      "machine": 3,
+      "intro": {
+        "before": {
+          "position": [
+            2,
+            36,
+            -2143
+          ],
+          "pixels": 296
+        },
+        "after": {
+          "position": [
+            2,
+            -37,
+            -2143
+          ],
+          "pixels": 6
+        },
+        "actor": "maxd",
+        "enabled": true,
+        "error": null,
+        "cutscene": false
+      }
+    },
+    "phases": {
+      "seen": [
+        {
+          "phase": "shoot",
+          "elapsed": 0,
+          "position": [
+            1,
+            1,
+            -2183
+          ],
+          "visible": true,
+          "clip": "idle",
+          "machineMotion": "shoot1"
+        },
+        {
+          "phase": "betweenShots",
+          "elapsed": 0,
+          "position": [
+            1,
+            1,
+            -2183
+          ],
+          "visible": true,
+          "clip": "idle",
+          "machineMotion": "still"
+        },
+        {
+          "phase": "shoot",
+          "elapsed": 0,
+          "position": [
+            1,
+            1,
+            -2183
+          ],
+          "visible": true,
+          "clip": "idle",
+          "machineMotion": "shoot1"
+        },
+        {
+          "phase": "betweenShots",
+          "elapsed": 0,
+          "position": [
+            1,
+            1,
+            -2183
+          ],
+          "visible": true,
+          "clip": "idle",
+          "machineMotion": "still"
+        },
+        {
+          "phase": "shoot",
+          "elapsed": 0,
+          "position": [
+            1,
+            1,
+            -2183
+          ],
+          "visible": true,
+          "clip": "idle",
+          "machineMotion": "shoot1"
+        },
+        {
+          "phase": "rise",
+          "elapsed": 0,
+          "position": [
+            1,
+            1,
+            -2183
+          ],
+          "visible": true,
+          "clip": "idle",
+          "machineMotion": "litopen"
+        },
+        {
+          "phase": "look",
+          "elapsed": 0,
+          "position": [
+            1,
+            41,
+            -2183
+          ],
+          "visible": true,
+          "clip": "idle",
+          "machineMotion": "litopen"
+        },
+        {
+          "phase": "lower",
+          "elapsed": 0,
+          "position": [
+            1,
+            41,
+            -2183
+          ],
+          "visible": true,
+          "clip": "idle",
+          "machineMotion": "litclose"
+        }
+      ],
+      "shots": [
+        "magma",
+        "magma",
+        "magma"
+      ],
+      "phase": "lower"
+    },
+    "shielding": {
+      "health": 11,
+      "bossId": "StandingEnemy1",
+      "low": {
+        "health": 11,
+        "remaining": 0,
+        "target": null
+      },
+      "coveredHead": {
+        "health": 11,
+        "remaining": 0,
+        "target": null
+      },
+      "raisedHead": {
+        "health": 10,
+        "remaining": 0,
+        "target": "StandingEnemy1"
+      },
+      "foreignShot": [],
+      "ownShot": [
+        [
+          1,
+          31,
+          -2083
+        ]
+      ],
+      "exit": [
+        1,
+        31,
+        -2083
+      ]
+    },
+    "defeat": {
+      "health": 0,
+      "kills": 1,
+      "cutscene": false,
+      "frozen": false,
+      "error": null,
+      "beams": null,
+      "gates": [
+        false,
+        false
+      ],
+      "expectedCamera": null
+    }
+  },
+  "maxj": {
+    "initial": {
+      "position": [
+        -79,
+        73,
+        -2711
+      ],
+      "machine": 0
+    },
+    "phases": {
+      "seen": [
+        {
+          "phase": "teleportOut",
+          "elapsed": 0.05,
+          "position": [
+            -79,
+            73,
+            -2711
+          ],
+          "visible": true,
+          "clip": "teleport"
+        },
+        {
+          "phase": "invisible",
+          "elapsed": 0,
+          "position": [
+            -79,
+            73,
+            -2711
+          ],
+          "visible": false,
+          "clip": "teleport"
+        },
+        {
+          "phase": "teleportIn",
+          "elapsed": 0,
+          "position": [
+            370,
+            65,
+            -2437
+          ],
+          "visible": true,
+          "clip": "teleport"
+        },
+        {
+          "phase": "shoot",
+          "elapsed": 0,
+          "position": [
+            370,
+            65,
+            -2437
+          ],
+          "visible": true,
+          "clip": "shoot1"
+        }
+      ],
+      "shots": [
+        "jesterBall"
+      ],
+      "phase": "shoot"
+    },
+    "defeat": {
+      "health": 0,
+      "kills": 1,
+      "cutscene": true,
+      "frozen": false,
+      "error": null,
+      "beams": null,
+      "gates": null,
+      "expectedCamera": null
+    }
+  },
+  "witch": {
+    "initial": {
+      "position": [
+        -2,
+        2386,
+        48
+      ],
+      "machine": 0
+    },
+    "phases": {
+      "seen": [
+        {
+          "phase": "start",
+          "elapsed": 0.05,
+          "position": [
+            -2,
+            2386,
+            48
+          ],
+          "visible": true,
+          "clip": "start"
+        },
+        {
+          "phase": "fly",
+          "elapsed": 0,
+          "position": [
+            -2,
+            2386,
+            48
+          ],
+          "visible": true,
+          "clip": "start"
+        },
+        {
+          "phase": "shoot",
+          "elapsed": 0,
+          "position": [
+            0,
+            2380,
+            51
+          ],
+          "visible": true,
+          "clip": "shoot1"
+        }
+      ],
+      "shots": [
+        "magicBall"
+      ],
+      "phase": "shoot"
+    },
+    "defeat": {
+      "health": 0,
+      "kills": 1,
+      "cutscene": true,
+      "frozen": true,
+      "error": null,
+      "beams": [
+        true,
+        true
+      ],
+      "gates": null,
+      "camera": "CameraTrigger27",
+      "expectedCamera": "CameraTrigger27"
+    }
+  }
+}

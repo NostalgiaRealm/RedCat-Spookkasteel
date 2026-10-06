@@ -2,9 +2,12 @@
 
 The application now executes the original compiled level scripts, using a portable
 Davi-Script interpreter and game-command adapter. It does not execute the original
-Windows DAT/EXE or compile script text into JavaScript. The full original native
-game engine and enemy AI have not been reimplemented, and a complete campaign
-playthrough has not yet been verified.
+Windows DAT/EXE or compile script text into JavaScript. Recovered enemy movement,
+attacks, boss phases, player actions and effects run in the portable engine.
+Some collision, camera and rendering details remain adaptations, and a complete
+playthrough of the current source has not yet been verified. The README's older
+manual campaign runs do not establish coverage for subsequent changes. Status below reflects the source
+reviewed on 5 October 2026; earlier validation results are not new test runs.
 
 ## Script pipeline
 
@@ -59,8 +62,10 @@ Cutscene commands control input, RedCat visibility, enemy freezing, cameras,
 teleports, music volume and subtitles. `tools/import_dialogue.py` imports 398 Dutch
 text entries and 223 matching voice files/durations. Fixed camera targets take
 precedence over the generic player-target flag. Moving cameras visit authored
-waypoints at 150 world units per second; exact original final-approach acceleration
-and smoothing remain approximate. Offset camera framing is reconstructed.
+intermediate waypoints at 150 world units per second and use the recovered
+150–470-unit distance lookup for the final approach. The route sampler integrates
+those bands independently of frame rate. Camera collision/compensation and
+offset framing retain portable adaptations; see [camera evidence](camera-native-status.md).
 
 ## Regular enemy and action feedback
 
@@ -70,7 +75,12 @@ swept BSP terrain collision. Green/yellow spiders use contact damage; red spider
 use their original ranged-salvo and RcEnemyShot settings with visible, colliding
 projectiles. Attack sounds occur at the strike/projectile release, with separate
 alert, idle, hurt and death sounds. Player shots, impacts, jumps and health loss
-have their original sounds. Details and fidelity limits are in `enemy-gameplay.md`.
+have their original sounds. Recovered random patrol selection, touching-enemy
+waypoint choices and shared reservations are documented in
+[waypoint movement](enemy-waypoint-movement.md); initially hidden grave zombies
+use their original XYZ entrance edge before ordinary collision resumes
+([grave ascent](zombie-activation-native.md)). Details and fidelity limits are in
+`enemy-gameplay.md` and these follow-up notes.
 
 ## Remaining native engine work
 
@@ -78,9 +88,10 @@ The [current native parity audit](native-parity-audit.md) supersedes older broad
 TODO lists. The [native follow-up](native-completion-followup.md) connects player
 hurt/death/respawn, breadth-first pursuit, sampled salvos and enemy state rules,
 projectile/actor lighting, directional sound and wall obstruction. The earlier
-shove-action claim was not supported by the recovered executable. Route endpoint
-selection, collision and some particle/audio envelopes retain documented
-approximations; a normal complete campaign playthrough remains outstanding.
+shove-action claim was not supported by the recovered executable. Arbitrary-position
+pursuit endpoints, collision tolerances, camera compensation, fixed-step particle
+timing and local random streams retain documented differences; a normal complete
+campaign playthrough of the current source remains outstanding.
 
 [SuperSkippie and BIG BENG](player-abilities-native.md), boss phase machines,
 enemy death effects and the latest original projectile frames/timing are already
@@ -90,7 +101,9 @@ fixtures is not proof of identical native gameplay.
 
 ## Verification
 
-Run `npm test`, `python3 -m unittest discover -s tests -p 'test_*.py'`,
+Run only the checks for changed behavior during development; follow
+[building.md](building.md) for deliberate release validation. Available broader
+commands include `npm test`, `python3 -m unittest discover -s tests -p 'test_*.py'`,
 `npm run test:smoke`, `npm run test:scripts`, `npm run test:gameplay-audio`,
 `npm run test:enemies`, `npm run test:bosses`, and `npm run test:desktop`.
 The browser scene test renders the forest introduction, checks Dutch voice and
@@ -118,7 +131,7 @@ checks the castle WhizKitty scene's position. This test also runs in the package
 Linux application. Other mirror routes and the tower's fifth placement are
 covered by original-script tests.
 
-## Liquids, mushroom ribbons and remaining boss cycles
+## Liquids, mushroom ribbons and boss cycles
 
 Translucent water survives the renderer’s palette cutout threshold. Visible
 water faces on trigger brushes render without making the water solid. Contact
@@ -127,11 +140,14 @@ sides. Forest triggers drain their authored 1 HP/second; the castle ooze drains
 3 HP/second. Damage is continuous while hurt feedback is throttled. See
 `water-native.md` for executable evidence and exact wet/dry test positions.
 
-Mushrooms leave the original camera-facing trail, width 6.4 and lifetime 1.5 s.
-Trail contact uses the authored TrailDamage=5 with the existing hit cooldown;
-that contact rule is reconstructed, since its native handler is not yet recovered.
-Trail age and geometry persist through saves, freeze during cutscenes, and clear
-on respawn. The trail is in the projectile’s flight path, not projected onto a floor.
+Mushrooms leave the original camera-facing `STrail` ribbon, width 6.4 and point
+fade time 1.5 s. Native contact recovery found no live consumer of `TrailDamage=5`;
+the earlier invented ribbon damage was removed. Direct mushroom-body hits still
+cause damage. The ribbon disappears with its projectile, rather than leaving an
+independent tail after impact. Its sampling clock and geometry survive saves,
+freeze during cutscenes, and clear on respawn. See
+[mushroom evidence](mushroom-trail-native.md) and
+[projectile contact](projectile-impacts-native.md).
 
 Dungeon Max’s original turret parts and rise/look/lower cycle, Jester Max’s
 teleport/invisibility cycle, and the Witch’s takeoff, waypoint flight and attack
@@ -148,13 +164,17 @@ statues now use their original actor flags for player, projectile and sight
 collision. Sweeps use the transformed mesh; this is a reconstruction of actor
 collision, not the recovered original collision algorithm.
 
-Green touch bats pursue into actual player contact, while ranged bats keep
-their original timed shot release. Flight uses their rest-pose body bounds so
-spread-wing animation no longer traps them in authored alcoves. See
-`graveyard-door.md`, `actor-collision.md` and `bat-native.md`.
+Green touch bats select their recovered closer/clockwise/counterclockwise
+waypoints, damaging RedCat on actual contact; an off-route player does not force
+them off the authored network. Ranged bats keep their timed shot release.
+Flight uses rest-pose body bounds so spread-wing animation no longer traps them
+in authored alcoves. See `graveyard-door.md`, `actor-collision.md`, `bat-native.md`
+and the newer [waypoint recovery](enemy-waypoint-movement.md).
 
 Original bitmap/alpha pairs drive flames, coronas, lightning beams and staged
-checkpoint effects. Dynamic lights illuminate the lightmapped world and actor
+checkpoint effects. Smoke/flame spouts now use the recovered 15-slot pools,
+reused launch templates, timers and motion; see [spout recovery](spout-effects-native.md).
+Dynamic lights illuminate the lightmapped world and actor
 materials. Save beacons build six converging spokes before the upward beam,
 with their original sound stages, and restore their activation clock. Actual
 checkpoints remain controlled by the original Davi-Script calls. Recovered
@@ -167,8 +187,9 @@ and adds 9000 points, capped at 999999. This changes inventory only: it does not
 dispatch mirror pickup scripts or complete a level. The real gateway stays
 collectible. No-clip follows the camera, with Space up and Shift down. It skips
 movement/camera collision, gravity, platform carry and out-of-world recovery;
-script events and damage still operate. Disabling it validates the current
-position and returns to safe terrain if needed. Saves retain the flight flag
+script events still operate, but RedCat is invulnerable while no-clip is active.
+Disabling it validates the current position and returns to safe terrain if
+needed. Saves retain the flight flag
 and last safe position, including when saved outside the map.
 
 The potion cap follows the executable's actual pickup routine, which uses a
@@ -181,7 +202,11 @@ are recorded in [inventory-limits-native.md](inventory-limits-native.md).
 The desktop suite runs these same scenarios before checking actual Linux
 window pixels, hardware compositing and resolution changes.
 
-## Subsequent source fixes (not packaged)
+## Subsequent source fixes and later recovery
+
+The following changes were originally validated in source without rebuilding
+packages. This is a record of that work, not a statement about the contents of
+any subsequently produced `dist/` directory.
 
 The original StandingEnemy factory maps Type 4 to castle Jester Max and Type 5
 to cave Dungeon Max. This corrects their earlier reversal. The cave's compiled
@@ -198,13 +223,16 @@ and [actor-model-attachments.md](actor-model-attachments.md).
 
 The cave's four boss-gate beams apply their authored damage and delay; the
 original puzzle callbacks disable each one. TeleporterFX responds to the
-original Show action, rendering imported sparks, energy strands and ground
-effects while preserving its seven-second activation clock through saves.
-The effect trajectories and some sound stages remain approximate; see
-[world-effects-native.md](world-effects-native.md).
+original Show action. Its recovered particle pool, seek/orbit/burst trajectories,
+beam contraction, floor blast, terminal flash and sound arguments now replace
+the earlier analytic approximation. Current saves preserve the live pool;
+legacy saves use bounded reconstruction. Fixed simulation timing, local RNG and
+renderer/collision tolerances remain portable differences. See
+[portal recovery](portal-native-recovery.md), [portal audio](portal-audio-native.md)
+and [world effects](world-effects-native.md).
 
 `test:doors`, `test:actor-placement` and `test:portals` add actual rendered-level
 regressions to `test:desktop`. The asset audit resolves 710 placed actors, 29
 model attachments and 56 explicitly named motions. These are source checks;
-the prepared Linux/Windows directories remain unchanged. Follow
-[building.md](building.md) to run source or package it yourself.
+they do not establish which changes a separately packaged directory contains.
+Follow [building.md](building.md) to run source or package it yourself.

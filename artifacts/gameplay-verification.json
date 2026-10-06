@@ -1,0 +1,60 @@
+{
+  "version": "0.2.5",
+  "date": "2026-09-21T20:27:32.927Z",
+  "checks": {
+    "javascriptTests": 227,
+    "pythonTests": 37,
+    "fiveLevelSmoke": "passed",
+    "scriptScenes": "passed",
+    "forestMixRegression": "passed packaged Linux",
+    "gameplaySounds": "passed packaged Linux",
+    "renderedEnemyScenes": "passed packaged Linux",
+    "bossScenes": "passed packaged Linux",
+    "bossPhasesAndMachineShielding": "passed original-asset unit, browser and packaged Linux",
+    "environment": "passed forest/castle rendering, damage, safe bridge, mushroom trail contact/save/freeze/respawn",
+    "graveyard": "passed original paired-button door scripts, actual walking passage, statue collision and LOS flags",
+    "bats": "passed contact pursuit, airborne idle2 and timed ranged release",
+    "worldEffects": "passed original flame pixels, light contribution, staged checkpoint beacon and saved activation",
+    "cheats": "passed original 5 mirrors/100 potions/+9000 score, inventory caps, keyboard flight, outside-world save/load and safe exit",
+    "linuxLauncher": "passed Start-RedCat.sh",
+    "nativeWindow": "1144 sampled colors; hardware compositing enabled; fullscreen and resolution checks passed",
+    "windows": "built and all game files verified; not run on Windows"
+  },
+  "packages": [
+    {
+      "target": "linux-unpacked",
+      "version": "0.2.5",
+      "verifiedFiles": 1576,
+      "sha256": "b6965f99b612181e660addb1afadaff149086ab8896f90c7312542f97a6f9852"
+    },
+    {
+      "target": "win-unpacked",
+      "version": "0.2.5",
+      "verifiedFiles": 1576,
+      "sha256": "b6965f99b612181e660addb1afadaff149086ab8896f90c7312542f97a6f9852"
+    }
+  ],
+  "originalSha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5",
+  "limits": [
+    "Exact native route scoring, randomized salvo sizes and some state transitions remain approximate.",
+    "Mushroom trail contact, actor collision, particle simulation and dynamic light falloff are reconstructed; native constants and assets are used where recovered.",
+    "Projectile-specific homing, bounce, original special-shot charging and some abilities remain incomplete.",
+    "A complete side-by-side campaign playthrough has not been verified.",
+    "macOS and Android remain planned ports; this release packages Linux x64 and Windows x64 only."
+  ],
+  "reports": [
+    "artifacts/boss-scenes.json",
+    "artifacts/boss-phase-scenes.json",
+    "artifacts/environment-scenes.json",
+    "artifacts/graveyard-scenes.json",
+    "artifacts/bat-scenes.json",
+    "artifacts/effects-scenes.json",
+    "artifacts/cheat-scenes.json",
+    "artifacts/cheats-menu.png",
+    "artifacts/desktop-linux-native.png",
+    "artifacts/unit-tests.log",
+    "artifacts/python-tests.log",
+    "artifacts/desktop-tests.log",
+    "artifacts/package-verification.json"
+  ]
+}

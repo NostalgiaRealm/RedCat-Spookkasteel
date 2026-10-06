@@ -29,17 +29,17 @@ and turbine sources still wait for their original scripts to enable them.
 (`LV4snd21`), moving rocks, the altar machinery and unlock effects (`LV2snd5`).
 All original repeating emitters now use the same rule; future imported loops
 will inherit it without another filename exception. The range is a tuning
-choice, not a recovered native constant: full gain within **5 metres / 160 units**, smooth fading to complete
-silence at **30 metres / 960 units**. This covers the nearby section without
-carrying across the level. At 15 metres, the final waveform amplitude is about
-49% of its nearby amplitude; at 25 metres, about 2.3%.
+choice, not a recovered native constant: after the user's later range increases,
+full gain extends to **17.55 metres / 561.6 units**, with smooth fading to complete
+silence at **105.3 metres / 3,369.6 units**. This replaces the initial 5–30 m
+choice while retaining a finite audible section.
 
-The control gain is `1 - smoothstep(5, 30, distanceMetres)`, combined with the
+The control gain is `1 - smoothstep(17.55, 105.3, distanceMetres)`, combined with the
 existing authored, channel and script gains before native logarithmic
 conversion. The range endpoints are smooth and the far gain is exactly zero.
 Moving source callbacks continue to update distance. Playback is not restarted
 when crossing a boundary. One-shots, voices, music, non-spatial sounds and the
-same filenames in other levels keep their existing native attenuation.
+same filenames in other levels keep their existing attenuation policies.
 
 ## Focused verification
 
@@ -48,7 +48,8 @@ node --test tests/cave-ambience-range.test.mjs
 node tests/cave-ambience-range-scenes.mjs
 ```
 
-Three focused unit/integration tests passed, covering the distance curve,
+At the time of the initial 5–30 m change, three focused unit/integration tests
+passed, covering the distance curve,
 channel/level scope, live source positions, master/script volumes, native
 activation and restoration of all 36 original cave loops. The browser check
 loaded the original caves, decoded all 36 repeating emitters, confirmed nearby
@@ -56,4 +57,6 @@ playback,
 measured their real audio-element volumes at 0/5/15/25/30/100 metres, and found
 no browser or HTTP errors. Results are in
 `artifacts/cave-ambience-range-scenes.json`. No unrelated suites or release
-builds were run. This does not implement audio occlusion through walls.
+builds were run. These measurements describe that earlier tuning, not the
+current endpoints. The later [spatial audio update](audio.md) implements native
+BSP/door obstruction and visibility separately from this local-range policy.

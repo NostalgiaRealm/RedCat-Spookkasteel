@@ -4,6 +4,9 @@
 `e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5`.
 These changes use recovered values and imported assets; they do not establish
 complete frame-for-frame native parity. No builds or packages were made.
+Status reviewed against the current source on 5 October 2026. The verification
+results below describe their original focused runs, not new tests during this
+documentation review.
 
 ## Enemy navigation and combat
 
@@ -25,8 +28,11 @@ complete frame-for-frame native parity. No builds or packages were made.
   return to their own hanging point after losing a remembered target, climb
   their web and become dormant again. Return/ascent state is saved.
 - The touch-enemy decision at `0x40ae9c` has three outcomes: MoveCloser or
-  two opposite two-second circles after its one-second contact wait. All
-  three outcomes are now represented, including saved circle state.
+  two opposite two-second waypoint selectors. The earlier contact-wait label
+  was incorrect: the one-second movement wait means no valid destination,
+  independently of the damage cooldown. Exact neighbor scoring, timing and
+  shared reservations replaced continuous orbits on 2026-10-05; see
+  [enemy waypoint movement](enemy-waypoint-movement.md).
 - Guardian construction (`0x40d660 → 0x42dc80`) inherits CRcTouchEnemy; the
   initializer (`0x42dd20`) installs the same touch main-state family as bats.
   Its native collision callback (`0x42def2–0x42df2a`) damages on contact with
@@ -54,17 +60,24 @@ instances apply authored sunlight/ambient switches, ambient overrides, default
 sun settings, maximum dynamic-light count and interpolated a–z colour patterns.
 The shared actor colour update is at `0x4a6c30`. For example, the original heart
 cycles red to white over two seconds; stained glass uses its fullbright ambient.
-Each actor selects its own closest two in-range lights rather than inheriting
-only the lights nearest the camera. Ghost/death material clones retain their
-instance lighting state.
+Each actor selects its own nearest in-range lights up to its authored limit
+(default two, bounded to 32), rather than inheriting only the lights nearest the
+camera. The later recovery also restored root-reference preparation, local Sun
+selection, baked/dynamic floor ambient and raw-RGB vertex shading. Ghost/death
+material clones retain their instance lighting state. See
+[actor lighting](actor-lighting-native.md).
 
 Ordinary projectile constructors call `0x44c1b0` with a radius-200 orange
 light (250,175,20); the light setter forces alpha 255 (`0x4e30b1`). Mushrooms
 use their difficulty's TrailRed/Green/Blue values. Lights now move with their
 projectile and disappear when it retires. They illuminate world surfaces and
 actors; projectile artwork remains white-tinted and retains its readability
-scaling. The fixed world sun/ambient and portable light falloff are still
-approximations.
+scaling. The earlier fixed sun/ambient and approximate world falloff have been
+replaced: BSP surfaces use the recovered texture-axis luxel arithmetic, channel
+clamping and interpolation. Authored shadow-casting world lights now perform
+cached static-BSP obstruction checks. The selected-world-light budget and
+portable precision differences remain; see [world falloff](world-light-falloff-research.md)
+and [world shadows](world-light-shadows-native.md).
 
 Five focused JS tests, two actor-import tests and the source-browser forest
 lighting scene passed. The scene measured changed pixels when a shot light was

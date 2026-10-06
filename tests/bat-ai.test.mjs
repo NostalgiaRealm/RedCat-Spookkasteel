@@ -3,13 +3,14 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as THREE from 'three';
 import { Gameplay } from '../src/gameplay.js';
+import {batOverlapsPlayer} from '../src/enemy-flight.js';
 import { GAMEPLAY_SETTINGS } from '../src/gameplay-settings.js';
 import { BspCollider } from '../src/collision.js';
 import { CastleWorld } from '../src/world.js';
 
 function fixture(variant=1,extra={}) {
   const level={id:'lvl01a',spawn:{position:[0,0,0],orientation:0},entities:[{
-    classname:'MovingEnemy','%name%':'bat',Type:'2',SubType:String(variant),Origin:'0 60 0',...extra
+    classname:'MovingEnemy','%name%':'bat',Type:'2',SubType:String(variant),Origin:'0 60 0',StartOrientation:'6',...extra
   }]};
   const events=[],game=new Gameplay(level,{onEvent:event=>events.push(event)}),bat=game.objects[0];
   bat.animationDurations={attack:1.600008,hurt:1.866676,death:2.00001};
@@ -31,7 +32,8 @@ test('green bats pursue through the inherited attack radius and damage only on c
   advance(game,.65,[0,0,80],{traceEnemy:clearTrace});
   assert.equal(game.state.health,9);assert.equal(game.projectiles.length,0);
   assert.ok(events.some(e=>e.type==='enemyAttack'&&e.contact===true));
-  assert.ok(Math.hypot(...bat.position.map((v,i)=>v-[0,0,80][i]))<1);
+  assert.equal(batOverlapsPlayer(bat,[0,0,80]),false);
+  assert.ok(Math.hypot(bat.position[0],bat.position[2]-80)<24,'contact stops at RedCat hull, not his origin');
   assert.notEqual(bat.animationState,'attack','contact does not stop flight for shoot1');
 });
 

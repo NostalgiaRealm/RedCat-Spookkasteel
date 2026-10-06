@@ -4,7 +4,14 @@
 
 `assets/actors/manifest.json` maps lowercase actor names to JSON geometry, materials, counts and settings. Each actor JSON contains bind-pose render vertices, normals, UVs, triangle indices, material groups, source-local vertex/normal coordinates, their bone indices, the bone hierarchy and exported animation tracks. The runtime applies the INI initial rotation and scale; actor geometry itself retains its original coordinates.
 
-`src/animation.js` samples the exported translation and quaternion tracks, composes parent × attachment × sampled motion transforms, and skins each rigid vertex and normal. Animated instances own their vertex buffers; source geometry/materials are cached. RedCat selects original clips from movement/jump/attack state. Environment animation clocks advance off-screen, with vertex sampling deferred until nearby; looking away no longer pauses their timeline. Runtime blending and exact original animation event/camera synchronization remain future fidelity work.
+`src/animation.js` samples the exported translation and quaternion tracks, composes parent × attachment × sampled motion transforms, and skins each rigid vertex and normal. Animated instances own their vertex buffers; source geometry/materials are cached. RedCat selects original clips from movement/jump/attack state. Environment animation clocks advance off-screen, with vertex sampling deferred until nearby; looking away no longer pauses their timeline.
+
+Original motion-event dispatch and scripted camera timelines are implemented;
+see [motion playback](motions.md) and [camera recovery](camera-native-status.md).
+Hurt/death/respawn clip rates and completion gates are also connected in
+[player reactions](player-reactions-and-projectile-contact-native.md).
+General cross-clip blending and the full native camera spring solver are not
+implemented; that narrower limit should not be read as missing event playback.
 
 RedCat has 16 clips including idle, walkfw, walkbw, directional movement, jump/fall, shoot, charge, hit, death and respawn. The animation tests sample all clips, verify finite bounded positions and normalized normals, and verify looping and independent instances.
 

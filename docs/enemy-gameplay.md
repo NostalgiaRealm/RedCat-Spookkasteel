@@ -42,9 +42,11 @@ Spider I and II have contact-damage settings. Spider III has ranged salvo fields
 and fires `RcEnemyShot`: normal-difficulty speed 400, damage 2, zero gravity and
 five-second lifetime. The projectile has swept collision against the world and
 player, so walls stop it and moving out of its path avoids it. It uses the original
-four Spark/alpha image pairs and 20 fps animation, imported by
-`tools/import_projectiles.py`. Projectile difficulty settings are included in
-the gameplay settings import. Frog, plant, skeleton and gargoyle projectile
+four Spark/alpha image pairs, imported by `tools/import_projectiles.py`. Its
+50 ms bitmap timer uses the recovered strict expiry and separate rearm update,
+so the displayed rate depends on update cadence; see
+[native projectile animation](native-projectile-animation.md). Projectile difficulty
+settings are included in the gameplay settings import. Frog, plant, skeleton and gargoyle projectile
 classes are also selected from native evidence.
 
 Enemy and projectile simulation pauses with cutscenes/enemy freezing. Saves keep
@@ -69,16 +71,19 @@ salvo relocation and boss projectile classes; see `patrol-boss-native.md`.
 `player-projectiles-native.md` also corrects the earlier orange sprite tint:
 the native orange values configure a light; the bitmap vertices use white.
 
-This is still a reconstruction of native enemy behavior. Exact navigation
-selection, every enemy vulnerability and all native interruption rules are
-not complete. The boss-phase update adds the Dungeon Max, Jester Max and Witch phase
-controllers and mushroom ribbons; see `boss-phases-native.md`. The later
-[projectile animation recovery](native-projectile-animation.md) adds the original
-frames and native bitmap timing for all imported projectile kinds. The later
-[native follow-up](native-completion-followup.md) adds pursuit/combat refinements,
-projectile lighting and the recovered shared collision hull. Enemy muzzle
-placement and fragment physics retain approximations; see the
-[current audit](native-parity-audit.md). The tests are controlled scenes, not a complete campaign
+The boss-phase update adds the Dungeon Max, Jester Max and Witch phase
+controllers; see [boss phases](boss-phases-native.md). Subsequent recovery
+implements [minimum-hop pursuit and combat refinements](native-completion-followup.md),
+[native touching-enemy and patrol waypoint selection](enemy-waypoint-movement.md),
+[animated projectile attachments](enemy-projectile-origins-native.md), and
+[fragment physics](debris-native-recovery.md). [Projectile contacts](projectile-impacts-native.md)
+now use the recovered shared hull and subclass dispatch; mushroom ribbons are
+visual only, as established by the executable.
+
+Remaining boundaries include direct-chase endpoint selection, some attack
+interruptions, portable collision tolerances and saved per-enemy random streams.
+These do not invalidate the recovered rules, but prevent a claim of complete
+native parity. The tests are controlled scenes, not a complete campaign
 playthrough or frame-by-frame comparison with the original executable.
 
 The later [ambush and flight update](enemy-ambush-flight.md) documents original

@@ -318,28 +318,28 @@ export default {
     "flgen11.wav": 1.0
   },
   "spatial": {
-    "minDistanceMeters": 5.0,
+    "minDistanceMeters": 17.55,
     "maxDistanceFactor": 25.0
   },
   "levels": {
     "lvl00a": {
-      "minDistanceMeters": 50.0,
+      "minDistanceMeters": 175.5,
       "maxDistanceFactor": 150.0
     },
     "lvl01a": {
-      "minDistanceMeters": 50.0,
+      "minDistanceMeters": 175.5,
       "maxDistanceFactor": 150.0
     },
     "lvl02a": {
-      "minDistanceMeters": 50.0,
+      "minDistanceMeters": 175.5,
       "maxDistanceFactor": 150.0
     },
     "lvl03a": {
-      "minDistanceMeters": 50.0,
+      "minDistanceMeters": 175.5,
       "maxDistanceFactor": 150.0
     },
     "lvl04a": {
-      "minDistanceMeters": 50.0,
+      "minDistanceMeters": 175.5,
       "maxDistanceFactor": 150.0
     }
   }

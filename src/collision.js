@@ -140,7 +140,7 @@ export class BspCollider {
     }
     return contents;
   }
-  trace(start, end, mins = [0,0,0], maxs = [0,0,0], modelIndices = [0], actorMask='blocksPlayer') {
+  trace(start, end, mins = [0,0,0], maxs = [0,0,0], modelIndices = [0], actorMask='blocksPlayer', contentsMask=67) {
     const { planes, nodes, leaves, leafSides, models } = this.data;
     const result = { fraction:1, end:[...end], normal:[0,1,0], startSolid:false, modelIndex:null };
     const boxMin = start.map((v,i)=>Math.min(v,end[i])+mins[i]);
@@ -161,7 +161,7 @@ export class BspCollider {
       const checkLeaf = index => {
         if (visited.has(index)) return; visited.add(index);
         const leaf=leaves[index];
-        if (!leaf || !(leaf.contents & 67) || !leaf.numSides) return;
+        if (!leaf || !(leaf.contents & contentsMask) || !leaf.numSides) return;
         if(leaf.min && leaf.max) {
           const [min,max]=transform?transform.bounds(leaf.min,leaf.max):[leaf.min,leaf.max];
           if(min.some((v,i)=>v>boxMax[i] || max[i]<boxMin[i])) return;

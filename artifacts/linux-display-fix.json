@@ -1,0 +1,10 @@
+{
+  "version": "0.2.1",
+  "verifiedAt": "2026-09-21T11:21:11.543Z",
+  "cause": "Ozone backend changed after native window-system initialization: Wayland surface ID 1 passed to X11 presenter",
+  "fix": "Select X11 in Start-RedCat.sh before Electron starts; remove late Ozone mutation; default ANGLE to OpenGL",
+  "nativeWindowPixels": true,
+  "hardwareDesktopCompositing": true,
+  "fullscreenAndWindowedResolution": true,
+  "existingProfile": "tested a temporary copy; original profile unchanged"
+}

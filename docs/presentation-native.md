@@ -54,9 +54,10 @@ state. Left strafing also selects its matching `strafel` clip.
 
 ## Fleurifee effects
 
-This initial reconstruction was subsequently refined; see
-[native visual follow-up](native-visuals-2026-09-22.md) for corrected native
-layering, orbital speed, color cycling, departure lifecycle, and remaining limits.
+This initial reconstruction was subsequently replaced with recovered native
+state updates; see [native visual follow-up](native-visuals-2026-09-22.md) for
+layering, orbital motion, color cycling, the 50-slot particle pool, and departure
+lifecycle, and [effect saves](fairy-save-restoration.md) for live-state restoration.
 
 
 The original Fairy class has no actor mesh. It is a procedural effect, which
@@ -77,17 +78,22 @@ layers, and 0.9 radians/second spin. It creates five orbiting particles
 (`0x47caab`–`0x47cbc1`) and a radius-110 dynamic light (`0x64e280`). The level
 supplies Origin, LifeTime, NumberOfWayPoints and up to ten FairyWP references.
 
-`fairy-effects.js` restores these original image layers, rotation, five star
-trails, dynamic light, authored waypoint positions and finite lifetime. A
-finished lifetime deactivates the effect so a later script Enable starts a
-fresh appearance. Its age survives saves through the existing effectAge field.
+`fairy-effects.js` implements the recovered centre seeking/hovering, five
+orbiters, secondary-particle gravity and wiggle, reusable 50-slot pool, color
+cycling and per-tick pulse. Re-enabling resets the centre/orbiters and emission
+timers while preserving the native retained color, pulse and living particles.
+The light radius follows the pulse. New saves preserve the complete bounded
+state, including trails, random state, departure particles and fractional tick;
+only legacy age-only saves reconstruct an earlier activation.
 
-**Remaining fidelity limit:** the shared native particle integrator's exact
-random steering, colour cycle and 50-slot secondary particle pool are not a
-byte-for-byte port. The five trails and waypoint travel use bounded smooth
-paths, and the pulse uses a deterministic waveform. The missing effect is
-restored with original artwork and recovered dimensions/rates, but its detailed
-particle trajectories are a reconstruction rather than verified exact parity.
+Deliberate portability differences remain: a fixed 60 Hz simulation and a
+per-fairy random stream instead of the original variable frame times and shared
+global random sequence. The recovered 800 ms trails use a linear opacity fade;
+the exact native trail-history attenuation curve has not been established.
+Audio playheads are not part of visual effect snapshots. These limits do not
+mean the particle integrator, pool or color cycle is still unimplemented, and
+controlled numerical/rendering checks do not claim pixel-identical original
+playthroughs.
 
 ## Focused validation
 

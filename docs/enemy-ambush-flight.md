@@ -23,10 +23,10 @@ settings, the imported actor motions and the compiled level scripts.
   enable the skeleton groups; an enabled room alone must not turn the bones
   into an already walking skeleton. Normal `Skeleton.ini` perception range
   is 250 world units.
-- Touch-bat state `0x40ac60` contains the one-second contact wait (`0x40ae2b`)
+- Touch-bat state `0x40ac60` contains the one-second no-destination wait (`0x40ae2b`)
   and three randomized pursuit modes (`0x40ae9c`), including two timed
-  2,000-ms flight modes. The exact native steering trajectories have not
-  all been recovered. The original rest-pose bat body is much narrower than
+  2,000-ms flight modes. Their exact waypoint selectors were recovered in the
+  [2026-10-05 follow-up](enemy-waypoint-movement.md). The original rest-pose bat body is much narrower than
   its animated spread wings.
 - The actual tower introduction enables `The_Witch` through
   `trigger_witchmodel`, unfreezes enemies and returns RedCat to the ground.
@@ -92,10 +92,10 @@ fires pellets through the real world collision query at the cave vehicle's
 body, crate and lid after its original stand-in has withdrawn. It writes
 `artifacts/caves-spider-descent.png` and `artifacts/enemy-ambush-scenes.json`.
 
-Remaining fidelity limits include spider return-to-ceiling decisions, all
-native bat steering branches, and the exact original randomized waypoint
-selection. The changes restore the requested encounter behavior without
-claiming those unfinished branches are fully reproduced.
+This section records the original encounter correction. Subsequent work
+implemented spider return/ascent and recovered the native bat and random patrol
+waypoint selectors. Current movement limits are recorded in
+[enemy waypoint movement](enemy-waypoint-movement.md).
 
 ## Contact and ending follow-up
 
@@ -111,13 +111,12 @@ Native inspection identified the formerly unnamed pursuit modes: RTTI at
 `0x650028` is `CAdamGMS_MoveClockWise`, `0x650038` is
 `CAdamGMS_MoveAntiClockWise`, and `0x650048` is `CAdamGMS_MoveCloser`.
 Touch-bat code at `0x40af87`/`0x40af9e` supplies 2,000 milliseconds to the
-circling constructors; `0x40ae2b` supplies a 1,000-ms contact wait. After a
-contact the portable bat waits that second, then circles for two seconds in
-a randomized direction before approaching again. It reverses if its orbit is
-blocked. The radius and radial correction use the portable collision body;
-this is a reconstruction of the native movement states, not an exact port of
-all their route scoring or the native three-way random choice. Contact waits
-and orbit progress are saved and freeze with enemy simulation.
+circling constructors; `0x40ae2b` supplies a 1,000-ms no-destination wait.
+Earlier versions of this document incorrectly called it a contact wait and
+implemented a continuous radius-based orbit. Both were corrected on 2026-10-05:
+the three native selectors choose adjacent authored waypoints, independently of
+the contact damage cooldown. See [exact selectors, timing and performance](enemy-waypoint-movement.md).
+Movement state and destination survive saves and freeze with enemy simulation.
 
 The duplicate Witch had a separate cause. Native `CRcWitchMain`'s defeat
 method (`0x64aa80 + 0x28`, implementation `0x40b1c0`) invokes the enemy cleanup

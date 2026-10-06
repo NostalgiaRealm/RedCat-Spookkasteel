@@ -2,7 +2,8 @@
 
 Inactive graveyard zombies no longer protrude through unopened graves. Their
 original scripts destroy the grave cover and then enable the zombie. The
-existing movement, perception and waypoint logic takes over on activation.
+zombie follows its explicit upward entrance edge before ordinary movement,
+perception and waypoint logic takes over.
 The two zombies that the original level enables from the start remain visible.
 
 ## Original evidence
@@ -45,6 +46,69 @@ Read-only native inspection used `RcHcGame.dat`, SHA-256
 This investigation did not establish the native timing of the zombie's
 `start` motion. The fix does not add an unverified emergence-animation delay.
 
+## Smooth grave ascent (October 2026 follow-up)
+
+The running session and its copied save reproduced a frame-rate-dependent
+regression. Ground movement flattened the upward waypoint direction, then
+tried to step over the grave slope and apply gravity. At short frame intervals
+this alternated between moving and standing still, restarting `walkfw` after
+each idle frame. A fixed 60 Hz check largely concealed the problem.
+
+Further native inspection shows that `CRcZombie` calls `CRcTouchingEnemy`'s
+constructor (`0x42dc80`, called at `0x418e29`). Its cursor advances in XYZ:
+`0x59bfb5–0x59bfd6` computes the full 3D direction and length,
+`0x59c049` computes `dt_ms * Speed * .001`, and `0x59c091–0x59c0a4`
+advances the normalized direction (or copies the endpoint at `0x59c070`).
+`0x595f60` forwards the resulting cursor position to the actor. The original
+Zombie.ini supplies Speed 50 on every difficulty. There is no evidence here
+for a separate timed rise animation; the normal walk motion continues.
+
+`src/zombie-grave-rise.js` now owns only the first, explicitly linked rising
+edge of an initially disabled zombie with `UnlinkStartPoint`. This selects
+`zombie1`–`zombie4` and `frogzom1`–`frogzom4`. The two flat plank entrances
+and initially active mausoleum zombies retain their ordinary movement.
+During the rise, XYZ advances at Speed without step/gravity collision or
+recovery searches, and facing turns toward the exit at RotationPerSec.
+Once it reaches the authored endpoint, normal patrol and collision resume.
+The original grave destruction and enable callbacks remain responsible for
+uncovering and revealing each zombie.
+
+The actor continues from its existing position, including the small authored
+Origin/StartPoint offsets and previously saved collision corrections. It does
+not snap back to the start. Existing saved patrol fields record progress and
+completion; no save migration or additional timer is needed. A hurt pose or
+authored cutscene can hold the rise without making the zombie fall back down.
+
+Focused checks for this follow-up:
+
+```sh
+node --test tests/zombie-grave-rise.test.mjs
+node --test --test-name-pattern='first zombie clears|original grave triggers' tests/zombie-activation.test.mjs
+```
+
+All seven new checks and the two affected existing checks passed. The new
+checks exercise all eight entrances at 60 Hz, 120 Hz, 7 ms, and uneven frame
+intervals, plus older-save continuation, save/reload, hurt/cutscene holding,
+scope and facing. An isolated browser also tested the copied running save and
+the four original first-area trigger/button encounters. For the copied save's
+remaining ascent:
+
+| Frame timing | Before: stopped frames / animation changes | After: stopped frames / animation changes |
+| --- | --- | --- |
+| 7 ms | 194 / 388 | 0 / 0 |
+| Uneven 7–11 ms | 85 / 170 | 0 / 0 |
+
+The `frogzom12_tr` encounter also passed a physical approach check. Its second
+zombie rises continuously to the authored Y=535 endpoint, then settles onto
+the Y=528 floor over 133 ms while continuing to walk, without stopping or
+restarting its animation.
+
+The fixed ascent uses zero enemy collision sweeps rather than up to six per
+frame, and makes no pursuit searches. This is a focused work-count check,
+not a claim about whole-level FPS. No unrelated suites or builds were run.
+Retained disassembly, copied state, browser harness, screenshots and before/
+after reports are in `current_work/zombie-rise-smooth-2026-10-05/`.
+
 ## Fix and saves
 
 The shared `actorVisible` predicate now excludes disabled living zombies.
@@ -67,7 +131,9 @@ area before the first patrol segment is complete, allows at most 16 units
 and applies no displacement unless the final hull is clear. Its original
 westward waypoint route remains unchanged. This is a
 portable collision adaptation, not a claim about native AI instructions, and
-also repairs older saves with that zombie still stuck at its spawn.
+also repairs older saves with that zombie still stuck at its spawn. The
+smooth-ascent follow-up above supersedes this correction during an authored
+grave rise; the bounded correction remains available to ordinary movement.
 
 ## Focused verification
 

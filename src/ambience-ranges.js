@@ -2,9 +2,9 @@
 // Keep all repeating spatial ambience audible in its section, including lava,
 // machinery, torches and the intermittent corridor noises. A filename list
 // misses authored emitters using other sounds (and delayed replay loops).
-export const CAVE_AMBIENCE_RANGE = Object.freeze({nearMeters:5, farMeters:30});
-export const CASTLE_AMBIENCE_RANGE = Object.freeze({nearMeters:5, farMeters:25});
-export const TOWER_FIRE_RANGE = Object.freeze({nearMeters:3, farMeters:18, gain:.65});
+export const CAVE_AMBIENCE_RANGE = Object.freeze({nearMeters:17.55, farMeters:105.3});
+export const CASTLE_AMBIENCE_RANGE = Object.freeze({nearMeters:17.55, farMeters:87.75});
+export const TOWER_FIRE_RANGE = Object.freeze({nearMeters:10.53, farMeters:63.18, gain:.65});
 export const FAIRY_IDLE_DISTANCE_SCALE = 3;
 export const isFairyIdle = record=>record.channel==='effects'&&record.loop&&record.name==='idlefee1.wav';
 

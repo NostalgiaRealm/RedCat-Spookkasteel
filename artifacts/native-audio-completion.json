@@ -1,0 +1,458 @@
+{
+  "door": [
+    {
+      "key": "door:DoorModel17",
+      "sourceId": "DoorModel17",
+      "channel": "effects",
+      "sound": "opendoornormal.wav",
+      "authoredGain": 1,
+      "scriptVolume": 1,
+      "distanceGain": 0.30117531449301016,
+      "volume": 0.08175022674429092,
+      "spatial": true,
+      "position": [
+        23,
+        -144,
+        -1423
+      ],
+      "loop": false,
+      "paused": true,
+      "waiting": null,
+      "readyState": 4,
+      "currentTime": 0
+    }
+  ],
+  "brutus": [
+    {
+      "action": "attack",
+      "sounds": [
+        {
+          "key": "enemy:MovingEnemy1",
+          "sourceId": "MovingEnemy1",
+          "channel": "voices",
+          "sound": "brin0011.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 0.1955627343406675,
+          "volume": 0.03990276073372933,
+          "spatial": true,
+          "position": [
+            2396,
+            -156,
+            -1495
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        }
+      ]
+    },
+    {
+      "action": "hurt",
+      "sounds": [
+        {
+          "key": "enemy:MovingEnemy1",
+          "sourceId": "MovingEnemy1",
+          "channel": "voices",
+          "sound": "brin0003.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 0.1955627343406675,
+          "volume": 0.03990276073372933,
+          "spatial": true,
+          "position": [
+            2396,
+            -156,
+            -1495
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        }
+      ]
+    },
+    {
+      "action": "death",
+      "sounds": [
+        {
+          "key": "enemy:MovingEnemy1",
+          "sourceId": "MovingEnemy1",
+          "channel": "voices",
+          "sound": "brin0004.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 0.1955627343406675,
+          "volume": 0.03990276073372933,
+          "spatial": true,
+          "position": [
+            2396,
+            -156,
+            -1495
+          ],
+          "loop": false,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        }
+      ]
+    }
+  ],
+  "footsteps": {
+    "position": [
+      -1332,
+      -159.95,
+      2593.600000000006
+    ],
+    "grounded": true,
+    "sounds": [
+      {
+        "key": "player:step",
+        "sourceId": null,
+        "channel": "effects",
+        "sound": "rcwalk2.wav",
+        "authoredGain": 1,
+        "scriptVolume": 1,
+        "distanceGain": 1,
+        "volume": 0.6,
+        "spatial": false,
+        "position": null,
+        "loop": false,
+        "paused": true,
+        "waiting": null,
+        "readyState": 0,
+        "currentTime": 0
+      }
+    ]
+  },
+  "music": [
+    {
+      "level": 0,
+      "modes": [
+        {
+          "type": "scriptMusic",
+          "id": "EffectMusic1",
+          "sound": "Level 1 - The Forest.wav",
+          "mode": "ambient",
+          "volume": 1,
+          "crossFade": true,
+          "fadeInTimeSeconds": 2,
+          "fadeOutTimeSeconds": 2
+        },
+        {
+          "type": "scriptMusic",
+          "id": "EffectMusic1",
+          "sound": "Endbosses.wav",
+          "mode": "action",
+          "volume": 1,
+          "crossFade": true,
+          "fadeInTimeSeconds": 2,
+          "fadeOutTimeSeconds": 2
+        }
+      ],
+      "sounds": [
+        {
+          "key": null,
+          "sourceId": "EffectMusic1",
+          "channel": "music",
+          "sound": "level 1 - the forest.wav",
+          "authoredGain": 0.7,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0,
+          "spatial": false,
+          "position": null,
+          "loop": true,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "music",
+          "sourceId": "EffectMusic1",
+          "channel": "music",
+          "sound": "endbosses.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0,
+          "spatial": false,
+          "position": null,
+          "loop": true,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "modes": [
+        {
+          "type": "scriptMusic",
+          "id": "EffectMusic1",
+          "sound": "Level 2- -The Castle.wav",
+          "mode": "ambient",
+          "volume": 1,
+          "crossFade": true,
+          "fadeInTimeSeconds": 2,
+          "fadeOutTimeSeconds": 2
+        },
+        {
+          "type": "scriptMusic",
+          "id": "EffectMusic1",
+          "sound": "Endbosses.wav",
+          "mode": "action",
+          "volume": 1,
+          "crossFade": true,
+          "fadeInTimeSeconds": 2,
+          "fadeOutTimeSeconds": 2
+        }
+      ],
+      "sounds": [
+        {
+          "key": null,
+          "sourceId": "EffectMusic1",
+          "channel": "music",
+          "sound": "level 2- -the castle.wav",
+          "authoredGain": 0.7,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0,
+          "spatial": false,
+          "position": null,
+          "loop": true,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "music",
+          "sourceId": "EffectMusic1",
+          "channel": "music",
+          "sound": "endbosses.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0,
+          "spatial": false,
+          "position": null,
+          "loop": true,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        }
+      ]
+    },
+    {
+      "level": 2,
+      "modes": [
+        {
+          "type": "scriptMusic",
+          "id": "EffectMusic1",
+          "sound": "Level 3 - The Graveyard.wav",
+          "mode": "ambient",
+          "volume": 1,
+          "crossFade": true,
+          "fadeInTimeSeconds": 2,
+          "fadeOutTimeSeconds": 2
+        },
+        {
+          "type": "scriptMusic",
+          "id": "EffectMusic1",
+          "sound": "Endbosses.wav",
+          "mode": "action",
+          "volume": 1,
+          "crossFade": true,
+          "fadeInTimeSeconds": 2,
+          "fadeOutTimeSeconds": 2
+        }
+      ],
+      "sounds": [
+        {
+          "key": null,
+          "sourceId": "EffectMusic1",
+          "channel": "music",
+          "sound": "level 3 - the graveyard.wav",
+          "authoredGain": 0.7,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0,
+          "spatial": false,
+          "position": null,
+          "loop": true,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "music",
+          "sourceId": "EffectMusic1",
+          "channel": "music",
+          "sound": "endbosses.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0,
+          "spatial": false,
+          "position": null,
+          "loop": true,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        }
+      ]
+    },
+    {
+      "level": 3,
+      "modes": [
+        {
+          "type": "scriptMusic",
+          "id": "EffectMusic1",
+          "sound": "Level 4 - The Caves.wav",
+          "mode": "ambient",
+          "volume": 1,
+          "crossFade": true,
+          "fadeInTimeSeconds": 2,
+          "fadeOutTimeSeconds": 2
+        },
+        {
+          "type": "scriptMusic",
+          "id": "EffectMusic1",
+          "sound": "spookkort3.wav",
+          "mode": "action",
+          "volume": 1,
+          "crossFade": true,
+          "fadeInTimeSeconds": 2,
+          "fadeOutTimeSeconds": 2
+        }
+      ],
+      "sounds": [
+        {
+          "key": null,
+          "sourceId": "EffectMusic1",
+          "channel": "music",
+          "sound": "level 4 - the caves.wav",
+          "authoredGain": 0.7,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0,
+          "spatial": false,
+          "position": null,
+          "loop": true,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "music",
+          "sourceId": "EffectMusic1",
+          "channel": "music",
+          "sound": "spookkort3.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0,
+          "spatial": false,
+          "position": null,
+          "loop": true,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        }
+      ]
+    },
+    {
+      "level": 4,
+      "modes": [
+        {
+          "type": "scriptMusic",
+          "id": "EffectMusic1",
+          "sound": "Level 5 - The CastleTowerr.wav",
+          "mode": "ambient",
+          "volume": 1,
+          "crossFade": true,
+          "fadeInTimeSeconds": 2,
+          "fadeOutTimeSeconds": 2
+        },
+        {
+          "type": "scriptMusic",
+          "id": "EffectMusic1",
+          "sound": "spookkort3.wav",
+          "mode": "action",
+          "volume": 1,
+          "crossFade": true,
+          "fadeInTimeSeconds": 2,
+          "fadeOutTimeSeconds": 2
+        }
+      ],
+      "sounds": [
+        {
+          "key": null,
+          "sourceId": "EffectMusic1",
+          "channel": "music",
+          "sound": "level 5 - the castletowerr.wav",
+          "authoredGain": 0.7,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0,
+          "spatial": false,
+          "position": null,
+          "loop": true,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        },
+        {
+          "key": "music",
+          "sourceId": "EffectMusic1",
+          "channel": "music",
+          "sound": "spookkort3.wav",
+          "authoredGain": 1,
+          "scriptVolume": 1,
+          "distanceGain": 1,
+          "volume": 0,
+          "spatial": false,
+          "position": null,
+          "loop": true,
+          "paused": true,
+          "waiting": null,
+          "readyState": 4,
+          "currentTime": 0
+        }
+      ]
+    }
+  ],
+  "secret": [
+    {
+      "key": null,
+      "sourceId": null,
+      "channel": "effects",
+      "sound": "secretfound.wav",
+      "authoredGain": 1,
+      "scriptVolume": 1,
+      "distanceGain": 1,
+      "volume": 0.6,
+      "spatial": false,
+      "position": null,
+      "loop": false,
+      "paused": true,
+      "waiting": null,
+      "readyState": 4,
+      "currentTime": 0
+    }
+  ]
+}

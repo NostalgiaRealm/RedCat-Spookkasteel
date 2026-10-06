@@ -1,0 +1,84 @@
+{
+  "approach": {
+    "visible": true,
+    "enabled": false,
+    "position": [
+      2396,
+      -156,
+      -1495
+    ]
+  },
+  "intro": {
+    "cutscene": true,
+    "visible": true,
+    "subtitle": "Oah!"
+  },
+  "shot": {
+    "enabled": true,
+    "music": "endbosses.wav",
+    "cutscene": false,
+    "mushroom": {
+      "kind": "mushRoom",
+      "speed": 249.99999999999997,
+      "sprite": true,
+      "width": 9.6,
+      "damage": 2
+    },
+    "initial": {
+      "kind": "shot",
+      "speed": 300,
+      "sprite": true,
+      "visible": true,
+      "width": 25.6,
+      "clip": "shoot1",
+      "health": 8
+    },
+    "animated": true,
+    "damage": 1,
+    "healthBefore": 8
+  },
+  "victory": {
+    "musicAfterDeath": "level 1 - the forest.wav",
+    "cutscene": false,
+    "position": [
+      2340,
+      -154,
+      -1158
+    ],
+    "visible": true,
+    "actorPosition": [
+      2340,
+      -146.52101358150622,
+      -1158
+    ],
+    "platformIncluded": true,
+    "scriptError": null
+  },
+  "exit": {
+    "collected": true,
+    "completed": true,
+    "events": [
+      {
+        "type": "levelComplete",
+        "target": "lvl01a",
+        "requestedTarget": "lvl01a",
+        "score": 150
+      }
+    ],
+    "loadedLevel": "lvl01a"
+  },
+  "castle": {
+    "position": [
+      -84,
+      -17,
+      458
+    ],
+    "expected": [
+      -84,
+      -18,
+      458
+    ],
+    "subtitle": "Help, RedCat, hellup!",
+    "cutscene": true
+  }
+}

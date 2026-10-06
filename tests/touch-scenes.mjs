@@ -341,7 +341,7 @@ try {
   await layout(page, 'small-portrait');
   await tap(page, '#game-menu');
   await tap(page, '#return-menu');
-  await tap(page, '#start');
+  await tap(page, '#start-over');
   assert.equal(await page.locator('#new-adventure-warning').evaluate(element => element.open), true);
   await tap(page, '#cancel-new-adventure');
   assert.equal(await page.evaluate(() => window.__redcat.mode), 'menu');

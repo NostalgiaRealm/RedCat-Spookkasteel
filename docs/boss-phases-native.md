@@ -83,11 +83,15 @@ invented teleport is needed. The model transform is preserved in saves.
 ## Fidelity limits
 
 This is a recovered playable phase implementation, not a claim of complete
-instruction-for-instruction AI parity. Native random-number sequences and
-randomized salvo sizes differ; the shared waypoint graph now includes native
-angle/intersection and point-clearance pruning, but still lacks native route
-scoring. Some per-enemy interruption
-transitions and exact projectile muzzle positions remain approximations.
+instruction-for-instruction AI parity. Native salvo-size sampling is implemented,
+but the saved per-enemy random stream differs from the original global stream.
+The shared graph includes native pruning, minimum-hop pursuit routing and the
+[recovered waypoint selectors](enemy-waypoint-movement.md); arbitrary-position
+pursuit endpoints and body-clearance safeguards remain portable choices. Some
+attack interruption branches remain unrecovered.
+[Projectile muzzles](enemy-projectile-origins-native.md) now use their original
+animated bones, including both barrels of Dungeon Max's machine. Release still
+occurs on a simulation update rather than splitting the frame at an animation event.
 Dungeon vehicle collision uses the original assembly geometry. The narrow
 `brcrate` retains its native dimensions (76.16 units high) with no additional
 translation below the turret. The original top disables its shot flags; the
@@ -104,7 +108,10 @@ The Witch uses the existing reconstructed graph with full body-clearance
 checks after her explicitly authored cauldron takeoff, so route choices may differ.
 The later [projectile flight recovery](native-enemy-projectile-flight.md) implements
 Witch homing and native lifetime variation in the shared projectile module.
-Subclass impact/bounce behavior and exact collision fidelity still need research.
+The later [impact investigation](projectile-impacts-native.md) recovered subclass
+dispatch: these enemy projectiles retire on contact without a secondary effect
+or bounce. Exact Genesis collision roundoff remains outside the portable backend's
+parity claim.
 
 `tests/boss-phases.test.mjs` tests complete cycles, original difficulty values,
 freeze/save behavior, animation restarts, hidden collision rejection, and

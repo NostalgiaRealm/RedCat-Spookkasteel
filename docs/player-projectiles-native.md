@@ -76,8 +76,12 @@ the simulation retains a fallback muzzle offset for headless tests or missing
 actor data. The original super-shot charge/release phase is now reconstructed
 as described in [player-abilities-native.md](player-abilities-native.md), including
 the held pose, 1.5-second charge, release timing and scaled damage.
-The current hit hull and continuous integration are portable reconstructions,
-not a claim of bit-identical Genesis3D collision or frame stepping.
+The shared native collision hull, approximately ±0.032 units, is implemented
+independently of sprite size; see [projectile contact](player-reactions-and-projectile-contact-native.md).
+The [player impact factories](projectile-impacts-native.md) also use their
+recovered artwork, timing and light profiles. Continuous flight integration and
+portable BSP/actor traces still do not claim bit-identical Genesis3D collision
+or frame stepping.
 
 ## Verification
 

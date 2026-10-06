@@ -149,8 +149,10 @@ come from each original Fairy entity. Re-enabling resets the center, orbiters
 and emission timers while retaining color, pulse and living secondary particles.
 The implementation stores one `NativeFairyEffect` per entity, with cached orbit
 segments for the800ms trail. Drawing and `update(0)` refreshes never advance
-the simulation, RNG, lifecycle or sound events. A saved active effect age is
-replayed once at load; rendering does not recompute the trajectory.
+the simulation, RNG, lifecycle or sound events. The later
+[save-state recovery](fairy-save-restoration.md) preserves and restores the
+complete live state directly. Only legacy age-only saves use the earlier replay
+fallback; rendering does not recompute the trajectory.
 
 ### Remaining fidelity limits
 
@@ -163,11 +165,13 @@ The original beam-history attenuation curve has not been established.
 
 The MSVC random formula is recovered, but each fairy has a deterministic seed
 instead of sharing the original game's global random stream with unrelated
-events. The existing save format stores only `effectAge`; it reconstructs a first
-activation's state correctly. It cannot recover color/pulse, particles and RNG
-carried over from earlier activations of the same entity, or exact audio playheads;
-those details were not stored in the existing save format. An already expired
-saved age remains disabled rather than accidentally reactivating the fairy.
+events. New ordinary and recovery saves preserve color/pulse, centre motion,
+all 50 particle slots, trails, timers, RNG and fractional tick, including state
+carried over from earlier activations. Legacy saves that stored only `effectAge`
+cannot recover that lost history exactly. Audio playback cursors remain outside
+the visual snapshot; an active idle loop resumes without replaying appearance
+or already-played departure sounds. An already expired legacy saved age remains
+disabled rather than accidentally reactivating the fairy.
 
 ## Focused checks
 

@@ -79,7 +79,9 @@ velocities 125–180 and 200–250, and lifetimes of 3–4 seconds. The stronger
 `brcrate` blast uses 25% size; `wkcrate` uses a much smaller 0.5% blast.
 
 Destruction now starts the original eight-frame `Explosie01..08` bitmap/alpha
-sequence, smoke, the original fragment meshes and `Explosion.wav`. Scripts
+sequence, smoke, the original fragment meshes and `expl6.wav`. The
+[destruction audio audit](destruction-audio-native.md) corrected the earlier
+`Explosion.wav` assumption and restored native blast-size volume scaling. Scripts
 which destroy several props create effects for each prop at its rendered
 position, including attached moving actors. Fragment counts, meshes,
 initial velocity ranges, spin, lifetimes, collision and fade flags come from
@@ -87,9 +89,15 @@ the INI. The native actor destruction path (`0x4a7fd2` to `0x58d710`) uses
 the orange `Explosie` sequence. It schedules frames at 0, 100, 200, 300, 400,
 500, 600 and 699 ms (`0x58dd70`), with scale factors 0.5, 0.6, 0.8, 0.9,
 0.95, 0.9, 0.8 and 0.7 applied to `SizePercentage / 100 * 20`. These frame
-times/scales are reproduced. The portable fragment integration, smoke and
-multi-blast placement remain reconstructions; exact native particle
-scheduling has not been fully recovered.
+times/scales are reproduced. The later [debris recovery](debris-native-recovery.md)
+also implements native fragment integration, source-volume launch positions,
+velocity-dependent spin, collision response and settle-only fading. Blast
+placement uses the recovered lookup table and staggered delays; each blast's
+smoke follows a finite four-particle schedule at 200/600/1000/1400 ms with the
+original artwork, motion, lifetime, size and opacity rules. Remaining limits
+are the portable collision tolerances, per-effect random sequence and native
+frame-boundary variation, rather than an unrecovered smoke schedule. Unused
+green-flash and electrical variants remain outside that recovery.
 
 The first collision with a projectile may identify an actor rather than a
 BSP model. That actor identity now routes the hit to the destructible prop

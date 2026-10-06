@@ -1,185 +1,224 @@
-# RedCat Spookkasteel — portable reconstruction
+# RedCat Spookkasteel — cross-platform reconstruction
 
-Runnable, independent reconstruction of the game, It does not launch the old Windows executables, Direct3D DLLs, or Wine. The renderer is Three.js/WebGL 2; the desktop application is Electron.
+A modern reconstruction of **RedCat Spookkasteel**, Davilex's 2000 Windows game. Explore five haunted worlds as RedCat, solve puzzles, collect potions and mirror pieces, and face the original enemies and bosses.
 
-**Status: playable game from start to end, with the original Davi-Script logic running.** All five original worlds load, and their compiled puzzle, cutscene and boss-event scripts execute in the new runtime. Original motion timelines, Dutch dialogue and script state saving are integrated. Patrol routes, boss phases, original projectile animation, mushroom trails, damaging water, SuperSkippie and BIG BENG are implemented. RedCat's hit/death/respawn clips, authored pursuit routing, additional enemy attack states, projectile/actor lighting and directional sound with wall obstruction are also connected. 
+The project brings the original levels, artwork, animation, Dutch dialogue and game scripts to **Linux, Windows and web browsers**, with widescreen resolutions, modern controls and improved saving. It uses a new JavaScript game engine built with **Three.js/WebGL 2**, packaged for desktop with **Electron**.
 
-Exact parity is still tbd. But manual runs of build 0.9.3 on 2026-09-04 confirm that the game campaign can be finished from start to finish. There are some bugs that can cause RedCat to get stuck in an item, but it's exactly why automatic saves are done and can be recovered from the menu. Other problems are: not complete parity with respect to enemy behavior and visual bugs.
+**Status:** all five levels and their original scripts are playable. Development focuses on matching the original behavior, fixing regressions and keeping performance practical. Some details still differ; see [current status and remaining work](docs/native-parity-audit.md). Apple Silicon macOS still needs hardware validation. An initial Android wrapper is implemented and compiles, but device validation remains; mobile browser touch controls already work.
 
-See the [current native parity audit](docs/native-parity-audit.md) for confirmed gaps, approximations and validation work.
+[Run the game](#run-the-game) · [Work completed](#work-completed) · [Controls](#controls) · [Build guide](docs/building.md) · [Technical documentation](#technical-documentation)
 
-## Run the prepared builds
+## How this port works
 
-- Linux: double-click `Start-RedCat.sh`, or run `./Start-RedCat.sh` from this directory.
-- Windows x64: copy the entire `dist/win-unpacked` directory to Windows, then run `RedCat Spookkasteel.exe` inside it. Do not copy only the EXE.
-- Linux x64 portable directory: copy the entire `dist/linux-unpacked` directory and run `./redcat-spookkasteel --ozone-platform=x11` inside it.
+The original game used Genesis3D and Direct3D. This project replaces the engine code that draws the world, moves characters, handles collisions and plays effects. It runs independently of the old Windows executables, Direct3D DLLs and Wine.
 
-The prepared directories include the imported data and runtime. They do not need Node, Python, the mounted CD, or the Wine installation at runtime. A GPU/driver with WebGL 2 support is required. The Linux launcher selects X11/XWayland before Electron starts and uses OpenGL by default. Advanced overrides remain available, for example `REDCAT_GPU=vulkan ./Start-RedCat.sh` or `./Start-RedCat.sh --ozone-platform=wayland`. Windows builds are unsigned.
+Import tools read the original game files and convert their maps, models, textures, sounds and animation into formats the new engine can use. The original **Davi-Script** programs—the instructions controlling puzzles, dialogue, cutscenes and level events—run through a small interpreter written for this project. Other behavior, such as enemy movement and projectile timing, is reconstructed from the original settings, assets and executable research.
 
-The original installation, ISO, CD files, and original saves are unchanged. This reconstruction has its own settings and save format.
+This preserves the original content while allowing a different renderer, operating system and input method. In the technical notes, **native behavior** means behavior of the original Windows game; it does not mean that this project runs the original engine. Recovered behavior and deliberate improvements are documented separately.
 
-## What works
+## Technologies
 
-- Original five Genesis3D BSP v15 maps, embedded textures, texture coordinates, exact baked lightmap atlases and original object placements.
-- The original [UFO impact dirt patch and surface decals](docs/ufo-impact-decal-native.md), including forest lily pads, use their original artwork, alpha masks and placements.
-- All 165 actor files imported, including 16 original RedCat animations; runtime skeletal animation for RedCat and nearby animated objects.
-- Dutch intro and outro video converted to modern codecs, original music and pickup/jump audio.
-- Original per-file sound levels and distance attenuation, including the quieter forest ambience/UFO. All repeating cave ambience—including water, wind, lava, torches and machinery—uses a deliberately [shorter hearing range](docs/cave-ambience-range.md). Volume changes retain script adjustments, and saved games restore ambient loops. See `docs/audio.md` for verification and remaining audio differences.
-- Correct player shooting, impact, jump, hurt/death sounds and original regular-enemy voice sets. Enemy movement, attack, hurt and death select original animation clips; red spiders fire colliding projectiles with original sprites. See `docs/enemy-gameplay.md`.
-- RedCat's original shooting motion timing, recharge, pellet acceleration, animated normal/power/super-shot artwork and right-hand release position. Impact sounds and damage occur when a pellet reaches its target.
-- Original patrol points and links, view/sense ranges, remembered positions, salvo movement, and saved enemy random state. Bosses select their own original projectile classes; Brutus throws the original mushroom sprites.
-- Original translucent forest water and castle moat render and cause continuous contact damage. Exact BSP liquid volumes keep nearby banks and bridges safe. Mushroom trails use original artwork, fade and saved collision state.
-- Original flames, coronas, dynamic lights and save-point beam sequences render across the five levels. Save beacons follow their authored trigger and keep their activation state through saves.
-- Decorative actors honor their original player/shot/visibility collision flags, including the graveyard gargoyle pedestals. The graveyard's paired doors open after both buttons complete their original scripts. Green bats pursue into contact instead of stopping to attack at a distance.
-- Dungeon Max has his original machine assembly and firing/rise/look/lower cycle. Jester Max disappears and reappears; the Witch takes off and flies along authored routes. Boss phase clocks survive saves and freezes.
-- Brutus is visible before his introduction; defeat ends boss music and raises a collectible mirror. The four exit mirrors follow their authored routes; the tower's final mirror stays in that level. WhizKitty's castle scene uses the inside cutscene endpoint.
-- The tower's five mirror stands use their native upright orientation and placement motions. Its inactive combat Witch stays hidden during the window introduction. See [tower mirror and Witch notes](docs/witch-mirrors-native.md).
-- Original HUD artwork and layout for health, lives, potions, score and targeted-enemy health. Nearby visible enemies receive the original animated target ring; attacking locks the view and aims pellets at the target.
-- Hold E for two seconds during scripted dialogue to fill the “Overslaan” circle and skip while preserving script outcomes.
-- Native facing-angle/rotation conversion, normal jump/descent clip selection, and Fleurifee's original animated light artwork.
-- Castle portraits use the original missing-INI rotation default and stand upright on their authored walls. See [portrait placement notes](docs/castle-portraits-native.md).
-- Ghost enemies use their original translucent texture, alpha mask and green/yellow/red tints. See [ghost appearance notes](docs/ghost-transparency-native.md).
-- Defeated enemies finish their death animation, fade over the native five seconds, and emit the original purple smoke. Fade and smoke progress survive saves; knight fragments no longer replay their breakup. See [enemy death effects](docs/enemy-death-effects-native.md).
-- Ceiling-spider web descents and dormant skeleton wake-up, bat flight separation, and combat facing updates. Cave fans/spring boxes use original level forces; the [vertical recovery fan](docs/vertical-fan-native.md) uses native continuous launch refresh and gravity integration to return RedCat to the platform. Touch tiles/buttons, secret cues and destructible explosions follow their authored data.
-- Third-person and first-person cameras, mouse look, walking, jumping, step climbing and sliding against original BSP collision geometry.
-- A selectable render resolution: automatic, 720p, 1080p, 1440p, 4K, 2560×1080, 3440×1440 and classic 1024×768.
-- Correct camera aspect ratios with constant vertical field of view. Mismatched window/render aspect ratios are letterboxed instead of stretched; the original 4:3 videos also retain their aspect ratio.
-- Desktop fullscreen and windowed modes, saved graphics/audio preferences, pause, manual saves, quick saves and [automatic saves every minute of active play](docs/autosave.md). The game menu also offers recovery points from roughly 2, 5 and 10 minutes of playing time ago; older history is discarded. Starting a new adventure warns before replacing an existing save and its recovery history.
-- Earned chapter access with the original chained/unlocked menu artwork; existing saves retain their current chapter. See [campaign menu](docs/campaign-menu-native.md).
-- Settings difficulty choices **Makkelijk / Normaal / Moeilijk** select the original enemy, boss and projectile tables for new/restarted levels. Saves retain their encounter difficulty; older saves remain Normal. See [native difficulty](docs/difficulty-native.md).
-- Settings → Cheats can immediately unlock all five levels, fill the original inventory limits (5 mirror pieces, 100 potions), add 9000 points, or enable free flight through geometry. Level unlocks are saved immediately; rewards and flight state survive saves.
-- Original compiled Davi-Script: 5,134 instructions, 444 event handlers, puzzle conditions, boss-event callbacks and persistent globals.
-- 437 original brush motions with synchronized rendering/collision, moving floors, scripted cameras, Dutch voices/subtitles and save restoration.
-- Cave rolling stones retain their original repeating, staggered paths after loading saves. Already-stalled old saves recover on leaving and re-entering the section. See [rolling-stone save repair](docs/rolling-stones-native.md).
-- Reconstructed pickups, health, scoring, basic attacks/enemies, named door/button actions, trigger counters and checkpoints. See `docs/gameplay-reconstruction.md` for fidelity boundaries.
-
-Source-only fixes from 22 September 2026 are documented in [docs/source-fixes-2026-09-22.md](docs/source-fixes-2026-09-22.md). Existing packages have not been regenerated.
-
-The next audio, shootable-object targeting, camera and presentation fixes are
-tracked in [docs/source-followup-2026-09-22.md](docs/source-followup-2026-09-22.md).
-
-The latest [graveyard and Fleurifee corrections](docs/graveyard-and-fairy-corrections.md)
-restore cave-door artwork, hide upper graveyard rooms behind their original sky
-boundaries, and fix Fleurifee's sounds and cutscene-skip cleanup. These are also
-source-only changes.
-
-The [target eligibility correction](docs/target-eligibility-native.md) excludes
-decorative fixtures and restores the original longer range for shootable
-buttons, including the castle drawbridge control.
-
-[Knight combat music](docs/knight-attack-music.md) now starts when RedCat attacks
-from shooting range. Actual hits refresh enemy awareness and remembered player
-position while preserving the original perception ranges.
-
-The [castle library buttons](docs/bookcase-touch.md) now complete the original
-bookcase rotation when touched. Automatic closing waits until opening finishes,
-and E no longer bypasses the buttons by operating the bookcase directly.
-
-[Graveyard zombie activation](docs/zombie-activation-native.md) now keeps
-inactive zombies hidden until the original grave or button action reveals them.
-
-The [graveyard painting puzzle](docs/painting-spider-native.md) uses the original
-strip loop callbacks to activate its three ceiling spiders and open the entryway.
-
-## Controls
-
-| Control | Action |
+| Part | Technology and purpose |
 | --- | --- |
-| W / S, Up / Down | Forward / backward |
-| A / D | Strafe |
-| Left / Right | Turn |
-| Mouse | Look after clicking the game |
-| Space | Jump |
-| Shift | Walk slowly |
-| Left click / Ctrl | Attack |
-| E | Use a nearby door/button; hold 2 seconds during dialogue to skip |
-| V | First/third-person camera |
-| Escape / P | Pause |
-| F5 / F9 | Save / load |
+| Game logic | JavaScript ES modules and typed arrays for gameplay, the Davi-Script interpreter, collision, animation and save state. |
+| Graphics | Three.js and WebGL 2 for 3D rendering, custom lighting shaders, animated models, particles and graphics-resource streaming. |
+| Desktop application | Electron supplies the desktop window, Chromium renderer and operating-system display controls. Electron-builder creates Linux and Windows portable directories. |
+| Menus and input | HTML/CSS, keyboard and pointer events, touch overlays and the browser Gamepad API. |
+| Sound and movies | Web Audio and HTML media for positional sound, dialogue, looping music and converted intro/outro videos. |
+| Saving | Browser localStorage for the latest save, settings and campaign progress; IndexedDB for recovery history. |
+| Asset conversion | Python 3 importers, Pillow for image conversion, and FFmpeg for movie conversion. |
+| Development and checks | Node.js/npm, Node and Python tests, and Playwright/Chromium scene checks. Exact dependency versions are pinned in [package.json](package.json) and [package-lock.json](package-lock.json). |
 
-In **Instellingen → Cheats**, **Alle levels vrijspelen** immediately unlocks all
-five chapters and saves access without completing or changing the active level.
-It also works from the main menu before starting an adventure.
+The shared game code does not depend on Windows APIs. The desktop bridge is isolated in `electron/`, so the browser and desktop versions use the same gameplay implementation.
 
-Enable **Vrij vliegen (no-clip)** to fly in your
-viewing direction with WASD. Space rises and Shift descends. Disabling it inside
-a wall or outside the level returns RedCat to a verified safe position. The
-inventory cheat adds 9000 points each time, up to the original score limit;
-collecting the actual exit mirror still advances the chapter.
-The native pickup routine caps potions at 100; see
-[original inventory evidence](docs/inventory-limits-native.md).
+## Run the game
 
-## Develop or rebuild
+### From source
 
-See [the build guide](docs/building.md) for Linux and Windows prerequisites, asset import, source testing, portable packaging and troubleshooting. Install Node.js 22.12+ and use the pinned dependency versions:
+Install **Node.js 22.12 or newer**, including npm. Open a terminal in the downloaded or cloned project directory. You need the complete `assets/` and `data/` directories as well as the source; see [importing game data](#importing-game-data) if they are absent.
 
 ```sh
 npm ci
 npm start
 ```
 
-On Linux, use `npm start -- --ozone-platform=x11`. `Start-RedCat.sh` prefers an existing packaged build, so use `npm start` to test source changes before rebuilding.
-
-For the browser frontend, run `npm run serve` and open `http://127.0.0.1:4173`. It works offline once dependencies/data are present. Do not open `index.html` directly with a `file:` URL.
-
-To host the game at **https://games.nostalgiarealm.com/redcatspookkasteel/**,
-follow the [Nginx hosting guide](docs/nginx-hosting.md) and its
-[location configuration](docs/nginx-redcatspookkasteel.conf). The browser release
-uses static source/assets; uploading it does not require an Electron build.
+On Linux, the recommended launch uses X11/XWayland:
 
 ```sh
-npm test
-python3 -m unittest discover -s tests -p 'test_*.py'
-npm run test:smoke
-npm run test:scripts
-npm run test:audio
-npm run test:gameplay-audio
-npm run test:enemies
-npm run test:bosses
-npm run test:boss-phases
-npm run test:environment
-npm run test:graveyard
-npm run test:bats
-npm run test:effects
-npm run test:cheats
-npm run test:doors
-npm run test:actor-placement
-npm run test:portals
-npm run test:desktop
-npm run build:linux
-npm run build:windows
+npm start -- --ozone-platform=x11
 ```
 
-Browser tests use Google Chrome at `/usr/bin/google-chrome`; set `CHROME_PATH` for another installed Chromium executable. The native desktop test needs a running Linux graphical session. Both test types use separate temporary profiles and do not alter normal game saves.
+Wayland is also available with `npm start -- --ozone-platform=wayland` when supported by your desktop and graphics driver. Running the source does not generate a package.
 
-The binary directories are generated by electron-builder. Rebuilding Linux and Windows does not compile or run the legacy game. The Windows directory can be generated on Linux; testing on an actual Windows machine remains a separate step.
+### In a browser
 
-## Reimport your game data
-
-Python 3 and Pillow are required for actors/menu images. FFmpeg is required only for converting videos. The level importer uses Python's standard library.
+After `npm ci`, start the local web server:
 
 ```sh
-python3 -m pip install Pillow
-python3 tools/import_assets.py \
+npm run serve
+```
+
+Open **http://127.0.0.1:4173**. Use the server rather than opening `index.html` directly. A WebGL 2-capable browser and graphics driver are required. Once dependencies and game data are present, local play does not need an internet connection.
+
+Browser saves belong to that website's address and browser profile. They are separate from desktop saves. This project uses its own save format; importing original Windows-game saves is not implemented.
+
+### From a prepared desktop package
+
+If you have a prepared package, it includes Electron and the imported resources; Node.js, Python, the CD and Wine are not needed to play.
+
+| Platform | Launch |
+| --- | --- |
+| Linux x64 | From the project folder, run `./Start-RedCat.sh`. For a standalone copy of `dist/linux-unpacked/`, run `./redcat-spookkasteel --ozone-platform=x11` inside it. Preserve executable permissions when copying. |
+| Windows x64 | Run `Start-RedCat.bat` from the project folder, or open `RedCat Spookkasteel.exe` inside `dist/win-unpacked/`. Copy the **whole directory**, not just the EXE. Current Windows packages are unsigned. |
+
+**The launcher scripts prefer an existing package in `dist/`.** That package may be older than the source. Use `npm start` to try source changes; consult the [build guide](docs/building.md) to regenerate packages.
+
+## Work completed
+
+### Original worlds, scripts and puzzles
+
+All five worlds are imported: **Het Bos**, **Het Kasteel**, **Het Kerkhof**, **De Grotten** and **De Kasteeltoren**. The world importer reads Genesis3D BSP v15 maps—the original format containing level geometry and collision data—and preserves textures, baked lighting and object placements.
+
+- The Davi-Script interpreter executes **5,134 imported instructions and 444 event handlers**, including puzzle conditions, enemy activation, skill rewards and persistent script variables.
+- **437 original model motions** drive doors, moving platforms, rotating bookcases, rolling obstacles, camera sequences and their timed callbacks. Rendering and collision follow the same moving objects.
+- Touch-activated buttons and doors, shootable controls, secrets, exploding props, fans, spring boxes and damaging water follow their authored rules. Level-ending mirrors, boss handoffs and the final tower mirror sequence are connected.
+- Chapter unlocking, difficulty settings, end-of-level scoreboards and replay tutorial skipping are implemented. Replaying a chapter uses the existing menu and skips the original applicable tutorials while preserving required rewards and story events.
+
+See [gameplay reconstruction](docs/gameplay-reconstruction.md), [motion playback](docs/motions.md), [campaign progression](docs/campaign-menu-native.md) and [replay behavior](docs/replayed-level-intros-native.md).
+
+### Characters, combat and animation
+
+All **165 original actor files** are imported. Here, an *actor* can be a character or a modeled world object. RedCat has **16 original animation clips**, including movement, jumping, shooting, being hurt, death and respawn.
+
+- Movement, aiming, attack timing and projectile release use recovered original rules. Shots originate at animated attachment points, including RedCat's hand and Max's turret barrels; impacts use the original artwork and sound.
+- Enemies use authored waypoint networks, perception ranges, remembered targets and attack sequences. Recovery work covers knight strikes, gargoyle flame salvos, zombie grave emergence, spiders descending on webs, dormant skeletons and bat steering.
+- Brutus, Jester Max, Dungeon Max and the Witch have their own phase controllers, projectiles and defeat sequences. Defeated enemies fade with the original purple smoke; their visual state can continue during dialogue.
+- **SuperSkippie** adds a timed second jump, and **BIG BENG** enables charged shots. Earned abilities persist across chapter progression and replay; starting a new adventure resets them.
+- Original HUD artwork shows health, lives, potions and score, with a target ring and enemy health where applicable. Pickup effects and floating score rewards are restored.
+
+See [enemy behavior](docs/enemy-gameplay.md), [waypoint movement](docs/enemy-waypoint-movement.md), [boss phases](docs/boss-phases-native.md), [projectile origins](docs/enemy-projectile-origins-native.md), [player abilities](docs/player-abilities-native.md) and [pickup effects](docs/pickup-score-native.md).
+
+### Lighting, effects and audio
+
+Work includes original world and character lighting, RedCat's ground shadow and subtle nearby light, authored dynamic-light obstruction, translucent water and ghosts, and corrected model placement. Examples include wall-mounted castle portraits, the UFO's dirt patch, readable corner trees and moving hand torches.
+
+Fleurifee's movement and particles, portal sequences, flames, smoke, explosions, debris, save-point beams and animated projectiles use imported artwork and recovered timing. New saves preserve Fleurifee's full effect state. Some effects retain documented simulation differences.
+
+Original Dutch voices, movies, footsteps, weapon sounds, enemy voices, door sounds and combat music are connected. Dialogue plays through a queue, audio pauses and resumes with the game, and level music loops. Positional effects use directional stereo and obstruction by world geometry. Selected ambience ranges and volumes are intentionally adjusted for clarity.
+
+See [actor lighting](docs/actor-lighting-native.md), [world-light shadows](docs/world-light-shadows-native.md), [world effects](docs/world-effects-native.md), [smoke/flame emitters](docs/spout-effects-native.md), [fairy saves](docs/fairy-save-restoration.md) and [audio](docs/audio.md).
+
+### Modern controls, saving and performance
+
+- Widescreen and selectable resolutions include automatic sizing, 720p, 1080p, 1440p, 4K, ultrawide formats and classic 1024×768. Camera proportions are preserved; original movies retain their 4:3 framing.
+- Keyboard/mouse, standard-mapped controllers and mobile touch overlays share gameplay actions. Menus and the level scoreboard adapt to the window size, including portrait displays.
+- Manual saves and autosaves every minute of active play are supplemented by recovery points from roughly **2, 5 and 10 minutes ago**. When a save exists, **Verder spelen** (Continue) is the main action; **Start opnieuw** (Start over) asks before replacing the adventure.
+- A two-second hold skips dialogue while retaining its script outcomes. Settings also include difficulty, audio, camera, display, touch preferences and cheats.
+- World and actor graphics stream in sections according to camera visibility, with nearby resources prepared ahead of time. Large visible areas remain complete. Collision, scripts and cached CPU data stay available; this does not unload every part of the level from system memory.
+- Navigation searches have bounded work budgets, and rendering caches reduce repeated uploads and updates. These changes address graveyard pursuit hitches and pauses when turning or revisiting an area; they do not guarantee a particular frame rate on every device.
+
+Autosave recovery, invulnerable no-clip, adjusted ambience, stuck-character recovery, maze reset after death and lighting previously unlit hand torches are **intentional improvements**, rather than claims of exact original behavior. The technical notes identify these differences.
+
+See [autosaves](docs/autosave.md), [world streaming](docs/world-streaming.md), [navigation performance](docs/graveyard-performance-regression.md), [movement recovery](docs/movement-recovery.md) and [torch enhancements](docs/torch-flames.md).
+
+## Controls
+
+The interface and original dialogue are in Dutch. **Instellingen** means Settings, **Besturing** means Controls, **Over** means About, and **Overslaan** means Skip.
+
+| Keyboard / mouse | Action |
+| --- | --- |
+| W / S or Up / Down | Move forward / backward |
+| A / D | Strafe |
+| Left / Right | Turn |
+| Mouse | Look after clicking the game |
+| Space | Jump |
+| Shift | Walk slowly |
+| Left click / Ctrl | Shoot; hold to charge once BIG BENG is earned |
+| E | Use; hold for two seconds during dialogue to skip |
+| V | Switch first/third-person camera |
+| Escape / P | Pause |
+| F5 / F9 | Save / load |
+
+Doors and buttons authored for contact activate when RedCat reaches them. Fixed scripted cameras keep control until their timer expires or the script changes the view.
+
+**Controller:** left/right sticks move/look; A / × jumps; RT / R2 or RB / R1 shoots; X / □ uses or skips when held for two seconds; LB / L1 walks; Y / △ changes camera; Start / Options pauses. A / × confirms and B / ○ returns in menus. See [controller support](docs/controller-support.md) for mappings and browser/device requirements.
+
+**Touch:** mobile browsers automatically enable the overlay. Change **Instellingen → Aanraakbediening** to automatic, on or off. Move with the left stick, swipe the right side to look, and use **Spring** (Jump), **Schieten** (Shoot) and **Overslaan** (Skip). **Menu** provides pause, saving, loading and settings. See [touch controls](docs/touch-controls.md).
+
+**Cheats:** Settings → Cheats can unlock chapters, fill inventory to 5 mirror pieces and 100 potions, add 9000 points, or enable **Vrij vliegen (no-clip)**. In no-clip, RedCat is invulnerable and can fly through geometry; Space rises and Shift descends. Exiting inside an obstacle attempts to return him to a safe position. Inventory cheats do not complete levels: collect the actual exit mirror to advance.
+
+## Development and packaging
+
+The [build guide](docs/building.md) covers prerequisites, Linux/Windows instructions, imports, troubleshooting and portable packaging. Dependencies are locked; use `npm ci` rather than upgrading them as part of ordinary setup.
+
+### Project layout
+
+| Path | Contents |
+| --- | --- |
+| `src/` | Game systems, renderer, UI, audio, input and portable script interpreter. |
+| `electron/` | Desktop application and display/quit bridge. |
+| `assets/` | Imported artwork, actors, sounds, voices and movies. |
+| `data/` | Imported levels, scripts and associated structured game data. |
+| `tools/` | Asset importers, local web server and packaging helper. |
+| `tests/` | Unit, importer, browser-scene and desktop checks. |
+| `docs/` | Build/hosting guides, implementation notes and original-game research. |
+| `current_work/` | Retained investigation files, disassembly, screenshots and diagnostics. |
+| `dist/` | Generated desktop packages; these may lag behind source changes. |
+
+### Focused checks
+
+Run tests for the system you changed. For example, a change to motion playback can be checked with:
+
+```sh
+node --test tests/motions.test.mjs
+```
+
+Feature documents list the relevant unit and scene checks. `npm test` runs the broader JavaScript unit suite; importer and release validation are described in the [build guide](docs/building.md). Browser checks use Chromium/Playwright; many accept `CHROME_PATH` for an installed browser. Desktop presentation checks require a graphical session.
+
+Keep new temporary profiles, research and diagnostic output in a named `current_work/` subfolder, and retain it for comparison. Use isolated profiles rather than the player's normal saves.
+
+### Creating desktop packages
+
+Packaging bundles this implementation and its resources with Electron; it does not compile the original Genesis3D game. The configured outputs are Linux x64 and Windows x64 portable directories.
+
+The packaging helper requires **`REDCAT_PACKAGE_VERSION`** containing three dot-separated integers. This is generated-package metadata, separate from the game's About display. Follow the [packaging instructions](docs/building.md#5-generate-portable-packages-when-ready) when running `npm run build:linux` or `npm run build:windows`. A Windows package can be generated on Linux, but that does not replace testing it on Windows.
+
+### Importing game data
+
+Skip importing if `assets/` and `data/` are already complete. Both directories are included in this checkout's Git tracking and are needed to run and package the game. Their original content belongs to the original game's rights holders.
+
+To regenerate them, use your original installation and mounted or extracted CD/ISO. Python 3 and Pillow handle the data/image imports; FFmpeg converts the movies. The [import guide](docs/building.md#3-import-assets-if-needed) includes virtual-environment setup for Linux and Windows. Once that environment is active and Pillow/FFmpeg are installed, the main command is:
+
+```sh
+python tools/import_assets.py \
   --installation '/path/to/RedCat Spookkasteel' \
   --cd '/path/to/mounted/RedCat' \
   --album-dir '/path/to/cover-scans'
 ```
 
-On Windows, run the same command using Windows paths and put it on one line. `--album-dir` is optional; `--skip-media` avoids video conversion. Individual import tools support `--help`. Audio filenames and actor settings are resolved case-insensitively during import, matching the original Windows behavior.
+`--album-dir` is optional; `--skip-media` omits movie conversion. Importing regenerates project assets and generated settings files, so preserve any local edits before reimporting. The original installation, CD files and saves are read without modification. The project includes its own IMG archive reader; Davitools is not a runtime dependency.
 
-Imported game assets are kept in `assets/` and `data/` and excluded from source control. They belong to the original game's rights holders. The output is prepared locally from your supplied copy; no game assets have been published or downloaded from third parties.
+### Hosting the browser version
 
-## Touch controls
+The browser game is served as static files and does not require an Electron package or a game server. The [Nginx hosting guide](docs/nginx-hosting.md) includes the files to upload, HTTPS setup, media handling and an example for **games.nostalgiarealm.com/redcatspookkasteel/**. Its [example configuration](docs/nginx-redcatspookkasteel.conf) supports hosting beneath a subdirectory.
 
-Mobile browsers automatically enable the touch overlay. Choose **Instellingen → Aanraakbediening → Automatisch · mobiel / Aan / Uit** to override this; your preference is saved. The left stick moves RedCat, dragging on the right controls the camera, and buttons cover jumping, attacking, interaction, two-second cutscene skipping, slow walking, camera changes and no-clip flight. **Meer** provides quick save/load; **Menu** provides pause, settings, cheats and the other game menus. See the [touch control guide](docs/touch-controls.md).
+## Current limits and future platforms
 
-## Portability
+Recorded manual runs of the older **0.9.3 build on 4 September 2026** completed the campaign. Later source changes have focused regression checks, but a full playthrough of the current source and fresh platform validation remain outstanding. Implemented systems can still have bugs or differ from the original in fine details.
 
-The Davi-Script VM, gameplay, animation, collision and rendering code contains no Windows APIs and no Node dependencies. `electron/` contains the desktop-only window/quit bridge. Browser input is translated into frame actions before reaching movement/gameplay.
+Known differences include camera/collision behavior, animation blending, knight-armour breakup physics, some particle integration and random sequences, and bounded lighting/query budgets. Original RCR save import is absent. The [implementation audit](docs/native-parity-audit.md) distinguishes these from features already completed; historical research notes should not be read as current task lists.
 
-Apple Silicon macOS can use the same frontend in an Electron arm64 build. It still requires a macOS build/signing/test pass; there is no tested Mac build in this delivery. Android packaging still needs an Android WebView shell, controller input, lifecycle/audio handling and device performance testing; browser touch controls are available. Electron does not run on Android. See `docs/portability.md` for the concrete remaining work.
+**Apple Silicon macOS** needs arm64 packaging and hardware validation, with signing/notarization for distribution. **Packaged Android** has an initial Kotlin/WebView shell, offline asset preparation and lifecycle/audio integration targeting API 36 with minimum API 29. Compilation and focused desktop/browser compatibility checks pass; Android device testing, signing and release validation remain. Electron does not run on Android. See [Android setup and remaining work](ANDROID.md). See [platform architecture](docs/portability.md).
 
-## Format references
+## Technical documentation
 
-The importers were written against your files and the [Genesis3D reference source](https://github.com/RealityFactory/Genesis3D). The menu index layout was independently checked against [Davitools](https://github.com/Gymnasiast/Davitools/blob/master/src/RCS/EntryTable.php). Davitools is not a runtime dependency. Engine/format investigations and output schemas are documented in `docs/asset-formats.md`, `docs/menu-media.md`, `docs/davi-format.md`, `docs/davi-vm-opcodes.md` and `docs/motions.md`. Current fidelity boundaries and verification are in `docs/gameplay-reconstruction.md`.
+| Topic | Start here |
+| --- | --- |
+| What is implemented and what remains | [Native implementation audit](docs/native-parity-audit.md), [gameplay reconstruction](docs/gameplay-reconstruction.md) |
+| Original file formats | [BSP world data](docs/asset-formats.md), [actor models](docs/actors.md), [menu/media archives](docs/menu-media.md) |
+| Script execution | [Davi-Script format](docs/davi-format.md), [VM opcodes](docs/davi-vm-opcodes.md), [motion timelines](docs/motions.md) |
+| Rendering and effects | [Actor lighting](docs/actor-lighting-native.md), [world-light falloff](docs/world-light-falloff-research.md), [portal effects](docs/portal-native-recovery.md), [destruction debris](docs/debris-native-recovery.md) |
+| Performance work | [World streaming](docs/world-streaming.md), [enemy navigation](docs/enemy-waypoint-movement.md), [refresh-rate investigation](docs/native-refresh-performance.md) |
+| Setup and deployment | [Building](docs/building.md), [Nginx hosting](docs/nginx-hosting.md), [Android setup and validation](ANDROID.md), [future platforms](docs/portability.md) |
+
+The format research used the [Genesis3D reference source](https://github.com/RealityFactory/Genesis3D), and menu archive layout was checked against [Davitools](https://github.com/Gymnasiast/Davitools/blob/master/src/RCS/EntryTable.php). The repository's importers and runtime are independent implementations. Research notes record original-file evidence, implementation decisions and focused verification so later work can be checked against the same findings.

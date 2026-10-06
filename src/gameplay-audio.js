@@ -7,6 +7,12 @@ export const PLAYER_SOUNDS = {
   shot:'rcshoot1.wav', impact:'rcshoot4.wav', jump:'rcjump1.wav',
   hurt:['rcgen1.wav','rcgen2.wav','rcgen3.wav'], death:'rcgen7.wav'
 };
+const PLAYER_PROJECTILE_SOUNDS = {
+  shot:{fire:PLAYER_SOUNDS.shot,impact:PLAYER_SOUNDS.impact},
+  powerShot:{fire:'rcshoot2.wav',impact:'rcshoot5.wav'},
+  // Native super-shot release stops rcshoot3's charge loop; it adds no fire cue.
+  superShot:{fire:null,impact:'rcshoot6.wav'},
+};
 
 export const ENEMY_SOUND_PREFIXES = {
   spiderg:'spiderl', spidery:'spiderll', spiderr:'spiderlll',
@@ -35,7 +41,9 @@ export class GameplayAudio {
     // ground multiplier. Moving-platform displacement is not in this vector.
     const wind=player.environmentVelocity||[0,0,0];
     const speed=Math.hypot(...playerInputVelocity(input,world.yaw||0,true).map((v,i)=>v+(wind[i]||0)))/32;
-    for(const sound of this.steps.update(dt,{speed,grounded:player.grounded,enabled,contents,settings:gameplay.settings.game}))this.audio.play({sound,key:'player:step'});
+    // Native footfalls create independent one-shots. The water recordings
+    // outlast the next footfall, so a shared replacement key clips their tails.
+    for(const sound of this.steps.update(dt,{speed,grounded:player.grounded,enabled,contents,settings:gameplay.settings.game}))this.audio.play({sound,group:'player:step'});
     gameplay.footstepState=this.steps.snapshot();
   }
   handle(event, gameplay=null) {
@@ -62,8 +70,14 @@ export class GameplayAudio {
       const sound=explicit?null:doorMovementSound(object,gameplay?.level);
       if(sound)play({sound,key:`door:${event.id}`,sourceId:event.id,spatial:true,position:()=>gameplay.objectPosition(object)});
     }
-    if(event.type==='attack')play({sound:PLAYER_SOUNDS.shot});
-    if(event.type==='playerProjectileImpact')play({sound:PLAYER_SOUNDS.impact,spatial:true,position:event.position});
+    if(event.type==='attack') {
+      const sound=(PLAYER_PROJECTILE_SOUNDS[event.kind]||PLAYER_PROJECTILE_SOUNDS.shot).fire;
+      if(sound)play({sound});
+    }
+    if(event.type==='playerProjectileImpact') {
+      const sound=(PLAYER_PROJECTILE_SOUNDS[event.kind]||PLAYER_PROJECTILE_SOUNDS.shot).impact;
+      play({sound,spatial:true,position:event.position});
+    }
     if(event.type==='jump')play({sound:PLAYER_SOUNDS.jump,key:'player:jump'});
     if(event.type==='damage' && event.health>0) {
       const variant=event.amount>=40?2:event.amount>=10?1:0;

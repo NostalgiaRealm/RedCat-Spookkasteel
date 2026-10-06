@@ -51,10 +51,11 @@ comparison is claimed.
 ## Lifecycle and verification
 
 Gameplay records the effect once when a pickup awards its points or an enemy
-is defeated. Nonlethal hits, full-health pickups, duplicate collection/death
-calls and the zero-score witch do not spawn misleading counters. Unsupported
-custom score amounts have no matching native card. Inventory/scoring rules
-are unchanged.
+is defeated. Healing hearts also collect and award their normal points at full
+health, with healing capped at maximum. Nonlethal hits, disabled pickups,
+duplicate collection/death calls and the zero-score witch do not spawn
+misleading counters. Unsupported custom score amounts have no matching native
+card.
 
 Records expire on the gameplay clock, continue through dialogue, pause with
 the game, and survive save/load with their existing age. Older saves need no

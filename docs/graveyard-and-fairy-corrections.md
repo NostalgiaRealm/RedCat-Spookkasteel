@@ -46,8 +46,10 @@ encounters remain available. See [sound and skip implementation notes](fairy-ski
 
 ## Verification and playing the source
 
-Only the affected visibility and fairy checks were run, including the actual
-three-second E hold in the forest. No complete regression suite was rerun and no
+Only the affected visibility and fairy checks were run, including the
+then-current three-second E hold in the forest. The hold was subsequently
+shortened to two seconds; see [skip validation](hud-targeting-cutscene-skip.md).
+No complete regression suite was rerun and no
 build or version bump was made. Focused browser commands are:
 
 ```sh

@@ -1,0 +1,1253 @@
+{
+  "source": {
+    "id": "AdamAnyActor72",
+    "position": [
+      3568,
+      -46.99999809265137,
+      1489
+    ],
+    "settings": {
+      "scale": 1,
+      "initialRotationDegrees": [
+        -90,
+        0,
+        0
+      ],
+      "rotationDegreesPerSecond": [
+        0,
+        0,
+        0
+      ],
+      "blocksPlayer": true,
+      "blocksLOS": false,
+      "canBeShot": true,
+      "destroyable": true,
+      "damageThreshold": [
+        1,
+        1
+      ],
+      "explosion": {
+        "DamagePercentage": 25,
+        "SizePercentage": 25,
+        "NrExplosions": 1,
+        "Electric": 0,
+        "SmokeOnly": 0,
+        "Green": 0
+      },
+      "debris": {
+        "Gravity": 9.8,
+        "MustFade": 1,
+        "TestCollision": 1,
+        "MustRotate": 1,
+        "RotationSpeed": 100,
+        "FloorOffset": 5,
+        "MinLifeTimeSeconds": 3,
+        "MaxLifeTimeSeconds": 4,
+        "Elasticity": 1.6,
+        "Friction": 0.8,
+        "AirFriction": 1,
+        "types": [
+          {
+            "actor": "brcrate_s1.act",
+            "MinNr": 5,
+            "MaxNr": 8,
+            "MinVelocity": 125,
+            "MaxVelocity": 180
+          },
+          {
+            "actor": "brcrate_s2.act",
+            "MinNr": 5,
+            "MaxNr": 7,
+            "MinVelocity": 200,
+            "MaxVelocity": 250
+          }
+        ]
+      },
+      "lighting": {
+        "useSun": true,
+        "useAmbient": true,
+        "overrideAmbient": false,
+        "useDefaultSun": false,
+        "useDefaultSunOnly": false,
+        "ambientColor": [
+          155,
+          155,
+          155
+        ],
+        "sunColor": [
+          155,
+          155,
+          155
+        ],
+        "sunNormal": [
+          0,
+          1,
+          0
+        ],
+        "sunIntensityFactor": 1,
+        "maxDynamicLights": 2
+      },
+      "lightAnimation": {
+        "enabled": false,
+        "start": [
+          90,
+          90,
+          255
+        ],
+        "end": [
+          255,
+          90,
+          90
+        ],
+        "pattern": "adhkruxurkhd",
+        "duration": 2
+      }
+    },
+    "explosion": {
+      "id": "AdamAnyActor72:0",
+      "sourceId": "AdamAnyActor72",
+      "birth": 0,
+      "position": [
+        3568,
+        -46.99999809265137,
+        1489
+      ],
+      "bounds": {
+        "min": [
+          -16,
+          -16.00000190734864,
+          -16.000001907348633
+        ],
+        "max": [
+          16,
+          16.00000190734864,
+          16.000001907348633
+        ]
+      },
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "settings": {
+        "scale": 1,
+        "initialRotationDegrees": [
+          -90,
+          0,
+          0
+        ],
+        "rotationDegreesPerSecond": [
+          0,
+          0,
+          0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          1,
+          1
+        ],
+        "explosion": {
+          "DamagePercentage": 25,
+          "SizePercentage": 25,
+          "NrExplosions": 1,
+          "Electric": 0,
+          "SmokeOnly": 0,
+          "Green": 0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1,
+          "TestCollision": 1,
+          "MustRotate": 1,
+          "RotationSpeed": 100,
+          "FloorOffset": 5,
+          "MinLifeTimeSeconds": 3,
+          "MaxLifeTimeSeconds": 4,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1,
+          "types": [
+            {
+              "actor": "brcrate_s1.act",
+              "MinNr": 5,
+              "MaxNr": 8,
+              "MinVelocity": 125,
+              "MaxVelocity": 180
+            },
+            {
+              "actor": "brcrate_s2.act",
+              "MinNr": 5,
+              "MaxNr": 7,
+              "MinVelocity": 200,
+              "MaxVelocity": 250
+            }
+          ]
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155,
+            155,
+            155
+          ],
+          "sunColor": [
+            155,
+            155,
+            155
+          ],
+          "sunNormal": [
+            0,
+            1,
+            0
+          ],
+          "sunIntensityFactor": 1,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90,
+            90,
+            255
+          ],
+          "end": [
+            255,
+            90,
+            90
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2
+        }
+      }
+    }
+  },
+  "frames": [
+    {
+      "time": 0.15,
+      "age": 0.15,
+      "health": 0,
+      "bitmapBatches": [
+        {
+          "key": "explosie01.bmp|explosie01_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie01-explosie01_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie02.bmp|explosie02_a.bmp",
+          "count": 1,
+          "instances": 1,
+          "visible": true,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie02-explosie02_a.png",
+          "opacity": [
+            1
+          ]
+        },
+        {
+          "key": "explosie03.bmp|explosie03_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie03-explosie03_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie04.bmp|explosie04_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie04-explosie04_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie05.bmp|explosie05_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie05-explosie05_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie06.bmp|explosie06_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie06-explosie06_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie07.bmp|explosie07_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie07-explosie07_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie08.bmp|explosie08_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie08-explosie08_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_05.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_05-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_blue.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_blue-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_brown.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_brown-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_green.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_green-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_red.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_red-smoke_green_a.png",
+          "opacity": []
+        }
+      ],
+      "changedPixels": 2716,
+      "maxUpdate": 20.900000005960464,
+      "blastCohorts": 2,
+      "smokeCohortParticles": 8,
+      "fragments": 13,
+      "fragmentPositions": [
+        [
+          3561.138575509519,
+          -21.113709154085544,
+          1479.2877650567475
+        ],
+        [
+          3582.3437010628454,
+          -29.78833459905645,
+          1509.54530341641
+        ],
+        [
+          3558.4808991999503,
+          -11.924709462246456,
+          1481.4346762724313
+        ],
+        [
+          3569.8894636666732,
+          -32.41579836939442,
+          1491.2335307869027
+        ],
+        [
+          3565.684199932375,
+          -25.344086055166983,
+          1490.3032936213426
+        ],
+        [
+          3557.635494285539,
+          -6.092773012897323,
+          1471.2887530457856
+        ],
+        [
+          3559.436463525606,
+          -8.803569538726318,
+          1479.2429839037432
+        ],
+        [
+          3570.821780072071,
+          -12.654069241103402,
+          1485.6622843721277
+        ],
+        [
+          3544.466398105504,
+          -27.38993023204648,
+          1499.4035159789753
+        ],
+        [
+          3562.2407791523065,
+          -10.179910350839027,
+          1467.1796853956675
+        ],
+        [
+          3566.511784319994,
+          -7.130307824049472,
+          1470.0413518876744
+        ],
+        [
+          3605.0102496205313,
+          40.98358160474703,
+          1459.443630544778
+        ],
+        [
+          3522.5988775632204,
+          -15.39033438025878,
+          1461.0488447771945
+        ]
+      ],
+      "draws": 691,
+      "scriptError": null
+    },
+    {
+      "time": 0.45,
+      "age": 0.44999999999999996,
+      "health": 0,
+      "bitmapBatches": [
+        {
+          "key": "explosie01.bmp|explosie01_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie01-explosie01_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie02.bmp|explosie02_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie02-explosie02_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie03.bmp|explosie03_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie03-explosie03_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie04.bmp|explosie04_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie04-explosie04_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie05.bmp|explosie05_a.bmp",
+          "count": 1,
+          "instances": 1,
+          "visible": true,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie05-explosie05_a.png",
+          "opacity": [
+            1
+          ]
+        },
+        {
+          "key": "explosie06.bmp|explosie06_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie06-explosie06_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie07.bmp|explosie07_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie07-explosie07_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie08.bmp|explosie08_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie08-explosie08_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_05.bmp|smoke_green_a.bmp",
+          "count": 2,
+          "instances": 2,
+          "visible": true,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_05-smoke_green_a.png",
+          "opacity": [
+            0.6921085119247437,
+            0.679642379283905
+          ]
+        },
+        {
+          "key": "smoke_blue.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_blue-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_brown.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_brown-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_green.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_green-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_red.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_red-smoke_green_a.png",
+          "opacity": []
+        }
+      ],
+      "changedPixels": 13180,
+      "maxUpdate": 9.699999995529652,
+      "blastCohorts": 2,
+      "smokeCohortParticles": 8,
+      "fragments": 13,
+      "fragmentPositions": [
+        [
+          3571.121326528557,
+          -15.981134313452927,
+          1461.2200953319857
+        ],
+        [
+          3601.4439031885363,
+          -16.712207633228918,
+          1526.1879073348011
+        ],
+        [
+          3550.0986975998508,
+          7.1506642333473085,
+          1492.377631925509
+        ],
+        [
+          3556.5419910000196,
+          -9.624997159727418,
+          1493.2301920662137
+        ],
+        [
+          3577.2189997971254,
+          -19.50746392416795,
+          1500.1290817246236
+        ],
+        [
+          3549.9496828566175,
+          31.040074343571227,
+          1456.0518615436677
+        ],
+        [
+          3540.2101905768186,
+          29.34608553360134,
+          1486.826554941515
+        ],
+        [
+          3558.039740216213,
+          18.9977865699027,
+          1475.5052527013443
+        ],
+        [
+          3519.1079943165128,
+          7.2254074636506385,
+          1529.9321490958307
+        ],
+        [
+          3546.3447374569196,
+          25.569063139224877,
+          1455.3854599833894
+        ],
+        [
+          3566.178552959983,
+          29.508270098560832,
+          1450.1080578068832
+        ],
+        [
+          3601.3301923430395,
+          43.0077694134088,
+          1454.5140441978915
+        ],
+        [
+          3523.7422829078623,
+          -10.937982446091361,
+          1460.822383912819
+        ]
+      ],
+      "draws": 692,
+      "scriptError": null
+    },
+    {
+      "time": 1,
+      "age": 1.0000000000000013,
+      "health": 0,
+      "bitmapBatches": [
+        {
+          "key": "explosie01.bmp|explosie01_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie01-explosie01_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie02.bmp|explosie02_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie02-explosie02_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie03.bmp|explosie03_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie03-explosie03_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie04.bmp|explosie04_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie04-explosie04_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie05.bmp|explosie05_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie05-explosie05_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie06.bmp|explosie06_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie06-explosie06_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie07.bmp|explosie07_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie07-explosie07_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie08.bmp|explosie08_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie08-explosie08_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_05.bmp|smoke_green_a.bmp",
+          "count": 6,
+          "instances": 6,
+          "visible": true,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_05-smoke_green_a.png",
+          "opacity": [
+            0.4547472298145294,
+            0.6391729116439819,
+            0.800000011920929,
+            0.41485556960105896,
+            0.5846154093742371,
+            0.800000011920929
+          ]
+        },
+        {
+          "key": "smoke_blue.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_blue-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_brown.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_brown-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_green.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_green-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_red.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_red-smoke_green_a.png",
+          "opacity": []
+        }
+      ],
+      "changedPixels": 11069,
+      "maxUpdate": 9.899999998509884,
+      "blastCohorts": 2,
+      "smokeCohortParticles": 8,
+      "fragments": 13,
+      "fragmentPositions": [
+        [
+          3588.8015031385335,
+          -55.861668055965986,
+          1429.2209408849485
+        ],
+        [
+          3636.187761761692,
+          -60.696136510422804,
+          1556.4613187377038
+        ],
+        [
+          3534.7313279996683,
+          -31.18181732473075,
+          1512.4397172894846
+        ],
+        [
+          3532.071624444488,
+          -41.14586160867122,
+          1496.8907377449505
+        ],
+        [
+          3597.535914316164,
+          -55.56213812501188,
+          1517.43581433527
+        ],
+        [
+          3535.859028570261,
+          25.812961163763614,
+          1428.1175604564514
+        ],
+        [
+          3504.9620235040416,
+          25.98311983286875,
+          1500.7297685107635
+        ],
+        [
+          3534.6060004804735,
+          3.7221888900805853,
+          1456.8840279715746
+        ],
+        [
+          3472.6175873700286,
+          -2.617140094237927,
+          1585.9013098100656
+        ],
+        [
+          3517.2019943487103,
+          17.804847871008736,
+          1433.7627133942128
+        ],
+        [
+          3565.567628799962,
+          23.374996290013094,
+          1413.5636853254325
+        ],
+        [
+          3594.5834206676377,
+          3.334780395955377,
+          1445.4764692285996
+        ],
+        [
+          3525.838526039706,
+          -46.15933723345109,
+          1460.407205661464
+        ]
+      ],
+      "draws": 692,
+      "scriptError": null
+    },
+    {
+      "time": 2,
+      "age": 1.9999999999999978,
+      "health": 0,
+      "bitmapBatches": [
+        {
+          "key": "explosie01.bmp|explosie01_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie01-explosie01_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie02.bmp|explosie02_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie02-explosie02_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie03.bmp|explosie03_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie03-explosie03_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie04.bmp|explosie04_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie04-explosie04_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie05.bmp|explosie05_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie05-explosie05_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie06.bmp|explosie06_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie06-explosie06_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie07.bmp|explosie07_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie07-explosie07_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie08.bmp|explosie08_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie08-explosie08_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_05.bmp|smoke_green_a.bmp",
+          "count": 5,
+          "instances": 5,
+          "visible": true,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_05-smoke_green_a.png",
+          "opacity": [
+            0.2371051162481308,
+            0.36250001192092896,
+            0.4936542809009552,
+            0.2879297733306885,
+            0.4700706899166107
+          ]
+        },
+        {
+          "key": "smoke_blue.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_blue-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_brown.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_brown-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_green.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_green-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_red.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_red-smoke_green_a.png",
+          "opacity": []
+        }
+      ],
+      "changedPixels": 17938,
+      "maxUpdate": 10.400000005960464,
+      "blastCohorts": 2,
+      "smokeCohortParticles": 8,
+      "fragments": 13,
+      "fragmentPositions": [
+        [
+          3610.2756772396006,
+          -62.35025658634434,
+          1390.3550726958913
+        ],
+        [
+          3678.3343768832437,
+          -62.28777600271198,
+          1593.1849836158615
+        ],
+        [
+          3512.2086250943785,
+          -58.501162824513045,
+          1541.8430829967979
+        ],
+        [
+          3498.0052082481607,
+          -61.93483527801659,
+          1501.9867657228945
+        ],
+        [
+          3621.8512382656386,
+          -62.38675808397829,
+          1538.1485465535682
+        ],
+        [
+          3512.779684837841,
+          -39.51931046228963,
+          1382.3634511287614
+        ],
+        [
+          3447.1327207090044,
+          -41.227878968834666,
+          1523.5398381992081
+        ],
+        [
+          3497.2788366945124,
+          -54.69790440929296,
+          1427.2226289280702
+        ],
+        [
+          3398.7607033812856,
+          -56.3965975123257,
+          1674.8165953780524
+        ],
+        [
+          3469.902969989566,
+          -45.4511912288532,
+          1398.6687342915695
+        ],
+        [
+          3565.021827338085,
+          -41.42598956204954,
+          1353.8784642266407
+        ],
+        [
+          3583.7692546820335,
+          -38.27219508391741,
+          1430.9904542087697
+        ],
+        [
+          3528.885948215478,
+          -59.47401114647988,
+          1460.3109397709263
+        ]
+      ],
+      "draws": 692,
+      "scriptError": null
+    },
+    {
+      "time": 5,
+      "age": 4.999999999999988,
+      "health": 0,
+      "bitmapBatches": [
+        {
+          "key": "explosie01.bmp|explosie01_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie01-explosie01_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie02.bmp|explosie02_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie02-explosie02_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie03.bmp|explosie03_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie03-explosie03_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie04.bmp|explosie04_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie04-explosie04_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie05.bmp|explosie05_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie05-explosie05_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie06.bmp|explosie06_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie06-explosie06_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie07.bmp|explosie07_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie07-explosie07_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie08.bmp|explosie08_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie08-explosie08_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_05.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_05-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_blue.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_blue-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_brown.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_brown-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_green.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_green-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_red.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_red-smoke_green_a.png",
+          "opacity": []
+        }
+      ],
+      "changedPixels": 0,
+      "maxUpdate": 9.200000002980232,
+      "blastCohorts": 0,
+      "smokeCohortParticles": 0,
+      "fragments": 4,
+      "fragmentPositions": [
+        [
+          3494.8069827627,
+          -62.28151120395872,
+          1346.7331062977266
+        ],
+        [
+          3405.250643312117,
+          -62.279605366559935,
+          1540.0597175327969
+        ],
+        [
+          3438.153886986048,
+          -62.28082111501277,
+          1375.112188029781
+        ],
+        [
+          3565.021827338085,
+          -62.28489923943542,
+          1311.321769256268
+        ]
+      ],
+      "draws": 673,
+      "scriptError": null
+    },
+    {
+      "time": 8,
+      "age": 7.999999999999977,
+      "health": 0,
+      "bitmapBatches": [
+        {
+          "key": "explosie01.bmp|explosie01_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie01-explosie01_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie02.bmp|explosie02_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie02-explosie02_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie03.bmp|explosie03_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie03-explosie03_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie04.bmp|explosie04_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie04-explosie04_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie05.bmp|explosie05_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie05-explosie05_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie06.bmp|explosie06_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie06-explosie06_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie07.bmp|explosie07_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie07-explosie07_a.png",
+          "opacity": []
+        },
+        {
+          "key": "explosie08.bmp|explosie08_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/explosie08-explosie08_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_05.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_05-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_blue.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_blue-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_brown.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_brown-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_green.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_green-smoke_green_a.png",
+          "opacity": []
+        },
+        {
+          "key": "smoke_red.bmp|smoke_green_a.bmp",
+          "count": 0,
+          "instances": 0,
+          "visible": false,
+          "texture": "http://127.0.0.1:4290/assets/effects/smoke_red-smoke_green_a.png",
+          "opacity": []
+        }
+      ],
+      "changedPixels": 0,
+      "maxUpdate": 13.799999997019768,
+      "blastCohorts": 0,
+      "smokeCohortParticles": 0,
+      "fragments": 0,
+      "fragmentPositions": [],
+      "draws": 665,
+      "scriptError": null
+    }
+  ],
+  "errors": []
+}

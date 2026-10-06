@@ -31,11 +31,43 @@ export class EnemyNavigation {
     }));
     this.names=new Map();for(const p of this.points)for(const name of [p.id,p.name])if(name)this.names.set(name.toLowerCase(),p);
     this.links=new Map();this.ready=false;
+    // Native cursors reserve their current/destination node. These indexes
+    // are rebuilt after loading and never belong to an enemy's saved state.
+    this.reservationFrame=null;this.reservationPlayer=null;this.reservationObjects=new Map();this.reservationPoints=new Map();
     // Search iterators are transient: completed routes alone belong in saves.
-    this.pursuitJobs=new Map();this.searchFrame=null;this.searchCredits=new Map();this.searchUnassigned=0;this.searchTraces=0;this.searchCursor=0;
+    this.pursuitJobs=new Map();this.searchRequests=new Map();this.searchFrame=null;this.searchCredits=new Map();this.searchUnassigned=0;this.searchTraces=0;this.searchCursor=0;
   }
 
   find(id){return this.names.get(String(id||'').toLowerCase());}
+
+  syncReservations(objects,now,player) {
+    if(this.reservationFrame===now)return;
+    this.reservationFrame=now;this.reservationPlayer=player||null;
+    this.reservationObjects.clear();this.reservationPoints.clear();
+    for(const object of objects)this.syncReservation(object);
+  }
+
+  syncReservation(object) {
+    const state=object.patrol;
+    const active=state&&object.enabled!==false&&!(object.health<=0)&&
+      (object.batContact?.version===2||!object.alerted||state.relocating||object.waypointActive);
+    const point=active&&(this.find(state.target)||this.find(state.current)||this.find(state.start));
+    const id=point?.id||null,previous=this.reservationObjects.get(object);
+    if(previous===id)return;
+    if(previous){
+      const occupants=this.reservationPoints.get(previous);occupants?.delete(object);
+      if(!occupants?.size)this.reservationPoints.delete(previous);
+    }
+    if(id){
+      if(!this.reservationPoints.has(id))this.reservationPoints.set(id,new Set());
+      this.reservationPoints.get(id).add(object);this.reservationObjects.set(object,id);
+    }else this.reservationObjects.delete(object);
+  }
+
+  waypointBusy(id,object) {
+    for(const other of this.reservationPoints.get(this.find(id)?.id)||[])if(other!==object&&other.enabled!==false&&!(other.health<=0))return true;
+    return false;
+  }
 
   initialize(object) {
     const start=this.find(object.entity.StartPoint);
@@ -167,12 +199,40 @@ export class EnemyNavigation {
     return [];
   }
 
+  // Ground pursuit and flight detours share one fair collision-search budget.
+  // Requesters and their iterators stay transient; routes remain plain save data.
+  takeSearchCredit(object,now) {
+    this.searchRequests.set(object,now);
+    if(this.searchFrame!==now) {
+      this.searchFrame=now;this.searchTraces=0;this.searchCredits.clear();this.searchUnassigned=48;
+      for(const [enemy,pending] of this.pursuitJobs)if(now-pending.lastRequestedAt>.25||enemy.enabled===false||enemy.health<=0)this.pursuitJobs.delete(enemy);
+      for(const [enemy,requestedAt] of this.searchRequests)if(now-requestedAt>.25||enemy.enabled===false||enemy.health<=0)this.searchRequests.delete(enemy);
+      const waiting=[...this.searchRequests.keys()];
+      // Reserve each waiting enemy's share; fixed object iteration order must
+      // not let the first three searches take all the collision checks.
+      for(let round=0;round<16&&this.searchUnassigned>0;round++)for(let i=0;i<waiting.length&&this.searchUnassigned>0;i++) {
+        const enemy=waiting[(i+this.searchCursor)%waiting.length];
+        this.searchCredits.set(enemy,(this.searchCredits.get(enemy)||0)+1);this.searchUnassigned--;
+      }
+      this.searchCursor=waiting.length?(this.searchCursor+1)%waiting.length:0;
+    }
+    if(!this.searchCredits.has(object)) {
+      const credit=Math.min(16,this.searchUnassigned);this.searchCredits.set(object,credit);this.searchUnassigned-=credit;
+    }
+    const credit=this.searchCredits.get(object);
+    if(credit<=0)return false;
+    this.searchCredits.set(object,credit-1);this.searchTraces++;
+    return true;
+  }
+
+  finishSearch(object) {this.searchRequests.delete(object);}
+
   pursuitTarget(object,goal,lineOfSight,trace,now) {
     if(!trace||!object.patrol)return goal;
     const mins=object.collisionMins||[-12,0,-12],maxs=object.collisionMaxs||[12,45,12];
     // RedCat jumping must not aim a grounded enemy's horizontal sweep upward.
     const clear=(a,b)=>{const hit=trace(a,[b[0],a[1],b[2]],mins,maxs);return !hit.startSolid&&hit.fraction>.999;};
-    if(clear(object.position,goal)){object.pursuit=null;this.pursuitJobs.delete(object);return goal;}
+    if(clear(object.position,goal)){object.pursuit=null;this.pursuitJobs.delete(object);this.finishSearch(object);return goal;}
     this.build(lineOfSight);
     const nextTarget=()=>{
       const route=object.pursuit?.route;
@@ -195,32 +255,12 @@ export class EnemyNavigation {
       job={search,step:search.next(),goal:[...goal],position,startedAt:now,lastRequestedAt:now};this.pursuitJobs.set(object,job);
     }
     job.lastRequestedAt=now;
-    if(this.searchFrame!==now) {
-      this.searchFrame=now;this.searchTraces=0;this.searchCredits.clear();this.searchUnassigned=48;
-      for(const [enemy,pending] of this.pursuitJobs)if(now-pending.lastRequestedAt>.25||enemy.enabled===false||enemy.health<=0)this.pursuitJobs.delete(enemy);
-      const waiting=[...this.pursuitJobs.keys()];
-      // Reserve each waiting enemy's share; fixed object iteration order must
-      // not let the first three searches take all the collision checks.
-      for(let round=0;round<16&&this.searchUnassigned>0;round++)for(let i=0;i<waiting.length&&this.searchUnassigned>0;i++) {
-        const enemy=waiting[(i+this.searchCursor)%waiting.length];
-        this.searchCredits.set(enemy,(this.searchCredits.get(enemy)||0)+1);this.searchUnassigned--;
-      }
-      this.searchCursor=waiting.length?(this.searchCursor+1)%waiting.length:0;
-    }
-    if(!this.searchCredits.has(object)) {
-      const credit=Math.min(16,this.searchUnassigned);this.searchCredits.set(object,credit);this.searchUnassigned-=credit;
-    }
     // The old route/direct goal still uses the normal collision controller
     // while pending work continues next frame. No enemy update is skipped.
-    let credit=this.searchCredits.get(object);
-    while(!job.step.done&&credit>0) {
-      credit--;this.searchTraces++;
-      job.step=job.search.next(clear(...job.step.value));
-    }
-    this.searchCredits.set(object,credit);
+    while(!job.step.done&&this.takeSearchCredit(object,now))job.step=job.search.next(clear(...job.step.value));
     if(job.step.done) {
       object.pursuit={goal:job.goal,route:job.step.value,until:now+.5};
-      this.pursuitJobs.delete(object);
+      this.pursuitJobs.delete(object);this.finishSearch(object);
     }
     return nextTarget();
   }
@@ -228,32 +268,35 @@ export class EnemyNavigation {
   choose(object,{relocate=false,player=null,canTravel=null}={}) {
     const state=object.patrol;if(!state)return null;
     const current=this.find(state.current)||this.find(state.start);if(!current)return null;
-    let candidates=[...(this.links.get(current.id)||[])].map(id=>this.find(id)).filter(Boolean);
+    object.waypointActive=true;this.syncReservation(object);
+    const playerPosition=player||this.reservationPlayer,minimum=number(object.stats?.MinPlayerDistance);
+    // Native generic selector 0x599b80 uses the same busy/player-distance
+    // gate as touch steering. It samples all valid slots, including the
+    // previous node; it does not fall back to a forbidden close destination.
+    let candidates=[...(this.links.get(current.id)||[])].slice(0,8).map(id=>this.find(id))
+      .filter(p=>p&&!this.waypointBusy(p.id,object)&&(!playerPosition||distance(p.position,playerPosition)>=minimum));
     if(canTravel)candidates=candidates.filter(canTravel);
     if(number(object.entity.UnlinkStartPoint)&&state.leftStart)candidates=candidates.filter(p=>p.id!==state.start);
-    const onward=candidates.filter(p=>p.id!==state.previous);if(onward.length)candidates=onward;
-    if(relocate&&player) {
-      const allowed=candidates.filter(p=>distance(p.position,player)>=number(object.stats.MinPlayerDistance));
-      if(allowed.length)candidates=allowed;
-    }
     if(!candidates.length)return null;
-    const target=candidates[Math.floor(enemyRandom(object)*candidates.length)];
-    state.target=target.id;state.relocating=relocate;return target;
+    const target=candidates[Math.floor(enemyRandom(object)*32768)%candidates.length];
+    state.target=target.id;state.relocating=relocate;this.syncReservation(object);return target;
   }
 
   target(object,lineOfSight,{relocate=false,player=null}={}) {
     this.build(lineOfSight);const state=object.patrol;if(!state)return null;
+    object.waypointActive=true;this.syncReservation(object);
     let target=this.find(state.target);
     // Native cursor 0x59c049–0x59c08a reaches the exact waypoint before
     // selecting another edge. A five-unit shortcut cuts grounded hulls into
     // corners, notably the graveyard frogs' point265 -> point124 turn.
     // Allow only the BSP sweep's .05-unit separation margin at the endpoint.
-    const atTarget=target&&(object.flying?distance(object.position,target.position)<5:Math.hypot(object.position[0]-target.position[0],object.position[2]-target.position[2])<.1);
+    const atTarget=target&&(object.flying?distance(object.position,target.position)<.1:Math.hypot(object.position[0]-target.position[0],object.position[2]-target.position[2])<.1);
     if(atTarget){
       const finishedRelocation=state.relocating;
       state.previous=state.current;state.current=target.id;state.target=null;
       if(target.id!==state.start)state.leftStart=true;
       state.relocating=false;
+      this.syncReservation(object);
       if(finishedRelocation)return null;
       target=null;
     }

@@ -71,7 +71,8 @@ clamp their combined colors separately, then interpolate them. Rigid moving
 brushes rotate their raw texture axes and retain their local projection offset.
 Fullbright and Gouraud materials bypass this lightmap shader. The eight nearest
 active lights remain a portable rendering budget; the native engine supports
-more lights. Per-luxel shadow traces remain unimplemented. Original float32
+more lights. [Per-luxel shadow obstruction](world-light-shadows-native.md) now
+uses cached native BSP traces for lights whose `CastShadow` flag is set. Original float32
 arithmetic can also differ at integer boundaries from the shader's arithmetic.
 
 Focused verification: `node --test tests/world-lighting.test.mjs` (four passing
@@ -103,6 +104,5 @@ The subsequent [actor-lighting recovery](actor-lighting-native.md) replaces
 per-fragment decoded-color lighting with root-reference preparation and raw RGB
 vertex accumulation/clamping. It also restores the local Sun selector and floor
 ambient, including the floor's single-luxel shadow query. The world-surface
-shader's eight-light budget and unimplemented per-luxel shadows described above
-remain separate limits; the octagonal BSP formula is not substituted for direct
+shader's eight-light budget remains a separate limit; the octagonal BSP formula is not substituted for direct
 actor illumination.

@@ -57,8 +57,12 @@ Consequently the full halo width and height are `64 * radius * 0.25`, or
 lights eight times too small in each dimension. `WorldEffects` now uses
 the imported artwork dimensions and the native scale. Distance-dependent
 radius, color, visibility checks and fading retain their existing behavior.
-Particle spouts already scale by their artwork dimensions; their flames
-and the separate save-beacon glow do not need this correction.
+This textured-point sizing rule belongs to fixture coronas. Smoke/flame spouts
+instead use the separately recovered world-unit half-size `10 * Scale`, their
+authored size interpolation and native one-unit quad offsets, independently of
+bitmap pixel dimensions; see [smoke/flame recovery](spout-effects-native.md).
+The separate save-beacon glow retains its own geometry and does not use the
+fixture-corona correction.
 
 Focused verification covers all 233 authored coronas across the five
 levels (4, 36, 68, 92 and 33 respectively), at both near and far distances,

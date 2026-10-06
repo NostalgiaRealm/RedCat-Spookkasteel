@@ -27,15 +27,32 @@ export function validAdventureSave(save) {
 export function readCampaignProgress(stored,legacySave=null) {
   let unlocked=highest(stored);
   let skills=campaignSkills(stored);
+  const played=new Set(stored?.version===1&&Array.isArray(stored.playedLevels)?stored.playedLevels.filter(id=>LEVEL_IDS.includes(id)):[]);
   // Earlier source releases exposed every chapter. Keep a valid existing
   // adventure playable; its current chapter is the available migration proof.
   // Inventory cheats, difficulty choice and a mere menu selection are not proof.
   if(validAdventureSave(legacySave)) {
+    played.add(legacySave.level);
     skills|=validSkills(legacySave.game.state.skill);
     const index=LEVEL_IDS.indexOf(legacySave.level);
     unlocked=Math.max(unlocked,Math.min(LEVEL_IDS.length-1,index+(legacySave.game.completed===true?1:0)));
   }
-  return {version:1,highestUnlocked:unlocked,...(skills?{earnedSkills:skills}:{})};
+  return {version:1,highestUnlocked:unlocked,...(skills?{earnedSkills:skills}:{}),...(played.size?{playedLevels:LEVEL_IDS.filter(id=>played.has(id))}:{})};
+}
+
+// Access to a chapter is not evidence of having played it: completion unlocks
+// the next unvisited chapter, and the explicit cheat can unlock all five.
+export function isCampaignLevelReplay(progress,index,{save=null,newAdventure=false}={}) {
+  if(!validIndex(index)||newAdventure)return false;
+  if(save)return validAdventureSave(save)&&save.level===LEVEL_IDS[index]&&save.game.scripts?.replayLevel===true;
+  return readCampaignProgress(progress).playedLevels?.includes(LEVEL_IDS[index])===true;
+}
+
+export function recordPlayedCampaignLevel(progress,levelId,{newAdventure=false}={}) {
+  const result=readCampaignProgress(progress);
+  if(!LEVEL_IDS.includes(levelId))return result;
+  const played=new Set(newAdventure?[]:result.playedLevels||[]);played.add(levelId);
+  result.playedLevels=LEVEL_IDS.filter(id=>played.has(id));return result;
 }
 
 export function canStartCampaignLevel(progress,index) {
@@ -44,7 +61,10 @@ export function canStartCampaignLevel(progress,index) {
 
 export function completeCampaignLevel(progress,levelId) {
   const result=readCampaignProgress(progress),index=LEVEL_IDS.indexOf(levelId);
-  if(canStartCampaignLevel(result,index))result.highestUnlocked=Math.max(result.highestUnlocked,Math.min(LEVEL_IDS.length-1,index+1));
+  if(canStartCampaignLevel(result,index)) {
+    result.highestUnlocked=Math.max(result.highestUnlocked,Math.min(LEVEL_IDS.length-1,index+1));
+    return recordPlayedCampaignLevel(result,levelId);
+  }
   return result;
 }
 

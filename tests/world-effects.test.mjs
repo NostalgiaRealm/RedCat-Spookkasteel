@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import * as THREE from 'three';
 import {Gameplay} from '../src/gameplay.js';
 import {GameAudio} from '../src/audio.js';
-import {WorldEffects,saveBeaconGeometry,spoutParticle,sampleParticle,coronaRadius,lightFunction} from '../src/world-effects.js';
+import {WorldEffects,saveBeaconGeometry,coronaRadius,lightFunction} from '../src/world-effects.js';
 
 const manifest=JSON.parse(fs.readFileSync(new URL('../assets/effects/manifest.json',import.meta.url)));
 const levels=['lvl00a','lvl01a','lvl02a','lvl03a','lvl04a'].map(id=>JSON.parse(fs.readFileSync(new URL(`../data/levels/${id}/level.json`,import.meta.url))));
@@ -40,13 +40,6 @@ test('dynamic light animation wraps and interpolates authored a-z functions',()=
   assert.equal(lightFunction('az',2,0,true,1),1);
 });
 
-test('spout uses authored endpoint direction, speed, lifetime, growth and fade',()=>{
-  const e={SpeedMin:'8',SpeedMax:'8',LifeSecondsMin:'2',LifeSecondsMax:'2',AlphaPercentageStart:'100',AlphaPercentageEnd:'0',SizePercentageStart:'25',SizePercentageEnd:'100',Scale:'2',Gravity:'2'};
-  const p=spoutParticle(e,[10,20,30],[0,1,0],1);
-  assert.deepEqual(p.velocity,[0,8,0]);const s=sampleParticle(e,p,1);
-  assert.deepEqual(s.position,[10,27,30]);assert.equal(s.size,1.25);assert.equal(s.opacity,.5);assert.equal(sampleParticle(e,p,2).alive,false);
-});
-
 function fixture(entity){
   const object={id:'effect1',entity,position:[1,2,3],enabled:entity.IsInitiallyEnabled!=='0',visible:true};
   const world={scene:new THREE.Scene(),camera:new THREE.PerspectiveCamera(),modelMeshes:new Map(),physicalModels:[0],collider:{trace(a,b){return{fraction:1,end:b};}}};
@@ -71,7 +64,21 @@ test('turning off a flame stops emission and allows existing particles to expire
   const {object,effects,state}=fixture({classname:'EffectSpoutEntity',BitmapFileName:'flame03.bmp',BitmapAlphaFileName:'a_flame.bmp',DelaySecondsMin:'.1',DelaySecondsMax:'.1',LifeSecondsMin:'.5',LifeSecondsMax:'.5',SpeedMin:'2',SpeedMax:'2'});
   for(let i=0;i<10;i++)effects.update(.1);assert.ok(state.particles.length>0);
   object.enabled=false;for(let i=0;i<10;i++)effects.update(.1);assert.equal(state.particles.length,0);
-  object.enabled=true;effects.update(.1);assert.ok(state.particles.length>0);
+  object.enabled=true;effects.update(.1);assert.equal(state.particles.length,0,'native delay starts on first update');
+  effects.update(.05);assert.ok(state.particles.length>0);
+});
+
+test('finite spout disable and repeated Enable commands reset only visual timers and keep live particles',()=>{
+  const {object,effects,state}=fixture({classname:'EffectSpoutEntity',BitmapFileName:'flame03.bmp',BitmapAlphaFileName:'a_flame.bmp',
+    LifeTimeSecs:'1',DelaySecondsMin:'.1',DelaySecondsMax:'.1',LifeSecondsMin:'2',LifeSecondsMax:'2'});
+  const game={emit(){},scripts:null};for(let i=0;i<8;i++)effects.update(.1);
+  const particles=[...state.particles],serial=state.spout.serial;
+  Gameplay.prototype.command.call(game,object,'enable');effects.update(.05);
+  assert.ok(state.particles.some(p=>particles.includes(p)));assert.equal(state.spout.serial,serial);
+  assert.equal(state.age,.05);assert.equal(state.spout.finished,false);
+  for(let i=0;i<35;i++)effects.update(.1);
+  assert.equal(object.enabled,false);assert.equal(state.particles.length,0);
+  Gameplay.prototype.command.call(game,object,'enable');effects.update(.2);assert.ok(state.particles.length>0);
 });
 
 test('authored dynamic light follows a moving model and Davi-Script disable',()=>{

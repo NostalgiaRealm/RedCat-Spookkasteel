@@ -68,6 +68,11 @@ positions against the original motion samples. Screenshots and measurements
 are saved in `artifacts/actor-placement-scenes.json` and the corresponding PNGs.
 
 This is an asset/reference and targeted scene audit, not a frame-by-frame
-comparison of every animation with the original executable. Animation blending,
-some native transitions and particle trajectories still have reconstruction
-limits documented elsewhere. No release packages were generated for this work.
+comparison of every animation with the original executable. General animation
+blending remains a fidelity limit. Later investigations recovered
+[player reaction transitions](player-reactions-and-projectile-contact-native.md),
+[projectile attachment bones](enemy-projectile-origins-native.md),
+[portal trajectories](portal-native-recovery.md) and
+[smoke/flame integration](spout-effects-native.md); those are implemented rather
+than outstanding attachment work. Their documents record the remaining timing
+and rendering adaptations. No release packages were generated for this work.

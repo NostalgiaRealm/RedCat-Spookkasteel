@@ -35,11 +35,35 @@ test('native footfall cadence scales with movement and preserves normal/liquid s
 
 test('footstep router uses actual ground movement and rejects walls, platforms, flight and teleport jumps',()=>{
   const audio=mixer(),router=new GameplayAudio(audio),game={state:{health:10},scripts:{cutscene:false},liquidModels:new Set(),settings:{game:{}}},world={player:{position:[0,0,0],grounded:true},collider:{contents:()=>0}};
-  router.update(1,world,game,{forward:1});world.player.position[0]=156.8;router.update(1,world,game,{forward:1});assert.ok(audio.keyed.has('player:step'));audio.reset();
+  router.update(1,world,game,{forward:1});world.player.position[0]=156.8;router.update(1,world,game,{forward:1});assert.ok([...audio.sounds].some(record=>record.group==='player:step'));audio.reset();
   router.update(1,world,game,{forward:1});assert.equal(audio.sounds.size,0);
   world.player.position[0]+=156.8;router.update(1,world,game,{});assert.equal(audio.sounds.size,0);
   world.player.noClip=true;world.player.position[0]+=156.8;router.update(1,world,game,{forward:1});assert.equal(audio.sounds.size,0);
   world.player.noClip=false;world.player.position[0]+=3000;router.update(1,world,game,{forward:1});assert.equal(audio.sounds.size,0);
+});
+
+test('water footsteps overlap without clipping their tails and finish independently after pausing or stopping',()=>{
+  const audio=mixer(),router=new GameplayAudio(audio);
+  const game={state:{health:10},scripts:{cutscene:false},liquidModels:new Set(),settings:{game:{}}};
+  const world={yaw:0,player:{position:[0,0,0],stepDisplacement:98.784,grounded:true},collider:{contents:()=>0x10000}};
+  router.update(.45,world,game,{forward:1});
+  const first=[...audio.sounds][0];assert.equal(first.name,'rclwater.wav');
+  // Native water WAVs last 717/777ms, longer than the roughly 449ms stride.
+  first.element.currentTime=.45;
+  router.update(.45,world,game,{forward:1});
+  assert.deepEqual(audio.snapshot().map(record=>record.sound),['rclwater.wav','rcrwater.wav']);
+  const second=[...audio.sounds][1];
+  assert.equal(first.element.paused,false);assert.equal(first.element.currentTime,.45);
+  assert.equal(first.loop,false);assert.equal(second.loop,false);
+  audio.pause();assert.ok([...audio.sounds].every(record=>record.element.paused));
+  audio.resume();assert.ok([...audio.sounds].every(record=>!record.element.paused));
+  assert.equal(first.element.currentTime,.45,'resuming preserves the unfinished splash');
+  const phase={...game.footstepState};world.player.stepDisplacement=0;
+  router.update(1,world,game,{});
+  assert.deepEqual(game.footstepState,phase);assert.equal(audio.sounds.size,2);
+  assert.equal(first.element.paused,false,'stopping movement does not stop a recording already playing');
+  first.element.onended();assert.equal(audio.sounds.size,1);assert.equal(second.element.paused,false);
+  second.element.onended();assert.equal(audio.sounds.size,0);
 });
 
 test('every level selects authored ambient/action/special slots and recovers after the final ordinary threat',()=>{

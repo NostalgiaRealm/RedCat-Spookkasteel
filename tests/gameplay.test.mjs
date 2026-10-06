@@ -52,9 +52,9 @@ test('pickups score exactly once, health caps and blocked line of sight prevents
   const events=[];
   const game=new Gameplay(fixture([entity('ItemCoin','coin',{Type:'3'}),entity('ItemHealth','health',{Type:'2'}),entity('ItemPotion','potion')]),{onEvent:e=>events.push(e)});
   game.update(.02,[0,0,0],{lineOfSight:()=>false});assert.equal(game.state.score,0);
-  game.update(.02,[0,0,0]);assert.equal(game.state.score,75);assert.equal(game.state.coins,10);assert.equal(game.state.potions,1);
-  assert.equal(game.find('health')[0].collected,false);
-  game.state.health=9;game.update(.02,[0,0,0]);assert.equal(game.state.health,10);assert.equal(game.state.score,90);
+  game.update(.02,[0,0,0]);assert.equal(game.state.score,90);assert.equal(game.state.coins,10);assert.equal(game.state.potions,1);
+  assert.equal(game.find('health')[0].collected,true);assert.equal(game.state.health,game.state.maxHealth);
+  game.state.health=9;game.update(.02,[0,0,0]);assert.equal(game.state.health,9);assert.equal(game.state.score,90);
   game.update(.02,[0,0,0]);assert.equal(events.filter(e=>e.type==='pickup').length,3);
 });
 

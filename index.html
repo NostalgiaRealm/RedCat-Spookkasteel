@@ -13,18 +13,20 @@
 <div id="menu" class="screen">
   <main class="menu-main">
     <section class="hero"><img class="logo" src="assets/menu/menu-logo.png" alt="RedCat Spookkasteel"><h1>Durf jij naar binnen?</h1>
-    <div class="hero-actions"><button id="start" class="primary">Start avontuur <span>➜</span></button><button id="continue" class="secondary" hidden>Verder spelen</button></div>
+    <div class="hero-actions"><button id="start" class="primary">Start avontuur <span>➜</span></button><button id="continue" class="primary" hidden>Verder spelen <span>➜</span></button><button id="start-over" class="secondary" hidden>Start opnieuw</button></div>
     <button id="open-recovery" class="text-button" type="button">Eerder opgeslagen avontuur laden</button>
     <button id="play-intro" class="text-button">▷ &nbsp; Bekijk de originele intro</button>
     </section>
     <aside class="cover"><img src="assets/menu/cover.jpg" alt="Originele RedCat Spookkasteel omslag"><div class="cover-caption"><span>HET ORIGINELE AVONTUUR</span><b>RedCat · Davilex · 2000</b></div></aside>
   </main>
-  <section class="chapters"><div class="section-top"><h2>Kies je bestemming</h2><span>5 originele werelden <span class="thin">/ speel ze één voor één vrij</span></span></div><div id="level-list"></div></section>
-  <footer><div><button id="open-help">Besturing</button><button id="open-settings">⚙ &nbsp; Instellingen</button><button id="open-about" type="button">Over</button><button id="quit">Afsluiten</button></div></footer>
+  <section class="chapters"><div class="section-top"><h2>Kies een level</h2><span>Speel alle levels vrij om WhizKitty te bevrijden!</span></div><div id="level-list"></div></section>
+  <footer><div><button id="open-help">Besturing</button><button id="open-settings">⚙ &nbsp; Instellingen</button><button id="open-about" type="button">Over</button></div></footer>
 </div>
 <dialog id="about" class="panel about-panel" aria-labelledby="about-title">
 <div class="panel-top"><h2 id="about-title">Over</h2><button id="close-about" class="close" type="button" aria-label="Terug naar het hoofdmenu" autofocus>×</button></div>
-<p>RedCat Spookkasteel</p><p>Versie <strong>0.9.5</strong></p>
+<p>RedCat Spookkasteel</p><p>Versie <strong>0.9.7</strong></p>
+<p>Originele versie van <strong>Davilex Games</strong></p>
+<p>Nieuw leven in geblazen door <strong>Rick van den Bergh - Nostalgia Realm</strong></p>
 <section class="about-section" aria-labelledby="about-donations-title">
 <h3 id="about-donations-title">🫰 Doneren</h3>
 <p>Doneer om dit project te ondersteunen via: <a href="https://ko-fi.com/nostalgiarealm" target="_blank" rel="noopener noreferrer">https://ko-fi.com/nostalgiarealm</a></p>
@@ -41,7 +43,7 @@
 </dialog>
 <dialog id="new-adventure-warning" class="panel new-adventure-warning" aria-labelledby="new-adventure-title" aria-describedby="new-adventure-message">
 <h2 id="new-adventure-title">Opgeslagen avontuur overschrijven?</h2>
-<p id="new-adventure-message">Er is al een opgeslagen avontuur. Als je een nieuw avontuur start, worden dit avontuur en de bijbehorende herstelpunten overschreven. Wil je doorgaan?</p>
+<p id="new-adventure-message">Er is al een opgeslagen avontuur. Als je opnieuw begint, worden je oude opgeslagen avontuur en alle bijbehorende herstelpunten overschreven. Je kunt die voortgang daarna niet meer terughalen. Wil je doorgaan?</p>
 <div class="new-adventure-actions"><button id="cancel-new-adventure" class="secondary" type="button" autofocus>Annuleren</button><button id="confirm-new-adventure" class="primary" type="button">Nieuw avontuur starten</button></div>
 </dialog>
 <dialog id="recovery-saves" class="panel recovery-panel" aria-labelledby="recovery-title" aria-describedby="recovery-description">
@@ -69,9 +71,11 @@
 <label class="setting"><span><b>Volledig scherm</b><small>Vult het beeldscherm</small></span><input id="fullscreen" type="checkbox"></label>
 <label class="setting"><span><b>Camera</b><small>Wissel tijdens het spelen met V</small></span><select id="camera-mode"><option value="third">Achter RedCat</option><option value="first">Eerste persoon</option></select></label>
 <label class="setting"><span><b>Gezichtsveld</b><small>Verticale kijkhoek, zonder uitrekken</small></span><input id="fov" type="range" min="45" max="90" step="1"><output id="fov-value"></output></label>
-<label class="setting"><span><b>Kijkgevoeligheid</b><small>Muis en aanraken</small></span><input id="sensitivity" type="range" min="0.2" max="2" step="0.1"></label>
+<label class="setting"><span><b>Kijkgevoeligheid</b><small>Muis, aanraken en rechterstick</small></span><input id="sensitivity" type="range" min="0.2" max="2" step="0.1"></label>
 <label class="setting"><span><b>Geluid</b></span><input id="volume" type="range" min="0" max="1" step="0.05"></label>
 <label class="setting"><span><b>Originele intro bij opstarten</b></span><input id="auto-intro" type="checkbox"></label>
+<p id="controller-status" class="settings-note" role="status">Controller: sluit een controller aan en druk op een knop.</p>
+<p class="settings-note">Controller: A / × bevestigt, B / ○ gaat terug. Kies met de linkerstick of richtingsknoppen; links/rechts wijzigt instellingen. Scroll lange menu’s met de rechterstick. In een browser is soms eerst een klik of tik nodig voor geluid en volledig scherm.</p>
 <button id="open-cheats" class="secondary cheats-link">Cheats <span>→</span></button>
 <button id="apply-settings" class="primary">Instellingen toepassen <span>✓</span></button><p class="settings-note">Je instellingen worden automatisch bewaard. Het beeld behoudt altijd de juiste verhoudingen.</p></section></div>
 <div id="cheats" class="overlay" hidden><section class="panel cheats-panel" aria-labelledby="cheats-title"><div class="panel-top"><div><div class="eyebrow">INSTELLINGEN</div><h2 id="cheats-title">Cheats</h2></div><button id="close-cheats" class="close" aria-label="Terug naar instellingen">←</button></div>
@@ -82,7 +86,7 @@
 <label class="setting"><span><b>Vrij vliegen (no-clip)</b><small>Vlieg door muren en buiten het level. WASD of de stick volgt je kijkrichting; Spatie / Omhoog stijgt, Shift / Omlaag daalt.</small></span><input id="cheat-noclip" type="checkbox"></label>
 <p class="settings-note">Uitschakelen in een muur of buiten het level brengt je terug naar een veilige plek.</p><p id="cheat-status" class="cheat-status" role="status"></p>
 <button id="back-cheats" class="secondary cheats-link">← Terug naar instellingen</button></section></div>
-<div id="help" class="overlay" hidden><section class="panel"><div class="panel-top"><h2>Op avontuur</h2><button id="close-help" class="close" aria-label="Sluiten">×</button></div><p><b>Aanraakbediening:</b> beweeg met de stick links en veeg rechts om rond te kijken. Spring en Schieten werken zolang je ze aanraakt. Houd Overslaan twee seconden vast tijdens een tussenfilmpje. Lopen schakelt rustig lopen in of uit; Camera wisselt de weergave. Menu opent pauze, instellingen en cheats. Bij vrij vliegen zijn Omhoog en Omlaag beschikbaar.</p><dl class="key-guide"><dt>W A S D / pijlen</dt><dd>Bewegen</dd><dt>Muis</dt><dd>Rondkijken</dd><dt>Spatie</dt><dd>Springen</dd><dt>Shift</dt><dd>Rustig lopen</dd><dt>Linkermuisknop / Ctrl</dt><dd>Aanvallen</dd><dt>E</dt><dd>Deur gebruiken</dd><dt>V</dt><dd>Camera wisselen</dd><dt>F5 / F9</dt><dd>Opslaan / laden</dd><dt>Esc</dt><dd>Pauzeren</dd></dl><p>Je avontuur wordt elke minuut automatisch opgeslagen. Je kunt ook zelf opslaan met F5. Zit je vast? Kies in het menu Eerder opgeslagen avontuur laden om ongeveer 2, 5 of 10 minuten speeltijd terug te gaan.</p><p>Verzamel schatten, toverdrank en spiegelstukken. Klik in het spel om met de muis rond te kijken.</p></section></div>
+<div id="help" class="overlay" hidden><section class="panel"><div class="panel-top"><h2>Op avontuur</h2><button id="close-help" class="close" aria-label="Sluiten">×</button></div><p><b>Aanraakbediening:</b> beweeg met de stick links en veeg rechts om rond te kijken. Spring en Schieten werken zolang je ze aanraakt. Houd Overslaan twee seconden vast tijdens een tussenfilmpje. Lopen schakelt rustig lopen in of uit; Camera wisselt de weergave. Menu opent pauze, instellingen en cheats. Bij vrij vliegen zijn Omhoog en Omlaag beschikbaar.</p><h3>Controller</h3><p>Sluit een controller aan en druk op een knop. Gebruik de linkerstick om te bewegen en de rechterstick om rond te kijken. De kijkgevoeligheid is instelbaar.</p><dl class="key-guide"><dt>A / ×</dt><dd>Springen / bevestigen</dd><dt>RT / R2 of RB / R1</dt><dd>Schieten; vasthouden voor BIG BENG</dd><dt>X / □</dt><dd>Gebruiken; twee seconden vasthouden om een scène over te slaan</dd><dt>LB / L1</dt><dd>Rustig lopen</dd><dt>Y / △</dt><dd>Camera wisselen</dd><dt>Start / Options / +</dt><dd>Pauzeren / hervatten</dd><dt>B / ○</dt><dd>Terug in menu’s; dalen bij vrij vliegen</dd><dt>Linkerstick / richtingsknoppen</dt><dd>Menu kiezen; links/rechts wijzigt een instelling</dd></dl><p>Bij vrij vliegen stijg je met A / ×. Opslaan, laden en cheats staan in het pauzemenu. Als de gebruikte controller losraakt, pauzeert het spel. Knopnamen volgen de standaard Xbox- of PlayStation-indeling; op andere controllers tellen de posities.</p><h3>Toetsenbord en muis</h3><dl class="key-guide"><dt>W A S D / pijlen</dt><dd>Bewegen</dd><dt>Muis</dt><dd>Rondkijken</dd><dt>Spatie</dt><dd>Springen</dd><dt>Shift</dt><dd>Rustig lopen</dd><dt>Linkermuisknop / Ctrl</dt><dd>Aanvallen</dd><dt>E</dt><dd>Gebruiken / twee seconden vasthouden om een scène over te slaan</dd><dt>V</dt><dd>Camera wisselen</dd><dt>F5 / F9</dt><dd>Opslaan / laden</dd><dt>Esc</dt><dd>Pauzeren</dd></dl><p>Je avontuur wordt elke minuut automatisch opgeslagen. Je kunt ook zelf opslaan met F5. Zit je vast? Kies in het menu Eerder opgeslagen avontuur laden om ongeveer 2, 5 of 10 minuten speeltijd terug te gaan.</p><p>Verzamel schatten, toverdrank en spiegelstukken. Klik in het spel om met de muis rond te kijken.</p></section></div>
 <div id="fatal" class="overlay" hidden><section class="panel"><h2>Het avontuur kon niet starten</h2><p id="fatal-message"></p><button id="fatal-close" class="primary">Terug naar het menu</button></section></div>
 <script type="module" src="src/main.js"></script>
 </body></html>

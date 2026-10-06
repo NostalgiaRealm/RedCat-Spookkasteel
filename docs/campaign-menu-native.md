@@ -71,9 +71,17 @@ area. State 4 has a different source ratio and must not be stretched or cropped.
 `src/campaign-progress.js` contains pure helpers, with no DOM or storage writes:
 
 - `readCampaignProgress(stored, legacySave)` returns
-  `{version: 1, highestUnlocked: 0…4}`.
-- `completeCampaignLevel(progress, levelId)` returns new progress with the next
-  earned chapter; unavailable or unknown completions cannot grant access.
+  `{version: 1, highestUnlocked: 0…4}` with optional `earnedSkills` and
+  ordered `playedLevels` history. A valid legacy save proves only its current
+  chapter was played, independently of chapter access.
+- `completeCampaignLevel(progress, levelId)` records the completed chapter as
+  played and returns progress with the next earned chapter; unavailable or
+  unknown completions cannot grant access or mark a successor played.
+- `isCampaignLevelReplay(progress, index, options)` selects the saved session's
+  replay flag for Continue/recovery, or checks played history for a fresh start.
+  A new adventure forces ordinary first-play behavior.
+- `recordPlayedCampaignLevel(progress, levelId, options)` records a successful
+  visit; its new-adventure option starts a fresh played list while keeping access.
 - `canStartCampaignLevel(progress, index)` also rejects malformed indices.
 - `chapterArtwork(index, {unlocked, hovered, selected, pressed})` resolves an
   original card path; `CHAPTER_ART_SIZE` describes the outer card area.
@@ -94,9 +102,10 @@ inventory quantities are not used as progression evidence.
 `tests/campaign-progress.test.mjs` checks fresh access, sequential completion,
 invalid indices, immutable updates, legacy checkpoint migration, no progression
 from cheat supplies, preserving unlocks after earlier replays, and every card
-file's actual PNG dimensions. All four cases passed. After the dimension check
-identified the smaller locked-hover resource, only that affected case was
-rerun. No packages were built. `node tests/campaign-settings-scenes.mjs` verifies the real menu locks, original
+file's actual PNG dimensions. All four cases passed in that feature's original
+validation. After the dimension check identified the smaller locked-hover
+resource, only that affected case was rerun. No packages were built.
+`node tests/campaign-settings-scenes.mjs` verifies the real menu locks, original
 hover/locked artwork, completion unlock, persistence after replay, existing-save
 migration, difficulty controls and one-minute autosave. Screenshots are saved in
 `artifacts/campaign-menu-{locked,unlocked}.png` and
@@ -105,3 +114,56 @@ migration, difficulty controls and one-minute autosave. Screenshots are saved in
 `node tests/cheat-unlock-levels-scenes.mjs` checks only the explicit unlock
 cheat, including main-menu/paused use, persistence, level access and storage
 failure.
+
+These are recorded feature checks, not a recommendation to rerun every suite
+after a menu change. Later replay-history checks and their retained results are
+listed in [replayed introductions](replayed-level-intros-native.md).
+
+## Saved-adventure menu
+
+With a valid current save, **Verder spelen** becomes the yellow primary action,
+**Start avontuur** is hidden, and **Start opnieuw** appears as a secondary
+action. Start opnieuw always starts the Forest, even if another chapter was
+selected. Unlocked chapter cards offer a replay directly when a save exists.
+Both routes display the overwrite warning with **Annuleren** focused initially;
+mouse, keyboard, touch and controller cancellation preserve the current save
+and all recovery checkpoints.
+
+Only a confirmed, successfully loaded adventure replaces the current save and
+starts a new recovery timeline. The old save remains available while assets
+are loading. Earned chapter unlocks and preferences remain profile settings.
+Malformed saves do not hide the fresh-start button.
+
+Starting a completely new adventure also resets earned abilities to the
+Forest's original starting state. Power shots, BIG BENG and SuperSkippie must
+be earned again. Both the new save and campaign skill ownership are replaced
+after successful loading, so reloading cannot restore the previous adventure's
+upgrades. Continue, level restart and chapter-card replay retain learned
+abilities; cancelling or a failed new-game load leaves ownership intact.
+
+The focused `node tests/new-adventure-skills-scenes.mjs` regression checks
+Continue and Forest replay with learned upgrades, cancellation, deferred reset
+while loading, the original Forest starting skill mask, and reload persistence.
+Evidence is retained in `current_work/new-adventure-skills-2026-10-03/`.
+
+Focused verification: `node tests/new-adventure-warning-scenes.mjs`. This checks
+fresh/invalid saves, desktop/portrait layout, primary button color, warning
+cancellation (including controller), Continue restoration, chapter replay and
+confirmed Forest restart with recovery reset. Evidence is retained in
+`current_work/saved-adventure-menu-2026-10-03/`. No builds were created.
+
+
+## Automatic tutorial suppression on replay
+
+Successfully entering a chapter records its ID in `playedLevels`. Starting that
+chapter again through the existing menu uses the original connected Snelstart
+script branches: eight Forest tutorial triggers and two Graveyard tutorial
+triggers are disabled. First visits, ability rewards, boss and exit sequences
+keep their normal behavior. Unlocks (including the cheat) alone do not suppress
+any tutorials.
+
+Continue and recovery snapshots retain their saved replay policy and do not
+reinitialize puzzles or tutorials. Start opnieuw clears played history only
+on successful loading, restoring ordinary tutorials for the new adventure while
+retaining the existing chapter-access policy. See [native evidence and focused
+verification](replayed-level-intros-native.md).

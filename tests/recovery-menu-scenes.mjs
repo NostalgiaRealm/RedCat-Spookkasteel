@@ -102,11 +102,11 @@ try {
 
   // A canceled new adventure preserves recovery; a successful confirmed start
   // begins a fresh timeline, so another adventure cannot leak into its menu.
-  await page.locator('#start').click();
+  await page.locator('#start-over').click();
   assert.equal(await page.evaluate(()=>document.getElementById('new-adventure-warning').open),true);
   await page.locator('#cancel-new-adventure').click();
   assert.deepEqual(await page.evaluate(()=>window.__redcat.recovery.state.checkpoints.map(entry=>entry.save.game.state.score)),report.seed.retained);
-  await page.locator('#start').click();await page.locator('#confirm-new-adventure').click();
+  await page.locator('#start-over').click();await page.locator('#confirm-new-adventure').click();
   await page.waitForFunction(()=>window.__redcat.world&&['playing','paused'].includes(window.__redcat.mode),{},{timeout:60000});
   report.reset=await page.evaluate(async()=>{const app=window.__redcat;app.pause();await app.recovery.flush();return {score:app.gameplay.state.score,retained:app.recovery.state.checkpoints.length,choices:app.recovery.choices().map(choice=>!!choice.save)};});
   assert.deepEqual(report.reset,{score:0,retained:1,choices:[false,false,false]});

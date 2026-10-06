@@ -121,10 +121,15 @@ changing valid samples, Sun visibility or flame effects. See
 [actor-floor-lighting-native.md](actor-floor-lighting-native.md)
 for the recovered BSP/luxel lookup and caching details.
 
-Decorative `tree.act` corner trees additionally permit a cached, bounded floor
-probe inside their own setup bounds when the original root is buried in solid
-world geometry. This repairs the forest's black trees while preserving native
-sampling for other actors and for already valid, including dark, floor samples.
+Verified decorative corner trees, candlesticks, grave markers and benches
+(`tree.act`, `kandela.act`, `cross5.act`, `pbench.act` as `AdamAnyActor`), plus
+`knight.act` standing enemies, permit a cached floor probe inside their own
+setup bounds when the original root is buried in solid world geometry. This
+repairs black scenery and unlit shaded knight faces while preserving native
+sampling for other actors and already valid, including dark, floor samples.
+The all-level audit and exact affected placements are documented in the floor
+ambient notes linked above; visibility and cinematic actor lighting remain
+unchanged.
 
 ## Dynamic lights
 

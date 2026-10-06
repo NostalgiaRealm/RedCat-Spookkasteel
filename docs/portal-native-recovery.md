@@ -111,8 +111,10 @@ for the separately recovered sound arguments and terminal cue.
   `0x4727df–0x472836`. Its radius multiplier is initialized to one. Its light
   position field is initialized to zero and no subsequent position assignment
   was found. The remake retains its functioning authored-origin placement
-  instead of reproducing an unexplained world-origin light. Three.js light
-  falloff is also a renderer adaptation.
+  instead of reproducing an unexplained world-origin light. Its illumination now
+  uses the recovered [BSP lightmap falloff](world-light-falloff-research.md) and
+  [actor lighting](actor-lighting-native.md), rather than the former generic
+  Three.js falloff. The eight-light world rendering budget remains a portable limit.
 - Billboard basis construction, integer alpha rounding, floating-point
   precision and Genesis clipping are not byte-identical. Recovered sizes,
   phases, trajectories and artwork replace the substantial approximation;

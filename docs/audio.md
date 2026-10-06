@@ -8,8 +8,9 @@ The portable mixer in `src/audio.js` now reads the original sound gains exported
 by `tools/import_audio_settings.py` to `src/audio-settings.js`. This importer is
 also part of the full asset import. It resolves filename paths and case, and
 keeps the first matching INI section/key as the original Windows lookup does.
-The exported values retain the original data; the runtime clamps per-file gains
-to 0–1 as the native loader did.
+Per-file gains retain the original data and are clamped to 0–1 as the native
+loader did. Spatial hearing distances also include the user's intentional
+range increases, described below.
 
 The original volume controls are not linear waveform amplitudes. The verified
 Adam/Genesis3D/DirectSound conversion is reproduced before applying the port's
@@ -33,8 +34,10 @@ describe gain, not the recorded samples' peak levels or perceived loudness.
 
 Spatial sounds follow the camera position. Each level inherits Computer.ini's
 3DSound settings and applies its first matching Game.ini sublevel override.
-The supplied five levels use a minimum distance of 50 meters and a maximum
-distance factor of 150; one meter is 32 world units. The native logarithmic
+The original five levels use a minimum distance of 50 meters and a maximum
+distance factor of 150; one meter is 32 world units. The current configuration
+uses 175.5 meters with the same factor after the requested hearing-range
+increases. The native logarithmic
 distance curve is converted to amplitude along with the other gains. Dialogue
 and music remain nonspatial. Positioned effects (including spatial enemy
 voices) now use the original stereo balance: the camera's local azimuth lowers
@@ -52,9 +55,13 @@ disconnect when a sound ends/stops, and changing levels releases the bound
 world. The same media elements retain their pause/resume position, replay
 delays and full-length dialogue sequencing.
 
-Preserved user choices include local Castle/Cave ambience ranges, quieter tower
-fire, and Fleurifee's threefold radius/player listener. Her active idle is
-exempt from camera-PVS muting. A no-clip camera outside the map retains
+Preserved user choices include the local ambience ranges in
+`src/ambience-ranges.js`: Castle sources fade between 17.55 and 87.75 meters,
+Cave loops between 17.55 and 105.3 meters, and Tower fire between 10.53 and
+63.18 meters with a 0.65 gain multiplier. These replace the earlier, shorter
+local ranges. Fleurifee retains her threefold radius and player listener; her
+active idle is exempt from camera-PVS muting. These are intentional mix
+differences from the original. A no-clip camera outside the map retains
 distance/pan rather than silencing everything.
 
 The mixer also retains gain factors when the master changes, stops replaced
@@ -64,8 +71,9 @@ effects are not replayed by restoring a save.
 
 ## Verification and limits
 
-`npm test` includes original forest/host regression cases, gain math, distance,
-script clamping, pause/replacement, mute/unmute and replay scheduling.
+Earlier audio verification covered original forest/host regression cases,
+gain math, distance, script clamping, pause/replacement, mute/unmute and replay
+scheduling.
 `npm run test:audio` checks decoded WAV playback in the browser, the opening
 Dutch dialogue, 17 spatial loops, changes through the actual volume UI,
 save/load, listener distance, resume and returning to the menu. The same audio
@@ -76,9 +84,13 @@ The detailed executable evidence, including its hash and function addresses,
 is in `audio-native.md`. No original-versus-port audio recording comparison has
 been completed. Native stereo and BSP obstruction are implemented; authored
 effect-specific fade envelopes and sample-exact replay/voice timing are not
-claimed. In particular, the teleporter terminal sound's native volume envelope
-still needs complete recovery. The mixer uses portable HTML media and Web Audio,
-without an operating-system-specific audio API.
+claimed. Exact native scheduling of nonzero EffectSound replay delays and the
+music fade curve remain verification limits. The later
+[portal audio audit](portal-audio-native.md) found no per-frame terminal volume
+envelope in the portal class: `Magiev1.wav` finishes naturally beyond the
+visual flash, which the port now preserves. The mixer uses portable HTML media
+and Web Audio, without an operating-system-specific audio API. This status
+update does not change playback scheduling or the chosen hearing ranges.
 
 `node --test tests/spatial-audio.test.mjs` covers the native centibel balance,
 camera rotation, obstruction distance, PVS/door state, nonspatial dialogue,

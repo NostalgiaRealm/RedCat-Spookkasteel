@@ -86,9 +86,9 @@ Texture-info flags: mirror `1`, fullbright `2`, sky `4`, emissive compiler light
 
 For Three.js: bind these coordinates as `uv1`, set light-map texture `channel = 1`, `flipY = false`, `generateMipmaps = false`, and linear min/mag filters. Treat original RGB lightmap samples as linear intensity (`NoColorSpace`). Use vertex colors **only on Gouraud surfaces** when enabling light maps, to avoid multiplying the same baked lighting twice. The eleven-float RGB remains a fallback for renderers without lightmap support.
 
-The lightmap coordinate for a corner is derived from `dot(position, vector) / 16`, relative to the floor of the minimum face coordinate, plus the half-texel center and atlas placement. Original lightmap data has a one-byte RGB marker before the samples. Dynamic light styles, moving lights and mirror reflections are not reconstructed by this importer.
+The lightmap coordinate for a corner is derived from `dot(position, vector) / 16`, relative to the floor of the minimum face coordinate, plus the half-texel center and atlas placement. Original lightmap data has a one-byte RGB marker before the samples. This importer exports baked lighting; runtime dynamic lights, including moving lights and authored shadow obstruction, are implemented separately in [world lighting](world-light-falloff-research.md) and [world shadows](world-light-shadows-native.md). All five supplied BSPs use baked light style zero. Arbitrary multi-style BSP animation and mirror-surface reflections are not implemented by this importer.
 
-`lightmaps.bin`, `lightmap-faces.bin` and `motions.bin` preserve the original lightmap chunk, 36-byte face records, and brush-motion chunk for future work. These preserved streams are not executable Windows code.
+`lightmaps.bin`, `lightmap-faces.bin` and `motions.bin` preserve the original lightmap chunk, 36-byte face records, and brush-motion chunk. The first two now supply [actor floor sampling](actor-floor-lighting-native.md) and world-light shadow queries. The motion stream is decoded by the [motion importer](motions.md) for runtime brush/camera playback. These are active data sources, not unused future-work placeholders or executable Windows code.
 
 ### Entities and gameplay references
 

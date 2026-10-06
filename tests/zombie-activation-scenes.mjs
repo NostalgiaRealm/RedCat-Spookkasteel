@@ -42,7 +42,7 @@ try {
       };
       const state=()=>({at:g.time,player:[...w.player.position],contacts:[...(w.player.contacts||[])],inside:object.inside,switchCount:object.switchCount,triggerCount:object.triggerCount,zombie:actorState(zombie),lid:g.modelState(lid.modelIndex),coverVisible:w.actorInstances.get(cover.id)?.visible,coverHealth:cover.health,coverExplosion:!!g.explosions?.some(e=>e.sourceId===cover.id),fragments:w.effects?.destructibles?.particles.length||0});
       const photograph=()=>{w.syncPlayer(0,{});w.camera.position.fromArray(fixture.camera);w.camera.lookAt(...fixture.look);w.render();};
-      const events=[],oldEvent=g.onEvent;g.onEvent=event=>{if(['visibility','enemyDefeated','enable'].includes(event.type)||event.type==='scriptSound'&&event.sound==='Explosion.wav')events.push({at:g.time,...event});oldEvent(event);};
+      const events=[],oldEvent=g.onEvent;g.onEvent=event=>{if(['visibility','enemyDefeated','enable'].includes(event.type)||event.type==='scriptSound'&&event.sound==='expl6.wav')events.push({at:g.time,...event});oldEvent(event);};
       window.__zombieFixture={w,g,h,object,zombie,lid,cover,actorState,state,photograph,fixture,ground,events};
       photograph();
     },fixture);
@@ -83,7 +83,7 @@ try {
       assert.equal(r.after.final.zombie.visible,true,`${r.fixture.name}: activated zombie renders`);
       assert.ok(r.after.timeline.some(s=>s.zombie.animation==='walk'&&s.zombie.motion==='walkfw'),`${r.fixture.name}: activated zombie plays original walking animation`);
       assert.ok(Math.hypot(...r.after.final.zombie.position.map((v,i)=>v-r.before.state.zombie.position[i]))>70,`${r.fixture.name}: activated zombie walks along its original route`);
-      const explosion=r.after.events.findIndex(e=>e.type==='scriptSound'&&e.sound==='Explosion.wav'),activation=r.after.events.findIndex(e=>e.type==='enable'&&e.id===r.before.state.zombie.id&&e.enabled);
+      const explosion=r.after.events.findIndex(e=>e.type==='scriptSound'&&e.sound==='expl6.wav'),activation=r.after.events.findIndex(e=>e.type==='enable'&&e.id===r.before.state.zombie.id&&e.enabled);
       assert.ok(explosion>=0&&activation>explosion,`${r.fixture.name}: grave-cover explosion precedes zombie activation`);
       assert.ok(r.after.timeline.some(s=>s.coverExplosion&&s.fragments>0),`${r.fixture.name}: original grave-cover fragments render`);
       assert.equal(r.before.statue.visible,true,`${r.fixture.name}: original entrance statue remains visible`);

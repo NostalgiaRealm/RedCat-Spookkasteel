@@ -59,8 +59,10 @@ try {
     await page.locator('#play-intro').click();await advancing(page);
     const replay=await state(page);assert.equal(replay.muted,false);assert.equal(replay.actionHidden,true);
     check(`${label}: skip cleans playback and manual replay starts with sound`);
-    await page.evaluate(()=>{const v=document.getElementById('intro-video');v.currentTime=v.duration-.1;});
-    await page.waitForFunction(()=>window.__redcat.mode==='menu');
+    // The local fixture server sends complete files, not byte ranges. Play to
+    // the real ended event rather than depending on a seek into an unread tail.
+    await page.evaluate(()=>document.getElementById('intro-video').playbackRate=16);
+    await page.waitForFunction(()=>window.__redcat.mode==='menu',null,{timeout:15000});
     assert.equal((await state(page)).src,null);check(`${label}: natural end returns to the menu`);
     if(!mobile) {
       await page.goto(`http://127.0.0.1:${port}/?skipIntro`);await page.waitForFunction(()=>window.__redcat);

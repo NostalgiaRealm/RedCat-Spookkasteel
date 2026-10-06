@@ -41,8 +41,9 @@ Original Normal settings distinguish the behaviors:
 
 The generic melee branch previously stopped green bats within 100 units,
 played `shoot1`, and damaged RedCat remotely halfway through the animation.
-Green bats now continue flying toward a visible or recently seen player
-until actual hull contact. Their swept, BSP-clipped movement is checked
+Green bats now select native neighboring-waypoint movement on detecting or
+remembering RedCat; damage requires actual hull contact. See the
+[2026-10-05 movement recovery](enemy-waypoint-movement.md). Their swept, BSP-clipped movement is checked
 against RedCat's hull, using the imported bat collision bounds; blocked
 line of sight prevents a contact hit across a wall. Contact uses a one-second
 per-bat cooldown stored in the existing saved `attackTimer` field. Hurt
@@ -98,7 +99,8 @@ additional attachment test checks the real collision hulls at every active
 bat spawn, reproduces BAT03's former start-solid failure, and confirms that
 flapping wings leave the body hull unchanged.
 
-This correction does not claim a full instruction-for-instruction port of
-the native bat navigation state. The toucher state also randomly chooses
-among navigation methods `0x596710`, `0x596780`, and `0x5967f0` from
-`0x40ae80`; its complete route-selection policy remains to be reconstructed.
+The three touching-enemy waypoint selectors, shared reservations, random
+patrol rules and state timing were recovered on 2026-10-05. The former
+continuous orbit is replaced; see [movement evidence and limits](enemy-waypoint-movement.md).
+Portable collision, overlap recovery and saved per-enemy RNG remain deliberate
+adaptations, rather than a complete instruction-for-instruction engine port.

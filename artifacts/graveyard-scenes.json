@@ -1,0 +1,115 @@
+{
+  "before": {
+    "doors": [
+      {
+        "id": "DoorModel17",
+        "enabled": false,
+        "open": false
+      },
+      {
+        "id": "DoorModel18",
+        "enabled": false,
+        "open": false
+      }
+    ],
+    "blocked": true
+  },
+  "buttons": [
+    {
+      "name": "dknopa",
+      "switched": true,
+      "counter": 1,
+      "open": [
+        false,
+        false
+      ]
+    },
+    {
+      "name": "dknopb",
+      "switched": true,
+      "counter": 2,
+      "open": [
+        true,
+        true
+      ]
+    }
+  ],
+  "after": {
+    "doors": [
+      {
+        "open": true,
+        "enabled": false,
+        "time": 2,
+        "rotation": [
+          0,
+          -0.7071072811865696,
+          0,
+          0.707106281186172
+        ]
+      },
+      {
+        "open": true,
+        "enabled": false,
+        "time": 2,
+        "rotation": [
+          0,
+          0.7071072811865696,
+          0,
+          0.707106281186172
+        ]
+      }
+    ],
+    "fraction": 1,
+    "error": null
+  },
+  "crossing": {
+    "position": [
+      1528.8799999999974,
+      -39.95,
+      728
+    ],
+    "health": 8
+  },
+  "statue": {
+    "id": "AdamAnyActor134",
+    "rotation": -0.34906585039886584,
+    "meshRotation": -1.5707963267948966,
+    "scale": 1,
+    "bounds": {
+      "min": [
+        1754.3415642282644,
+        -70.29375410079956,
+        3322.945600428745
+      ],
+      "max": [
+        1873.9588755447085,
+        90.33938598632812,
+        3419.163645405418
+      ]
+    },
+    "direct": {
+      "fraction": 0.4036081338332268,
+      "id": "AdamAnyActor134"
+    },
+    "shot": {
+      "fraction": 0.5412230664798754,
+      "id": "AdamAnyActor134"
+    },
+    "sight": 1,
+    "stopped": [
+      1787.8341230728488,
+      -63.95,
+      3409.3324864193823
+    ],
+    "stable": [
+      1783.1465044955353,
+      -63.95,
+      3407.2703464674237
+    ]
+  },
+  "around": [
+    1746.3781951921321,
+    -47.95,
+    3164.451048570886
+  ]
+}

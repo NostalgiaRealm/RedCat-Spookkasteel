@@ -44,6 +44,7 @@ vec3 nativeLitLightmap(sampler2D atlas,vec2 atlasUv) {
   vec3 c10=floor(texture2D(atlas,uv+vec2(1.,0.)/effectAtlasSize).rgb*255.+.5)*256.;
   vec3 c01=floor(texture2D(atlas,uv+vec2(0.,1.)/effectAtlasSize).rgb*255.+.5)*256.;
   vec3 c11=floor(texture2D(atlas,uv+vec2(1.,1.)/effectAtlasSize).rgb*255.+.5)*256.;
+  /* shadow samples */
   for(int i=0;i<8;i++) {
     if(i>=effectLightCount)break;
     vec4 light=vec4(effectLightPosition[i],1.);
@@ -51,10 +52,11 @@ vec3 nativeLitLightmap(sampler2D atlas,vec2 atlasUv) {
     if(radius<=abs(planeDistance))continue;
     vec2 projectedLight=vec2(dot(light,effectTextureU),dot(light,effectTextureV));
     vec3 rgb=nativeWorldLightFixedColor(effectLightColor[i]);
-    c00+=rgb*nativeWorldLightStrength(radius,planeDistance,projectedLight,corner,effectMinUV,effectScaleStep.xy,effectScaleStep.zw);
-    c10+=rgb*nativeWorldLightStrength(radius,planeDistance,projectedLight,corner+vec2(1.,0.),effectMinUV,effectScaleStep.xy,effectScaleStep.zw);
-    c01+=rgb*nativeWorldLightStrength(radius,planeDistance,projectedLight,corner+vec2(0.,1.),effectMinUV,effectScaleStep.xy,effectScaleStep.zw);
-    c11+=rgb*nativeWorldLightStrength(radius,planeDistance,projectedLight,corner+vec2(1.,1.),effectMinUV,effectScaleStep.xy,effectScaleStep.zw);
+    /* shadow visibility */
+    c00+=rgb*/* visible00 */nativeWorldLightStrength(radius,planeDistance,projectedLight,corner,effectMinUV,effectScaleStep.xy,effectScaleStep.zw);
+    c10+=rgb*/* visible10 */nativeWorldLightStrength(radius,planeDistance,projectedLight,corner+vec2(1.,0.),effectMinUV,effectScaleStep.xy,effectScaleStep.zw);
+    c01+=rgb*/* visible01 */nativeWorldLightStrength(radius,planeDistance,projectedLight,corner+vec2(0.,1.),effectMinUV,effectScaleStep.xy,effectScaleStep.zw);
+    c11+=rgb*/* visible11 */nativeWorldLightStrength(radius,planeDistance,projectedLight,corner+vec2(1.,1.),effectMinUV,effectScaleStep.xy,effectScaleStep.zw);
   }
   return mix(mix(nativeWorldLightmapClamp(c00),nativeWorldLightmapClamp(c10),fraction.x),
     mix(nativeWorldLightmapClamp(c01),nativeWorldLightmapClamp(c11),fraction.x),fraction.y);
@@ -65,7 +67,23 @@ export function patchWorldLightShader(shader,uniforms) {
   Object.assign(shader.uniforms,uniforms);
   shader.vertexShader=`attribute vec3 nativeLightU;attribute vec3 nativeLightV;attribute vec2 nativeLightMinUV;\n${VARYINGS}`+shader.vertexShader;
   shader.vertexShader=shader.vertexShader.replace('#include <project_vertex>',`#include <project_vertex>\n${VERTEX}`);
-  shader.fragmentShader=VARYINGS+FRAGMENT+shader.fragmentShader;
+  let fragment=FRAGMENT;
+  // Levels without authored CastShadow lamps keep the original shader and
+  // allocate no shadow texture. Four byte reads serve all selected lamps.
+  if(uniforms.effectShadowAtlas) {
+    fragment='uniform sampler2D effectShadowAtlas;\nuniform float effectLightShadowBit[8];\nuniform int effectShadowCount;\n'+fragment;
+    fragment=fragment.replace('/* shadow samples */',`vec4 shadowBytes=vec4(0.);
+    if(effectShadowCount>0)shadowBytes=floor(vec4(
+      texture2D(effectShadowAtlas,uv).r,
+      texture2D(effectShadowAtlas,uv+vec2(1.,0.)/effectAtlasSize).r,
+      texture2D(effectShadowAtlas,uv+vec2(0.,1.)/effectAtlasSize).r,
+      texture2D(effectShadowAtlas,uv+vec2(1.,1.)/effectAtlasSize).r)*255.+.5);`);
+    fragment=fragment.replace('/* shadow visibility */',`vec4 lightVisible=vec4(1.);
+    float shadowBit=effectLightShadowBit[i];
+    if(shadowBit>0.)lightVisible-=mod(floor(shadowBytes/shadowBit),2.);`);
+    ['00','10','01','11'].forEach((corner,i)=>{fragment=fragment.replace(`/* visible${corner} */`,`lightVisible.${'xyzw'[i]}*`);});
+  }
+  shader.fragmentShader=VARYINGS+fragment+shader.fragmentShader;
   shader.fragmentShader=shader.fragmentShader.replace('vec4 lightMapTexel = texture2D( lightMap, vLightMapUv );',
     'vec4 lightMapTexel = vec4(nativeLitLightmap(lightMap,vLightMapUv),1.);');
 }

@@ -2,8 +2,9 @@ import { GAMEPLAY_SETTINGS } from './gameplay-settings.js';
 import {restoreLevelSummary} from './debriefing.js';
 import { transformMotionPoint } from './motions.js';
 import { moveEnemy, sweepPlayer, resolveZombieSpawn } from './enemies.js';
+import {updateZombieGraveRise} from './zombie-grave-rise.js';
 import { EnemyNavigation, enemyRandom } from './enemy-navigation.js';
-import {initializeEnemySalvo,enemySalvoSize,usesTouchPursuit,chooseTouchPursuit} from './enemy-combat-native.js';
+import {initializeEnemySalvo,enemySalvoSize,usesTouchPursuit} from './enemy-combat-native.js';
 import { PLAYER_SHOOT_MOTION, PLAYER_SUPER_CHARGE, playerShotDefinition, sweepActor, advancePlayerProjectile } from './player-projectiles.js';
 import { BspCollider } from './collision.js';
 import { visibleLiquidGroups, liquidDamageRate } from './liquids.js';
@@ -16,7 +17,8 @@ import { playerInventoryLimits } from './player-inventory.js';
 import { showTeleporter } from './teleporter-effects.js';
 import { updateBeamContacts } from './beam-contacts.js';
 import { initializeEnemyAmbush, updateEnemyAmbush, restoreEnemyAmbush } from './enemy-ambush.js';
-import { batFlightTarget, batSeparationTarget, clipBatPlayerContact, batOrbitTarget } from './enemy-flight.js';
+import { batFlightTarget, batSeparationTarget, clipBatPlayerContact, cancelBatFlightSearch } from './enemy-flight.js';
+import {touchWaypointTarget} from './enemy-waypoint-steering.js';
 import { triggerVelocity, playerActivatesModel, withinTriggerRadius, discoverSecret } from './environment-interactions.js';
 import { ENEMY_FADE_SECONDS } from './enemy-death-effects.js';
 import { beginPlayerReaction, advancePlayerReaction, restorePlayerReaction } from './player-lifecycle.js';
@@ -25,6 +27,8 @@ import { enemyProjectileOrigins } from './enemy-projectile-origins.js';
 import {createProjectileImpact,retainProjectileImpacts,restoreProjectileImpacts} from './projectile-impacts.js';
 import {createGargoyleBlast,advanceGargoyleBlasts,restoreGargoyleBlasts} from './gargoyle-blast.js';
 import {createRewardEffect,retainRewardEffects,restoreRewardEffects} from './reward-effects.js';
+import {nativeExplosionSound} from './explosion-native.js';
+import {cancelPendingGraveyardMazeExit,resetGraveyardMaze} from './graveyard-maze.js';
 
 const n = (value, fallback=0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
 const clamp = (value,min,max) => Math.max(min,Math.min(max,value));
@@ -170,6 +174,9 @@ export class Gameplay {
     if(verb==='open'||verb==='close') {this.setDoor(object,verb==='open',depth);return;}
     if(verb==='lock'||verb==='unlock'){object.locked=verb==='lock';return;}
     if(verb==='enable'||verb==='disable') {
+      // CRcParticleSystem Enable restarts birth/life timers even if already on.
+      // This visual revision is unrelated to EffectSound/EffectMusic commands.
+      if(verb==='enable'&&e.classname==='EffectSpoutEntity'){object.spoutEnableSerial=(object.spoutEnableSerial||0)+1;object.effectAge=0;}
       const changed=object.enabled!==(verb==='enable');object.enabled=verb==='enable';this.scripts?.objectEnabled(object,object.enabled,changed);this.emit('enable',{id:object.id,modelIndex:object.modelIndex,enabled:object.enabled,kind:object.kind});
       if(changed&&object.enabled&&e.classname==='CameraTrigger'&&n(e.CamActivateOnEnable))this.trigger(object,depth);
       return;
@@ -258,7 +265,7 @@ export class Gameplay {
       this.emit('damage',{amount,source,health:this.state.health});
       if(continuous)this.environmentFeedbackCooldown=.65;
     }
-    if(this.state.health===0){this.cancelPlayerCharge();this.pendingPlayerAttack=null;this.playerAttackUntil=0;this.attackCooldown=0;this.state.lives=Math.max(0,this.state.lives-1);this.emit('death',{lives:this.state.lives,checkpoint:this.checkpoint});}
+    if(this.state.health===0){this.cancelPlayerCharge();this.pendingPlayerAttack=null;this.playerAttackUntil=0;this.attackCooldown=0;this.state.lives=Math.max(0,this.state.lives-1);cancelPendingGraveyardMazeExit(this);this.emit('death',{lives:this.state.lives,checkpoint:this.checkpoint});}
   }
 
   respawn() {
@@ -269,6 +276,7 @@ export class Gameplay {
     this.playerReaction=beginPlayerReaction('respawn');
     for(const object of this.triggers)object.inside=false;
     for(const world of this.objects.filter(o=>o.entity.classname==='World'))this.runEvent(world,'OnPlayerRespawnCommand');
+    resetGraveyardMaze(this);
     return [...this.checkpoint.position];
   }
 
@@ -287,7 +295,6 @@ export class Gameplay {
   pickup(object) {
     if(!object.enabled||object.collected)return;
     const type=clamp(n(object.entity.Type,1)-1,0,2),items=this.settings.items||{},limits=playerInventoryLimits(this.settings);
-    if(object.subtype==='health'&&this.state.health>=this.state.maxHealth)return;
     object.collected=true;let score=0;
     if(object.subtype==='coin') {this.state.coins+=[1,5,10][type];score=[5,25,50][type];}
     if(object.subtype==='health'){this.state.health=Math.min(this.state.maxHealth,this.state.health+n(items.Medikit?.[['Small','Medium','Large'][type]],[1,2,20][type]));score=[5,15,25][type];}
@@ -319,7 +326,8 @@ export class Gameplay {
       const position=object.effectPosition?.()||[...this.objectPosition(object)];
       (this.explosions||=[]).push({id:object.id+':'+this.time,sourceId:object.id,birth:this.time,position,
         bounds:object.effectBounds?.(position),scale:object.effectScale?.(),settings:object.actorSettings||{}});
-      this.emit('scriptSound',{sound:'Explosion.wav',spatial:true,position});
+      const sound=nativeExplosionSound(object.actorSettings);
+      if(sound)this.emit('scriptSound',{...sound,spatial:true,position});
     }
     if(object.kind==='enemy'){
       this.state.kills++;this.state.score=Math.min(playerInventoryLimits(this.settings).score,this.state.score+n(object.stats.PlayerScore,15));
@@ -472,11 +480,14 @@ export class Gameplay {
   }
 
   updateEnemy(object,dt,playerPosition,lineOfSight,traceEnemy) {
+    this.navigation.syncReservations(this.objects,this.time,playerPosition);
     const recoveries=object.movementRecovery?.recoveries||0;
     if(recoveries!==(object.lastMovementRecovery||0)){
-      this.navigation.pursuitJobs.delete(object);object.lastMovementRecovery=recoveries;
+      this.navigation.pursuitJobs.delete(object);cancelBatFlightSearch(this,object);object.lastMovementRecovery=recoveries;
+      if(object.patrol?.target)object.patrol.reacquiring=true;
     }
     object.attackTimer=Math.max(0,object.attackTimer-dt);
+    if(updateZombieGraveRise(this,object,dt))return;
     resolveZombieSpawn(object,traceEnemy);
     if(updateEnemyAmbush(this,object,dt,playerPosition,lineOfSight,traceEnemy))return;
     let batContact=clipBatPlayerContact(object,[...object.position],playerPosition,traceEnemy);
@@ -490,15 +501,18 @@ export class Gameplay {
     if(visible&&!object.alerted){object.alerted=true;this.enemyAction(object,'alert');}
     if(visible){object.lastSeenAt=this.time;object.lastSeenPosition=[...playerPosition];}
     else if(this.time-n(object.lastSeenAt,-100)>n(object.stats.TimeToRememberVisual,2))object.alerted=false;
+    this.navigation.syncReservation(object);
     const face=target=>{
       const desired=Math.atan2(target[0]-object.position[0],target[2]-object.position[2]);
       const current=object.yaw??desired,diff=Math.atan2(Math.sin(desired-current),Math.cos(desired-current));
       object.yaw=current+clamp(diff,-n(object.stats.RotationPerSec,Math.PI*3)*dt,n(object.stats.RotationPerSec,Math.PI*3)*dt);
     };
-    const walk=(target,{authoredFlight=false,authoredRoute=false,circling=false}={})=>{
+    const walk=(target,{authoredFlight=false,authoredRoute=false}={})=>{
       // A patrol waypoint is already the next graph edge. Searching the full
       // graph again on a blocked patrol caused the graveyard's growing stalls.
-      if(!circling)target=object.flying?batFlightTarget(this,object,target,traceEnemy):authoredRoute?target:this.navigation.pursuitTarget(object,target,lineOfSight,traceEnemy,this.time);
+      object.waypointActive=authoredRoute;this.navigation.syncReservation(object);
+      if(!authoredRoute)target=object.flying?batFlightTarget(this,object,target,traceEnemy):this.navigation.pursuitTarget(object,target,lineOfSight,traceEnemy,this.time);
+      else if(object.enemyType==='bat')cancelBatFlightSearch(this,object);
       face(target);const delta=target.map((v,i)=>i===1&&!object.flying?0:v-object.position[i]),length=Math.hypot(...delta);
       const step=Math.min(length,n(object.stats.Speed,55)*dt),before=[...object.position];
       if(length>0&&(authoredFlight||traceEnemy||lineOfSight(from,from.map((v,i)=>v+delta[i]/length*step))))moveEnemy(object,delta.map(v=>v/(length||1)*step),dt,authoredFlight?null:traceEnemy);
@@ -516,29 +530,26 @@ export class Gameplay {
       // Older saves can contain the shoot1 attack used by the generic AI.
       if(object.animationState==='attack'){this.enemyAnimation(object,'idle');object.attackTimer=0;}
       if(['hurt','start','charge','teleport'].includes(object.animationState)&&this.time<object.animationUntil){moveEnemy(object,[0,0,0],dt,traceEnemy);return;}
-      const orbit=object.batContact;
-      if(orbit?.wait>0){orbit.wait=Math.max(0,orbit.wait-dt);this.enemyAnimation(object,'idle');return;}
-      if(orbit?.remaining>0){
-        orbit.remaining=Math.max(0,orbit.remaining-dt);
-        const moved=walk(batOrbitTarget(object,playerPosition),{circling:true});
-        // Turn away from a blocked orbit instead of holding against the wall.
-        if(!moved)orbit.direction*=-1;
-        return;
-      }
-      object.batContact=null;
-      if(visible)walk(batSeparationTarget(this,object)||playerPosition);
-      else if(object.alerted&&object.lastSeenPosition&&distance(object.position,object.lastSeenPosition)>10)walk(object.lastSeenPosition);
-      else {
+      if(visible||object.alerted){
+        // 0x40311e enters the touch movement selector on perception/memory,
+        // not AttackRange or a hit. These are neighboring-waypoint choices,
+        // not a free-form orbit after contact. Collision remains immediate.
+        const target=touchWaypointTarget(this,object,dt,playerPosition,lineOfSight);
+        const separation=batSeparationTarget(this,object);
+        if(separation)walk(separation,{authoredRoute:true});
+        else if(target)walk(target.position,{authoredRoute:!object.patrol.reacquiring});
+        else if(target===undefined)walk(visible?playerPosition:object.lastSeenPosition||playerPosition);
+        else {moveEnemy(object,[0,0,0],dt,traceEnemy);this.enemyAnimation(object,'idle');}
+      }else {
+        object.batContact=null;
         const target=this.navigation.target(object,lineOfSight);
         if(target)walk(target.position,{authoredRoute:true});
         else {moveEnemy(object,[0,0,0],dt,traceEnemy);this.enemyAnimation(object,'idle');}
       }
       if(batContact&&object.attackTimer===0&&lineOfSight(from,to)) {
         this.damage(n(object.stats.Damage,1),object.id);object.attackTimer=1;
-        // Native contact waits 1000 ms, then chooses another movement state;
-        // its clockwise / anticlockwise states each run for 2000 ms.
-        object.batContact=chooseTouchPursuit(object);
-        object.flightDetour=null;
+        // The independent collision callback throttles damage for 1000 ms.
+        // It does not pause or replace the currently selected movement edge.
         this.enemyAction(object,'attack');
         this.emit('enemyAttack',{id:object.id,position:[...object.position],ranged:false,contact:true});
       }
@@ -803,6 +814,7 @@ export class Gameplay {
 
   restore(save) {
     if(!save||save.version!==1||save.level!==this.level.id)return false;
+    this.navigation.reservationFrame=null;
     // A saved encounter retains its own difficulty. Older saves were all
     // Normal; the next-level preference must not silently retune them.
     this.difficulty=normalizeDifficulty(save.difficulty);
@@ -859,14 +871,20 @@ export class Gameplay {
       object.pendingAttack=value.pendingAttack&&Number.isFinite(value.pendingAttack.at)?{at:value.pendingAttack.at,...(Number.isFinite(value.pendingAttack.until)?{until:Math.max(value.pendingAttack.at,value.pendingAttack.until)}:{})}:null;
       if(object.patrol&&value.patrol&&typeof value.patrol==='object'){
         for(const key of ['start','current','target','previous'])if(value.patrol[key]===null||this.navigation.find(value.patrol[key]))object.patrol[key]=value.patrol[key];
-        for(const key of ['leftStart','relocating'])if(typeof value.patrol[key]==='boolean')object.patrol[key]=value.patrol[key];
+        for(const key of ['leftStart','relocating','reacquiring'])if(typeof value.patrol[key]==='boolean')object.patrol[key]=value.patrol[key];
       }
       if(Array.isArray(value.lastSeenPosition)&&value.lastSeenPosition.length===3&&value.lastSeenPosition.every(Number.isFinite))object.lastSeenPosition=[...value.lastSeenPosition];
       restoreBossState(this,object,value.boss);
       if(value.position)object.position=v3(value.position);
       restoreEnemyAmbush(object,value.ambush);
-      if(object.enemyType==='bat'&&this.navigation.find(value.flightDetour?.target)&&Number.isFinite(value.flightDetour.until))object.flightDetour={...value.flightDetour};
-      if(usesTouchPursuit(object)&&value.batContact&&[value.batContact.wait,value.batContact.remaining].every(Number.isFinite))object.batContact={wait:clamp(value.batContact.wait,0,1),remaining:clamp(value.batContact.remaining,0,2),direction:value.batContact.direction<0?-1:1,mode:value.batContact.mode==='closer'?'closer':'circle'};
+      cancelBatFlightSearch(this,object);object.flightDetour=null;object.batContact=null;object.waypointActive=false;
+      if(object.enemyType==='bat'&&(value.flightDetour?.target===null||this.navigation.find(value.flightDetour?.target))&&Number.isFinite(value.flightDetour?.until))object.flightDetour={target:value.flightDetour.target,until:value.flightDetour.until};
+      if(usesTouchPursuit(object)&&value.batContact?.version===2&&[value.batContact.wait,value.batContact.remaining].every(Number.isFinite))object.batContact={version:2,started:value.batContact.started===true,wait:clamp(value.batContact.wait,0,1),remaining:clamp(value.batContact.remaining,0,2),direction:value.batContact.direction<0?-1:1,mode:value.batContact.mode==='closer'?'closer':'circle'};
+      // Old free-form pursuit/orbits could leave the body away from its
+      // saved edge while retaining a destination. Do not treat that arbitrary
+      // approach as a clear authored segment; reacquire with the bounded solver.
+      if(usesTouchPursuit(object)&&object.patrol&&value.batContact?.version!==2&&
+        (value.batContact||value.alerted&&typeof value.patrol?.reacquiring!=='boolean'))object.patrol.reacquiring=true;
       if(object.kind==='enemy'&&Number.isInteger(value.salvoSize)&&value.salvoSize>=1&&value.salvoSize<=Math.max(1,n(object.stats.AverageShotsPerSalvo,2)))object.salvoSize=value.salvoSize;
       if(object.kind==='enemy'&&value.pursuit&&Array.isArray(value.pursuit.route)&&value.pursuit.route.every(id=>this.navigation.find(id))&&Array.isArray(value.pursuit.goal)&&value.pursuit.goal.length===3&&value.pursuit.goal.every(Number.isFinite)&&Number.isFinite(value.pursuit.until))object.pursuit=structuredClone(value.pursuit);
       if(['maxd','maxj'].includes(object.enemyType)&&['maxd','maxj'].includes(value.boss?.type)&&value.boss.type!==object.enemyType) {

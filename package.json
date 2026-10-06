@@ -8,6 +8,7 @@
   "scripts": {
     "start": "electron .",
     "serve": "node tools/serve.mjs",
+    "android:prepare": "node tools/prepare-android.mjs",
     "test": "node --test tests/*.test.mjs",
     "test:smoke": "node tests/smoke.mjs",
     "test:scripts": "node tests/script-scenes.mjs",

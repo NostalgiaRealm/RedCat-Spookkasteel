@@ -36,7 +36,10 @@ final level uses the same overview before the original outro movie.
 The original HUD uses two HP per complete heart. `items.ini` specifies small,
 medium and large medikits as 1, 2 and 20 HP respectively. Small pickups therefore
 refill a half-heart; medium pickups refill a whole heart. Fractional liquid
-damage can also be healed, and pickups remain available at full health.
+damage can also be healed. Healing hearts are collected even at full health:
+they still award their normal score, effect, sound and pickup command while
+health remains capped at maximum. Full-health collection follows the user's
+observation of the original game; the earlier remake-only refusal was removed.
 
 The native heart-container pickup at `0x43d46e` passes `2.0` to `0x439c70` to
 increase maximum health, capped at 20 HP. The remake had added only one HP,

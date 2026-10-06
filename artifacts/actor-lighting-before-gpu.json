@@ -1,0 +1,187 @@
+{
+  "reports": [
+    {
+      "name": "white light, root attenuation",
+      "expected": [
+        102,
+        102,
+        102
+      ],
+      "samples": [
+        [
+          156,
+          156,
+          156
+        ],
+        [
+          170,
+          170,
+          170
+        ],
+        [
+          156,
+          156,
+          156
+        ]
+      ],
+      "maximumError": 68
+    },
+    {
+      "name": "dark texture modulation",
+      "expected": [
+        51.2,
+        51.2,
+        51.2
+      ],
+      "samples": [
+        [
+          76,
+          76,
+          76
+        ],
+        [
+          83,
+          83,
+          83
+        ],
+        [
+          76,
+          76,
+          76
+        ]
+      ],
+      "maximumError": 31.799999999999997
+    },
+    {
+      "name": "coloured lights add before clamping",
+      "expected": [
+        255,
+        150.45000000000002,
+        63.750000000000014
+      ],
+      "samples": [
+        [
+          156,
+          80,
+          36
+        ],
+        [
+          226,
+          115,
+          53
+        ],
+        [
+          156,
+          80,
+          36
+        ]
+      ],
+      "maximumError": 99
+    },
+    {
+      "name": "material tint before saturation",
+      "expected": [
+        217.60000000000002,
+        108.80000000000001,
+        54.400000000000006
+      ],
+      "samples": [
+        [
+          111,
+          55,
+          27
+        ],
+        [
+          163,
+          83,
+          43
+        ],
+        [
+          111,
+          55,
+          27
+        ]
+      ],
+      "maximumError": 106.60000000000002
+    },
+    {
+      "name": "authored ambient without hemisphere",
+      "expected": [
+        27.607843137254903,
+        39.21568627450981,
+        62.745098039215684
+      ],
+      "samples": [
+        [
+          22,
+          34,
+          61
+        ],
+        [
+          22,
+          34,
+          61
+        ],
+        [
+          22,
+          34,
+          61
+        ]
+      ],
+      "maximumError": 5.607843137254903
+    },
+    {
+      "name": "zero dynamic lights",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "samples": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "maximumError": 0
+    },
+    {
+      "name": "authored four-light capacity",
+      "expected": [
+        153.00000000000003,
+        153.00000000000003,
+        153.00000000000003
+      ],
+      "samples": [
+        [
+          43,
+          43,
+          43
+        ],
+        [
+          67,
+          67,
+          67
+        ],
+        [
+          43,
+          43,
+          43
+        ]
+      ],
+      "maximumError": 110.00000000000003
+    }
+  ],
+  "errors": []
+}

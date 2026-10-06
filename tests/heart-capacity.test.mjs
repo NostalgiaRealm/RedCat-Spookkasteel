@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Gameplay} from '../src/gameplay.js';
+import {GameplayAudio} from '../src/gameplay-audio.js';
 import {hudCommands} from '../src/hud.js';
 const manifest=JSON.parse(readFileSync(new URL('../assets/hud/manifest.json',import.meta.url)));
 const entity=(classname,name,Type='1')=>({classname,'%name%':name,Origin:'0 0 0',Type});
@@ -37,8 +38,28 @@ test('native container adds two max HP without healing; a lost half-heart can be
   const wounded=new Gameplay(level);wounded.state.health=6;wounded.pickup(wounded.find('container')[0]);
   assert.equal(wounded.state.health,6);assert.equal(wounded.state.maxHealth,12);
 });
-test('native small/medium/large heal 1/2/20 HP, partial damage is healable and full health leaves pickup',()=>{
-  const g=new Gameplay(level);g.pickup(g.find('small')[0]);assert.equal(g.find('small')[0].collected,false);
+test('full-health healing hearts collect once with score, effects, sound and pickup command',()=>{
+  for(const capacity of [10,20])for(const [type,score,suffix] of [[1,5,'s'],[2,15,'m'],[3,25,'l']]){
+    const events=[],sounds=[],commands=[],audio=new GameplayAudio({play:options=>sounds.push(options)});
+    const fixture={...level,entities:[{...entity('ItemHealth','heart',String(type)),IsSecret:'1',PickupCommand:'heartCollected'}]};
+    const g=new Gameplay(fixture,{deferInit:true,onEvent:event=>{events.push(event);audio.handle(event,g);}});
+    g.state.health=g.state.maxHealth=capacity;g.time=4;
+    g.scripts={modelTransforms:new Map(),dispatch:(object,event)=>commands.push([object.id,event]),snapshot:()=>null};
+    const heart=g.objects[0];g.pickup(heart);g.pickup(heart);
+    assert.equal(heart.collected,true);assert.equal(g.state.health,capacity);assert.equal(g.state.maxHealth,capacity);
+    assert.equal(g.state.lives,3);assert.equal(g.state.score,score);assert.equal(g.state.secrets,1);
+    assert.deepEqual(g.rewardEffects,[{kind:'pickup',score,position:[0,0,0],birth:4}]);
+    assert.equal(events.length,1);assert.equal(events[0].type,'pickup');assert.equal(events[0].score,score);
+    assert.deepEqual(events[0].state,g.state);assert.equal(events[0].message,'Je voelt je weer beter.');
+    assert.deepEqual(sounds,[{sound:`ihealth${suffix}.wav`,group:'pickup'}]);
+    assert.deepEqual(commands,[[heart.id,'PickupCommand']]);
+    const restored=new Gameplay(fixture,{save:g.snapshot(),onEvent:event=>events.push(event)});
+    restored.pickup(restored.objects[0]);assert.deepEqual(restored.state,g.state);
+    assert.deepEqual(restored.rewardEffects,g.rewardEffects);assert.equal(events.length,1,'loading cannot collect the heart again');
+  }
+});
+test('native small/medium/large heal 1/2/20 HP and fractional healing caps at maximum health',()=>{
+  const g=new Gameplay(level);
   g.state.health=9.8;g.pickup(g.find('small')[0]);assert.equal(g.state.health,10);
   g.state.health=7;g.pickup(g.find('medium')[0]);assert.equal(g.state.health,9);
   g.state.health=.2;g.pickup(g.find('large')[0]);assert.equal(g.state.health,10);

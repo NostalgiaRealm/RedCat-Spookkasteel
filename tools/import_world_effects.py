@@ -20,6 +20,7 @@ def import_effects(installation, output, levels):
     pairs.add(('electricwave.bmp','electricwave_a.bmp'))
     pairs.add(('kaboom.bmp','kaboom_a.bmp'))
     pairs.add(('kaboom2.bmp','kaboom2_a.bmp'))
+    pairs.add(('rcsdw.bmp','rcsdw_a.bmp'))
     for score in range(5):
         pairs.add((f'score{score}.bmp',f'score{score}_a.bmp'))
     for file in Path(levels).glob('*/level.json'):

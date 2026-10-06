@@ -2,12 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Gameplay} from '../src/gameplay.js';
+import {EnemyNavigation} from '../src/enemy-navigation.js';
 import {ScriptHost} from '../src/script-host.js';
 import {actorVisible} from '../src/world.js';
 import {batOverlapsPlayer,clipBatPlayerContact} from '../src/enemy-flight.js';
 const json=p=>JSON.parse(readFileSync(new URL('../'+p,import.meta.url)));
 const clear=(a,b)=>({fraction:1,end:[...b],normal:[0,0,0],startSolid:false});
-const fixture=()=>{const game=new Gameplay(json('data/levels/lvl01a/level.json'),{deferInit:true}),bat=game.find('Bat01')[0];bat.position=[80,0,0];bat.yaw=-Math.PI/2;bat.enabled=true;bat.collisionMins=[-7.19,5.3,-8.44];bat.collisionMaxs=[8.56,36.28,7.47];for(const o of game.objects)if(o!==bat)o.enabled=false;return{game,bat};};
+const fixture=()=>{const game=new Gameplay(json('data/levels/lvl01a/level.json'),{deferInit:true}),bat=game.find('Bat01')[0];bat.position=[80,0,0];bat.entity={...bat.entity,StartPoint:'a'};game.navigation=new EnemyNavigation({entities:[{classname:'GrobberPathPoint','%name%':'a',Origin:'80 0 0',WayPoint1:'b'},{classname:'GrobberPathPoint','%name%':'b',Origin:'-80 0 0'}]},{MaxConnectionDistance:0});game.navigation.initialize(bat);bat.yaw=-Math.PI/2;bat.enabled=true;bat.collisionMins=[-7.19,5.3,-8.44];bat.collisionMaxs=[8.56,36.28,7.47];for(const o of game.objects)if(o!==bat)o.enabled=false;return{game,bat};};
 
 test('bat hull sweeps stop at RedCat and a moving player overlap recovers without crossing a wall',()=>{
   const {bat}=fixture(),player=[0,0,0],before=[80,0,0];bat.position=[-80,0,0];
@@ -17,11 +18,11 @@ test('bat hull sweeps stop at RedCat and a moving player overlap recovers withou
   assert.equal(clipBatPlayerContact(bat,[...bat.position],player,wall),true);assert.equal(batOverlapsPlayer(bat,player),false);assert.ok(bat.position[0]<=0);
 });
 
-test('stationary RedCat gets separated bat contacts with native waits and occasional circling',()=>{
+test('stationary RedCat gets separated bat contacts at the independent native damage cooldown',()=>{
   const {game,bat}=fixture(),hits=[],positions=[];game.onEvent=e=>{if(e.type==='enemyAttack')hits.push(game.time);};
   for(let i=0;i<240;i++){game.time+=.05;game.hitCooldown=Math.max(0,game.hitCooldown-.05);game.updateEnemy(bat,.05,[0,0,0],()=>true,clear);positions.push([...bat.position]);assert.equal(batOverlapsPlayer(bat,[0,0,0]),false);}
   assert.ok(hits.length>=2&&hits.length<=12,JSON.stringify(hits));for(let i=1;i<hits.length;i++)assert.ok(hits[i]-hits[i-1]>=1-1e-6);
-  assert.ok(positions.some(p=>Math.abs(p[2])>50));assert.equal(game.projectiles.length,0);
+  assert.ok(positions.some(p=>Math.abs(p[0])<20));assert.equal(game.projectiles.length,0);
 });
 
 test('walking into green and shooting bats never leaves RedCat embedded in their bodies',()=>{
@@ -36,11 +37,11 @@ test('walking into green and shooting bats never leaves RedCat embedded in their
   }
 });
 
-test('bat contact wait and circling preserve remaining time through saves and script freezes',()=>{
+test('bat waypoint movement preserves remaining time through saves and script freezes',()=>{
   const {game,bat}=fixture();bat.position=[0,0,0];game.update(.05,[0,0,0],{traceEnemy:clear});
   assert.ok(bat.batContact);const state={...bat.batContact};
   game.scripts={cutscene:true};game.update(.1,[0,0,0],{traceEnemy:clear});assert.deepEqual(bat.batContact,state);game.scripts=null;
-  const copy=new Gameplay(game.level,{deferInit:true,save:game.snapshot()}).find('Bat01')[0];assert.deepEqual(copy.batContact,state);
+  const restored=fixture().game;restored.restore(game.snapshot());const copy=restored.find('Bat01')[0];assert.deepEqual(copy.batContact,state);
 });
 
 test('Witch defeat retires the combat body before its authored ending double arrives, including old saves',()=>{

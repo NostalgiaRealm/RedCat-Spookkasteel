@@ -1,14 +1,24 @@
 # Davi-Script investigation
 
-Historical research note, written before the interpreter was implemented. The
-statements below about missing parsing/execution describe that earlier state.
+Historical research note, written before the interpreter was implemented.
+**Current status (5 October 2026):** the complete format-27 parser, portable
+interpreter, original event dispatch and brush motion playback are implemented.
+`tools/import_scripts.py` consumes all five DSO files into `data/davi/`;
+`src/davi-vm.js` and `src/script-host.js` execute them. The research below is
+retained as provenance, with the earlier plan explicitly labelled historical.
 For current implementation coverage and remaining work, see
 [gameplay status](gameplay-reconstruction.md) and the
 [native parity audit](native-parity-audit.md).
 
 Executable address references are version-specific; see [reference build notes](native-reference-builds.md) before relying on native addresses.
 
-This bounded, read-only investigation examines the supplied `Levels/*.dso`, `Script/ScriptGameObject.ds` and `RcHcGame.dat`. **The original campaign code is present in serialized form with useful names and signatures. No DSO interpreter, complete parser or decompiler has been implemented.** The existing portable gameplay module still skips unsupported script behavior.
+This bounded, read-only investigation examined the supplied `Levels/*.dso`,
+`Script/ScriptGameObject.ds` and `RcHcGame.dat`. It established that the original
+campaign code was present in serialized form with useful names and signatures.
+At that stage no DSO interpreter or complete parser existed, and the early
+portable gameplay module skipped unsupported script behavior. That limitation
+was subsequently removed; unknown calls now fail explicitly rather than silently
+skipping script behavior. A source-format decompiler is not needed by the runtime.
 
 ## Concrete identification
 
@@ -31,7 +41,7 @@ Each file begins with three little-endian 32-bit values:
 | --- | --- | --- |
 | `0x00` | `27` / `0x1b`: compiler/object format version | Confirmed by native loader comparison |
 | `0x04` | Unix timestamp corresponding to October 1, 2000 | High; native loader prints it as compilation time |
-| `0x08` | `1`, followed by class record tag `0x42` | Observed; likely first collection count, not fully traced |
+| `0x08` | `1`, followed by class record tag `0x42` | Initially inferred; later confirmed as the classes collection count in [the complete grammar](davi-format.md) |
 
 Targeted disassembly confirms the version: the loader candidate starts at virtual address `0x005eb970`; at `0x005eb9f3` it executes `cmp eax,0x1b`. Its mismatch path references `runtimelib version (%d) differs from objectfile version(%d)` at file offset `0x2b1210`. This is stronger evidence than guessing from a shared numeric header.
 
@@ -43,7 +53,12 @@ Targeted disassembly confirms the version: the loader candidate starts at virtua
 | lvl03a.dso | 51,879 | 2000-10-01 18:50:05 | 16 |
 | lvl04a.dso | 23,608 | 2000-10-01 18:39:06 | 14 |
 
-These are neither Windows PE executables nor text sources. Names, declarations, object bindings, constants and serialized executable structures are interleaved. It is not yet established whether the executable representation should best be described as linear bytecode or serialized instruction/expression objects. Do not apply a Torque/Tribes `.dso` decoder merely because the extension matches.
+These are neither Windows PE executables nor text sources. Names, declarations,
+object bindings, constants and serialized executable structures are interleaved.
+The initial investigation had not established their complete representation;
+the later [grammar](davi-format.md) and [VM opcode recovery](davi-vm-opcodes.md)
+decode the tagged instruction/expression objects. A Torque/Tribes `.dso` decoder
+is not applicable merely because the extension matches.
 
 ## Recoverable names and types
 
@@ -67,7 +82,15 @@ The following tag meanings are inferred from comparisons with the shipped API he
 
 Method/function records immediately following the name expose a return-type descriptor, uint32 argument count, then formal-variable records. Primitive descriptors are `(type, 0xff)`: void `0`, double `1`, int `2`, string `3`. Observed object descriptors are `04 01 42 <uint16 class index>`. Formal-variable records append a signed int32 stack offset. `@self` is an implicit object parameter at offset `-4`; explicit string/int parameters occupy four-byte slots and doubles occupy eight-byte slots in the observed signatures.
 
-The API header identifies 111 callable/event declarations in total, matching **53 methods + 26 events + 32 externs** in every DSO. Examples of native methods not yet fully represented in portable gameplay include `MoveTo`, `SetTo`, `SetMotionSpeed`, `SetFollowDaviName`, `Fire`, and music-state controls. Native externs include `RcShowAtSpawnPoint`, `RcSetSavePoint`, `CutSceneSay`, `RcHasAllPotions`, `RcEnableSkill`, `FreezeEnemies`, `KillPlayer`, `RespawnPlayer` and `PlayerHasKeyItem`.
+The API header identifies 111 callable/event declarations in total, matching
+**53 methods + 26 events + 32 externs** in every DSO. The initial gap list included
+`MoveTo`, `SetTo`, `SetMotionSpeed`, `SetFollowDaviName`, `Fire`, and music-state
+controls. Current `ScriptHost` implements the motion, follow and music operations
+used by the campaign; unused declarations such as `Fire` are not evidence of a
+missing campaign mechanic. Native externs include `RcShowAtSpawnPoint`,
+`RcSetSavePoint`, `CutSceneSay`, `RcHasAllPotions`, `RcEnableSkill`, `FreezeEnemies`,
+`KillPlayer`, `RespawnPlayer` and `PlayerHasKeyItem`. All functions and methods
+actually called by the five shipped programs have an adapter implementation.
 
 ## Campaign functions preserved in the objects
 
@@ -97,7 +120,13 @@ python3 -m unittest discover -s tests -p 'test_inspect_scripts.py' -v
 
 The tool bounds-checks candidate lengths and validates declaration type/parameter structure. It scans possible record starts rather than consuming the entire file through a proven grammar. It therefore labels its result an **inventory**, not a full parse. Raw immediate-address matches in the executable are also candidates; the version comparison was separately verified with disassembly.
 
-## Concrete next steps toward original behavior
+## Historical implementation plan
+
+Items 1–6 below describe the original research plan and were subsequently
+implemented by `tools/import_scripts.py`, `src/davi-vm.js`, `src/script-host.js`,
+`tools/import_motions.py` and `src/motions.js`. They are retained to explain the
+research sequence, not as an outstanding-work checklist. Complete normal
+campaign playthrough validation in item 7 remains separate from focused tests.
 
 1. Map the native loader's five collection reads at `0x005ebb40`, `0x005ebb4f`, `0x005ebb5e`, `0x005ebb70` and `0x005ebb7f`; they call `0x005ed1f0`. Identify the tagged-record factory and record readers. Implement a complete parser that consumes every object exactly and rejects unresolved references.
 2. Use the shipped 53 methods, 26 events and 32 externs as known fixtures. Verify the full type system, constant tables, object IDs and per-instance event-handler linkage before evaluating any instructions.
@@ -107,4 +136,7 @@ The tool bounds-checks candidate lengths and validates declaration type/paramete
 6. Decode preserved Genesis3D brush `motions.bin` alongside the script VM. Campaign scripts act on motion-event labels; a VM alone will not restore moving platforms, teleports, camera choreography or boss interactions without the corresponding game-object behavior.
 7. Validate each level with deterministic recorded playthroughs: puzzle state, potion/skill gate, checkpoints, boss death, mirror pickup and exit. Until these succeed, retain the current explicit campaign-parity limitation.
 
-No native game code was executed, no original file was changed, and no recovered source or VM emulation is claimed by this investigation.
+This initial investigation executed no native game code and changed no original
+file. It did not itself implement a VM; the subsequent portable implementation
+is documented in [the grammar](davi-format.md), [opcodes](davi-vm-opcodes.md) and
+[gameplay status](gameplay-reconstruction.md).

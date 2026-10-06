@@ -22,8 +22,13 @@ state machine calls the same function on opening (`0x4ccc78`) and closing
 (`0x4cce54`). Consequently the portable router plays the same original sound
 on either actual transition, once per door transition. It uses a moving
 spatial source and preserves separately authored Davi-Script/EffectSound cues.
-Many moving models intentionally use type 4; they must not receive a generic
-wooden-door sound. Numbered door samples continue through authored scripts.
+Many moving models intentionally use type 4, so the router does not give every
+moving model a generic wooden-door sound. The later
+[world-action audio update](world-action-audio.md) adds an intentional, bounded
+fallback for named visible door panels that otherwise use `empty.wav`.
+Authored BeforeOpen/BeforeClose cues take priority. Lifts, slopes, hedges and
+invisible barriers do not receive that fallback; native nonempty door types
+retain their own cue. Numbered door samples continue through authored scripts.
 
 ## RedCat footsteps
 
@@ -53,6 +58,26 @@ physics are portable. The follow-up [presentation recovery](presentation-native-
 uses the native pre-multiplier input velocity, excludes platform carry from
 movement gating and preserves the footstep clock in saves. Native footsteps
 use this separate Wobble clock rather than animation contact events.
+
+The 2026-10-04 audit confirmed all four selected WAVs are byte-identical to
+the original installation. Footsteps pass fixed gain 1 and default playback
+frequency, with no per-step pitch randomization. Native `0x54ffe0` caches the
+sound resource, but `0x54f240` creates a separate engine voice through
+`0x5c7f50` at `0x54f571`. Each footfall drops its local reference without
+stopping the previous voice.
+
+The remake previously reused the `player:step` replacement key. That cut off
+the 717/777ms water recordings at the next running footfall (roughly 449ms).
+Footsteps now play as independent one-shots grouped under `player:step`, so
+their tails overlap naturally and finish even after movement stops. Global
+pause/resume and level audio cleanup still cover every active instance.
+
+Only the six footstep/footfall cases in `native-audio-completion.test.mjs`,
+`presentation-native.test.mjs` and `presentation-renderer.test.mjs` were run.
+They passed, covering surface selection, cadence, movement gating, independent
+water playback, pause/resume and saved phase. Hashes, durations, native
+disassembly and the test log are retained under
+`current_work/footstep-audio-audit-2026-10-04/`. No build was created.
 
 ## Brutus combat voices
 

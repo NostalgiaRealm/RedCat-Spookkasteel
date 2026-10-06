@@ -72,7 +72,7 @@ test('a first-hit crate collider takes the pellet, emits original debris and an 
   game.projectiles=[{id:'shot',owner:'player',position:[0,25,0],velocity:[0,0,300],radius:3,life:5,age:0,damage:1,gravity:0,acceleration:0,maximumSpeed:1000}];
   game.updateProjectiles(.1,[0,0,0],()=>({fraction:.5,end:[0,25,15],actorId:crate.id,modelIndex:null}));
   assert.equal(crate.health,0);assert.equal(game.explosions.length,1);assert.deepEqual(game.explosions[0].position,[0,24,100]);
-  game.destroy(crate);assert.equal(game.explosions.length,1);assert.equal(events.filter(e=>e.sound==='Explosion.wav').length,1);
+  game.destroy(crate);assert.equal(game.explosions.length,1);assert.equal(events.filter(e=>e.sound==='expl6.wav').length,1);
   const particles=debrisParticles(game.explosions[0]);assert.ok(particles.length>=10&&particles.length<=15);assert.deepEqual(new Set(particles.map(p=>p.actor)),new Set(['brcrate_s1','brcrate_s2']));
   assert.ok(particles.every(p=>p.life>=3&&p.life<=4));assert.equal(explosionFrame(0),1);assert.equal(explosionFrame(.698),7);assert.equal(explosionFrame(.699),8);assert.equal(explosionFrame(.81),null);
   const saved=game.snapshot(),restored=new Gameplay(game.level,{save:saved});CastleWorld.prototype.configureDestructible.call({},restored.objects[0],actor);assert.equal(restored.objects[0].health,0);

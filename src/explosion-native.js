@@ -2,6 +2,15 @@ import {nativeEffectRandom} from './debris-native.js';
 
 const number=(value,fallback=0)=>Number.isFinite(Number(value))?Number(value):fallback;
 const mix=(a,b,t)=>a+(b-a)*t;
+
+// RcExplosion 0x58d904 selects expl6; 0x58d92f..0x58d988 sets its
+// instance gain from SizePercentage (also for zero-size, debris-only blasts).
+export function nativeExplosionSound(settings={}) {
+  const conf=settings.explosion||{};
+  if(number(conf.NrExplosions,1)<=0)return null;
+  return {sound:'expl6.wav',volume:number(conf.SmokeOnly)!==0?.4:Math.max(.4,Math.min(.98,number(conf.SizePercentage,25)*.04))};
+}
+
 // 0x4a7bfd..0x4a7cfa; the executable indexes rows with count % 6,
 // including its slightly off-centre first blast when count is one.
 const SPREAD=[

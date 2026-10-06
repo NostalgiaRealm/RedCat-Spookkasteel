@@ -48,8 +48,12 @@ the explicit authored edges bypass them:
   sufficiently separated floors therefore remain independent.
 
 The nearest passing candidate is selected at `0x59defc`–`0x59df24`. The remake
-keeps nearest-first construction and preserves authored order for ties. Native
-route scoring after graph construction and full pursuit routing remain open.
+keeps nearest-first construction and preserves authored order for ties. The
+later [native follow-up](native-completion-followup.md) implements minimum-hop
+pursuit routing, and [enemy waypoint movement](enemy-waypoint-movement.md)
+recovers touching-enemy selectors, random patrol and shared reservations.
+Choosing pursuit endpoints for arbitrary actor positions remains a portable
+policy; it is separate from the recovered graph search.
 
 Enemies now use their configured sensing distance, visual range, view angle,
 rotation speed and remembered last-seen position. Unaware moving enemies patrol
@@ -162,20 +166,26 @@ generic post-salvo pause before another shot.
 
 - Native minimum-hop pursuit routing and sampled per-enemy salvo properties
   are now implemented; see [native follow-up](native-completion-followup.md).
-  The portable route endpoint selection, body clearance and saved per-enemy RNG
-  can still differ from the original's path cursor and global CRT random stream.
-- Generic attack timing uses actor clip duration and the configured draw
-  fraction. Per-enemy timing randomization, interruption transitions and all
-  attack states have not been recovered. Enemy muzzle positions remain reconstructed; the shared native projectile
-  collision hull is now recovered in [projectile contact](player-reactions-and-projectile-contact-native.md).
-- Mushroom Brutus now leaves the original flight-path ribbon; the earlier
-  floor-trail description was incorrect. Its collision/damage inference and
-  confirmed visual behavior are documented in `mushroom-trail-native.md`.
-  Projectile-specific bouncing and exact engine collision remain open.
+  Native touching-enemy selectors and random patrol are also implemented; see
+  [waypoint movement](enemy-waypoint-movement.md). Portable pursuit endpoints,
+  body clearance and saved per-enemy RNG can still differ from the original
+  path cursor and global CRT random stream.
+- Generic attacks schedule release on a simulation update using actor clip
+  duration and the configured draw fraction. Some per-enemy timing variations
+  and interruption branches remain unrecovered. Native salvo sampling and Bone
+  Brutus's charge-rate variation are already implemented.
+  [Projectile origins](enemy-projectile-origins-native.md) now use the animated
+  native attachments, with a fallback only when actor data is unavailable.
+- Mushroom Brutus leaves the original flight-path ribbon; the earlier floor
+  trail and ribbon damage were incorrect. [Ribbon recovery](mushroom-trail-native.md)
+  establishes that it is visual only. [Subclass impact dispatch](projectile-impacts-native.md)
+  is recovered: the installed enemy ammunition retires on contact without a
+  bounce or secondary explosion. Portable collision tolerances remain a boundary.
 - Dungeon Max's machine/rise/look cycle, Jester's teleport/invisibility, and
   the Witch's takeoff/flight/attack/defeat phases are implemented and documented
-  with their remaining limits in `boss-phases-native.md`. Guardian-specific
-  behavior is still incomplete.
+  with their remaining limits in [boss phases](boss-phases-native.md). Guardians
+  use the recovered shared touching-enemy movement and one-second contact
+  damage cooldown. The investigation found no separate guardian shield or boss phase.
 
 ## Validation
 

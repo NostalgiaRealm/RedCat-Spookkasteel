@@ -56,15 +56,12 @@ test('every collectible emits the corresponding original score artwork exactly o
   }
 });
 
-test('unavailable pickups and unnecessary health do not create reward effects',()=>{
-  const events=[],game=make([entity('ItemHealth'),entity('ItemCoin',{'%name%':'disabled',IsInitiallyEnabled:'0'})],{onEvent:event=>events.push(event)});
+test('disabled pickups do not create reward effects',()=>{
+  const events=[],game=make([entity('ItemHealth',{IsInitiallyEnabled:'0'}),entity('ItemCoin',{'%name%':'disabled',IsInitiallyEnabled:'0'})],{onEvent:event=>events.push(event)});
   for(const object of game.objects)game.pickup(object);
   assert.equal(game.state.score,0);assert.equal(game.rewardEffects.length,0);
-  assert.equal(game.objects[0].collected,false,'a heart remains collectible when health is full');
+  assert.ok(game.objects.every(object=>!object.collected));
   assert.equal(events.length,0);
-  game.state.health-=.5;game.pickup(game.objects[0]);
-  assert.equal(game.state.health,game.state.maxHealth);
-  assert.equal(game.rewardEffects.length,1,'a half-heart wound still permits the pickup and visual');
 });
 
 test('enemy kills award their authored score once; wounds, scenery and the zero-score witch do not',()=>{

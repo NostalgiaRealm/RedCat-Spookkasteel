@@ -15,6 +15,12 @@ load or call either executable.
 All five installed DSO hashes still match the fully parsed `data/davi` programs.
 Their complete structural decoding, linked references and original-data execution
 tests remain applicable. Motion samples and puzzle/scene tests use the exported
-original data directly. Exact native camera easing and boss combat behavior remain
-open fidelity work; script-event test coverage is not a substitute for verifying
-those native systems.
+original data directly. Subsequent investigations against the installed
+`e30781fc…` executable recovered and implemented the
+[camera final-approach speed lookup](camera-native-status.md),
+[boss phases](boss-phases-native.md),
+[projectile origins](enemy-projectile-origins-native.md) and
+[enemy waypoint decisions](enemy-waypoint-movement.md). Their remaining portable
+collision/timing limits are documented individually; these systems are no longer
+blanket unimplemented items. Script-event coverage alone still does not validate
+native movement or rendering. See the [current audit](native-parity-audit.md).

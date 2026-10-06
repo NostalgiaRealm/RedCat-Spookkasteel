@@ -189,3 +189,35 @@ test('unsupported media reports its error without an automatic retry',async()=>{
   assert.equal(button.hidden,true);
   assert.deepEqual(errors,[error]);
 });
+
+test('Android suspension keeps the movie position and resumes only from the play action',async()=>{
+  const {video,button,player,calls,click}=fixture();
+  await player.start('intro.webm',.6);
+  video.currentTime=12.25;
+  player.suspend();
+  assert.equal(video.paused,true);
+  assert.equal(video.currentTime,12.25);
+  assert.equal(button.textContent,'Verder kijken');
+  assert.equal(button.hidden,false);
+  assert.equal(calls.length,1);
+  await click();
+  assert.equal(video.paused,false);
+  assert.equal(video.currentTime,12.25);
+  assert.equal(button.hidden,true);
+});
+
+test('a pending autoplay cannot restart a suspended movie or replace its resume action',async()=>{
+  for(const reject of [false,true]) {
+    const pending=pendingPlay();
+    const {video,button,player,calls}=fixture([pending.promise]);
+    const playback=player.start('intro.webm',.6);
+    player.suspend();
+    if(reject)pending.reject(mediaError('NotAllowedError'));
+    else{video.paused=false;pending.resolve();}
+    await playback;
+    assert.equal(video.paused,true);
+    assert.equal(button.textContent,'Verder kijken');
+    assert.equal(button.hidden,false);
+    assert.equal(calls.length,1);
+  }
+});

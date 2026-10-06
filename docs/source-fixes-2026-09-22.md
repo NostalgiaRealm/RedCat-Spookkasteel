@@ -1,8 +1,9 @@
 # Source fixes — 22 September 2026
 
-This pass addresses the reported presentation, combat and environmental
-regressions. It updates source and imported assets only. Existing Linux and
-Windows packages were not rebuilt. Run the current source as described in
+This historical pass addressed the reported presentation, combat and environmental
+regressions. It updated source and imported assets only; Linux and Windows
+packages were not rebuilt in that pass. Later corrections are identified below.
+Run the current source as described in
 [building.md](building.md); `Start-RedCat.sh` still prefers the existing package.
 
 | Report | Source behavior and verification |
@@ -12,7 +13,7 @@ Windows packages were not rebuilt. Run the current source as described in
 | Reversed Brutus/knights | Correct native initial heading; combat updates facing during locked attack animation. Rendered actor fronts were checked against the player direction. |
 | Reversed introductory UFO | Native world-axis rotation composition replaces the incorrect local-axis order. |
 | Large-fall pose on ordinary jump descent | Normal jumps retain the original full jump clip through descent; long-drop selection uses the recovered floor-gap rule. |
-| New dialogue skip | Hold E continuously for three seconds; “Overslaan” progress circle; original remaining callbacks complete and preserve outcomes. |
+| New dialogue skip | Initially a three-second E hold, later changed to **two seconds** in `src/cutscene-skip.js`; “Overslaan” progress circle; original remaining callbacks complete and preserve outcomes. Touch/controller skip use the same duration. |
 | Enemy targeting and lock | Original front-cone/range selection, visibility, target artwork and animation; firing locks camera and aims from the hand toward the enemy. |
 | Original HUD | Original icons/digits show health, lives, potions/level total, score and targeted-enemy health; widescreen and 4:3 positioning checked. |
 | `GRintro3` subtitle | Original empty text stays empty while laughter audio remains. |
@@ -39,9 +40,14 @@ Only tests covering changed behavior were run, plus the specifically requested
 moving-platform carry regression. No full historical test suite was rerun.
 Rendered verification artifacts are in `artifacts/`.
 
-This is not a claim of complete instruction-level parity. Remaining boundaries
-include native bat steering/randomized route selection, spider return-to-ceiling
-decisions, fairy trail steering, fragment/smoke physics and the full native camera
-spring solver. Original art, scripts, settings and recovered constants are used
-where documented; the remaining portable reconstructions are identified in the
-linked notes.
+This pass did not establish complete instruction-level parity. Its original
+follow-up list has since changed: native touching-enemy waypoint selection and
+random patrols are now recovered in [enemy movement](enemy-waypoint-movement.md),
+spider return/ascent in [the native follow-up](native-completion-followup.md),
+Fleurifee movement/particles in [her effect-save note](fairy-save-restoration.md),
+and fragment/explosion smoke and general emitters in
+[debris recovery](debris-native-recovery.md) and [spout recovery](spout-effects-native.md).
+These are no longer blanket missing-feature claims. The complete native camera
+spring/collision solver, collision tolerances and process-wide RNG matching
+remain separate fidelity limits. The [current audit](native-parity-audit.md)
+records remaining work and intentional portable differences.

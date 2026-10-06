@@ -4,6 +4,7 @@ import { moveSolidPlayer } from './moving-solids.js';
 import { ActorAnimator, ActorStateAnimator } from './animation.js';
 import { sampleCameraRoute } from './script-camera.js';
 import { PlayerCameraControl } from './camera-control.js';
+import { resolveThirdPersonCamera } from './third-person-camera.js';
 import { visibleLiquidGroups, surfaceAlphaTest } from './liquids.js';
 import { trailOpacity } from './projectile-hazards.js';
 import { projectileVisibilityScale } from './projectile-visibility.js';
@@ -26,6 +27,8 @@ import { createActorFloorLighting } from './actor-floor-lighting.js';
 import { ActorLightVisibility } from './actor-light-visibility.js';
 import { WorldGeometryStream } from './world-streaming.js';
 import { ActorRenderResidency } from './actor-render-residency.js';
+import { PlayerShadow, PLAYER_SHADOW_TEXTURE } from './player-shadow.js';
+import { normalizeSkyboxFaces } from './skybox.js';
 const json = async url => { const response=await fetch(url); if(!response.ok) throw new Error(`Ontbrekend spelbestand: ${url}`); return response.json(); };
 const binary = async url => {const response=await fetch(url);if(!response.ok)throw new Error(`Ontbrekend spelbestand: ${url}`);return response.arrayBuffer();};
 const point = e => (e.Origin || e.origin || '0 0 0').trim().split(/\s+/).map(Number);
@@ -61,6 +64,10 @@ export function actorVisible(object,time) {
 // portable ballistic motion is an approximation of the old particle system.
 const KNIGHT_PARTS=['knhd','knbrst','knhip','knllg','knrlg','knlrm','knrrm','knlns','knax'];
 const KNIGHT_PART_HEIGHTS=[.9,.65,.42,.16,.16,.66,.66,.6,.6];
+// Confirmed decorative assets with authored roots inside walls, plinths or
+// just below the floor. Character doubles and hazards must not opt in merely
+// because they also use AdamAnyActor or start underground.
+const BURIED_DECORATIVE_ACTORS=new Set(['tree.act','kandela.act','cross5.act','pbench.act']);
 export class CastleWorld {
   constructor(renderer, settings) {
     this.renderer=renderer;this.settings=settings;this.scene=new THREE.Scene();
@@ -125,12 +132,13 @@ export class CastleWorld {
       const sky=new Map();
       await Promise.all([...new Set(data.sky.textures.filter(i=>i>=0))].map(async i=>sky.set(i,await this.texture(base+data.textures[i].file))));
       const faces=data.sky.textures.map(i=>sky.get(i<0?data.sky.textures.find(j=>j>=0):i).image);
-      const cube=this.track(new THREE.CubeTexture(faces));cube.colorSpace=THREE.SRGBColorSpace;cube.needsUpdate=true;this.scene.background=cube;
+      const cube=this.track(new THREE.CubeTexture(normalizeSkyboxFaces(faces,this.renderer.capabilities.maxCubemapSize)));cube.colorSpace=THREE.SRGBColorSpace;cube.needsUpdate=true;this.scene.background=cube;
     }
     this.collider=new BspCollider(data.collision);
     invisibleModels.forEach(i=>this.collider.disabledModels.add(i));
     this.actorWorldLighting=new ActorWorldLighting(data.entities);
     this.actorLightVisibility=new ActorLightVisibility(this,lightVisibility,new Uint8Array(lightPvs));
+    this.worldLightmapMetadata=floorMetadata;
     this.actorFloorLighting=floorMetadata?createActorFloorLighting(data.collision,floorMetadata,new Uint8Array(floorBytes),this.collider):null;
     this.player=new PlayerController(this.collider,[...data.spawn.position],this.physicalModels);
     this.yaw=nativePlayerYaw(data.spawn.orientation);
@@ -168,6 +176,9 @@ export class CastleWorld {
     }));
     this.redcat=await this.makeActor('redcat.act');
     if(this.redcat){this.scene.add(this.redcat);this.redcat.position.fromArray(this.player.position);}
+    const shadowMap=await this.texture(PLAYER_SHADOW_TEXTURE);
+    shadowMap.wrapS=shadowMap.wrapT=THREE.ClampToEdgeWrapping;
+    this.playerShadow=new PlayerShadow(this,shadowMap);
     this.updateCamera(1,true);await this.geometryStream.settle();return this;
   }
   async loadActor(name) {
@@ -183,11 +194,15 @@ export class CastleWorld {
       geometry.setAttribute('normal',new THREE.Float32BufferAttribute(data.normals,3));
       geometry.setAttribute('uv',new THREE.Float32BufferAttribute(data.uvs,2));geometry.setIndex(data.indices);
       data.groups.forEach(g=>geometry.addGroup(g.start,g.count,g.materialIndex));
+      // Hekdoor is a closed grate with front/back faces ten units apart.
+      // Native actor rendering culls backfaces (0x5cddac–0x5cddf6); showing
+      // the rear face through the front's alpha holes draws a second gate.
+      const side=['hekdoor','hekdoor_s1'].includes(stem)?THREE.FrontSide:THREE.DoubleSide;
       const materials=await Promise.all(data.materials.map(async m=>{
         const map=m.texture?await this.texture('assets/actors/'+m.texture):null;
         // Actor importer flips V for the conventional Three.js texture origin.
         if(map){map.flipY=true;map.needsUpdate=true;}
-        return this.track(new THREE.MeshLambertMaterial({map,color:m.texture?0xffffff:new THREE.Color().setRGB(...m.color,THREE.SRGBColorSpace),side:THREE.DoubleSide,alphaTest:0.3}));
+        return this.track(new THREE.MeshLambertMaterial({map,color:m.texture?0xffffff:new THREE.Color().setRGB(...m.color,THREE.SRGBColorSpace),side,alphaTest:0.3}));
       }));
       return {geometry,materials,data};
     })();
@@ -221,10 +236,14 @@ export class CastleWorld {
     if(options.rotation)root.rotation.set(...options.rotation.map(v=>v*Math.PI/180),'ZYX');
     root.userData.template=template;root.userData.mesh=mesh;
     mesh.userData.actorLighting=createActorLighting(defaults);
-    // Corner trees intersect the authored walls. Their buried origin cannot
-    // receive floor lighting, so permit a bounded local lighting probe only
-    // for this decorative asset, without moving the tree or its collision.
-    if(template.data.source?.toLowerCase()==='tree.act')mesh.userData.actorLighting.floorRecoveryBounds=new Float64Array(6);
+    // These actors have buried lighting origins. Reuse a floor sample
+    // inside their own bounds only if the root starts solid; successful dark
+    // samples, placement, collision and Sun visibility remain unchanged.
+    // Castle StandingEnemy knights remain one unit below their floor even
+    // during combat; unlike moving enemies, they never settle above it.
+    const source=template.data.source?.toLowerCase(),actorClass=options.entity?.classname;
+    if((actorClass==='AdamAnyActor'&&BURIED_DECORATIVE_ACTORS.has(source))||(actorClass==='StandingEnemy'&&source==='knight.act'))
+      mesh.userData.actorLighting.floorRecoveryBounds=new Float64Array(6);
     for(const material of materials)applyActorLighting(material,mesh.userData.actorLighting);
     if(animated){const animator=new ActorAnimator(template.data,geometry);animator.play('idle')||animator.play(template.data.animations[0].name);root.userData.animator=animator;}
     if(!geometry.boundingBox)geometry.computeBoundingBox();
@@ -807,6 +826,10 @@ export class CastleWorld {
   }
   updateCamera(dt,snap=false) {
     const scripted=this.cameraControl.sync(this);
+    if(this.cameraOccludesPlayer){
+      this.cameraOccludesPlayer=false;
+      if(this.redcat)this.redcat.visible=(this.settings.camera==='third'||!!scripted)&&this.gameplay?.scripts?.playerVisible!==false;
+    }
     if(scripted&&scripted.mode!==0&&scripted.mode!==1) {
       const host=this.gameplay.scripts;
       const route=sampleCameraRoute(scripted.points,host.time-scripted.start);
@@ -824,9 +847,16 @@ export class CastleWorld {
     if(this.settings.camera==='first'&&!offsetMode){this.camera.position.copy(p);this.camera.lookAt(p.clone().add(direction));}
     else {
       const desired=p.clone().addScaledVector(direction,offsetMode?-Math.max(1,scripted.offset[0])*32:-145);desired.y+=13;
-      const hit=this.player.noClip?{end:desired.toArray()}:this.collider.trace(p.toArray(),desired.toArray(),[-4,-4,-4],[4,4,4],this.physicalModels);
-      this.camera.position.lerp(new THREE.Vector3(...hit.end),snap?1:1-Math.exp(-12*dt));
-      this.camera.lookAt(locked?new THREE.Vector3(...targetAimPoint(locked)):p.clone().addScaledVector(direction,80));
+      let lift=0;
+      if(this.player.noClip)this.camera.position.lerp(desired,snap?1:1-Math.exp(-12*dt));
+      else{
+        const resolved=resolveThirdPersonCamera({anchor:p.toArray(),desired:desired.toArray(),previous:this.camera.position.toArray(),playerPosition:this.player.position,dt,snap,
+          trace:(a,b)=>this.collider.trace(a,b,[-4,-4,-4],[4,4,4],this.physicalModels)});
+        this.camera.position.fromArray(resolved.position);lift=resolved.lift;
+        this.cameraOccludesPlayer=resolved.hidePlayer;
+        if(resolved.hidePlayer&&this.redcat)this.redcat.visible=false;
+      }
+      this.camera.lookAt(locked?new THREE.Vector3(...targetAimPoint(locked)):p.clone().addScaledVector(direction,80*(1-lift)));
     }
   }
   updateRenderResidency(){
@@ -838,7 +868,8 @@ export class CastleWorld {
     // Retain the completed frame during an unexpected camera cut until the
     // new view is ready, instead of displaying holes or untextured walls.
     if(this.geometryStream&&!this.geometryStream.readyForView)return;
+    this.playerShadow?.update();
     this.renderer.render(this.scene,this.camera);
   }
-  dispose(){this.actorResidency?.dispose();this.geometryStream?.dispose();this.effects?.dispose();for(const resource of this.resources)resource.dispose();this.resources.clear();this.scene.clear();this.enemyDebris?.clear();this.projectileMeshes?.clear();this.hazardMeshes.clear();this.bossMachines.clear();this.spiderWebs.clear();}
+  dispose(){this.playerShadow?.dispose();this.actorResidency?.dispose();this.geometryStream?.dispose();this.effects?.dispose();for(const resource of this.resources)resource.dispose();this.resources.clear();this.scene.clear();this.enemyDebris?.clear();this.projectileMeshes?.clear();this.hazardMeshes.clear();this.bossMachines.clear();this.spiderWebs.clear();}
 }

@@ -3,6 +3,13 @@
 import {usesTouchPursuit} from './enemy-combat-native.js';
 import {sweepActor} from './player-projectiles.js';
 const distance=(a,b)=>Math.hypot(...a.map((v,i)=>v-b[i]));
+// Pending body-clearance work is not save data. Weak keys also let abandoned
+// levels/enemies be collected without retaining their waypoint lists.
+const flightSearches=new WeakMap();
+
+export function cancelBatFlightSearch(game,object) {
+  flightSearches.delete(object);game.navigation.finishSearch(object);
+}
 
 export function batOverlapsPlayer(object,player,position=object.position) {
   const mins=object.collisionMins||[-10,5,-10],maxs=object.collisionMaxs||[10,40,10];
@@ -35,28 +42,45 @@ export function clipBatPlayerContact(object,before,player,trace) {
   return true;
 }
 
-export function batOrbitTarget(object,player) {
-  const state=object.batContact,dx=object.position[0]-player[0],dz=object.position[2]-player[2],r=Math.hypot(dx,dz);
-  const nx=r>.001?dx/r:Math.sin(object.yaw||0),nz=r>.001?dz/r:Math.cos(object.yaw||0);
-  const desired=Math.max(70,Math.max(...(object.collisionMaxs||[10,40,10]).map(Math.abs))+35);
-  const radial=Math.max(-30,Math.min(45,desired-r)),side=state?.direction||1;
-  return [object.position[0]+nx*radial+nz*side*45,object.position[1],object.position[2]+nz*radial-nx*side*45];
-}
 export function batFlightTarget(game,object,target,trace) {
   if(object.enemyType!=='bat'||!trace)return target;
   const state=object.flightDetour,point=state&&game.navigation.find(state.target);
   if(point&&state.until>game.time&&distance(object.position,point.position)>5)return point.position;
-  object.flightDetour=null;
   const mins=object.collisionMins||[-10,5,-10],maxs=object.collisionMaxs||[10,40,10];
-  if(trace(object.position,target,mins,maxs).fraction>.98)return target;
+  const clear=(a,b)=>{const hit=trace(a,b,mins,maxs);return !hit.startSolid&&hit.fraction>.98;};
+  if(clear(object.position,target)){object.flightDetour=null;cancelBatFlightSearch(game,object);return target;}
+  // A failed search used to sweep every nearby waypoint again every frame.
+  // Movement/door changes still get the immediate probe above, but cannot
+  // bypass the half-second negative cache or the shared 16/48 search budget.
+  if(!point&&state?.until>game.time)return target;
+  object.flightDetour=null;
   const start=game.navigation.find(object.patrol?.start);if(!start)return target;
-  const occupied=game.objects.filter(o=>o!==object&&o.enemyType==='bat'&&o.enabled&&o.health>0);
-  const candidates=game.navigation.points.filter(p=>p.subsystem===start.subsystem&&distance(p.position,object.position)>10&&distance(p.position,object.position)<450&&
-    trace(object.position,p.position,mins,maxs).fraction>.98);
-  candidates.sort((a,b)=>cost(a)-cost(b));
-  function cost(p){return distance(p.position,target)+.35*distance(object.position,p.position)+occupied.reduce((sum,o)=>sum+(distance(o.position,p.position)<40||o.flightDetour?.target===p.id?150:0),0);}
-  const chosen=candidates[0];if(!chosen)return target;
-  object.flightDetour={target:chosen.id,until:game.time+3};return chosen.position;
+  let job=flightSearches.get(object);
+  if(job&&(job.navigation!==game.navigation||game.time-job.requestedAt>.25||game.time-job.startedAt>4||
+    distance(job.goal,target)>96||distance(job.position,object.position)>48||job.recoveries!==(object.movementRecovery?.recoveries||0)))job=null;
+  if(!job){
+    const occupied=game.objects.filter(o=>o!==object&&o.enemyType==='bat'&&o.enabled&&o.health>0);
+    const candidates=[];
+    for(const point of game.navigation.points){
+      const d=distance(point.position,object.position);
+      if(point.subsystem!==start.subsystem||d<=10||d>=450)continue;
+      const cost=distance(point.position,target)+.35*d+occupied.reduce((sum,o)=>sum+(distance(o.position,point.position)<40||o.flightDetour?.target===point.id?150:0),0);
+      candidates.push({point,cost});
+    }
+    // Test in score order: the first clear point is the same optimum as
+    // sweeping the entire list then sorting, usually with only one sweep.
+    candidates.sort((a,b)=>a.cost-b.cost);
+    job={navigation:game.navigation,candidates,index:0,goal:[...target],position:[...object.position],startedAt:game.time,recoveries:object.movementRecovery?.recoveries||0};
+    flightSearches.set(object,job);
+  }
+  job.requestedAt=game.time;
+  while(job.index<job.candidates.length&&game.navigation.takeSearchCredit(object,game.time)){
+    const chosen=job.candidates[job.index++].point;
+    if(!clear(job.position,chosen.position))continue;
+    object.flightDetour={target:chosen.id,until:game.time+3};cancelBatFlightSearch(game,object);return chosen.position;
+  }
+  if(job.index===job.candidates.length){object.flightDetour={target:null,until:game.time+.5};cancelBatFlightSearch(game,object);}
+  return target;
 }
 
 export function batSeparationTarget(game,object) {

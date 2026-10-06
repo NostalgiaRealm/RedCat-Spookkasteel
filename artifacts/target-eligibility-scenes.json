@@ -1,0 +1,703 @@
+{
+  "castle": {
+    "before": {
+      "button": "ButtonModel1",
+      "selected": "ButtonModel1",
+      "ring": true,
+      "locked": true,
+      "skill": 1,
+      "weapons": true,
+      "health": 10,
+      "lives": 3,
+      "position": [
+        -150,
+        -31.9,
+        1700
+      ],
+      "aim": [
+        -350,
+        -6.8994245529174805,
+        1073
+      ],
+      "distance": 658.6000522112682,
+      "cameraAimDot": 1,
+      "bridgeOpen": true,
+      "bridgeTime": 3,
+      "buttonModel": 47,
+      "actors": []
+    },
+    "after": {
+      "position": [
+        -150,
+        -31.95,
+        1700
+      ],
+      "health": 10,
+      "lives": 3,
+      "switched": true,
+      "count": 1,
+      "bridgeOpen": false,
+      "bridgeTime": 5.655198531684391e-15,
+      "error": null,
+      "events": [
+        {
+          "type": "attack",
+          "id": "player-projectile-1",
+          "kind": "shot",
+          "origin": [
+            -151.52381962212374,
+            -3.1116416305796193,
+            1677.4336109442072
+          ],
+          "direction": [
+            -0.3119726368567063,
+            -0.005953785607284204,
+            -0.9500724321280016
+          ]
+        },
+        {
+          "type": "attack",
+          "id": "player-projectile-2",
+          "kind": "shot",
+          "origin": [
+            -151.53329846060652,
+            -3.1116416305792356,
+            1677.4342530128324
+          ],
+          "direction": [
+            -0.3119588885259535,
+            -0.005953807572076194,
+            -0.950076946381211
+          ]
+        },
+        {
+          "type": "button",
+          "id": "ButtonModel1",
+          "modelIndex": 47,
+          "on": true
+        },
+        {
+          "type": "playerProjectileImpact",
+          "id": "player-projectile-1",
+          "kind": "shot",
+          "target": "ButtonModel1",
+          "position": [
+            -347.68501114708346,
+            -6.855244565042933,
+            1080.05
+          ],
+          "end": [
+            -347.68501114708346,
+            -6.855244565042933,
+            1080.05
+          ]
+        },
+        {
+          "type": "door",
+          "id": "DoorModel52",
+          "modelIndex": 46,
+          "open": false
+        },
+        {
+          "type": "playerProjectileImpact",
+          "id": "player-projectile-2",
+          "kind": "shot",
+          "target": "ButtonModel1",
+          "position": [
+            -349.98358244089013,
+            -6.899111220002989,
+            1073.05
+          ],
+          "end": [
+            -349.98358244089013,
+            -6.899111220002989,
+            1073.05
+          ]
+        }
+      ]
+    }
+  },
+  "graveyard": {
+    "skill": 3,
+    "weapons": true,
+    "crate": {
+      "before": {
+        "id": "AdamAnyActor72",
+        "actor": "brcrate.act",
+        "targetFlag": "1",
+        "health": 1,
+        "selected": "AdamAnyActor72",
+        "ring": true,
+        "locked": true,
+        "position": [
+          3568,
+          -63.95,
+          1590
+        ],
+        "aim": [
+          3568,
+          -46.99999809265137,
+          1489
+        ]
+      },
+      "after": {
+        "health": 0,
+        "enabled": false,
+        "position": [
+          3568,
+          -63.95,
+          1590
+        ],
+        "events": [
+          {
+            "type": "attack",
+            "id": "player-projectile-1",
+            "kind": "powerShot",
+            "origin": [
+              3573.396800382334,
+              -35.111641630579626,
+              1568.0355176047462
+            ],
+            "direction": [
+              -0.06737021214092138,
+              -0.14840665581748125,
+              -0.9866289672542353
+            ]
+          },
+          {
+            "type": "playerProjectileImpact",
+            "id": "player-projectile-1",
+            "kind": "powerShot",
+            "target": "AdamAnyActor72",
+            "position": [
+              3569.4339478181923,
+              -43.84122222492031,
+              1510
+            ],
+            "end": [
+              3569.4339478181923,
+              -43.84122222492031,
+              1510
+            ]
+          }
+        ]
+      }
+    },
+    "lights": [
+      {
+        "id": "AdamAnyActor12",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor13",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor14",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor15",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor16",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor17",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor20",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor21",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor37",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor38",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor39",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor43",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor44",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor45",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor46",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor47",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor48",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor49",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor50",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor51",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor52",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor53",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor54",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor55",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor57",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor58",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor59",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor60",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor73",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor74",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor77",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor78",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor79",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor80",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor82",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor84",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor85",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor90",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor105",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor106",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor107",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor108",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor109",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor110",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor111",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor112",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor114",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor115",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor116",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor117",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor118",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor119",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor120",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor121",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor122",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor123",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor124",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor125",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor126",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor127",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor128",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor129",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor130",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor131",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor132",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor133",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor135",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor136",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor137",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor138",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor139",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor140",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor141",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor148",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor150",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor151",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor152",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor153",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor154",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor155",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor156",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor157",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor158",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor159",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor166",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor167",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor177",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor178",
+        "actor": "htorch.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor180",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor181",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor182",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor183",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor184",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor185",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor186",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor187",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor188",
+        "actor": "batlamp.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor189",
+        "actor": "kandela.act",
+        "targetable": false
+      },
+      {
+        "id": "AdamAnyActor190",
+        "actor": "kandela.act",
+        "targetable": false
+      }
+    ],
+    "error": null,
+    "lamp": {
+      "id": "AdamAnyActor12",
+      "actor": "batlamp.act",
+      "available": true,
+      "selected": null,
+      "ring": false,
+      "locked": false,
+      "losModel": null,
+      "losFraction": 1
+    },
+    "enemy": {
+      "id": "StandingEnemy1",
+      "selected": "StandingEnemy1",
+      "ring": true,
+      "locked": true,
+      "health": 3
+    }
+  },
+  "errors": []
+}

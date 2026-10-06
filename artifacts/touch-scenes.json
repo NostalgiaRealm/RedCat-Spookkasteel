@@ -1,0 +1,250 @@
+{
+  "errors": [],
+  "checks": [
+    "mobile automatically enables touch; help and original intro work by touch",
+    "settings scroll by touch and the Off override survives reload",
+    "mobile menu remains available with controls Off; real two-second touch hold skips the authored intro",
+    "touch jump executes grounded collision movement and emits the normal jump event",
+    "touch camera, slow-walk toggle and pause/settings/cheats navigation",
+    "five simultaneous fingers move/look/jump/fire/use and release independently",
+    "no-clip descend, pointercancel and authored fixed-camera look suppression",
+    "More tray saves and restores a checkpoint directly without pause autosave",
+    "pause clears held controls; save/load work through visible touch menus",
+    "orientation and visibility loss clear input; landscape UI fits; touch never requests pointer lock",
+    "320px portrait controls fit and touch can cancel the new-adventure warning",
+    "desktop detection, persistent forced On and Electron auto suppression"
+  ],
+  "skipMilliseconds": 1994.2000000001863,
+  "portrait": {
+    "viewport": [
+      390,
+      844
+    ],
+    "overflow": false,
+    "controls": [
+      {
+        "id": "touch-move",
+        "x": 14,
+        "y": 690,
+        "width": 132,
+        "height": 132,
+        "hidden": false
+      },
+      {
+        "id": "touch-jump",
+        "x": 324,
+        "y": 770,
+        "width": 52,
+        "height": 52,
+        "hidden": false
+      },
+      {
+        "id": "touch-attack",
+        "x": 265,
+        "y": 770,
+        "width": 52,
+        "height": 52,
+        "hidden": false
+      },
+      {
+        "id": "touch-use",
+        "x": 206,
+        "y": 770,
+        "width": 52,
+        "height": 52,
+        "hidden": false
+      },
+      {
+        "id": "touch-walk",
+        "x": 206,
+        "y": 711,
+        "width": 52,
+        "height": 52,
+        "hidden": false
+      },
+      {
+        "id": "touch-camera",
+        "x": 265,
+        "y": 711,
+        "width": 52,
+        "height": 52,
+        "hidden": false
+      },
+      {
+        "id": "game-menu",
+        "x": 157,
+        "y": 72,
+        "width": 76,
+        "height": 44,
+        "hidden": false
+      }
+    ]
+  },
+  "multitouch": {
+    "held": {
+      "forward": 0.8858315352801555,
+      "right": 0.4640069946705576,
+      "turn": 0,
+      "jump": true,
+      "descend": false,
+      "walk": false,
+      "attack": true,
+      "use": true
+    },
+    "before": {
+      "position": [
+        -1332,
+        -132.65205812406322,
+        2280
+      ],
+      "yaw": -3.141592653589793,
+      "pitch": 0.16
+    },
+    "after": {
+      "position": [
+        -1384.6863154756525,
+        -54.9292264906437,
+        2394.3797374960122
+      ],
+      "yaw": -3.0715926535897933,
+      "pitch": 0.20400000000000001,
+      "attacks": 1
+    }
+  },
+  "landscape": {
+    "viewport": [
+      844,
+      390
+    ],
+    "overflow": false,
+    "controls": [
+      {
+        "id": "touch-move",
+        "x": 12,
+        "y": 266,
+        "width": 112,
+        "height": 112,
+        "hidden": false
+      },
+      {
+        "id": "touch-jump",
+        "x": 786,
+        "y": 332,
+        "width": 46,
+        "height": 46,
+        "hidden": false
+      },
+      {
+        "id": "touch-attack",
+        "x": 734,
+        "y": 332,
+        "width": 46,
+        "height": 46,
+        "hidden": false
+      },
+      {
+        "id": "touch-use",
+        "x": 682,
+        "y": 332,
+        "width": 46,
+        "height": 46,
+        "hidden": false
+      },
+      {
+        "id": "touch-descend",
+        "x": 786,
+        "y": 280,
+        "width": 46,
+        "height": 46,
+        "hidden": false
+      },
+      {
+        "id": "touch-camera",
+        "x": 734,
+        "y": 280,
+        "width": 46,
+        "height": 46,
+        "hidden": false
+      },
+      {
+        "id": "game-menu",
+        "x": 384,
+        "y": 8,
+        "width": 76,
+        "height": 44,
+        "hidden": false
+      }
+    ]
+  },
+  "compatibilityMouse": [
+    {
+      "fromTouch": true,
+      "attack": false
+    }
+  ],
+  "small-portrait": {
+    "viewport": [
+      320,
+      568
+    ],
+    "overflow": false,
+    "controls": [
+      {
+        "id": "touch-move",
+        "x": 12,
+        "y": 444,
+        "width": 112,
+        "height": 112,
+        "hidden": false
+      },
+      {
+        "id": "touch-jump",
+        "x": 262,
+        "y": 510,
+        "width": 46,
+        "height": 46,
+        "hidden": false
+      },
+      {
+        "id": "touch-attack",
+        "x": 210,
+        "y": 510,
+        "width": 46,
+        "height": 46,
+        "hidden": false
+      },
+      {
+        "id": "touch-use",
+        "x": 158,
+        "y": 510,
+        "width": 46,
+        "height": 46,
+        "hidden": false
+      },
+      {
+        "id": "touch-descend",
+        "x": 262,
+        "y": 458,
+        "width": 46,
+        "height": 46,
+        "hidden": false
+      },
+      {
+        "id": "touch-camera",
+        "x": 210,
+        "y": 458,
+        "width": 46,
+        "height": 46,
+        "hidden": false
+      },
+      {
+        "id": "game-menu",
+        "x": 122,
+        "y": 72,
+        "width": 76,
+        "height": 44,
+        "hidden": false
+      }
+    ]
+  }
+}

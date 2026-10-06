@@ -40,7 +40,7 @@ test('pursuit routes around a wall on authored points and resumes directly when 
 test('touch enemy chooses MoveCloser as well as both timed circling directions',()=>{
  const modes=new Set();for(let i=0;i<120;i++){
   const result=chooseTouchPursuit({id:`bat${i}`});modes.add(`${result.mode}:${result.mode==='circle'?result.direction:0}`);
-  assert.equal(result.wait,1);assert.equal(result.remaining,result.mode==='closer'?0:2);
+  assert.equal(result.wait,0);assert.equal(result.remaining,result.mode==='closer'?0:2);
  }
  assert.deepEqual([...modes].sort(),['circle:-1','circle:1','closer:0']);
 });
@@ -49,8 +49,8 @@ test('guardian approaches instead of causing distant melee damage, then attacks 
  const g=new Gameplay(level([enemy(10)])),o=g.objects[0];
  o.collisionMins=[-12,0,-12];o.collisionMaxs=[12,45,12];
  tick(g,.5,[0,0,140]);assert.equal(g.state.health,10);assert.ok(o.position[2]>0);assert.equal(o.pendingAttack,null);
- tick(g,2,[0,0,140]);assert.ok(g.state.health<10);assert.ok(o.position[2]<=117.01);assert.ok(o.batContact);
- const restored=new Gameplay(g.level,{save:g.snapshot()});assert.deepEqual(restored.objects[0].batContact,o.batContact);
+ tick(g,2,[0,0,140]);assert.ok(g.state.health<10);assert.ok(o.position[2]<=117.01);assert.ok(o.attackTimer>0);
+ const restored=new Gameplay(g.level,{save:g.snapshot()});assert.equal(restored.objects[0].attackTimer,o.attackTimer);
 });
 
 test('knight can hit during the end of its active strike window, only once',()=>{

@@ -48,9 +48,11 @@ also proves ordinary patrol does not search while remembered-target chasing can.
 The existing actual-map frog patrol/save-recovery scene is checked because this
 change directly touches the shared patrol movement path.
 
-Chunked rendering remains an available future optimization. This regression was
-CPU routing work; changing world visibility is unnecessary for this fix and
-would not remove the repeated searches.
+This regression was CPU routing work; changing world visibility alone would
+not remove the repeated searches. [Chunked world streaming](world-streaming.md)
+has since been implemented separately, including residency hysteresis to avoid
+repeated uploads while turning or revisiting nearby areas. It is no longer an
+unimplemented optimization; the navigation budgets below remain necessary.
 
 ## Follow-up: activated zombies still caused hitches
 

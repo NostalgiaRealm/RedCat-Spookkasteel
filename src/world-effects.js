@@ -13,6 +13,10 @@ import { DecalEffects, decalTextureKey } from './decal-effects.js';
 import { nativeCoronaRadius, saveBeaconUv, CoronaVisibilityCache } from './presentation-native.js';
 import { impactLight } from './projectile-impacts.js';
 import { patchWorldLightShader } from './world-lighting-material.js';
+import { PlayerWorldLight } from './player-world-light.js';
+import {TorchFlames} from './torch-flames.js';
+import {WorldLightShadows} from './world-light-shadows.js';
+import {NativeSpoutEffect} from './spout-effects.js';
 
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
 const number=(e,key,fallback=0)=>Number.isFinite(Number(e[key]))&&e[key]!==''?Number(e[key]):fallback;
@@ -57,28 +61,7 @@ export function saveBeaconGeometry(origin,age,ceilingY=origin[1]+200) {
   return {rays,glowRadius,crystal};
 }
 
-function random(seed) {let s=seed>>>0;return ()=>{s=(Math.imul(s,1664525)+1013904223)>>>0;return s/4294967296;};}
 function hash(name) {let h=2166136261;for(const c of name)h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0;}
-
-export function spoutParticle(entity,origin,direction,seed,birth=0) {
-  const rnd=random(seed),pick=(a,b)=>mix(number(entity,a),number(entity,b),rnd());
-  const axis=new THREE.Vector3(...direction).normalize();if(axis.lengthSq()<.1)axis.set(0,1,0);
-  const tangent=new THREE.Vector3(Math.abs(axis.y)<.95?0:1,Math.abs(axis.y)<.95?1:0,0).cross(axis).normalize();
-  const side=new THREE.Vector3().crossVectors(axis,tangent),angle=pick('AngleMin','AngleMax')*Math.PI/180,azimuth=rnd()*Math.PI*2;
-  const radius=Math.sqrt(rnd())*number(entity,'StartRadius'),offsetAngle=rnd()*Math.PI*2;
-  const velocity=axis.clone().multiplyScalar(Math.cos(angle)).addScaledVector(tangent,Math.sin(angle)*Math.cos(azimuth)).addScaledVector(side,Math.sin(angle)*Math.sin(azimuth)).multiplyScalar(pick('SpeedMin','SpeedMax'));
-  const position=new THREE.Vector3(...origin).addScaledVector(tangent,radius*Math.cos(offsetAngle)).addScaledVector(side,radius*Math.sin(offsetAngle));
-  return {position:position.toArray(),velocity:velocity.toArray(),life:Math.max(.01,pick('LifeSecondsMin','LifeSecondsMax')),birth,gravity:number(entity,'Gravity'),seed};
-}
-
-export function sampleParticle(entity,particle,time) {
-  const age=Math.max(0,time-particle.birth),t=clamp(age/particle.life);
-  const from=color(entity.ColourFrom),to=color(entity.ColourTo);
-  return {position:particle.position.map((v,i)=>v+particle.velocity[i]*age-(i===1?.5*particle.gravity*age*age:0)),
-    size:number(entity,'Scale',1)*mix(number(entity,'SizePercentageStart',100),number(entity,'SizePercentageEnd',100),t)/100,
-    opacity:mix(number(entity,'AlphaPercentageStart',100),number(entity,'AlphaPercentageEnd',0),t)/100,
-    color:from.map((v,i)=>mix(v,to[i],entity.ColourCycling==='1'?t:0)),alive:age<particle.life};
-}
 
 // All flames with the same artwork share one draw call; no per-particle lights.
 class BillboardBatch {
@@ -91,18 +74,45 @@ class BillboardBatch {
     this.colors=new THREE.InstancedBufferAttribute(new Float32Array(capacity*4),4).setUsage(THREE.DynamicDrawUsage);
     this.rotations=new THREE.InstancedBufferAttribute(new Float32Array(capacity),1).setUsage(THREE.DynamicDrawUsage);
     this.diagonalScales=new THREE.InstancedBufferAttribute(new Float32Array(capacity*2),2).setUsage(THREE.DynamicDrawUsage);
+    this.nativeSpouts=new THREE.InstancedBufferAttribute(new Float32Array(capacity),1).setUsage(THREE.DynamicDrawUsage);
+    geometry.setAttribute('effectNativeSpout',this.nativeSpouts);
     geometry.setAttribute('effectDiagonal',this.diagonalScales);geometry.setAttribute('effectRotation',this.rotations);
     geometry.setAttribute('effectPosition',this.positions);geometry.setAttribute('effectSize',this.sizes);geometry.setAttribute('effectColor',this.colors);geometry.instanceCount=0;
     const material=world.track(new THREE.ShaderMaterial({uniforms:{map:{value:map}},transparent:true,depthWrite:false,depthTest,blending:additive?THREE.AdditiveBlending:THREE.NormalBlending,
-      vertexShader:`attribute vec3 effectPosition;attribute vec2 effectSize;attribute vec4 effectColor;attribute float effectRotation;attribute vec2 effectDiagonal;varying vec2 effectUv;varying vec4 effectTint;void main(){effectUv=uv;effectTint=effectColor;vec4 p=modelViewMatrix*vec4(effectPosition,1.);float c=cos(effectRotation),s=sin(effectRotation);p.xy+=mat2(c,s,-s,c)*(position.xy*effectSize*(position.x*position.y<0.?effectDiagonal.x:effectDiagonal.y));gl_Position=projectionMatrix*p;}`,
+      vertexShader:`attribute vec3 effectPosition;attribute vec2 effectSize;attribute vec4 effectColor;attribute float effectRotation;attribute vec2 effectDiagonal;attribute float effectNativeSpout;varying vec2 effectUv;varying vec4 effectTint;
+void main(){
+  effectUv=uv;effectTint=effectColor;vec4 p;
+  if(effectNativeSpout>.5){
+    // CRcParticleSystem 0x468123/0x477d50 faces each particle toward the
+    // camera position, independently of camera roll or its view direction.
+    vec3 toward=cameraPosition-effectPosition;
+    if(dot(toward,toward)<1.e-12)toward=vec3(0.,0.,1.);
+    vec3 reference=vec3(0.,toward.y<0.?-1.:1.,0.);
+    if(all(lessThanEqual(abs(toward-reference),vec3(.1))))reference=vec3(0.,0.,toward.z<0.?-1.:1.);
+    vec3 right=cross(toward,reference);
+    // Native's raw-vector parallel check misses a camera exactly above
+    // the emitter at other distances; keep that edge case finite.
+    if(dot(right,right)<1.e-12)right=cross(toward,vec3(0.,0.,1.));
+    right=normalize(right);vec3 up=normalize(cross(toward,right));
+    if(toward.y>0.){right=-right;up=-up;}
+    vec3 worldPosition=effectPosition+right*(position.x*effectSize.x)+up*(position.y*effectSize.y)+vec3(position.xy,0.);
+    p=viewMatrix*vec4(worldPosition,1.);
+    // Native's top-left UV is (1,0); these maps upload with flipY=true.
+    effectUv=vec2(1.-uv.x,uv.y);
+  }else{
+    p=modelViewMatrix*vec4(effectPosition,1.);float c=cos(effectRotation),s=sin(effectRotation);
+    p.xy+=mat2(c,s,-s,c)*(position.xy*effectSize*(position.x*position.y<0.?effectDiagonal.x:effectDiagonal.y));
+  }
+  gl_Position=projectionMatrix*p;
+}`,
       fragmentShader:`uniform sampler2D map;varying vec2 effectUv;varying vec4 effectTint;void main(){gl_FragColor=texture2D(map,effectUv)*effectTint;if(gl_FragColor.a<.003)discard;
 #include <tonemapping_fragment>
 #include <colorspace_fragment>
 }` }));
     this.mesh=new THREE.Mesh(geometry,material);this.mesh.frustumCulled=false;this.mesh.renderOrder=2;world.scene.add(this.mesh);
   }
-  add(position,width,height,tint,opacity,rotation=0,diagonalScale=[1,1]) {if(this.count>=this.capacity||opacity<=0)return;const i=this.count++;this.positions.setXYZ(i,...position);this.sizes.setXY(i,width,height);this.colors.setXYZW(i,...tint,clamp(opacity));this.rotations.setX(i,rotation);this.diagonalScales.setXY(i,...diagonalScale);}
-  flush(){this.mesh.geometry.instanceCount=this.count;this.mesh.visible=this.count>0;for(const a of [this.positions,this.sizes,this.colors,this.rotations,this.diagonalScales])a.needsUpdate=true;}
+  add(position,width,height,tint,opacity,rotation=0,diagonalScale=null,nativeSpout=0) {if(this.count>=this.capacity||opacity<=0)return;const i=this.count++;this.positions.setXYZ(i,...position);this.sizes.setXY(i,width,height);this.colors.setXYZW(i,...tint,clamp(opacity));this.rotations.setX(i,rotation);this.diagonalScales.setXY(i,diagonalScale?.[0]??1,diagonalScale?.[1]??1);this.nativeSpouts.setX(i,nativeSpout);}
+  flush(){this.mesh.geometry.instanceCount=this.count;this.mesh.visible=this.count>0;for(const a of [this.positions,this.sizes,this.colors,this.rotations,this.diagonalScales,this.nativeSpouts])a.needsUpdate=true;}
 }
 
 class BeamBatch {
@@ -140,7 +150,8 @@ export class WorldEffects {
   static async create(world,gameplay) {
     const response=await fetch('assets/effects/manifest.json');if(!response.ok)throw new Error('Ontbrekende originele effecten');
     const manifest=await response.json(),effects=new WorldEffects(world,gameplay,manifest);
-    const textures=await Promise.all(Object.entries(manifest.textures).map(async([key,entry])=>{
+    // RedCat's projected ground shadow owns its texture and quad separately.
+    const textures=await Promise.all(Object.entries(manifest.textures).filter(([key])=>key!=='rcsdw.bmp|rcsdw_a.bmp').map(async([key,entry])=>{
       const map=await world.texture('assets/effects/'+entry.file);
       // Blast UVs are copied from Genesis: V=1 is the translucent bottom
       // of kaboom_a at the red tail, V=0 the bright yellow head. Billboard
@@ -171,6 +182,7 @@ export class WorldEffects {
   }
   constructor(world,gameplay,manifest) {
     this.world=world;this.gameplay=gameplay;this.manifest=manifest;this.entries=new Map();this.batches=new Map();this.beamBatches=new Map();this.beams=[];this.lights=[];
+    this.playerLight=new PlayerWorldLight(world);
     this.coronaVisibility=new CoronaVisibilityCache();this.cameraForward=new THREE.Vector3();
     for(const object of gameplay.objects)if(EFFECT_CLASSES.has(object.entity.classname)) {
       const state={object,active:false,age:Math.max(0,object.effectAge||0),particles:[],nextSpawn:0,serial:0,opacity:0};
@@ -181,8 +193,10 @@ export class WorldEffects {
       }
       this.entries.set(object.id,state);
     }
+    this.torches=new TorchFlames(world,gameplay);
+    for(const object of this.torches.synthetic)this.entries.set(object.id,{object,active:false,age:0,particles:[],nextSpawn:0,serial:0,opacity:0});
   }
-  position(object) {const pose=this.gameplay.scripts?.modelTransforms.get(object.modelIndex);return pose?transformMotionPoint(object.position,pose.origin,pose):object.position;}
+  position(object) {const torch=this.torches.position(object);if(torch)return torch;const pose=this.gameplay.scripts?.modelTransforms.get(object.modelIndex);return pose?transformMotionPoint(object.position,pose.origin,pose):object.position;}
   endpoint(name,fallback) {const object=this.gameplay.find(name)[0];return object?this.position(object):fallback;}
   attachLights() {
     // Fixed slots avoid shader recompiles as Davi-Script switches lamps on/off.
@@ -190,6 +204,20 @@ export class WorldEffects {
     const atlas=this.world.level?.mesh.lightmap;
     this.lightCount={value:0};this.lightUniforms={effectLightPosition:{value:this.lightPositions},effectLightColor:{value:this.lightColors},
       effectLightRadius:{value:this.lightRadii},effectLightCount:this.lightCount,effectAtlasSize:{value:new THREE.Vector2(atlas?.width||1,atlas?.height||1)}};
+    const shadowSources=[...this.entries.values()].filter(({object})=>object.entity.classname==='DynamicLightEntity'&&number(object.entity,'CastShadow')!==0);
+    if(shadowSources.length&&this.world.worldLightmapMetadata&&atlas) {
+      this.worldShadows=new WorldLightShadows(this.world.level.collision,this.world.worldLightmapMetadata,atlas.width,atlas.height);
+      this.shadowTexture=new THREE.DataTexture(this.worldShadows.data,atlas.width,atlas.height,THREE.RedFormat,THREE.UnsignedByteType);
+      this.shadowTexture.name='native-world-light-obstruction';
+      this.shadowTexture.minFilter=this.shadowTexture.magFilter=THREE.NearestFilter;
+      this.shadowTexture.generateMipmaps=false;this.shadowTexture.flipY=false;
+      this.lightShadowBits=new Float32Array(8);this.shadowCount={value:0};
+      Object.assign(this.lightUniforms,{effectShadowAtlas:{value:this.shadowTexture},effectLightShadowBit:{value:this.lightShadowBits},effectShadowCount:this.shadowCount});
+      // Prime the authored static lamps while loading, not on first approach.
+      this.worldShadows.update(shadowSources.slice(0,8).map(({object})=>({castShadow:true,shadowKey:object.id,
+        position:this.position(object),radius:Math.max(number(object.entity,'RadiusA'),number(object.entity,'RadiusZ'))})));
+      this.shadowTexture.needsUpdate=true;
+    }
     this.pointLights=Array.from({length:8},()=>{const light=new THREE.PointLight(0,0,1,1);this.world.scene.add(light);return light;});
     this.patchedMaterials=[];
     for(const meshes of this.world.modelMeshes?.values()||[])for(const mesh of meshes) {
@@ -200,7 +228,7 @@ export class WorldEffects {
         previous.call(material,shader,renderer);
         patchWorldLightShader(shader,this.lightUniforms);
       };
-      material.customProgramCacheKey=()=>cacheKey.call(material)+'-original-bsp-lightmaps-v2';material.needsUpdate=true;
+      material.customProgramCacheKey=()=>cacheKey.call(material)+'-original-bsp-lightmaps-v3'+(this.worldShadows?'-shadows':'');material.needsUpdate=true;
     }
   }
   update(dt) {
@@ -208,6 +236,7 @@ export class WorldEffects {
     for(const batch of [...this.batches.values(),...this.beamBatches.values()])batch.count=0;
     if(this.coronaBatch)this.coronaBatch.count=0;
     const eye=this.world.camera.position.toArray(),direction=(this.world.camera.getWorldDirection?.(this.cameraForward)||this.cameraForward.set(0,0,-1)).toArray(),coronas=[];
+    this.torches.update(eye);
     for(const state of this.entries.values())if(state.object.entity.classname==='EffectCoronaEntity') {
       const {object}=state,origin=this.position(object);
       coronas.push({id:object.id,origin,enabled:object.enabled!==false&&object.visible!==false,
@@ -218,7 +247,7 @@ export class WorldEffects {
     for(const state of this.entries.values()) {
       const {object}=state,e=object.entity;
       if(e.classname==='Fairy'){this.updateFairy(state,dt);continue;}
-      const enabled=object.enabled!==false&&object.visible!==false,previousAge=state.age;
+      const enabled=object.enabled!==false&&object.visible!==false&&this.torches.enabled(object),previousAge=state.age;
       if(enabled&&!state.active){state.nextSpawn=state.clock||0;state.serial=0;}
       if(!enabled&&state.active){state.age=0;state.nextSpawn=0;object.effectAge=0;if(e.classname==='SavePoint')this.beaconSound(object,true);}
       if(!enabled&&e.classname==='TeleporterFX')this.teleporterLoop(state,false);
@@ -253,9 +282,12 @@ export class WorldEffects {
         const f=lightFunction(e.ColorFunction,state.age,number(e,'ColorTime'),e.ColorInterpolateValues==='1',e.StartZValues==='1'?1:0);
         const r=lightFunction(e.RadiusFunction,state.age,number(e,'RadiusTime'),e.RadiusInterpolateValues==='1',e.StartZValues==='1'?1:0);
         const a=color(e.ColorA),z=color(e.ColorZ);
-        this.lights.push({position:origin,color:a.map((v,i)=>mix(v,z[i],f)),radius:mix(number(e,'RadiusA'),number(e,'RadiusZ'),r),castShadow:number(e,'CastShadow')!==0});
+        const lamp={position:origin,color:a.map((v,i)=>mix(v,z[i],f)),radius:mix(number(e,'RadiusA'),number(e,'RadiusZ'),r),castShadow:number(e,'CastShadow')!==0};
+        if(lamp.castShadow){lamp.shadowKey=object.id;lamp.shadowRadius=Math.max(number(e,'RadiusA'),number(e,'RadiusZ'));}
+        this.lights.push(lamp);
       }
     }
+    this.lights.push(...this.torches.lights);
     this.destructibles?.update(dt,this.batches);
     this.enemyDeaths?.update(this.batches);
     this.enemyCombat?.update(this.batches);
@@ -271,11 +303,21 @@ export class WorldEffects {
     for(const impact of this.gameplay.projectileImpacts||[]) {
       const light=impactLight(impact,this.gameplay.time);if(light)this.lights.push(light);
     }
+    const playerLight=this.playerLight.update();if(playerLight)this.lights.push(playerLight);
     this.world.syncActorLighting?.(this.lights);
     for(const batch of [...this.batches.values(),...this.beamBatches.values()])batch.flush();
     this.coronaBatch?.flush();
-    const camera=this.world.camera.position,nearest=this.lights.filter(lamp=>lamp.radius>0).sort((a,b)=>camera.distanceToSquared(new THREE.Vector3(...a.position))-camera.distanceToSquared(new THREE.Vector3(...b.position))).slice(0,8);
+    // Keep the player's small pool of light stable in busy rooms, using one
+    // of the existing eight slots rather than increasing shader/light cost.
+    const camera=this.world.camera.position,nearest=this.lights.filter(lamp=>lamp.radius>0).sort((a,b)=>
+      Number(b===playerLight)-Number(a===playerLight)||camera.distanceToSquared(new THREE.Vector3(...a.position))-camera.distanceToSquared(new THREE.Vector3(...b.position))).slice(0,8);
     if(this.lightCount)this.lightCount.value=nearest.length;
+    if(this.worldShadows) {
+      if(this.worldShadows.update(nearest))this.shadowTexture.needsUpdate=true;
+      let count=0;
+      for(let i=0;i<8;i++){const bit=this.worldShadows.bit(nearest[i]);this.lightShadowBits[i]=bit;if(bit)count++;}
+      this.shadowCount.value=count;
+    }
     for(let i=0;i<8;i++){const lamp=nearest[i],light=this.pointLights[i];if(!light)continue;this.lightRadii[i]=lamp?.radius||0;light.intensity=lamp?1:0;if(lamp){this.lightPositions[i].fromArray(lamp.position);this.lightColors[i].fromArray(lamp.color);light.position.copy(this.lightPositions[i]);light.color.copy(this.lightColors[i]).convertSRGBToLinear();light.distance=lamp.radius;}}
   }
   updateRewards(camera) {
@@ -289,17 +331,17 @@ export class WorldEffects {
     }
   }
   updateSpout(state,origin,dt) {
-    const e=state.object.entity,key=textureKey(e.BitmapFileName,e.BitmapAlphaFileName),batch=this.batches.get(key),entry=this.manifest.textures[key];if(!batch||!entry)return;
-    const duration=number(e,'LifeTimeSecs'),spawning=state.active&&(!duration||state.age<=duration);
-    const clock=state.clock=(state.clock||0)+dt;
-    // Capped by time and authored particle lifetime, rather than frame rate.
-    let guard=0;
-    while(spawning&&state.nextSpawn<=clock&&guard++<128) {
-      const seed=hash(state.object.id)+state.serial++,rnd=random(seed),delay=mix(number(e,'DelaySecondsMin',.1),number(e,'DelaySecondsMax',.3),rnd());
-      const target=this.endpoint(e.SpoutDirection,[origin[0],origin[1]+1,origin[2]]),direction=target.map((v,i)=>v-origin[i]);
-      state.particles.push(spoutParticle(e,origin,direction,seed,state.nextSpawn));state.nextSpawn+=Math.max(.01,delay);
-    }
-    state.particles=state.particles.filter(p=>{const sample=sampleParticle(e,p,clock);if(sample.alive)batch.add(sample.position,entry.width*sample.size,entry.height*sample.size,sample.color,sample.opacity);return sample.alive;});
+    const e=state.object.entity,key=textureKey(e.BitmapFileName,e.BitmapAlphaFileName),batch=this.batches.get(key);
+    if(!batch)return;
+    const enableSerial=state.object.spoutEnableSerial||0;
+    if(dt>0&&enableSerial!==(state.spoutEnableSerial||0)){state.age=dt;state.object.effectAge=dt;state.spoutEnableSerial=enableSerial;}
+    if(!state.spout)state.spout=new NativeSpoutEffect(e,{seed:hash(state.object.id),age:Math.max(0,state.age-(state.active?dt:0))});
+    const target=this.endpoint(e.SpoutDirection,[origin[0],origin[1]+1,origin[2]]);
+    const direction=this.torches.direction(state.object)||target.map((v,i)=>v-origin[i]);
+    state.spout.update(dt,origin,direction,state.active,enableSerial);
+    state.clock=state.spout.time;state.particles=state.spout.particles;
+    for(const p of state.particles)batch.add(p.position,p.size,p.size,state.spout.tint,p.opacity,0,null,1);
+    if(dt>0&&state.active&&state.spout.finished&&!state.particles.length)state.object.enabled=state.active=false;
   }
   updateTeleporter(state,origin,dt) {
     const {object}=state,e=object.entity;
@@ -435,6 +477,7 @@ export class WorldEffects {
     }
     this.destructibles?.dispose();
     this.decals?.dispose();
+    this.shadowTexture?.dispose();
     for(const {material,previous,cacheKey}of this.patchedMaterials||[]){material.onBeforeCompile=previous;material.customProgramCacheKey=cacheKey;material.needsUpdate=true;}
     for(const batch of [...this.batches.values(),...this.beamBatches.values()])batch.mesh.removeFromParent();
     this.coronaBatch?.mesh.removeFromParent();

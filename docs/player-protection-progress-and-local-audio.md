@@ -6,8 +6,10 @@ These changes are source-only. No packages or website deployment are generated.
 
 `CastleWorld.attachGameplay` supplies `Gameplay.damage` with the current player
 controller's no-clip flag. Every damage route through the gameplay damage entry
-point is ignored during free flight, including enemies, projectiles, beams,
-liquids, mushroom trails and scripted `KillPlayer`. Ignored damage causes no hurt
+point is ignored during free flight, including enemies, projectile bodies,
+beams, liquids and scripted `KillPlayer`. Mushroom ribbons are visual only:
+the native `TrailDamage` field has no hurt consumer; direct mushroom-body
+contact supplies their damage. Ignored damage causes no hurt
 reaction, death, lost life or new hit cooldown. Turning no-clip off immediately
 restores ordinary damage; a blocked safe-exit attempt keeps both flight and
 protection enabled. Loading a save with no-clip enabled also retains protection.
@@ -24,6 +26,12 @@ chapter and the unlock-all-levels cheat preserve the learned mask. Supplies and
 unlock cheats do not themselves award skills. A valid older adventure checkpoint
 migrates its saved skill mask; malformed masks or checkpoints are ignored.
 
+`Start opnieuw` is the intentional exception: a successfully loaded new
+adventure clears the earned mask and starts the Forest with ordinary shooting
+and jumping. Cancelling the confirmation or failing to load the new adventure
+preserves the previous progress. Chapter replay and the unlock cheat do not
+perform this reset.
+
 Temporary scripted weapon restrictions remain under script control. The campaign
 mask is applied at chapter entry, not forcibly reapplied every frame.
 See [native player abilities](player-abilities-native.md) for the actual reward
@@ -37,16 +45,21 @@ second stopping mechanism. The remake localizes these positioned effects as
 well as spatial sounds. Unpositioned pickup/UI sounds, music and dialogue keep
 their existing routing.
 
-- Castle effects retain their authored gain within 5 metres, smoothly fade
-  between 5 and 25 metres, and are silent beyond 25 metres. Moving sound-source
+- Castle effects retain their authored gain within 17.55 metres, smoothly fade
+  between 17.55 and 87.75 metres, and are silent beyond 87.75 metres. Moving sound-source
   callbacks continue to use their updated positions.
 - Tower `LV4snd16.WAV` is positively identified by nine `s_torch01`…`s_torch09`
   emitters plus the cauldron-area `vuur` emitter. Its gain is multiplied by .65,
-  then fades between 3 and 18 metres and is silent beyond 18 metres. With the
+  then fades between 10.53 and 63.18 metres and is silent beyond 63.18 metres. With the
   existing native logarithmic conversion this is about half the previous
   close-up amplitude. `LV4snd15.WAV` is the separately authored `bubbles` sound
   and is unchanged.
-- Existing cave loop ranges remain 5–30 metres.
+- Cave loops fade between 17.55 and 105.3 metres.
+
+These are the current `src/ambience-ranges.js` values after the requested
+hearing-range increases. They supersede the original local choices of 5–25 m,
+3–18 m and 5–30 m respectively. The normal five-level minimum distance is now
+175.5 m instead of the native 50 m; its maximum-distance factor remains 150.
 
 Distances use 32 engine units per metre and the existing audio listener. Range
 changes preserve original WAV files and their per-file, script, channel and

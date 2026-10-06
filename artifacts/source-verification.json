@@ -1,0 +1,31 @@
+{
+  "verifiedAt": "2026-09-22T10:38:34.065661+00:00",
+  "kind": "source verification, not a release build",
+  "packagesRegenerated": false,
+  "version": "0.2.5",
+  "javascriptTests": 258,
+  "pythonTests": 39,
+  "browserSmoke": "passed: five levels, resolutions, saves, menus and intro",
+  "scriptScenes": "passed",
+  "nativeLinux": "passed: source Electron, all integration scenes, native pixels/compositing and resolution changes",
+  "nativeWindows": "not run; existing package preserved",
+  "buildInstructions": "docs/building.md",
+  "originalExecutableSha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5",
+  "packages": [
+    {
+      "path": "dist/linux-unpacked/resources/app.asar",
+      "sha256": "b6965f99b612181e660addb1afadaff149086ab8896f90c7312542f97a6f9852",
+      "unchanged": true
+    },
+    {
+      "path": "dist/win-unpacked/resources/app.asar",
+      "sha256": "b6965f99b612181e660addb1afadaff149086ab8896f90c7312542f97a6f9852",
+      "unchanged": true
+    }
+  ],
+  "limits": [
+    "No full campaign playthrough or frame-by-frame native comparison",
+    "Portal particle trajectories/density and some audio stages remain approximate",
+    "See docs/gameplay-reconstruction.md and native evidence notes for other fidelity limits"
+  ]
+}

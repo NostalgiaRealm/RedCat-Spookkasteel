@@ -4,7 +4,7 @@ The source is the installed `RcHcGame.dat`, its x86 disassembly, and the origina
 
 ## Fairy distance
 
-`idlefee1.wav` keeps its existing authored gain and active/deactivated lifetime. Its entire distance curve is expanded by exactly three: castle near/far 5/25 m becomes 15/75 m, cave 5/30 m becomes 15/90 m, and the other levels multiply the native minimum radius by three (which also scales the maximum). This is the requested mix adjustment, not a claim about original native attenuation.
+`idlefee1.wav` keeps its existing authored gain and active/deactivated lifetime. Its entire distance curve is expanded by exactly three. After the later requested ambience-range increases, the current castle near/far 17.55/87.75 m becomes 52.65/263.25 m, and cave 17.55/105.3 m becomes 52.65/315.9 m. The other levels multiply the current configured minimum radius by three, also scaling the maximum. `src/ambience-ranges.js` contains these intentional mix adjustments; they are not claims about original native attenuation.
 
 Only this fairy loop uses RedCat's position as its listener. Scripted camera moves can no longer push its gain down while RedCat remains beside the activated lantern. Other effects keep their existing camera listener and ranges.
 
@@ -24,7 +24,7 @@ Authored `DoorBeforeOpenCommand`/`DoorBeforeCloseCommand` sounds take precedence
 
 Native TeleporterFX constructs `Magiev18.wav` at `0x4712b0` (resource `0x6b86f8`) and `Magiev1.wav` at `0x471400` (`0x6b86e8`). Its constructor stores them in sound slots 0 and 1 at `0x47215a`/`0x47216d`. The indexed sound player is `0x4763c0`: Show plays slot 0 at `0x4758fb`, and the final particle stage plays slot 1 at `0x475976`. These are distinct startup and terminal recordings. Native actor Hide/Show (`0x502680`/`0x502710`) do not themselves choose a sound.
 
-The existing pad startup `Magiev18.wav` remains. A fresh scripted TeleporterFX.Show arms its terminal cue; the corresponding actual RedCat disappearance or reappearance emits `Magiev1.wav` once at that pad. This aligns the native terminal sample to the requested actor transition instead of duplicating startup audio. It does not recreate the native terminal sound's dynamic volume envelope.
+The existing pad startup `Magiev18.wav` remains. A fresh scripted TeleporterFX.Show arms its terminal cue; the corresponding actual RedCat disappearance or reappearance emits `Magiev1.wav` once at that pad. This aligns the native terminal sample to the requested actor transition instead of duplicating startup audio. The later [portal audio audit](portal-audio-native.md) found no per-frame terminal gain envelope in the native portal class. The complete terminal WAV now finishes beyond the visual flash; the slow decoded loop and authored playback rates are also implemented. If no matching actor transition consumed the cue, the terminal visual stage emits it once as a fallback.
 
 Both the graveyard's source-pad Shows in trigger/button handlers and the tower's Shows inside controller motions are covered. There are six graveyard journeys (including the Easter-egg return) and five tower journeys. Repeated visibility calls do not create extra sounds. Saving between Show and the transition preserves the pending cue; skipping a cutscene suppresses it while completing the original teleport.
 

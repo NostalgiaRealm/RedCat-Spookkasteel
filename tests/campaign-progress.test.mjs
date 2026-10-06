@@ -33,8 +33,8 @@ test('valid legacy checkpoints preserve reached chapters and completion without 
 
 test('earned progress survives earlier replays, save overwrites, difficulty changes and malformed records',()=>{
   const earned={version:1,highestUnlocked:4};
-  for(const checkpoint of [save('lvl00a'),save('lvl01a',true),{...save('lvl00a'),difficulty:'Hard'},null])assert.deepEqual(readCampaignProgress(earned,checkpoint),earned);
-  assert.deepEqual(completeCampaignLevel(earned,'lvl00a'),earned);
+  for(const checkpoint of [save('lvl00a'),save('lvl01a',true),{...save('lvl00a'),difficulty:'Hard'},null])assert.deepEqual(readCampaignProgress(earned,checkpoint),{...earned,...(checkpoint?{playedLevels:[checkpoint.level]}:{})});
+  assert.deepEqual(completeCampaignLevel(earned,'lvl00a'),{...earned,playedLevels:['lvl00a']});
   for(const invalid of [null,{},[],{version:2,highestUnlocked:4},{version:1,highestUnlocked:999},{version:1,highestUnlocked:-1},{version:1,highestUnlocked:'4'}])assert.equal(readCampaignProgress(invalid).highestUnlocked,0);
   for(const invalid of [{...save('lvl04a'),version:2},{...save('lvl04a'),position:[0,0,NaN]},{...save('lvl04a'),yaw:'0'},{...save('lvl04a'),level:'../../bad'},{...save('lvl04a'),game:[]}]){
     assert.equal(validAdventureSave(invalid),false);assert.equal(readCampaignProgress(null,invalid).highestUnlocked,0);

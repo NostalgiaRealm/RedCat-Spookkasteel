@@ -1,0 +1,143 @@
+{
+  "walking": {
+    "id": "MovingEnemy1",
+    "state": "walk",
+    "clip": "walkfw",
+    "changed": 438,
+    "before": [
+      -80,
+      -15.950000000000003,
+      2386
+    ],
+    "position": [
+      -63.25558875927591,
+      -15.950000000000003,
+      2370.9056348194467
+    ],
+    "durations": {
+      "idle": 1.266672968864441,
+      "walk": 1.9333430528640747,
+      "attack": 1.6666749715805054,
+      "hurt": 0.799992024898529,
+      "death": 1.6666749715805054
+    },
+    "groundGap": 0
+  },
+  "shooting": {
+    "state": "attack",
+    "clip": "shoot1",
+    "projectile": {
+      "kind": "enemyShot",
+      "position": [
+        -63.25558875927591,
+        9.049999999999997,
+        2370.9056348194467
+      ],
+      "speed": 400
+    },
+    "visible": true,
+    "sprite": true,
+    "frames": 4,
+    "fps": 20
+  },
+  "outcome": {
+    "damage": 2,
+    "remaining": 0,
+    "hurt": {
+      "clip": "hit",
+      "time": 0.15
+    },
+    "death": {
+      "clip": "death",
+      "visible": true,
+      "time": 0.1
+    }
+  },
+  "knight": {
+    "bodyVisible": false,
+    "parts": [
+      {
+        "source": "knhd.act",
+        "position": [
+          -8,
+          169.00599575042727,
+          -992
+        ],
+        "visible": true
+      },
+      {
+        "source": "knbrst.act",
+        "position": [
+          16.060533173924174,
+          150.72655248641968,
+          -981.8676455890783
+        ],
+        "visible": true
+      },
+      {
+        "source": "knhip.act",
+        "position": [
+          3.5137626706212135,
+          134.14946468353273,
+          -1008.9349076938953
+        ],
+        "visible": true
+      },
+      {
+        "source": "knllg.act",
+        "position": [
+          -6.5603383463239275,
+          106.01884368896485,
+          -976.9215857160472
+        ],
+        "visible": true
+      },
+      {
+        "source": "knrlg.act",
+        "position": [
+          25.678983187653852,
+          109.01884368896485,
+          -995.6578209804106
+        ],
+        "visible": true
+      },
+      {
+        "source": "knlrm.act",
+        "position": [
+          -5.968818842027725,
+          154.57773021697997,
+          -998.9774646692601
+        ],
+        "visible": true
+      },
+      {
+        "source": "knrrm.act",
+        "position": [
+          8.894064597106285,
+          148.57773021697997,
+          -977.5142738907033
+        ],
+        "visible": true
+      },
+      {
+        "source": "knlns.act",
+        "position": [
+          12.835419391471323,
+          146.47066383361818,
+          -1007.0866233120518
+        ],
+        "visible": true
+      },
+      {
+        "source": "knax.act",
+        "position": [
+          -12.84710461600972,
+          149.47066383361818,
+          -985.4822659746496
+        ],
+        "visible": true
+      }
+    ],
+    "age": 0.19999999999999998
+  }
+}

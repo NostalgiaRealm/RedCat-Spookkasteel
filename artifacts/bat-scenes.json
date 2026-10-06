@@ -1,0 +1,188 @@
+[
+  {
+    "id": "MovingEnemy16",
+    "variant": 1,
+    "start": [
+      1219,
+      364,
+      -754
+    ],
+    "target": [
+      1219,
+      312.05,
+      -574
+    ],
+    "position": [
+      1219,
+      312.05,
+      -574
+    ],
+    "states": [
+      "walkfw",
+      "idle2"
+    ],
+    "positions": [
+      [
+        1219,
+        363.02947339203627,
+        -750.637251406478
+      ],
+      [
+        1219,
+        343.6189412327616,
+        -683.3822795360371
+      ],
+      [
+        1219,
+        324.2084090734872,
+        -616.1273076655963
+      ],
+      [
+        1219,
+        312.05,
+        -574
+      ],
+      [
+        1219,
+        312.05,
+        -574
+      ],
+      [
+        1219,
+        312.05,
+        -574
+      ],
+      [
+        1219,
+        312.05,
+        -574
+      ],
+      [
+        1219,
+        312.05,
+        -574
+      ]
+    ],
+    "minimumDistance": 0,
+    "changed": 290,
+    "firstAttackTime": null,
+    "damage": [
+      {
+        "type": "damage",
+        "amount": 1,
+        "source": "MovingEnemy16",
+        "health": 19,
+        "time": 1.2249999999999996,
+        "batPosition": [
+          1219,
+          316.44419620977754,
+          -589.2253189174199
+        ],
+        "player": [
+          1219,
+          312.05,
+          -574
+        ]
+      },
+      {
+        "type": "damage",
+        "amount": 1,
+        "source": "MovingEnemy16",
+        "health": 18,
+        "time": 2.224999999999996,
+        "batPosition": [
+          1219,
+          312.05,
+          -574
+        ],
+        "player": [
+          1219,
+          312.05,
+          -574
+        ]
+      },
+      {
+        "type": "damage",
+        "amount": 1,
+        "source": "MovingEnemy16",
+        "health": 17,
+        "time": 3.2249999999999925,
+        "batPosition": [
+          1219,
+          312.05,
+          -574
+        ],
+        "player": [
+          1219,
+          312.05,
+          -574
+        ]
+      }
+    ],
+    "projectiles": [],
+    "attackDuration": 1.6000080108642578
+  },
+  {
+    "id": "MovingEnemy18",
+    "variant": 2,
+    "start": [
+      567,
+      350,
+      -590
+    ],
+    "target": [
+      691.7204418453817,
+      344.05,
+      -506.66446504705965
+    ],
+    "position": [
+      567,
+      350,
+      -590
+    ],
+    "states": [
+      "shoot1"
+    ],
+    "positions": [
+      [
+        567,
+        350,
+        -590
+      ],
+      [
+        567,
+        350,
+        -590
+      ]
+    ],
+    "minimumDistance": 150.1179619499279,
+    "changed": 492,
+    "firstAttackTime": 0.025,
+    "damage": [],
+    "projectiles": [
+      {
+        "type": "enemyProjectile",
+        "id": "MovingEnemy18",
+        "kind": "enemyShot",
+        "position": [
+          567,
+          375,
+          -590
+        ],
+        "time": 0.7500000000000003,
+        "batPosition": [
+          567,
+          350,
+          -590
+        ],
+        "player": [
+          691.7204418453817,
+          344.05,
+          -506.66446504705965
+        ]
+      }
+    ],
+    "attackDuration": 1.6000080108642578,
+    "drawFraction": 0.45
+  }
+]

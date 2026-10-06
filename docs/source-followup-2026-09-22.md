@@ -17,7 +17,7 @@ been rebuilt.
 | Missing Brutus combat voices | Both variants use the original localized attack, hurt and death WAVs. |
 | Ordinary enemy combat music missing | Each level's Action, Special and Ambient slots follow threat transitions; caves/tower Action uses `spookkort3.wav`. Mode changes preserve same-file playback and saved state. |
 | Duplicate witch before outro | The defeated combat actor retires immediately, including recovery of old frozen corpses. Authored cinematic model handoffs remain intact. |
-| Camera stuck after overview; pellets aim upward | Regional views share adjustable pitch with weapon aim. Timed previews expire; deliberate mouse look/firing can release non-dialogue overviews. Legacy saved hidden pitch is repaired. |
+| Camera stuck after overview; pellets aim upward | Regional views share adjustable pitch with weapon aim. Fixed/route overviews retain camera ownership until their authored timer expires or a script replaces them; mouse look/firing no longer cancels them. Legacy saved hidden pitch is repaired. See [camera ownership](targetable-props-camera.md). |
 | Fleurifee appearance/disappearance effects inaccurate | Recovered halo/rays, accelerated waypoint movement, hover, orbit timing and timed particle emissions replace the approximation. Departure preserves live particles, fills vacant pool slots and plays its original sound. |
 
 Research, affected files and focused validation are documented in:

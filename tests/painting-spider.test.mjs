@@ -99,7 +99,7 @@ test('pre-fix solved saves recover skipped spider enables and roof placement wit
   assert.equal(restored.host.cutscene,false);
   assert.equal(restored.host.players.get(restored.game.find('mausomodel_mc')[0].id).playing,false);
   assert.equal(restored.game.find('mausodeur_mc')[0].visible,false);
-  assert.equal(restored.events.some(e=>e.type==='scriptSound'&&e.sound==='Explosion.wav'),false);
+  assert.equal(restored.events.some(e=>e.type==='scriptSound'&&e.sound==='expl6.wav'),false);
   assert.equal(restored.host.vm.lastError,null);
   const piece=restored.game.find('puzstuk2_mc')[0],player=restored.host.players.get(piece.id);
   assert.ok(player.time<.02,'old correct picture resumes at the equivalent native first marker');

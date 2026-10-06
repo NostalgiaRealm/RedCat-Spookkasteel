@@ -15,9 +15,9 @@ Performance is bounded by the BSP query and a local face lookup. Large coplanar 
 
 Portable safeguards and remaining limits:
 
-- A start inside solid space or missing floor normally returns the configured actor ambient; decorative corner trees opt into the bounded recovery described below. When every native face sample fails, a second pass can recover the same floor's physical lightmap coordinates without texture-art shifts. It requires the point to lie inside the face bounds (0.001-unit numerical tolerance), retains native face priority and the 0.3 cap, and leaves valid black samples untouched. If recovery also fails, configured ambient applies. The original unsuccessful-face branch could accidentally retain the preceding actor's global ambient; that cross-actor leak is not reproduced.
+- A start inside solid space or missing floor normally returns the configured actor ambient; the verified actors below opt into bounded recovery for solid origins. When every native face sample fails, a second pass can recover the same floor's physical lightmap coordinates without texture-art shifts. It requires the point to lie inside the face bounds (0.001-unit numerical tolerance), retains native face priority and the 0.3 cap, and leaves valid black samples untouched. If recovery also fails, configured ambient applies. The original unsuccessful-face branch could accidentally retain the preceding actor's global ambient; that cross-actor leak is not reproduced.
 - A coordinate exactly one sample beyond a map is clamped to its edge rather than reading adjacent memory, while all valid authored luxels retain native indexing.
-- The shadow branch described above fixes actor ambient sampling. The renderer's separate world-surface dynamic-light shader has its own presentation limitations; this change does not add shadow rendering to world geometry.
+- The shadow branch described above fixes actor ambient sampling. The subsequent [world-surface shadow implementation](world-light-shadows-native.md) also uses native per-luxel obstruction in the separate BSP shader.
 - The explicit contents mask avoids the native floor routine's dependence on a mutable global mask left by previous unrelated traces.
 
 Focused checks: `node --test tests/actor-floor-lighting.test.mjs` covers exact point intersections, nearest-luxel indexing, authored shifts, bounds tolerance, ambient cap, dynamic contribution, stationary caching, authored model priority, transformed brush fallback, native shadow endpoints, wall occlusion, stable shadow caching and bounded sampling in all five imported levels. `python3 tools/import_actor_floor_lighting.py --check` verifies metadata against all five original BSP files.
@@ -34,8 +34,32 @@ Focused regression checks: `node --test tests/hand-torch-lighting.test.mjs` and 
 
 All 60 `tree.act` corner decorations in Het Bos have origins buried inside the authored segment walls. Their floor trace starts in solid space rather than crossing a floor, so the shifted-coordinate recovery used by the hand torches cannot help. The separate local Sun lookup can also fail, leaving black trunks and foliage. The three standalone `tree2.act` instances already have valid floor lighting.
 
-Only `tree.act` opts into an additional recovery pass. When its root starts in solid space, the sampler tries at most five points inside the tree's transformed setup bounds: the center and four horizontal sides at one quarter of its height. The first valid floor supplies its original lightmap color, including a legitimately black sample; the normal 0.3 ambient cap and dynamic-light calculation still apply. It does not change tree geometry, collision, Sun visibility, or other actors' handling of buried origins. This is a local compatibility repair, not an assertion that native Genesis3D used these probes.
+Decorative `tree.act` instances opt into an additional recovery pass, also shared by the verified cases below. When the root starts in solid space, the sampler tries at most five points inside the actor's transformed setup bounds: the center and four horizontal sides at one quarter of its height. The first valid floor supplies its original lightmap color, including a legitimately black sample; the normal 0.3 ambient cap and dynamic-light calculation still apply. It does not change geometry, collision or Sun visibility. This is a local compatibility repair, not an assertion that native Genesis3D used these probes.
 
 The recovered surface and a numeric snapshot of the bounds are cached per actor. Position or bounds changes invalidate the result; recovered brush floors also track brush changes. A stationary tree incurs no further BSP searches. The imported forest needs 130 additional point queries once to recover all 60 corner trees; it does not scan scene triangles or add a per-frame lighting search.
 
 Focused checks: `node --test tests/forest-tree-lighting.test.mjs` covers explicit opt-in, local probe limits, dark samples, missing floors, cache invalidation, all 60 corner trees and the three unchanged standalone trees. `node tests/forest-tree-lighting-scenes.mjs` checks all live tree uniforms, rendered corner-tree pixels, unchanged placement and zero repeated BSP work across 60 updates. No new package build was generated.
+
+## Audit of other buried origins
+
+The October 2026 audit checked 1,309 entity-backed actors in all five levels: 710 `AdamAnyActor` decorations and 599 enemy/pickup meshes. Both authored positions and initialized script/model transforms were checked using the production actor setup bounds and floor sampler. It found 37 additional persistent failures:
+
+| Level | Asset and instances | Cause |
+| --- | --- | --- |
+| Het Kasteel | Ten `knight.act` standing knights (`StandingEnemy1`–`5`, `13`–`17`) | Roots remain at Y=86 beneath floors at Y=87–87.086, including during combat. Sun illumination works, but many shaded normals receive no light without floor ambient. |
+| Het Kerkhof | Four `cross5.act` grave markers (`AdamAnyActor232`–`235`) | Roots are eight units below their plinths. |
+| Het Kerkhof | One `pbench.act` bench (`AdamAnyActor11`) | Root is one unit below the ground. |
+| De Kasteeltoren | 22 `kandela.act` candlesticks (`AdamAnyActor26`–`47`) | Integer authored origins lie about 0.04 units below their BSP floors. |
+
+All 37 recover on the first center probe inside their own setup bounds, returning a floor on static world model zero. The original INIs enable ambient lighting without an override. The repair adds `kandela.act`, `cross5.act` and `pbench.act` to the explicit decorative asset list; that list, including `tree.act`, requires an `AdamAnyActor` entity. The knight exception requires both `knight.act` and `StandingEnemy`. It does not move actors, change collisions or turn them emissive. The root and native Sun reference stay intact. Normal visibility, death fading and render residency still apply before lighting.
+
+The existing tree fix already covers nine affected castle trees as well as the 60 forest trees. Nine further corner-tree placements have valid native samples and remain unchanged. Other audited cases deliberately retain their existing handling:
+
+- Coins and health pickups that disable floor ambient keep their authored override lighting.
+- Three spiders have valid roots after their normal spawn placement; an extra life pickup does after pickup positioning.
+- Tower guardian `MovingEnemy5` clears its shallow initial overlap on the second active movement frame; its normal floor lighting then succeeds. The standing knights, in contrast, remain buried after 300 near-player or far-player updates.
+- Scripted character doubles, attached rolling hazards and mirror stands do not opt in. Some have no reachable floor even within all five probes; this change does not fabricate a light value for them or expose hidden actors.
+
+The audit covers authored/freshly initialized entity meshes, plus focused enemy updates. It is not an exhaustive check of every later scripted pose, transient projectile or debris actor.
+
+Evidence, reproducible audit scripts, native settings, entity records and rendered before/after captures are retained in `current_work/buried-actor-lighting-2026-10-05/`. Focused checks are `node --test tests/buried-actor-lighting.test.mjs` and `node tests/buried-actor-lighting-scenes.mjs`. They cover affected placements, unchanged valid samples, eligibility and visibility, static caching, actual displayed pixels, and unchanged placement. No build is required.

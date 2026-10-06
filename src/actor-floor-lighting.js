@@ -181,10 +181,10 @@ export function createActorFloorLighting(collision,metadata,bytes,collider=null)
         }
       }
     }
-    // Some decorative trees deliberately overlap the segment walls, burying
-    // their actor origin in solid BSP. Only opted-in props may recover within
-    // their own world bounds; ordinary actors retain the native solid-origin
-    // result. Probe the lower trunk region, never an arbitrary distant floor.
+    // Some authored actor origins lie inside walls, plinths or floors.
+    // Only explicitly opted-in actors may recover within their own world
+    // bounds; ordinary actors retain the native solid-origin result. Probe
+    // the lower quarter of the bounds, never an arbitrary distant floor.
     if(!surface&&hit&&hit.node===undefined&&recoveryBounds) {
       const [x0,y0,z0,x1,y1,z1]=recoveryBounds;
       const x=(x0+x1)/2,y=y0+(y1-y0)*.25,z=(z0+z1)/2;

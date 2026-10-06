@@ -61,8 +61,10 @@ node --test --test-name-pattern='native fairy lifecycle' tests/native-visuals.te
 node tests/fairy-skip-audio-scenes.mjs
 ```
 
-The browser fixture follows the original forest dialogue and uses a real
-three-second E hold. It verifies the appearance cue and idle loop are each
+The recorded browser run followed the original forest dialogue with the
+then-current three-second E hold. The current hold is two seconds; its later
+focused validation is recorded in [dialogue skipping](hud-targeting-cutscene-skip.md).
+The earlier run verified the appearance cue and idle loop were each
 started once, then confirms zero remaining fairy sprites, trails, light or
 audio after skipping. There were no browser or HTTP errors.
 

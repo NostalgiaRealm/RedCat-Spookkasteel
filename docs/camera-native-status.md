@@ -59,11 +59,11 @@ Mode 4 has no zero-limit exception: a zero limit expires on the first positive
 frame. All five authored mode-4 cameras have positive durations, so this edge
 case does not affect the supplied campaign.
 
-Catmull–Rom interpolation distributed over `CamTimeInMode` is a reconstruction
-approximation, not verified native choreography. A closer implementation starts
-at the first waypoint, visits the points in order at the recovered speed, looks
-at the player, and treats the time as a separate lifetime. The final-approach
-lookup is now recovered and implemented (see the current-build details below).
+The earlier Catmull–Rom interpolation distributed over `CamTimeInMode` has been
+replaced. `src/script-camera.js` starts at the first waypoint, visits the points
+in order at the recovered speed and returns a position for the player-facing
+view; `ScriptHost` tracks its separate lifetime. The final-approach lookup is
+recovered and implemented (see the current-build details below).
 Camera collision adjustment still needs further work before exact camera parity
 can be claimed.
 
@@ -132,6 +132,12 @@ script commands now control the return to RedCat. In the caves,
 `cam_waterlab03` and `cam_waterlab04` specify `8000`. Their camera pitch cannot
 be altered by mouse input, and ignored motion cannot accumulate a hidden aiming
 angle. Regional player-relative mode 1 remains mouse-adjustable.
+
+Mouse, touch and controller look share this ownership check. The camera-mode
+shortcut is also ignored while a fixed overview or cutscene owns the view, so
+it cannot silently select first person for the later return to RedCat. Dialogue
+cutscenes can still be skipped with the explicit two-second hold action; that
+does not make ordinary look input cancel an authored overview.
 
 Save files already preserve host time and camera start/duration, so a partially
 viewed overview resumes with its remaining duration rather than restarting or

@@ -23,5 +23,5 @@ export function usesTouchPursuit(object) {
 // Mode zero is MoveCloser (no timer), the others circle for 2000 ms.
 export function chooseTouchPursuit(object) {
   const mode=Math.floor(enemyRandom(object)*32768)%3;
-  return {wait:1,remaining:mode===0?0:2,direction:mode===2?-1:1,mode:mode===0?'closer':'circle'};
+  return {version:2,started:false,wait:0,remaining:mode===0?0:2,direction:mode===2?-1:1,mode:mode===0?'closer':'circle'};
 }

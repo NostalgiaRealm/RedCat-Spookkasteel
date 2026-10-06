@@ -1,5 +1,6 @@
 import { DaviVM } from './davi-vm.js';
 import { MotionPlayer } from './motions.js';
+import { repairGraveyardMazeSave } from './graveyard-maze.js';
 
 const number=(value,fallback=0)=>Number.isFinite(Number(value))?Number(value):fallback;
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
@@ -10,11 +11,12 @@ const isBoss=object=>object.kind==='enemy'&&['brutusm','brutusb','maxd','maxj','
 /** The portable game side of Davi-Script. The VM knows nothing about rendering,
  * DOM, files or operating systems. Names bind both single objects and groups. */
 export class ScriptHost {
-  constructor(gameplay,program,{motions={motions:[]},dialogue={},isDialoguePlaying=()=>false}={}) {
+  constructor(gameplay,program,{motions={motions:[]},dialogue={},isDialoguePlaying=()=>false,replayLevel=false}={}) {
     this.game=gameplay;this.dialogue=dialogue;this.bindings=new Map();this.players=new Map();
     this.modelTransforms=new Map();this.keyItems=new Set();this.missions=new Map();
     this.cutscene=false;this.playerVisible=true;this.enemiesFrozen=false;this.weaponsEnabled=true;
     this.isDialoguePlaying=isDialoguePlaying;this.pendingCutsceneStop=null;
+    this.replayLevel=replayLevel===true;
     this.portalTransition=null;
     this.camera=null;this.subtitle=null;this.musicState=null;this.afterBossMusicId=null;this.combatThreats=false;this.combatBoss=false;this.errors=[];this.time=0;this.initialized=false;
     this.vm=new DaviVM(program,this);gameplay.scripts=this;
@@ -37,6 +39,7 @@ export class ScriptHost {
     this.vm.initialize();this.initialized=true;
     if(save){
       this.restore(save);
+      repairGraveyardMazeSave(this.game);
       this.normalizeFairies(this.game.playerPosition);
       // Resume enabled ambience without replaying completed one-shot effects.
       for(const object of this.game.objects)if(object.enabled&&object.entity.classname==='EffectSound'&&number(object.entity.Replay))this.sound(object,true);
@@ -137,7 +140,9 @@ export class ScriptHost {
         if(game.level.id==='lvl03a'&&this.dispatchContext?.object.entity.DaviName==='trigger_cuts04'&&this.dispatchContext.event==='CommandOnEnter'&&skill===4)skill=2;
         game.state.skill|=1<<skill;game.emit('skill',{skill});return 0;
       }
-      case 'getgametype':return 0;
+      // Use the authored Snelstart tutorial branches for a fresh chapter replay,
+      // without exposing a separate mode or changing campaign progression.
+      case 'getgametype':return Number(this.replayLevel);
       case 'giveplayerkeyitem':this.keyItems.add(String(a).toLowerCase());return 0;
       case 'playerhaskeyitem':return Number(this.keyItems.has(String(a).toLowerCase()));
       case 'enableweapons':this.weaponsEnabled=!!a;return 0;
@@ -315,12 +320,15 @@ export class ScriptHost {
     } finally {this.skippingCutscene=false;}
   }
   snapshot() {
-    return {version:1,vm:this.vm.snapshot(),time:this.time,cutscene:this.cutscene,playerVisible:this.playerVisible,enemiesFrozen:this.enemiesFrozen,weaponsEnabled:this.weaponsEnabled,
+    return {version:1,replayLevel:this.replayLevel,vm:this.vm.snapshot(),time:this.time,cutscene:this.cutscene,playerVisible:this.playerVisible,enemiesFrozen:this.enemiesFrozen,weaponsEnabled:this.weaponsEnabled,
       poses:copy([...this.modelTransforms]),camera:copy(this.camera),subtitle:copy(this.subtitle),pendingCutsceneStop:copy(this.pendingCutsceneStop),portalTransition:copy(this.portalTransition),musicState:copy(this.musicState),afterBossMusicId:this.afterBossMusicId,combatThreats:this.combatThreats,combatBoss:this.combatBoss,keyItems:[...this.keyItems],missions:[...this.missions],
       motions:[...this.players].map(([id,p])=>({id,started:!!p.object.motionStarted,time:p.time,from:p.from,to:p.to,speed:p.speed,loop:p.loop,playing:p.playing,finished:p.finished,includeStart:p.includeStart,loopFrom:p.loopFrom,loopTo:p.loopTo}))};
   }
   restore(save) {
     if(save?.version!==1)return;
+    // Older checkpoints were always ordinary campaign sessions. Do not turn
+    // them into replays merely because their chapter now appears in history.
+    this.replayLevel=save.replayLevel===true;
     this.vm.restore(save.vm);this.time=number(save.time);
     for(const key of ['cutscene','playerVisible','enemiesFrozen','weaponsEnabled'])if(typeof save[key]==='boolean')this[key]=save[key];
     this.camera=save.camera||null;this.subtitle=save.subtitle||null;this.keyItems=new Set(save.keyItems||[]);this.missions=new Map(save.missions||[]);
