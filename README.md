@@ -117,9 +117,20 @@ See [actor lighting](docs/actor-lighting-native.md), [world-light shadows](docs/
 - World and actor graphics stream in sections according to camera visibility, with nearby resources prepared ahead of time. Large visible areas remain complete. Collision, scripts and cached CPU data stay available; this does not unload every part of the level from system memory.
 - Navigation searches have bounded work budgets, and rendering caches reduce repeated uploads and updates. These changes address graveyard pursuit hitches and pauses when turning or revisiting an area; they do not guarantee a particular frame rate on every device.
 
-Autosave recovery, invulnerable no-clip, adjusted ambience, stuck-character recovery, maze reset after death and lighting previously unlit hand torches are **intentional improvements**, rather than claims of exact original behavior. The technical notes identify these differences.
-
 See [autosaves](docs/autosave.md), [world streaming](docs/world-streaming.md), [navigation performance](docs/graveyard-performance-regression.md), [movement recovery](docs/movement-recovery.md) and [torch enhancements](docs/torch-flames.md).
+
+## Intentional changes from the original game
+
+The port retains several deliberate improvements and adaptations:
+
+- One-minute autosaves, recent recovery saves, overwrite warnings and optional cheats with invulnerable no-clip.
+- Stuck-character recovery, maze reset after death, corrected BIG BENG rewards and damageable Max turret parts.
+- Two-second cutscene skipping, protected dialogue and automatic tutorial skipping on chapter replay.
+- Adjusted ambience and fairy hearing, quieter Tower fire, selected door sound fallbacks and uninterrupted audio playback.
+- Lit moving hand torches, reliable floor-light sampling, readable distant projectiles and camera protection near walls.
+- Widescreen, touch/controller controls, responsive menus/scoreboards and bounded rendering/navigation work.
+
+See [intentional fixes and original-game findings](docs/intentional-fixes-and-findings.md) for the full catalog, current settings, reasons and evidence—including the unused power-move finding. It distinguishes requested changes from original-content corrections and technical fidelity limits.
 
 ## Controls
 
@@ -162,7 +173,7 @@ The [build guide](docs/building.md) covers prerequisites, Linux/Windows instruct
 | `tools/` | Asset importers, local web server and packaging helper. |
 | `tests/` | Unit, importer, browser-scene and desktop checks. |
 | `docs/` | Build/hosting guides, implementation notes and original-game research. |
-| `current_work/` | Retained investigation files, disassembly, screenshots and diagnostics. |
+| `temp_work/` | Retained investigation files, disassembly, screenshots and diagnostics; formerly `current_work/`. |
 | `dist/` | Generated desktop packages; these may lag behind source changes. |
 
 ### Focused checks
@@ -175,7 +186,7 @@ node --test tests/motions.test.mjs
 
 Feature documents list the relevant unit and scene checks. `npm test` runs the broader JavaScript unit suite; importer and release validation are described in the [build guide](docs/building.md). Browser checks use Chromium/Playwright; many accept `CHROME_PATH` for an installed browser. Desktop presentation checks require a graphical session.
 
-Keep new temporary profiles, research and diagnostic output in a named `current_work/` subfolder, and retain it for comparison. Use isolated profiles rather than the player's normal saves.
+Keep new temporary profiles, research and diagnostic output in a named `temp_work/` subfolder, and retain it for comparison. Use isolated profiles rather than the player's normal saves. Historical research notes may still refer to its former name, `current_work/`.
 
 ### Creating desktop packages
 
@@ -215,6 +226,7 @@ Known differences include camera/collision behavior, animation blending, knight-
 | Topic | Start here |
 | --- | --- |
 | What is implemented and what remains | [Native implementation audit](docs/native-parity-audit.md), [gameplay reconstruction](docs/gameplay-reconstruction.md) |
+| Deliberate differences and research findings | [Intentional fixes and original-game findings](docs/intentional-fixes-and-findings.md) |
 | Original file formats | [BSP world data](docs/asset-formats.md), [actor models](docs/actors.md), [menu/media archives](docs/menu-media.md) |
 | Script execution | [Davi-Script format](docs/davi-format.md), [VM opcodes](docs/davi-vm-opcodes.md), [motion timelines](docs/motions.md) |
 | Rendering and effects | [Actor lighting](docs/actor-lighting-native.md), [world-light falloff](docs/world-light-falloff-research.md), [portal effects](docs/portal-native-recovery.md), [destruction debris](docs/debris-native-recovery.md) |
