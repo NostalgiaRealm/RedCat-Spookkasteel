@@ -49,4 +49,4 @@ layers or change projectile-specific impact sounds.
   crate-hit, grave-trigger and solved-puzzle restoration cases were rerun.
 
 Evidence and logs are retained in
-`current_work/explosion-audio-audit-2026-10-04/`.
+`temp_work/explosion-audio-audit-2026-10-04/`.

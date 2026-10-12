@@ -60,6 +60,6 @@ standard controller into an isolated Chromium profile and tests actual menus,
 forest opening/skip, camera locks, gameplay input, no-clip flight, pause/resume,
 reconnection and keyboard takeover. It also verifies the delayed ten-second
 desktop onboarding hint and its persistence. Evidence is retained under
-`current_work/controller-support-2026-10-03/`. These are simulated-controller
+`temp_work/controller-support-2026-10-03/`. These are simulated-controller
 checks; physical-controller and Windows-device validation remain to be done.
 No distribution packages were generated.

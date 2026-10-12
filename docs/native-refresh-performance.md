@@ -102,7 +102,7 @@ library-name check (only `libMangoHud.so`, omitting the OpenGL library); the
 verification report records the actual mapped library paths instead.
 
 Profiles, snapshots, benchmark scripts and focused test logs are retained in
-`current_work/native-refresh-2026-10-01/`. Main evidence:
+`temp_work/native-refresh-2026-10-01/`. Main evidence:
 
 - `live-snapshot.json`, `baseline-live.json`, `live-before.cpuprofile`
 - `before-1790892232162/report.json`

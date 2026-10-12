@@ -7,7 +7,7 @@ import { EnemyNavigation, enemyRandom } from './enemy-navigation.js';
 import {initializeEnemySalvo,enemySalvoSize,usesTouchPursuit} from './enemy-combat-native.js';
 import { PLAYER_SHOOT_MOTION, PLAYER_SUPER_CHARGE, playerShotDefinition, sweepActor, advancePlayerProjectile } from './player-projectiles.js';
 import { BspCollider } from './collision.js';
-import { visibleLiquidGroups, liquidDamageRate } from './liquids.js';
+import { visibleLiquidGroups, liquidContactModels, liquidDamageRate } from './liquids.js';
 import { ProjectileHazards, mushroomTrailDefinition } from './projectile-hazards.js';
 import { advanceProjectileAnimation } from './projectile-animation.js';
 import { ENEMY_PROJECTILE_GRAVITY_SCALE, enemyProjectileLifetime, restoreEnemyProjectileFlight, retargetMagicProjectile } from './enemy-projectiles.js';
@@ -29,6 +29,7 @@ import {createGargoyleBlast,advanceGargoyleBlasts,restoreGargoyleBlasts} from '.
 import {createRewardEffect,retainRewardEffects,restoreRewardEffects} from './reward-effects.js';
 import {nativeExplosionSound} from './explosion-native.js';
 import {cancelPendingGraveyardMazeExit,resetGraveyardMaze} from './graveyard-maze.js';
+import {pickupPosition} from './pickup-placement.js';
 
 const n = (value, fallback=0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
 const clamp = (value,min,max) => Math.max(min,Math.min(max,value));
@@ -72,6 +73,7 @@ export class Gameplay {
     this.hazards=new ProjectileHazards(settings,difficulty);this.environmentFeedbackCooldown=0;
     this.volumeCollider=level.collision?.nodes?new BspCollider(level.collision):null;
     this.liquidModels=new Set([...visibleLiquidGroups(level)].map(g=>g.model));
+    this.liquidContactModels=liquidContactModels(level.collision);
     this.playerAttackSerial=0;this.playerAttackUntil=0;this.pendingPlayerAttack=null;
     this.navigation=new EnemyNavigation(level,settings.game?.WayPointSystem);
     this.objects=[];this.names=new Map();this.modelObjects=new Map();this.unsupportedCommands=new Set();this.variables=new Map();
@@ -636,10 +638,19 @@ export class Gameplay {
     // Preserve authored attachment anchors in saves and apply the brush pose
     // for both models and pickups, without accumulating transforms.
     const pose=['pickup','actor'].includes(object.kind)&&this.scripts?.modelTransforms.get(object.modelIndex);
-    return pose?transformMotionPoint(object.position,pose.origin,pose):object.position;
+    const position=pickupPosition(object);
+    return pose?transformMotionPoint(position,pose.origin,pose):position;
   }
 
   environmentVelocity(position) {return triggerVelocity(this,position);}
+
+  playerContactContents(position,mins=[0,0,0],maxs=[0,1,0]) {
+    if(!this.volumeCollider||!this.liquidContactModels.length)return 0;
+    // syncModelStates disables solid collision for water triggers. Their
+    // contents still affect RedCat: use the volume collider, as triggers do.
+    if(this.scripts?.modelTransforms)this.volumeCollider.modelTransforms=this.scripts.modelTransforms;
+    return this.volumeCollider.contents(position,mins,maxs,this.liquidContactModels);
+  }
 
   contains(object,position,padding=0) {
     const model=this.level.collision?.models?.[object.modelIndex];

@@ -13,6 +13,7 @@ import { triangleCollider, traceActors } from './actor-collision.js';
 import { WorldEffects } from './world-effects.js';
 import { EnemyTargeting, targetAimPoint, targetDirection, targetableObject, transformedTargetBounds, targetMarkerPose } from './targeting.js';
 import { actorOrientation, attachedActorVisible, nativePlayerYaw } from './actor-placement.js';
+import {pickupBounds,pickupPlacement} from './pickup-placement.js';
 import { playerMotion } from './player-animation.js';
 import { playerReactionMotion } from './player-lifecycle.js';
 import { PLAYER_SUPER_CHARGE, PLAYER_SHOOT_MOTION } from './player-projectiles.js';
@@ -91,7 +92,7 @@ export class CastleWorld {
   async load(id,onProgress=()=>{}) {
     this.id=id;const base=`data/levels/${id}/`;this.level=await json(base+'level.json');const data=this.level;
     [this.scriptProgram,this.motions,this.dialogue]=await Promise.all([json(`data/davi/${id}.json`),json(`data/motions/${id}.json`),json('data/dialogue/nl.json')]);
-    onProgress('Originele geometrie en belichting laden…');
+    onProgress('Originele geometrie en belichting laden…',.12);
     const [meshBuffer,lm,lmUv,lmFrames,floorMetadata,floorBytes,lightVisibility,lightPvs]=await Promise.all([
       binary(base+data.mesh.file),
       data.mesh.lightmap?this.texture(base+data.mesh.lightmap.file,true):null,
@@ -124,7 +125,7 @@ export class CastleWorld {
         // artwork. Only resource residency changes; brush state is separate.
         return this.track(new THREE.MeshBasicMaterial(skyBoundary?
           {colorWrite:false,depthWrite:true,side:THREE.DoubleSide}:
-          {vertexColors:(!lm || gouraud)&&!fullbright,lightMap:fullbright || gouraud?null:lm,lightMapIntensity:1,side:THREE.FrontSide,transparent:group.alpha<1,opacity:group.alpha,depthWrite:group.alpha>=1,alphaTest:surfaceAlphaTest(group,data.textures[group.texture])}));
+          {vertexColors:(!lm || gouraud)&&!fullbright,lightMap:fullbright || gouraud?null:lm,lightMapIntensity:1,side:THREE.FrontSide,transparent:group.alpha<1,opacity:group.alpha,depthWrite:group.alpha>=1,alphaTest:surfaceAlphaTest(group,data.textures[group.texture],id)}));
       }
     });
     if(data.sky?.textures?.some(i=>i>=0)) {
@@ -146,7 +147,7 @@ export class CastleWorld {
     this.player.position[1]+=1;
     const ground=this.collider.trace(this.player.position,this.player.position.map((v,i)=>i===1?v-180:v),this.player.mins,this.player.maxs,this.physicalModels);
     if(!ground.startSolid)this.player.position=ground.end;
-    onProgress('RedCat en de bewoners van het kasteel laden…');
+    onProgress('RedCat en de bewoners van het kasteel laden…',.42);
     try {this.actorManifest=await json('assets/actors/manifest.json');}catch{this.actorManifest={};}
     this.actorOverrideManifest=await json('assets/actor-overrides/manifest.json');this.actorOverrideMaps=new Map();
     const projectileManifest=await json('assets/projectiles/manifest.json');
@@ -350,6 +351,20 @@ export class CastleWorld {
         }
       }
     }));
+    // Settle all pickups once, after their possible supporting props exist.
+    // Use initial BSP poses and authored prop visibility even when resuming a
+    // save in which a crate was destroyed or a supporting platform has moved.
+    const placementCollider=new BspCollider(this.level.collision);
+    placementCollider.actors=gameplay.objects.filter(obj=>obj.kind==='actor').flatMap(obj=>{
+      const record=this.actorInstances.get(obj.id)?.userData.collisionRecord;
+      return record?[{...record,active:()=>obj.entity.IsInitiallyEnabled!=='0'}]:[];
+    });
+    for(const obj of gameplay.objects)if(obj.kind==='pickup') {
+      const actor=this.actorInstances.get(obj.id);if(!actor)continue;
+      obj.pickupPlacement=pickupPlacement(point(obj.entity),pickupBounds(actor.userData.template.data,obj.entity),
+        (start,end,mins,maxs)=>placementCollider.trace(start,end,mins,maxs,this.physicalModels));
+      actor.position.fromArray(gameplay.objectPosition(obj));
+    }
     if(gameplay.objects.some(obj=>obj.kind==='enemy'&&obj.actorFile==='knight'))this.knightParts=await Promise.all(KNIGHT_PARTS.map(name=>this.loadActor(name)));
     this.syncModels();
     if(this.level)this.effects=await WorldEffects.create(this,gameplay);
@@ -516,7 +531,6 @@ export class CastleWorld {
         actor.quaternion.copy(actorOrientation(obj,actor.userData.template?.data.settings||{},game.scripts?.modelTransforms.get(obj.modelIndex)));
         actor.visible=actor.visible&&attachedActorVisible(obj,game);
       }
-      if(obj.kind==='pickup')actor.position.y+=5+Math.sin((obj.actorAge||0)*2)*3;
       if(obj.kind==='enemy'&&obj.yaw!==undefined)actor.rotation.y=obj.yaw;
       if(obj.rotation&&obj.kind!=='actor'&&obj.kind!=='pickup')actor.rotation.fromArray(obj.rotation);
       if(corpse&&obj.actorFile==='knight'&&this.knightParts?.every(Boolean)) {
@@ -796,6 +810,7 @@ export class CastleWorld {
     // own horizontal step participates in footstep contact feedback.
     this.player.stepDisplacement=playerFrozen||this.player.recoveredThisStep?0:Math.hypot(this.player.position[0]-stepStart[0],this.player.position[2]-stepStart[2]);
     if(!playerFrozen&&this.player.didJump)this.gameplay?.emit('jump',{position:[...this.player.position],kind:this.player.didJump});
+    if(!playerFrozen&&this.player.didLand>0)this.gameplay?.emit('land',{position:[...this.player.position],impactSpeed:this.player.didLand});
     if(!this.player.noClip&&this.player.position[1]<this.level.bounds.min[1]-350) {this.player.position=[...this.player.lastSafe];this.player.position[1]+=4;this.player.resetVelocity();this.player.movementRecovery.reset();this.gameplay?.damage?.(2);}
     const p=this.player.position;
     if(this.gameplay){

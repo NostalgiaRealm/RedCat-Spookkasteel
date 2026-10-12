@@ -8,7 +8,9 @@ No original game files were modified.
 ## Player sounds
 
 The user identified `Sounds/rcshoot1.WAV` for an ordinary shot,
-`Sounds/rcshoot4.WAV` for its impact, and `Sounds/rcjump1.WAV` for jumping.
+`Sounds/rcshoot4.WAV` for its impact, and `Sounds/rcjump1.WAV` for dry-ground jumping.
+Water/ooze jumps use `Rcwalk1.wav`; see the recovered resource slots and liquid
+landing behavior in [water-contact sounds](water-native.md#jumping-and-landing-in-liquid).
 The executable corroborates these assets: ordinary-shot selection is at
 `0x436b84`, impact at `0x44f479`, and jump at `0x4dc847`.
 
@@ -33,7 +35,7 @@ including projectiles already in flight when the player's abilities change.
 Impacts play only on actual contact, not lifetime expiry. Independent one-shot
 instances preserve earlier firing and impact tails. The existing charge-loop
 and pause/resume behavior are unchanged. Audit evidence is retained in
-`current_work/shooting-audio-audit-2026-10-03/`; focused regression coverage is
+`temp_work/shooting-audio-audit-2026-10-03/`; focused regression coverage is
 `tests/player-projectile-audio.test.mjs`.
 
 Damage selection at `0x433d97`–`0x433df3` uses damage amount, rather than

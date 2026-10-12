@@ -139,6 +139,21 @@ test('original water surfaces remain visible, keyed and nonblocking',()=>{
   assert.equal(surfaceAlphaTest({alpha:1},{colorKey:true}),.5,'foliage retains the original cutout');
 });
 
+test('opaque graveyard wall trim does not inherit the shared fence texture cutouts',()=>{
+  const data=level('lvl02a'),texture=data.textures.findIndex(t=>t.name==='hek_door');
+  const wall=data.groups.filter(g=>g.texture===texture&&g.model===0);
+  const gates=data.groups.filter(g=>g.texture===texture&&g.model!==0);
+  assert.equal(wall.length,1);assert.equal(wall[0].flags,0);assert.equal(wall[0].count,12);
+  assert.equal(data.textures[texture].colorKey,true);
+  assert.equal(surfaceAlphaTest(wall[0],data.textures[texture],data.id),0);
+  assert.ok(gates.length>=4);
+  for(const group of gates){assert.ok(group.flags&16);assert.equal(surfaceAlphaTest(group,data.textures[texture],data.id),.5);}
+  const forest=level('lvl00a'),leaf=forest.textures.findIndex(t=>t.name==='Lfgrn');
+  const foliage=forest.groups.filter(g=>g.texture===leaf&&g.flags===0);
+  assert.ok(foliage.length);
+  for(const group of foliage)assert.equal(surfaceAlphaTest(group,forest.textures[leaf],forest.id),.5,'unflagged forest foliage still has cutouts');
+});
+
 test('graveyard moving-platform moat renders its opaque authored damage-trigger water',()=>{
   const data=level('lvl02a'),groups=data.groups.filter(g=>g.model===135),visible=visibleLiquidGroups(data);
   assert.equal(groups.length,1);

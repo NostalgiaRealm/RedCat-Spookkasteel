@@ -125,12 +125,12 @@ npm run test:smoke
 npm run test:scripts
 ```
 
-Other focused checks are listed under `scripts` in `package.json`, including audio, enemies, bosses, effects, doors and cheats. Newer focused checks also run directly from `tests/*.mjs`; use the relevant feature document to choose them. They use isolated game state rather than your normal desktop saves. Older scripts write results under `artifacts/`; newer investigations retain reports, screenshots and isolated profiles in named folders under `current_work/`.
+Other focused checks are listed under `scripts` in `package.json`, including audio, enemies, bosses, effects, doors and cheats. Newer focused checks also run directly from `tests/*.mjs`; use the relevant feature document to choose them. They use isolated game state rather than your normal desktop saves. Older scripts write results under `artifacts/`; newer investigations retain reports, screenshots and isolated profiles in named folders under `temp_work/`.
 
 Keep new temporary research, disassembly, profiles and diagnostic work in a
-descriptively named `current_work/` subfolder and retain it for later comparison.
+descriptively named `temp_work/` subfolder and retain it for later comparison.
 Do not use `/tmp` for that work. Where a browser harness needs `TMPDIR`, use a
-short relative path under `current_work/` from the project root; long absolute
+short relative path under `temp_work/` from the project root; long absolute
 paths can exceed Chromium's Unix socket path limit. Follow the particular
 test's output/profile setup rather than reusing your running game's profile.
 
@@ -263,7 +263,7 @@ npx --no-install electron-builder --win dir --arm64 --publish never \
   "-c.extraMetadata.version=$REDCAT_PACKAGE_VERSION"
 ```
 
-This uses the same unsigned `dir` configuration as the existing Windows x64 package, including `win.signAndEditExecutable: false`. The ARM64 cross-packaging path remains unverified; installer creation or signing would have additional requirements and is not covered by this command.
+This uses the same unsigned `dir` configuration as the existing Windows x64 package. `win.signExecutable: false` disables signing while allowing the builder to apply the original game's icon and executable metadata. Do not replace this with `signAndEditExecutable: false`, which also skips the icon update. The ARM64 cross-packaging path remains unverified; installer creation or signing would have additional requirements and is not covered by this command.
 
 Copy the **whole** `dist/win-arm64-unpacked/` directory to Windows on ARM. Launch `RedCat Spookkasteel.exe` from that directory, or use this command from the project root on the target machine:
 
@@ -318,7 +318,7 @@ Either Mac architecture can select either package architecture for this game's c
 
 These are **local development bundles**. `mac.identity=-` requests ad-hoc signing without a Developer ID certificate, and `mac.notarize=false` skips notarization. Keep the entire `.app` bundle intact. The pinned builder supplies default Electron entitlements, including JIT and library-validation permissions, while retaining its hardened-runtime default. An ad-hoc signature does not provide the trust of a signed and notarized public release. These options follow the [version 26 macOS signing configuration](https://www.electron.build/v26/docs/mac/#code-signing).
 
-For public Mac distribution, configure a Developer ID signing identity and notarization credentials on the Mac/CI runner, replace these development overrides, add the intended app icon, and choose a distribution target such as DMG. Those release settings and artifacts are not currently configured or validated in this project. See [electron-builder's code-signing guide](https://www.electron.build/v26/docs/features/code-signing/).
+The original game's icon is configured for macOS, Windows and Linux; see [App icon](app-icon.md) for its source and regeneration instructions. For public Mac distribution, configure a Developer ID signing identity and notarization credentials on the Mac/CI runner, replace these development overrides, and choose a distribution target such as DMG. Those release settings and artifacts are not currently configured or validated in this project. See [electron-builder's code-signing guide](https://www.electron.build/v26/docs/features/code-signing/).
 
 Before describing either Mac target as supported, verify WebGL rendering, Retina resolutions, fullscreen, pointer lock, keyboard/controller input, audio/video playback, saving and restoring on that hardware. The current Electron shell also quits when its last window closes; Mac-specific lifecycle polish remains separate from producing an app bundle.
 
@@ -330,6 +330,7 @@ When validating a new platform, first check startup and visible gameplay, contro
 
 ## Troubleshooting
 
+- **Every desktop build rejects `win.signExecutable` after `npm audit fix --force`:** the forced audit repair can replace the pinned build tool with an incompatible version. On 12 October 2026 it downgraded electron-builder from 26.15.3 to 26.5.0, which does not recognize this option. Configuration validation covers all platform sections, so this also breaks Linux and macOS commands. Restore the supported tool with `npm install --save-dev --save-exact electron-builder@26.15.3`, then retry your build. Keep the repaired `package.json` and `package-lock.json` together; subsequent `npm ci` installs reproduce that dependency tree. Keep `win.signExecutable: false`: replacing it with `signAndEditExecutable: false` also disables Windows executable icon/metadata editing. Review `npm audit` findings before applying fixes; [`--force` permits dependency changes outside the declared range](https://docs.npmjs.com/cli/v11/commands/npm-audit/#force). A clean schema check does not establish that every dependency is free of advisories.
 - **Old behavior after editing source:** `Start-RedCat.sh` may be launching the old package. Use `npm start -- --ozone-platform=x11` on Linux, or `npm start` on Windows.
 - **Node engine errors:** check `node --version`; the pinned Electron tools require at least 22.12.0. Re-run `npm ci` with a supported version.
 - **Missing maps, actors, audio or videos:** check `assets/` and `data/`, then complete the asset import. `npm ci` installs software dependencies, not original game data.

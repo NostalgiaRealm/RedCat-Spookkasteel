@@ -17,7 +17,8 @@ export function partitionWorld(groups,spans,vertices,cellSize=WORLD_STREAMING.ce
       for(let v=start;v<start+count;v++)for(let axis=0;axis<3;axis++) {
         const value=vertices[v*11+axis];min[axis]=Math.min(min[axis],value);max[axis]=Math.max(max[axis],value);
       }
-      // Moving brushes stay whole, and are never culled using static face PVS.
+      // Moving brushes stay whole; visibility uses their transformed model
+      // bounds, never the static PVS of the faces at their original position.
       const key=group.model?'model':min.map((v,a)=>Math.floor((v+max[a])*.5/cellSize)).join(',');
       let chunk=buckets.get(key);
       if(!chunk){chunk={group,spans:[],count:0,min:[...min],max:[...max]};buckets.set(key,chunk);}
@@ -100,7 +101,7 @@ export class WorldGeometryStream {
     this.frustum=new THREE.Frustum();this.preloadFrustum=new THREE.Frustum();this.projection=new THREE.Matrix4();this.boundVisibility=new WeakMap();
     this.textures=new StreamTextures(textureFor,texture=>{texture.dispose();world.resources.delete(texture);});
     this.chunks=partitionWorld(groups,visibility.faceSpans,vertices);
-    this.materials=new Map();this.pending=new Set();this.ready=[];this.readyForView=false;
+    this.materials=new Map();this.movingModels=new Map();this.pending=new Set();this.ready=[];this.readyForView=false;
     this.stats={totalVertices:this.chunks.reduce((n,c)=>n+c.count,0),residentVertices:0,residentChunks:0,totalChunks:this.chunks.length,loadedTextures:0};
     for(const chunk of this.chunks) {
       const group=chunk.group;
@@ -111,6 +112,12 @@ export class WorldGeometryStream {
       chunk.mesh.layers.set(1);chunk.mesh.userData.model=group.model;
       chunk.mesh.userData.worldChunk=chunk;chunk.bounds=chunk.empty.boundingBox.clone();
       chunk.boundsMatrix=null;chunk.visibilityRevision=-1;
+      const nativeBounds=visibility.modelBounds?.[group.model];
+      if(group.model&&nativeBounds&&!this.movingModels.has(group.model)) {
+        const localBounds=new THREE.Box3(new THREE.Vector3(...nativeBounds.slice(0,3)),new THREE.Vector3(...nativeBounds.slice(3,6)));
+        this.movingModels.set(group.model,{mesh:chunk.mesh,localBounds,bounds:localBounds.clone(),matrix:null,pvsVisible:true});
+      }
+      chunk.movingModel=this.movingModels.get(group.model);
       if(chunk.sky){chunk.mesh.renderOrder=-100;world.skyBoundaryMeshes.push(chunk.mesh);}
       world.scene.add(chunk.mesh);
       if(!world.modelMeshes.has(group.model))world.modelMeshes.set(group.model,[]);
@@ -172,6 +179,19 @@ export class WorldGeometryStream {
     // no-clip camera. Without a valid camera leaf use conservative frustum only.
     if(this.visibility.usable(leaf))this.visibility.update(eye,eye,()=>true);
     else this.visibility.active=false;
+    // Native ModelVisible tests the whole root-node box against visible BSP
+    // leaves. Bypassing this lets distant gates show through transparent sky
+    // seams. Share one conservative result across every material of a model;
+    // boundsVisible caches it until the pose or camera PVS actually changes.
+    for(const model of this.movingModels.values()) {
+      model.mesh.updateMatrixWorld();
+      if(!model.matrix||!model.matrix.equals(model.mesh.matrixWorld)) {
+        model.bounds.copy(model.localBounds).applyMatrix4(model.mesh.matrixWorld).expandByScalar(1);
+        if(!model.matrix)model.matrix=new THREE.Matrix4();
+        model.matrix.copy(model.mesh.matrixWorld);
+      }
+      model.pvsVisible=this.boundsVisible(model.bounds);
+    }
     const wanted=[];
     for(const chunk of this.chunks) {
       chunk.mesh.updateMatrixWorld();
@@ -185,7 +205,8 @@ export class WorldGeometryStream {
         chunk.pvsVisible=chunk.spans.some(([face])=>!this.referencedFaces[face]||this.visibility.faces[face]);
         chunk.visibilityRevision=this.visibility.revision;
       }
-      const potentiallyVisible=chunk.sky||chunk.group.model!==0||!this.visibility.active||chunk.pvsVisible;
+      const potentiallyVisible=chunk.sky||!this.visibility.active||
+        (chunk.group.model!==0?(chunk.movingModel?.pvsVisible??true):chunk.pvsVisible);
       chunk.inView=chunk.mesh.visible&&potentiallyVisible&&this.frustum.intersectsBox(chunk.bounds);
       const near=distance<=WORLD_STREAMING.preloadRadius;
       const ahead=chunk.mesh.visible&&potentiallyVisible&&this.preloadFrustum.intersectsBox(chunk.bounds);

@@ -57,8 +57,8 @@ node tests/well-recovery-scene.mjs
 The browser scene test uses Playwright and `/usr/bin/google-chrome` (override
 with `CHROME_PATH`) with the source server; it does not create a release build.
 It retains logs, profiles
-and screenshots in `current_work/`. Its Chromium temporary directory is relative
-(`TMPDIR=current_work`) to avoid the Unix socket path length limit at this
+and screenshots in `temp_work/`. Its Chromium temporary directory is relative
+(`TMPDIR=temp_work`) to avoid the Unix socket path length limit at this
 project's long absolute path.
 
 Initial verification on 2026-09-27:
@@ -78,12 +78,12 @@ Initial verification on 2026-09-27:
 
 Evidence is retained in:
 
-- `current_work/movement-recovery-tests-2026-09-27/ledge-run.log`
-- `current_work/movement-recovery-controllers-2026-09-27.log`
-- `current_work/movement-recovery-scenes-2026-09-27T19-03-58-969Z/report.json`
-- `current_work/movement-recovery-audit-2026-09-27/audit.md`
+- `temp_work/movement-recovery-tests-2026-09-27/ledge-run.log`
+- `temp_work/movement-recovery-controllers-2026-09-27.log`
+- `temp_work/movement-recovery-scenes-2026-09-27T19-03-58-969Z/report.json`
+- `temp_work/movement-recovery-audit-2026-09-27/audit.md`
 
-Earlier failed investigations remain in `current_work/` for comparison. No
+Earlier failed investigations remain in `temp_work/` for comparison. No
 release packages were generated for this change.
 
 ## Follow-up: actual suspended well state
@@ -110,9 +110,9 @@ Only the recovery suite and this exact-well scene were run for the follow-up.
 
 Additional evidence:
 
-- `current_work/well-live-2026-09-27/` (copied autosave and failed/passing probes)
-- `current_work/well-recovery-review-2026-09-27/targeted-test-run.log`
-- `current_work/well-recovery-2026-09-27T19-21-43-413Z/report.json`
+- `temp_work/well-live-2026-09-27/` (copied autosave and failed/passing probes)
+- `temp_work/well-recovery-review-2026-09-27/targeted-test-run.log`
+- `temp_work/well-recovery-2026-09-27T19-21-43-413Z/report.json`
 
 An already running desktop session keeps its loaded JavaScript. Restart the
 source game and continue the saved adventure to use the corrected recovery.

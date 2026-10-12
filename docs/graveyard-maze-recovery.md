@@ -54,7 +54,7 @@ The 12 logic tests cover every progression stage and moving-hedge state,
 repeated attempts, native death/respawn timing, pending/committed buttons,
 save/load, preservation of other progress, and other-level isolation.
 
-The scene test uses an isolated browser profile under `current_work/`. It loads
+The scene test uses an isolated browser profile under `temp_work/`. It loads
 a copy of the reported save, reproduces both blocked routes, verifies automatic
 load repair and ordinary entrance contact, checks the full player collision
 hull can use the reopened passage, and exercises the real application death,
@@ -62,4 +62,4 @@ checkpoint respawn and save reload. It never edits the active game's profile.
 
 Evidence, the copied October 5, 2026 save, original-script audit, test logs,
 before/after pictures and collision measurements are retained in
-`current_work/graveyard-maze-respawn-2026-10-05/`. No package build was made.
+`temp_work/graveyard-maze-respawn-2026-10-05/`. No package build was made.

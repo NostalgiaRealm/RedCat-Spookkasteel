@@ -11,9 +11,8 @@ corrections to original content defects, and technical adaptations for a new
 engine. A technical approximation with unresolved fidelity is identified as
 such; it is not automatically a desired change to the original game.
 
-Research files previously stored in `current_work/` now live in `temp_work/`.
-Historical notes may still use the former directory name. Retain new research,
-profiles and diagnostics in named `temp_work/` subfolders.
+Retain research files, profiles and diagnostics in named `temp_work/`
+subfolders for later comparison.
 
 ## At a glance
 
@@ -36,7 +35,7 @@ profiles and diagnostics in named `temp_work/` subfolders.
 | --- | --- | --- |
 | Automatic saving | Save every 60 seconds of active play, alongside manual saves and checkpoints. This reduces progress lost after interruptions. | [Autosaves](autosave.md) |
 | Recovery history | Offer saves from approximately 2, 5 and 10 minutes of playing time ago. Retain at most eleven minute checkpoints; older ones are discarded. Paused/offline time does not age them. | [Recovery storage and retention](autosave.md#retention-and-storage) |
-| Safer adventure replacement | When a save exists, highlight **Verder spelen**, hide **Start avontuur**, and offer **Start opnieuw** with confirmation. Chapter starts also warn before replacing the adventure and its recovery history. Replacement occurs only after the new level loads successfully. | [Starting a new adventure](autosave.md#starting-a-new-adventure), [menu implementation](../src/main.js) |
+| Safer adventure replacement | When a save exists, highlight **Verder spelen**, hide **Start avontuur**, and offer **Start opnieuw** with confirmation. Selecting an unlocked chapter reveals **Level Spelen**; only clicking that button opens the chapter-start warning before replacing the adventure and its recovery history. Replacement occurs only after the new level loads successfully. | [Starting a new adventure](autosave.md#starting-a-new-adventure), [menu implementation](../src/main.js) |
 | Optional cheats | A settings submenu fills mirror pieces and potions to their limits, adds 9000 points, unlocks all chapters, or enables free flight. Supplies do not collect actual level objects or complete their scripts. | [Cheat implementation](../src/cheats.js), [chapter access](campaign-menu-native.md) |
 | Invulnerable no-clip | Free flight ignores all damage, including enemies, liquids, beams and scripted kills. Exiting inside geometry seeks a safe position; if none is available, flight and protection stay enabled. | [No-clip protection](player-protection-progress-and-local-audio.md#no-clip-protection) |
 | Campaign ownership | Unlocks and earned abilities are stored separately from individual checkpoints. Earlier chapter replays and recovery loads retain them. A confirmed new adventure resets shooting upgrades, SuperSkippie and played-level history; chapter unlocks and preferences remain. | [Permanent abilities](player-protection-progress-and-local-audio.md#earned-abilities-across-chapter-replays), [replay history](replayed-level-intros-native.md#automatic-replay-policy-in-the-port) |
@@ -126,6 +125,7 @@ present settings. Sources: [Cave ambience](cave-ambience-range.md),
 | Browser intro fallback | Attempt audible intro autoplay, then muted autoplay with **Geluid inschakelen** if blocked. A playback button remains when the browser blocks both. This accommodates browser policy without restarting the movie to unmute. | [Intro playback](startup-behavior.md) |
 | Distant projectile readability | Small shots grow toward 24 pixels and ribbons toward 6 pixels at 1080-pixel viewport height, capped at 2.5× native size. Close shots retain native dimensions. Collision, damage, flight and timing do not grow with the artwork. | [Projectile visibility](projectile-visibility.md#deliberate-visibility-improvement) |
 | All moving hand torches lit | Add the 16 missing flames and attach flame/light to all 32 moving hand tips. Reuse existing original artwork/emitters. The 95 already-lit stationary torches retain their stationary behavior. | [Torch inventory and attachment](torch-flames.md), [preserved emitter enhancement](spout-effects-native.md#preserved-intentional-torch-behavior) |
+| Opaque Graveyard wall trim | Seal two narrow structural wall faces beside the descending passage that reuse the transparent gate bitmap. Keep their original geometry and palette colors, while retaining actual gate and foliage cutouts. This is a scoped content repair, not a claim of identical original renderer behavior. | [Wall transparency evidence and correction](graveyard-wall-transparency.md) |
 | Deterministic actor-lighting recovery | Retry valid floor lighting when authored shifts invalidate native samples; permit bounded local probes for verified buried origins. Clamp out-of-range luxels and avoid inherited ambient from the previous actor or mutable unrelated trace masks. | [Floor-light safeguards](actor-floor-lighting-native.md), [actor lighting](actor-lighting-native.md) |
 
 Lighting recovery covers the hand-torch sampling failures, all 60 Forest corner

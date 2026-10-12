@@ -70,14 +70,14 @@ plus disabling an indicator. Run only the relevant cases with:
 
 ```sh
 node --test --test-name-pattern='corona' tests/presentation-native.test.mjs tests/presentation-renderer.test.mjs
-TMPDIR=current_work node tests/fixture-light-scenes.mjs
+TMPDIR=temp_work node tests/fixture-light-scenes.mjs
 ```
 
 The scene check uses an isolated browser profile and compares the old and
 corrected halo sizes against actual castle and graveyard scenery. It
 isolates the selected halo, checks the production batch dimensions and
 retains screenshots and reports under
-`current_work/fixture-lights-2026-09-30/`. Native executable excerpts and
+`temp_work/fixture-lights-2026-09-30/`. Native executable excerpts and
 the sizing evidence are retained in that same directory. These checks
 passed without generating packages or running unrelated tests.
 

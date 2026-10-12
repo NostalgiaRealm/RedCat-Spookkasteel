@@ -1,4 +1,4 @@
-# Water surfaces and contact damage
+# Water surfaces, contact sounds and damage
 
 Evidence checked against the installed `RcHcGame.dat` SHA-256
 `e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5`.
@@ -83,6 +83,99 @@ Both paths apply fractional health damage every simulation frame. In RedCat's
 health callback, `0x433bc7–0x433be0` subtracts health before the later sound and
 reaction checks. A hit-sound cooldown must not discard the continuous health
 loss. Leaving contact stops further loss; it must not queue damage for later.
+
+## Water-contact sounds
+
+On 2026-10-11 the user's copied save placed RedCat beside the first forest
+moat, at `[-1734.56,-136.95,1170.02]`. Walking inside model 56 reproduced the
+missing splash: the solid collider returned no water bit, while the separate
+volume collider returned `0x1000c`. Consequently the audio router selected
+`Rcwalk1/2` even while RedCat was visibly in the pool.
+
+`CastleWorld.syncModelStates` correctly excludes these trigger models from
+solid collision. The error was reusing that exclusion for sound contact.
+`Gameplay.playerContactContents` now uses the volume collider and current
+model transforms. The relevant model list is calculated once from the original
+BSP contents, separately from rendering and streamed mesh visibility. Per-frame
+sound checks inspect only that short list, with the collider's bounds rejection.
+
+The original footstep sound slots and cadence are preserved; see
+[native footstep audio](audio-completion-native.md#redcat-footsteps). Running
+through plain water alternates `RcLWater.wav` and `RcRWater.wav`. Slow walking
+in water uses `Rcwalk1.wav`; ooze also uses that recording. Water recordings
+remain independent one-shots, so subsequent footsteps do not truncate their
+tails. Standing still, flying in no-clip, jumping above the water and pausing
+do not create repeated footstep splashes.
+
+### Jumping and landing in liquid
+
+The original does **not** select the running splash recordings for every kind
+of water contact. The shipped resource constructors assign `Rcwalk1.wav` to
+both the water and ooze jump/landing slots:
+
+| Action | Water resource | Ooze resource | Dispatch |
+|---|---|---|---|
+| Jump | `0x6b5548` | `0x6b5640` | `0x4dc808`, `0x4dc7b8` |
+| Land | `0x6b5520` | `0x6b5618` | `0x4dc709`, `0x4dc6b3` |
+
+Constructors `0x42f810`, `0x42f1b0`, `0x42f920` and `0x42f2c0` all copy the
+string at `0x690220`, `Rcwalk1.wav`. Ordinary dry jumps instead select
+`Rcjump1.wav` at `0x4dc846`. The port now selects the liquid jump sound from
+actual contact, and emits one landing contact sound when airborne RedCat
+reaches a supporting floor in water/ooze. It does not repeat that sound while
+standing on the floor, loading a save or flying in no-clip. Movement recovery
+also clears the pending landing event.
+
+The native landing handler (`0x4dc615–0x4dc696`) uses downward impact speed.
+Its minimum threshold and full-volume speed are the ordinary jump takeoff
+speed multiplied by `MinNoDamageImpactSpeedFactor` (.05) and
+`MaxNoDamageImpactSpeedFactor` (2), respectively. The multiplications are at
+`0x4dc2ba` and `0x4dc41c`. For a level pool floor, the new contact cue follows
+that minimum threshold and the clamped impact/full-volume ratio; the sound
+mixer performs its existing native gain conversion. This adds audio only,
+without adding fall damage or changing dry-ground landing behavior.
+
+Evidence is disassembled code and the shipped resources, plus the user's
+confirmation of audible splashes in this moat. No frame-by-frame recording
+of the original was used. In particular, this fix does not claim identical
+movement speed, contact hulls or every slope-impact calculation; it corrects
+the proven contact-query failure and the recovered liquid sound choices.
+
+An audit of all five imported maps found:
+
+| Level | BSP models with liquid/death contents | Audio consequence |
+|---|---|---|
+| Het Bos | 0 (water + death), 56 and 57 (water) | Both shallow pools now select splash footsteps; the lethal pit retains its death behavior. |
+| Het Kasteel | 0 (ooze) | Preserves the native ooze sound slots and excludes dry banks/bridge decks. |
+| Het Kerkhof | None | Model 135's visible water has trigger contents 4, not the native water bit; no splash is inferred from its texture. |
+| De Grotten | 0 and 211 (death) | The death bit alone does not select water sounds. Other visible water effects are not automatically footstep water. |
+| De Kasteeltoren | None | No new liquid footstep sound is assigned. |
+
+Water rendering, collision, trigger damage, movement speed and ambient/music
+scheduling are unchanged by this correction.
+
+Focused checks: `tests/water-audio.test.mjs` covers both forest pools,
+all-level contents selection, dry corners, bridge decks, walk/ooze sound slots,
+no-clip, transformed volumes, liquid jump/landing slots and impact gain, and
+single landing events at 30/60/120 simulation steps per second.
+`tests/water-audio-scenes.mjs` exercises real
+player movement in both pools and on dry ground, and verifies that both original
+splash recordings decode and retain their full durations. It also checks the
+world-to-audio jump/landing event path. To reproduce against
+a copy of the reported save:
+
+```sh
+REDCAT_WATER_SAVE=temp_work/water-contact-2026-10-11/live-autosave.json node tests/water-audio-scenes.mjs
+```
+
+The scene check also works without the environment variable by starting Het Bos.
+Use `--transitions-only` to check just jumping and landing without repeating
+the already-verified walking scenes.
+Both splash files are byte-identical to the installed originals, with durations
+of approximately 717 and 777 ms. The saved-moat scene and the second forest pool
+selected both recordings; the dry-bank scene selected only ordinary footsteps.
+Evidence and the isolated save copy are retained under
+`temp_work/water-contact-2026-10-11/`. The user's save was not modified.
 
 ## Geometry needed for contact
 

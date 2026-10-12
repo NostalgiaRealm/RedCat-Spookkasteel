@@ -10,9 +10,33 @@ export function visibleLiquidGroups(level) {
   return new Set((level.groups||[]).filter(group=>visibleLiquidGroup(group,level.textures,damaging.has(group.model))));
 }
 
+// Contact comes from BSP contents, not water artwork or solid collision.
+// Cache the few relevant models once; footfalls must not scan the whole map.
+export function liquidContactModels(collision) {
+  if(!collision?.models||!collision.nodes||!collision.leaves)return [];
+  const result=[];
+  for(let index=0;index<collision.models.length;index++) {
+    const pending=[collision.models[index].root],seen=new Set();
+    while(pending.length) {
+      const id=pending.pop();if(seen.has(id))continue;seen.add(id);
+      if(id<0) {
+        if(collision.leaves[-id-1]?.contents&0x70000){result.push(index);break;}
+      } else {
+        const node=collision.nodes[id];if(node)pending.push(node[0],node[1]);
+      }
+    }
+  }
+  return result;
+}
+
 // Three applies opacity before alphaTest. Keep palette cutouts while allowing
 // the original 115/255 and 125/255 water opacity to survive the test.
-export function surfaceAlphaTest(group, texture) {
+export function surfaceAlphaTest(group, texture, levelId) {
+  // Graveyard faces 920/921 are solid 8-unit wall strips beside the stairs,
+  // but reuse the keyed gate bitmap. Seal these strips, not the actual gates.
+  // Do not require TEXINFO_TRANS globally: the forest's Lfgrn foliage relies
+  // on bitmap-level color keying even on faces without that flag.
+  if(levelId==='lvl02a'&&group.model===0&&group.flags===0&&texture?.name==='hek_door')return 0;
   return texture?.colorKey ? .5 * group.alpha : 0;
 }
 

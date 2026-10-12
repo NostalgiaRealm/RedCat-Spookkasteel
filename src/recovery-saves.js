@@ -64,6 +64,15 @@ export class IndexedDBRecoveryStorage {
       transaction.onerror = transaction.onabort = () => reject(transaction.error || new Error('Cannot write recovery saves.'));
     });
   }
+
+  async close() {
+    // Profile switches drain RecoverySaves.flush() before closing the database.
+    // Also cover a still-pending open so deleting a player's DB cannot block on us.
+    try { await this.opening; } catch {}
+    this.database?.close();
+    this.database = null;
+    this.opening = null;
+  }
 }
 
 function readState(stored) {

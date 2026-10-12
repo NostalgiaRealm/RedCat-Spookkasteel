@@ -27,7 +27,7 @@ Static inspection of the installed `RcHcGame.dat`, SHA-256
   remains present in first person and during scripted model disappearance.
 
 Constants and focused disassembly are retained in
-`current_work/player-world-light-2026-10-04/`. This is executable evidence,
+`temp_work/player-world-light-2026-10-04/`. This is executable evidence,
 not a claim of a frame-by-frame capture of the original game.
 
 ## Portable integration

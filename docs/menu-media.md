@@ -55,6 +55,11 @@ assets in a responsive widescreen layout; preserve the aspect ratio of each imag
 The original logo and illustrations are low resolution, so high definition output
 does not create additional source-art detail.
 
+The level loading screen uses separate original 256 × 256 illustrations from
+`Bitmaps/levelbg1.bmp` through `levelbg5.bmp`, together with the original loading
+background, logo and red progress bar. See [Original level loading screen](loading-screen-native.md)
+for the layout, import command and verification.
+
 ## Movies
 
 `assets/media/manifest.json` maps the original CD movies to their converted files:

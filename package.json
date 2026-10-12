@@ -29,15 +29,45 @@
     "build:linux": "node tools/package.mjs linux",
     "build:windows": "node tools/package.mjs windows"
   },
-  "dependencies": { "three": "0.186.0" },
-  "devDependencies": { "electron": "44.3.0", "electron-builder": "26.15.3", "playwright": "1.58.2" },
+  "dependencies": {
+    "three": "0.186.0"
+  },
+  "devDependencies": {
+    "electron": "44.3.0",
+    "electron-builder": "26.15.3",
+    "playwright": "1.58.2"
+  },
   "build": {
     "appId": "local.redcat.spookkasteel",
     "productName": "RedCat Spookkasteel",
     "asar": true,
-    "directories": { "output": "dist" },
-    "files": ["index.html", "src/**/*", "electron/**/*", "assets/**/*", "data/**/*", "node_modules/three/**/*", "package.json", "README.md", "docs/**/*"],
-    "linux": { "target": "dir", "category": "Game", "executableName": "redcat-spookkasteel" },
-    "win": { "target": "dir", "signAndEditExecutable": false }
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "index.html",
+      "src/**/*",
+      "electron/**/*",
+      "assets/**/*",
+      "data/**/*",
+      "node_modules/three/**/*",
+      "package.json",
+      "README.md",
+      "docs/**/*"
+    ],
+    "linux": {
+      "target": "dir",
+      "category": "Game",
+      "executableName": "redcat-spookkasteel",
+      "icon": "assets/icons/redcat.png"
+    },
+    "win": {
+      "target": "dir",
+      "signExecutable": false,
+      "icon": "assets/icons/redcat.ico"
+    },
+    "mac": {
+      "icon": "assets/icons/redcat.icns"
+    }
   }
 }

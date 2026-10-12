@@ -72,12 +72,18 @@ Footsteps now play as independent one-shots grouped under `player:step`, so
 their tails overlap naturally and finish even after movement stops. Global
 pause/resume and level audio cleanup still cover every active instance.
 
+The [2026-10-11 water-contact correction](water-native.md#water-contact-sounds)
+also fixes the missing splash selection in the two forest pools. Their
+nonblocking trigger models were excluded by the solid collider, so the sound
+router incorrectly treated them as dry ground. Audio now reads their actual
+liquid contents through the volume collider.
+
 Only the six footstep/footfall cases in `native-audio-completion.test.mjs`,
 `presentation-native.test.mjs` and `presentation-renderer.test.mjs` were run.
 They passed, covering surface selection, cadence, movement gating, independent
 water playback, pause/resume and saved phase. Hashes, durations, native
 disassembly and the test log are retained under
-`current_work/footstep-audio-audit-2026-10-04/`. No build was created.
+`temp_work/footstep-audio-audit-2026-10-04/`. No build was created.
 
 ## Brutus combat voices
 

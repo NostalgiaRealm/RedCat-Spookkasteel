@@ -107,7 +107,7 @@ The fixed ascent uses zero enemy collision sweeps rather than up to six per
 frame, and makes no pursuit searches. This is a focused work-count check,
 not a claim about whole-level FPS. No unrelated suites or builds were run.
 Retained disassembly, copied state, browser harness, screenshots and before/
-after reports are in `current_work/zombie-rise-smooth-2026-10-05/`.
+after reports are in `temp_work/zombie-rise-smooth-2026-10-05/`.
 
 ## Fix and saves
 

@@ -47,9 +47,11 @@ try{
   check('Continue retains learned shot upgrades and SUPERSKIPPIE');
 
   await page.locator('#return-menu').click();await page.locator('[data-level="lvl00a"]').click();
+  assert.equal(await page.locator('#new-adventure-warning').evaluate(element=>element.open),false);
+  await page.locator('#play-level').click();
   await page.locator('#new-adventure-warning').waitFor({state:'visible'});await page.locator('#confirm-new-adventure').click();
   await loaded();await pause();await preserved();
-  check('replaying the forest through its chapter card retains learned abilities');
+  check('selecting the forest and confirming Level Spelen retains learned abilities');
 
   await page.locator('#return-menu').click();
   const stored=()=>page.evaluate(()=>({save:localStorage.getItem('redcat.save.v1'),progress:localStorage.getItem('redcat.progress.v1'),history:JSON.stringify(window.__redcat.recovery.state.checkpoints)}));

@@ -50,4 +50,4 @@ the portable controller's small skin tolerance and actor collision rules.
   that the shadow visibly changes the ground beneath RedCat in each scene.
 
 Disassembly, constants, asset comparison and rendered evidence are retained
-under `current_work/player-shadow-2026-10-04/`. No builds were created.
+under `temp_work/player-shadow-2026-10-04/`. No builds were created.

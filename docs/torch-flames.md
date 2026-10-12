@@ -62,4 +62,4 @@ emitters, JavaScript errors or shader errors. No builds or unrelated suites
 were run.
 
 Inventory, animation measurements, harnesses, reports and screenshots are
-retained in `current_work/torch-flames-2026-10-05/`.
+retained in `temp_work/torch-flames-2026-10-05/`.

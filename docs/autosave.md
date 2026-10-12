@@ -55,7 +55,10 @@ are reported; clearing browser/app storage also clears recovery points.
 ## Starting a new adventure
 
 Starting a new adventure or a chapter from the main menu warns before replacing
-the current adventure **and its recovery history**. Cancel, Escape, or the
+the current adventure **and its recovery history**. With an existing save,
+selecting an unlocked chapter reveals **Level Spelen** without opening the
+warning. Click **Level Spelen** to start the selected chapter or **Start opnieuw**
+to start a new adventure; these actions open the warning. Cancel, Escape, or the
 initially focused cancel button leaves both untouched. After confirmation, the
 new adventure replaces them only after its assets and scripts load successfully.
 Ordinary campaign transitions, restarting a level, and loading saves retain the

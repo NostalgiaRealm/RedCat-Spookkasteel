@@ -6,10 +6,10 @@ and browser-rendering checks passed. No packaged build was created.
 Source: installed `RcHcGame.dat`, SHA-256
 `e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5`.
 The retained complete disassembly is
-`current_work/player-world-light-2026-10-04/native-full.asm`.
+`temp_work/player-world-light-2026-10-04/native-full.asm`.
 Narrow extracts, constants, inventories, the full initializer argument mapping,
 and read-only reproducible research scripts are retained under
-`current_work/native-spouts-2026-10-05/`.
+`temp_work/native-spouts-2026-10-05/`.
 
 This recovery concerns the visual `EffectSpoutEntity` emitters. Audio/music
 behavior and scheduling are outside its scope.
@@ -279,8 +279,8 @@ visible fragments with no WebGL errors. Screenshots were inspected.
 
 Retained browser evidence:
 
-- `current_work/native-spouts-2026-10-05/scenes-1791234202235/report.json`
-- `current_work/native-spouts-2026-10-05/scenes-1791234337718/report.json`
+- `temp_work/native-spouts-2026-10-05/scenes-1791234202235/report.json`
+- `temp_work/native-spouts-2026-10-05/scenes-1791234337718/report.json`
 
 Sound/music scheduling was deliberately left as previously tuned. Before/after
 SHA-256 checks of all seven audio/ambience modules matched; the new script-command

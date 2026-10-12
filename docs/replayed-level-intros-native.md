@@ -6,7 +6,7 @@ DSO programs in `data/davi/lvl00a.json` through `lvl04a.json`, the original BSP
 entities and motion events, and installed `RcHcGame.dat` (SHA-256
 `e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5`).
 
-Retained evidence is under `current_work/replayed-level-intros-2026-10-05/`:
+Retained evidence is under `temp_work/replayed-level-intros-2026-10-05/`:
 `branch-map.json`, `script-traces.json`, `script-trace-summary.txt`, the
 per-level skill-handler extracts, and reproducible extraction/tracing scripts.
 These are focused read-only script investigations, not a run of the previous
@@ -198,4 +198,4 @@ control toast is not newly armed during a replay.
   Start opnieuw were verified. No page/script errors occurred.
 
 Browser evidence, including screenshots/profile and its JSON report, is retained
-in `current_work/replayed-level-intros-2026-10-05/scenes-1791235142883/`.
+in `temp_work/replayed-level-intros-2026-10-05/scenes-1791235142883/`.

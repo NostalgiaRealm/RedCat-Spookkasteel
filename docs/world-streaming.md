@@ -30,8 +30,18 @@ or no-clip camera has no valid PVS leaf, the renderer uses the camera frustum;
 it never borrows the player's old room or a stale last-valid camera leaf.
 
 Moving brush models retain complete groups and use their **current transformed
-bounds**, without static-face PVS filtering. This preserves door artwork,
-platforms and rolling obstacles. The graveyard's depth-only sky boundaries are
+bounds**, without static-face PVS filtering. Their whole authored root-node box
+must intersect a camera-visible BSP leaf, following Genesis3D's `ModelVisible`
+check. All materials of a model share this result. These boxes are deliberately
+larger than the artwork bounds; using tight per-material boxes can hide parts
+of doors while they open. The result is cached until the pose or camera PVS
+changes. Missing model-bound metadata retains conservative frustum-only
+visibility, as does a camera outside valid PVS leaves.
+
+This restores the check formerly bypassed for all moving brushes, which exposed
+distant graveyard gates through a small transparent sky seam. See
+[the original data, reproduction and focused checks](graveyard-sky-native.md#distant-gate-visible-through-a-sky-seam-2026-10-09).
+The graveyard's depth-only sky boundaries are
 retained, independently of static-face PVS. Liquid flags, lightmaps, alpha
 masks and face winding remain unchanged.
 
@@ -83,13 +93,13 @@ The remaining castle loads occurred during initial exploration; repeat laps no
 longer continually recreate the scenery. Resident world vertices at the end
 were 17,868 / 75,843 in the graveyard and 31,770 / 67,017 in the castle. This
 keeps the world streamed rather than retaining the entire level. The traces
-and CPU profiles are preserved in `current_work/circling-hitch-2026-10-01/`.
+and CPU profiles are preserved in `temp_work/circling-hitch-2026-10-01/`.
 
 For this regression specifically, run:
 
 ```sh
 node --test tests/world-streaming.test.mjs
-TMPDIR=current_work node tests/world-streaming-circles.mjs
+TMPDIR=temp_work node tests/world-streaming-circles.mjs
 ```
 
 The browser regression checks actual walking/collision over three circles,
@@ -100,8 +110,8 @@ does not impose a machine-dependent FPS threshold.
 
 ```sh
 node --test tests/world-streaming.test.mjs tests/actor-render-residency.test.mjs
-TMPDIR=current_work node tests/world-streaming-scenes.mjs
-TMPDIR=current_work node tests/world-streaming-transitions.mjs
+TMPDIR=temp_work node tests/world-streaming-scenes.mjs
+TMPDIR=temp_work node tests/world-streaming-transitions.mjs
 ```
 
 For a follow-up confined to large arenas and sky boundaries, pass
@@ -114,7 +124,7 @@ Browser comparisons recreate the previous full-level geometry batches at the
 same camera and restore all actor render layers for an independent reference.
 They cover starts, remote rooms, boss areas and the graveyard sky boundary.
 Screenshots, reports and isolated browser profiles remain in
-`current_work/world-streaming-2026-09-30/`.
+`temp_work/world-streaming-2026-09-30/`.
 
 Initial measurements before the wider prefetch/grace period, at the start
 views in the focused 640×360 comparisons (resident counts can now be higher):

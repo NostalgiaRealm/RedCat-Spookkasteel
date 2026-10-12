@@ -51,8 +51,12 @@ try{
   await page.evaluate(()=>window.__redcat.pause());await page.locator('#return-menu').click();
   assert.equal(await page.evaluate(()=>JSON.stringify(window.__redcat.recovery.state.checkpoints)),baseline.history);
   check('Verder spelen restores the existing adventure directly and preserves recovery choices');
-  await page.locator('[data-level="lvl01a"]').click();await page.locator('#new-adventure-warning').waitFor({state:'visible'});
-  assert.equal(await page.locator('#confirm-new-adventure').textContent(),'Het kasteel starten');await page.locator('#cancel-new-adventure').click();
+  await page.locator('[data-level="lvl01a"]').click();
+  assert.equal(await page.locator('#new-adventure-warning').evaluate(e=>e.open),false);
+  assert.equal(await page.locator('#play-level').isVisible(),true);
+  await page.locator('#play-level').click();await page.locator('#new-adventure-warning').waitFor({state:'visible'});
+  assert.equal(await page.locator('#confirm-new-adventure').textContent(),'Het Kasteel starten');await page.locator('#cancel-new-adventure').click();
+  assert.equal(await page.evaluate(()=>document.activeElement.id),'play-level');
   await page.locator('#start-over').click();assert.equal(await page.locator('#confirm-new-adventure').textContent(),'Nieuw avontuur starten');
   const oldSave=await page.evaluate(()=>localStorage.getItem('redcat.save.v1'));
   let releaseLoad,loadedRequest;const held=new Promise(resolve=>{releaseLoad=resolve;}),requested=new Promise(resolve=>{loadedRequest=resolve;});
@@ -63,7 +67,7 @@ try{
   await page.evaluate(async()=>{window.__redcat.pause();await window.__redcat.recovery.flush();});
   const reset=await page.evaluate(()=>({score:window.__redcat.gameplay.state.score,potions:window.__redcat.gameplay.state.potions,level:JSON.parse(localStorage.getItem('redcat.save.v1')).level,history:window.__redcat.recovery.state.checkpoints.length,choices:window.__redcat.recovery.choices().map(choice=>!!choice.save)}));
   assert.deepEqual(reset,{score:0,potions:0,level:'lvl00a',history:1,choices:[false,false,false]});
-  check('chapter cards retain confirmed replay; Start opnieuw always starts Level 1 and replaces old save/history after successful loading');
+  check('chapter selection waits for Level Spelen before warning; Start opnieuw always starts Level 1 and replaces old save/history after successful loading');
   await page.reload();await page.waitForFunction(()=>window.__redcat);assert.equal(await page.locator('#continue').isVisible(),true);assert.equal(await page.locator('#start').isVisible(),false);assert.equal(await page.locator('#start-over').isVisible(),true);
   check('saved-menu behavior persists after reloading');assert.deepEqual(report.errors,[]);
 }catch(error){report.failure=String(error.stack||error);await page?.screenshot({path:resolve(output,'failure.png')}).catch(()=>{});throw error;}

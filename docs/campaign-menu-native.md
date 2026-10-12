@@ -124,8 +124,10 @@ listed in [replayed introductions](replayed-level-intros-native.md).
 With a valid current save, **Verder spelen** becomes the yellow primary action,
 **Start avontuur** is hidden, and **Start opnieuw** appears as a secondary
 action. Start opnieuw always starts the Forest, even if another chapter was
-selected. Unlocked chapter cards offer a replay directly when a save exists.
-Both routes display the overwrite warning with **Annuleren** focused initially;
+selected. Selecting an unlocked chapter only changes the selection and reveals
+**Level Spelen** when a save exists. Players can select another chapter without
+opening a warning or changing their save. Clicking **Level Spelen** or
+**Start opnieuw** displays the overwrite warning with **Annuleren** focused initially;
 mouse, keyboard, touch and controller cancellation preserve the current save
 and all recovery checkpoints.
 
@@ -138,19 +140,19 @@ Starting a completely new adventure also resets earned abilities to the
 Forest's original starting state. Power shots, BIG BENG and SuperSkippie must
 be earned again. Both the new save and campaign skill ownership are replaced
 after successful loading, so reloading cannot restore the previous adventure's
-upgrades. Continue, level restart and chapter-card replay retain learned
+upgrades. Continue, level restart and replay through **Level Spelen** retain learned
 abilities; cancelling or a failed new-game load leaves ownership intact.
 
 The focused `node tests/new-adventure-skills-scenes.mjs` regression checks
 Continue and Forest replay with learned upgrades, cancellation, deferred reset
 while loading, the original Forest starting skill mask, and reload persistence.
-Evidence is retained in `current_work/new-adventure-skills-2026-10-03/`.
+Evidence is retained in `temp_work/new-adventure-skills-2026-10-03/`.
 
 Focused verification: `node tests/new-adventure-warning-scenes.mjs`. This checks
 fresh/invalid saves, desktop/portrait layout, primary button color, warning
 cancellation (including controller), Continue restoration, chapter replay and
 confirmed Forest restart with recovery reset. Evidence is retained in
-`current_work/saved-adventure-menu-2026-10-03/`. No builds were created.
+`temp_work/saved-adventure-menu-2026-10-03/`. No builds were created.
 
 
 ## Automatic tutorial suppression on replay

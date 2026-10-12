@@ -46,7 +46,9 @@ try {
   };
   const toMenu=async()=>{await page.locator('#return-menu').click();await page.evaluate(()=>window.__redcat.recovery.flush());};
   const startChapter=async id=>{
-    await page.locator(`[data-level="${id}"]`).click();await page.locator('#new-adventure-warning').waitFor({state:'visible'});
+    await page.locator(`[data-level="${id}"]`).click();
+    assert.equal(await page.locator('#new-adventure-warning').evaluate(element=>element.open),false);
+    await page.locator('#play-level').click();await page.locator('#new-adventure-warning').waitFor({state:'visible'});
     await page.locator('#confirm-new-adventure').click();await loaded(id);
   };
   const recoveryRoundTrip=async(replay,marker)=>{
@@ -99,7 +101,7 @@ try {
     assert.deepEqual(await stored(),preserved);await page.unroute(pattern);await page.reload();await ready();
   };
   await failLoad('lvl03a',async()=>{
-    await page.locator('[data-level="lvl03a"]').click();await page.locator('#confirm-new-adventure').click();
+    await page.locator('[data-level="lvl03a"]').click();await page.locator('#play-level').click();await page.locator('#confirm-new-adventure').click();
   });
   check('failed first Cave load does not record the level as played or replace saves');
   await failLoad('lvl00a',async()=>{await page.locator('#start-over').click();await page.locator('#confirm-new-adventure').click();});

@@ -1,4 +1,4 @@
-import {FootstepClock} from './locomotion-audio.js';
+import {FootstepClock,jumpSound,liquidLandingSound} from './locomotion-audio.js';
 import {playerInputVelocity} from './player-movement.js';
 import {doorMovementSound} from './door-audio.js';
 // Sound choices for gameplay actions, separate from level-script ambience.
@@ -36,7 +36,8 @@ export class GameplayAudio {
     const moved=Number.isFinite(player.stepDisplacement)?player.stepDisplacement:this.previousPosition?Math.hypot(position[0]-this.previousPosition[0],position[2]-this.previousPosition[2]):0;
     this.previousPosition=[...position];
     const enabled=!player.noClip&&!gameplay.scripts?.cutscene&&gameplay.state.health>0&&!!(input.forward||input.right)&&dt>0&&moved>.001&&moved<256*dt;
-    const contents=enabled?world.collider.contents(position,[0,0,0],[0,1,0],[...new Set([0,...gameplay.liquidModels])]):0;
+    const contents=enabled?(gameplay.playerContactContents?.(position)
+      ??world.collider.contents(position,[0,0,0],[0,1,0],[...new Set([0,...gameplay.liquidModels])])):0;
     // Native Wobble samples live input/environment velocity before the 1.4x
     // ground multiplier. Moving-platform displacement is not in this vector.
     const wind=player.environmentVelocity||[0,0,0];
@@ -78,7 +79,14 @@ export class GameplayAudio {
       const sound=(PLAYER_PROJECTILE_SOUNDS[event.kind]||PLAYER_PROJECTILE_SOUNDS.shot).impact;
       play({sound,spatial:true,position:event.position});
     }
-    if(event.type==='jump')play({sound:PLAYER_SOUNDS.jump,key:'player:jump'});
+    if(event.type==='jump'||event.type==='land') {
+      const contents=event.position?gameplay?.playerContactContents?.(event.position)||0:0;
+      if(event.type==='jump')play({sound:jumpSound(contents),key:'player:jump'});
+      else {
+        const landing=liquidLandingSound(event.impactSpeed,contents,gameplay?.settings?.game);
+        if(landing)play({...landing,group:'player:land'});
+      }
+    }
     if(event.type==='damage' && event.health>0) {
       const variant=event.amount>=40?2:event.amount>=10?1:0;
       play({sound:PLAYER_SOUNDS.hurt[variant],channel:'voices',key:'player:reaction'});

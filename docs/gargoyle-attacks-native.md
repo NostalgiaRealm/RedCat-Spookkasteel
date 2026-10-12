@@ -7,7 +7,7 @@ sprite would affect other enemies and would not restore this attack.
 
 Research uses the installed `RcHcGame.dat` and its original bitmaps and INI.
 Disassembly, decoded particle arguments, the previous timing baseline and
-render captures are retained in `current_work/gargoyle-native-2026-09-28/`.
+render captures are retained in `temp_work/gargoyle-native-2026-09-28/`.
 
 - The Gargoyle constructor creates a `Blast` effect at `0x40ba14` and stores
   it at `+0x234`. The effect constructor (`0x45dca0`) loads `kaboom.bmp` with
@@ -59,9 +59,9 @@ The engine reference corroborates the top-down BMP loading and separate-alpha
 conversion paths in [Genesis3D bitmap.c](https://github.com/RealityFactory/Genesis3D/blob/f85b288ff54873e93879791ee9eb1367a311909f/Bitmap/bitmap.c).
 The installed executable remains the source for the game's quad coordinates.
 Reference source, additional disassembly and the focused before/after renders
-are retained in `current_work/gargoyle-transparency-2026-09-29/`.
+are retained in `temp_work/gargoyle-transparency-2026-09-29/`.
 
-The focused check is `TMPDIR=current_work node tests/gargoyle-transparency-scenes.mjs`.
+The focused check is `TMPDIR=temp_work node tests/gargoyle-transparency-scenes.mjs`.
 It renders the actual tower attack and samples the production beam material
 over black and white backgrounds. At the sampled red-tail position, the old
 mapping transmits 0% of the background; the corrected mapping transmits about
@@ -110,7 +110,7 @@ Focused checks (no packaging/build step):
 
 ```sh
 node --test tests/gargoyle-blast.test.mjs
-TMPDIR=current_work node tests/gargoyle-blast-scenes.mjs
+TMPDIR=temp_work node tests/gargoyle-blast-scenes.mjs
 ```
 
 The browser check uses an isolated profile, the actual tower Gargoyle,

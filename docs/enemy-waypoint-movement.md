@@ -98,11 +98,11 @@ name; old fixtures that expected invented orbits or faced away from the target
 were corrected to test the intended contact/perception behavior.
 
 Preserved evidence and reusable browser harnesses are under
-`current_work/enemy-movement-native-2026-10-05/`:
+`temp_work/enemy-movement-native-2026-10-05/`:
 
-- [Native selector/state/actor evidence](../current_work/enemy-movement-native-2026-10-05/native-touch-waypoint-findings.md), including 42 focused disassemblies.
-- [Route endpoint findings](../current_work/enemy-movement-native-2026-10-05/route-findings.md).
-- [Performance method and captures](../current_work/enemy-movement-native-2026-10-05/performance-method-and-results.md).
+- [Native selector/state/actor evidence](../temp_work/enemy-movement-native-2026-10-05/native-touch-waypoint-findings.md), including 42 focused disassemblies.
+- [Route endpoint findings](../temp_work/enemy-movement-native-2026-10-05/route-findings.md).
+- [Performance method and captures](../temp_work/enemy-movement-native-2026-10-05/performance-method-and-results.md).
 
 This does not claim every original movement instruction is ported. The saved
 per-enemy RNG differs from the native global CRT stream. BSP body collision,

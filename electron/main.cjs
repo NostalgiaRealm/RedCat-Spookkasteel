@@ -20,6 +20,8 @@ if (process.platform === 'linux') {
 let win;
 app.whenReady().then(() => {
   const root = path.resolve(__dirname, '..');
+  const icon = path.join(root, 'assets', 'icons', process.platform === 'win32' ? 'redcat.ico' : 'redcat.png');
+  if (process.platform === 'darwin') app.dock?.setIcon(icon);
   protocol.handle('redcat', request => {
     const url = new URL(request.url);
     const filename = path.resolve(root, '.' + decodeURIComponent(url.pathname === '/' ? '/index.html' : url.pathname));
@@ -30,7 +32,7 @@ app.whenReady().then(() => {
   const area = screen.getPrimaryDisplay().workAreaSize;
   win = new BrowserWindow({
     width: Math.min(1366, area.width), height: Math.min(850, area.height), minWidth: 800, minHeight: 540,
-    title: 'RedCat Spookkasteel', backgroundColor: '#101920',
+    title: 'RedCat Spookkasteel', backgroundColor: '#101920', icon,
     webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true }
   });
   win.webContents.setWindowOpenHandler(({ url }) => {

@@ -62,7 +62,7 @@ graveyard, caves and tower. A separate rendered check loaded a copy of the
 2026-09-28 tower autosave beside `ItemHart1`, verified its yellow texture,
 scale/rotation, and pickup from 10 to 12 maximum HP with 75 points. Evidence,
 before/after images and native findings are retained in
-`current_work/health-extension-2026-09-28/`; no build was produced.
+`temp_work/health-extension-2026-09-28/`; no build was produced.
 
 Saved games now include `healthVersion:2`. Earlier capacities above the initial
 10 HP are converted once from one HP per container to two, preserving missing

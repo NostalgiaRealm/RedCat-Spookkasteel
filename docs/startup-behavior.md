@@ -40,5 +40,5 @@ Focused verification: `tests/intro-playback.test.mjs`,
 `tests/intro-scenes.mjs` and `tests/startup-ui-scenes.mjs`. Browser checks use
 fresh Chromium profiles with audible autoplay restricted; mobile layout/input
 is emulated. The desktop startup check uses the Linux Electron shell. Evidence
-is retained under `current_work/intro-autoplay-2026-10-02/` and
-`current_work/startup-ui-2026-10-03/`. No packages were generated.
+is retained under `temp_work/intro-autoplay-2026-10-02/` and
+`temp_work/startup-ui-2026-10-03/`. No packages were generated.

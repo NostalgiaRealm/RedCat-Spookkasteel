@@ -227,7 +227,7 @@ export class PlayerController {
     this.launchVelocityXZ=[0,0];
     this.grounded=false; this.modelIndices=modelIndices; this.mins=[-11,0,-11]; this.maxs=[11,56,11];
     this.lastSafe=[...position];this.noClip=false;this.environmentVelocity=[0,0,0];this.platformVelocity=[0,0,0];
-    this.skill=0;this.previousJump=false;this.jumpAge=Infinity;this.superJumpUsed=false;this.jumpSerial=0;this.jumpKind=null;
+    this.skill=0;this.previousJump=false;this.jumpAge=Infinity;this.superJumpUsed=false;this.jumpSerial=0;this.jumpKind=null;this.didLand=null;
     this.movementRecovery=new MovementRecovery();
   }
   resetVelocity(){this.velocityY=0;this.launchVelocityXZ=[0,0];this.platformVelocity=[0,0,0];this.jumpAge=Infinity;this.superJumpUsed=false;this.jumpKind=null;}
@@ -237,7 +237,7 @@ export class PlayerController {
   }
   restoreMotion(state) {
     this.movementRecovery.reset();
-    this.resetVelocity();this.grounded=false;this.previousJump=false;this.didJump=null;
+    this.resetVelocity();this.grounded=false;this.previousJump=false;this.didJump=null;this.didLand=null;
     if(!state||!Number.isFinite(state.velocityY)||!Array.isArray(state.launchVelocityXZ)||
       state.launchVelocityXZ.length!==2||!state.launchVelocityXZ.every(Number.isFinite))return;
     this.velocityY=state.velocityY;this.launchVelocityXZ=[...state.launchVelocityXZ];this.grounded=state.grounded===true;
@@ -249,7 +249,7 @@ export class PlayerController {
   update(dt, input, yaw, pitch=0) {
     dt=Math.min(dt,0.05);
     this.recoveredThisStep=false;
-    const pressedJump=!!input.jump&&!this.previousJump;this.previousJump=!!input.jump;this.didJump=null;
+    const pressedJump=!!input.jump&&!this.previousJump;this.previousJump=!!input.jump;this.didJump=null;this.didLand=null;
     this.jumpAge+=dt;
     if(this.noClip) {
       this.movementRecovery.reset();
@@ -318,7 +318,12 @@ export class PlayerController {
     this.velocityY-=PLAYER_JUMP.gravity*dt;
     const fall=this.collider.trace(this.position,[this.position[0],this.position[1]+verticalSpeed*dt,this.position[2]],this.mins,this.maxs,this.modelIndices);
     this.position=fall.end; this.grounded=false;
-    if(fall.fraction<1) { if(fall.modelIndex!==null)this.contacts.add(fall.modelIndex);this.grounded=fall.normal[1]>0.65 && verticalSpeed<=0; this.velocityY=0; }
+    if(fall.fraction<1) {
+      if(fall.modelIndex!==null)this.contacts.add(fall.modelIndex);
+      this.grounded=fall.normal[1]>0.65 && verticalSpeed<=0;
+      if(this.grounded&&!fall.startSolid)this.didLand=Math.max(0,-this.velocityY);
+      this.velocityY=0;
+    }
     if(this.grounded) {this.launchVelocityXZ=[0,0];this.jumpAge=Infinity;this.jumpKind=null;this.superJumpUsed=false;}
     return this.recoverMovement(dt,before,[dx,this.grounded?0:verticalSpeed*dt,dz],move.startSolid||fall.startSolid);
   }
@@ -329,7 +334,7 @@ export class PlayerController {
       safe:p=>!this.collider.contents||!(this.collider.contents(p,this.mins,this.maxs,this.modelIndices)&0x60000)});
     if(result){
       this.recoveredThisStep=true;
-      this.position=result.position;this.grounded=result.grounded;this.resetVelocity();this.didJump=null;
+      this.position=result.position;this.grounded=result.grounded;this.resetVelocity();this.didJump=null;this.didLand=null;
       this.contacts=new Set();this.lastSafe=[...this.position];
     } else if(this.movementRecovery.history.length)this.lastSafe=[...this.movementRecovery.history.at(-1)];
     return this.position;

@@ -15,6 +15,11 @@ def export_visibility(source,levels,output):
     require(level['source']['sha256']==hashlib.sha256(data).hexdigest(),'Visibility and level sources differ')
     faces=records(chunks,11,'<8i4B');vertices=records(chunks,14,'<3f');indices=[r[0] for r in records(chunks,13,'<i')]
     infos=records(chunks,17,'<10fI4fi');models=records(chunks,1,'<2i9f9i');leaves=records(chunks,4,'<i6f8i')
+    nodes=records(chunks,2,'<5i6f')
+    # Genesis3D CalcBSPModelInfo uses root-node bounds for ModelVisible, not
+    # the tighter render bounds in GFX_Model. Preserve these conservative
+    # boxes so a swinging door is not culled using its original face PVS.
+    model_bounds=[list(nodes[m[0]][5:11]) if m[0]>=0 else None for m in models]
     face_models=[0]*len(faces)
     for model,m in enumerate(models):
         for face in range(m[11],m[11]+m[12]):face_models[face]=model
@@ -43,7 +48,7 @@ def export_visibility(source,levels,output):
     (output/(name+'.bin')).write_bytes(pvs)
     result={'format':'redcat-gbsp-visibility-v1','sourceSha256':level['source']['sha256'],'pvsFile':name+'.bin','clusters':clusters,
             'leaves':[[l[11],l[12],l[7],l[8]] for l in leaves], 'leafFaces':leaf_faces,'faceSpans':spans,'faceCount':len(faces),
-            'areas':records(chunks,6,'<2i'),'areaPortals':records(chunks,7,'<2i')}
+            'areas':records(chunks,6,'<2i'),'areaPortals':records(chunks,7,'<2i'),'modelBounds':model_bounds}
     (output/(name+'.json')).write_text(json.dumps(result,separators=(',',':'))+'\n')
     return result
 

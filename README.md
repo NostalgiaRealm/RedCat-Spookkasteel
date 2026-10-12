@@ -113,6 +113,7 @@ See [actor lighting](docs/actor-lighting-native.md), [world-light shadows](docs/
 - Widescreen and selectable resolutions include automatic sizing, 720p, 1080p, 1440p, 4K, ultrawide formats and classic 1024×768. Camera proportions are preserved; original movies retain their 4:3 framing.
 - Keyboard/mouse, standard-mapped controllers and mobile touch overlays share gameplay actions. Menus and the level scoreboard adapt to the window size, including portrait displays.
 - Manual saves and autosaves every minute of active play are supplemented by recovery points from roughly **2, 5 and 10 minutes ago**. When a save exists, **Verder spelen** (Continue) is the main action; **Start opnieuw** (Start over) asks before replacing the adventure.
+- **Spelerlijst** (Player list), beside Settings, supports up to eight players with separate adventures, unlocks, abilities and recovery saves. It uses the original menu artwork and voices. Existing port progress is kept under **Speler 1**; see [player profiles](docs/player-profiles-native.md).
 - A two-second hold skips dialogue while retaining its script outcomes. Settings also include difficulty, audio, camera, display, touch preferences and cheats.
 - World and actor graphics stream in sections according to camera visibility, with nearby resources prepared ahead of time. Large visible areas remain complete. Collision, scripts and cached CPU data stay available; this does not unload every part of the level from system memory.
 - Navigation searches have bounded work budgets, and rendering caches reduce repeated uploads and updates. These changes address graveyard pursuit hitches and pauses when turning or revisiting an area; they do not guarantee a particular frame rate on every device.
@@ -173,7 +174,7 @@ The [build guide](docs/building.md) covers prerequisites, Linux/Windows instruct
 | `tools/` | Asset importers, local web server and packaging helper. |
 | `tests/` | Unit, importer, browser-scene and desktop checks. |
 | `docs/` | Build/hosting guides, implementation notes and original-game research. |
-| `temp_work/` | Retained investigation files, disassembly, screenshots and diagnostics; formerly `current_work/`. |
+| `temp_work/` | Retained investigation files, disassembly, screenshots and diagnostics. |
 | `dist/` | Generated desktop packages; these may lag behind source changes. |
 
 ### Focused checks
@@ -186,7 +187,7 @@ node --test tests/motions.test.mjs
 
 Feature documents list the relevant unit and scene checks. `npm test` runs the broader JavaScript unit suite; importer and release validation are described in the [build guide](docs/building.md). Browser checks use Chromium/Playwright; many accept `CHROME_PATH` for an installed browser. Desktop presentation checks require a graphical session.
 
-Keep new temporary profiles, research and diagnostic output in a named `temp_work/` subfolder, and retain it for comparison. Use isolated profiles rather than the player's normal saves. Historical research notes may still refer to its former name, `current_work/`.
+Keep new temporary profiles, research and diagnostic output in a named `temp_work/` subfolder, and retain it for comparison. Use isolated profiles rather than the player's normal saves.
 
 ### Creating desktop packages
 

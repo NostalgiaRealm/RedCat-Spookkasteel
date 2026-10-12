@@ -157,5 +157,5 @@ premature end events or sample mismatches above 1e-6. Electron also verified
 playhead preservation, quick fade reversal and pause/resume on the HTML fallback.
 
 Logs, isolated profiles and earlier failed probes are retained under
-`current_work/music-loop-2026-09-28/`; full render reports are in timestamped
-`current_work/music-loop-render-*/` directories. No release builds were made.
+`temp_work/music-loop-2026-09-28/`; full render reports are in timestamped
+`temp_work/music-loop-render-*/` directories. No release builds were made.
