@@ -4,8 +4,8 @@ import {build, createTargets, Platform} from 'electron-builder';
 
 const projectDir=fileURLToPath(new URL('../',import.meta.url));
 
-// Electron requires package metadata even though the game source is unversioned.
-// Supply it only when packaging; never persist it into package.json or the menu.
+// Electron requires package metadata even though package.json has no version.
+// Inject it only when packaging; the menu's display version is maintained separately.
 export function packageOptions(platform,packageVersion=process.env.REDCAT_PACKAGE_VERSION){
   if(!['linux','windows'].includes(platform))throw new Error('Choose linux or windows as the packaging target.');
   if(typeof packageVersion!=='string'||!packageVersion.trim())throw new Error('Electron packaging requires REDCAT_PACKAGE_VERSION (three dot-separated integers). See docs/building.md. No build was started.');

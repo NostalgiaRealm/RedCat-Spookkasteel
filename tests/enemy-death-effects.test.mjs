@@ -1,10 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {Group,Mesh,BoxGeometry,MeshBasicMaterial,Texture} from 'three';
 import {Gameplay} from '../src/gameplay.js';
 import {ghostMaterials} from '../src/ghost-materials.js';
 import {enemyDeathOpacity,applyEnemyDeathOpacity,EnemyDeathEffects,initializeDeathSmoke,deathSmokeParticle,DEATH_SMOKE_TEXTURE,DEATH_SMOKE_COLOR} from '../src/enemy-death-effects.js';
 import {CastleWorld} from '../src/world.js';
+import {KNIGHT_PARTS,createKnightDebrisParticles,knightDebrisLifetime} from '../src/knight-debris.js';
+import {stepNativeDebris} from '../src/debris-native.js';
 
 const level={id:'death-fixture',spawn:{position:[0,0,0],orientation:0},entities:[{classname:'MovingEnemy','%name%':'zombie',DaviName:'zombie',Type:'4',SubType:'1',Origin:'0 0 0'}]};
 function fixture(){const game=new Gameplay(level),object=game.objects[0];object.animationDurations={death:1.6};return {game,object};}
@@ -66,10 +69,32 @@ test('smoke follows native bind-bone offsets, outward velocity and positive acce
 
 test('knight breakup resumes its age after load and does not restart at its expiry',()=>{
   const object={id:'knight',health:0,position:[0,0,0],yaw:0,deathStartedAt:10,animationSerial:3,collisionMaxs:[20,80,20]},a=actor(new MeshBasicMaterial()),scene=new Group();
-  const world=Object.assign(Object.create(CastleWorld.prototype),{scene,gameplay:{time:12.5},actorInstances:new Map([['knight',a]]),enemyDebris:new Map(),knightParts:Array.from({length:9},()=>({})),instantiateActor:()=>actor(new MeshBasicMaterial()),track:v=>v});
+  a.userData.template={data:JSON.parse(readFileSync(new URL('../assets/actors/knight.json',import.meta.url)))};
+  const knightParts=KNIGHT_PARTS.map(name=>({data:JSON.parse(readFileSync(new URL(`../assets/actors/${name}.json`,import.meta.url)))}));
+  let disposed=0;
+  const world=Object.assign(Object.create(CastleWorld.prototype),{scene,gameplay:{time:12.5},actorInstances:new Map([['knight',a]]),enemyDebris:new Map(),knightParts,instantiateActor:()=>{
+    const material=new MeshBasicMaterial();material.addEventListener('dispose',()=>disposed++);return actor(material);
+  },track:v=>v});
   world.createKnightDebris(object,a);world.updateEnemyDebris(0);
-  const parts=world.enemyDebris.get('knight');assert.ok(Math.abs(parts.age-2.5)<1e-8);assert.ok(parts.parts.every(p=>p.actor.userData.mesh.material.opacity<1));
+  const parts=world.enemyDebris.get('knight');assert.equal(parts.parts.length,9);assert.ok(Math.abs(parts.age-2.5)<1e-8);assert.ok(parts.parts.every(p=>p.actor.userData.mesh.material.opacity===1),'airborne armour has no invented final fade');
   const positions=parts.parts.map(p=>p.actor.position.toArray());world.updateEnemyDebris(0);assert.deepEqual(parts.parts.map(p=>p.actor.position.toArray()),positions,'redraw leaves breakup motion unchanged');
   world.gameplay.time=11;world.updateEnemyDebris(0);assert.ok(Math.abs(world.enemyDebris.get('knight').age-1)<1e-8,'loading an earlier death pose rewinds existing debris');
-  world.gameplay.time=13.5;world.updateEnemyDebris(0);assert.equal(world.enemyDebris.size,0);
+  assert.equal(disposed,9,'rewinding releases the previous cohort materials');
+  world.gameplay.time=14;world.updateEnemyDebris(0);assert.equal(world.enemyDebris.size,0);assert.equal(scene.children.length,0);assert.equal(disposed,18);
+});
+
+test('knight fragments use original actor settings and native bounds, launch and per-piece physics',()=>{
+  const settings=JSON.parse(readFileSync(new URL('../assets/actors/knight.json',import.meta.url))).settings;
+  const templates=KNIGHT_PARTS.map(name=>({data:JSON.parse(readFileSync(new URL(`../assets/actors/${name}.json`,import.meta.url)))}));
+  const object={id:'knight',position:[100,200,300],deathStartedAt:10},parts=createKnightDebrisParticles(object,1.8,settings,templates);
+  assert.equal(parts.length,9);assert.equal(knightDebrisLifetime(templates),6);
+  assert.deepEqual(parts.map(p=>p.actor),KNIGHT_PARTS);assert.deepEqual(parts,createKnightDebrisParticles(object,1.8,settings,templates));
+  for(const p of parts){
+    const speed=Math.hypot(...p.velocity);assert.ok(speed>=40&&speed<80);assert.ok(p.velocity[1]/speed>=50/Math.hypot(30,50,30));
+    assert.ok(p.position[0]>=82&&p.position[0]<118);assert.ok(p.position[1]>=245&&p.position[1]<335);assert.ok(p.position[2]>=282&&p.position[2]<318);
+    assert.ok(p.life>=3&&p.life<4);assert.equal(p.conf.Gravity,9.8);assert.equal(p.conf.RotationSpeed,100);assert.equal(p.conf.Friction,.8);assert.equal(p.conf.Elasticity,1.6);
+    const vy=p.velocity[1];stepNativeDebris(p,.01);assert.ok(Math.abs(p.velocity[1]-(vy-3.136))<1e-10);
+    assert.equal(p.opacity,1);assert.deepEqual(p.bounds.min,[-2.4,p.actor==='knax'?-1.6:-0,-2.4]);
+    assert.equal(p.conf.MustFade,p.actor==='knax'?1:0);
+  }
 });

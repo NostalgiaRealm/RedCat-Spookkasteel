@@ -21,7 +21,8 @@ try{
     const mirror=g.objects.find(o=>o.subtype==='mirror');g.pickup(mirror);
     const r=[...a.audio.sounds].find(r=>r.group==='pickup'&&r.name==='imirror.wav');
     window.__mirrorRecord=r;window.__mirrorResult={completed:g.completed,initialLevel:a.world.id,initialPending:a.audio.pickupsPending,ended:false};
-    r.element.addEventListener('ended',()=>Object.assign(window.__mirrorResult,{ended:true,endTime:r.element.currentTime,duration:r.element.duration,levelAtEnd:a.world.id}));
+    const onended=r.element.onended;
+    r.element.onended=()=>{Object.assign(window.__mirrorResult,{ended:true,endTime:r.element.currentTime,duration:r.element.duration,levelAtEnd:a.world.id});onended();};
   });
   await page.waitForFunction(()=>window.__mirrorRecord.element.currentTime>.3);
   const paused=await page.evaluate(()=>{const a=window.__redcat;a.pause();return window.__mirrorRecord.element.currentTime;});

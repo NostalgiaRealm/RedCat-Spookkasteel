@@ -2,7 +2,8 @@
 
 Reviewed against the project documentation and current source on **6 October
 2026**. Here, **native** means the original Windows game. This catalog records
-the current deliberate departures; superseded tuning and reverted experiments
+the current deliberate departures; validation fixes were added 18 October 2026.
+Superseded tuning and reverted experiments
 are not instructions to restore old behavior. The linked feature notes provide
 the original evidence, implementation details and their recorded checks.
 
@@ -34,13 +35,15 @@ subfolders for later comparison.
 | Change | Current behavior and reason | Detail |
 | --- | --- | --- |
 | Automatic saving | Save every 60 seconds of active play, alongside manual saves and checkpoints. This reduces progress lost after interruptions. | [Autosaves](autosave.md) |
+| Preserve living saves | Reject new saves while RedCat has no health, preserving the latest living save and recovery history through death, menu/quit and player changes. Saving resumes after respawn; existing death-animation saves remain loadable. | [Autosaves](autosave.md), [focused evidence](../temp_work/death-save-2026-10-18/verified-fix.md) |
 | Recovery history | Offer saves from approximately 2, 5 and 10 minutes of playing time ago. Retain at most eleven minute checkpoints; older ones are discarded. Paused/offline time does not age them. | [Recovery storage and retention](autosave.md#retention-and-storage) |
+| Transient-state continuity | New saves retain smoke/flame pools, knight fragment physics, active WAV positions, dialogue queues, loop waits and crossfade progress. Loading continues these states instead of restarting them. This extends the port's save format; it is not a claim about the original RCR format. | [Effect continuity](effects-save-continuity.md), [audio continuity](audio-save-continuity.md) |
 | Safer adventure replacement | When a save exists, highlight **Verder spelen**, hide **Start avontuur**, and offer **Start opnieuw** with confirmation. Selecting an unlocked chapter reveals **Level Spelen**; only clicking that button opens the chapter-start warning before replacing the adventure and its recovery history. Replacement occurs only after the new level loads successfully. | [Starting a new adventure](autosave.md#starting-a-new-adventure), [menu implementation](../src/main.js) |
 | Optional cheats | A settings submenu fills mirror pieces and potions to their limits, adds 9000 points, unlocks all chapters, or enables free flight. Supplies do not collect actual level objects or complete their scripts. | [Cheat implementation](../src/cheats.js), [chapter access](campaign-menu-native.md) |
 | Invulnerable no-clip | Free flight ignores all damage, including enemies, liquids, beams and scripted kills. Exiting inside geometry seeks a safe position; if none is available, flight and protection stay enabled. | [No-clip protection](player-protection-progress-and-local-audio.md#no-clip-protection) |
 | Campaign ownership | Unlocks and earned abilities are stored separately from individual checkpoints. Earlier chapter replays and recovery loads retain them. A confirmed new adventure resets shooting upgrades, SuperSkippie and played-level history; chapter unlocks and preferences remain. | [Permanent abilities](player-protection-progress-and-local-audio.md#earned-abilities-across-chapter-replays), [replay history](replayed-level-intros-native.md#automatic-replay-policy-in-the-port) |
 | Accessible final chapter | The original fifth-card handler has an additional, unexplained comparison. The port makes the Tower selectable once legitimately unlocked, without reproducing that restriction. | [Original chapter-menu evidence](campaign-menu-native.md#original-evidence) |
-| Stuck-character recovery | RedCat and independently moving enemies try a small clear offset or a recently verified safe position after a sustained geometry wedge. Recovery checks support, hazards and the escape route; scripted doors/platforms/hazards are not relocated. | [Movement recovery](movement-recovery.md) |
+| Stuck-character recovery | RedCat and independently moving enemies try a small clear offset or a recently verified safe position after a sustained geometry wedge. Recovery checks support, hazards and the escape route. A bounded player-only search can also return from a narrow fall trap to an already reached higher safe position, as needed behind the Castle warehouse crates. Scripted doors/platforms/hazards are not relocated. | [Movement recovery](movement-recovery.md) |
 | Graveyard maze reset | An unfinished moving-hedge maze resets its progression triggers, walls and door on respawn. The specific stranded entrance pattern in older saves is repaired on load. Completed mazes and unrelated progress stay intact. | [Maze recovery](graveyard-maze-recovery.md) |
 
 The maze change fixes an original design trap: its one-use progression triggers
@@ -111,6 +114,7 @@ present settings. Sources: [Cave ambience](cave-ambience-range.md),
 | Music continuity | Loop the complete decoded track and resume its in-session playhead after combat instead of restarting every return to ambient music. Reuse/reverse an outgoing fade to avoid duplicate voices. Explicit stops and level resets clear remembered positions. | [Music loops and continuity](audio.md#complete-music-loops-and-encounter-continuity) |
 | Portal terminal cue alignment | Play original `Magiev1.wav` at the actual disappearance and reappearance associated with a pad's pending sequence, once per transition. Native code selects it at the terminal visual stage; the port aligns it to the requested actor transition, with that stage as fallback. | [Portal transitions](world-action-audio.md#portal-departure-and-arrival), [portal audio](portal-audio-native.md) |
 | Audio query budget and outside-map fallback | Cache sound visibility/obstruction checks at 10 Hz or after significant movement. A no-clip camera outside valid map visibility retains distance/pan audibility. | [Spatial audio](audio.md) |
+| Explicit browser-player cleanup | Unload completed/stopped HTML audio at existing release points instead of relying on garbage collection. Buffered pickup tails, active playback, pause/resume and deliberate music scheduling are preserved. This is a browser resource-lifetime fix, not a native timing change. | [Audio lifetime evidence](audio-media-lifetime.md) |
 
 ## Presentation, controls and menus
 
@@ -152,10 +156,15 @@ is bounded.
 | Display refresh and automatic mobile quality | Render through the display-synchronized browser frame loop. The Linux launcher removes an inherited MangoHud cap unless a launch-specific cap was supplied. The Android wrapper has its own automatic rendering-size budget; explicit resolution selection remains available. | [Refresh investigation](native-refresh-performance.md), [Android adapter](../src/android-host.js), [Android setup](../ANDROID.md) |
 
 Remaining fidelity gaps are tracked in [the native audit](native-parity-audit.md),
-rather than promoted to intentional design goals. Examples include cross-clip
-animation blending, some unrecovered attack branches, knight armour's
-reconstructed breakup and generic smoke/flame pools regenerating on save load.
-Current portal and Fleurifee snapshots preserve their particle state. Original
+rather than promoted to intentional design goals. Portable collision tolerances,
+global random sequencing and hardware audio timing still have boundaries.
+Cross-clip blending and knight
+armour's native particle rules are now implemented. Fresh skeletons retain a
+settled pile on initial loading instead of visibly reversing from a standing
+pose; subsequent wake and settling transitions use the recovered motions
+([lifecycle details](enemy-lifecycles-native.md)).
+Current portal, Fleurifee and smoke/flame snapshots preserve their particle
+state, and knight fragments and audio now retain their live state too. Original
 Windows RCR save import and additional platform validation remain separate work.
 
 ## Interesting findings: power-move and green crates

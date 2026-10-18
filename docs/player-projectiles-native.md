@@ -21,7 +21,10 @@ The ordinary firing branch at `0x434c25` selects animation speed 1.9. At
 from `0x64c598` before emitting the pellet. The imported RedCat `shoot1` motion
 lasts 1.9333430528640747 seconds, so a normal firing cycle is about 1.018 seconds
 and the pellet is released about 0.468 seconds after that cycle begins.
-The simulation and rendered player animation now share this timing.
+The simulation and rendered player animation share this clock. The 12 October
+animation audit additionally recovered the visual handoff at **80%**: shooting
+yields to movement/idle after about .814 seconds, while projectile release and
+recharge remain unchanged. See [animation recovery](redcat-animations-native.md).
 
 `ProjectileEasy.ini`, `ProjectileNormal.ini`, and `ProjectileHard.ini` contain
 the active per-projectile properties. These are already imported into

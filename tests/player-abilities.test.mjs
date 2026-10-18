@@ -136,12 +136,19 @@ test('ordinary held fire stays available before BIG BENG and stale charges cance
   tick(game,.4,true);game.scripts={weaponsEnabled:false};tick(game,.01,true);assert.equal(game.playerCharge,null);
 });
 
-test('charging pauses across cutscenes and survives save/load without losing its release',()=>{
+test('charging survives save/load without losing its release',()=>{
   const {game}=gameWithSkill();tick(game,.75,true);const age=game.playerCharge.age;
-  game.scripts={cutscene:true,weaponsEnabled:true};tick(game,2,true);assert.equal(game.playerCharge.age,age);game.scripts=null;
   const restored=new Gameplay(game.level,{save:JSON.parse(JSON.stringify(game.snapshot()))});
-  assert.deepEqual(restored.playerCharge,game.playerCharge);tick(restored,.25);
+  assert.equal(restored.playerCharge.age,age);assert.deepEqual(restored.playerCharge,game.playerCharge);tick(restored,.25);
   assert.equal(restored.projectiles.length,1);assert.ok(Math.abs(restored.projectiles[0].damage-2)<1e-8);
+});
+
+test('dialogue cancels a held charge so RedCat idles and cannot fire it after the cutscene',()=>{
+  const {game,events}=gameWithSkill();tick(game,.75,true);assert.ok(game.playerCharge);
+  game.scripts={cutscene:true,weaponsEnabled:true};tick(game,2,true);
+  assert.equal(game.playerCharge,null);assert.equal(game.pendingPlayerAttack,null);
+  assert.equal(events.filter(e=>e.type==='player-charge'&&!e.active).length,1);
+  game.scripts=null;tick(game,.25,false);assert.equal(game.projectiles.length,0);
 });
 
 test('touch press/release supplies the same SuperSkippie and charging edges as held keyboard input',()=>{

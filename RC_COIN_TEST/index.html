@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RC Coin Test</title>
+  <link rel="icon" href="assets/icons/redcat.png">
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+</head>
+<body>
+  <canvas id="scene" aria-label="RedCat testkamer"></canvas>
+  <canvas id="hud" aria-label="Originele spelinformatie"></canvas>
+  <footer>
+    <div><strong>Munten & geldzakjes · vergelijking</strong><p id="status" role="status">De originele modellen laden…</p></div>
+    <div class="controls">WASD / pijlen: bewegen · muis: kijken · spatie: springen<br>Shift: lopen · Ctrl / klik: schieten · V: eerste/derde persoon · R: opnieuw · Esc: pauze · F11: volledig scherm</div>
+    <button id="reset" type="button" disabled>Opnieuw (R)</button>
+  </footer>
+  <section id="overlay">
+    <div class="panel">
+      <h1>RC Coin Test</h1>
+      <p id="overlay-message">De originele modellen laden…</p>
+      <button id="resume" type="button" disabled>Start test</button>
+      <p class="note">Drie ongebruikte munten naast drie originele geldzakjes: 1, 5 en 10 geld.<br>Deze losse test gebruikt geen voortgang uit het gewone spel.</p>
+    </div>
+  </section>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

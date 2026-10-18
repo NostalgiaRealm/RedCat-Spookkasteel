@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RC Actor Test</title><link rel="icon" href="assets/icons/redcat.png"><link rel="stylesheet" href="style.css">
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script></head>
+<body>
+<canvas id="scene" aria-label="RedCat testkamer"></canvas><canvas id="hud" aria-label="Originele spelinformatie"></canvas>
+<footer><div><strong>Personages · origineel en ongebruikt</strong><p id="status" role="status">Modellen laden…</p>
+<p class="controls">WASD / pijlen: bewegen · muis: kijken · spatie: springen · Shift: lopen · Ctrl / klik: schieten · V: camera wisselen<br>
+[ / ]: ander model · 1–9: model 1–9 · E: volgende animatie · P: animaties pauzeren · Esc: modelkeuze · F11: volledig scherm</p></div>
+<button id="inspect" type="button">Modellen / pauze</button><button id="reset" type="button" disabled>Opnieuw (R)</button></footer>
+<section id="overlay"><div class="panel"><h1>RC Actor Test</h1><p id="overlay-message">Modellen laden…</p>
+<div class="fields"><label for="model">Model</label><select id="model"></select><button id="visit" type="button">Naar model</button>
+<label for="clip">Originele animatie</label><select id="clip"></select><button id="play" type="button">Afspelen</button></div>
+<label class="loop"><input type="checkbox" id="loop" checked> Animatie herhalen</label>
+<div class="actions"><button id="resume" type="button" disabled>Start test</button><button id="freeze" type="button">Animaties pauzeren (P)</button></div>
+<p class="note">Links: ongebruikt. Rechts: in het spel. Beide zijn animatievoorbeelden, zonder vechtgedrag.<br>Vaste modellen blijven in hun oorspronkelijke pose. Voortgang uit het gewone spel wordt niet gebruikt.</p>
+</div></section><script type="module" src="src/main.js"></script></body></html>

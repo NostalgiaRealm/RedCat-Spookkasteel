@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RedCat · Shove test</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js"}}</script>
+</head>
+<body>
+  <canvas id="scene" aria-label="RedCat testkamer"></canvas>
+  <aside>
+    <span class="eyebrow">LOSSE TESTKAMER</span>
+    <h1>RedCat · Shove test</h1>
+    <p id="description">De oorspronkelijke modellen worden geladen…</p>
+    <label for="mode">Opstelling</label>
+    <select id="mode">
+      <option value="power">Power-move proef — experimenteel</option>
+      <option value="native">Originele krattenpuzzel</option>
+    </select>
+    <p id="objective"></p>
+    <button id="reset">Opnieuw <kbd>R</kbd></button>
+    <details>
+      <summary>Wat is teruggevonden?</summary>
+      <p>In Het Kasteel verplaatst een aanraakknop drie groene krattenstapels. Tegen de kratten lopen verplaatst ze niet. De modellen en hun bewegingsbanen hieronder komen uit die puzzel.</p>
+      <p>Er bestaat een ongebruikte <em>power-move</em>-vlag, maar er is geen werkende shove-invoer of shove-animatie aangetoond. De power-move proef laat je zelf duwen; deze actie en de toets Q zijn experimenteel, niet teruggevonden in het oorspronkelijke spel.</p>
+      <p>De testkamer, verlichting en plaatsing zijn nieuw. Dit is geen volledig nagebouwde kamer uit het spel. Zie ook README.md.</p>
+    </details>
+  </aside>
+  <div id="status" role="status">Laden…</div>
+  <footer><span><kbd>WASD</kbd> / pijlen · bewegen</span><span><kbd>Q</kbd> vasthouden + lopen · duwen (proef)</span><span><kbd>Spatie</kbd> · springen</span><span>Klik · muisbesturing</span><span><kbd>Esc</kbd> · muis vrij</span><span><kbd>F11</kbd> · volledig scherm</span></footer>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

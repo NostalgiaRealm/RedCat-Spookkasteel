@@ -103,7 +103,8 @@ async function selectPlayer(id){
   if(id===profiles.activeId)return true;
   if(!profiles.list().some(player=>player.id===id))throw new Error('Deze speler bestaat niet meer.');
   // Save while the old player still owns both the world and the storage keys.
-  if(world&&gameplay&&!saveGame(true))throw new Error('Het huidige avontuur kon niet worden opgeslagen. Wisselen is afgebroken.');
+  // A defeated world keeps its last living save and can still be retired.
+  if(world&&gameplay&&gameplay.state.health>0&&!saveGame(true))throw new Error('Het huidige avontuur kon niet worden opgeslagen. Wisselen is afgebroken.');
   if(!store(PLAYER_OPTIONS_KEY,{difficulty:settings.difficulty,noClip:settings.noClip}))throw new Error('De instellingen van deze speler konden niet worden opgeslagen.');
   profileSwitching=true;const previousRecovery=recovery;let nextRecovery;
   try{
@@ -143,8 +144,15 @@ async function removePlayer(id){
   return 'Speler verwijderd.';
 }
 function validSave(save){return validAdventureSave(save);}
-function adventureSnapshot(){return {version:1,level:world.id,position:[...world.player.position],lastSafe:[...world.player.lastSafe],playerMotion:world.player.snapshotMotion(),noClip:world.player.noClip,yaw:world.yaw,pitch:world.pitch,game:gameplay.snapshot(),savedAt:new Date().toISOString()};}
-function saveGame(silent=false){if(profileSwitching||!world||!gameplay||worldProfileId!==profiles?.activeId)return false;const save=adventureSnapshot(),ok=store(SAVE_KEY,save);pendingRecoveryCapture=recovery.capture(save).then(saved=>{if(saved)recoveryError=false;return saved;});refreshContinue();if(ok){autosave.reset();if(!silent)toast('Je avontuur is opgeslagen.');}return ok;}
+function adventureSnapshot(){return {version:1,level:world.id,position:[...world.player.position],lastSafe:[...world.player.lastSafe],playerMotion:world.player.snapshotMotion(),playerAnimation:world.snapshotPlayerAnimation(),noClip:world.player.noClip,yaw:world.yaw,pitch:world.pitch,game:gameplay.snapshot(),audio:audio.saveState(),savedAt:new Date().toISOString()};}
+function saveGame(silent=false){
+  if(profileSwitching||!world||!gameplay||worldProfileId!==profiles?.activeId)return false;
+  // Death animations and game-over menus must not replace a usable save.
+  if(gameplay.state.health<=0){if(!silent)toast('Je avontuur is niet opgeslagen. Probeer het opnieuw zodra RedCat terug is.');return false;}
+  const save=adventureSnapshot(),ok=store(SAVE_KEY,save);
+  pendingRecoveryCapture=recovery.capture(save).then(saved=>{if(saved)recoveryError=false;return saved;});
+  refreshContinue();if(ok){autosave.reset();if(!silent)toast('Je avontuur is opgeslagen.');}return ok;
+}
 function renderRecoveryChoices(){
   const choices=recovery.choices();
   $('recovery-options').replaceChildren(...choices.map(choice=>{
@@ -263,6 +271,8 @@ function pause(){if(mode!=='playing')return;mode='paused';clearInputs();syncTouc
 function resume(){menuAudio.stop();if(!world||androidSuspended())return;if(gameplay.completed&&chapterTransition?.world!==world)return loadSave();if(gameplay.state.health<=0&&!(gameplay.playerReaction?.phase==='death'&&!gameplay.playerReaction.finished&&gameplay.state.lives>0))return startLevel(selected,null,null,{resumeReplayLevel:gameplay.scripts?.replayLevel===true});clearInputs();mode='playing';$('pause').hidden=true;$('settings').hidden=true;$('cheats').hidden=true;if(androidHost.enabled)audio.context?.resume()?.catch(()=>{});audio.resume();lastFrame=performance.now();syncTouchUI();requestLook();}
 function requestLook(event){if(controllerActive||touchEnabled||(mobileWeb&&!event)||event?.pointerType==='touch'||event?.sourceCapabilities?.firesTouchEvents)return;if(mode==='playing'&&!document.pointerLockElement){const result=$('game').requestPointerLock?.();result?.catch(()=>{if(event?.isTrusted)toast('Klik in het spel om rond te kijken.');});}}
 async function returnMenu(){if(world)saveGame(true);levelReplaySelected=false;mode='menu';menuAudio.showMenu();clearInputs();syncTouchUI();document.exitPointerLock?.();stopAudio();debriefing.hide();$('menu').hidden=false;$('hud').hidden=true;$('pause').hidden=true;$('settings').hidden=true;$('cheats').hidden=true;document.body.classList.remove('in-cutscene');$('subtitle').hidden=true;refreshContinue();renderChapters();}
+const dialogueStarted=line=>{$('subtitle').textContent=line.text||'';$('subtitle').hidden=!line.text;};
+const dialogueEnded=()=>{$('subtitle').hidden=true;};
 function handleGameEvent(event){
   // Skipping executes every script callback but suppresses transient audio/UI.
   if(gameplay?.scripts?.skippingCutscene&&['dialogue','scriptSound','scriptMusic','flash','message'].includes(event.type))return;
@@ -270,8 +280,8 @@ function handleGameEvent(event){
   if(event.type==='cutscene'){document.body.classList.toggle('in-cutscene',event.active);if(!event.active&&!audio.dialoguePending)$('subtitle').hidden=true;}
   if(event.type==='dialogue'){
     if(event.voice)audio.queueDialogue(event,{
-      onStart:line=>{$('subtitle').textContent=line.text||'';$('subtitle').hidden=!line.text;},
-      onEnd:()=>{$('subtitle').hidden=true;}
+      onStart:dialogueStarted,
+      onEnd:dialogueEnded
     });
     else if(!audio.dialoguePending){$('subtitle').textContent=event.text||'';$('subtitle').hidden=!event.text;}
   }
@@ -358,9 +368,19 @@ async function startLevel(index,save=null,progress=null,{resetRecovery=false,new
     gameplay.playerPosition=[...world.player.position];
     const scripts=new ScriptHost(gameplay,world.scriptProgram,{motions:world.motions,dialogue:world.dialogue,isDialoguePlaying:()=>audio.dialoguePending,replayLevel});
     await world.attachGameplay(gameplay);loadingScreen.setProgress(.8);audio.setLevel(world.id);await audio.setSpatialWorld(world);audio.pause();audio.update(0,world.camera.position.toArray());startMusic();scripts.initialize(save?.game.scripts);world.syncModels();world.syncActors(0);
-    if(save)world.cameraControl.restore(world);
+    if(save){world.cameraControl.restore(world);world.restorePlayerAnimation(save.playerAnimation);}
     world.updateCamera(1,true);audio.update(0,world.camera.position.toArray());selected=index;renderQuality.reset();resize();updateCheatControls();renderHud();
     await world.geometryStream.settle();world.updateRenderResidency();world.effects?.update(0);
+    // Restore after script/effect reconstruction, while every voice is paused.
+    // This replaces reconstruction audio without replaying script callbacks.
+    if(save?.audio&&audio.restoreState(save.audio,{
+      positionForSource:id=>{const object=gameplay.objects.find(o=>o.id===id);return object?()=>gameplay.objectPosition(object):null;},
+      onDialogueStart:dialogueStarted,onDialogueEnd:dialogueEnded
+    }))for(const state of world.effects?.entries.values()||[]){
+      // Legacy visual saves restart the fairy idle on their first tick. A
+      // restored voice already has its saved cursor and must not be replaced.
+      if(state.resumeFairyAudio&&audio.keyed.has(`effect:fairy:${state.object.id}:idlefee1.wav`))state.resumeFairyAudio=false;
+    }
     loadingScreen.setProgress(.95);
     $('level-name').textContent=LEVELS[index].name;$('objective').textContent='Verzamel toverdrank en vind het spiegelstuk.';
     // A successful new adventure replaces its own recovery timeline only now,
@@ -414,7 +434,10 @@ function applyUnlockAllLevels(){
 function renderHud(){
   if(!gameplay||!world)return;
   const state=gameplay.state;
-  for(const key of ['health','lives','score','potions','mirror'])$(key).textContent=state[key]||0;
+  for(const key of ['health','lives','score','potions','mirror']) {
+    const element=$(key),value=String(state[key]||0);
+    if(element.textContent!==value)element.textContent=value;
+  }
   originalHud.render(state,gameplay.totalPotions,world.targeting?.locked?world.targeting.target:null,$('game').width,$('game').height,{bottomInset:touchEnabled&&!controllerActive?200:0});
 }
 function updateSkipIndicator(){

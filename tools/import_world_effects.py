@@ -17,6 +17,7 @@ def import_effects(installation, output, levels):
         pairs.add((f'explosie{frame:02}.bmp',f'explosie{frame:02}_a.bmp'))
     pairs.add(('smoke_05.bmp','smoke_green_a.bmp'))
     pairs.add(('strail.bmp','strail_a.bmp'))
+    pairs.add(('ptrail.bmp','ptrail_a.bmp'))
     pairs.add(('electricwave.bmp','electricwave_a.bmp'))
     pairs.add(('kaboom.bmp','kaboom_a.bmp'))
     pairs.add(('kaboom2.bmp','kaboom2_a.bmp'))

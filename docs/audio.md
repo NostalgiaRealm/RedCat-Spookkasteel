@@ -71,6 +71,12 @@ effects are not replayed by restoring a save.
 
 ## Verification and limits
 
+The 18 October [media-lifetime follow-up](audio-media-lifetime.md) adds explicit
+unloading of released HTML audio players. Its nine focused tests and isolated
+browser destruction/startup check preserve active sounds, pause/resume,
+buffered pickup tails and the existing scheduling. The report also records the
+unproven cause of the campaign's first outro startup failure.
+
 Earlier audio verification covered original forest/host regression cases,
 gain math, distance, script clamping, pause/replacement, mute/unmute and replay
 scheduling.
@@ -84,8 +90,9 @@ The detailed executable evidence, including its hash and function addresses,
 is in `audio-native.md`. No original-versus-port audio recording comparison has
 been completed. Native stereo and BSP obstruction are implemented; authored
 effect-specific fade envelopes and sample-exact replay/voice timing are not
-claimed. Exact native scheduling of nonzero EffectSound replay delays and the
-music fade curve remain verification limits. The later
+claimed. Exact native scheduling of nonzero EffectSound replay delays remains
+an intentional scheduling difference. The music envelope now
+uses the [recovered native control-gain ramp](music-fade-native.md). The later
 [portal audio audit](portal-audio-native.md) found no per-frame terminal volume
 envelope in the portal class: `Magiev1.wav` finishes naturally beyond the
 visual flash, which the port now preserves. The mixer uses portable HTML media

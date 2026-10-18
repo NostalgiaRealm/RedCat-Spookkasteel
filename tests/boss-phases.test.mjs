@@ -5,6 +5,7 @@ import { Gameplay } from '../src/gameplay.js';
 import { initializeBoss,updateBoss,bossCanTakeDamage,bossHitResult,bossWasHit,snapshotBossState,restoreBossState } from '../src/boss-ai.js';
 import { ActorAnimator, ActorStateAnimator } from '../src/animation.js';
 import * as THREE from 'three';
+import {enemyRandom} from '../src/enemy-navigation.js';
 
 const data=async file=>JSON.parse(await readFile(new URL('../'+file,import.meta.url),'utf8'));
 const levels=await Promise.all(['lvl01a','lvl03a','lvl04a'].map(id=>data('data/levels/'+id+'/level.json')));
@@ -119,7 +120,9 @@ test('Witch enters the scripted defeat at native health threshold two',()=>{
 test('A boss hit interrupts its pending shot only when native reaction chooses a new state',()=>{
   const f=fixture('maxj');f.until(()=>f.o.boss.phase==='shoot');
   bossWasHit(f.game,f.o,{reaction:false});assert.equal(f.o.boss.phase,'shoot');
-  bossWasHit(f.game,f.o,{reaction:true});assert.equal(f.o.boss.phase,'teleportOut');assert.equal(f.o.pendingAttack,null);
+  bossWasHit(f.game,f.o,{reaction:true});assert.equal(f.o.boss.phase,'recover');assert.equal(f.o.pendingAttack,null);
+  assert.equal(f.o.animationState,'hurt');assert.equal(bossCanTakeDamage(f.o),true);
+  f.until(()=>f.o.boss.phase==='teleportOut');assert.equal(bossCanTakeDamage(f.o),false);
 });
 
 test('Gameplay routes bosses through specialized phases and restores a moving turret without a phase reset',()=>{
@@ -176,17 +179,107 @@ test('Witch threshold defeat dispatches the existing end-scene hook exactly once
   game.hurtEnemy(o,100);assert.equal(defeated,1);assert.equal(game.state.kills,1);
 });
 
-test('Interrupting Dungeon Max during a rise lowers from the actual height without teleporting upward',()=>{
+test('Interrupting Dungeon Max during a rise preserves height then starts a fresh native salvo',()=>{
   const f=fixture('maxd');f.until(()=>f.o.boss.phase==='rise');for(let i=0;i<10;i++)f.tick();
-  const height=f.o.position[1];f.o.aiRandomState=1;f.game.hurtEnemy(f.o,1);assert.equal(f.o.boss.phase,'recover');
-  f.until(()=>f.o.boss.phase==='lower');f.tick();assert.ok(f.o.position[1]<=height);
-  f.until(()=>f.o.boss.phase==='idle');assert.equal(f.o.position[1],f.o.boss.home[1]);
+  const height=f.o.position[1];bossWasHit(f.game,f.o,{reaction:true});assert.equal(f.o.boss.phase,'recover');
+  f.until(()=>f.o.boss.phase==='shoot');assert.equal(f.o.position[1],height);
+  assert.equal(f.o.boss.shots,f.o.salvoSize);assert.equal(f.o.boss.machineMotion,'shoot1');
 });
 
 test('Dungeon Max accepts every exposed-body hit but reacts on the native half of hits',()=>{
   const {game,o}=fixture('maxd');o.aiRandomState=1;
-  const first=bossHitResult(game,o,1);assert.equal(first.damage,1);assert.equal(first.reaction,true);
+  const first=bossHitResult(game,o,1);assert.equal(first.damage,1);
   let reaction=false,quiet=false;
   for(let i=0;i<100;i++){const hit=bossHitResult(game,o,1);assert.equal(hit.damage,1);reaction||=hit.reaction;quiet||=!hit.reaction;}
   assert.ok(reaction&&quiet);
+});
+
+test('boss hit reactions use CRT modulo and preserve a playing hurt child through repeated hits',()=>{
+  for(const type of ['maxj','maxd','witch']){
+    const {game,o,tick,until}=fixture(type);o.boss.started=true;
+    o.boss.phase='shoot';o.boss.shots=3;o.boss.duration=2;o.animationState='attack';
+    o.aiRandomState=101;const reference={...o};
+    const expected=Math.floor(enemyRandom(reference)*32768)%(type==='maxj'?3:2)===0;
+    assert.equal(bossHitResult(game,o,1).reaction,expected);assert.equal(o.aiRandomState,reference.aiRandomState);
+    bossWasHit(game,o,{reaction:true});assert.equal(o.boss.phase,'recover');assert.equal(o.boss.shots,0);
+    assert.ok(Math.abs(o.boss.duration-o.animationUntil+game.time)<1e-8);
+    assert.ok(o.animationRate>=.8&&o.animationRate<1.2);
+    tick(.05);const state=snapshotBossState(o),serial=o.animationSerial,deadline=o.animationUntil,rng=o.aiRandomState;
+    bossWasHit(game,o,{reaction:true});assert.deepEqual(o.boss,state);
+    assert.equal(o.animationSerial,serial);assert.equal(o.animationUntil,deadline);assert.equal(o.aiRandomState,rng);
+    const saved=game.snapshot(),copy=fixture(type);copy.game.restore(saved);
+    assert.deepEqual(copy.o.boss,o.boss);assert.equal(copy.o.animationRate,o.animationRate);
+    until(()=>o.boss.phase!=='recover');
+    assert.equal(o.boss.phase,type==='maxj'?'teleportOut':type==='maxd'?'shoot':'fly');
+    if(type==='witch')assert.equal(o.boss.approaching,true);
+  }
+});
+
+test('standing bosses release committed salvos with no extra pause between shoot animations',()=>{
+  for(const type of ['maxj','maxd']){
+    const f=fixture(type),{game,o,context,tick,until}=f;o.salvoSize=3;
+    until(()=>o.boss.phase==='shoot');
+    context.visible=false;context.distance=10000;
+    const firstDuration=o.boss.duration,start=game.time,oldSerial=o.animationSerial;
+    until(()=>o.boss.shots===2);
+    assert.equal(game.projectiles.length,1);assert.equal(o.boss.phase,'shoot');
+    assert.ok(game.time-start<firstDuration+.051);
+    if(type==='maxj'){
+      assert.ok(o.animationSerial>oldSerial);
+      assert.ok(Math.abs(o.boss.duration-o.animationUntil+game.time)<1e-8);
+    }else assert.equal(o.boss.duration,1.0000050067901611);
+    until(()=>o.boss.phase!=='shoot');assert.equal(game.projectiles.length,3);
+    assert.equal(o.boss.phase,type==='maxj'?'teleportOut':'rise');
+  }
+});
+
+test('a recovering boss never releases its canceled shot and pauses its actual hurt duration',()=>{
+  for(const type of ['maxj','maxd','witch']){
+    const f=fixture(type);f.until(()=>f.o.boss.phase==='shoot');
+    bossWasHit(f.game,f.o,{reaction:true});const count=f.game.projectiles.length,state=snapshotBossState(f.o);
+    f.game.scripts={enemiesFrozen:true};for(let i=0;i<20;i++)f.tick();
+    assert.deepEqual(f.o.boss,state);assert.equal(f.game.projectiles.length,count);
+    f.game.scripts=null;
+    while(f.o.boss.elapsed+.05<f.o.boss.duration)f.tick();
+    assert.equal(f.o.boss.phase,'recover');assert.equal(f.game.projectiles.length,count);
+  }
+});
+
+test('Witch hit recovery preserves closer selection at waypoint arrivals',()=>{
+  const {game,o,context,tick}=fixture('witch');o.boss.started=true;o.boss.phase='fly';o.boss.approaching=true;
+  const point={id:'closer-arrival',position:[...o.position],explicit:[]};
+  game.navigation.approachTarget=()=>point;
+  game.navigation.choose=()=>assert.fail('a closer arrival must not install a random patrol successor');
+  context.distance=10000;tick();assert.equal(o.boss.phase,'fly');assert.equal(o.boss.approaching,true);
+  assert.equal(o.patrol.current,point.id);assert.equal(o.patrol.target,null);
+});
+
+test('boss attack and hit poses reach the native release/end at the same rate as their phase clocks',async()=>{
+  for(const type of ['maxj','maxd','witch']){
+    const {game,o}=fixture(type),actor=await dataActor(type),geometry=new THREE.BufferGeometry();
+    geometry.setAttribute('position',new THREE.Float32BufferAttribute(actor.positions,3));
+    const animator=new ActorAnimator(actor,geometry),states=new ActorStateAnimator(animator,o.stats);
+    o.animationDurations=states.durations;o.boss.started=true;
+    bossWasHit(game,o,{reaction:true});states.update(o,0,false,game.time+o.boss.duration/2);
+    assert.equal(animator.name,'hit');assert.ok(Math.abs(animator.time-animator.clip.duration/2)<1e-6);
+    geometry.dispose();
+  }
+});
+
+test('Witch waits arm on first check and preserve strict expiry through save and freeze',()=>{
+  for(const phase of ['betweenShots','salvoWait']){
+    const f=fixture('witch'),{game,o,tick}=f;
+    Object.assign(o.boss,{started:true,phase,elapsed:0,duration:.25,waitUntil:null,shots:1});
+    const unarmed=game.snapshot(),copy=fixture('witch');copy.game.restore(unarmed);
+    assert.equal(copy.o.boss.waitUntil,null);
+    game.scripts={enemiesFrozen:true};tick(3);assert.equal(o.boss.waitUntil,null);assert.equal(o.boss.elapsed,0);
+    game.scripts=null;tick(.02);assert.equal(o.boss.waitUntil,.27);assert.equal(o.boss.phase,phase);
+    const armed=game.snapshot();copy.game.restore(armed);assert.equal(copy.o.boss.waitUntil,.27);
+    tick(.25);assert.equal(o.boss.phase,phase,'equality is not expiry');
+    tick(.001);assert.equal(o.boss.phase,'shoot');
+    // Older phase saves already counted from entry. Retain their remaining
+    // pause once instead of resetting it when loading after this correction.
+    const old=unarmed.objects.find(v=>v.id===o.id);delete old.boss.waitUntil;old.boss.elapsed=.1;
+    copy.game.restore(unarmed);assert.equal(copy.o.boss.waitUntil,.25);assert.equal(copy.o.boss.elapsed,.1);
+  }
 });

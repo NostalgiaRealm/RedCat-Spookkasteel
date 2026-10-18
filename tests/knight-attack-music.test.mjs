@@ -46,7 +46,7 @@ test('a free-aim hit gives a distant knight native hit memory and music expires 
   const {game,host,knight,position}=boot();
   game.update(.05,position);assert.equal(!!knight.alerted,false);
   game.playerProjectileHit(knight,{damage:1,type:1});
-  assert.equal(knight.health,4);assert.equal(knight.alerted,true);
+  assert.equal(knight.health,5,'the first hit alerts dormant stone without damaging it');assert.equal(knight.alerted,true);
   assert.equal(knight.lastSeenAt,game.time);assert.deepEqual(knight.lastSeenPosition,position);
   assert.equal(host.musicState.mode,'action');
   game.time+=knight.stats.TimeToRememberVisual-.1;

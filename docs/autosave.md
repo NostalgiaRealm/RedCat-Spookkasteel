@@ -3,7 +3,21 @@
 The game keeps the latest complete adventure in `redcat.save.v1` in local
 application/browser storage. **Verder spelen**, **Opgeslagen avontuur laden**,
 and F9 still load that current save. Automatic saving runs every 60 seconds of
-active play; manual saves, checkpoints, pause, completion, and exit also save.
+active play; manual saves, checkpoints, pause, completion, and exit also save
+while RedCat has positive health.
+
+With zero health, including during the death animation or after the final life,
+these actions preserve the last living save and the recovery history. F5 and
+the pause menu's Save button explain that the current state was not saved;
+automatic and exit saves stay quiet. Once normal checkpoint respawn restores
+health, saving is available again. This protection was added after an actual
+Caves playthrough exposed F5 replacing a usable save with a dead state.
+
+Existing saves from older versions remain loadable. A saved death animation
+with remaining lives resumes that animation and its normal checkpoint respawn.
+An older dead save without a resumable death animation starts its saved level
+again through the existing load behavior. The save guard does not rewrite or
+delete these older files.
 
 ## Recover from a deadlock
 
@@ -44,8 +58,8 @@ series of invented intermediate saves. A missing minute is shown as unavailable
 instead of silently loading a much older state under the wrong label.
 
 Frequent manual or pause saves cannot replace older minute checkpoints or
-postpone the next recovery point. Dead-player states are excluded from recovery
-history. History persists when the game is closed and reopened. Browsers,
+postpone the next recovery point. Dead-player states are excluded from both new
+latest saves and recovery history. History persists when the game is closed and reopened. Browsers,
 profiles, hosting origins and desktop apps have separate storage.
 
 A failed history write leaves the previous history intact and retries after
@@ -75,6 +89,7 @@ they are independent of the removed game release numbering.
 ```sh
 node --test tests/recovery-saves.test.mjs
 node tests/recovery-menu-scenes.mjs
+node tests/death-save-scenes.mjs
 ```
 
 The unit tests cover retention, minute selection, missing history, repeated
@@ -82,3 +97,15 @@ manual saves, saved-state isolation, restart persistence, dead snapshots,
 failed writes, and new-adventure resets. The browser check uses real IndexedDB
 and menu controls to restore complete snapshots, checks paused/offline history,
 and checks the dialog at desktop and mobile sizes.
+
+The focused death-save browser test failed before the fix when actual F5
+overwrote the living save, then passed after the fix. It checks byte-identical
+latest-save preservation, unchanged recovery history and rejection before
+snapshot/storage for F5, pause Save, silent pause/menu, due autosave/recovery,
+beforeunload and confirmed quit. It also covers switching away from a dead
+world, blocking a profile switch after a living save's storage failure, loading
+an explicit legacy death-animation save, and saving the normal living respawn.
+This test uses isolated storage fixtures; it is not campaign-completion
+evidence. See the [scoped verification notes](../temp_work/death-save-2026-10-18/verified-fix.md)
+and [passing browser report](../temp_work/death-save-2026-10-18/run-1792319076227/report.json).
+No builds or broad test reruns were performed for this fix.

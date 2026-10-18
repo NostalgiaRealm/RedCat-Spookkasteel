@@ -53,6 +53,10 @@ accidentally leave debris unlit or share a prototype's lighting at the origin.
 The same investigation also replaced the simultaneous circular blast layout
 and the single oversized brown smoke billboard.
 
+The base explosion's separate continuous 400 ms damage cell, including
+smoke-only explosions, is recovered in
+[native destructible explosion damage](explosion-damage-native.md).
+
 | Original address | Recovered behavior |
 | --- | --- |
 | `0x4a7b59–0x4a7d38` | Choose the longest source bounding-box axis and distribute blast positions using the six-row native lookup table. |

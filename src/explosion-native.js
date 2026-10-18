@@ -63,3 +63,16 @@ export function nativeSmokeState(particle,time) {
   particle.render.size=particle.size*mix(.5,1,t);particle.render.opacity=mix(.8,.1,t);
   return particle.render;
 }
+
+// Preserve an in-progress blast on load without replaying destruction or
+// sound. Its original birth keeps fire/smoke synchronized with hurt cells.
+export function restoreNativeExplosions(values,time) {
+  const vector=value=>Array.isArray(value)&&value.length===3&&value.every(Number.isFinite);
+  return (Array.isArray(values)?values:[]).filter(effect=>effect&&typeof effect.id==='string'&&typeof effect.sourceId==='string'&&
+    vector(effect.position)&&Number.isFinite(effect.birth)&&effect.birth<=time&&time-effect.birth<6&&
+    effect.settings&&typeof effect.settings==='object'&&!Array.isArray(effect.settings)&&
+    (!effect.bounds||vector(effect.bounds.min)&&vector(effect.bounds.max)))
+    .slice(0,256).map(effect=>({id:effect.id,sourceId:effect.sourceId,birth:effect.birth,position:[...effect.position],
+      bounds:effect.bounds?{min:[...effect.bounds.min],max:[...effect.bounds.max]}:undefined,
+      scale:vector(effect.scale)?[...effect.scale]:undefined,settings:structuredClone(effect.settings)}));
+}

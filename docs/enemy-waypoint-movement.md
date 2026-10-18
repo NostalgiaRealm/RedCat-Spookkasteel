@@ -1,12 +1,16 @@
 # Native enemy waypoint movement and performance
 
-Updated 5 October 2026. Research uses the installed `RcHcGame.dat`, SHA-256
+Movement research dated 5 October 2026; ordinary pursuit and retreat follow-up
+updated 14 October 2026. Research uses the installed `RcHcGame.dat`, SHA-256
 `e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5`.
 Original assets, scripts and executable were not modified. No build was made.
 
 ## Recovered behavior now implemented
 
-Green bats and guardians use the shared touching-enemy movement state. Detection
+Green bats, green ghosts, touching spiders, zombies and guardians use the
+shared touching-enemy movement state. The 14 October constructor and root-state
+trace confirms the additional types; touching spiders retain their ceiling
+descent/return wrapper. Detection
 or remembered detection starts its three-way decision immediately; AttackRange
 and body contact do not gate that decision (`0x40311e`, `0x422f30`, `0x40aba0`).
 The decision at `0x40ae9c` chooses MoveCloser, AntiClockWise or ClockWise.
@@ -21,9 +25,11 @@ The decision at `0x40ae9c` chooses MoveCloser, AntiClockWise or ClockWise.
   after the deadline. The next edge is selected before checking expiry, then
   that frame's advance is skipped. Changing mode preserves an unfinished edge.
 - No valid destination starts a 1-second movement wait, then another three-way
-  choice. The old implementation incorrectly paused after every hit and reversed
+  choice. The old movement implementation paused after every contact and reversed
   an invented orbit when blocked. Contact's independent 1-second damage cooldown
-  remains in place (`0x42df09`).
+  remains in place (`0x42df09`). The later full callback trace (`0x42ddd0`)
+  confirms that hurt does not suppress contact and hit reactions do not reset
+  that separate timestamp.
 - Native random patrol (`0x599b80`) samples all valid neighboring slots, including
   the previous node. Touching-enemy and ordinary patrol selectors share waypoint
   reservations and the strict minimum-player-distance gate (`0x599e10`). A dead
@@ -38,6 +44,26 @@ Transient reservation/search indexes rebuild after loading. Legacy free-form
 orbit saves, including those with stale non-null destinations, reacquire their
 waypoint through the bounded collision navigator. Recovery does not teleport
 the actor through a wall.
+
+Ordinary moving shooters also use adjacent-node MoveCloser rather than global
+nearest-node endpoints. `approachTarget` selects a random valid neighbor
+strictly closer to the current target actor; `retreatTarget` selects the
+farthest valid neighbor for skeleton retreat, retaining the first authored
+slot on equal distances. Both preserve an unfinished cursor edge. The native
+manager checks completion before physical movement on every frame, so closer
+can stop mid-edge below AttackRange and retreat body motion above AttackRange.
+Skeleton retreat begins below MinPlayerDistance, faces the current target and
+plays one positive-rate `walkbw` at WalkMotionFactor squared. The body can
+resume its saved edge if the player returns within range before the clip ends.
+The retreat child ends on clip completion, not on crossing AttackRange;
+no destination before completion interrupts it into shooting. Requesting the
+same completed retreat does not restart it.
+
+The parent attack state controls what follows: an ordinary shooter without a
+closer node shoots even outside range, while the touching family uses its
+one-second no-node wait. Salvo commitment, exact parent transitions and
+interruption rules are detailed in
+[pursuit and hit interruptions](enemy-pursuit-interruptions-native.md).
 
 The recovered actor update copies its waypoint cursor position; no additional
 player-homing translation was found. Consequently, an off-route RedCat does not
@@ -63,11 +89,12 @@ A newly clear direct route resumes immediately while pending/failed searches
 are discarded. An already selected positive detour keeps its existing short
 waypoint commitment. These fallback routes remain collision-safety adaptations.
 
-Touch and patrol decisions inspect at most eight linked nodes. Reservations use
+Touch, shooter approach/retreat and patrol decisions inspect at most eight
+linked nodes. Reservations use
 an index rebuilt once per simulation update and incrementally maintained after
 choices, avoiding repeated full actor scans for every candidate.
 
-Focused headless Chrome checks used the real graveyard button/zombie activation,
+The recorded 5 October headless Chrome checks used the real graveyard button/zombie activation,
 blocked chase, original castle bat geometry, actors, audio and rendering. CPU
 figures below measure synchronous update plus audio, not displayed FPS:
 
@@ -104,12 +131,30 @@ Preserved evidence and reusable browser harnesses are under
 - [Route endpoint findings](../temp_work/enemy-movement-native-2026-10-05/route-findings.md).
 - [Performance method and captures](../temp_work/enemy-movement-native-2026-10-05/performance-method-and-results.md).
 
+The 14 October follow-up adds the
+[complete pursuit/interruption REA bundle](../temp_work/enemy-pursuit-interruptions-2026-10-14/rea-evidence-bundle.json).
+Primary records are
+`ev_5b9eca924d3600f7d93c06416c1ca4dcad625d77ebd281fb3378becda2b5903a`
+(closer),
+`ev_cf9bafd05092ce9b9e41f0742c2738063baa3caa808be1604c846fcab0f62886`
+(farthest retreat), and
+`ev_b31de8109972c40387cb6173abcdc716bb06fcfef579f13ce9760087f3fbaeba`
+(completion before movement).
+The separate [skeleton retreat supplement](../temp_work/enemy-pursuit-interruptions-2026-10-14/skeleton-retreat-motion-findings.md)
+records the animation/movement distinction and the then-open first-check wait
+timing, subsequently recovered and implemented in [shooter wait clocks](shooter-wait-native.md).
+The [spider/contact supplement](../temp_work/enemy-pursuit-interruptions-2026-10-14/spider-hit-contact-findings.md)
+records fresh height-based spider alert and independent contact timing.
+
 This does not claim every original movement instruction is ported. The saved
 per-enemy RNG differs from the native global CRT stream. BSP body collision,
 step/slide, bat separation, player-overlap prevention and recovery remain
 portable safeguards. Off-node bodies approach their saved waypoint safely;
 native attachment directly places its separate cursor/actor at StartPoint.
-Direct chase outside the touching-enemy state remains reconstructed, including
-its pursuit endpoints: native `0x59ca10` was confirmed to receive an explicit
-destination waypoint ID, which does not establish a replacement policy for the
-port's arbitrary-position endpoint search. Its existing tested policy was kept.
+The ordinary authored chase path now follows the recovered adjacent-node
+selectors. The arbitrary-position endpoint search in `pursuitChecks` remains
+only a bounded off-graph recovery fallback for displaced actors, old saves and
+incomplete custom levels. Native `0x59ca10` handles an explicit destination
+waypoint ID, which remains the appropriate model for MoveToStart/return
+routing. These recovery adaptations are not evidence of a global native
+nearest-node pursuit policy.

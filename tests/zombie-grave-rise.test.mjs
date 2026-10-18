@@ -79,7 +79,7 @@ test('the captured older-save position continues smoothly, and saving midway pre
 test('hurt and authored cutscenes hold the rise without falling, and facing turns toward the exit',()=>{
   const game=boot(),zombie=game.find('zombie4')[0];game.command(zombie,'enable');
   const start=[...zombie.position],initialYaw=zombie.yaw;
-  game.enemyAnimation(zombie,'hurt',.3);
+  game.enemyAnimation(zombie,'hurt',.3,1); // isolate the rise from randomized native hit rates
   advance(game,zombie,.1);assert.deepEqual(zombie.position,start);assert.equal(zombie.velocityY,0);
   advance(game,zombie,.21);
   assert.ok(zombie.position[0]>start[0],'the fourth zombie exits to the east');

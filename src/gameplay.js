@@ -16,7 +16,7 @@ import { initializeBoss, updateBoss, bossHitResult, bossWasHit, snapshotBossStat
 import { playerInventoryLimits } from './player-inventory.js';
 import { showTeleporter } from './teleporter-effects.js';
 import { updateBeamContacts } from './beam-contacts.js';
-import { initializeEnemyAmbush, updateEnemyAmbush, restoreEnemyAmbush } from './enemy-ambush.js';
+import { initializeEnemyAmbush, updateEnemyAmbush, restoreEnemyAmbush, updateStoneAlert } from './enemy-ambush.js';
 import { batFlightTarget, batSeparationTarget, clipBatPlayerContact, cancelBatFlightSearch } from './enemy-flight.js';
 import {touchWaypointTarget} from './enemy-waypoint-steering.js';
 import { triggerVelocity, playerActivatesModel, withinTriggerRadius, discoverSecret } from './environment-interactions.js';
@@ -27,9 +27,16 @@ import { enemyProjectileOrigins } from './enemy-projectile-origins.js';
 import {createProjectileImpact,retainProjectileImpacts,restoreProjectileImpacts} from './projectile-impacts.js';
 import {createGargoyleBlast,advanceGargoyleBlasts,restoreGargoyleBlasts} from './gargoyle-blast.js';
 import {createRewardEffect,retainRewardEffects,restoreRewardEffects} from './reward-effects.js';
-import {nativeExplosionSound} from './explosion-native.js';
+import {nativeExplosionSound,restoreNativeExplosions} from './explosion-native.js';
+import {createNativeExplosionDamage,advanceExplosionDamage,advanceExplosionDamageClocks,restoreExplosionDamage} from './explosion-damage.js';
+import {restoreSpoutSnapshots} from './spout-effects.js';
+import {restoreKnightDebrisState} from './knight-debris.js';
+import {damageDestructible,restorePropDamage} from './destructible-damage.js';
 import {cancelPendingGraveyardMazeExit,resetGraveyardMaze} from './graveyard-maze.js';
 import {pickupPosition} from './pickup-placement.js';
+import {enemyMotionRate,nativeEnemyIdleCycle,enemyIdleClip} from './enemy-animation-rules.js';
+import {ordinaryEnemyHit,reactToEnemyHit} from './enemy-hit-native.js';
+import {usesNativeShooter,updateNativeShooter,restoreNativeShooterState} from './enemy-shooter-native.js';
 
 const n = (value, fallback=0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
 const clamp = (value,min,max) => Math.max(min,Math.min(max,value));
@@ -69,7 +76,7 @@ export class Gameplay {
     this.level=level;this.onEvent=onEvent;this.settings=settings;this.difficulty=difficulty;
     this.time=0;this.hitCooldown=0;this.attackCooldown=0;this.previousUse=false;this.completed=false;
     this.projectiles=[];this.gargoyleBlasts=[];this.nextProjectileId=1;this.projectileImpacts=[];
-    this.rewardEffects=[];
+    this.rewardEffects=[];this.explosions=[];this.explosionDamage=[];
     this.hazards=new ProjectileHazards(settings,difficulty);this.environmentFeedbackCooldown=0;
     this.volumeCollider=level.collision?.nodes?new BspCollider(level.collision):null;
     this.liquidModels=new Set([...visibleLiquidGroups(level)].map(g=>g.model));
@@ -273,7 +280,7 @@ export class Gameplay {
   respawn() {
     this.cancelPlayerCharge();
     this.state.health=this.state.maxHealth;this.hitCooldown=2;this.completed=false;
-    this.hazards.clear();this.projectiles=[];this.gargoyleBlasts=[];this.environmentFeedbackCooldown=0;
+    this.hazards.clear();this.projectiles=[];this.gargoyleBlasts=[];this.explosionDamage=[];this.environmentFeedbackCooldown=0;
     this.pendingPlayerAttack=null;this.playerAttackUntil=0;this.attackCooldown=0;
     this.playerReaction=beginPlayerReaction('respawn');
     for(const object of this.triggers)object.inside=false;
@@ -326,8 +333,10 @@ export class Gameplay {
     if(object.health<=0)return;object.health=0;object.enabled=false;
     if(object.kind==='actor'){
       const position=object.effectPosition?.()||[...this.objectPosition(object)];
-      (this.explosions||=[]).push({id:object.id+':'+this.time,sourceId:object.id,birth:this.time,position,
-        bounds:object.effectBounds?.(position),scale:object.effectScale?.(),settings:object.actorSettings||{}});
+      const effect={id:object.id+':'+this.time,sourceId:object.id,birth:this.time,position,
+        bounds:object.effectBounds?.(position),scale:object.effectScale?.(),settings:object.actorSettings||{}};
+      (this.explosions||=[]).push(effect);
+      this.explosionDamage.push(...createNativeExplosionDamage(effect));
       const sound=nativeExplosionSound(object.actorSettings);
       if(sound)this.emit('scriptSound',{...sound,spatial:true,position});
     }
@@ -338,7 +347,7 @@ export class Gameplay {
       object.deathStartedAt=this.time;
       delete object.deathSmokeAnchors;
       delete object.deathSmokeVelocities;
-      object.corpseUntil=this.time+this.enemyDuration(object,'death')+ENEMY_FADE_SECONDS;
+      object.corpseUntil=object.animationUntil+ENEMY_FADE_SECONDS;
       if(object.enemyType==='witch'){object.visible=false;object.corpseUntil=this.time;}
     }
     this.scripts?.enemyDefeated?.(object);
@@ -347,14 +356,29 @@ export class Gameplay {
   }
 
   enemyDuration(object,action) {
-    const fallback={attack:1.2,hurt:.5,death:1.5,charge:1.933343,start:object.enemyType==='skeleton'?2.1333439350128174:3.2666831016540527};
-    return Math.max(.1,n(object.animationDurations?.[action],fallback[action]||1));
+    const walkFactor=n(object.stats.WalkMotionFactor,1)>0?n(object.stats.WalkMotionFactor,1):1;
+    const fallback={attack:1.2,hurt:.5,death:1.5,charge:1.933343,walkback:1.333340048789978/walkFactor,start:object.enemyType==='skeleton'?2.1333439350128174:object.enemyType==='knight'?1.533318042755127:3.2666831016540527};
+    const motion=action==='idle'&&object.enemyType==='bat'&&object.enabled?'idleFlying':action;
+    const variant=action==='idle'&&object.animationDurations?.idleClips?.[object.animationIdleClip];
+    return Math.max(.1,n(variant||object.animationDurations?.[motion],fallback[action]||1));
   }
 
-  enemyAnimation(object,action,duration=0,rate=1) {
-    if(object.animationState===action&&!['attack','hurt','death','teleport'].includes(action))return;
-    object.animationState=action;object.animationSerial++;object.animationUntil=this.time+duration;object.animationRate=rate;
+  enemyAnimation(object,action,duration=0,rate=null) {
+    const idleCycle=action==='idle'&&nativeEnemyIdleCycle(object);
+    if(object.animationState===action&&!['attack','hurt','death','teleport'].includes(action)&&
+      (action!=='idle'||Number.isFinite(object.animationRate)&&!(idleCycle&&this.time>=object.animationUntil)))return Math.max(0,object.animationUntil-this.time);
+    const explicit=Number.isFinite(rate)&&rate!==0;
+    if(action==='idle'&&object.enemyType==='gargoyle')object.animationIdleClip=enemyIdleClip(object);
+    if(!explicit)rate=enemyMotionRate(object,action);
+    if(action==='idle'&&object.enemyType==='plant')object.animationIdleClip=enemyIdleClip(object);
+    if(idleCycle&&!duration)duration=this.enemyDuration(object,'idle');
+    // One sample controls both pose speed and every gameplay deadline. An
+    // explicit rate (Bone Brutus charge) already supplies its scaled duration.
+    const seconds=explicit?duration:duration/rate;
+    object.animationState=action;object.animationSerial++;object.animationUntil=this.time+seconds;object.animationRate=rate;
+    object.animationLoop=action==='idle'?!idleCycle:action==='walk';
     if(action!=='idle'&&action!=='attack')this.enemyAction(object,action);
+    return seconds;
   }
 
   enemyAction(object,action) {
@@ -376,17 +400,16 @@ export class Gameplay {
   hurtEnemy(object,amount) {
     if(object.health<=0||!(amount>=0))return;
     this.notePlayerAttack(object,true);
-    if(amount===0)return; // Native armored hits still refresh enemy memory.
     const bossHit=bossHitResult(this,object,amount);
     if(bossHit){
       if(bossHit.defeated){this.destroy(object);return;}
       if(!(bossHit.damage>0))return;
       object.health-=bossHit.damage;bossWasHit(this,object,bossHit);return;
     }
+    const hit=ordinaryEnemyHit(object,amount);amount=hit.damage;
     if(object.health<=amount){this.destroy(object);return;}
-    object.health-=amount;object.pendingAttack=null;
-    if(object.ambush&&object.ambush.phase!=='awake')object.alerted=true;
-    this.enemyAnimation(object,'hurt',this.enemyDuration(object,'hurt'));
+    object.health-=amount;
+    reactToEnemyHit(this,object,hit.react);
   }
 
   enemyProjectile(object,playerPosition) {
@@ -478,10 +501,11 @@ export class Gameplay {
     this.runEvent(target,'OnHitCommand',[projectile.damage,projectile.type]);
     if(target.kind==='button')this.switchButton(target);
     else if(target.kind==='enemy')this.hurtEnemy(target,projectile.damage);
-    else if(target.kind==='actor'){const remaining=target.health-projectile.damage;if(remaining<=0)this.destroy(target);else target.health=remaining;}
+    else if(target.kind==='actor')damageDestructible(this,target,projectile.damage);
   }
 
   updateEnemy(object,dt,playerPosition,lineOfSight,traceEnemy) {
+    if(object.animationState==='idle'&&object.animationLoop===false&&this.time>=object.animationUntil)this.enemyAnimation(object,'idle');
     this.navigation.syncReservations(this.objects,this.time,playerPosition);
     const recoveries=object.movementRecovery?.recoveries||0;
     if(recoveries!==(object.lastMovementRecovery||0)){
@@ -489,9 +513,19 @@ export class Gameplay {
       if(object.patrol?.target)object.patrol.reacquiring=true;
     }
     object.attackTimer=Math.max(0,object.attackTimer-dt);
+    const touchDamage=contact=>{
+      if(!usesTouchPursuit(object)||!contact||object.attackTimer!==0)return;
+      const from=[object.position[0],object.position[1]+25,object.position[2]],to=[playerPosition[0],playerPosition[1]+28,playerPosition[2]];
+      if(!lineOfSight(from,to))return;
+      this.damage(n(object.stats.Damage,1),object.id);object.attackTimer=1;
+      this.enemyAction(object,'attack');
+      this.emit('enemyAttack',{id:object.id,position:[...object.position],ranged:false,contact:true});
+    };
     if(updateZombieGraveRise(this,object,dt))return;
     resolveZombieSpawn(object,traceEnemy);
-    if(updateEnemyAmbush(this,object,dt,playerPosition,lineOfSight,traceEnemy))return;
+    if(updateEnemyAmbush(this,object,dt,playerPosition,lineOfSight,traceEnemy)){
+      touchDamage(clipBatPlayerContact(object,[...object.position],playerPosition,traceEnemy));return;
+    }
     let batContact=clipBatPlayerContact(object,[...object.position],playerPosition,traceEnemy);
     const from=[object.position[0],object.position[1]+25,object.position[2]],to=[playerPosition[0],playerPosition[1]+28,playerPosition[2]];
     const d=distance(object.position,playerPosition),vertical=Math.abs(from[1]-to[1]);
@@ -504,24 +538,25 @@ export class Gameplay {
     if(visible){object.lastSeenAt=this.time;object.lastSeenPosition=[...playerPosition];}
     else if(this.time-n(object.lastSeenAt,-100)>n(object.stats.TimeToRememberVisual,2))object.alerted=false;
     this.navigation.syncReservation(object);
+    if(updateStoneAlert(this,object,dt))return;
     const face=target=>{
       const desired=Math.atan2(target[0]-object.position[0],target[2]-object.position[2]);
       const current=object.yaw??desired,diff=Math.atan2(Math.sin(desired-current),Math.cos(desired-current));
       object.yaw=current+clamp(diff,-n(object.stats.RotationPerSec,Math.PI*3)*dt,n(object.stats.RotationPerSec,Math.PI*3)*dt);
     };
-    const walk=(target,{authoredFlight=false,authoredRoute=false}={})=>{
+    const walk=(target,{authoredFlight=false,authoredRoute=false,destinationId=null,backward=false}={})=>{
       // A patrol waypoint is already the next graph edge. Searching the full
       // graph again on a blocked patrol caused the graveyard's growing stalls.
       object.waypointActive=authoredRoute;this.navigation.syncReservation(object);
-      if(!authoredRoute)target=object.flying?batFlightTarget(this,object,target,traceEnemy):this.navigation.pursuitTarget(object,target,lineOfSight,traceEnemy,this.time);
+      if(!authoredRoute)target=object.flying?batFlightTarget(this,object,target,traceEnemy):this.navigation.pursuitTarget(object,target,lineOfSight,traceEnemy,this.time,{destinationId});
       else if(object.enemyType==='bat')cancelBatFlightSearch(this,object);
-      face(target);const delta=target.map((v,i)=>i===1&&!object.flying?0:v-object.position[i]),length=Math.hypot(...delta);
+      face(backward?playerPosition:target);const delta=target.map((v,i)=>i===1&&!object.flying?0:v-object.position[i]),length=Math.hypot(...delta);
       const step=Math.min(length,n(object.stats.Speed,55)*dt),before=[...object.position];
       if(length>0&&(authoredFlight||traceEnemy||lineOfSight(from,from.map((v,i)=>v+delta[i]/length*step))))moveEnemy(object,delta.map(v=>v/(length||1)*step),dt,authoredFlight?null:traceEnemy);
       else moveEnemy(object,[0,0,0],dt,traceEnemy);
       batContact=clipBatPlayerContact(object,before,playerPosition,traceEnemy)||batContact;
       const moved=distance(before,object.position)>.01;
-      this.enemyAnimation(object,moved?'walk':'idle');return moved;
+      if(!backward)this.enemyAnimation(object,moved?'walk':'idle');return moved;
     };
     if(updateBoss(this,object,dt,{playerPosition,visible,distance:d,face,walk,traceEnemy,lineOfSight}))return;
     // CRcTouchBat pursues until its hull touches RedCat. AttackRange belongs to
@@ -531,7 +566,9 @@ export class Gameplay {
       object.pendingAttack=null;
       // Older saves can contain the shoot1 attack used by the generic AI.
       if(object.animationState==='attack'){this.enemyAnimation(object,'idle');object.attackTimer=0;}
-      if(['hurt','start','charge','teleport'].includes(object.animationState)&&this.time<object.animationUntil){moveEnemy(object,[0,0,0],dt,traceEnemy);return;}
+      if(['hurt','start','charge','teleport'].includes(object.animationState)&&this.time<object.animationUntil){
+        moveEnemy(object,[0,0,0],dt,traceEnemy);touchDamage(batContact);return;
+      }
       if(visible||object.alerted){
         // 0x40311e enters the touch movement selector on perception/memory,
         // not AttackRange or a hit. These are neighboring-waypoint choices,
@@ -539,7 +576,7 @@ export class Gameplay {
         const target=touchWaypointTarget(this,object,dt,playerPosition,lineOfSight);
         const separation=batSeparationTarget(this,object);
         if(separation)walk(separation,{authoredRoute:true});
-        else if(target)walk(target.position,{authoredRoute:!object.patrol.reacquiring});
+        else if(target)walk(target.position,{authoredRoute:!object.patrol.reacquiring,destinationId:object.patrol.reacquiring?target.id:null});
         else if(target===undefined)walk(visible?playerPosition:object.lastSeenPosition||playerPosition);
         else {moveEnemy(object,[0,0,0],dt,traceEnemy);this.enemyAnimation(object,'idle');}
       }else {
@@ -548,13 +585,8 @@ export class Gameplay {
         if(target)walk(target.position,{authoredRoute:true});
         else {moveEnemy(object,[0,0,0],dt,traceEnemy);this.enemyAnimation(object,'idle');}
       }
-      if(batContact&&object.attackTimer===0&&lineOfSight(from,to)) {
-        this.damage(n(object.stats.Damage,1),object.id);object.attackTimer=1;
-        // The independent collision callback throttles damage for 1000 ms.
-        // It does not pause or replace the currently selected movement edge.
-        this.enemyAction(object,'attack');
-        this.emit('enemyAttack',{id:object.id,position:[...object.position],ranged:false,contact:true});
-      }
+      // Collision damage is independent of the current motion/hurt child.
+      touchDamage(batContact);
       return;
     }
     // Strikes happen at the authored pose, not when an attack is requested.
@@ -564,7 +596,11 @@ export class Gameplay {
       // Knights enable the strike for .65–.70 of shoot1, rather than testing
       // once at .65. Keep a missed opening test alive until that window closes.
       const inWindow=this.time-dt<=windowEnd;
-      if(inWindow&&visible&&d<=n(object.stats.AttackRange,100)+5) {
+      // Shooter children commit the release at DrawMotionPart (0x40a649 /
+      // 0x4074b0); perception is checked by the parent after completion.
+      // A duck behind cover may block the projectile, but cannot erase it.
+      const committedShot=object.ranged&&(['plant','gargoyle'].includes(object.enemyType)||usesNativeShooter(object));
+      if(inWindow&&(committedShot||visible&&d<=n(object.stats.AttackRange,100)+5)) {
         if(object.ranged)this.enemyProjectile(object,playerPosition);
         else this.damage(n(object.stats.Damage,1),object.id);
         this.enemyAction(object,'attack');
@@ -572,14 +608,17 @@ export class Gameplay {
         object.pendingAttack=null;
       } else if(this.time>=windowEnd)object.pendingAttack=null;
     }
-    if(locked){if(visible)face(playerPosition);moveEnemy(object,[0,0,0],dt,traceEnemy);return;}
+    if(locked){if(visible||object.animationState==='attack'&&usesNativeShooter(object))face(playerPosition);moveEnemy(object,[0,0,0],dt,traceEnemy);return;}
+    if(updateNativeShooter(this,object,dt,{playerPosition,visible,distance:d,lineOfSight,
+      walk:(target,options)=>{const apart=batSeparationTarget(this,object);return walk(apart||target,apart?{}:options);},
+      moveIdle:()=>{face(playerPosition);moveEnemy(object,[0,0,0],dt,traceEnemy);}}))return;
     const separation=batSeparationTarget(this,object);
     if(separation){walk(separation);return;}
     if(object.boneChargePending){
       // RcBoneBrutusAttackState enters its charge motion and switches ammo
       // after the last shoot motion, before deciding whether to relocate.
       object.boneChargePending=false;object.boneSkullPhase=!object.boneSkullPhase;
-      const rate=.9+.2*enemyRandom(object);
+      const rate=.9+(Math.floor(enemyRandom(object)*32768)%10000)*.00002;
       this.enemyAnimation(object,'charge',this.enemyDuration(object,'charge')/rate,rate);
       moveEnemy(object,[0,0,0],dt,traceEnemy);return;
     }
@@ -597,17 +636,17 @@ export class Gameplay {
       if(target){walk(target.position,{authoredRoute:true});return;}
     }
     const range=n(object.stats.AttackRange,100),minimum=n(object.stats.MinPlayerDistance);
-    if(visible) {
-      face(playerPosition);
-      if(d<=range&&d>=minimum&&object.attackTimer===0) {
-        const duration=this.enemyDuration(object,'attack');
-        this.enemyAnimation(object,'attack',duration);
+    const committedSalvo=object.salvoRemaining>0&&['plant','gargoyle'].includes(object.enemyType);
+    if(visible||committedSalvo) {
+      if(visible)face(playerPosition);
+      if((committedSalvo||d<=range&&d>=minimum)&&object.attackTimer===0) {
+        const duration=this.enemyAnimation(object,'attack',this.enemyDuration(object,'attack'));
         const strike=object.ranged?n(object.stats.DrawMotionPart,.5):n(object.stats.ShootMotionCollisionStart,.5);
         object.pendingAttack={at:this.time+duration*clamp(strike,0,1)};
         if(object.enemyType==='knight')object.pendingAttack.until=this.time+duration*clamp(n(object.stats.ShootMotionCollisionEnd,strike),clamp(strike,0,1),1);
         // Native standing-shooter state 0x40a5ee repeats shoot1 immediately
         // within a salvo; only its completed salvo enters the wait state.
-        let wait=object.enemyType==='gargoyle'?0:n(object.stats.WaitTimeBetweenShots,.4);
+        let wait=['plant','gargoyle'].includes(object.enemyType)?0:n(object.stats.WaitTimeBetweenShots,.4);
         if(object.ranged) {
           if(object.salvoRemaining<=0)object.salvoRemaining=enemySalvoSize(object);
           object.salvoRemaining--;
@@ -722,7 +761,7 @@ export class Gameplay {
     this.emit('attack',{id:projectile.id,kind:shot.kind,origin,direction:dir});
   }
 
-  update(dt,playerPosition,{attack=false,use=false,forward=[0,0,-1],lineOfSight=()=>true,traceShot=null,traceEnemy=null,traceProjectile=null,traceBeam=null,releaseOrigin=null,aimTarget=null,attackTarget=null,touchedModels=[],environmentContents=0,previousPlayerPosition=playerPosition}={}) {
+  update(dt,playerPosition,{attack=false,use=false,forward=[0,0,-1],lineOfSight=()=>true,explosionLineOfSight=lineOfSight,traceShot=null,traceEnemy=null,traceProjectile=null,traceBeam=null,releaseOrigin=null,aimTarget=null,attackTarget=null,touchedModels=[],environmentContents=0,previousPlayerPosition=playerPosition}={}) {
     dt=clamp(n(dt),0,0.1);this.time+=dt;this.playerPosition=v3(playerPosition);
     this.rewardEffects=retainRewardEffects(this.rewardEffects,this.time);
     const wasRecovering=this.playerReaction?.phase==='death'||this.playerReaction?.phase==='respawn';
@@ -730,17 +769,19 @@ export class Gameplay {
     this.hitCooldown=Math.max(0,this.hitCooldown-dt);if(!this.scripts?.cutscene)this.attackCooldown=Math.max(0,this.attackCooldown-dt);
     // Do not run interactions against the old death position on the tick that
     // the event handler moves RedCat back to his checkpoint.
-    if(wasRecovering)return;
-    if(this.state.health<=0||this.completed){this.cancelPlayerCharge();return;}
+    if(wasRecovering){advanceExplosionDamageClocks(this,dt);return;}
+    if(this.state.health<=0||this.completed){this.cancelPlayerCharge();advanceExplosionDamageClocks(this,dt);return;}
     if(this.scripts?.cutscene||this.scripts?.enemiesFrozen)for(const object of this.objects)if(object.kind==='enemy') {
       // Dialogue freezes combat, but already defeated enemies must finish
       // their death motion, smoke and retirement during the conversation.
       if(this.scripts?.cutscene&&object.health<=0)continue;
       for(const key of ['animationUntil','corpseUntil','deathStartedAt','nextIdleAt','lastSeenAt','lastAttackedAt'])if(Number.isFinite(object[key]))object[key]+=dt;
       if(object.pendingAttack){object.pendingAttack.at+=dt;if(Number.isFinite(object.pendingAttack.until))object.pendingAttack.until+=dt;}
+      if(Number.isFinite(object.nativeShooter?.waitUntil))object.nativeShooter.waitUntil+=dt;
     }
     if(this.scripts?.cutscene){
       this.cancelPlayerCharge();this.pendingPlayerAttack=null;this.playerAttackUntil=0;
+      advanceExplosionDamageClocks(this,dt);
       return;
     }
     this.environmentFeedbackCooldown=Math.max(0,this.environmentFeedbackCooldown-dt);
@@ -752,6 +793,8 @@ export class Gameplay {
     if(this.state.lives!==lives||this.state.health<=0)return;
     this.hazards.advance(dt,{frozen:!!this.scripts?.enemiesFrozen,playerPosition,previousPlayerPosition,damage:(amount,source)=>this.damage(amount,source)});
     if(this.state.lives!==lives||this.state.health<=0)return;
+    advanceExplosionDamage(this,dt,playerPosition,explosionLineOfSight);
+    if(this.state.lives!==lives||this.state.health<=0)return;
     this.updateProjectiles(dt,this.playerPosition,traceProjectile||traceShot,lineOfSight);
     if(this.state.lives!==lives||this.state.health<=0)return;
     this.updatePlayerAttackInput(dt,attack,this.playerPosition,forward,attackTarget?.());
@@ -762,8 +805,11 @@ export class Gameplay {
     for(const object of this.objects) {
       if(this.state.lives!==lives||this.state.health<=0)return;
       if(!object.enabled||object.collected||object.health<=0)continue;
-      const e=object.entity,position=this.objectPosition(object),d=distance(position,playerPosition);
-      if(object.kind==='pickup'&&d<38&&lineOfSight([playerPosition[0],playerPosition[1]+22,playerPosition[2]],[position[0],position[1]+18,position[2]]))this.pickup(object);
+      const e=object.entity;
+      if(object.kind==='pickup') {
+        const position=this.objectPosition(object);
+        if(distance(position,playerPosition)<38&&lineOfSight([playerPosition[0],playerPosition[1]+22,playerPosition[2]],[position[0],position[1]+18,position[2]]))this.pickup(object);
+      }
       if(object.kind==='trigger') {
         const inside=this.contains(object,playerPosition);
         if(inside&&!object.inside)this.trigger(object);
@@ -802,22 +848,28 @@ export class Gameplay {
   }
 
   snapshot() {
+    const explosionDamage=restoreExplosionDamage(this.explosionDamage,this.time);
     return {version:1,healthVersion:2,level:this.level.id,difficulty:this.difficulty,state:{...this.state},time:this.time,completed:this.completed,debriefing:this.debriefing?structuredClone(this.debriefing):null,
       hazards:this.hazards.snapshot(),environmentFeedbackCooldown:this.environmentFeedbackCooldown,hitCooldown:this.hitCooldown,
+      spoutEffects:this.spoutSnapshot?this.spoutSnapshot():this.spoutStates,
       footstepState:this.footstepState?{...this.footstepState}:undefined,
       attackCooldown:this.attackCooldown,playerAttackSerial:this.playerAttackSerial,playerAttackUntil:this.playerAttackUntil,
       playerReaction:this.playerReaction?{...this.playerReaction}:null,
       playerCharge:this.playerCharge?{age:this.playerCharge.age}:null,
       pendingPlayerAttack:this.pendingPlayerAttack?{...this.pendingPlayerAttack,position:[...this.pendingPlayerAttack.position],forward:[...this.pendingPlayerAttack.forward]}:null,
       gargoyleBlasts:restoreGargoyleBlasts(this.gargoyleBlasts),
+      explosionDamage,
+      explosions:restoreNativeExplosions(this.explosions,this.time),
       nextProjectileId:this.nextProjectileId,projectiles:this.projectiles.map(p=>({...p,position:[...p.position],velocity:[...p.velocity]})),
       projectileImpacts:restoreProjectileImpacts(this.projectileImpacts,this.time),
       rewardEffects:restoreRewardEffects(this.rewardEffects,this.time),
       scripts:this.scripts?.snapshot(),checkpoint:{...this.checkpoint,position:[...this.checkpoint.position]},variables:[...this.variables],
-      objects:this.objects.map(o=>({id:o.id,position:[...o.position],enabled:o.enabled,visible:o.visible,collected:o.collected,health:o.health,open:o.open,locked:o.locked,switchedOn:o.switchedOn,triggerCount:o.triggerCount,switchCount:o.switchCount,openFraction:o.openFraction,closeAt:o.closeAt,inside:o.inside,volume:o.volume,motionSpeed:o.motionSpeed,
-        animationState:o.animationState,animationSerial:o.animationSerial,animationUntil:o.animationUntil,animationRate:o.animationRate,corpseUntil:o.corpseUntil,deathStartedAt:o.deathStartedAt,deathSmokeAnchors:o.deathSmokeAnchors?.map(p=>[...p]),deathSmokeVelocities:o.deathSmokeVelocities?.map(p=>[...p]),effectAge:o.effectAge,teleportEffectAge:o.teleportEffectAge,teleportEffectSerial:o.teleportEffectSerial,teleportTerminalSoundSerial:o.teleportTerminalSoundSerial,teleporterState:o.teleporterSnapshot?.()||o.teleporterState,beamContactDelay:o.beamContactDelay,beamTriggered:o.beamTriggered,secretFound:o.secretFound,actorAge:o.actorAge,lastAttackedAt:o.lastAttackedAt,rotation:o.rotation?[...o.rotation]:undefined,
+      objects:this.objects.map(o=>({id:o.id,position:[...o.position],enabled:o.enabled,visible:o.visible,collected:o.collected,health:o.health,propDamage:o.propDamage,open:o.open,locked:o.locked,switchedOn:o.switchedOn,triggerCount:o.triggerCount,switchCount:o.switchCount,openFraction:o.openFraction,closeAt:o.closeAt,inside:o.inside,volume:o.volume,motionSpeed:o.motionSpeed,
+        animationPose:o.animationSnapshot?.()||o.animationPose,machinePose:o.machineAnimationSnapshot?.()||o.machinePose,animationState:o.animationState,animationSerial:o.animationSerial,animationUntil:o.animationUntil,animationRate:o.animationRate,animationLoop:o.animationLoop,animationIdleClip:o.animationIdleClip,corpseUntil:o.corpseUntil,deathStartedAt:o.deathStartedAt,deathSmokeAnchors:o.deathSmokeAnchors?.map(p=>[...p]),deathSmokeVelocities:o.deathSmokeVelocities?.map(p=>[...p]),effectAge:o.effectAge,teleportEffectAge:o.teleportEffectAge,teleportEffectSerial:o.teleportEffectSerial,teleportTerminalSoundSerial:o.teleportTerminalSoundSerial,teleporterState:o.teleporterSnapshot?.()||o.teleporterState,beamContactDelay:o.beamContactDelay,beamTriggered:o.beamTriggered,secretFound:o.secretFound,actorAge:o.actorAge,lastAttackedAt:o.lastAttackedAt,rotation:o.rotation?[...o.rotation]:undefined,
         fairyState:o.fairySnapshot?o.fairySnapshot():o.fairyState?structuredClone(o.fairyState):undefined,
+        knightDebrisState:o.knightDebrisSnapshot?o.knightDebrisSnapshot():o.knightDebrisState,
         pendingAttack:o.pendingAttack?{...o.pendingAttack}:null,attackTimer:o.attackTimer,salvoRemaining:o.salvoRemaining,salvoSize:o.salvoSize,pursuit:o.pursuit?structuredClone(o.pursuit):null,
+        nativeShooter:restoreNativeShooterState(o.nativeShooter),
         boss:snapshotBossState(o),ambush:o.ambush?structuredClone(o.ambush):null,flightDetour:o.flightDetour?{...o.flightDetour}:null,batContact:o.batContact?{...o.batContact}:null,
         patrol:o.patrol?{...o.patrol}:null,aiRandomState:o.aiRandomState,relocateAfterSalvo:o.relocateAfterSalvo,boneSkullPhase:o.boneSkullPhase,boneChargePending:o.boneChargePending,lastSeenPosition:o.lastSeenPosition?[...o.lastSeenPosition]:null,
         velocityY:o.velocityY,grounded:o.grounded,lastSeenAt:o.lastSeenAt,nextIdleAt:o.nextIdleAt,alerted:o.alerted,yaw:o.yaw}))};
@@ -825,6 +877,7 @@ export class Gameplay {
 
   restore(save) {
     if(!save||save.version!==1||save.level!==this.level.id)return false;
+    this.spoutStates=restoreSpoutSnapshots(save.spoutEffects);
     this.navigation.reservationFrame=null;
     // A saved encounter retains its own difficulty. Older saves were all
     // Normal; the next-level preference must not silently retune them.
@@ -852,6 +905,8 @@ export class Gameplay {
     this.projectileImpacts=restoreProjectileImpacts(save.projectileImpacts,this.time);
     this.rewardEffects=restoreRewardEffects(save.rewardEffects,this.time);
     this.gargoyleBlasts=restoreGargoyleBlasts(save.gargoyleBlasts);
+    this.explosionDamage=restoreExplosionDamage(save.explosionDamage,this.time);
+    this.explosions=restoreNativeExplosions(save.explosions,this.time);
     this.nextProjectileId=Math.max(1,n(save.nextProjectileId,1));
     this.attackCooldown=Math.max(0,n(save.attackCooldown));this.playerAttackSerial=n(save.playerAttackSerial);this.playerAttackUntil=n(save.playerAttackUntil);
     this.playerReaction=restorePlayerReaction(save.playerReaction,this.state.health,this.state.lives);
@@ -865,24 +920,50 @@ export class Gameplay {
       const value=saved.get(object.id);if(!value)continue;
       object.movementRecovery?.reset();delete object.lastMovementRecovery;
       if(Number.isFinite(value.health))object.restoredHealth=true;
-      for(const key of ['enabled','visible','collected','open','locked','switchedOn','inside','grounded','alerted','relocateAfterSalvo','boneSkullPhase','boneChargePending','beamTriggered','secretFound'])if(typeof value[key]==='boolean')object[key]=value[key];
+      for(const key of ['enabled','visible','collected','open','locked','switchedOn','inside','grounded','alerted','relocateAfterSalvo','boneSkullPhase','boneChargePending','beamTriggered','secretFound','animationLoop'])if(typeof value[key]==='boolean')object[key]=value[key];
       for(const key of ['health','triggerCount','switchCount','openFraction','closeAt','volume','motionSpeed','animationSerial','animationUntil','corpseUntil','attackTimer','salvoRemaining','velocityY','lastSeenAt','lastAttackedAt','nextIdleAt','yaw','aiRandomState'])if(Number.isFinite(value[key]))object[key]=value[key];
+      restorePropDamage(object,value.propDamage);
       if(Number.isFinite(value.deathStartedAt)&&object.health<=0)object.deathStartedAt=value.deathStartedAt;else delete object.deathStartedAt;
       for(const key of ['deathSmokeAnchors','deathSmokeVelocities']) {
         if(object.health<=0&&Array.isArray(value[key])&&value[key].length===15&&value[key].every(p=>Array.isArray(p)&&p.length===3&&p.every(Number.isFinite)))object[key]=value[key].map(p=>[...p]);else delete object[key];
       }
-      if(Number.isFinite(value.animationRate)&&value.animationRate>0)object.animationRate=value.animationRate;
+      object.animationPose=value.animationPose?structuredClone(value.animationPose):undefined;
+      object.machinePose=value.machinePose?structuredClone(value.machinePose):undefined;
+      if(['idle0','idle1','idle2','idle3','static'].includes(value.animationIdleClip))object.animationIdleClip=value.animationIdleClip;
+      if(Number.isFinite(value.animationRate)&&value.animationRate!==0)object.animationRate=value.animationRate;
       if(Number.isFinite(value.effectAge)&&value.effectAge>=0)object.effectAge=value.effectAge;
       for(const key of ['teleportEffectAge','teleportEffectSerial','teleportTerminalSoundSerial','beamContactDelay'])if(Number.isFinite(value[key])&&value[key]>=0)object[key]=value[key];
       if(object.entity.classname==='TeleporterFX'&&value.teleporterState)object.teleporterState=structuredClone(value.teleporterState);
       if(object.entity.classname==='Fairy')object.fairyState=value.fairyState?structuredClone(value.fairyState):undefined;
+      object.knightDebrisState=object.health<=0?restoreKnightDebrisState(value.knightDebrisState):undefined;
       if(Number.isFinite(value.actorAge)&&value.actorAge>=0)object.actorAge=value.actorAge;
       if(Array.isArray(value.rotation)&&value.rotation.length===3&&value.rotation.every(Number.isFinite))object.rotation=[...value.rotation];
-      if(['idle','walk','attack','hurt','death','charge','start','teleport','dormant'].includes(value.animationState))object.animationState=value.animationState;
+      if(['idle','walk','walkback','attack','hurt','death','charge','start','retract','teleport','dormant'].includes(value.animationState))object.animationState=value.animationState;
       object.pendingAttack=value.pendingAttack&&Number.isFinite(value.pendingAttack.at)?{at:value.pendingAttack.at,...(Number.isFinite(value.pendingAttack.until)?{until:Math.max(value.pendingAttack.at,value.pendingAttack.until)}:{})}:null;
+      object.nativeShooter=usesNativeShooter(object)?restoreNativeShooterState(value.nativeShooter):null;
+      const legacyShooter=usesNativeShooter(object)&&!object.nativeShooter&&!value.nativeShooter;
+      // A saved Bone charge has already switched ammo. Adopt its playing
+      // clip, without repeating that entry action or resurrecting the salvo.
+      if(legacyShooter&&object.enemyType==='brutusb'&&value.animationState==='charge'){
+        object.nativeShooter={version:1,phase:'charge',remaining:0,waitUntil:null};
+      }
+      // Pre-state-machine saves retain the outstanding release and shot
+      // count. Adopt that child instead of starting a second full salvo.
+      if(legacyShooter&&!object.nativeShooter&&
+        (object.pendingAttack||value.animationState==='attack'||n(value.salvoRemaining)>0||object.enemyType==='brutusb'&&value.boneChargePending)){
+        const waiting=value.animationState!=='attack'&&!object.pendingAttack;
+        const chargeNext=object.enemyType==='brutusb'&&value.boneChargePending;
+        object.nativeShooter={version:1,phase:waiting&&!chargeNext?'betweenWait':'shoot',
+          remaining:clamp(Math.trunc(n(value.salvoRemaining)),0,1024),
+          waitUntil:waiting?this.time+Math.max(0,n(value.attackTimer)):null};
+      }
       if(object.patrol&&value.patrol&&typeof value.patrol==='object'){
         for(const key of ['start','current','target','previous'])if(value.patrol[key]===null||this.navigation.find(value.patrol[key]))object.patrol[key]=value.patrol[key];
         for(const key of ['leftStart','relocating','reacquiring'])if(typeof value.patrol[key]==='boolean')object.patrol[key]=value.patrol[key];
+      }
+      if(legacyShooter&&object.nativeShooter){
+        object.boneChargePending=false;object.relocateAfterSalvo=false;
+        if(object.patrol)object.patrol.relocating=false;
       }
       if(Array.isArray(value.lastSeenPosition)&&value.lastSeenPosition.length===3&&value.lastSeenPosition.every(Number.isFinite))object.lastSeenPosition=[...value.lastSeenPosition];
       restoreBossState(this,object,value.boss);
@@ -911,6 +992,7 @@ export class Gameplay {
       }
     }
     if(this.scripts&&save.scripts)this.scripts.restore(save.scripts);
+    this.navigation.syncReservations(this.objects,this.time,this.playerPosition);
     return true;
   }
 }

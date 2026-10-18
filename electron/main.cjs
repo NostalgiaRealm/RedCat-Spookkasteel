@@ -4,6 +4,7 @@ const { pathToFileURL } = require('node:url');
 const aboutLinks = new Set([
   'https://ko-fi.com/nostalgiarealm',
   'https://www.nostalgiarealm.com/',
+  'https://github.com/NostalgiaRealm/RedCat-Spookkasteel',
   'https://www.youtube.com/@Nostalgia_Realm'
 ]);
 // A local secure origin lets the same frontend run in desktop and future mobile shells.

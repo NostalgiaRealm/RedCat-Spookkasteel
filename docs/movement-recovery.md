@@ -33,7 +33,9 @@ grounded recovery settles at most 18 units below its candidate; a suspended
 actor can settle onto verified support up to 64 units below its original
 position. History fallbacks are limited to 192 units.
 One candidate is checked per frame to spread collision work over time. A safe
-candidate must exist: recovery does not teleport through a sealed obstacle.
+candidate must exist. These local nudges do not cross sealed obstacles. The
+player-only fall-pocket fallback below can return to an already visited higher
+position after excluding nearby walking and jumping exits.
 
 Save restoration, teleports, respawns and no-clip transitions reset the history.
 Pausing does not advance recovery. Recovery displacement does not generate
@@ -116,3 +118,74 @@ Additional evidence:
 
 An already running desktop session keeps its loaded JavaScript. Restart the
 source game and continue the saved adventure to use the corrected recovery.
+
+
+## Castle warehouse fall pocket (18 October 2026)
+
+A fresh campaign run fell behind the shifted warehouse crates after a mistimed
+jump. RedCat could move sideways beneath the shelf but could not leave the
+pocket. The earlier eight-unit escape check treated that small movement as a
+valid exit and never tried the safe shelf recorded before the fall.
+
+The player now has a conservative fallback for this case. After sustained blocked
+input, an unsafe narrow position and a previously visited position more than one
+body height above it trigger a bounded local search. Full-body sweeps follow
+short horizontal segments, their clipped wall endpoints, and vertical segments.
+Walking around corners and jump clearance up to the current normal/SuperSkippie
+height plus step allowance are considered. A route reaching 64 horizontal units,
+any reachable drop below the starting floor, or an inconclusive search exceeding
+256 positions cancels the fallback. The search advances four edges per frame;
+it does not run a broad map pathfinder. This bounded grid establishes the tested
+cases below, rather than proving every possible level topology.
+
+Only an already visited higher position within 512 units can be restored, and
+its current body clearance, support and hazard checks must still pass. Health,
+lives, items and puzzle state are unchanged. There is no invented destination,
+and this fallback does not change enemy recovery or scripted movement. As before,
+loading a save clears this transient history; an old save already inside a trap
+may require the existing older-save recovery menu.
+
+Closed authored doors also veto the fallback. Door objects are cached by model
+index once per level; an existing search sweep that hits a currently closed door
+cancels recovery. Before returning to higher history, a separate full-body sweep
+checks only closed door brushes along that segment, including doors beyond the
+local search volume. Current open state is read from the cached object references,
+so ordinary opening, closing and save restoration need no per-frame object scan.
+At most one history candidate is revalidated per frame. Its extra door-only trace
+is included in the actual Castle fixture's bounded-work assertion.
+
+The warehouse crates themselves are authored DoorModel objects. Their normal
+button commands them open, even when collision stops one partway through its
+motion. The veto therefore concerns doors currently commanded closed; it does
+not reject every DoorModel brush. Other scripted solids retain the existing
+geometric protections.
+
+All **27 focused movement-recovery tests passed**, including the original Castle
+BSP with the observed partially stopped crate, L-shaped passages, closed gates,
+jumpable lips, a walk-to-headroom escape and a lower passage beneath a ceiling.
+The lower passage caught a search omission: upward-only exploration could miss
+an exit requiring a short drop before turning. Two additional synthetic BSP
+regressions caught a nearby door sealing a small turning corridor and a door
+outside the probe lying across the return to higher history. Both failed before
+the door guards and pass afterward, including controller wiring and live
+open-state changes. These are synthetic risks, not additional failures observed
+in a campaign map. The actual Castle shelf return still passes.
+
+Earlier in the isolated live campaign, normal forward input returned RedCat to
+the shelf he had actually reached in 279 controlled 60 Hz frames. That recovery
+class was hot-loaded without changing position, health, inventory or history;
+the recovery itself performed the return. Normal jumps subsequently crossed the
+crates, and the upper moving platform carried RedCat onward. **This live result
+predates the final downward-route and closed-door guards.** Those later changes
+have focused regression evidence; the live campaign recovery was not repeated.
+
+Retained evidence:
+
+- `temp_work/campaign-validation-2026-10-15/playthrough-1792088801065/castle-crate-pocket-before.json`
+- `temp_work/campaign-validation-2026-10-15/playthrough-1792088801065/castle-crate-pocket-collider-2026-10-18.json`
+- `temp_work/campaign-validation-2026-10-15/playthrough-1792088801065/castle-pocket-recovered-2026-10-18.json`
+- `temp_work/campaign-validation-2026-10-15/early/fall-pocket-audit-2026-10-18.md`
+- `temp_work/campaign-validation-2026-10-15/early/fall-pocket-door-review-2026-10-18.md`
+- `temp_work/campaign-validation-2026-10-15/early/movement-recovery-door-final-2026-10-18.log`
+
+No release packages were created.

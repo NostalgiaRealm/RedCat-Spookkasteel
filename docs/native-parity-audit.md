@@ -1,48 +1,101 @@
 # Native implementation status and remaining work
 
 Initial audit: 23 September 2026. Documentation status reviewed against source:
-6 October 2026.
+6 October 2026; enemy lifecycle, attack, threshold and boss follow-ups updated
+15 October, with source-runtime validation status updated 18 October 2026.
 
 There is still work before this project can claim full original-game parity.
 This audit compares the current source, imported original assets/settings and
 compiled campaign scripts with the project's recovered executable evidence. It
-is a source audit, not a fresh playthrough of either executable. Earlier research
+began as a source audit; the bounded port playthrough evidence added on
+18 October is described below. It is not a fresh original-executable comparison.
+Earlier research
 notes describe their own point in time; their TODO lists are not necessarily
 current. Follow the linked recovery documents for implemented behavior and
 specific portability limits. Test results cited there belong to their recorded
 runs; this documentation review did not rerun gameplay tests or create builds.
 
-## Completion assessment (6 October 2026)
+## Completion assessment (18 October 2026)
 
 The Linux/Windows/web game is close to feature-complete. This bounded source
-review found no clearly missing major campaign system or newly established
-campaign blocker. That is not a substitute for playing the current source from
-start to finish: the recorded complete campaign run predates many later fixes.
+review found no clearly missing major campaign system. The subsequent current-
+source playthrough found and fixed Castle fall-pocket recovery and dead-save
+overwrite failures with focused regressions. The earned five-level source
+campaign has now completed Forest, Castle, Graveyard, all four Caves altars,
+Max, Tower's full ascent and both bonus rooms, the five mirrors, the Witch,
+the unskipped authored ending and the full outro return to menu. It used normal
+controls and saves/recovery in an isolated browser profile, with controlled
+game-frame advancement and read-only route planning. It was not deathless and
+did not use a save import or inventory/health/puzzle-state grants in the earned
+route. Older complete campaign records predate many later fixes.
+
+All 13 authored secret objects now have physical ordinary-input route checks
+across the earned run and explicitly separate continuations/fixtures. Tower's
+two optional bonus rooms were also entered, their 32 loose pickups collected,
+and both return routes completed in the earned campaign. The secret checks
+include separate starts: the final campaign save has 7 secrets, not all 13, and
+does not establish collection of every bottle, money bag or enemy. The
+[15–18 October validation report](campaign-validation-2026-10-18.md) records the
+setup boundaries, failed attempts, fixes and retained evidence.
+
+Tower included two actual deaths/checkpoint respawns, one F9 living-save reload
+and one normal 2-minute recovery selection. Its first outro attempt failed at
+time 0 with a browser media-player creation error; ordinary reload+Continue
+restored the completed debrief, then the same 55.047-second media played to its
+native `ended` event and menu. Follow-up fixed retained HTML audio-player
+resources at release and passed focused lifetime/browser checks; this does not
+prove the cause of the original startup failure. See the
+[detailed earned finale record](../temp_work/campaign-finale-2026-10-18/earned-finale-report.md)
+and [audio cleanup evidence](audio-media-lifetime.md).
 
 The practical remaining work, in priority order:
 
-1. **Validate the current campaign in normal play.** Cover all five chapters,
-   puzzle/secret progression, upgrades, boss exits, deaths/retries, saves/reloads
-   and level transitions. Fix any reproducible failures with focused checks.
+1. **Validate long-session media on the intended runtime.** Audio release now
+   explicitly destroys the browser player; focused checks observed 66 matching
+   creations/destructions and successful outro startup. The complete campaign
+   preceded this small cleanup change. Its successful normal reload retry
+   establishes a working outro asset, but not the cause of the initial error.
+   Keep the failure and separate secret/fixture setup scopes visible.
 2. **Validate the intended releases.** Once builds are authorized, check the
    actual Linux/Windows packages and the deployed browser files, including
    controls, fullscreen/resolution, complete audio/video playback, persistence
    and sustained performance. Recent isolated Linux Electron and browser checks
    are useful evidence, but are not a complete Windows or campaign test.
 3. **Refine specific native differences if exact fidelity is the goal:**
-   arbitrary-position chase endpoint selection still uses a reconstructed
-   nearest-node policy (`src/enemy-navigation.js`, `pursuitChecks`); some
-   enemy-specific attack timing/interruption branches remain unrecovered
-   ([patrol/boss limits](patrol-boss-native.md#remaining-fidelity-limits));
-   animation clips switch without cross-clip blending (`src/animation.js`,
-   `ActorAnimator.play`); knight armour still has reconstructed launch/spin and
-   a fixed 3.5-second lifetime (`src/world.js`, `createKnightDebris`). Native
-   comparison should establish the desired changes before replacing working
-   behavior.
+   ordinary authored chase now uses recovered adjacent-node closer and skeleton
+   farthest-retreat selection. The bounded arbitrary-position search in
+   `pursuitChecks` remains an off-graph collision-recovery fallback. Common hit
+   interruption, dormant-stone immunity and the Brutus damage receivers are
+   recovered and implemented. Skeleton retreat uses its one-shot backward
+   clip independently of its distance-based body stop. Spider hit recovery
+   starts a fresh height-selected alert, and touch cooldown remains independent
+   of hurt. The 15 October follow-up now delays wait arming to the first
+   controller check, resolves skeleton dormant-hit dispatch, and connects
+   Max/Witch interruptions and both Brutus shooter parents. See
+   [wait clocks](shooter-wait-native.md), [skeleton hits](skeleton-hit-native.md),
+   [boss interruption/playback](boss-interruptions-native.md),
+   [pursuit and hit boundaries](enemy-pursuit-interruptions-native.md) and
+   [patrol/boss limits](patrol-boss-native.md#remaining-fidelity-limits).
+   Shared knight/gargoyle stone-alert and skeleton wake/settling now follow
+   the recovered lifecycles, including signed-rate save restoration. Fresh
+   skeletons retain the already-settled pile pose rather than briefly standing
+   during native reverse initialization; see [enemy lifecycles](enemy-lifecycles-native.md).
+   RedCat, enemy actors and Dungeon Max's turret
+   now use the recovered 250ms motion transition; common-enemy rates and idle
+   variants are connected. See the [RedCat audit](redcat-animations-native.md)
+   and [enemy/scenery animation audit](enemy-actor-animations-native.md).
+   Knight armour now uses the recovered shared actor-particle launch, spin,
+   collision and individual fragment lifetimes. New saves preserve live fragment
+   positions, velocities and spin; bounded saved-age replay remains only for
+   older saves. Portable collision tolerances still differ. See
+   [armour recovery](enemy-death-effects-native.md) and [effect continuity](effects-save-continuity.md).
 4. **Treat small presentation differences as polish.** Camera collision and
-   compensation, Fleurifee's exact ribbon attenuation curve, and generic
-   smoke/flame particle continuity across save loading retain documented
-   boundaries. Preserve the requested overhead camera protection near walls,
+   compensation retain documented portability boundaries. Generic smoke/flame
+   particle pools, knight fragments and audio playback now survive new saves;
+   older saves without those fields cannot recover their lost state, and
+   browser output-buffer/sample timing is not preserved. See
+   [effects](effects-save-continuity.md) and [audio](audio-save-continuity.md).
+   Preserve the requested overhead camera protection near walls,
    anti-stuck recovery, bounded lighting/navigation work and deliberate audio
    changes; they are not missing features to undo.
 
@@ -60,14 +113,19 @@ and [player reactions/projectile contact](player-reactions-and-projectile-contac
 
 | Area | Current status |
 | --- | --- |
-| RedCat reactions | Original hit/death/respawn clips and rates are connected; checkpoint/game-over wait for death, respawn is protected, and save/load preserves the phase. |
+| RedCat reactions | Original hit/death/respawn clips and rates are connected; checkpoint/game-over wait for death and respawn is protected. Existing death-animation snapshots remain loadable; new save requests with non-positive health preserve the last living save. See [save behavior](autosave.md). |
+| RedCat animation | All 16 imported clips verified against original motion data. Recovered strafe rates, looping jumps, 80% shooting handoff, post-respawn idle, drop probe and 250ms transitions are implemented; animation phases and blends survive saves. Modern control adaptations remain; see [animation audit](redcat-animations-native.md). |
+| Enemy/scenery animation | All 156 non-RedCat clips checked against original motion data. Enemies and the turret blend between clips; common-enemy playback rates, knight strikes, plant/gargoyle idle selection and pose saves are connected. Knight wake/retract, gargoyle no-start fallback/settling and skeleton randomized wake/reverse settling are implemented; see [lifecycles](enemy-lifecycles-native.md). Blank authored scenery motions remain static, with the intentional moving-torch exception. |
 | RedCat movement | Recovered directional speeds, grounded multiplier, takeoff/platform momentum and limited airborne steering now replace the uniform speed model; see [movement evidence](player-movement-native.md). |
 | Enemy projectile origins | Original animated attachment bones are used at release, including both Dungeon Max turret barrels; see [attachment evidence](enemy-projectile-origins-native.md). |
-| Pursuit and attacks | Native minimum-hop graph search, stored sampled salvos, spider return/ascent, all three touch-pursuit choices and knight strike windows are implemented. Patrols bypass full pursuit search. Native touching-enemy waypoint scoring/timing, uniform random patrols and shared node reservations were recovered on 2026-10-05, replacing continuous orbits. Bat fallback searches now share the original 16/48 trace limits; see [waypoint movement](enemy-waypoint-movement.md) and the [graveyard regression fix](graveyard-performance-regression.md). |
+| Pursuit and attacks | Authored pursuit uses recovered adjacent-node random closer selection and deterministic farthest skeleton retreat, with mid-edge range stopping. Skeleton retreat faces the current target and plays one backward-walk clip independently of the distance stop. Touching spiders, green bats/ghosts, zombies and guardians share the three-way contact-pursuit state, whose separate contact cooldown survives hurt. Ordinary moving shooters preserve committed salvos and the recovered parent move/wait choices; plants/gargoyles retain their standing-shooter commitment. First-check wait arming, Mushroom/Bone Brutus shooter parents, Max/Witch hurt completion and committed boss releases are now connected; see [boss follow-up](boss-interruptions-native.md). Explicit returns keep their authored StartPoint terminal. Minimum-hop routing remains for fixed destinations, and bounded off-graph collision recovery remains a portable fallback. Patrol, approach and retreat bypass full search on authored edges; recovery retains 16/48 sweep limits. See [pursuit and hits](enemy-pursuit-interruptions-native.md), [waypoint movement](enemy-waypoint-movement.md) and the [graveyard safeguards](graveyard-performance-regression.md). |
+| Enemy hit responses | Common damage chooses a hit reaction on the native 50% branch; sound-only responses leave the action intact. Selected reactions cancel pending release, remaining salvo and wait, while repeated hits do not restart an active hit motion. Spiders choose a fresh alert from current height after hurt; selected skeleton hits replace dormant/wake/retract with hurt then active alert, without an extra wake; older saves normalize to that order. Dormant knights/gargoyles ignore HP damage but can react; their wake/hurt phases remain vulnerable. Bone Brutus accepts damage on its distinct one-in-three branch, while Mushroom Brutus uses the common receiver. Fractional HP is deliberately retained so small continuous damage ticks accumulate. See [hit evidence and limits](enemy-pursuit-interruptions-native.md). |
 | Guardians | Native construction identifies a touch-enemy subclass. Actual body contact with a one-second cooldown is implemented; a distinct shield/state machine was not established. |
 | Actor/projectile lighting | Actors now select their original local Sun, sample floor ambient, and shade vertices using raw RGB and root-based dynamic lights. Floor shadow flags, animated ambient and material clones are preserved. Projectile/impact lights affect actors and world surfaces. See [actor lighting](actor-lighting-native.md). BSP lightmaps use recovered texture-axis falloff, fixed-point channel gain and per-luxel clamping. |
 | Spatial audio | Native directional stereo, BSP/PVS/area audibility and wall-distance attenuation are implemented. Requested ambience limits and fairy hearing exceptions are retained. |
+| Fleurifee ribbons | Original PTrail artwork, width1.92, alpha100/255, linear800ms attenuation/cutoff, distance sampling and endpoint clocks are recovered and implemented. Ribbons stop with the orbiters; departure stars retain their separate fade. Fixed-step simulation, bounded saves and skip cleanup remain; see [ribbon evidence](fairy-ribbon-fade-native.md). |
 | Shove/power move | The previous classification as a confirmed missing action was too strong. Bit 16 exists, but no playable input, animation or consuming gameplay action was recovered. The flag remains preserved; no speculative action was introduced. |
+| Playthrough fixes | Castle fall-pocket recovery now checks bounded local escape routes before returning to a revalidated previously reached position; downward exits and closed doors retain their guards. Saving after death no longer replaces the living latest save or recovery history; dead-profile switching still works, while living write failures block it. See [movement recovery](movement-recovery.md), [autosaves](autosave.md) and the [campaign evidence](campaign-validation-2026-10-18.md#fixes-found-during-the-playthrough). |
 
 An unused imported setting alone is not evidence for missing gameplay. In
 particular, TimeToRecoverFromHit is absent from the inspected executable;
@@ -103,34 +161,49 @@ See [automatic replay introductions](replayed-level-intros-native.md).
 - **Portal and destruction effects:** recovered portal trajectories, emission,
   beam/flash geometry and sound frequencies now replace the earlier approximations.
   Destructible-prop fragment launch, per-fragment physics, collision dimensions,
-  spin and settling are recovered too. Fixed-step timing, local RNG and portable collision tolerances
+  spin and settling are recovered too. Destructible explosions now apply the
+  recovered radial damage with a 400 ms clock armed on the first active frame,
+  including full-frame doses through the inclusive deadline, to RedCat, enemies and
+  destroyable props, including brush LOS and active-blast save restoration.
+  Fixed-step timing, local RNG and portable collision tolerances
   still differ from Genesis. Actor fragments now use the recovered actor light selection and shading. See
   [portal recovery](portal-native-recovery.md),
-  [portal audio](portal-audio-native.md) and
-  [debris recovery](debris-native-recovery.md).
+  [portal audio](portal-audio-native.md),
+  [debris recovery](debris-native-recovery.md) and
+  [explosion damage and strict accumulated prop thresholds](explosion-damage-native.md).
 - **Enemy death effects:** the native fade and purple smoke are implemented.
   Smoke uses a continuous trajectory rather than the native per-frame integrator.
-  Knight armour breakup still has a separate reconstructed launch, spin and
-  3.5-second lifetime; the recovered destructible-prop fragment solver does not
-  replace it. See [death-effect boundaries](enemy-death-effects-native.md).
+  Knight armour now shares the recovered actor-particle solver: nine original
+  fragments, upward 40–80 launch speed, individual 3–4-second lifetimes and
+  axe-only settling fade. New saves retain live fragment positions, velocities,
+  spin, contacts and fade state; legacy saves replay a bounded trajectory.
+  See [death-effect boundaries](enemy-death-effects-native.md).
 - **Smoke/flame emitters:** the native 15-slot pool, reusable launch templates,
   birth/fade timers, triple launch speed, gravity, square spread and world-unit
   sprite size are recovered. Moving hand-torch enhancements remain intact.
-  Sound/music scheduling retains its intentional port behavior. Fixed 60 Hz,
-  local RNG and regenerated smoke/flame pools on save loading remain portable
-  differences; see [smoke/flame recovery](spout-effects-native.md).
+  Saves preserve all pool slots, launch templates, timers, color, RNG and the
+  fractional simulation step, including synthetic hand-torch flames. Fixed
+  60 Hz and a local RNG remain portable differences. Sound/music scheduling
+  retains its intentional port behavior; see [smoke/flame recovery](spout-effects-native.md).
 - **Fleurifee effect restoration:** saves now retain the full particle pool,
   reused-slot oscillators, RNG, fractional simulation step, trails, path and
   pulse/color state. Active and departing effects survive actual menu save/load
   without replaying appearance or disappearance sounds. Legacy age-only saves
-  still reconstruct their effects; waveform cursors are not saved. See
-  [fairy save restoration](fairy-save-restoration.md).
+  still reconstruct their effects. Audio now saves playback positions,
+  delayed-loop waits, crossfade progress and the dialogue queue too; browser
+  output-buffer/sample timing remains outside the continuity guarantee. See
+  [fairy save restoration](fairy-save-restoration.md) and
+  [audio save continuity](audio-save-continuity.md).
+- **Music volume envelope:** the native constant-rate control-gain ramp and
+  logarithmic conversion are recovered and implemented, including partial
+  fade reversals. Intentional track scheduling and full-track looping remain.
+  See [music fade recovery](music-fade-native.md).
 - **Camera/presentation details:** the final camera approach now follows the
   recovered distance/speed lookup. Beacon texture movement and corona radius
   fading/occlusion are connected, and footsteps preserve the native independent
   Wobble phase across saves. BSP falloff uses original imported texture axes and
   four-sample lightmap interpolation. Remaining differences include camera
-  collision/compensation and cross-clip blending, fixed-step/local-RNG particle simulation, budgeted corona queries,
+  collision/compensation, fixed-step/local-RNG particle simulation, budgeted corona queries,
   and eight selected BSP lights. Authored shadow-casting BSP lights now use
   cached native per-luxel obstruction, before clamp and interpolation; see
   [world-light shadows](world-light-shadows-native.md).
@@ -145,13 +218,16 @@ See [automatic replay introductions](replayed-level-intros-native.md).
 
 ## Verification and platform work
 
-1. **A normal complete playthrough of the current source is still outstanding.**
-   The README records successful manual campaign runs of the older 0.9.3 build;
-   that does not validate every subsequent source change. Controlled
-   scene tests exercise many real triggers and boss handoffs, but do not prove
-   that every puzzle, secret, death/retry, save/reload and level transition is
-   reachable in sequence. Record a playthrough and compare the remaining
-   behavior with native footage. Run focused regressions for each resulting fix.
+1. **The earned current-source campaign is complete, within its recorded scope.**
+   The [15–18 October validation report](campaign-validation-2026-10-18.md)
+   separates the ordinary-input five-level run, actual deaths/recoveries,
+   secret continuations/fixtures and source-platform checks. The full ending
+   was unskipped; the final video reached native `ended` and menu after an
+   ordinary completed-save reload following its initial startup error. The
+   controlled-frame browser runner and read-only route planner do not establish
+   human real-time combat difficulty, exact native animation fidelity or target
+   package/hardware behavior. Compare remaining fidelity questions with native
+   footage and run focused regressions for resulting fixes.
 2. **Validate the current source on actual Linux and Windows systems** when a
    new build is authorized. Older prepared packages do not establish coverage
    for later source changes. Check rendering, sound, pause/resume, controls and
@@ -185,7 +261,8 @@ and timing, mushroom ribbons, debriefing, difficulty/progression, touch controls
 controller support and recovery saves. It also implements
 [world streaming](world-streaming.md),
 [smooth zombie emergence](zombie-activation-native.md),
-[mixed-size skybox normalization](world-light-shadows-native.md#campaign-wide-audit-and-implemented-fix)
+[native skybox face mapping and boundaries](skyboxes-native.md), including
+mixed-size skybox normalization,
 and [automatic replay tutorial skipping](replayed-level-intros-native.md).
 See their feature documents and targeted tests for limits.
 

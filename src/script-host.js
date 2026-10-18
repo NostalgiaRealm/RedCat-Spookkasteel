@@ -210,8 +210,8 @@ export class ScriptHost {
     // Preserve explicit script choices until the threat state changes.
     const alive=o=>o.kind==='enemy'&&o.enabled&&o.health>0;
     const threats=this.game.objects.some(o=>alive(o)&&!isBoss(o)&&
-      (o.alerted||number(o.lastAttackedAt,-Infinity)+number(o.stats?.TimeToRememberVisual,2)>this.game.time)&&
-      (!o.ambush||o.ambush.phase==='awake'));
+      (number(o.lastAttackedAt,-Infinity)+number(o.stats?.TimeToRememberVisual,2)>this.game.time||
+      o.alerted&&(!o.ambush||!['unplaced','dormant'].includes(o.ambush.phase))));
     const boss=this.game.objects.some(o=>alive(o)&&isBoss(o));
     const changed=threats!==this.combatThreats||boss!==this.combatBoss;
     if(this.cutscene&&!this.afterBossMusicId)return;
@@ -291,15 +291,15 @@ export class ScriptHost {
     if(object.kind==='door')this.game.doorMotionComplete(object);
     if(object.kind==='button')this.game.runEvent(object,object.switchedOn?'AfterSwitchOnCommand':'AfterSwitchOffCommand');
   }
-  applyMotion(object,player) {
-    this.modelTransforms.set(object.modelIndex,{...player.sample(),origin:player.motion.origin});
+  applyMotion(object,player,pose=player.sample()) {
+    this.modelTransforms.set(object.modelIndex,{...pose,origin:player.motion.origin});
   }
   update(dt) {
     this.time+=dt;
     this.updateBossMusic();
     for(const [id,player] of this.players) {
       const object=player.object;
-      if(player.playing){player.update(dt);this.applyMotion(object,player);}
+      if(player.playing)this.applyMotion(object,player,player.update(dt));
     }
     if(this.camera?.duration>0&&this.time-this.camera.start>=this.camera.duration)this.camera=null;
     if(this.pendingCutsceneStop&&!this.isDialoguePlaying())this.finishCutscene(this.pendingCutsceneStop.fade);

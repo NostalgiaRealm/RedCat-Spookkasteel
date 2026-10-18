@@ -20,7 +20,7 @@ for(const name of ['spiderg','spidery','spiderr','zombie'])test(`${name}: walkin
   const object={animationState:'idle',animationSerial:0};states.update(object,0);
   object.animationState='walk';object.animationSerial++;states.update(object,0);
   assert.equal(animator.name,'walkfw');
-  const before=[...geometry.attributes.position.array];states.update(object,.3);
+  const before=[...geometry.attributes.position.array];for(let i=0;i<6;i++)states.update(object,.05);
   const after=geometry.attributes.position.array;
   assert.ok(after.filter((v,i)=>Math.abs(v-before[i])>.05).length>60);
   assert.ok(after.every(Number.isFinite));assert.ok(geometry.boundingSphere.radius<150);
@@ -32,7 +32,7 @@ for(const name of ['batg','baty','batr'])test(`${name}: active idle keeps flying
   states.update(object,0);assert.equal(animator.name,'idle1');
   object.enabled=true;states.update(object,0);
   assert.equal(animator.name,'idle2');assert.equal(animator.loop,true);
-  const before=[...geometry.attributes.position.array];states.update(object,.2);
+  const before=[...geometry.attributes.position.array];for(let i=0;i<4;i++)states.update(object,.05);
   assert.ok(geometry.attributes.position.array.filter((v,i)=>Math.abs(v-before[i])>.05).length>60,'airborne idle continues flapping');
   const time=animator.time;states.update(object,.5,true);assert.equal(animator.time,time,'cutscenes freeze the airborne pose');
   object.animationState='walk';object.animationSerial++;states.update(object,0);assert.equal(animator.name,'walkfw');
@@ -105,7 +105,7 @@ test('knight death uses all nine original breakup actors, freezes with cutscenes
   world.knightParts=['knhd','knbrst','knhip','knllg','knrlg','knlrm','knrrm','knlns','knax'].map(name=>{
     const part=actor(name);return {data:part.data,geometry:world.track(part.geometry),materials:[material]};
   });
-  const object={id:'knight',actorFile:'knight',kind:'enemy',position:[0,0,0],enabled:false,health:0,animationState:'death',animationUntil:1.5,corpseUntil:3.5,collisionMaxs:[20,95,20]};
+  const object={id:'knight',actorFile:'knight',kind:'enemy',position:[0,0,0],enabled:false,health:0,animationState:'death',animationSerial:1,animationUntil:1.5,corpseUntil:3.5,collisionMaxs:[20,95,20]};
   world.gameplay={objects:[object],time:0};world.actorInstances.set(object.id,body);
   world.syncActors(.016);const debris=world.enemyDebris.get('knight');
   assert.equal(body.visible,false);assert.equal(debris.parts.length,9);assert.ok(debris.parts.every(p=>p.actor.parent===world.scene));

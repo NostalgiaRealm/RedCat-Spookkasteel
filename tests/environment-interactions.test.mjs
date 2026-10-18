@@ -64,12 +64,15 @@ test('the original cave hidden-button room plays SecretFound on entry once, incl
   restored.update(.025,secret.position);assert.equal(restored.state.secrets,1);assert.equal(events.filter(e=>e.sound==='SecretFound.wav').length,1);
 });
 
-test('a first-hit crate collider takes the pellet, emits original debris and an explosion only once',()=>{
+test('a crate collider takes both pellets, survives native threshold equality, and explodes only once',()=>{
   const settings=json('assets/actors/brcrate.json').settings,events=[];
   const game=new Gameplay({id:'prop-test',entities:[{classname:'AdamAnyActor','%name%':'crate',Origin:'0 0 100',ActorFileName:'brcrate.act',Targetable:'1'}]},{onEvent:e=>events.push(e)}),crate=game.find('crate')[0];
   const actor=new Group();actor.userData.template={data:{settings}};CastleWorld.prototype.configureDestructible.call({},crate,actor);crate.effectPosition=()=>[0,24,100];
   assert.equal(crate.health,1);
   game.projectiles=[{id:'shot',owner:'player',position:[0,25,0],velocity:[0,0,300],radius:3,life:5,age:0,damage:1,gravity:0,acceleration:0,maximumSpeed:1000}];
+  game.updateProjectiles(.1,[0,0,0],()=>({fraction:.5,end:[0,25,15],actorId:crate.id,modelIndex:null}));
+  assert.equal(crate.health,1);assert.equal(crate.propDamage,1);assert.equal(game.explosions.length,0);
+  game.projectiles=[{id:'shot2',owner:'player',position:[0,25,0],velocity:[0,0,300],radius:3,life:5,age:0,damage:1,gravity:0,acceleration:0,maximumSpeed:1000}];
   game.updateProjectiles(.1,[0,0,0],()=>({fraction:.5,end:[0,25,15],actorId:crate.id,modelIndex:null}));
   assert.equal(crate.health,0);assert.equal(game.explosions.length,1);assert.deepEqual(game.explosions[0].position,[0,24,100]);
   game.destroy(crate);assert.equal(game.explosions.length,1);assert.equal(events.filter(e=>e.sound==='expl6.wav').length,1);

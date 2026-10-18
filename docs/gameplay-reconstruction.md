@@ -90,8 +90,12 @@ hurt/death/respawn, breadth-first pursuit, sampled salvos and enemy state rules,
 projectile/actor lighting, directional sound and wall obstruction. The earlier
 shove-action claim was not supported by the recovered executable. Arbitrary-position
 pursuit endpoints, collision tolerances, camera compensation, fixed-step particle
-timing and local random streams retain documented differences; a normal complete
-campaign playthrough of the current source remains outstanding.
+timing and local random streams retain documented differences. The
+[15–18 October source run](campaign-validation-2026-10-18.md) completed a fresh
+Normal campaign without cheats, including the earned upgrades, all required
+puzzles and bosses, and the complete ending. Its instrumentation, ordinary
+deaths/recovery, iterative fixes and outro startup retry are documented; it does
+not establish frame-perfect native behavior or release-package validation.
 
 [SuperSkippie and BIG BENG](player-abilities-native.md), boss phase machines,
 enemy death effects and the latest original projectile frames/timing are already

@@ -8,6 +8,44 @@ const number=(e,key,fallback=0)=>e[key]!==''&&Number.isFinite(Number(e[key]))?Nu
 const mix=(a,b,t)=>a+(b-a)*t;
 const rgb=value=>String(value||'255 255 255').trim().split(/\s+/).map(Number);
 const cross=(a,b,out)=>{out[0]=a[1]*b[2]-a[2]*b[1];out[1]=a[2]*b[0]-a[0]*b[2];out[2]=a[0]*b[1]-a[1]*b[0];};
+const vector=value=>Array.isArray(value)&&value.length===3&&value.every(Number.isFinite);
+const counter=value=>Number.isSafeInteger(value)&&value>=0;
+const timer=value=>value===null||Number.isFinite(value)&&value>=0;
+// Compact rows keep all 15 templates and live integrator slots without
+// repeating field names in every emitter in the save's localStorage record.
+const slotScalars=['life','delay','birth','serial','lifeEnd','fadeStage','fadeEnd','fadeStart','opacity','size'];
+const slotVectors=['position','birthPosition','velocity','offset','launch'];
+
+function restoreSpoutState(saved) {
+  if(saved?.version!==1||!counter(saved.ticks)||!counter(saved.serial)||!counter(saved.randomState)||saved.randomState>0xffffffff||
+    !Number.isFinite(saved.remainder)||saved.remainder<0||saved.remainder>=SPOUT_STEP||
+    ![true,false,null].includes(saved.enabled)||!counter(saved.enableSerial)||typeof saved.finished!=='boolean'||
+    !Number.isFinite(saved.restoredAge)||saved.restoredAge<0||!Number.isFinite(saved.delay)||saved.delay<0||
+    !timer(saved.delayEnd)||!timer(saved.lifeEnd)||!vector(saved.color)||typeof saved.colorUp!=='boolean'||
+    !Array.isArray(saved.pool)||saved.pool.length!==SPOUT_POOL_SIZE)return null;
+  for(const row of saved.pool) {
+    if(!Array.isArray(row)||row.length!==26||typeof row[0]!=='boolean'||
+      !row.slice(1).every(value=>value===null||Number.isFinite(value))||
+      row.slice(11).some(value=>value===null)||!(row[1]>=1)||!(row[2]>=0))return null;
+    if(row[0]&&(!row.slice(1).every(Number.isFinite)||row[3]<0||!counter(row[4])||row[4]>saved.serial||
+      row[5]<0||![0,1,2].includes(row[6])||row[7]<0||row[8]<0||row[9]<0||row[9]>1||row[10]<0))return null;
+  }
+  return {version:1,ticks:saved.ticks,remainder:saved.remainder,serial:saved.serial,randomState:saved.randomState,
+    enabled:saved.enabled,enableSerial:saved.enableSerial,finished:saved.finished,restoredAge:saved.restoredAge,
+    delay:saved.delay,delayEnd:saved.delayEnd,lifeEnd:saved.lifeEnd,color:[...saved.color],colorUp:saved.colorUp,pool:saved.pool.map(row=>[...row])};
+}
+
+export function restoreSpoutSnapshots(saved) {
+  if(saved?.version!==1||!Array.isArray(saved.entries)||saved.entries.length>4096)return undefined;
+  const entries=[],ids=new Set();
+  for(const entry of saved.entries) {
+    if(typeof entry?.id!=='string'||entry.id.length>256||ids.has(entry.id)||
+      !Number.isFinite(entry.age)||entry.age<0||!counter(entry.enableSerial))return undefined;
+    const state=restoreSpoutState(entry.state);if(!state)return undefined;
+    ids.add(entry.id);entries.push({id:entry.id,age:entry.age,enableSerial:entry.enableSerial,state});
+  }
+  return {version:1,entries};
+}
 
 export class NativeSpoutEffect {
   constructor(entity,{seed=1,age=0}={}) {
@@ -39,6 +77,23 @@ export class NativeSpoutEffect {
     this.particles=[];this.delay=this.pool[0].delay;this.delayEnd=null;this.lifeEnd=null;
   }
   get time(){return this.ticks*SPOUT_STEP;}
+  snapshot() {
+    return {version:1,ticks:this.ticks,remainder:this.remainder,serial:this.serial,randomState:this.randomState,
+      enabled:this.enabled,enableSerial:this.enableSerial,finished:this.finished,restoredAge:this.restoredAge,
+      delay:this.delay,delayEnd:this.delayEnd,lifeEnd:this.lifeEnd,color:[...this.color],colorUp:this.colorUp,
+      pool:this.pool.map(p=>[p.active,...slotScalars.map(key=>p[key]??null),...slotVectors.flatMap(key=>p[key])])};
+  }
+  static restore(entity,saved) {
+    const state=restoreSpoutState(saved);if(!state)return null;
+    const effect=new NativeSpoutEffect(entity);
+    for(const key of ['ticks','remainder','serial','randomState','enabled','enableSerial','finished','restoredAge','delay','delayEnd','lifeEnd','color','colorUp'])effect[key]=state[key];
+    effect.tint=effect.color.map(v=>clamp(v/255));
+    effect.pool=state.pool.map(row=>{
+      const p={active:row[0]};slotScalars.forEach((key,i)=>{if(row[i+1]!==null)p[key]=row[i+1];});
+      slotVectors.forEach((key,i)=>{p[key]=row.slice(11+i*3,14+i*3);});return p;
+    });
+    effect.particles=effect.pool.filter(p=>p.active);return effect;
+  }
   random(){this.randomState=(Math.imul(this.randomState,214013)+2531011)>>>0;return ((this.randomState>>>16)&32767)%10000/10000;}
   basis(direction) {
     const d=this.axis,r=this.reference,length=Math.hypot(...direction);

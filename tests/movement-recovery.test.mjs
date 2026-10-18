@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {MovementRecovery} from '../src/movement-recovery.js';
 import {BspCollider,PlayerController} from '../src/collision.js';
 import {moveEnemy} from '../src/enemies.js';
@@ -281,4 +282,169 @@ test('normal free fall beside a wall does not trigger the suspended-body recover
   for(let i=0;i<120;i++)p.update(.025,{right:1},0);
   assert.equal(p.movementRecovery.recoveries,0);assert.equal(p.grounded,true);
   assert.ok(Math.abs(p.position[1]-.05)<1e-6);
+});
+
+function lowFallPocket({cornerExit=false,jumpable=false,gate=false}={}) {
+  // A body-wide space allows 46 units of travel. A straight radial probe
+  // cannot tell a sealed pocket from the same space with a turning exit.
+  const specs=[floor,
+    [[-200,0,-200],[-12,100,200]],
+    [[58,0,-200],[200,100,200]],
+    [[-200,0,-200],[200,100,-12]],
+    [[-200,0,12],[cornerExit?34:200,jumpable?32:100,200]]];
+  if(!jumpable)specs.push([[-200,64,-200],[200,100,200]]);
+  if(gate)specs.push([[34,0,80],[58,100,84]]);
+  const f=boxes(specs),position=[0,.05,0],previous=[0,100.05,0];
+  return {...f,position,previous};
+}
+
+test('a low sealed fall pocket recovers only to a revalidated higher visited position',()=>{
+  const f=lowFallPocket(),r=new MovementRecovery(),options=at(f.position,f.trace);
+  assert.equal(f.trace(f.position,f.position,hull.mins,hull.maxs).startSolid,false);
+  assert.equal(r.safeAt(f.position,options),false);
+  assert.equal(r.safeAt(f.previous,options),true);
+  assert.equal(f.trace(f.position,[46,.05,0],hull.mins,hull.maxs).fraction,1);
+  assert.ok(f.trace(f.position,[0,16.05,0],hull.mins,hull.maxs).fraction<1);
+  r.history.push([...f.previous]);
+  const result=tickUntil(r,options,1500);
+  assert.ok(result);assert.equal(result.reason,'fall-pocket');
+  assert.deepEqual(result.position,f.previous);finiteClear(f,result.position);
+  assert.equal(tickUntil(new MovementRecovery(),options,2500),null,'an unvisited upper shelf is not a recovery destination');
+});
+
+test('fall-pocket recovery cannot replace an ordinary walk around a low corridor corner',()=>{
+  for(const gate of [false,true]){
+    const f=lowFallPocket({cornerExit:true,gate}),r=new MovementRecovery(),options=at(f.position,f.trace);
+    assert.equal(r.safeAt(f.position,options),false);
+    for(let i=0;i<8;i++){
+      const a=i*Math.PI/4,to=[64*Math.cos(a),.05,64*Math.sin(a)];
+      assert.ok(f.trace(f.position,to,hull.mins,hull.maxs).fraction<1,'all straight radial probes are blocked');
+    }
+    assert.equal(f.trace(f.position,[46,.05,0],hull.mins,hull.maxs).fraction,1);
+    assert.equal(f.trace([46,.05,0],[46,.05,64],hull.mins,hull.maxs).fraction,1,
+      'the turning route is clear, including when a closed gate lies farther ahead');
+    r.history.push([...f.previous]);
+    assert.equal(tickUntil(r,options,2500),null,'normal walking remains available around the corner');
+  }
+});
+
+test('a nearby authored gate vetoes returning from a fall pocket to higher history',()=>{
+  const f=lowFallPocket({cornerExit:true,gate:true}),gateIndex=6;
+  // Move the gate close enough that the enclosed turning corridor cannot
+  // reach the probe's escape radius. The higher visited shelf is still safe.
+  f.collider.modelTransforms.set(gateIndex,{translation:[0,0,-32]});
+  const options=at(f.position,f.trace,{isBarrier:hit=>hit.modelIndex===gateIndex});
+  f.collider.disabledModels.add(gateIndex);
+  assert.equal(f.trace(f.position,[46,.05,0],hull.mins,hull.maxs).fraction,1);
+  assert.equal(f.trace([46,.05,0],[46,.05,64],hull.mins,hull.maxs).fraction,1);
+  f.collider.disabledModels.delete(gateIndex);
+  assert.ok(f.trace([46,.05,0],[46,.05,64],hull.mins,hull.maxs).fraction<1);
+  const r=new MovementRecovery();r.history.push([...f.previous]);
+  assert.equal(r.safeAt(f.previous,options),true);
+  assert.equal(tickUntil(r,options,1500),null,'a door closure must not become an escape to the upper shelf');
+  // Exercise the controller wiring as well as the standalone recovery class.
+  const p=new PlayerController(f.collider,[...f.position],f.models);
+  p.grounded=true;p.recoveryDoors=new Map([[gateIndex,{open:false}]]);
+  p.movementRecovery.history.push([...f.previous]);
+  for(let i=0;i<1500;i++)p.recoverMovement(.05,[...p.position],[1,0,0],false);
+  assert.equal(p.movementRecovery.recoveries,0);assert.deepEqual(p.position,f.position);
+});
+
+test('higher fall-pocket history cannot bypass a door beyond the local probe',()=>{
+  const f=lowFallPocket({gate:true}),gateIndex=6,previous=[46,100.05,150];
+  const r=new MovementRecovery(),options=at(f.position,f.trace,{
+    isBarrier:hit=>hit.modelIndex===gateIndex,
+    barrierTrace:(a,b,mins,maxs)=>f.collider.trace(a,b,mins,maxs,[gateIndex],false)
+  });
+  assert.equal(r.safeAt(previous,options),true);
+  assert.ok(options.barrierTrace(f.position,previous,hull.mins,hull.maxs).fraction<1);
+  r.history.push([...previous]);
+  assert.equal(tickUntil(r,options,1500),null,'the return segment must not cross an authored door');
+  // An open/disabled gate is no longer a barrier; ordinary sealed-pocket
+  // recovery can still return to exactly that supported higher history.
+  f.collider.disabledModels.add(gateIndex);r.reset();r.history.push([...previous]);
+  assert.deepEqual(tickUntil(r,options,1500)?.position,previous);
+  f.collider.disabledModels.delete(gateIndex);
+  const door={open:false},p=new PlayerController(f.collider,[...f.position],f.models);
+  p.grounded=true;p.recoveryDoors=new Map([[gateIndex,door]]);
+  p.movementRecovery.history.push([...previous]);
+  for(let i=0;i<1500;i++)p.recoverMovement(.05,[...p.position],[1,0,0],false);
+  assert.equal(p.movementRecovery.recoveries,0);
+  // The cached reference follows ordinary open-state changes without rebuild.
+  door.open=true;f.collider.disabledModels.add(gateIndex);
+  for(let i=0;i<1500&&!p.movementRecovery.recoveries;i++)p.recoverMovement(.05,[...p.position],[1,0,0],false);
+  assert.equal(p.movementRecovery.recoveries,1);assert.deepEqual(p.position,previous);
+});
+
+test('a jumpable lip below a previously visited higher shelf does not trigger fall-pocket recovery',()=>{
+  const f=lowFallPocket({jumpable:true}),r=new MovementRecovery(),options=at(f.position,f.trace);
+  assert.equal(f.trace(f.position,[0,40.05,0],hull.mins,hull.maxs).fraction,1);
+  assert.equal(f.trace([0,40.05,0],[0,40.05,64],hull.mins,hull.maxs).fraction,1);
+  // The left wall is a real, supported upper return point, but jumping over
+  // the low north lip remains an ordinary route out of the lower space.
+  const previous=[-40,100.05,0];assert.equal(r.safeAt(previous,options),true);
+  r.history.push(previous);assert.equal(tickUntil(r,options,2500),null);
+});
+
+test('a descending passage beneath a lower ceiling is an ordinary fall-pocket exit',()=>{
+  const f=boxes([
+    [[-500,-62,-500],[500,-32,500]],[[-500,-32,-500],[34,0,500]],
+    [[-200,0,-200],[-12,100,200]],[[58,-32,-200],[200,100,200]],
+    [[-200,-32,-200],[200,100,-12]],[[-200,-32,12],[34,100,200]],
+    [[-200,64,-200],[200,100,200]],[[34,40,12],[58,100,200]]
+  ]);
+  const r=new MovementRecovery(),position=[0,.05,0],previous=[0,100.05,0],options=at(position,f.trace);
+  const route=[position,[46,.05,0],[46,-31.95,0],[46,-31.95,64]];
+  for(let i=1;i<route.length;i++)assert.equal(f.trace(route[i-1],route[i],hull.mins,hull.maxs).fraction,1,
+    'walking off the short ledge and turning under the lower ceiling is unobstructed');
+  assert.equal(r.safeAt(position,options),false);assert.equal(r.safeAt(previous,options),true);
+  r.history.push(previous);
+  assert.equal(tickUntil(r,options,2500),null,'the player can descend instead of returning to the upper shelf');
+});
+
+test('a jump becomes available after walking beneath the edge of a low ceiling',()=>{
+  const f=boxes([floor,[[-200,0,-200],[-12,100,200]],[[58,0,-200],[200,100,200]],
+    [[-200,0,-200],[200,100,-12]],[[-200,0,12],[200,32,200]],
+    [[-200,64,-200],[34,100,200]]]);
+  const r=new MovementRecovery(),position=[0,.05,0],options=at(position,f.trace),previous=[0,100.05,0];
+  assert.ok(f.trace(position,[0,16.05,0],hull.mins,hull.maxs).fraction<1);
+  assert.equal(f.trace(position,[46,.05,0],hull.mins,hull.maxs).fraction,1);
+  assert.equal(f.trace([46,.05,0],[46,40.05,0],hull.mins,hull.maxs).fraction,1);
+  assert.equal(f.trace([46,40.05,0],[46,40.05,64],hull.mins,hull.maxs).fraction,1);
+  assert.equal(r.safeAt(previous,options),true);r.history.push(previous);
+  assert.equal(tickUntil(r,options,2500),null,'the player can walk to headroom and jump out normally');
+});
+
+test('the original Castle warehouse pocket recovers to the verified upper shelf with bounded work',()=>{
+  const level=JSON.parse(readFileSync(new URL('../data/levels/lvl01a/level.json',import.meta.url)));
+  const collider=new BspCollider(level.collision),models=[0,51,52,53];
+  // Captured after the ordinary crate button: crates02 is stopped partway by
+  // the player's body. Its fully open pose would overlap this location.
+  for(const [index,z] of [[51,91],[52,94.34666666661198],[53,93]])
+    collider.modelTransforms.set(index,{translation:[0,0,z]});
+  const trace=(a,b,mins,maxs)=>collider.trace(a,b,mins,maxs,models);
+  const position=[823.05,-23.95,-907.603],previous=[1099.8577,168.05,-931.175];
+  const names=new Map(level.entities.filter(e=>e.classname==='%Model%').map(e=>[e['%name%'],Number(e.Model)]));
+  // The retained earned save has commanded all three crate doors open, even
+  // though the player's collision stopped crates02 partway through its motion.
+  const openDoors=new Set([51,52,53]);
+  const barrierModels=new Set(level.entities.filter(e=>e.classname==='DoorModel').map(e=>names.get(e.Model)).filter(i=>Number.isInteger(i)&&!openDoors.has(i)));
+  const r=new MovementRecovery(),options=at(position,trace,{isBarrier:hit=>barrierModels.has(hit.modelIndex),
+    barrierTrace:(a,b,mins,maxs)=>collider.trace(a,b,mins,maxs,barrierModels,false)});
+  assert.equal(trace(position,position,hull.mins,hull.maxs).startSolid,false);
+  assert.equal(r.safeAt(position,options),false);assert.equal(r.safeAt(previous,options),true);
+  assert.equal(trace(position,[868,position[1],position[2]],hull.mins,hull.maxs).fraction,1,
+    'ordinary sideways movement is possible but does not leave the pocket');
+  assert.ok(trace(position,[position[0],position[1]+16,position[2]],hull.mins,hull.maxs).fraction<.5);
+  r.history.push(previous);let result=null,maxTraces=0;
+  for(let i=0;i<1500&&!result;i++){
+    let traces=0;result=r.update({...options,trace:(...args)=>{traces++;return trace(...args);},
+      barrierTrace:(...args)=>{traces++;return options.barrierTrace(...args);}});
+    maxTraces=Math.max(maxTraces,traces);
+  }
+  assert.ok(result);assert.equal(result.reason,'fall-pocket');assert.deepEqual(result.position,previous);
+  assert.ok(maxTraces<=12,`recovery work remains bounded per frame: ${maxTraces} traces`);
+  assert.equal(tickUntil(new MovementRecovery(),options,1500),null,'without reached history the recovery cannot invent an upper destination');
+  const unavailable=new MovementRecovery();unavailable.history.push(previous);
+  assert.equal(tickUntil(unavailable,{...options,safe:()=>false},1500),null,'the destination is revalidated before use');
 });

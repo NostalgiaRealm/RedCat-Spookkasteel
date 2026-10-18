@@ -68,7 +68,7 @@ test('Brutus defeat restores ambient music and raises the mirror through the ori
   assert.equal(host.musicState.sound,'Endbosses.wav');
   game.destroy(boss);
   assert.equal(object('csmc12').enabled,true);
-  assert.deepEqual(host.musicState,{id:music.id,sound:'Level 1 - The Forest.wav'});
+  assert.deepEqual(host.musicState,{id:music.id,sound:'Level 1 - The Forest.wav',mode:'ambient'});
   advance(host,24.1);
   const raised=host.modelTransforms.get(mirror.modelIndex);
   assert.ok(raised.translation[1]>before.translation[1]+50);
@@ -96,7 +96,9 @@ test('native boss activation selects special music in each original arena',()=>{
 test('boss defeat chooses action music while another living enemy remains engaged',()=>{
   const {game,host,object}=boot(3),boss=object('Max');
   game.command(boss,'enable');
-  const other=game.objects.find(o=>o.kind==='enemy'&&o!==boss);
+  // Use an already ground-active species: an unplaced ceiling spider is not
+  // engaged merely because a fixture toggles its alert flag.
+  const other=game.objects.find(o=>o.kind==='enemy'&&o.enemyType==='frog');
   other.enabled=true;other.alerted=true;
   game.destroy(boss);
   assert.equal(host.musicState.sound,'spookkort3.wav');

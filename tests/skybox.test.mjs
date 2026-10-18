@@ -1,12 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {normalizeSkyboxFaces} from '../src/skybox.js';
+import {normalizeSkyboxFaces,nativeSkyboxFaces} from '../src/skybox.js';
 
 function canvasFactory() {
   const calls=[],canvases=[];
   const create=()=>{
-    const canvas={width:0,height:0,getContext:()=>({drawImage:(...args)=>calls.push(args)})};
+    const canvas={width:0,height:0,operations:[]};
+    const context={drawImage:(...args)=>{calls.push(args);canvas.operations.push(['drawImage',...args]);},
+      translate:(...args)=>canvas.operations.push(['translate',...args]),scale:(...args)=>canvas.operations.push(['scale',...args]),
+      fillRect:(...args)=>canvas.operations.push(['fillRect',context.fillStyle,...args])};
+    canvas.getContext=()=>context;
     canvases.push(canvas);return canvas;
   };
   return {create,calls,canvases};
@@ -40,6 +44,26 @@ test('actual campaign sky artwork becomes upload-compatible, with existing unifo
     if(i===4)assert.equal(output[0],output[1],'Tower repeated sky00 uses one resized canvas');
   }
   assert.deepEqual(resized,[[2,2],[5,1]]);
+});
+
+test('native missing faces stay blank, while entirely unassigned skies allocate nothing',()=>{
+  const factory=canvasFactory(),top={width:256,height:256};
+  assert.equal(nativeSkyboxFaces(Array(6).fill(null),4096,factory.create),null);
+  assert.equal(factory.canvases.length,0);
+  const output=nativeSkyboxFaces([top,null,top,top,top,top],4096,factory.create);
+  assert.ok(output.every(image=>image.width===256&&image.height===256));
+  assert.notEqual(output[3],top,'the missing floor must not duplicate the ceiling artwork');
+  assert.ok(factory.canvases.some(c=>c.operations.some(op=>op[0]==='fillRect'&&op[1]==='#000')));
+  assert.throws(()=>nativeSkyboxFaces([]),/six images/);
+});
+
+test('Tower ceiling and floor share one normalized and oriented image within the GPU limit',()=>{
+  const cap={width:128,height:128},side={width:256,height:256},factory=canvasFactory();
+  const output=nativeSkyboxFaces([cap,cap,side,side,side,side],64,factory.create);
+  assert.equal(output[2],output[3]);assert.equal(output[0],output[1]);assert.equal(output[0],output[5]);
+  assert.ok(output.every(image=>image.width===64&&image.height===64));
+  assert.equal(factory.canvases.length,3,'two resized sources and one shared ceiling/floor rotation');
+  assert.deepEqual([cap.width,side.width],[128,256],'source artwork is never modified');
 });
 
 test('GPU cube limit applies to every face, preserving shared source images and source dimensions',()=>{

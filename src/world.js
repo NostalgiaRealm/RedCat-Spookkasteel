@@ -14,13 +14,15 @@ import { WorldEffects } from './world-effects.js';
 import { EnemyTargeting, targetAimPoint, targetDirection, targetableObject, transformedTargetBounds, targetMarkerPose } from './targeting.js';
 import { actorOrientation, attachedActorVisible, nativePlayerYaw } from './actor-placement.js';
 import {pickupBounds,pickupPlacement} from './pickup-placement.js';
-import { playerMotion } from './player-animation.js';
+import { playerMotion, snapshotPlayerAnimation, restorePlayerAnimation } from './player-animation.js';
 import { playerReactionMotion } from './player-lifecycle.js';
 import { PLAYER_SUPER_CHARGE, PLAYER_SHOOT_MOTION } from './player-projectiles.js';
 import { actorOverrideKey, actorOverrideColor } from './actor-materials.js';
 import { placeSpider } from './enemy-ambush.js';
 import { isGhostEnemy, ghostMaterials } from './ghost-materials.js';
 import { enemyDeathOpacity, applyEnemyDeathOpacity } from './enemy-death-effects.js';
+import {stepNativeDebris} from './debris-native.js';
+import {KNIGHT_PARTS,knightDebrisLifetime,createKnightDebrisParticles,restoreKnightDebrisState,snapshotKnightDebrisState} from './knight-debris.js';
 import { posedEnemyProjectileOrigins } from './enemy-projectile-origins.js';
 import { createActorLighting, updateActorLighting, applyActorLighting } from './actor-lighting.js';
 import { ActorWorldLighting } from './actor-world-lighting.js';
@@ -29,7 +31,7 @@ import { ActorLightVisibility } from './actor-light-visibility.js';
 import { WorldGeometryStream } from './world-streaming.js';
 import { ActorRenderResidency } from './actor-render-residency.js';
 import { PlayerShadow, PLAYER_SHADOW_TEXTURE } from './player-shadow.js';
-import { normalizeSkyboxFaces } from './skybox.js';
+import { nativeSkyboxFaces } from './skybox.js';
 const json = async url => { const response=await fetch(url); if(!response.ok) throw new Error(`Ontbrekend spelbestand: ${url}`); return response.json(); };
 const binary = async url => {const response=await fetch(url);if(!response.ok)throw new Error(`Ontbrekend spelbestand: ${url}`);return response.arrayBuffer();};
 const point = e => (e.Origin || e.origin || '0 0 0').trim().split(/\s+/).map(Number);
@@ -61,10 +63,6 @@ export function actorVisible(object,time) {
   }
   return object.enabled!==false&&object.health!==0;
 }
-// Original Actors/knight.ini lists these nine breakup actor types. Their
-// portable ballistic motion is an approximation of the old particle system.
-const KNIGHT_PARTS=['knhd','knbrst','knhip','knllg','knrlg','knlrm','knrrm','knlns','knax'];
-const KNIGHT_PART_HEIGHTS=[.9,.65,.42,.16,.16,.66,.66,.6,.6];
 // Confirmed decorative assets with authored roots inside walls, plinths or
 // just below the floor. Character doubles and hazards must not opt in merely
 // because they also use AdamAnyActor or start underground.
@@ -112,16 +110,13 @@ export class CastleWorld {
     this.physicalModels=[0];
     for(let i=1;i<data.collision.models.length;i++)if(!triggerModels.has(i))this.physicalModels.push(i);
     const liquidGroups=visibleLiquidGroups(data);
-    const groups=data.groups.filter(group=>{
-      const skyBoundary=id==='lvl02a'&&Boolean(group.flags&4);
-      return !(triggerModels.has(group.model)&&!liquidGroups.has(group) || group.flags&4&&!skyBoundary);
-    });
+    const groups=data.groups.filter(group=>!triggerModels.has(group.model)||liquidGroups.has(group));
     this.geometryStream=new WorldGeometryStream(this,{
       vertices,uv:lmUv?new Float32Array(lmUv):null,frames,visibility:lightVisibility,pvs:new Uint8Array(lightPvs),groups,
       textureFor:index=>this.texture(base+data.textures[index].file),
       materialFor:group=>{
-        const skyBoundary=id==='lvl02a'&&Boolean(group.flags&4),fullbright=Boolean(group.flags&2),gouraud=Boolean(group.flags&32);
-        // Preserve the graveyard's authored sky masks and one-sided fence
+        const skyBoundary=Boolean(group.flags&4),fullbright=Boolean(group.flags&2),gouraud=Boolean(group.flags&32);
+        // Preserve all authored sky masks and one-sided fence
         // artwork. Only resource residency changes; brush state is separate.
         return this.track(new THREE.MeshBasicMaterial(skyBoundary?
           {colorWrite:false,depthWrite:true,side:THREE.DoubleSide}:
@@ -132,8 +127,8 @@ export class CastleWorld {
       // The six tiny sky faces are global scenery, independent of room chunks.
       const sky=new Map();
       await Promise.all([...new Set(data.sky.textures.filter(i=>i>=0))].map(async i=>sky.set(i,await this.texture(base+data.textures[i].file))));
-      const faces=data.sky.textures.map(i=>sky.get(i<0?data.sky.textures.find(j=>j>=0):i).image);
-      const cube=this.track(new THREE.CubeTexture(normalizeSkyboxFaces(faces,this.renderer.capabilities.maxCubemapSize)));cube.colorSpace=THREE.SRGBColorSpace;cube.needsUpdate=true;this.scene.background=cube;
+      const faces=data.sky.textures.map(i=>i<0?null:sky.get(i).image);
+      const cube=this.track(new THREE.CubeTexture(nativeSkyboxFaces(faces,this.renderer.capabilities.maxCubemapSize)));cube.colorSpace=THREE.SRGBColorSpace;cube.needsUpdate=true;this.scene.background=cube;
     }
     this.collider=new BspCollider(data.collision);
     invisibleModels.forEach(i=>this.collider.disabledModels.add(i));
@@ -176,7 +171,7 @@ export class CastleWorld {
       }
     }));
     this.redcat=await this.makeActor('redcat.act');
-    if(this.redcat){this.scene.add(this.redcat);this.redcat.position.fromArray(this.player.position);}
+    if(this.redcat){this.scene.add(this.redcat);this.redcat.position.fromArray(this.player.position);if(this.redcat.userData.animator)this.redcat.userData.animator.transitionDuration=.25;}
     const shadowMap=await this.texture(PLAYER_SHADOW_TEXTURE);
     shadowMap.wrapS=shadowMap.wrapT=THREE.ClampToEdgeWrapping;
     this.playerShadow=new PlayerShadow(this,shadowMap);
@@ -246,7 +241,16 @@ export class CastleWorld {
     if((actorClass==='AdamAnyActor'&&BURIED_DECORATIVE_ACTORS.has(source))||(actorClass==='StandingEnemy'&&source==='knight.act'))
       mesh.userData.actorLighting.floorRecoveryBounds=new Float64Array(6);
     for(const material of materials)applyActorLighting(material,mesh.userData.actorLighting);
-    if(animated){const animator=new ActorAnimator(template.data,geometry);animator.play('idle')||animator.play(template.data.animations[0].name);root.userData.animator=animator;}
+    if(animated) {
+      const animator=new ActorAnimator(template.data,geometry);
+      // Native AdamAnyActor leaves a blank MotionName in the bind pose. The
+      // hand-torch exception preserves our requested animation enhancement.
+      const authored=options.entity?.classname==='AdamAnyActor';
+      if(!authored||options.entity.MotionName||source==='htorch.act') {
+        animator.play(authored&&options.entity.MotionName||'idle')||animator.play(template.data.animations[0].name);
+      }
+      root.userData.animator=animator;
+    }
     if(!geometry.boundingBox)geometry.computeBoundingBox();
     // AdamActor caches its lighting bounds at setup. Breathing or a death
     // pose must not move the Sun reference or retrigger stationary searches.
@@ -255,6 +259,10 @@ export class CastleWorld {
   }
   async attachGameplay(gameplay) {
     this.gameplay=gameplay;
+    // Cache door references once per level so current closed state is checked
+    // without scanning gameplay objects during movement. Shifted warehouse
+    // crates also use DoorModel, but are commanded open before the fall.
+    this.player.recoveryDoors=new Map(gameplay.objects.filter(o=>o.kind==='door'&&o.modelIndex!==undefined).map(o=>[o.modelIndex,o]));
     // Read the live controller flag, including restored saves and blocked exits.
     gameplay.isPlayerInvulnerable=()=>this.player.noClip===true;
     // Route topology uses stationary world geometry. Doors are tested by the
@@ -266,6 +274,7 @@ export class CastleWorld {
       if(this.actorInstances.has(obj.id)){
         if(obj.kind==='actor'){
           const actor=this.actorInstances.get(obj.id);this.configureDestructible(obj,actor);
+          this.configureExplosionTarget(obj,actor);
           this.registerActorCollision(obj,actor);
         }
         return;
@@ -282,10 +291,12 @@ export class CastleWorld {
         }
         actor.position.fromArray(gameplay.objectPosition(obj));actor.visible=actorVisible(obj,gameplay.time);this.scene.add(actor);this.actorInstances.set(obj.id,actor);
         if(obj.kind==='actor')this.configureDestructible(obj,actor);
+        if(obj.kind==='actor'||obj.kind==='enemy')this.configureExplosionTarget(obj,actor);
         if(obj.kind==='enemy') {
           if(actor.userData.animator) {
             const stateAnimator=new ActorStateAnimator(actor.userData.animator,obj.stats);
             actor.userData.stateAnimator=stateAnimator;obj.animationDurations={...stateAnimator.durations};
+            obj.animationSnapshot=()=>stateAnimator.snapshot();
           }
           obj.projectileOrigins=()=>this.enemyProjectileOrigins(obj,actor);
           obj.recoverySafePosition=position=>{
@@ -344,6 +355,10 @@ export class CastleWorld {
             // His own ammunition still excludes its source assembly.
             const shields=[parts[0],parts[2]].filter(Boolean);
             this.bossMachines.set(obj.id,{root:machine,top:parts[1],shields,serial:-1});
+            if(parts[1]?.userData.animator) {
+              parts[1].userData.animator.transitionDuration=.25;
+              obj.machineAnimationSnapshot=()=>({serial:this.bossMachines.get(obj.id).serial,pose:parts[1].userData.animator.snapshot()});
+            }
             for(const part of shields)this.registerActorCollision(obj,part,{blocksPlayer:true,canBeShot:true,blocksLOS:false});
             if(parts[1])this.registerActorCollision(obj,parts[1],{blocksPlayer:true,canBeShot:true,blocksLOS:false});
             obj.machineDurations=Object.fromEntries((parts[1]?.userData.template.data.animations||[]).map(clip=>[clip.name,clip.duration]));
@@ -373,8 +388,8 @@ export class CastleWorld {
   }
   configureDestructible(object,actor) {
     object.actorSettings=actor.userData.template?.data.settings||{};
-    // Saves retain their remaining health. Only a freshly constructed prop
-    // receives its original INI damage threshold.
+    // Saves retain the prop limit and accumulated damage; older saves supply
+    // a remaining-health limit. Only a fresh prop receives the INI threshold.
     if(!object.restoredHealth&&object.health>0){
       const thresholds=object.actorSettings.damageThreshold||[object.health,object.health];
       object.health=(thresholds[0]+thresholds[1])/2;
@@ -389,6 +404,40 @@ export class CastleWorld {
       return box.isEmpty()?{min:[0,0,0],max:[0,0,0]}:{min:box.min.sub(center).toArray(),max:box.max.sub(center).toArray()};
     };
     object.effectScale=()=>actor.userData.mesh?.scale.toArray()||[1,1,1];
+  }
+  configureExplosionTarget(object,actor) {
+    const game=this.gameplay;
+    object.explosionActive=()=>actorVisible(object,game.time)&&attachedActorVisible(object,game);
+    object.explosionMayReach=cell=>{
+      // The current geometry bound is already updated by pose evaluation.
+      // This conservative sphere rejects far actors without updating their
+      // world matrices or constructing a posed box. sqrt(3) also encloses
+      // the rotated AABB corners used by native radial damage.
+      const mesh=actor.userData.mesh,box=mesh?.geometry.boundingBox;
+      if(!box||actor.children.length!==1||actor.children[0]!==mesh)return true;
+      const rootScale=Math.max(Math.abs(actor.scale.x),Math.abs(actor.scale.y),Math.abs(actor.scale.z));
+      const scale=Math.max(Math.abs(mesh.scale.x),Math.abs(mesh.scale.y),Math.abs(mesh.scale.z))*rootScale;
+      const radius=Math.sqrt(3)*(Math.hypot(Math.max(Math.abs(box.min.x),Math.abs(box.max.x)),Math.max(Math.abs(box.min.y),Math.abs(box.max.y)),Math.max(Math.abs(box.min.z),Math.abs(box.max.z)))*scale+mesh.position.length()*rootScale);
+      const origin=game.objectPosition(object);
+      return Math.hypot(...origin.map((value,axis)=>value-cell.position[axis]))<=cell.radius+radius;
+    };
+    object.explosionBounds=()=>{
+      // Hurt cells use the posed actor box, not the narrower movement hull.
+      // Cache within a tick when several nearby crates explode together.
+      const cached=actor.userData.explosionBounds,origin=game.objectPosition(object);
+      const rotation=object.rotation?.join(',');
+      if(cached?.time===game.time&&cached.yaw===object.yaw&&cached.rotation===rotation&&cached.bounds.origin.every((value,axis)=>value===origin[axis]))return cached.bounds;
+      actor.position.fromArray(origin);
+      if(object.kind==='actor')actor.quaternion.copy(actorOrientation(object,actor.userData.template?.data.settings||{},game.scripts?.modelTransforms.get(object.modelIndex)));
+      else {
+        if(object.yaw!==undefined)actor.rotation.y=object.yaw;
+        if(object.rotation)actor.rotation.fromArray(object.rotation);
+      }
+      actor.updateWorldMatrix(true,true);
+      const box=new THREE.Box3().setFromObject(actor),bounds={origin:[...origin],min:box.min.toArray(),max:box.max.toArray()};
+      actor.userData.explosionBounds={time:game.time,yaw:object.yaw,rotation,bounds};
+      return bounds;
+    };
   }
   registerActorCollision(object,actor,overrideFlags={}) {
     const record=this.actorCollisionRecord(object,actor,overrideFlags);
@@ -434,7 +483,9 @@ export class CastleWorld {
     const position=new THREE.Vector3(),bounds=new THREE.Box3();
     this.scene.traverseVisible(mesh=>{
       const state=mesh.userData.actorLighting;if(!state||this.actorResidency&&!this.actorResidency.isRendered(mesh))return;
-      mesh.getWorldPosition(position);
+      // The scene update above already includes every mounted part and debris
+      // transform; getWorldPosition would walk/update its ancestors again.
+      position.setFromMatrixPosition(mesh.matrixWorld);
       const root=position.toArray(),lighting=state.settings.lighting||{};
       if(!mesh.geometry.boundingBox)mesh.geometry.computeBoundingBox();
       state.bounds??=mesh.geometry.boundingBox.clone();
@@ -509,8 +560,22 @@ export class CastleWorld {
     const animator=machine.top?.userData.animator;
     if(animator) {
       const restart=machine.serial!==object.boss.machineSerial;
-      animator.play(object.boss.machineMotion,object.boss.machineMotion==='still',restart);
-      machine.serial=object.boss.machineSerial;animator.time=object.boss.machineElapsed;animator.update(0);
+      const initial=machine.serial===-1,now=this.gameplay.time;
+      const frozen=!!(this.gameplay.scripts?.enemiesFrozen||this.gameplay.scripts?.cutscene);
+      const elapsed=!frozen&&Number.isFinite(machine.poseTime)?Math.max(0,now-machine.poseTime):0;
+      machine.poseTime=now;
+      const saved=object.machinePose;
+      const restored=initial&&saved?.serial===object.boss.machineSerial&&
+        String(saved.pose?.name).toLowerCase()===String(object.boss.machineMotion).toLowerCase()&&animator.restore(saved.pose);
+      if(!restored) {
+        const blendDuration=animator.transitionDuration;
+        if(initial){animator.transition=null;animator.transitionDuration=0;}
+        animator.play(object.boss.machineMotion,object.boss.machineMotion==='still',restart);
+        animator.transitionDuration=blendDuration;
+        animator.time=object.boss.machineElapsed;animator.update(0,elapsed);
+      }
+      if(initial)delete object.machinePose;
+      machine.serial=object.boss.machineSerial;
     }
     if(collision) {
       for(const part of machine.shields)this.registerActorCollision(object,part,{blocksPlayer:true,canBeShot:true,blocksLOS:false});
@@ -537,7 +602,7 @@ export class CastleWorld {
         if(actor.userData.knightDebrisSerial!==obj.animationSerial) {
           actor.userData.knightDebrisSerial=obj.animationSerial;
           // A restored, expired breakup must not throw its parts again.
-          if(!Number.isFinite(obj.deathStartedAt)||game.time-obj.deathStartedAt<3.5)this.createKnightDebris(obj,actor);
+          if(!Number.isFinite(obj.deathStartedAt)||game.time-obj.deathStartedAt<knightDebrisLifetime(this.knightParts))this.createKnightDebris(obj,actor);
         }
         actor.visible=false;
       }
@@ -580,17 +645,25 @@ export class CastleWorld {
   }
   createKnightDebris(object,actor) {
     this.enemyDebris??=new Map();
-    const scale=actor.userData.mesh.scale.x,height=object.collisionMaxs?.[1]||80;
-    const parts=this.knightParts.map((template,i)=>{
+    const scale=actor.userData.mesh.scale.x,settings=actor.userData.template?.data.settings||{};
+    const saved=restoreKnightDebrisState(object.knightDebrisState);
+    const particles=saved?.particles||createKnightDebrisParticles(object,scale,settings,this.knightParts);
+    const parts=particles.map(particle=>{
+      const template=this.knightParts[KNIGHT_PARTS.indexOf(particle.actor)];
       const piece=this.instantiateActor(template,{scale});
-      const mesh=piece.userData.mesh;mesh.updateMatrix();mesh.geometry.computeBoundingBox();
-      const center=mesh.geometry.boundingBox.clone().applyMatrix4(mesh.matrix).getCenter(new THREE.Vector3());mesh.position.sub(center);
-      const angle=(object.yaw||0)+i*2.39996323,speed=40+(i%5)*10;
-      piece.position.set(object.position[0]+Math.sin(angle)*5,object.position[1]+height*KNIGHT_PART_HEIGHTS[i],object.position[2]+Math.cos(angle)*5);
-      piece.rotation.y=object.yaw||0;this.scene.add(piece);
-      return {actor:piece,velocity:[Math.sin(angle)*speed,50+(i%3)*15,Math.cos(angle)*speed],spin:[1+(i%3),1+(i%2),.7+(i%4)*.3]};
+      piece.position.fromArray(particle.position);piece.quaternion.fromArray(particle.orientation);this.scene.add(piece);
+      const mesh=piece.userData.mesh,materials=Array.isArray(mesh.material)?mesh.material:[mesh.material];
+      return {actor:piece,particle,materials,opacity:materials.map(m=>m.opacity)};
     });
-    this.enemyDebris.set(object.id,{parts,object,age:0,life:3.5});
+    this.enemyDebris.set(object.id,{parts,object,age:saved?.age||0,life:saved?.life??knightDebrisLifetime(this.knightParts)});
+    object.knightDebrisSnapshot=()=>snapshotKnightDebrisState(this.enemyDebris.get(object.id));
+    delete object.knightDebrisState;
+  }
+  removeKnightDebrisPart(part) {
+    this.scene.remove(part.actor);
+    for(const material of part.materials){material.dispose();this.resources?.delete(material);}
+    const mesh=part.actor.userData.mesh;
+    if(mesh.geometry!==part.actor.userData.template?.geometry){mesh.geometry.dispose();this.resources?.delete(mesh.geometry);}
   }
   updateEnemyDebris(dt) {
     if(!this.enemyDebris)return;
@@ -598,32 +671,34 @@ export class CastleWorld {
       let debris=previous;
       const object=debris.object,target=Number.isFinite(object?.deathStartedAt)?Math.max(0,this.gameplay.time-object.deathStartedAt):debris.age+Math.max(0,Math.min(.05,dt));
       if(target>=debris.life||object?.health>0) {
-        for(const part of debris.parts)this.scene.remove(part.actor);
+        for(const part of debris.parts)this.removeKnightDebrisPart(part);
         this.enemyDebris.delete(id);
         if(object?.health>0)delete this.actorInstances.get(id)?.userData.knightDebrisSerial;
         continue;
       }
       if(target<debris.age-1e-6) {
-        for(const part of debris.parts)this.scene.remove(part.actor);
+        for(const part of debris.parts)this.removeKnightDebrisPart(part);
         this.createKnightDebris(object,this.actorInstances.get(id));debris=this.enemyDebris.get(id);
       }
-      // Resume a saved breakup at its existing age, with the same collision
-      // trace, rather than throwing another fresh set of armour pieces.
+      // New saves resume live positions, spin and contact history directly.
+      // Only older saves replay from birth against the available geometry.
       while(debris.age<target-1e-8) {
         const step=Math.min(.05,target-debris.age);debris.age+=step;
-        for(const part of debris.parts) {
-          part.velocity[1]-=160*step;
-          const start=part.actor.position.toArray(),end=start.map((v,i)=>v+part.velocity[i]*step);
-          const hit=this.collider?.trace(start,end,[-2,-2,-2],[2,2,2],this.physicalModels)||{fraction:1,end};
-          part.actor.position.fromArray(hit.end);
-          if(hit.fraction<1) {
-            const into=part.velocity.reduce((sum,v,i)=>sum+v*hit.normal[i],0);
-            if(into<0)part.velocity=part.velocity.map((v,i)=>(v-hit.normal[i]*into*1.35)*.65);
+        for(let i=debris.parts.length-1;i>=0;i--) {
+          const part=debris.parts[i];
+          if(!stepNativeDebris(part.particle,step,(start,end,min,max)=>this.collider?.trace(start,end,min,max,this.physicalModels)||{fraction:1,end})){
+            this.removeKnightDebrisPart(part);debris.parts.splice(i,1);
           }
-          for(let i=0;i<3;i++)part.actor.rotation[['x','y','z'][i]]+=part.spin[i]*step;
         }
       }
-      for(const part of debris.parts)applyEnemyDeathOpacity(part.actor,Math.min(1,(debris.life-debris.age)/1.5),material=>this.track(material));
+      for(const part of debris.parts){
+        part.actor.position.fromArray(part.particle.position);part.actor.quaternion.fromArray(part.particle.orientation);
+        for(let i=0;i<part.materials.length;i++){
+          const material=part.materials[i];material.opacity=part.opacity[i]*part.particle.opacity;
+          if(part.particle.opacity<1){material.transparent=true;material.depthWrite=false;material.alphaTest=Math.min(material.alphaTest,.003);}
+        }
+      }
+      if(!debris.parts.length)this.enemyDebris.delete(id);
     }
   }
   syncProjectiles() {
@@ -695,6 +770,9 @@ export class CastleWorld {
       for(const resource of [mesh.geometry,mesh.material]){resource.dispose();this.resources.delete(resource);}
     }
   }
+  snapshotPlayerAnimation(){return snapshotPlayerAnimation(this.redcat);}
+  restorePlayerAnimation(saved){restorePlayerAnimation(this.redcat,saved,this.player);}
+
   syncPlayer(dt,input) {
     if(!this.redcat)return;
     const game=this.gameplay,host=game?.scripts,animator=this.redcat.userData.animator;
@@ -705,36 +783,46 @@ export class CastleWorld {
       // Scripted conversations leave RedCat breathing in his ordinary idle
       // pose, even when entered during a jump or a pending shot.
       this.redcat.userData.motionState={};
+      this.redcat.userData.reactionPhase=null;
       animator.timeScale=1;animator.play('idle',true);animator.update(dt);return;
     }
     const reaction=playerReactionMotion(game?.playerReaction);
     if(reaction) {
       this.redcat.userData.motionState={};
+      this.redcat.userData.reactionPhase=game.playerReaction.phase;
       animator.timeScale=reaction.speed;animator.play(reaction.name,false);
-      animator.time=reaction.time;animator.update(0);return;
+      animator.time=reaction.time;animator.update(0,dt);return;
     }
+    const state=this.redcat.userData.motionState||={};
+    if(this.redcat.userData.reactionPhase==='respawn')state.respawnIdle=true;
+    this.redcat.userData.reactionPhase=null;
     let gap=0;
     if(!this.player.grounded&&!this.player.noClip) {
-      const origin=this.player.position,down=[origin[0],origin[1]-10000,origin[2]];
+      const origin=this.player.position,down=[origin[0],origin[1]-1000,origin[2]];
       const floor=this.collider.trace(origin,down,[0,0,0],[0,0,0],this.physicalModels);
       gap=origin[1]-floor.end[1];
     }
-    const motion=playerMotion(this.redcat.userData.motionState||={},this.player,input,host?.cutscene?0:dt,gap);
-    const shooting=game?.playerAttackUntil>game?.time;
+    const motion=playerMotion(state,this.player,input,dt,gap);
+    // Keep the saved full-clip deadline and weapon cooldown unchanged. Native
+    // releases visual priority at 80%, before the shoot1 file itself ends.
+    const shotTime=PLAYER_SHOOT_MOTION.duration-((game?.playerAttackUntil||0)-(game?.time||0))*PLAYER_SHOOT_MOTION.rate;
+    const shooting=game?.playerAttackUntil>game?.time&&shotTime<PLAYER_SHOOT_MOTION.duration*PLAYER_SHOOT_MOTION.finishFraction;
     if(game?.playerCharge) {
+      state.respawnIdle=false;
       animator.timeScale=0;animator.play('shoot1',false);
-      animator.time=PLAYER_SHOOT_MOTION.duration*PLAYER_SUPER_CHARGE.holdFraction;animator.update(0);
+      animator.time=PLAYER_SHOOT_MOTION.duration*PLAYER_SUPER_CHARGE.holdFraction;animator.update(0,dt);
     } else if(shooting) {
+      state.respawnIdle=false;
       const restart=this.redcat.userData.attackSerial!==game.playerAttackSerial;
       this.redcat.userData.attackSerial=game.playerAttackSerial;
-      animator.timeScale=1.9;animator.play('shoot1',false,restart);
+      animator.timeScale=PLAYER_SHOOT_MOTION.rate;animator.play('shoot1',false,restart);
       // Derive the pose from the same clock that releases the pellet, including
       // save restoration and cutscene pauses, instead of a held input button.
-      animator.time=Math.max(0,animator.clip.duration-(game.playerAttackUntil-game.time)*1.9);animator.update(0);
+      animator.time=Math.max(0,shotTime);animator.update(0,dt);
     } else {
       animator.timeScale=motion.speed;animator.play(motion.name,motion.loop);
-      if(motion.time!==undefined){animator.time=motion.time;animator.update(0);}
-      else animator.update(host?.cutscene?0:dt);
+      if(motion.time!==undefined){animator.time=motion.time;animator.update(0,dt);}
+      else animator.update(dt);
     }
   }
   updateTargeting(dt,input) {
@@ -831,6 +919,7 @@ export class CastleWorld {
         },
         traceShot:(a,b)=>this.collider.trace(a,b,[0,0,0],[0,0,0],this.physicalModels,'canBeShot'),
         traceBeam:(a,b)=>this.collider.trace(a,b,[0,0,0],[0,0,0],this.physicalModels,null),
+        explosionLineOfSight:(a,b)=>this.collider.trace(a,b,[0,0,0],[0,0,0],this.physicalModels,null).fraction===1,
         traceEnemy:(a,b,mins,maxs,object)=>this.collider.trace(a,b,mins,maxs,this.physicalModels,{mask:'blocksPlayer',ignoreId:object?.id}),
         traceProjectile:(a,b,radius=0,projectile)=>this.collider.trace(a,b,[-radius,-radius,-radius],[radius,radius,radius],this.physicalModels,{mask:'canBeShot',ignoreId:projectile?.sourceId}),
         lineOfSight:(a,b)=>this.collider.trace(a,b,[0,0,0],[0,0,0],this.physicalModels,'blocksLOS').fraction>0.98});

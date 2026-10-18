@@ -29,7 +29,7 @@ test('original cave skeletons stay as bones until the enabled room and nearby pl
   assert.equal(skeleton.ambush.phase,'waking');assert.equal(skeleton.animationState,'start');
   for(let i=0;i<10;i++){game.time+=.1;game.updateEnemy(skeleton,.1,home,()=>true,clear);}
   assert.equal(skeleton.ambush.phase,'waking');assert.deepEqual(skeleton.position,home);assert.equal(game.projectiles.length,0);
-  for(let i=0;i<12;i++){game.time+=.1;game.updateEnemy(skeleton,.1,home,()=>true,clear);}
+  for(let i=0;i<20;i++){game.time+=.1;game.updateEnemy(skeleton,.1,home,()=>true,clear);}
   assert.equal(skeleton.ambush.phase,'awake');geometry.dispose();
 });
 

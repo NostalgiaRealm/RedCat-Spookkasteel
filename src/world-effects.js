@@ -4,7 +4,7 @@ import { transformMotionPoint } from './motions.js';
 import { NativeTeleporterEffect, TELEPORT_EFFECT_SECONDS, TELEPORT_FLIGHT_SECONDS } from './teleporter-effects.js';
 import { beamEndpoints } from './beam-contacts.js';
 import { DestructibleEffects } from './destructible-effects.js';
-import { NativeFairyEffect, FAIRY_TEXTURES } from './fairy-effects.js';
+import { NativeFairyEffect, FAIRY_TEXTURES, FAIRY_RIBBON_TEXTURE } from './fairy-effects.js';
 import { EnemyDeathEffects } from './enemy-death-effects.js';
 import {GARGOYLE_BLAST_TEXTURE,gargoyleBlastQuads} from './gargoyle-blast.js';
 import { EnemyCombatEffects } from './enemy-combat-effects.js';
@@ -16,7 +16,7 @@ import { patchWorldLightShader } from './world-lighting-material.js';
 import { PlayerWorldLight } from './player-world-light.js';
 import {TorchFlames} from './torch-flames.js';
 import {WorldLightShadows} from './world-light-shadows.js';
-import {NativeSpoutEffect} from './spout-effects.js';
+import {NativeSpoutEffect,restoreSpoutSnapshots} from './spout-effects.js';
 
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
 const number=(e,key,fallback=0)=>Number.isFinite(Number(e[key]))&&e[key]!==''?Number(e[key]):fallback;
@@ -31,6 +31,8 @@ const SPARK=textureKey('spark8.bmp','spark8_a.bmp');
 const BLAST=textureKey('blast.bmp','blast_a.bmp');
 const FLEURI=textureKey('fleuri.bmp','fleuri_a.bmp');
 const CORONA=textureKey('Coreff.bmp','Coreff_a.bmp');
+// AdamEffectTexturedTrail: U follows the segment, V crosses its width.
+const FAIRY_RIBBON_UVS=[[0,1],[0,0],[1,1],[0,0],[1,0],[1,1]];
 
 // Genesis light function strings encode normalized values a=0 ... z=1.
 export function lightFunction(pattern,time,duration,interpolate=false,fallback=0) {
@@ -115,9 +117,14 @@ void main(){
   flush(){this.mesh.geometry.instanceCount=this.count;this.mesh.visible=this.count>0;for(const a of [this.positions,this.sizes,this.colors,this.rotations,this.diagonalScales,this.nativeSpouts])a.needsUpdate=true;}
 }
 
-class BeamBatch {
+const BEAM_U=[0,1,0,1,1,0],BEAM_V_END=[false,false,true,false,true,true];
+
+export class BeamBatch {
   constructor(world,map,capacity=512) {
     this.world=world;this.count=0;this.capacity=capacity;
+    this.start=new THREE.Vector3();this.end=new THREE.Vector3();this.side=new THREE.Vector3();
+    this.direction=new THREE.Vector3();this.toward=new THREE.Vector3();
+    this.points=Array.from({length:6},()=>new THREE.Vector3());
     const geometry=world.track(new THREE.BufferGeometry());
     this.positions=new THREE.BufferAttribute(new Float32Array(capacity*18),3).setUsage(THREE.DynamicDrawUsage);
     this.colors=new THREE.BufferAttribute(new Float32Array(capacity*24),4).setUsage(THREE.DynamicDrawUsage);
@@ -127,23 +134,46 @@ class BeamBatch {
     this.mesh=new THREE.Mesh(geometry,world.track(new THREE.MeshBasicMaterial({map,vertexColors:true,transparent:true,depthWrite:false,side:THREE.DoubleSide})));
     this.mesh.frustumCulled=false;this.mesh.renderOrder=1;world.scene.add(this.mesh);
   }
-  add(ray,camera) {
+  add(ray,camera,cameraDirection=null,uvs=null) {
     if(this.count>=this.capacity)return;
-    const start=new THREE.Vector3(...ray.start),end=new THREE.Vector3(...ray.end),side=new THREE.Vector3().crossVectors(end.clone().sub(start),camera.clone().sub(start));
+    const start=this.start.fromArray(ray.start),end=this.end.fromArray(ray.end),side=this.side;
+    this.direction.subVectors(end,start);
+    if(cameraDirection)this.toward.copy(cameraDirection);else this.toward.subVectors(camera,start);
+    side.crossVectors(this.direction,this.toward);
     if(side.lengthSq()<1e-10)side.set(1,0,0);side.normalize().multiplyScalar(ray.width/2);
-    const points=[start.clone().sub(side),start.clone().add(side),end.clone().sub(side),start.clone().add(side),end.clone().add(side),end.clone().sub(side)];
-    this.addPoints(points,ray.color,ray.opacity,ray.uvStart,ray.uvEnd);
+    const points=this.points;
+    points[0].copy(start).sub(side);points[1].copy(start).add(side);points[2].copy(end).sub(side);
+    points[3].copy(start).add(side);points[4].copy(end).add(side);points[5].copy(end).sub(side);
+    this.addPoints(points,ray.color,ray.opacity,ray.uvStart,ray.uvEnd,uvs);
   }
   addDisc(position,radius,color,opacity) {
-    const [x,y,z]=position,points=[[-1,-1],[1,-1],[-1,1],[1,-1],[1,1],[-1,1]].map(([a,b])=>new THREE.Vector3(x+a*radius,y,z+b*radius));
+    if(this.count>=this.capacity)return;
+    const [x,y,z]=position,points=this.points;
+    for(let i=0;i<6;i++)points[i].set(x+(BEAM_U[i]?radius:-radius),y,z+(BEAM_V_END[i]?radius:-radius));
     this.addPoints(points,color,opacity);
   }
   addPoints(points,color,opacity,uvStart=0,uvEnd=1,uvs=null,colors=null) {
     if(this.count>=this.capacity)return;
-    for(let i=0;i<6;i++){const index=this.count*6+i;this.positions.setXYZ(index,...points[i].toArray());this.colors.setXYZW(index,...(colors?.[i]||color),opacity);this.uvs.setXY(index,uvs?.[i][0]??[0,1,0,1,1,0][i],uvs?.[i][1]??[uvStart,uvStart,uvEnd,uvStart,uvEnd,uvEnd][i]);}
+    for(let i=0;i<6;i++) {
+      const point=points[i],tint=colors?.[i]||color,p=(this.count*6+i)*3,c=(this.count*6+i)*4,u=(this.count*6+i)*2;
+      this.positions.array[p]=point.x;this.positions.array[p+1]=point.y;this.positions.array[p+2]=point.z;
+      this.colors.array[c]=tint[0];this.colors.array[c+1]=tint[1];this.colors.array[c+2]=tint[2];this.colors.array[c+3]=opacity;
+      this.uvs.array[u]=uvs?.[i][0]??BEAM_U[i];this.uvs.array[u+1]=uvs?.[i][1]??(BEAM_V_END[i]?uvEnd:uvStart);
+    }
     this.count++;
   }
   flush(){this.mesh.geometry.setDrawRange(0,this.count*6);this.mesh.visible=this.count>0;this.positions.needsUpdate=this.colors.needsUpdate=this.uvs.needsUpdate=true;}
+}
+
+export function nearestWorldLights(lights,camera,playerLight=null,maximum=8) {
+  const candidates=[];
+  for(const light of lights)if(light.radius>0) {
+    const dx=camera.x-light.position[0],dy=camera.y-light.position[1],dz=camera.z-light.position[2];
+    candidates.push({light,distance:dx*dx+dy*dy+dz*dz});
+  }
+  // Stable ties retain the original light order; player light keeps priority.
+  candidates.sort((a,b)=>Number(b.light===playerLight)-Number(a.light===playerLight)||a.distance-b.distance);
+  return candidates.slice(0,maximum).map(candidate=>candidate.light);
 }
 
 export class WorldEffects {
@@ -156,7 +186,8 @@ export class WorldEffects {
       // Blast UVs are copied from Genesis: V=1 is the translucent bottom
       // of kaboom_a at the red tail, V=0 the bright yellow head. Billboard
       // effects use the opposite convention; flipping this map hides its fade.
-      map.flipY=key!==GARGOYLE_BLAST_TEXTURE;map.wrapS=map.wrapT=THREE.ClampToEdgeWrapping;
+      // PTrail also uses literal Genesis UVs (its mask is vertically symmetric).
+      map.flipY=key!==GARGOYLE_BLAST_TEXTURE&&key!==FAIRY_RIBBON_TEXTURE;map.wrapS=map.wrapT=THREE.ClampToEdgeWrapping;
       if(key===ENERGY)map.wrapT=THREE.RepeatWrapping;
       return [key,map];
     }));
@@ -164,8 +195,8 @@ export class WorldEffects {
     for(const [key,map]of textures) {
       if(decals.has(key))continue;
       if(SCORE_TEXTURES.includes(key)||key===PICKUP_TEXTURE||key===GARGOYLE_BLAST_TEXTURE){effects.beamBatches.set(key,new BeamBatch(world,map,key===PICKUP_TEXTURE?640:128));continue;}
-      if([BEAM,ENERGY,BLAST,FLEURI].includes(key))effects.beamBatches.set(key,new BeamBatch(world,map));
-      if(![BEAM,ENERGY,BLAST].includes(key))effects.batches.set(key,new BillboardBatch(world,map,key===CORONA||key===SPARK));
+      if([BEAM,ENERGY,BLAST,FLEURI,FAIRY_RIBBON_TEXTURE].includes(key))effects.beamBatches.set(key,new BeamBatch(world,map));
+      if(![BEAM,ENERGY,BLAST,FAIRY_RIBBON_TEXTURE].includes(key))effects.batches.set(key,new BillboardBatch(world,map,key===CORONA||key===SPARK));
       // Native coronas trace visibility and fade their radius; they bypass
       // the depth test so an occluded halo can finish fading. Beacons retain
       // their separate depth-tested CORONA batch.
@@ -195,6 +226,15 @@ export class WorldEffects {
     }
     this.torches=new TorchFlames(world,gameplay);
     for(const object of this.torches.synthetic)this.entries.set(object.id,{object,active:false,age:0,particles:[],nextSpawn:0,serial:0,opacity:0});
+    for(const saved of restoreSpoutSnapshots(gameplay.spoutStates)?.entries||[]) {
+      const state=this.entries.get(saved.id);if(state?.object.entity.classname!=='EffectSpoutEntity')continue;
+      state.spout=NativeSpoutEffect.restore(state.object.entity,saved.state);if(!state.spout)continue;
+      state.age=state.object.effectAge=saved.age;state.active=state.spout.enabled===true;
+      state.spoutEnableSerial=state.object.spoutEnableSerial=saved.enableSerial;
+    }
+    this.spoutSnapshot=()=>({version:1,entries:[...this.entries.values()].filter(state=>state.spout).map(state=>({
+      id:state.object.id,age:state.age,enableSerial:state.object.spoutEnableSerial||0,state:state.spout.snapshot()}))});
+    gameplay.spoutSnapshot=this.spoutSnapshot;delete gameplay.spoutStates;
   }
   position(object) {const torch=this.torches.position(object);if(torch)return torch;const pose=this.gameplay.scripts?.modelTransforms.get(object.modelIndex);return pose?transformMotionPoint(object.position,pose.origin,pose):object.position;}
   endpoint(name,fallback) {const object=this.gameplay.find(name)[0];return object?this.position(object):fallback;}
@@ -247,6 +287,10 @@ export class WorldEffects {
     for(const state of this.entries.values()) {
       const {object}=state,e=object.entity;
       if(e.classname==='Fairy'){this.updateFairy(state,dt);continue;}
+      // Loading draws once before the restored camera and torch residency
+      // have settled. A zero-time redraw must preserve saved activation age
+      // and timers, even if that temporary camera cannot yet see the hand.
+      if(e.classname==='EffectSpoutEntity'&&dt===0){this.updateSpout(state,this.position(object),0);continue;}
       const enabled=object.enabled!==false&&object.visible!==false&&this.torches.enabled(object),previousAge=state.age;
       if(enabled&&!state.active){state.nextSpawn=state.clock||0;state.serial=0;}
       if(!enabled&&state.active){state.age=0;state.nextSpawn=0;object.effectAge=0;if(e.classname==='SavePoint')this.beaconSound(object,true);}
@@ -309,8 +353,7 @@ export class WorldEffects {
     this.coronaBatch?.flush();
     // Keep the player's small pool of light stable in busy rooms, using one
     // of the existing eight slots rather than increasing shader/light cost.
-    const camera=this.world.camera.position,nearest=this.lights.filter(lamp=>lamp.radius>0).sort((a,b)=>
-      Number(b===playerLight)-Number(a===playerLight)||camera.distanceToSquared(new THREE.Vector3(...a.position))-camera.distanceToSquared(new THREE.Vector3(...b.position))).slice(0,8);
+    const nearest=nearestWorldLights(this.lights,this.world.camera.position,playerLight);
     if(this.lightCount)this.lightCount.value=nearest.length;
     if(this.worldShadows) {
       if(this.worldShadows.update(nearest))this.shadowTexture.needsUpdate=true;
@@ -444,7 +487,7 @@ export class WorldEffects {
     const geometry=state.fairy.geometry();
     state.fairyGeometry=geometry;
     for(const sprite of geometry.sprites)this.batches.get(sprite.texture)?.add(sprite.position,sprite.width,sprite.height,sprite.color,sprite.opacity,sprite.rotation,sprite.diagonalScale);
-    for(const ray of geometry.rays)this.addBeam(ray,ENERGY);
+    for(const ray of geometry.rays)this.addBeam(ray,FAIRY_RIBBON_TEXTURE);
     if(geometry.light)this.lights.push(geometry.light);
   }
   collectCutsceneFairies(ids=new Set()) {
@@ -468,9 +511,10 @@ export class WorldEffects {
         this.gameplay.emit?.('scriptSound',{id:`fairy:${id}:${file}`,sound:file,stop:true});
     }
   }
-  addBeam(ray,key) {this.beams.push(ray);this.beamBatches.get(key)?.add(ray,this.world.camera.position);}
+  addBeam(ray,key) {this.beams.push(ray);const ribbon=key===FAIRY_RIBBON_TEXTURE;this.beamBatches.get(key)?.add(ray,this.world.camera.position,ribbon?this.cameraForward:null,ribbon?FAIRY_RIBBON_UVS:null);}
   beaconSound(object,stop=false,playbackRate=1) {this.gameplay.emit?.('scriptSound',{id:`beacon:${object.id}`,sound:'Magiev10.wav',stop,volume:.75,playbackRate,spatial:true,position:[...this.position(object)]});}
   dispose() {
+    if(this.gameplay.spoutSnapshot===this.spoutSnapshot)delete this.gameplay.spoutSnapshot;
     for(const state of this.entries.values()) {
       if(state.object.entity.classname==='TeleporterFX')this.teleporterLoop(state,false);
       if(state.object.entity.classname==='Fairy')delete state.object.fairySnapshot;

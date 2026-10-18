@@ -251,8 +251,10 @@ Deliberate portability differences:
   Newly born particles use the current tip; older particles keep their own path.
 - The radial billboard basis has a finite fallback for looking exactly vertically
   at a particle, avoiding the original helper's zero cross-product degeneracy.
-- Generic smoke/flame particle pools are still regenerated on save loading;
-  `effectAge` preserves the finite emitter's elapsed duration, not every puff.
+- New saves preserve the generic smoke/flame pools, including launch templates,
+  active positions/velocities, colour, fractional clock, delayed timers and
+  finite-emitter tails. Older saves lacking this state retain their `effectAge`
+  fallback. See [effect save continuity](effects-save-continuity.md).
   Exact saved portal/Fleurifee pools remain separate and unchanged.
 
 Focused checks executed (12 unit/integration checks total):

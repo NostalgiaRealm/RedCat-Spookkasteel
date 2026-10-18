@@ -2,6 +2,36 @@ const clamp=v=>Math.max(0,Math.min(1,v));
 export const FAIRY_TEXTURES={core:'fleuri.bmp|fleuri_a.bmp',halo:'fleurl8.bmp|fleurl8_a.bmp',rays:'fleurl7.bmp|fleurl7_a.bmp',star:'star.bmp|star_a.bmp'};
 export const FAIRY_DEPARTURE_SECONDS=4;
 export const FAIRY_STEP=1/60;
+export const FAIRY_RIBBON_TEXTURE='ptrail.bmp|ptrail_a.bmp';
+export const FAIRY_RIBBON_WIDTH=1.92;
+export const FAIRY_RIBBON_DISTANCE=1.6;
+const RIBBON_LIFE_MS=800,RIBBON_SEGMENTS_PER_ORBITER=48;
+const milliseconds=time=>Math.floor(time*1000+1e-6);
+
+// CFairy sets owner alpha 100, not 255 (0x478f97). The shared trail
+// renderer fades that alpha over 800ms, using one value for the whole quad,
+// and does not submit a quad at alpha <=5 (0x587a2a–0x587b54).
+export function fairyRibbonOpacity(ageMs) {
+  const alpha=100*clamp(1-ageMs/RIBBON_LIFE_MS);
+  return alpha>5?alpha/255:0;
+}
+
+function ribbonGroups(trails) {
+  const groups=Array.from({length:5},()=>[]);
+  for(const trail of trails)groups[trail.orbiter].push(trail);
+  return groups;
+}
+
+function pruneRibbon(group) {
+  if(!group.length)return group;
+  const now=milliseconds(group.at(-1).born);
+  const first=group.findIndex((t,i)=>fairyRibbonOpacity(now-milliseconds(i===0?t.born:t.fromBorn))>0);
+  // Retain the preceding point, as the native renderer does. A fixed 60Hz
+  // update can commit only one point per orbiter per tick; 48 segments cover
+  // its visible history plus the preceding point and duplicate live head.
+  const offset=first>0&&group.length-first>1?first-1:0;
+  return group.slice(Math.max(offset,group.length-RIBBON_SEGMENTS_PER_ORBITER));
+}
 
 // CParticle::Seek / Hover, 0x47e850 / 0x47ece0. Position is integrated
 // BEFORE the stored velocity is capped; reversing those operations changes
@@ -49,7 +79,7 @@ export class NativeFairyEffect {
     this.color=[20,255,20];this.channel=0;this.colorUp=true;
     this.pulse=1;this.otherPulse=1;this.pulseUp=true;
     this.pool=Array.from({length:50},()=>({active:false,wiggle:0,wiggleUp:true}));
-    this.trails=[];this.serial=0;
+    this.trails=[];this.trailFormat=2;this.serial=0;
     this.activate({origin,waypoints,lifeTime});
   }
   snapshot() {
@@ -81,11 +111,30 @@ export class NativeFairyEffect {
         !Number.isFinite(p.born)||p.born<0||p.born>saved.time||!Number.isSafeInteger(p.serial)||p.serial<1||p.serial>saved.serial||
         !['slow','burst'].includes(p.kind))return null;
     }
-    if(saved.trails.some(t=>!t||!vector(t.start)||!vector(t.end)||!Number.isFinite(t.born)||t.born<0||t.born>saved.time))return null;
+    if(saved.trailFormat!==undefined&&saved.trailFormat!==2)return null;
+    if(saved.trails.some(t=>!t||!vector(t.start)||!vector(t.end)||!Number.isFinite(t.born)||t.born<0||t.born>saved.time+1e-9))return null;
+    if(saved.trailFormat===2) {
+      if(saved.trails.some(t=>!Number.isInteger(t.orbiter)||t.orbiter<0||t.orbiter>4||
+        !Number.isFinite(t.fromBorn)||t.fromBorn<0||t.fromBorn>t.born))return null;
+      for(const group of ribbonGroups(saved.trails))if(group.length>RIBBON_SEGMENTS_PER_ORBITER||
+        group.some((t,i)=>i>0&&(t.fromBorn!==group[i-1].born||t.end.some((v,axis)=>v!==group[i-1].start[axis]))))return null;
+    }
     const effect=new NativeFairyEffect(saved);
     for(const key of Object.keys(effect))effect[key]=structuredClone(saved[key]);
     effect.pool=effect.pool.map(p=>p===null?{active:false,wiggle:0,wiggleUp:true}:
       Array.isArray(p)?{active:false,wiggle:p[0],wiggleUp:p[1]}:p);
+    if(saved.trailFormat!==2) {
+      // Older saves stored five independent segments per tick in orbiter
+      // order. Preserve their path once, then continue with a moving endpoint.
+      const groups=ribbonGroups(effect.trails.map((t,i)=>({...t,orbiter:i%5,
+        born:milliseconds(t.born)/1000,fromBorn:milliseconds(Math.max(0,t.born-FAIRY_STEP))/1000})));
+      for(const group of groups) {
+        for(let i=1;i<group.length;i++){group[i].fromBorn=group[i-1].born;group[i].end=[...group[i-1].start];}
+        const last=group.at(-1);
+        if(last)group.push({start:[...last.start],end:[...last.start],born:last.born,fromBorn:last.born,orbiter:last.orbiter});
+      }
+      effect.trails=groups.flatMap(pruneRibbon);effect.trailFormat=2;
+    }
     return effect;
   }
   random() {
@@ -144,6 +193,22 @@ export class NativeFairyEffect {
     else if(this.pulse<1){this.pulse=1;this.otherPulse=2;this.pulseUp=true;}
     this.angle+=.9*dt;
   }
+  updateRibbon(tips) {
+    const now=milliseconds(this.time)/1000,groups=ribbonGroups(this.trails);
+    for(let orbiter=0;orbiter<5;orbiter++) {
+      const group=groups[orbiter],tip=tips[orbiter],head=group.at(-1);
+      // 0x5871f0 creates two identical initial points, then replaces the live
+      // endpoint each tick. Fairy disables time-based sampling and commits
+      // only when its distance from the anchor is strictly greater than 1.6.
+      if(!head)group.push({start:[...tip],end:[...tip],born:now,fromBorn:now,orbiter});
+      else {
+        head.start=[...tip];head.born=now;
+        if(Math.hypot(...tip.map((v,axis)=>v-head.end[axis]))>FAIRY_RIBBON_DISTANCE)
+          group.push({start:[...tip],end:[...tip],born:now,fromBorn:now,orbiter});
+      }
+    }
+    this.trails=groups.flatMap(pruneRibbon);
+  }
   tick(dt,events) {
     this.time+=dt;const wasActive=this.active,age=this.time-this.startedAt;
     if(this.active) {
@@ -168,12 +233,14 @@ export class NativeFairyEffect {
       // this tick's centre (0x47c6c0 versus0x47c460, copy0x47961f).
       this.lastCentre=[...this.centre.position];
       const tips=Array.from({length:5},(_,i)=>fairyOrbit(this.centre.position,i,age));
-      for(let i=0;i<5;i++)this.trails.push({start:tips[i],end:this.lastTips[i],born:this.time});
+      this.updateRibbon(tips);
       this.lastTips=tips;
     } else if(wasActive) {
       this.burst();events.push('departure');
     }
-    this.trails=this.trails.filter(t=>this.time-t.born<.8-1e-9);
+    // Stopped orbiters no longer draw their ribbons. Discard expired stored
+    // history without retaining invisible native list nodes indefinitely.
+    if(!this.active)this.trails=this.trails.filter(t=>this.time-t.born<RIBBON_LIFE_MS/1000-1e-9);
   }
   advance(dt) {
     const events=[];if(!(dt>0))return events;
@@ -196,7 +263,19 @@ export class NativeFairyEffect {
       for(const position of this.lastTips)sprites.push({texture:FAIRY_TEXTURES.star,position:[...position],width:6,height:6,color:[r,1,b],opacity:1,rotation:0});
     }
     for(const p of this.pool)if(p.active)sprites.push({texture:FAIRY_TEXTURES.star,position:[...p.position],width:6,height:6,color:[r,1,b],opacity:clamp((4-(this.time-p.born))/3),rotation:0});
-    const rays=this.trails.map(t=>({start:t.start,end:t.end,width:1.6,color:[1,1,25/255],opacity:1-(this.time-t.born)/.8}));
+    const rays=[];
+    if(this.active)for(const group of ribbonGroups(this.trails)) {
+      if(!group.length)continue;
+      // The original uses the live head's timestamp, not the render clock.
+      // Its first quad uses the second point's stamp; subsequent quads use
+      // their first point (0x587871 and 0x587a3e–0x587a53).
+      const now=milliseconds(group.at(-1).born);
+      group.forEach((t,i)=>{
+        const opacity=fairyRibbonOpacity(now-milliseconds(i===0?t.born:t.fromBorn));
+        if(opacity>0&&Math.hypot(...t.start.map((v,axis)=>v-t.end[axis]))>1e-7)
+          rays.push({start:t.end,end:t.start,width:FAIRY_RIBBON_WIDTH,color:[1,1,25/255],opacity});
+      });
+    }
     return {sprites,rays,light:this.active?{position:centre,color:[1,1,25/255],radius:110*this.pulse}:null};
   }
 }

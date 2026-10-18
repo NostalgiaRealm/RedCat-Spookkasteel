@@ -58,7 +58,9 @@ compared with the ordinary 41.6-unit jump.
 The native animation table's `jump2` entry at `0x690148` is selected at
 `0x432e1c` and played at 1.3× (`0x432e81`). The remake resets its motion clock
 on the airborne boost and retains the entire original `jump2` through descent.
-Normal jumps continue to use the original `jump1` at 1.4×.
+Normal jumps continue to use the original `jump1` at 1.4×. Both motions now
+loop on prolonged flights, following the native loop flags recovered on
+12 October; see [animation recovery](redcat-animations-native.md).
 
 The actual graveyard cave exit staircase at Z=-900 has floor heights 308,
 380, 452, and 524: three 72-unit rises. The focused test starts at
@@ -74,8 +76,8 @@ The super-shot branch at `0x434b24` checks factory type 11 (skill mask 4).
 `0x64c410`. While held, `0x434bda` seeks `shoot1` to normalized time .26 and
 sets playback speed to zero. It does not select the separate imported
 `charge` clip. On release, the original 1.9× shooting rate resumes and the
-projectile emits at .46, about 203 ms after release. The remainder of the
-same clip follows the simulation clock, including restored saves.
+projectile emits at .46, about 203 ms after release. The same clip follows the simulation clock, including restored saves, until
+the recovered 80% visual handoff to locomotion/idle.
 
 At `0x434db1`, projectile damage is multiplied by charge percentage, with a
 minimum of 1. The imported super-shot damage of 4 therefore gives damage 1
@@ -84,12 +86,15 @@ Super shots keep their authored sprite, speed, acceleration, and lifetime.
 Ordinary/power shots retain their existing held-fire cadence.
 
 The input path waits for recharge before beginning the next held charge,
-releases exactly once, pauses charge time during cutscenes, saves its elapsed
-charge, and cancels charging on death, respawn, or weapon removal.
+releases exactly once and preserves elapsed charge in saves. Charging is
+canceled on death, respawn, weapon removal, or entry into dialogue. The last
+case is the deliberate dialogue protection described in
+[cutscene completion](enemy-combat-effects-native.md): RedCat returns to idle
+and an interrupted shot cannot fire when the conversation finishes.
 
 ## Focused verification
 
-Run `node --test tests/player-abilities.test.mjs` (9 tests). It covers the real
+Run `node --test tests/player-abilities.test.mjs`. It covers the real
 fresh chapter defaults, graveyard-to-caves carry and save preservation,
 29/30-potion VM branches in both levels, skill and tap bounds, held-input
 behavior, all three actual cave boxes, native motion selection, charge pose,

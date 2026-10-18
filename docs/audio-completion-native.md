@@ -128,8 +128,9 @@ new script request or combat transition.
 The mixer preserves playback position for same-file mode changes and honors
 the authored CrossFade/FadeInTimeSeconds/FadeOutTimeSeconds (2 seconds in all
 five levels). Pausing freezes fades, and stopping removes all fading layers.
-The fade envelope is a portable linear amplitude interpolation; the native
-fade curve has not been fully recovered. Threat timing follows perception and
+The recovered fade ramps control gain at a constant rate before the native
+logarithmic volume conversion; see [music fade recovery](music-fade-native.md).
+Threat timing follows perception and
 remembered hits. The [knight attack correction](knight-attack-music.md) also starts
 music immediately when an accepted shot targets an enemy outside its perception
 range. Actual hits refresh `alerted`, `lastSeenAt` and remembered player position;

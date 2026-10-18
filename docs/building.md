@@ -23,7 +23,7 @@ Keep `index.html`, `package.json`, `package-lock.json`, `src/`, `electron/`, `to
 On Linux:
 
 ```sh
-cd /mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW
+cd '/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW'
 node --version
 npm --version
 npm ci
@@ -66,7 +66,7 @@ The original installation needs its `Levels`, `Actors`, `Settings`, `Sounds`, `V
 Linux example with the paths used on this machine:
 
 ```sh
-cd /mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW
+cd '/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW'
 python3 -m venv "$HOME/.venvs/redcat-import"
 "$HOME/.venvs/redcat-import/bin/python" -m pip install Pillow
 ffmpeg -version
@@ -157,9 +157,25 @@ This launches Electron against the **source** and checks gameplay, resolution sw
 
 Resolve test failures before creating packages. Some original-file comparison tests require the original installation on the development machine and skip when it is absent.
 
+Keep source validation and package validation separate. An existing `dist/`
+package still contains the source and metadata from when it was generated:
+changing the Over dialog to **0.9.9** does not update a previously built **0.9.8**
+package. Record the executable/package version, source revision or file hashes,
+platform, inputs and checks for each release run. Source tests and older-package
+checks do not certify an unbuilt 0.9.9 release, and Linux browser/Electron checks
+do not certify Windows, macOS or ARM hardware. The current validation pass is
+source-only; new packages require a later build and their own validation.
+
 ## 5. Generate portable packages when ready
 
 **Only run this section when you intend to create new builds.** Close the game first. These commands update the corresponding directories under `dist/`; copy an older build elsewhere first if you want to preserve it. The **Over** dialog has a display version, but `package.json` intentionally has no package version. Electron-builder requires numeric package metadata, so supply `REDCAT_PACKAGE_VERSION` only for that packaging command. It is injected into the generated package metadata without modifying the source, lockfile or displayed version. Use three dot-separated integers chosen for your distribution; the helper has no default. Without this value, the packaging command stops before creating a build.
+
+For the upcoming **0.9.9** release, enter **0.9.9** at the version prompts below
+(or set `REDCAT_PACKAGE_VERSION=0.9.9` in Bash / `$env:REDCAT_PACKAGE_VERSION = '0.9.9'`
+in PowerShell). Use the same version for every desktop architecture. The current
+Over dialog displays 0.9.9; the separate Android preview's version remains its
+own development metadata until an Android release is prepared. No new package
+is created by updating this documentation or the display version.
 
 ### Available targets and current limits
 
@@ -222,7 +238,7 @@ The output is `dist/win-unpacked/`. Copy the **whole directory** to Windows, the
 & '.\dist\win-unpacked\RedCat Spookkasteel.exe'
 ```
 
-This is an unsigned portable directory, not an installer. The current configuration disables Windows executable signing/editing and has been packaged on Linux without Wine. Different targets, signing or installer generation may need additional platform tools. Generating the directory on Linux does not replace a test on an actual Windows machine.
+This is an unsigned portable directory, not an installer. The current configuration disables Windows executable signing while retaining icon/metadata editing (`win.signExecutable: false`). Different targets, signing or installer generation may need additional platform tools. Generating the directory on Linux does not replace a test on an actual Windows machine.
 
 ### Linux ARM64
 

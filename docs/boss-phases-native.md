@@ -21,22 +21,27 @@ FreezeEnemies suspends the machine. Terminal hits pass through the existing
   defeated state, damage proportion and script progress.
 - Dungeon Max fires the authored magma salvo, opens the lid, rises from
   `MinHeight` to `MaxHeight`, waits `LookTime`, lowers, and repeats. Normal
-  difficulty uses three shots, two seconds to rise and two seconds to look;
-  Easy and Hard use their own imported counts/timing. The three original
+  difficulty samples its salvo from the imported average of three, with two
+  seconds to rise and two seconds to look; Easy and Hard use their own values. The three original
   machine actors are `turbot`, `turtop`, and `brcrate`, scaled by `MachineScale`.
   `turtop` owns the `still`, `shoot1`, `litopen` and `litclose` clips. The body
   and stationary assembly have separate positions, so generic gravity no
-  longer sinks Max's platform. A hit during an unfinished rise lowers from
-  the actual current height instead of jumping to the top first.
+  longer sinks Max's platform. A selected hit preserves the current height
+  through the hurt clip, then starts a fresh salvo through the native root's
+  alert entry. It does not insert a reconstructed lowering phase.
 - Jester Max plays `teleport`, becomes hidden for `InvisibleTime`, chooses an
   authored `JesterMaxPoint` (or its appended spawn fallback), reappears with a
   fresh teleport animation, and fires jester balls. Hidden enemies do not
   absorb player projectiles. Teleporting rejects damage. Current/max health
   controls whether he shoots or teleports again after reappearing, and a
-  one-in-three accepted-hit reaction can interrupt the salvo.
+  one-in-three accepted-hit reaction interrupts the salvo with the full hurt
+  clip before entering a fresh teleport. Further selected hits do not restart
+  that clip. Shots repeat immediately after each shoot animation, as with
+  Dungeon Max, without an added WaitTimeBetweenShots pause.
 - The Witch plays her original takeoff clip, traverses the tower's authored
   three-dimensional waypoint network, and launches magic-ball salvos. She
-  can relocate after a salvo or a hit. The native combat health floor of two
+  enters closer pursuit after a selected hit, or the native random move choice
+  after a salvo; a hit does not invent a random relocation. The native combat health floor of two
   triggers the existing beam/cutscene handoff; the remake represents that
   terminal combat state as health zero to preserve its existing script and
   save conventions. The last mirror still belongs to the local finale.
@@ -85,10 +90,16 @@ invented teleport is needed. The model transform is preserved in saves.
 This is a recovered playable phase implementation, not a claim of complete
 instruction-for-instruction AI parity. Native salvo-size sampling is implemented,
 but the saved per-enemy random stream differs from the original global stream.
+The [15 October interruption follow-up](boss-interruptions-native.md) recovers
+Max/Witch hit children, their fresh-alert return, committed releases, sampled
+motion rates, strict wait clocks and both Brutus shooter parents. It includes
+focused save/freeze and actual imported-pose checks.
 The shared graph includes native pruning, minimum-hop pursuit routing and the
-[recovered waypoint selectors](enemy-waypoint-movement.md); arbitrary-position
-pursuit endpoints and body-clearance safeguards remain portable choices. Some
-attack interruption branches remain unrecovered.
+[recovered waypoint selectors](enemy-waypoint-movement.md). Ordinary authored
+pursuit uses adjacent nodes; arbitrary-position endpoints remain only in the
+bounded off-graph recovery fallback. Body-clearance safeguards remain portable choices.
+The Witch retains her body-clear 3D takeoff/flight safeguards. Whole-engine
+dispatcher equivalence and a full native-runtime battle comparison are not claimed.
 [Projectile muzzles](enemy-projectile-origins-native.md) now use their original
 animated bones, including both barrels of Dungeon Max's machine. Release still
 occurs on a simulation update rather than splitting the frame at an animation event.

@@ -52,8 +52,11 @@ keeps nearest-first construction and preserves authored order for ties. The
 later [native follow-up](native-completion-followup.md) implements minimum-hop
 pursuit routing, and [enemy waypoint movement](enemy-waypoint-movement.md)
 recovers touching-enemy selectors, random patrol and shared reservations.
-Choosing pursuit endpoints for arbitrary actor positions remains a portable
-policy; it is separate from the recovered graph search.
+Ordinary authored pursuit now uses adjacent-node closer/retreat selection;
+it does not choose arbitrary global endpoints. The bounded arbitrary-position
+endpoint search is retained only for off-graph collision recovery. See
+[pursuit and hit interruptions](enemy-pursuit-interruptions-native.md).
+Spider retreat uses its recovered explicit start waypoint, as detailed below.
 
 Enemies now use their configured sensing distance, visual range, view angle,
 rotation speed and remembered last-seen position. Unaware moving enemies patrol
@@ -62,6 +65,60 @@ choose a new reachable patrol point; `MinPlayerDistance` controls retreat and
 relocation candidates. The per-enemy random state, route, last observation,
 salvo/animation state and pending projectile timing persist through saves.
 Cutscene/freeze handling pauses movement and animation deadlines.
+
+## Committed stationary shots and spider return destinations
+
+The 14 October 2026 follow-up recovered two narrower differences without
+replacing the performance-bounded navigation system.
+
+- Plant and gargoyle shooting uses the standing-shooter child state. Its parent
+  updates the child first (`0x40a200`) and checks perception after the child
+  finishes (`0x40a32d`, `0x40a382`). The child releases ammunition when the motion
+  reaches `DrawMotionPart` (`0x40a649`–`0x40a682`). The release routine
+  (`0x42b620`–`0x42b880`) gets RedCat's current position and the muzzle position;
+  it does not retest line of sight or attack range. An already committed shot
+  now fires when RedCat ducks behind cover or moves away. Projectile collision
+  still prevents it passing through the intervening wall.
+- A started plant/gargoyle salvo completes before perception can prevent a
+  new salvo. The child repeats its shooting motion immediately after completion
+  (`0x40a5ee`–`0x40a631`); `WaitTimeBetweenShots` does not apply to this state.
+  Gargoyles already had this cadence, but plants incorrectly added that delay.
+  Both now wait only after their completed salvo. Plant's subclass constructor
+  `0x406c40` calls `0x40a1d0` and retains the shared update/shoot methods, while
+  overriding the post-salvo idle wait at `0x406c60`.
+- A retreating spider supplies its own start waypoint ID to the native move
+  controller (`0x40931f`, `0x40993f`). The getter chain `0x414180` → `0x4283d0`
+  → `0x595480` retrieves the actor's stored start waypoint. The port now keeps
+  this exact terminal instead of substituting a nearer point when routing back
+  around geometry. All 46 authored spiders have a `StartPoint` and none unlink
+  it. Safe direct movement and collision-tested route reacquisition remain.
+
+This change adds no full-graph scan to an ordinary movement update. Pending
+searches still share the existing 16 checks per enemy / 48 checks per update
+budget; changing a destination does not replenish that allowance. Route-search
+jobs and cached routes identify their exact destination so a previous chase
+route cannot be reused for a retreat.
+
+This initial change covered stationary committed shots. The later
+[pursuit/hit recovery](enemy-pursuit-interruptions-native.md) and
+[boss follow-up](boss-interruptions-native.md) extend committed release and
+recovered interruption handling to the moving shooters and bosses. Knight
+strikes still use their actual contact window and range; selected hurt and
+death cancel unreleased attacks. Authored pursuit now uses recovered adjacent
+nodes. The reconstructed endpoint policy applies only to off-graph recovery;
+`CRcMoveMoveToStart` first-link selection (`0x406550`) is not evidence for a
+global nearest-node chase policy.
+
+Evidence is retained under `temp_work/enemy-pursuit-attacks-2026-10-14/`.
+Focused verification: six committed-attack checks, five endpoint/budget-sharing
+checks and six pursuit-budget checks passed. These include target loss during
+wind-up, loss of gargoyle alert memory, full salvo completion, damage/death,
+knight range, save/freeze continuity, exact return destination and fair bounded
+search. No package build or unrelated test suite was run.
+
+```sh
+node --test tests/enemy-committed-attacks.test.mjs tests/enemy-route-endpoints.test.mjs tests/enemy-pursuit-budget.test.mjs
+```
 
 ## Graveyard frog corner recovery
 
@@ -167,13 +224,14 @@ generic post-salvo pause before another shot.
 - Native minimum-hop pursuit routing and sampled per-enemy salvo properties
   are now implemented; see [native follow-up](native-completion-followup.md).
   Native touching-enemy selectors and random patrol are also implemented; see
-  [waypoint movement](enemy-waypoint-movement.md). Portable pursuit endpoints,
+  [waypoint movement](enemy-waypoint-movement.md). Off-graph recovery endpoints,
   body clearance and saved per-enemy RNG can still differ from the original
   path cursor and global CRT random stream.
 - Generic attacks schedule release on a simulation update using actor clip
-  duration and the configured draw fraction. Some per-enemy timing variations
-  and interruption branches remain unrecovered. Native salvo sampling and Bone
-  Brutus's charge-rate variation are already implemented.
+  duration and the configured draw fraction. The [15 October boss follow-up](boss-interruptions-native.md)
+  connects Max/Witch hurt completion and sampled motion rates, committed salvos,
+  first-check wait clocks and Bone Brutus charge/ammunition sequencing. Native
+  global RNG and whole-engine dispatcher order remain validation boundaries.
   [Projectile origins](enemy-projectile-origins-native.md) now use the animated
   native attachments, with a fallback only when actor data is unavailable.
 - Mushroom Brutus leaves the original flight-path ribbon; the earlier floor

@@ -1,0 +1,2308 @@
+{
+  "format": "redcat-actors-v1",
+  "actors": {
+    "redcat": {
+      "file": "redcat.json",
+      "vertices": 482,
+      "triangles": 556,
+      "animations": [
+        "walkbwl",
+        "walkbwr",
+        "fall2",
+        "fall1",
+        "strafer",
+        "strafel",
+        "jump2",
+        "jump1",
+        "re-spawn",
+        "shoot1",
+        "charge",
+        "death",
+        "hit",
+        "walkbw",
+        "walkfw",
+        "idle"
+      ],
+      "warnings": [],
+      "settings": {
+        "scale": 1.3,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          1000.0,
+          1000.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": false,
+          "overrideAmbient": true,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            55.0,
+            55.0,
+            55.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "knight2": {
+      "file": "knight2.json",
+      "vertices": 307,
+      "triangles": 362,
+      "animations": [],
+      "warnings": [],
+      "settings": {
+        "scale": 1.0,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "knight3": {
+      "file": "knight3.json",
+      "vertices": 307,
+      "triangles": 362,
+      "animations": [],
+      "warnings": [],
+      "settings": {
+        "scale": 1.0,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "k_active": {
+      "file": "k_active.json",
+      "vertices": 307,
+      "triangles": 362,
+      "animations": [],
+      "warnings": [],
+      "settings": {
+        "scale": 1.0,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "spider": {
+      "file": "spider.json",
+      "vertices": 184,
+      "triangles": 198,
+      "animations": [
+        "Death",
+        "Shoot"
+      ],
+      "warnings": [],
+      "settings": {
+        "scale": 1.0,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "bat": {
+      "file": "bat.json",
+      "vertices": 211,
+      "triangles": 214,
+      "animations": [],
+      "warnings": [],
+      "settings": {
+        "scale": 3.0,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "batfly": {
+      "file": "batfly.json",
+      "vertices": 211,
+      "triangles": 214,
+      "animations": [
+        "fly"
+      ],
+      "warnings": [],
+      "settings": {
+        "scale": 2.5,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "maxtest1": {
+      "file": "maxtest1.json",
+      "vertices": 482,
+      "triangles": 561,
+      "animations": [
+        "test"
+      ],
+      "warnings": [],
+      "settings": {
+        "scale": 1.0,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "fep_test5": {
+      "file": "fep_test5.json",
+      "vertices": 192,
+      "triangles": 186,
+      "animations": [
+        "test"
+      ],
+      "warnings": [],
+      "settings": {
+        "scale": 1.9,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "brutus": {
+      "file": "brutus.json",
+      "vertices": 491,
+      "triangles": 560,
+      "animations": [
+        "shoot1"
+      ],
+      "warnings": [],
+      "settings": {
+        "scale": 1.0,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "redcat2": {
+      "file": "redcat2.json",
+      "vertices": 490,
+      "triangles": 560,
+      "animations": [
+        "fall2",
+        "fall1",
+        "strafer",
+        "strafel",
+        "jump2",
+        "jump1",
+        "re-spawn",
+        "shoot3",
+        "shoot2",
+        "shoot1",
+        "charge",
+        "death",
+        "hit",
+        "walkbw",
+        "walkfw",
+        "idle"
+      ],
+      "warnings": [],
+      "settings": {
+        "scale": 1.0,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "whizztest8": {
+      "file": "whizztest8.json",
+      "vertices": 441,
+      "triangles": 542,
+      "animations": [
+        "idle"
+      ],
+      "warnings": [],
+      "settings": {
+        "scale": 1.0,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "tstwitch": {
+      "file": "tstwitch.json",
+      "vertices": 390,
+      "triangles": 422,
+      "animations": [],
+      "warnings": [],
+      "settings": {
+        "scale": 1.0,
+        "initialRotationDegrees": [
+          0,
+          0,
+          0
+        ],
+        "rotationDegreesPerSecond": [
+          0,
+          0,
+          0
+        ],
+        "blocksPlayer": false,
+        "blocksLOS": false,
+        "canBeShot": false
+      }
+    },
+    "mxmach": {
+      "file": "mxmach.json",
+      "vertices": 144,
+      "triangles": 126,
+      "animations": [
+        "shoot"
+      ],
+      "warnings": [],
+      "settings": {
+        "scale": 1.0,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "knight": {
+      "file": "knight.json",
+      "vertices": 307,
+      "triangles": 362,
+      "animations": [
+        "hit",
+        "shoot1",
+        "idle",
+        "start"
+      ],
+      "warnings": [],
+      "settings": {
+        "scale": 1.8,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 0.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 10.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": [
+            {
+              "actor": "knhd.act",
+              "MinNr": 1.0,
+              "MaxNr": 1.0,
+              "MinVelocity": 40.0,
+              "MaxVelocity": 80.0
+            },
+            {
+              "actor": "knbrst.act",
+              "MinNr": 1.0,
+              "MaxNr": 1.0,
+              "MinVelocity": 40.0,
+              "MaxVelocity": 80.0
+            },
+            {
+              "actor": "knhip.act",
+              "MinNr": 1.0,
+              "MaxNr": 1.0,
+              "MinVelocity": 40.0,
+              "MaxVelocity": 80.0
+            },
+            {
+              "actor": "knllg.act",
+              "MinNr": 1.0,
+              "MaxNr": 1.0,
+              "MinVelocity": 40.0,
+              "MaxVelocity": 80.0
+            },
+            {
+              "actor": "knrlg.act",
+              "MinNr": 1.0,
+              "MaxNr": 1.0,
+              "MinVelocity": 40.0,
+              "MaxVelocity": 80.0
+            },
+            {
+              "actor": "knlrm.act",
+              "MinNr": 1.0,
+              "MaxNr": 1.0,
+              "MinVelocity": 40.0,
+              "MaxVelocity": 80.0
+            },
+            {
+              "actor": "knrrm.act",
+              "MinNr": 1.0,
+              "MaxNr": 1.0,
+              "MinVelocity": 40.0,
+              "MaxVelocity": 80.0
+            },
+            {
+              "actor": "knlns.act",
+              "MinNr": 1.0,
+              "MaxNr": 1.0,
+              "MinVelocity": 40.0,
+              "MaxVelocity": 80.0
+            },
+            {
+              "actor": "knax.act",
+              "MinNr": 1.0,
+              "MaxNr": 1.0,
+              "MinVelocity": 40.0,
+              "MaxVelocity": 80.0
+            }
+          ]
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "spiderg": {
+      "file": "spiderg.json",
+      "vertices": 184,
+      "triangles": 198,
+      "animations": [
+        "walkfw",
+        "shoot1",
+        "idle",
+        "hit",
+        "death"
+      ],
+      "warnings": [],
+      "settings": {
+        "scale": 1.0,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "batg": {
+      "file": "batg.json",
+      "vertices": 211,
+      "triangles": 214,
+      "animations": [
+        "walkfw",
+        "start",
+        "shoot1",
+        "idle2",
+        "idle1",
+        "hit",
+        "death"
+      ],
+      "warnings": [],
+      "settings": {
+        "scale": 1.8,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "maxj": {
+      "file": "maxj.json",
+      "vertices": 482,
+      "triangles": 561,
+      "animations": [
+        "walkfw",
+        "teleport",
+        "shoot1",
+        "idle",
+        "hit",
+        "death"
+      ],
+      "warnings": [],
+      "settings": {
+        "scale": 1.4,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "plant": {
+      "file": "plant.json",
+      "vertices": 192,
+      "triangles": 186,
+      "animations": [
+        "idle3",
+        "idle2",
+        "idle1",
+        "idle0",
+        "hit",
+        "death",
+        "shoot1"
+      ],
+      "warnings": [],
+      "settings": {
+        "scale": 1.9,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "brutusm": {
+      "file": "brutusm.json",
+      "vertices": 491,
+      "triangles": 560,
+      "animations": [
+        "walkfw",
+        "shoot1",
+        "idle",
+        "hit",
+        "death"
+      ],
+      "warnings": [],
+      "settings": {
+        "scale": 1.65,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "wkkooi": {
+      "file": "wkkooi.json",
+      "vertices": 628,
+      "triangles": 644,
+      "animations": [
+        "idle"
+      ],
+      "warnings": [],
+      "settings": {
+        "scale": 1.55,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "witch": {
+      "file": "witch.json",
+      "vertices": 450,
+      "triangles": 454,
+      "animations": [
+        "death",
+        "start",
+        "shoot1",
+        "hit",
+        "walkfw",
+        "idle"
+      ],
+      "warnings": [],
+      "settings": {
+        "scale": 1.9,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "turbot": {
+      "file": "turbot.json",
+      "vertices": 76,
+      "triangles": 72,
+      "animations": [],
+      "warnings": [],
+      "settings": {
+        "scale": 1.0,
+        "initialRotationDegrees": [
+          0,
+          0,
+          0
+        ],
+        "rotationDegreesPerSecond": [
+          0,
+          0,
+          0
+        ],
+        "blocksPlayer": false,
+        "blocksLOS": false,
+        "canBeShot": false
+      }
+    },
+    "turtop": {
+      "file": "turtop.json",
+      "vertices": 68,
+      "triangles": 54,
+      "animations": [
+        "still",
+        "shoot1",
+        "litopen",
+        "litclose"
+      ],
+      "warnings": [],
+      "settings": {
+        "scale": 1.0,
+        "initialRotationDegrees": [
+          0,
+          0,
+          0
+        ],
+        "rotationDegreesPerSecond": [
+          0,
+          0,
+          0
+        ],
+        "blocksPlayer": false,
+        "blocksLOS": false,
+        "canBeShot": false
+      }
+    },
+    "brcrate": {
+      "file": "brcrate.json",
+      "vertices": 24,
+      "triangles": 12,
+      "animations": [],
+      "warnings": [],
+      "settings": {
+        "scale": 1.0,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          1.0,
+          1.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": [
+            {
+              "actor": "brcrate_s1.act",
+              "MinNr": 5.0,
+              "MaxNr": 8.0,
+              "MinVelocity": 125.0,
+              "MaxVelocity": 180.0
+            },
+            {
+              "actor": "brcrate_s2.act",
+              "MinNr": 5.0,
+              "MaxNr": 7.0,
+              "MinVelocity": 200.0,
+              "MaxVelocity": 250.0
+            }
+          ]
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    },
+    "maxd": {
+      "file": "maxd.json",
+      "vertices": 499,
+      "triangles": 556,
+      "animations": [
+        "death",
+        "hit",
+        "idle"
+      ],
+      "warnings": [],
+      "settings": {
+        "scale": 1.4,
+        "initialRotationDegrees": [
+          -90.0,
+          0.0,
+          0.0
+        ],
+        "rotationDegreesPerSecond": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          100.0,
+          100.0
+        ],
+        "explosion": {
+          "DamagePercentage": 25.0,
+          "SizePercentage": 25.0,
+          "NrExplosions": 1.0,
+          "Electric": 0.0,
+          "SmokeOnly": 0.0,
+          "Green": 0.0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1.0,
+          "TestCollision": 1.0,
+          "MustRotate": 1.0,
+          "RotationSpeed": 100.0,
+          "FloorOffset": 5.0,
+          "MinLifeTimeSeconds": 3.0,
+          "MaxLifeTimeSeconds": 4.0,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1.0,
+          "types": []
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunColor": [
+            155.0,
+            155.0,
+            155.0
+          ],
+          "sunNormal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "sunIntensityFactor": 1.0,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90.0,
+            90.0,
+            255.0
+          ],
+          "end": [
+            255.0,
+            90.0,
+            90.0
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2.0
+        }
+      }
+    }
+  },
+  "errors": []
+}

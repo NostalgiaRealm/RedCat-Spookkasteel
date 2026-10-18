@@ -1,0 +1,95 @@
+This release brings further improvements to gameplay, graphics, sound, controls, and overall usability. Many changes focus on restoring the behaviour of the original game, alongside several quality-of-life improvements.
+
+## Gameplay & Controls
+
+- **Initial controller support:** Added controller support for gameplay and menus. Available controls are listed under *Besturing*.
+- **Improved camera behaviour:** The camera now moves above RedCat when there isn't enough space behind him, such as near walls, and returns to its normal position when space becomes available.
+- **Improved save-game menu:**
+  - When a saved game exists, *Verder spelen* is highlighted in yellow and *Start avontuur* is hidden.
+  - Added *Start opnieuw*, including a warning before overwriting existing progress.
+  - Starting a new adventure now correctly resets shooting upgrades and SuperSkippie, including saved ownership. Continuing a game or replaying chapters retains these abilities.
+- **Automatic tutorial skipping on repeat playthroughs:**
+  - Added automatic skipping of eight Forest tutorials and two Graveyard tutorials, following the original game's *Snelstart* rules.
+  - Unlike the original game's separate *Snelstart* mode, skipping is handled automatically through the existing menu.
+  - Shooting and upgrade rewards, boss encounters, and exits remain available.
+  - *Start opnieuw* restores the tutorials for a fresh playthrough.
+  - Existing saves automatically establish replay history based on the player's current level.
+
+## Graphics & Lighting
+
+- **Restored RedCat's shadow:** Reimplemented the missing shadow using the original texture, size, and transparency. The shadow follows floors, slopes, and moving platforms, stays grounded during jumps, and disappears when RedCat becomes invisible.
+- **Restored RedCat's original dynamic lighting:** Reimplemented the original *rc glow* light, using its native grey-white colour, 120-unit radius, and position above RedCat's centre.
+- **Corrected lighting on 37 additional objects:** Fixed lighting calculations for:
+  - 22 candlesticks in the Tower.
+  - 10 knights in the Castle.
+  - 4 Graveyard markers and 1 bench.
+
+  These objects now correctly sample nearby floor lighting without changing their placement, collisions, or intentionally dark areas.
+
+- **Restored dynamic-light obstruction in the Tower:** Implemented the original shadowing behaviour for all five Tower lights, including those surrounding the witch's cauldron.
+- **Fixed the doubled Graveyard gate:** The gate's rear bars were incorrectly visible through its front, making it appear as two overlapping gates. Restored the original back-face rendering behaviour.
+- **Corrected skybox texture handling:** Addressed mismatched 128×128 and 256×256 skybox textures that caused missing or dark sky faces in Level 2 (*Het Kasteel*) and the Tower. The Tower skybox remains normally invisible during gameplay.
+- **Restored original smoke and flame effects:** Reimplemented native emission timing, movement, size, transparency, and fading.
+
+## Sound Improvements
+
+- **Corrected upgraded shooting sounds** to match the original game:
+  - **Power Shot:** `rcshoot2.wav` when firing and `rcshoot5.wav` on impact.
+  - **BIG BENG:** `rcshoot3.wav` while charging and `rcshoot6.wav` on impact.
+  - Removed an extra ordinary-shot sound that incorrectly played during BIG BENG.
+  - Ordinary shooting sounds remain unchanged.
+- **Fixed overlapping footsteps:** Footstep sounds were being interrupted by subsequent footsteps. They now play to completion and overlap naturally, as in the original game.
+- **Corrected destructible-object sounds:** Destroyed boxes and other destructible objects now use the original `expl6.wav` instead of `Explosion.wav`. Restored native volume scaling for small explosions and smoke-only destruction.
+- **Increased ambient sound ranges:** Ambient audio can now be heard from greater distances throughout all levels. For example, the howling wind at the beginning of Level 2 (*Het Kasteel*) is now audible as intended.
+
+## Enemy Behaviour & Performance
+
+- **Restored original enemy movement behaviour:**
+  - Green bats and guardians now follow the original waypoint-selection rules and movement timing.
+  - Enemy patrols correctly respect occupied waypoints and the original distance restrictions.
+  - Bat obstacle searches share a bounded search budget to prevent excessive processing.
+  - Older save files safely recover enemy movement routes.
+- **Fixed jittery Graveyard zombies:** Following the movement-system improvements, all eight zombies rising from graves in Level 3 now follow their original upward paths smoothly at native speed, without repeatedly stopping or restarting their walking animations.
+- **Improved movement-system performance:** Graveyard updates remained around 6.3 ms median during testing, while peak bat collision checks dropped from 13 to 3.
+
+## Menu & User Experience
+
+- **Improved browser intro playback:** The introduction now plays automatically, using muted playback and a sound button when browser restrictions require it.
+- **Added first-time control hints:** Touch and keyboard hints appear for 10 seconds after Level 1's opening cutscene. They are displayed only once, with completion remembered across restarts.
+- **Improved fullscreen behaviour:** Fullscreen is now enabled by default while respecting an existing preference to disable it. In browsers, fullscreen activates on the first eligible click or tap.
+- **Simplified the game menu:** Removed *Afsluiten* and its associated handler, since closing the application window already provides the same functionality.
+
+## Intentional Improvements Over the Original Game
+
+The following changes deliberately improve behaviour beyond the original release.
+
+### Graveyard maze soft-lock prevention
+
+An unfinished maze in the Graveyard could become permanently stuck after the player died, preventing further progress.
+
+The maze now resets its walls and triggers correctly after death. This issue existed in both the original game and earlier versions of this port, before version 0.9.5.
+
+### Restored and improved animated torch flames
+
+Several animated torches in the original game lacked visible flames or had flames that did not move with their animated hands.
+
+- Added visible flames to all 16 previously unlit hand torches.
+- Flames and warm lighting now correctly follow all 32 animated hand torches.
+- Preserved the behaviour of all 95 other stationary torches.
+
+One noticeable example is the boss fight room with Jester Max in Level 2.
+
+## Documentation & Development
+
+- **Reworked `README.md`** with:
+  - A clearer introduction for new players and developers.
+  - A plain-language explanation of how the port works.
+  - An overview of the technology stack and completed work, organised by system.
+  - Updated running instructions, project structure, and technical references.
+- **Expanded `building.md`** with build instructions for Windows ARM64, Linux ARM64, macOS Intel, and Apple Silicon.
+- **Updated 36 Markdown files** to remove outdated references to unfinished features and distinguish historical development findings from currently implemented behaviour.
+
+### Technical Notes
+
+- The Castle has no native *Snelstart* mode branch. Cave and Tower tutorial-skipping functions remain inactive. Enabling the dormant Cave branch could bypass Max's duplicate cleanup and passage-opening events.
+- Save restoration must preserve the existing world state rather than replaying world initialisation.

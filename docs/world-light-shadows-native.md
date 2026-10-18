@@ -145,6 +145,13 @@ shadow change did not fix the skybox; the subsequent fix described below does.
 
 ### Campaign-wide audit and implemented fix
 
+**Follow-up, 12 October:** the dimension fix below is retained, but its original
+face-order assumption was wrong. The port now converts native face order and
+cap orientation and removes the copied-texture fallback for unassigned faces.
+See [Original skyboxes](skyboxes-native.md) for the all-level comparison and
+current independent rendering checks. The following describes the October 5
+upload repair and its original validation.
+
 All five level manifests were checked against the actual PNG dimensions:
 
 | Level | Resolved sky faces before the fix | Affected? |
@@ -163,9 +170,10 @@ full-image scaling. Matching images are reused directly; repeated references
 to a resized image share one canvas. This creates two resized images in Het
 Kasteel and one in the Tower, once during level loading, with no per-frame work.
 
-Face order, orientation, sRGB interpretation and missing-face fallback remain
-unchanged. The source PNGs are untouched. Forest and Graveyard sky images need
-no conversion; the Caves retain their existing background. The shadow browser
+That repair left face order, orientation, sRGB interpretation and missing-face
+fallback unchanged. The October 12 audit subsequently corrected face placement,
+cap orientation and unassigned faces. The source PNGs are untouched. The Caves
+retain their existing background. The shadow browser
 fixture now renders the normal skybox, with its neutral-background workaround
 removed.
 
@@ -177,9 +185,10 @@ Focused verification commands:
 - `node tests/skybox-scenes.mjs`: cubemap GPU uploads and six-direction artwork
   checks, plus the real Tower loader/rendering path.
 
-All four unit checks passed. The browser check covered **24 sky views** (six
+At that time, all four unit checks passed. The browser check covered **24 sky views** (six
 directions in each of the four levels with skyboxes), with artwork/orientation
-pixel differences no greater than one 8-bit channel step and zero GL errors.
+pixel differences no greater than one 8-bit channel step and zero GL errors
+against the existing Three cube layout, not against native face placement.
 Three normal Tower room views also rendered with the actual skybox and no GL
 errors. The Caves configuration was confirmed to have no authored cubemap.
 Only these skybox checks were run; previous gameplay suites were not rerun.

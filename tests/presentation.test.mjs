@@ -34,9 +34,9 @@ test('UFO authored XYZ turns multiply about world axes in native order',()=>{
   near(new Vector3(.3,.6,.7).applyQuaternion(actorOrientation({entity},{})).toArray(),native.toArray());
 });
 test('normal jump keeps the descending half of jump1 at native speed through the apex',()=>{
-  const state={},p={position:[0,0,0],grounded:true,velocityY:0},input={};playerMotion(state,p,input,0);
+  const state={},p={position:[0,0,0],grounded:true,velocityY:0,jumpKind:'normal'},input={};playerMotion(state,p,input,0);
   p.grounded=false;p.velocityY=230;let pose=playerMotion(state,p,input,.1,20);
-  assert.equal(pose.name,'jump1');assert.equal(pose.speed,1.4);assert.equal(pose.loop,false);
+  assert.equal(pose.name,'jump1');assert.equal(pose.speed,1.4);assert.equal(pose.loop,true);
   p.velocityY=-100;pose=playerMotion(state,p,input,.3,300);
   assert.equal(pose.name,'jump1');assert.ok(pose.time>.5,'Descending pose must continue beyond jump apex');
   p.grounded=true;assert.equal(playerMotion(state,p,input,.1).name,'idle');

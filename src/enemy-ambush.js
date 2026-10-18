@@ -1,16 +1,22 @@
 import {moveEnemy} from './enemies.js';
 // Spider ceiling/floor setup: RcShootSpider::Initialize (0x413a90),
-// RcSpiderMoveToStart (0x409440 / 0x409a60). Skeletons hold the first
-// frame of their original start motion until the room/perception wakes them.
+// RcSpiderMoveToStart (0x409440 / 0x409a60). Skeletons settle to start frame
+// zero and replay it forward on wake; CRcStonedAlert is shared by knights and
+// gargoyles, but only knights supply its optional start motion.
 const n=(value,fallback=0)=>Number.isFinite(Number(value))?Number(value):fallback;
 const point=v=>String(v||'0 0 0').trim().split(/\s+/).map(Number);
 const valid=v=>Array.isArray(v)&&v.length===3&&v.every(Number.isFinite);
+const skeletonSees=(object,player,lineOfSight)=>{
+  const p=object.position;
+  return Math.hypot(...p.map((v,i)=>v-player[i]))<=n(object.stats.VisualRange,250)&&
+    lineOfSight([p[0],p[1]+25,p[2]],[player[0],player[1]+28,player[2]]);
+};
 export const enemyDormant=object=>['unplaced','dormant'].includes(object.ambush?.phase);
 
 export function initializeEnemyAmbush(object) {
-  if(!['spider','skeleton'].includes(object.enemyType))return;
+  if(!['spider','skeleton','knight','gargoyle'].includes(object.enemyType))return;
   object.ambush={version:1,type:object.enemyType,phase:object.enemyType==='spider'?'unplaced':'dormant',elapsed:0};
-  if(object.enemyType==='skeleton')object.animationState='dormant';
+  if(object.enemyType!=='spider')object.animationState='dormant';
 }
 
 export function placeSpider(game,object,trace) {
@@ -50,6 +56,45 @@ export function placeSpider(game,object,trace) {
 /** Returns true while the ambush owns movement/animation this frame. */
 export function updateEnemyAmbush(game,object,dt,playerPosition,lineOfSight,trace) {
   const state=object.ambush;if(!state)return false;
+  // Stone alert depends on the normal authored view/sense/memory checks.
+  if(['knight','gargoyle'].includes(state.type))return false;
+  if(state.type==='spider'){
+    // Selected hits replace the complete nested spider movement child.
+    // Keep hanging/return movement from overwriting the new hurt motion.
+    if(object.animationState==='hurt'&&game.time<object.animationUntil)return true;
+    if(state.resumeAlert){
+      delete state.resumeAlert;state.elapsed=0;
+      const nearUpper=valid(state.upper)&&valid(state.lower)&&
+        Math.abs(object.position[1]-state.upper[1])<Math.abs(object.position[1]-state.lower[1]);
+      // Fresh alert wrappers 0x408d80/0x408f90 descend if nearer the upper
+      // anchor; floor/tie enters combat. Never resume the old ascent/return.
+      state.phase=nearUpper?'returning':'awake';
+      if(nearUpper)state.returnForDescent=true;else delete state.returnForDescent;
+      object.alerted=true;object.lastSeenAt=game.time;object.lastSeenPosition=[...playerPosition];
+      game.enemyAnimation(object,'idle');
+    }
+  }
+  if(state.type==='skeleton'&&state.phase!=='awake'&&object.animationState==='hurt'&&game.time<object.animationUntil)return true;
+  if(state.type==='skeleton'&&state.phase==='awake'&&!object.alerted&&
+    game.time-n(object.lastSeenAt,game.time)>n(object.stats.TimeToRememberVisual,2)&&
+    (!['attack','hurt','start','charge'].includes(object.animationState)||game.time>=n(object.animationUntil))&&!object.pendingAttack&&!object.nativeShooter) {
+    // RcSkeletonIdleState::Initialize restarts start backwards at -1. The
+    // initial spawn is already the completed pile; returning enemies collapse.
+    state.phase='retracting';state.elapsed=0;state.duration=game.enemyDuration(object,'start');
+    game.enemyAnimation(object,'retract',state.duration,-1);
+    return true;
+  }
+  if(state.phase==='retracting') {
+    if(object.alerted||skeletonSees(object,playerPosition,lineOfSight)) {
+      object.alerted=true;object.lastSeenAt=game.time;object.lastSeenPosition=[...playerPosition];
+      state.phase='waking';state.elapsed=0;
+      state.duration=game.enemyAnimation(object,'start',game.enemyDuration(object,'start'));
+      return true;
+    }
+    state.elapsed+=dt;
+    if(state.elapsed>=state.duration){state.phase='dormant';game.enemyAnimation(object,'dormant');}
+    return true;
+  }
   if(state.phase==='awake')return updateSpiderReturn(game,object,dt,playerPosition,lineOfSight,trace);
   placeSpider(game,object,trace);
   if(state.phase==='unplaced'){state.phase='awake';return false;}
@@ -68,15 +113,14 @@ export function updateEnemyAmbush(game,object,dt,playerPosition,lineOfSight,trac
         if(!lineOfSight(eye,playerPosition)&&!lineOfSight(eye,[playerPosition[0],playerPosition[1]+56,playerPosition[2]]))return true;
       } else {
         // Dormant bones do not patrol just because their room was enabled.
-        const origin=object.position,distance=Math.hypot(...origin.map((v,i)=>v-playerPosition[i]));
-        if(distance>n(object.stats.VisualRange,250)||!lineOfSight([origin[0],origin[1]+25,origin[2]],[playerPosition[0],playerPosition[1]+28,playerPosition[2]]))return true;
+        if(!skeletonSees(object,playerPosition,lineOfSight))return true;
       }
     }
     state.elapsed=0;object.alerted=true;object.lastSeenAt=game.time;object.lastSeenPosition=[...playerPosition];
     game.enemyAction(object,'alert');
     if(state.type==='skeleton'){
-      state.phase='waking';state.duration=game.enemyDuration(object,'start');
-      game.enemyAnimation(object,'start',state.duration);
+      state.phase='waking';state.duration=game.enemyAnimation(object,'start',game.enemyDuration(object,'start'));
+      return true;
     }else {state.phase='descending';game.enemyAnimation(object,'idle');}
   }
   if(state.phase==='waking') {
@@ -97,10 +141,12 @@ export function updateEnemyAmbush(game,object,dt,playerPosition,lineOfSight,trac
 
 export function restoreEnemyAmbush(object,saved) {
   if(!object.ambush)return;
-  if(saved?.version===1&&saved.type===object.enemyType&&['unplaced','dormant','descending','returning','ascending','waking','awake'].includes(saved.phase)) {
+  if(saved?.version===1&&saved.type===object.enemyType&&['unplaced','dormant','descending','returning','ascending','waking','awake','retracting'].includes(saved.phase)) {
     const state={version:1,type:saved.type,phase:saved.phase,elapsed:Math.max(0,n(saved.elapsed))};
     for(const key of ['lower','upper','anchor'])if(valid(saved[key]))state[key]=[...saved[key]];
     if(Number.isFinite(saved.duration))state.duration=Math.max(0,saved.duration);
+    if(['knight','gargoyle','spider'].includes(state.type)&&saved.resumeAlert===true)state.resumeAlert=true;
+    if(state.type==='spider'&&state.phase==='returning'&&saved.returnForDescent===true)state.returnForDescent=true;
     if(state.type==='spider'&&['dormant','descending','returning','ascending'].includes(state.phase)&&!['lower','upper','anchor'].every(key=>valid(state[key])))state.phase='unplaced';
     object.ambush=state;
   } else {
@@ -108,7 +154,68 @@ export function restoreEnemyAmbush(object,saved) {
     const moved=Math.hypot(...object.position.map((v,i)=>v-point(object.entity.Origin)[i]))>10;
     if(object.health<=0||object.alerted||object.health<object.maxHealth||moved||object.attackTimer>0)object.ambush.phase='awake';
   }
-  if(object.ambush.phase==='dormant'&&object.enemyType==='skeleton')object.animationState='dormant';
+  if(object.enemyType==='skeleton'&&object.animationState==='hurt'){
+    // Older snapshots retained the replaced inactive/wake child during hit.
+    // Native post-hit alert observes the completed hit and enters combat;
+    // it does not replay start after hurt (0x407bc0 / 0x408880).
+    object.ambush.phase='awake';object.ambush.elapsed=0;
+    delete object.ambush.duration;
+  }
+  if(object.ambush.phase==='dormant'&&object.enemyType==='skeleton'&&!['hurt','death'].includes(object.animationState))object.animationState='dormant';
+}
+
+/** Native CRcStonedAlert: optional wake, looping alert, retract on memory loss. */
+export function updateStoneAlert(game,object,dt) {
+  const state=object.ambush;
+  if(!state||!['knight','gargoyle'].includes(state.type))return false;
+  // An old active save or a script-selected combat motion must not be reset
+  // to the initial statue. The hit reaction may interrupt wake as in native.
+  if(state.phase==='dormant'&&['attack','hurt'].includes(object.animationState))state.phase='awake';
+  if(['hurt','death'].includes(object.animationState)&&game.time<object.animationUntil)return true;
+  if(state.resumeAlert){
+    delete state.resumeAlert;state.elapsed=0;
+    if(state.type==='knight'){
+      state.phase='waking';state.duration=game.enemyDuration(object,'start')/1.7;
+      game.enemyAnimation(object,'start',state.duration,1.7);return true;
+    }
+    state.phase='awake';game.enemyAnimation(object,'idle');
+  }
+  if(state.phase==='dormant') {
+    if(!object.alerted)return true;
+    if(state.type==='knight') {
+      state.phase='waking';state.elapsed=0;state.duration=game.enemyDuration(object,'start')/1.7;
+      game.enemyAnimation(object,'start',state.duration,1.7);return true;
+    }
+    // Gargoyle's actor has no start motion. 0x404ca7 takes the idle fallback.
+    state.phase='awake';object.animationState='dormant';game.enemyAnimation(object,'idle');
+  }
+  if(state.phase==='waking') {
+    state.elapsed+=dt;
+    if(game.time<object.animationUntil)return true;
+    state.phase='awake';game.enemyAnimation(object,'idle');
+  }
+  if(state.phase==='retracting') {
+    if(object.alerted) {
+      state.phase='waking';state.elapsed=0;state.duration=game.enemyDuration(object,'start')/1.7;
+      game.enemyAnimation(object,'start',state.duration,1.7);return true;
+    }
+    state.elapsed+=dt;
+    if(game.time<object.animationUntil)return true;
+    state.phase='dormant';game.enemyAnimation(object,'dormant');return true;
+  }
+  if(state.phase==='awake'&&!object.alerted) {
+    // A standing shooter completes its already-entered salvo child before
+    // returning to stone alert, including a shot committed behind cover.
+    if(state.type==='gargoyle'&&(object.pendingAttack||object.salvoRemaining>0||
+      object.animationState==='attack'&&game.time<object.animationUntil))return false;
+    object.pendingAttack=null;object.salvoRemaining=0;object.attackTimer=0;
+    if(state.type==='knight') {
+      state.phase='retracting';state.elapsed=0;state.duration=game.enemyDuration(object,'start')/1.7;
+      game.enemyAnimation(object,'retract',state.duration,-1.7);
+    }else {state.phase='dormant';object.animationLoop=false;}
+    return true;
+  }
+  return false;
 }
 
 
@@ -122,19 +229,23 @@ function updateSpiderReturn(game,object,dt,player,lineOfSight,trace) {
     const eye=[object.position[0],object.position[1]+25,object.position[2]];
     const visible=horizontal<Math.max(n(object.stats.VisualRange,250),n(object.stats.SenseRange))&&
       (lineOfSight(eye,player)||lineOfSight(eye,[player[0],player[1]+56,player[2]]));
-    if(visible||game.time-n(object.lastSeenAt,game.time)<=n(object.stats.TimeToRememberVisual,2)||game.time<object.animationUntil)return false;
+    if(visible||game.time-n(object.lastSeenAt,game.time)<=n(object.stats.TimeToRememberVisual,2)||game.time<object.animationUntil||object.nativeShooter)return false;
     state.phase='returning';state.elapsed=0;object.pendingAttack=null;object.alerted=false;object.pursuit=null;
   }
   if(state.phase==='returning') {
     const remaining=Math.hypot(object.position[0]-state.lower[0],object.position[2]-state.lower[2]);
     if(remaining>.1) {
-      const target=game.navigation?.pursuitTarget(object,state.lower,lineOfSight,trace,game.time)||state.lower;
+      const target=game.navigation?.pursuitTarget(object,state.lower,lineOfSight,trace,game.time,{destinationId:object.entity.StartPoint})||state.lower;
       const dx=target[0]-object.position[0],dz=target[2]-object.position[2],length=Math.hypot(dx,dz);
       const step=Math.min(length,n(object.stats.Speed,50)*dt);
       if(length){object.yaw=Math.atan2(dx,dz);moveEnemy(object,[dx/length*step,0,dz/length*step],dt,trace);}
       game.enemyAnimation(object,'walk');return true;
     }
-    state.phase='ascending';object.velocityY=0;object.pursuit=null;game.enemyAnimation(object,'idle');
+    object.velocityY=0;object.pursuit=null;game.enemyAnimation(object,'idle');
+    if(state.returnForDescent){
+      delete state.returnForDescent;state.phase='descending';return true;
+    }
+    state.phase='ascending';
   }
   if(state.phase==='ascending') {
     // 0x40950d–0x409553: the same FallSpeed is added for the return ascent.

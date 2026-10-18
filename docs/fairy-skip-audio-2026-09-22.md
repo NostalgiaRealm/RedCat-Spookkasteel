@@ -1,5 +1,9 @@
 # Fleurifee cutscene skipping and corrected sounds
 
+The [2026-10-18 idle playback correction](fairy-idle-audio-native.md) adds the
+native idle base gain and seamless PCM looping; the cue sequence and skip
+behavior below remain unchanged.
+
 The latest user correction sets this sound sequence:
 
 | Event | Original file | Playback |

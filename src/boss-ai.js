@@ -3,30 +3,38 @@
 // advances only when updateBoss is called, so script freezes pause every phase.
 import { enemyRandom } from './enemy-navigation.js';
 import {enemySalvoSize} from './enemy-combat-native.js';
+import {nativeShooterWaitComplete} from './enemy-shooter-native.js';
 const n=(v,f=0)=>Number.isFinite(Number(v))?Number(v):f;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const distance=(a,b)=>Math.hypot(...a.map((v,i)=>v-b[i]));
 const vector=v=>Array.isArray(v)?[...v]:String(v||'0 0 0').trim().split(/\s+/).map(Number);
 const TYPES=new Set(['maxd','maxj','witch']);
+const nativeRoll=o=>Math.floor(enemyRandom(o)*32768);
 const PHASES=new Set(['idle','shoot','betweenShots','rise','look','lower','teleportOut','invisible','teleportIn','start','fly','recover','salvoWait']);
 
 export function initializeBoss(game,object) {
   if(!TYPES.has(object.enemyType))return;
   object.boss={version:1,type:object.enemyType,phase:'idle',elapsed:0,duration:0,shots:0,released:false,
+    waitUntil:null,approaching:false,
     home:vector(object.entity.Origin||object.position),started:false,machineMotion:'still',machineSerial:0,machineElapsed:0,
     teleportIndex:-1,hidden:false,invulnerable:false,lowerFrom:n(object.stats.MaxHeight,40)};
   if(object.enemyType==='maxd')object.position[1]=object.boss.home[1]+n(object.stats.MinHeight);
 }
 
 function enter(game,o,phase,duration=0,animation=null) {
-  Object.assign(o.boss,{phase,elapsed:0,duration:Math.max(0,duration),released:false});
+  Object.assign(o.boss,{phase,elapsed:0,duration:Math.max(0,duration),released:false,waitUntil:null});
   o.pendingAttack=null;o.attackTimer=0;
-  if(animation)game.enemyAnimation(o,animation,duration);
+  if(animation){
+    const seconds=game.enemyAnimation(o,animation,duration);
+    // Motion-driven children finish with the sampled playback rate. Idle
+    // body playback must not change the turret's separate machine clock.
+    if(animation!=='idle'&&Number.isFinite(seconds))o.boss.duration=seconds;
+  }
 }
 function machine(o,motion){o.boss.machineMotion=motion;o.boss.machineSerial++;o.boss.machineElapsed=0;}
 function duration(game,o,action,fallback){return n(o.animationDurations?.[action],fallback??game.enemyDuration(o,action));}
 function fire(game,o,context) {
-  if(!context.visible||context.distance>n(o.stats.AttackRange,100)+5)return;
+  // Shoot children commit their release; only the parent checks perception.
   game.enemyProjectile(o,context.playerPosition);game.enemyAction(o,'attack');
   game.emit('enemyAttack',{id:o.id,position:[...o.position],ranged:true});
 }
@@ -57,17 +65,17 @@ function chooseTeleport(game,o,player) {
   if(current<0)current=points.length-1;
   let chosen=current;
   for(let attempt=0;attempt<5&&chosen===current;attempt++) {
-    const candidate=Math.floor(enemyRandom(o)*points.length);
+    const candidate=nativeRoll(o)%points.length;
     if(distance(points[candidate],player)>=n(o.stats.MinPlayerDistance))chosen=candidate;
   }
   o.boss.teleportIndex=chosen;o.position=[...points[chosen]];
   game.emit('bossTeleport',{id:o.id,position:[...o.position]});
 }
-function relocate(game,o,context) {
-  game.navigation.build(context.lineOfSight);
-  const target=game.navigation.choose(o,{relocate:true,player:context.playerPosition,canTravel:flightClearance(o,context)});
-  if(target){enter(game,o,'fly');o.boss.target=target.id;return true;}
-  return false;
+function approachWitch(game,o) {
+  // A fresh ordinary-shooter alert selects closer, retaining an unfinished
+  // cursor edge. The hit child does not randomly relocate or replay takeoff.
+  enter(game,o,'fly');o.boss.approaching=true;o.boss.target=o.patrol?.target||null;
+  if(o.patrol)o.patrol.relocating=false;
 }
 function flightClearance(o,c) {
   if(!c.traceEnemy)return null;
@@ -107,7 +115,7 @@ function updateDungeon(game,o,c) {
       if(!b.released&&b.elapsed>=b.duration*clamp(n(o.stats.DrawMotionPart,.25),0,1)){b.released=true;fire(game,o,c);}
       if(b.elapsed>=b.duration){
         b.shots--;
-        if(b.shots>0){machine(o,'still');enter(game,o,'betweenShots',n(o.stats.WaitTimeBetweenShots,1));}
+        if(b.shots>0)shoot(game,o);
         else {machine(o,'litopen');enter(game,o,'rise',rise,'idle');}
       }break;
     case 'betweenShots':if(b.elapsed>=b.duration)shoot(game,o);break;
@@ -119,7 +127,7 @@ function updateDungeon(game,o,c) {
       o.position[1]=b.home[1]+b.lowerFrom-(b.lowerFrom-min)*clamp(b.elapsed/b.duration,0,1);
       if(b.elapsed>=b.duration){machine(o,'still');enter(game,o,'idle',0,'idle');}break;
     case 'recover':
-      if(b.elapsed>=b.duration)lowerDungeon(game,o);break;
+      if(b.elapsed>=b.duration)salvo(game,o);break;
   }
 }
 function lowerDungeon(game,o) {
@@ -141,14 +149,14 @@ function updateJester(game,o,c) {
         b.invulnerable=false;
         // Native 0x404759 compares random with current/max health. At low
         // health he repeatedly teleports more often, not a fixed .9 chance.
-        if(enemyRandom(o)<o.health/o.maxHealth)salvo(game,o);else teleport(game,o);
+        if((nativeRoll(o)%10000)*.0001<o.health/o.maxHealth)salvo(game,o);else teleport(game,o);
       }break;
     case 'shoot':
       c.face(c.playerPosition);
       if(!b.released&&b.elapsed>=b.duration*clamp(n(o.stats.DrawMotionPart,.5),0,1)){b.released=true;fire(game,o,c);}
       if(b.elapsed>=b.duration){
         b.shots--;
-        if(b.shots>0)enter(game,o,'betweenShots',n(o.stats.WaitTimeBetweenShots,1),'idle');
+        if(b.shots>0)shoot(game,o);
         else teleport(game,o);
       }break;
     case 'betweenShots':if(b.elapsed>=b.duration)shoot(game,o);break;
@@ -158,13 +166,23 @@ function updateJester(game,o,c) {
 function updateWitch(game,o,c) {
   const b=o.boss;
   switch(b.phase) {
+    case 'idle':if(c.visible||o.alerted)approachWitch(game,o);break;
     case 'start':
       if(b.elapsed>=b.duration){enter(game,o,'fly');b.target=o.patrol?.target||null;}break;
     case 'fly': {
       // Follow the tower's authored 3D waypoint network after takeoff or a
       // relocation. Chasing RedCat's feet collapses the flight to floor height.
       let target=b.target&&game.navigation.find(b.target);
-      if(!target&&c.visible&&c.distance<=n(o.stats.AttackRange,175)){salvo(game,o);break;}
+      if(b.approaching){
+        target=game.navigation.approachTarget(o,c.playerPosition,c.lineOfSight,{player:c.playerPosition});
+        // The cursor chooses/reserves before its strict range check. Retain
+        // the existing body-clear flight fallback if no authored graph exists.
+        if(target===null||(target!==undefined&&c.distance<n(o.stats.AttackRange,175)&&(c.visible||o.alerted))){b.approaching=false;salvo(game,o);break;}
+        if(target!==undefined&&c.distance<n(o.stats.AttackRange,175)&&!c.visible&&!o.alerted){b.approaching=false;enter(game,o,'idle',0,'idle');break;}
+        if(target===undefined)b.approaching=false;
+        b.target=target?.id||null;
+      }
+      if(!b.approaching&&!target&&c.visible&&c.distance<=n(o.stats.AttackRange,175)){salvo(game,o);break;}
       if(!target){
         game.navigation.build(c.lineOfSight);
         target=game.navigation.find(o.patrol?.target)||game.navigation.choose(o,{player:c.playerPosition,canTravel:flightClearance(o,c)});
@@ -179,7 +197,7 @@ function updateWitch(game,o,c) {
         const current=game.navigation.find(o.patrol?.current);
         game.navigation.build(c.lineOfSight);
         target=current&&distance(o.position,current.position)>5&&canTravel(current)?current:
-          game.navigation.choose(o,{player:c.playerPosition,canTravel});
+          game.navigation.choose(o,{player:c.playerPosition,canTravel,...(b.approaching?{closerTo:c.playerPosition}:{})});
         b.target=target?.id||null;
         if(o.patrol)o.patrol.target=b.target;
       }
@@ -193,8 +211,10 @@ function updateWitch(game,o,c) {
       else {
         if(target&&o.patrol){o.patrol.previous=o.patrol.current;o.patrol.current=target.id;o.patrol.target=null;o.patrol.leftStart=target.id!==o.patrol.start;o.patrol.relocating=false;}
         b.target=null;
-        if(c.visible&&c.distance<=n(o.stats.AttackRange,175))salvo(game,o);
-        else {const next=game.navigation.choose(o,{player:c.playerPosition,canTravel:!o.patrol?.leftStart?null:flightClearance(o,c)});if(next)b.target=next.id;else game.enemyAnimation(o,'idle');}
+        if(!b.approaching&&c.visible&&c.distance<=n(o.stats.AttackRange,175))salvo(game,o);
+        else if(!b.approaching){const next=game.navigation.choose(o,{player:c.playerPosition,canTravel:!o.patrol?.leftStart?null:flightClearance(o,c)});if(next)b.target=next.id;else game.enemyAnimation(o,'idle');}
+        // A closer child selects its next edge through approachTarget on
+        // the next update; an unrestricted patrol choice would poison it.
       }
       break;
     }
@@ -204,14 +224,15 @@ function updateWitch(game,o,c) {
       if(b.elapsed>=b.duration){
         b.shots--;
         if(b.shots>0)enter(game,o,'betweenShots',n(o.stats.WaitTimeBetweenShots),'idle');
-        else if(enemyRandom(o)<=n(o.stats.ChanceToMoveAfterSalvo,.3)&&relocate(game,o,c))break;
+        else if((nativeRoll(o)%10000)*.0001<=n(o.stats.ChanceToMoveAfterSalvo,.3))approachWitch(game,o);
         else enter(game,o,'salvoWait',n(o.stats.WaitTimeAfterSalvo,1),'idle');
       }break;
-    case 'betweenShots':if(b.elapsed>=b.duration)shoot(game,o);break;
+    // Use the phase-local simulation clock so freezes cannot age this wait.
+    case 'betweenShots':if(nativeShooterWaitComplete(b,b.elapsed,b.duration))shoot(game,o);break;
     case 'salvoWait':
-      if(b.elapsed>=b.duration){if(c.visible&&c.distance<=n(o.stats.AttackRange,175))salvo(game,o);else enter(game,o,'fly');}break;
+      if(nativeShooterWaitComplete(b,b.elapsed,b.duration)){if((c.visible||o.alerted)&&c.distance<=n(o.stats.AttackRange,175))salvo(game,o);else approachWitch(game,o);}break;
     case 'recover':
-      if(b.elapsed>=b.duration&&!relocate(game,o,c))enter(game,o,'fly');break;
+      if(b.elapsed>=b.duration)approachWitch(game,o);break;
     default:enter(game,o,'fly');
   }
 }
@@ -221,14 +242,18 @@ export function bossCanTakeDamage(object) {return !object.boss?.hidden&&!object.
 export function bossHitResult(game,o,amount) {
   if(!TYPES.has(o.enemyType))return null;
   if(!bossCanTakeDamage(o))return {damage:0,defeated:false,reaction:false};
-  if(o.enemyType==='witch')return {damage:Math.min(amount,Math.max(0,o.health-2)),defeated:o.health-amount<=2,reaction:enemyRandom(o)<.5};
-  return {damage:amount,defeated:o.health<=amount,reaction:enemyRandom(o)<(o.enemyType==='maxd'?.5:1/3)};
+  const defeated=o.health-amount<=(o.enemyType==='witch'?2:0);
+  const reaction=!defeated&&nativeRoll(o)%(o.enemyType==='maxj'?3:2)===0;
+  return {damage:o.enemyType==='witch'?Math.min(amount,Math.max(0,o.health-2)):amount,defeated,reaction};
 }
 /** Call only for nonterminal accepted hits, after changing health. */
 export function bossWasHit(game,o,result) {
   if(!o.boss)return;
   if(!result?.reaction){game.enemyAction(o,'hurt');return;}
-  if(o.enemyType==='maxj'){teleport(game,o);return;}
+  // Same-state rejection preserves an in-progress hurt clip and its sound.
+  // Jester's fresh alert teleports only AFTER this common hurt child finishes.
+  if(o.boss.phase==='recover')return;
+  o.boss.shots=0;
   enter(game,o,'recover',duration(game,o,'hurt',.5),'hurt');
 }
 export function snapshotBossState(o) {return o.boss?JSON.parse(JSON.stringify(o.boss)):null;}
@@ -239,10 +264,12 @@ export function restoreBossState(game,o,saved) {
   const b=o.boss;
   for(const key of ['elapsed','duration','shots','machineSerial','machineElapsed','teleportIndex','lowerFrom'])if(Number.isFinite(saved[key]))b[key]=saved[key];
   if(!Number.isFinite(b.lowerFrom))b.lowerFrom=n(o.stats.MaxHeight,40);
-  for(const key of ['started','released','hidden','invulnerable'])if(typeof saved[key]==='boolean')b[key]=saved[key];
+  for(const key of ['started','released','hidden','invulnerable','approaching'])if(typeof saved[key]==='boolean')b[key]=saved[key];
   if(Array.isArray(saved.home)&&saved.home.length===3&&saved.home.every(Number.isFinite))b.home=[...saved.home];
   if(['still','shoot1','litopen','litclose'].includes(saved.machineMotion))b.machineMotion=saved.machineMotion;
   b.phase=saved.phase;
+  b.waitUntil=saved.waitUntil===null?null:Number.isFinite(saved.waitUntil)?Math.max(0,saved.waitUntil):
+    (o.enemyType==='witch'&&['betweenShots','salvoWait'].includes(saved.phase)?b.duration:null);
   b.teleportEffects=(Array.isArray(saved.teleportEffects)?saved.teleportEffects:[]).filter(effect=>
     ['departure','arrival'].includes(effect.phase)&&Number.isFinite(effect.age)&&effect.age>=0&&effect.age<1.5&&
     Array.isArray(effect.position)&&effect.position.length===3&&effect.position.every(Number.isFinite))

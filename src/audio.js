@@ -1,10 +1,19 @@
 import AUDIO_SETTINGS from './audio-settings.js';
 import {ambienceRange, nearbyAmbienceGain, isFairyIdle, FAIRY_IDLE_DISTANCE_SCALE} from './ambience-ranges.js';
 import {BspAudioEnvironment, nativeStereoGains, obstructedSource, createStereoRoute} from './spatial-audio.js';
+import {advanceMusicFade} from './music-fade.js';
 
 export const soundName = value => String(value || '').replace(/^.*[\\/]/, '').toLowerCase();
 const nonnegative = (value, fallback = 1) => Number.isFinite(Number(value)) ? Math.max(0, Number(value)) : fallback;
 const clamp = value => Math.min(1, Math.max(0, value));
+const finite = (value, fallback=0, maximum=86400) => typeof value==='number'&&Number.isFinite(value)?Math.max(0,Math.min(maximum,value)):fallback;
+const point = value => Array.isArray(value)&&value.length===3&&value.every(Number.isFinite)?[...value]:null;
+const label = value => typeof value==='string'&&value.length<=512?value:null;
+const savedVoice = event => event&&typeof event.voice==='string'&&event.voice.length<=512?{voice:soundName(event.voice),text:typeof event.text==='string'?event.text.slice(0,8192):'',id:label(event.id),until:finite(event.until)}:null;
+// CFairy::StartSound (0x47d570) starts IdleFee1 at .4; the native voice
+// updater retains this base gain. Keep it separate from saved/script volume
+// so older saves also receive the correction, without compounding on reload.
+const FAIRY_IDLE_BASE_GAIN = .4;
 
 // Adam's LinToLog followed by Genesis3D's DirectSound centibel conversion.
 // An authored volume of .25 is -20 dB (amplitude .1), not amplitude .25.
@@ -14,6 +23,9 @@ export const nativeGainToAmplitude = gain => gain <= 0 ? 0 : 10 ** (.5 * Math.lo
 // actual sample-rate conversion down to .075x, including the matching pitch.
 // Music also uses the complete decoded buffer: repeating a WAV media element
 // seeks/rebuffers at its end and can estimate a slightly shorter duration.
+// Pickup media can report EOF with final samples still queued for output;
+// pausing it during release clips that tail. Buffer completion follows the
+// audio rendering clock and retains every sample of the original recording.
 class BufferedAudioVoice {
   constructor(context, loadBuffer) {
     this.context=context;this.loadBuffer=loadBuffer;this.output=context.createGain();this.output.connect(context.destination);
@@ -35,6 +47,9 @@ class BufferedAudioVoice {
     this.wanted=true;
     this.buffer??=await this.loadBuffer();
     if(this.disposed||!this.wanted||this.source)return;
+    // A save can land after the last sample but before onended is dispatched.
+    // Complete that one-shot without allocating/restarting an empty source.
+    if(!this.loop&&this.offset>=this.buffer.duration){this.offset=this.buffer.duration;this.wanted=false;this.onended?.();return;}
     if(this.context.state!=='running')await this.context.resume();
     if(this.disposed||!this.wanted||this.source)return;
     const source=this.context.createBufferSource();source.buffer=this.buffer;source.playbackRate.value=this.playbackRate;source.loop=this.loop;
@@ -47,7 +62,9 @@ class BufferedAudioVoice {
       if(this.source!==source)return;
       this.source=null;source.disconnect();this.offset=this.buffer.duration;this.wanted=false;this.onended?.();
     };
-    source.start(0,this.offset%this.buffer.duration);
+    // Only loops wrap: a restored one-shot at its exact end must finish,
+    // rather than replaying its entire recording from zero.
+    source.start(0,this.loop?this.offset%this.buffer.duration:Math.min(this.offset,this.buffer.duration));
   }
   stopSource(){
     if(!this.source)return;
@@ -82,18 +99,21 @@ export class GameAudio {
     const url=`assets/${channel === 'voices' ? 'voices' : 'audio'}/${encodeURIComponent(name)}`;
     // DirectSound frequency zero selects the original sample frequency.
     const rate=nativeFrequency?(nonnegative(playbackRate)||1):nonnegative(playbackRate);
-    const buffered=(channel==='music'||nativeFrequency&&rate<.25)&&this.ensureContext();
+    // DirectSound repeats the fairy's PCM buffer continuously. HTML WAV loops
+    // rebuffer at each seam (12–15 ms gaps measured for IdleFee1), making the
+    // short sparkle sound repeat in distinct bursts instead of flowing.
+    const buffered=(channel==='music'||group==='pickup'||isFairyIdle({channel,name,loop})||nativeFrequency&&rate<.25)&&this.ensureContext();
     const element=buffered?new BufferedAudioVoice(this.context,()=>this.loadAudioBuffer(url,channel==='music')):this.createAudio(url);
     element.playbackRate = buffered&&nativeFrequency?rate:Math.max(.25, Math.min(4, rate));
     element.preservesPitch = false;
     const minDelay = nonnegative(minReplayDelay, 0), maxDelay = Math.max(minDelay, nonnegative(maxReplayDelay, 0));
     const record = {key, sourceId, group, channel, name, element, volume: nonnegative(volume),
-      authoredGain: this.settings.gains[name] ?? 1, position, spatial, loop, minDelay, maxDelay, wait: null};
+      authoredGain: this.settings.gains[name] ?? 1, position, spatial, loop, nativeFrequency, minDelay, maxDelay, wait: null, pendingStartTime:null};
     element.preload = 'auto';
     element.loop = loop && maxDelay === 0;
     // Set the media's pending start position before play(), so resuming a
     // background track never briefly plays its introduction a second time.
-    if(nonnegative(startTime,0)>0)element.currentTime=nonnegative(startTime,0);
+    if(nonnegative(startTime,0)>0)this.seek(record,nonnegative(startTime,0));
     if((spatial||ambienceRange(this.levelId,record))&&position)this.attachStereo(record);
     this.sounds.add(record); if (key) this.keyed.set(key, record);
     this.applyGain(record);
@@ -108,19 +128,19 @@ export class GameAudio {
   }
   // Authored motion timestamps can arrive before a WAV has loaded or finished.
   // Advance dialogue only on media completion, never a subtitle timeout.
-  queueDialogue(event, {onStart = null, onEnd = null} = {}) {
+  queueDialogue(event, {onStart = null, onEnd = null, startTime = 0} = {}) {
     if (!event.voice) return;
-    this.dialogueQueue.push({event:{...event}, onStart, onEnd});
+    this.dialogueQueue.push({event:{...event}, onStart, onEnd, startTime});
     this.startNextDialogue();
   }
   startNextDialogue() {
     if (this.dialogueActive || !this.dialogueQueue.length) return;
     const item = this.dialogueQueue.shift(); this.dialogueActive = item;
-    item.record = this.play({key:'voice', channel:'voices', sound:item.event.voice, onEnded:reason=>{
+    item.onStart?.(item.event);
+    item.record = this.play({key:'voice', channel:'voices', sound:item.event.voice, startTime:item.startTime, onEnded:reason=>{
       if (this.dialogueActive !== item) return;
       this.dialogueActive = null; item.onEnd?.(item.event, reason); this.startNextDialogue();
     }});
-    item.onStart?.(item.event);
   }
   stopDialogue() {
     this.dialogueQueue.length = 0; this.dialogueActive = null; this.stop('voice');
@@ -149,6 +169,10 @@ export class GameAudio {
   }
   start(record) {
     if (this.paused || !this.sounds.has(record)) return;
+    if(record.pendingStartTime!==null&&!this.seek(record,record.pendingStartTime))return;
+    // HTMLMediaElement.play() restarts media whose position is already at EOF.
+    // Deliver the pending completion instead, preserving a just-finished tail.
+    if(!record.element.loop&&Number.isFinite(record.element.duration)&&record.element.duration>0&&record.element.currentTime>=record.element.duration){record.element.onended?.();return;}
     if(record.stereo&&this.context?.state!=='running')this.context.resume()?.catch(()=>{});
     const attempt = record.element.play();
     attempt?.catch(error => {
@@ -156,14 +180,33 @@ export class GameAudio {
       if (!['NotAllowedError', 'AbortError'].includes(error?.name) && this.sounds.has(record)) record.element.onerror?.();
     });
   }
+  seek(record, seconds) {
+    const element=record.element,duration=Number(element.duration);
+    const time=duration>0&&Number.isFinite(duration)?(element.loop?seconds%duration:Math.min(seconds,duration)):seconds;
+    try {
+      element.currentTime=time;
+      // HAVE_NOTHING may accept a default start time but still report zero.
+      // Retain our requested clock until metadata confirms a real seek.
+      if(element.nativeBuffered||element.readyState!==0){record.pendingStartTime=null;element.onloadedmetadata=null;return true;}
+    } catch { /* Embedded media may reject a seek until metadata arrives. */ }
+    // Do not briefly play the start of the WAV while waiting.
+    record.pendingStartTime=seconds;
+    element.onloadedmetadata=()=>{if(this.sounds.has(record)&&this.seek(record,seconds)&&record.wait===null)this.start(record);};
+    return false;
+  }
   release(record) {
     if(record.channel==='music') {
-      const time=nonnegative(record.element.currentTime,0),duration=Number(record.element.duration);
+      const time=nonnegative(record.pendingStartTime??record.element.currentTime,0),duration=Number(record.element.duration);
       this.musicPositions.set(record.name,duration>0&&Number.isFinite(duration)?time%duration:time);
     }
-    record.element.onended = null; record.element.onerror = null; record.element.pause();
+    record.element.onended = null; record.element.onerror = null; record.element.onloadedmetadata=null;record.element.pause();
     record.stereo?.disconnect();record.stereo=null;
-    record.element.dispose?.();
+    if(typeof record.element.dispose==='function')record.element.dispose();
+    else {
+      // A paused HTML media element can retain its browser player/decoder until
+      // collection. Release that resource now, including pending media loads.
+      record.element.removeAttribute?.('src');record.element.load?.();
+    }
     this.sounds.delete(record);
     if (record.key && this.keyed.get(record.key) === record) this.keyed.delete(record.key);
   }
@@ -193,7 +236,7 @@ export class GameAudio {
     const cache=music?this.musicBufferCache:this.bufferCache,limit=music?2:8;
     if(!cache.has(url)) {
       // Retain at most two music buffers (ambient/combat), separately from the
-      // small shared portal sounds. Changing levels clears both caches.
+      // small shared portal/pickup sounds. Changing levels clears both caches.
       if(cache.size>=limit)cache.delete(cache.keys().next().value);
       const pending=this.fetchAudio(url).then(response=>{if(!response.ok)throw new Error(`Cannot load ${url}`);return response.arrayBuffer();})
         .then(bytes=>this.context.decodeAudioData(bytes));
@@ -246,20 +289,72 @@ export class GameAudio {
     }
     record.distanceGain = positioned ? (record.obstruction.audible?
       (range ? nearbyAmbienceGain(listener, position, range) : distanceGain(listener, position, spatial)):0) : 1;
-    record.element.volume = clamp(this.master * nativeGainToAmplitude((this.channels[record.channel] ?? 1) * clamp(record.authoredGain) * record.volume * record.distanceGain)*(record.fadeGain??1));
+    record.element.volume = clamp(this.master * nativeGainToAmplitude((this.channels[record.channel] ?? 1) * clamp(record.authoredGain) * record.volume * (fairy?FAIRY_IDLE_BASE_GAIN:1) * record.distanceGain*(record.fadeGain??1)));
   }
   update(dt, listener = this.listener) {
     this.listener = [...listener];
     this.clock+=Math.max(0,dt);this.environment?.refreshPortals();
     if(this.world?.camera)this.listenerQuaternion=this.world.camera.quaternion.toArray();
     for (const record of this.sounds) {
-      if(!this.paused&&record.fade){const fade=record.fade;fade.elapsed+=Math.max(0,dt);const t=Math.min(1,fade.elapsed/fade.duration);record.fadeGain=fade.from+(fade.to-fade.from)*t;if(t>=1){record.fade=null;if(fade.release){this.release(record);continue;}}}
+      if(!this.paused&&record.fade){const fade=record.fade,result=advanceMusicFade(fade,dt);record.fadeGain=result.gain;if(result.done){record.fade=null;if(fade.release){this.release(record);continue;}}}
       this.applyGain(record);
       if (!this.paused && record.wait !== null) {
         record.wait -= Math.max(0, dt);
-        if (record.wait <= 0) { record.wait = null; record.element.currentTime = 0; this.start(record); }
+        if (record.wait <= 0) { record.wait = null; this.seek(record,0); this.start(record); }
       }
     }
+  }
+  // Diagnostic snapshot() below intentionally stays independent of the save
+  // schema. Save actual source clocks, not wall time: loading/pause duration
+  // must not advance a WAV or a delayed replay.
+  saveState() {
+    const active=this.dialogueActive,serialize=record=>({
+      key:record.key,sourceId:record.sourceId,group:record.group,channel:record.channel,sound:record.name,
+      volume:record.volume,position:point(record.currentPosition),followSource:typeof record.position==='function',
+      spatial:record.spatial,loop:record.loop,playbackRate:record.element.playbackRate,nativeFrequency:record.nativeFrequency,
+      minReplayDelay:record.minDelay,maxReplayDelay:record.maxDelay,wait:record.wait,
+      currentTime:finite(record.pendingStartTime??record.element.currentTime),fadeGain:record.fadeGain??1,
+      fade:record.fade?{...record.fade}:null
+    });
+    return {version:1,level:this.levelId,
+      sounds:[...this.sounds].filter(record=>record!==active?.record).slice(0,512).map(serialize),
+      musicPositions:[...this.musicPositions].slice(-32),
+      dialogue:[...(active?[{event:savedVoice(active.event),currentTime:finite(active.record?.pendingStartTime??active.record?.element.currentTime)}]:[]),
+        ...this.dialogueQueue.map(item=>({event:savedVoice(item.event),currentTime:finite(item.startTime)}))].filter(item=>item.event).slice(0,128)};
+  }
+  restoreState(save, {positionForSource=null,onDialogueStart=null,onDialogueEnd=null}={}) {
+    if(save?.version!==1||save.level!==this.levelId||!Array.isArray(save.sounds)||!Array.isArray(save.dialogue))return false;
+    const paused=this.paused;
+    // Script/effect restoration has recreated authoritative source bindings.
+    // Keep their moving positions, then replace playback only, without replaying
+    // any scripts, pickup events, random loop delays or dialogue triggers.
+    const positions=new Map([...this.sounds].filter(record=>record.key).map(record=>[record.key,record.position]));
+    this.pause();this.stopDialogue();for(const record of [...this.sounds])this.release(record);
+    this.musicPositions.clear();
+    for(const item of Array.isArray(save.musicPositions)?save.musicPositions.slice(-32):[])if(Array.isArray(item)&&typeof item[0]==='string'&&item[0].length<=512)this.musicPositions.set(soundName(item[0]),finite(item[1]));
+    const keys=new Set();
+    for(const entry of save.sounds.slice(0,512)) {
+      if(!entry||typeof entry.sound!=='string'||!entry.sound||entry.sound.length>512||!['music','effects','voices'].includes(entry.channel))continue;
+      const key=label(entry.key);if(key==='voice'||key&&keys.has(key))continue;if(key)keys.add(key);
+      const sourceId=label(entry.sourceId),existing=key?positions.get(key):null;
+      const position=typeof existing==='function'?existing:entry.followSource&&sourceId?positionForSource?.(sourceId)||point(entry.position):point(entry.position);
+      const record=this.play({sound:entry.sound,key,sourceId,group:label(entry.group),channel:entry.channel,
+        volume:finite(entry.volume,1,100),position,spatial:entry.spatial===true,loop:entry.loop===true,
+        playbackRate:finite(entry.playbackRate,1,100),nativeFrequency:entry.nativeFrequency===true,
+        minReplayDelay:finite(entry.minReplayDelay),maxReplayDelay:finite(entry.maxReplayDelay),startTime:finite(entry.currentTime)});
+      record.wait=entry.wait===null||!record.loop?null:finite(entry.wait);
+      record.fadeGain=finite(entry.fadeGain,1,1);
+      if(entry.fade&&Number.isFinite(entry.fade.duration)&&Number.isFinite(entry.fade.elapsed))record.fade={
+        from:finite(entry.fade.from,0,1),to:finite(entry.fade.to,1,1),duration:finite(entry.fade.duration),
+        elapsed:finite(entry.fade.elapsed),...(entry.fade.release===true?{release:true}:{})};
+      this.applyGain(record);
+    }
+    onDialogueEnd?.(null,'restored');
+    for(const item of save.dialogue.slice(0,128)) {
+      const event=savedVoice(item?.event);if(event)this.queueDialogue(event,{startTime:finite(item.currentTime),onStart:onDialogueStart,onEnd:onDialogueEnd});
+    }
+    if(!paused)this.resume();
+    return true;
   }
   snapshot() {
     return [...this.sounds].map(r => ({key:r.key, sourceId:r.sourceId, channel:r.channel, sound:r.name,

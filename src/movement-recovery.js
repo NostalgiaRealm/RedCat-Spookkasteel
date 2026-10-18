@@ -10,7 +10,7 @@ export class MovementRecovery {
   constructor(){this.reset();}
   reset() {
     this.history=[];this.lastPosition=null;this.anchor=null;this.blocked=0;this.embeddedTime=0;
-    this.sampleAge=0;this.cooldown=0;this.search=null;this.recoveries=0;
+    this.sampleAge=0;this.cooldown=0;this.search=null;this.pocketProbe=null;this.recoveries=0;
   }
   // Extra horizontal clearance avoids immediately dropping back into the same
   // crack. Ground support includes a centre-foot probe, not just a hull corner
@@ -74,18 +74,67 @@ export class MovementRecovery {
     }
     return {position:[...position],grounded:!flying,reason:overlap.startSolid?'overlap':'blocked'};
   }
+  // A fall behind shifted crates can leave a low, body-wide pocket. Explore
+  // its reachable space rather than mistaking a few sideways steps for an exit.
+  // Any route out, including raised routes around corners, cancels recovery. Work
+  // is spread over frames and an inconclusive/large search never rewinds.
+  probeFallPocket(options) {
+    const probe=this.pocketProbe,{mins,maxs,trace}=options;
+    const node=probe.queue[probe.cursor];
+    if(node) {
+      const direction=++probe.direction;
+      if(direction===5){probe.cursor++;probe.direction=-1;}
+      if(direction===0&&node[1]-probe.origin[1]>=Math.ceil((options.jumpHeight??80)/16)*16)return null;
+      const next=direction<2?offset(node,0,direction===0?16:-16,0):
+        offset(node,directions[(direction-2)*2][0]*8,0,directions[(direction-2)*2][1]*8);
+      const hit=trace(node,next,mins,maxs);
+      // A closed authored door can temporarily seal an ordinary passage.
+      // Do not turn its closure into a rewind, even if higher history is safe.
+      // The caller caches door objects; this adds no collision query or scan.
+      if(options.isBarrier?.(hit))return {done:true};
+      // Include the swept endpoint beside a wall: the exit may turn a corner
+      // between grid steps in a narrow passage.
+      const reached=clear(hit)?next:!hit.startSolid&&hit.fraction>0?hit.end:null;
+      if(reached&&distance(node,reached)>1) {
+        // A lower floor may lead beneath a ceiling and around a corner. Do
+        // not rewind when a drop is available; leave that route to the player.
+        // Downward edges above the origin also permit landing after a rise.
+        if(reached[1]<probe.origin[1]-1)return {done:true};
+        if(Math.hypot(reached[0]-probe.origin[0],reached[2]-probe.origin[2])>=64)return {done:true};
+        const key=reached.map(v=>Math.round(v)).join(',');
+        if(!probe.seen.has(key)) {
+          if(probe.queue.length>=256)return {done:true};
+          probe.seen.add(key);probe.queue.push([...reached]);
+        }
+      }
+      return null;
+    }
+    const previous=probe.history.shift();
+    if(!previous)return {done:true};
+    // A door can lie between the pocket and higher history without touching
+    // the local search volume. Recheck that segment against door brushes only;
+    // crate/ledge geometry is intentionally permitted by this fallback.
+    if(options.barrierTrace&&!clear(options.barrierTrace(probe.origin,previous,mins,maxs)))return {pending:true};
+    if(!this.safeAt(previous,options))return {pending:true};
+    return {position:[...previous],grounded:true,reason:'fall-pocket'};
+  }
+  complete(result) {
+    this.search=this.pocketProbe=null;this.blocked=this.embeddedTime=0;this.cooldown=1;
+    this.anchor=this.lastPosition=[...result.position];this.recoveries++;
+    return result;
+  }
   update(options) {
     const {before,position,intended,mins,maxs,trace,grounded=false,flying=false,embedded=false,autonomous=false}=options;
     const dt=Math.max(0,Math.min(.1,options.dt));if(!dt)return null;
     if(this.lastPosition&&distance(before,this.lastPosition)>32)this.reset();
     this.lastPosition=[...position];this.sampleAge+=dt;this.cooldown=Math.max(0,this.cooldown-dt);
     if(!this.anchor||distance(position,this.anchor)>2) {
-      this.anchor=[...position];this.blocked=0;this.search=null;
+      this.anchor=[...position];this.blocked=0;this.search=this.pocketProbe=null;
     }
     const attempting=Math.hypot(...intended)>.01;
     this.blocked=attempting?this.blocked+dt:0;
     this.embeddedTime=embedded?this.embeddedTime+dt:0;
-    if(!attempting&&!embedded)this.search=null;
+    if(!attempting&&!embedded)this.search=this.pocketProbe=null;
     // History sampling costs at most two hull/foot traces twice per second,
     // and only after sufficient travel. It never overwrites the last safe spot
     // merely because a failed downward trace called an embedded body grounded.
@@ -95,6 +144,16 @@ export class MovementRecovery {
       if(this.safeAt(position,options)){this.history.push([...position]);if(this.history.length>12)this.history.shift();}
     }
     if(this.cooldown||(!this.search&&this.blocked<(autonomous?1.2:.8)&&this.embeddedTime<.2))return null;
+    if(this.pocketProbe) {
+      for(let i=0;i<4;i++) {
+        const result=this.probeFallPocket(options);
+        if(!result)continue;
+        if(result.position)return this.complete(result);
+        if(result.pending)return null; // At most one history revalidation per frame.
+        this.pocketProbe=null;this.cooldown=1;break;
+      }
+      return null;
+    }
     const overlap=trace(position,position,mins,maxs);
     if(!this.search) {
       // A player deliberately pushing a wall/door still has an escape route.
@@ -108,7 +167,15 @@ export class MovementRecovery {
           if(clear(hit)){canLeave=true;if(grounded)break;}
           else if(hit.normal&&!contacts.some(n=>distance(n,hit.normal)<.01))contacts.push(hit.normal);
         }
-        if(grounded&&canLeave){this.cooldown=.5;return null;}
+        if(grounded) {
+          const history=this.history.slice().reverse().filter(p=>
+            p[1]-position[1]>maxs[1]-mins[1]+8&&distance(p,position)<=512);
+          if(history.length&&!this.safeAt(position,options)) {
+            this.pocketProbe={origin:[...position],history,queue:[[...position]],cursor:0,direction:-1,
+              seen:new Set([position.map(v=>Math.round(v)).join(',')])};return null;
+          }
+          if(canLeave){this.cooldown=.5;return null;}
+        }
       }
       const candidates=[];
       for(const p of (overlap.penetrations||[]).slice().sort((a,b)=>a.distance-b.distance))
@@ -136,8 +203,6 @@ export class MovementRecovery {
     if(!candidate){this.search=null;this.cooldown=1;return null;}
     const result=this.candidate(candidate,position,overlap,options);
     if(!result)return null;
-    this.search=null;this.blocked=this.embeddedTime=0;this.cooldown=1;
-    this.anchor=this.lastPosition=[...result.position];this.recoveries++;
-    return result;
+    return this.complete(result);
   }
 }

@@ -42,8 +42,11 @@ in `lvl02a`. They draw before ordinary meshes with `colorWrite=false`,
 through the boundary, nearby geometry can draw in front of it, and geometry
 beyond it fails the depth test. This is a portable rendering implementation of
 the authored sky boundary, rather than a claim that Genesis3D used this exact
-depth-prepass technique. That SKY-material correction is scoped to the
-graveyard. The separate moving-model visibility correction below uses the
+depth-prepass technique. That SKY-material correction was initially scoped to
+the graveyard. The [12 October skybox audit](skyboxes-native.md) extends it to
+the Forest and Castle's authored SKY polygons and corrects sky face placement
+and orientation across all assigned skies. The Caves and Tower have no SKY
+polygons. The separate moving-model visibility correction below uses the
 original PVS data across all five levels.
 
 ## Distant gate visible through a sky seam (2026-10-09)

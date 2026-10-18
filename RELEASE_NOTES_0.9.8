@@ -1,0 +1,110 @@
+This release brings a more faithful original-game menu, separate adventures for multiple players, adjustable rendering quality, and further corrections to graphics, item placement, and sound. Version 0.9.8 also restores the original loading screens and addresses several issues reported while playing saved adventures.
+
+## Gameplay & Save Management
+
+- **Added the original Spelerlijst menu:**
+  - Added the original *Spelerlijst* button beside *Instellingen* in the bottom-left corner.
+  - Supports up to eight players, with names of up to twelve characters, following the original menu's limits.
+  - Players can create, select, and remove profiles using the original backgrounds, button artwork, prompts, logo, and voice recordings.
+  - Each player keeps a separate adventure, inventory, score, unlocked levels, earned abilities, tutorial history, difficulty, and no-clip preference.
+  - The existing two-, five-, and ten-minute recovery saves are also kept separately for each player.
+  - Existing port progress is preserved automatically under *Speler 1*.
+  - Deleting a player requires confirmation and removes only that player's data. The final remaining player cannot be deleted.
+  - Switching players safely finishes pending save operations before changing ownership, preventing one player's adventure from being saved over another's.
+  - Display, sound, camera, and input preferences remain shared on the same device.
+- **Improved level selection with an existing save:**
+  - Selecting an unlocked level now changes the selection without immediately showing an overwrite warning.
+  - Added *Level Spelen*, which appears after selecting a level when a saved adventure exists.
+  - The overwrite warning appears only when pressing *Level Spelen* or *Start opnieuw*.
+  - Canceling preserves the current adventure and recovery history. Confirmed replacement happens only after the new level loads successfully.
+
+## Rendering Quality & Performance
+
+- **Added a rendering-scale slider:**
+  - Adjustable from **25% to 300%**, with **100%** as the default.
+  - Scales the 3D rendering resolution relative to the selected resolution or automatic window resolution, while keeping menu text and overlays sharp.
+  - The section above 100% is red to indicate the additional performance cost. At 300%, each image dimension is tripled, resulting in nine times as many rendered pixels.
+  - Automatic resolution on Android now follows the same window-resolution and scaling policy instead of the previous fixed 720p budget.
+- **Added automatic resolution reduction:**
+  - Sustained performance below **30 FPS** lowers rendering scale in steps of **25 percentage points**: **100% → 75% → 50% → 25%** at the default setting.
+  - Uses a warmup period and consecutive low-FPS measurements to avoid reacting to individual slow frames.
+  - Pauses, loading screens, hidden windows, and non-gameplay frames do not trigger reductions.
+  - Automatic reductions do not overwrite the saved slider setting. Starting another level or changing resolution/render scale resets the reductions.
+  - There is no automatic upscaling, avoiding repeated resolution changes when performance fluctuates.
+- **Added an optional FPS counter**, available in *Instellingen*, with its preference saved between sessions.
+- **Improved visibility checks for moving world geometry:** Doors, gates, and other moving brush models now use the original level's visibility data and their current transformed bounds. Results are cached until the camera's visibility region or the model's position changes, avoiding repeated searches on unchanged frames.
+
+## Graphics & Item Placement
+
+- **Fixed see-through wall strips in Het Kerkhof:** Narrow strips beside the descending passage incorrectly used the fence texture's transparent pixels. The structural wall now renders solidly while actual fences, foliage, and water retain their transparency.
+- **Fixed distant scenery visible through a Graveyard sky seam:** A floating fence from another part of the level could appear through a small gap. The corrected moving-model visibility checks hide it from that location while preserving the gate's artwork when approached or opened.
+- **Corrected collectible placement across all five levels:**
+  - Audited all **437** potions, money bags, health items, extra lives, heart containers, and collectible mirror pieces.
+  - Restored the original placement step that settles items onto supporting geometry before applying the original **18-unit** offset.
+  - Found supporting surfaces for **425** items; **12** deliberately buried or embedded cases retain their authored anchors rather than being moved through geometry.
+  - Fixed the reported floating Castle potion and additional elevated pickups in the Graveyard and Caves.
+  - Removed the added sine-wave bobbing that was not enabled by the original item settings. Original rotation and actor animations remain.
+  - Rendering, pickup detection, score counters, and pickup effects now use the same corrected positions.
+  - Existing saves receive the correction when loaded, without accumulating height changes or losing collected-item state. Attached pickups continue to follow their moving platforms.
+  - Placement is calculated during loading, with no additional item-floor searches during gameplay.
+- **Corrected cutscene black levels:** Letterbox bars and unused canvas margins now use true black instead of a tinted near-black colour. Verified on native Wayland without changing world lighting, exposure, or texture colour settings.
+- **Restored the original application icon:** Extracted the RedCat face from the original `RcHcGame.dat` executable and applied it to browser favicons, desktop window/package icons, Apple home-screen bookmarks, and the Android launcher artwork. Larger sizes preserve the original pixel-art appearance.
+
+## Sound Improvements
+
+- **Restored looping menu music:** The menu now plays the complete original `menumuz.wav` repeatedly, stopping it when entering a level or movie.
+- **Restored original menu announcements:**
+  - Displaying the main menu plays `RCMN9.wav` once per visit.
+  - Selecting each unlocked level plays its original pair of recordings in sequence: `RCMN33–37.wav`, followed by the corresponding `RCMN38–42.wav`.
+  - Starting or continuing a level from the main menu plays *Nou uh starten maar* (`RCMN32.wav`). Ordinary level transitions and pause-menu restarts do not add this announcement.
+  - *Start opnieuw* plays `RCMN29.wav`, and opening *Instellingen* plays `mn_red24.wav`.
+  - Original player-list, new-player, deletion, confirmation, and cancellation voices accompany the new *Spelerlijst* screens.
+- **Added original settings feedback:**
+  - Lowering or raising sound volume plays *Zachter* / *Harder* (`RCMN15.wav` / `RCMN16.wav`).
+  - Lowering or raising camera sensitivity, field of view, or render scale plays *Lager* / *Hoger* (`RCMN23.wav` / `RCMN22.wav`).
+  - Slider words finish before the next queued response, avoiding overlapping or repeatedly interrupted speech.
+  - Opening the difficulty selector plays `RCMN30.wav`; choosing *Makkelijk*, *Normaal*, or *Moeilijk* plays `mn_red02.wav`, `mn_red03.wav`, or `mn_red04.wav`.
+  - The settings **OK** button plays `RCMN1.wav`. Closing Settings, Controls, About, or the recovery-save chooser with X plays `RCMN2.wav`.
+- **Fixed missing water-contact sounds:**
+  - Nonblocking water volumes were incorrectly excluded from sound detection, causing ordinary footsteps in the Forest's shallow moats.
+  - Running through those pools now alternates the original `RcLWater.wav` and `RcRWater.wav`, allowing both recordings to finish completely.
+  - Restored the original water/ooze jump and landing sound assignments, including landing volume based on impact speed.
+  - Audited water-contact data across all five levels. Dry banks, bridge decks, and water artwork without the original water-contact flags do not incorrectly produce splash footsteps.
+  - Standing still, no-clip movement, and airborne movement do not repeatedly trigger splashes. Existing water damage and ambient/music scheduling remain unchanged.
+
+## Menu & User Experience
+
+- **Restored original menu button artwork and placement:**
+  - *Instellingen* now uses its original button at the bottom left, while retaining the port's settings screen.
+  - *Besturing* and *Over* use matching original generic button artwork and are anchored to the bottom-right corner of the screen.
+  - *Stoppen* appears at the top right with the original purple-cross button artwork.
+- **Added the original Stoppen confirmation:**
+  - Restored the original background, Dutch prompt, RedCat logo in the top-left corner, and *Ja* / *Nee* buttons along the bottom.
+  - Opening it plays `Mn_red23.wav`.
+  - *Ja* plays `RCMN3.wav`, then `Mn_red28.wav`, before saving pending progress and requesting closure.
+  - *Nee* plays `RCMN4.wav` and returns to the menu.
+  - Browsers that prevent a manually opened tab from closing show a message explaining that it can be closed manually.
+- **Corrected menu labels:** Replaced *Het spookbos* with *Het Bos*, capitalized level names, changed *Kies een level* to *Kies een griezelplek*, and shortened *Instellingen toepassen* to **OK**.
+- **Updated the About screen** to show version **0.9.8** and include a link to the project's GitHub source code.
+- **Restored the original level-loading screens:**
+  - Uses the original backgrounds, RedCat logo, illustrations for all five levels, and red progress bar.
+  - Restored *Even Wachten*, *Avontuur*, and *Bezig met het laden van*, followed by the correct level name.
+  - Replaces the previous loading panel and spinner, including when waiting for streamed geometry.
+  - Adapts to widescreen, portrait, and smaller mobile windows while keeping the level illustration square and text readable.
+  - Progress follows actual loading stages; loading errors dismiss the screen and show the existing error message.
+
+## Documentation & Development
+
+- **Updated documentation paths** from `current_work` to `temp_work`, including retained research notes, so references follow the renamed investigation folder.
+- **Added implementation and research notes** for render quality, menu audio, player profiles, original icons, black levels, collectible placement, loading screens, Graveyard wall/sky fixes, and water-contact audio.
+- **Updated save, campaign-menu, streaming, and build documentation** to describe the new behaviour and provide reproducible import and verification commands.
+- **Added original-icon and loading-art import tools**, including original resource/source information. The complete asset-import workflow now also imports the loading screens.
+- **Updated the local web server** to serve ICO favicons with the appropriate content type.
+- **Fixed packaging after a forced dependency audit:** Restored the exact electron-builder **26.15.3** dependency and lockfile after `npm audit fix --force` downgraded it to **26.5.0**. The older version rejected `win.signExecutable` and prevented all desktop targets from passing configuration validation. Windows executable icon and metadata editing remain enabled.
+
+### Technical Notes
+
+- Player profiles and recovery saves remain local to the desktop installation or browser profile. This does not add online accounts, cross-device synchronization, or importing saves from the original Windows game.
+- The Graveyard wall-strip correction is a targeted content repair. The visibility and item-placement changes use original level data and native-code research, but do not claim that the entire renderer or collision engine is pixel-for-pixel identical to Genesis3D.
+- MangoHud's native-Wayland compatibility was investigated. The experimental workaround was rolled back after flickering and cursor problems; it is not included in this release. The documented XWayland launch and the game's own FPS counter remain the available alternatives.
+- Focused checks covered the changed menu/save flows, rendering controls, item placement, visibility, loading screens, and water audio. Packaging configuration was validated for Linux, Windows, Intel macOS, and Apple Silicon; this is not a claim of full release-build or runtime validation on every platform.

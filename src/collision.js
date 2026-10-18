@@ -228,7 +228,7 @@ export class PlayerController {
     this.grounded=false; this.modelIndices=modelIndices; this.mins=[-11,0,-11]; this.maxs=[11,56,11];
     this.lastSafe=[...position];this.noClip=false;this.environmentVelocity=[0,0,0];this.platformVelocity=[0,0,0];
     this.skill=0;this.previousJump=false;this.jumpAge=Infinity;this.superJumpUsed=false;this.jumpSerial=0;this.jumpKind=null;this.didLand=null;
-    this.movementRecovery=new MovementRecovery();
+    this.movementRecovery=new MovementRecovery();this.recoveryDoors=new Map();
   }
   resetVelocity(){this.velocityY=0;this.launchVelocityXZ=[0,0];this.platformVelocity=[0,0,0];this.jumpAge=Infinity;this.superJumpUsed=false;this.jumpKind=null;}
   snapshotMotion() {
@@ -330,6 +330,10 @@ export class PlayerController {
   recoverMovement(dt,before,intended,embedded) {
     const result=this.movementRecovery.update({dt,before,position:this.position,intended,embedded,
       mins:this.mins,maxs:this.maxs,grounded:this.grounded,
+      jumpHeight:PLAYER_JUMP.height*(this.skill&8?1+PLAYER_JUMP.superSpeedFactor**2:1)+18,
+      isBarrier:hit=>this.recoveryDoors.get(hit.modelIndex)?.open===false,
+      barrierTrace:(a,b,mins,maxs)=>this.collider.trace(a,b,mins,maxs,
+        [...this.recoveryDoors].filter(([,door])=>!door.open).map(([index])=>index),false),
       trace:(a,b,mins,maxs)=>this.collider.trace(a,b,mins,maxs,this.modelIndices),
       safe:p=>!this.collider.contents||!(this.collider.contents(p,this.mins,this.maxs,this.modelIndices)&0x60000)});
     if(result){

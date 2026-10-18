@@ -71,15 +71,16 @@ test('no closer neighbor waits one second without searching distant points',()=>
   assert.equal(game.navigation.searchTraces,0);
 });
 
-test('detection starts waypoint pursuit immediately and contact never replaces its selected edge',()=>{
-  for(const type of [2,10]){
+test('touch spider, bat, ghost, zombie and guardian follow their edge and damage on body contact',()=>{
+  for(const type of [1,2,3,4,10]){
     const {game,object}=fixture([wp('a',[100,0,0],['b']),wp('b',[-100,0,0])],type);object.batContact=mode('circle',-1);
     object.collisionMins=[-8,0,-8];object.collisionMaxs=[8,30,8];
     game.update(.05,[0,0,0]);assert.ok(object.position[0]<100,'first attack update is not a post-contact wait');
     const patrol=object.patrol.target;
-    for(let i=0;i<30&&game.state.health===10;i++)game.update(.05,[0,0,0]);
-    assert.ok(game.state.health<10);assert.equal(object.patrol.target,patrol);assert.equal(object.batContact.wait,0);
+    for(let i=0;i<80&&game.state.health===10;i++)game.update(.05,[0,0,0]);
+    assert.ok(game.state.health<10,`type ${type} reaches body contact`);assert.equal(object.patrol.target,patrol);assert.equal(object.batContact.wait,0);
     assert.equal(game.projectiles.length,0);
+    assert.equal(object.pendingAttack,null);assert.notEqual(object.animationState,'attack');
   }
 });
 

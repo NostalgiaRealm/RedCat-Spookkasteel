@@ -61,7 +61,10 @@ test('the three roof-origin spiders wait for approach, descend at native FallSpe
     game.updateEnemy(spider,.1,state.lower,()=>false,trace);assert.equal(state.phase,'dormant','a wall still occludes approach');
     const y=spider.position[1];game.updateEnemy(spider,.1,state.lower,()=>true,trace);
     assert.equal(state.phase,'descending');assert.ok(Math.abs(spider.position[1]-(y-spider.stats.FallSpeed*.1))<1e-6);
-    for(let i=0;i<30&&state.phase!=='awake';i++)game.updateEnemy(spider,.1,state.lower,()=>true,trace);
+    // Step out from directly beneath the web: contact spiders now respect
+    // RedCat's hull and cannot descend through his head to reach the floor.
+    const nearby=[state.lower[0]+40,state.lower[1],state.lower[2]];
+    for(let i=0;i<30&&state.phase!=='awake';i++)game.updateEnemy(spider,.1,nearby,()=>true,trace);
     assert.equal(state.phase,'awake');assert.deepEqual(spider.position,state.lower);
   }
 });

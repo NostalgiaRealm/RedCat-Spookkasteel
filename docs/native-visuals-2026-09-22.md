@@ -101,15 +101,18 @@ The new native investigation corrected several details of the earlier effect:
   the white center with colored rays.
 - `0x47caab` / `0x47db60` initialize five orbiters with **radius 30**,
   **5 radians/s**, `.7*i` phase and two `.7*i` X tilts. `0x47ea90` performs
-  their orbital transform. Trails have an **800 ms** history, native width1.6,
-  and yellow-green color `[255,255,25]`. Star tips follow the fairy's tint.
+  their orbital transform. Trails use an **800 ms** attenuation duration and
+  yellow-green color `[255,255,25]`. Later [ribbon recovery](fairy-ribbon-fade-native.md)
+  corrects the width to **1.92**: 1.6 is the history sampling distance.
+  Star tips follow the fairy's tint.
 - `0x479788` scales the dynamic light's radius **110 by the pulse**, with the
   same yellow-green light color.
 - `0x479645` detects central-particle death and calls `0x47c580(-1)`: fill the
   available **50-particle pool** with an outward burst, using randomized
   velocities multiplied by110. Their configured life is **4 seconds**.
-  The fairy body disappears first; the separate burst and old trail history
-  finish afterward. Disabling an active fairy follows this lifecycle too.
+  The fairy body and orbital ribbons stop together; the separate burst finishes
+  afterward. The port retains its deliberate clean departure when a script
+  disables an active fairy. See [ribbon lifecycle evidence](fairy-ribbon-fade-native.md).
 - `0x47e850` seeks the current authored waypoint with acceleration
   `min(.006 * distance², 200)`, multiplied by32. Arrival within20 units advances
   only one waypoint, with the current tick still using the old direction.
@@ -158,10 +161,12 @@ fallback; rendering does not recompute the trajectory.
 
 The native operations run at a fixed60Hz in the portable renderer instead of
 the original variable frame interval. This preserves the recovered algorithms
-across HD frame rates, but it does not reproduce every old render frame or its
-millisecond timer quantization. Trail positions are actual cached simulation
-samples; their opacity currently fades linearly over the recovered800ms lifetime.
-The original beam-history attenuation curve has not been established.
+across HD frame rates, but it does not reproduce the original frame timings.
+Trail positions are cached simulation samples with native integer
+millisecond endpoint timestamps. The [recovered ribbon renderer](fairy-ribbon-fade-native.md)
+now uses PTrail artwork, alpha100/255, linear800ms attenuation, the alpha5 cutoff
+and the original first/subsequent-quad timestamp selection. It no longer uses
+fully opaque energy-beam segments or an independent post-departure ribbon tail.
 
 The MSVC random formula is recovered, but each fairy has a deterministic seed
 instead of sharing the original game's global random stream with unrelated

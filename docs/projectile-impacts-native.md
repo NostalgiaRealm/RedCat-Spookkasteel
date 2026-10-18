@@ -103,12 +103,16 @@ the camera is exactly vertically aligned and the native cross product vanishes.
 ## Contact scope
 
 The shared factory copies projectile damage/radius into inherited effect fields,
-but this `RcExplosion::Init` override does not consume those fields for damage.
-The remake therefore does not invent a second radial damage event.
+but the player-shot `RcExplosion::Init` override at `0x463550` does not consume
+those fields for damage. The remake therefore does not add a second radial
+damage event to those projectile impacts. Destructible actors use the distinct
+base initializer at `0x58d710`, which does create a continuous 400 ms hurt cell;
+see [destructible explosion damage](explosion-damage-native.md).
 
 Portable BSP and actor traces remain the remake's collision backend, so geometry
 roundoff at a contact boundary can differ from the original Genesis query.
-The recovered subclass behavior adds no secondary damage from visual effects.
+The recovered projectile subclass behavior adds no secondary damage from its
+impact visuals.
 
 ## Focused validation
 

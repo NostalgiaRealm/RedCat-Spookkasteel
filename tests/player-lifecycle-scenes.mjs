@@ -26,7 +26,14 @@ try {
     game.damage(1);advance(.2);const hurt=capture();
     const hurtFell=world.player.position[1]<origin[1]+50;
     advance(PLAYER_REACTIONS.hit.duration);game.hitCooldown=0;game.damage(100);
-    advance(.6);const dying=capture();app.saveGame(true);
+    advance(.6);const dying=capture();
+    // Older versions wrote death-animation saves. Seed that legacy format
+    // explicitly: ordinary saving now preserves the last living adventure.
+    const legacySave={...JSON.parse(localStorage.getItem('redcat.save.v1')),
+      position:[...world.player.position],lastSafe:[...world.player.lastSafe],
+      playerMotion:world.player.snapshotMotion(),playerAnimation:world.snapshotPlayerAnimation(),
+      yaw:world.yaw,pitch:world.pitch,game:game.snapshot(),audio:app.audio.saveState()};
+    localStorage.setItem('redcat.save.v1',JSON.stringify(legacySave));
     await app.loadSave();app.pause();const restored=app.gameplay;
     const restore={phase:restored.playerReaction?.phase,age:restored.playerReaction?.age,health:restored.state.health,lives:restored.state.lives};
     // The restored live host is used for all checkpoint events and rendering.

@@ -115,3 +115,7 @@ Validation was limited to the affected collision, animation, targeting and
 launcher behavior. Differential tests compare the optimized triangle surfaces
 against the former implementation using 1,008 synthetic cases and 800 player/
 projectile sweeps through original animated props. No packages were generated.
+
+## Later CPU optimization pass
+
+The [18 October 2026 CPU performance report](low-end-cpu-performance.md) records a separate measured reduction in repeated animation, lighting, gameplay, effect and HUD work for slower devices. It preserves the native-refresh scheduling described here and reports CPU update times separately from displayed FPS.

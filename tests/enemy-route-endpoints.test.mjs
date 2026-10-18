@@ -42,3 +42,19 @@ test('inactive and finished searches stop reserving the next update allowance',(
  assert.deepEqual(counts,[16,16,16]);
  assert.equal(nav.searchRequests.size,3);
 });
+
+test('explicit spider return destination cannot be replaced by a nearer arbitrary waypoint',()=>{
+ const wp=(id,x,z,links=[])=>({classname:'GrobberPathPoint','%name%':id,Origin:`${x} 0 ${z}`,...Object.fromEntries(links.map((v,i)=>[`WayPoint${i+1}`,v]))});
+ const nav=new EnemyNavigation({entities:[wp('a',0,0,['decoy','bend']),wp('decoy',100,0),wp('bend',0,100,['home']),wp('home',100,100)]},{MaxConnectionDistance:0});nav.build();
+ const o=enemy(nav,'spider');
+ const route=destination=>{const search=nav.pursuitChecks(o,[0,0,0],[100,0,0],destination);let result=search.next();while(!result.done)result=search.next(true);return result.value;};
+ assert.deepEqual(route(null),['decoy']);assert.deepEqual(route('home'),['bend','home']);
+});
+
+test('switching to an explicit return endpoint retires a cached chase route without resetting search credits',()=>{
+ const nav=blockedMap(),o=enemy(nav,'spider');o.pursuit={goal:[100,0,0],route:['far0'],until:2};
+ consume(nav,o,1);
+ nav.pursuitTarget(o,[100,0,0],()=>true,()=>({fraction:0,startSolid:false}),1,{destinationId:'a'});
+ assert.equal(o.pursuit,null);assert.equal(nav.pursuitJobs.get(o).destination,'a');assert.equal(nav.searchTraces,16);
+ assert.doesNotThrow(()=>structuredClone(o));
+});

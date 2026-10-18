@@ -60,6 +60,17 @@ export class DestructibleEffects {
         this.blasts.push(...createNativeBlasts(effect));
         for(const particle of debrisParticles(effect,name=>this.prototypes.get(name)?.userData.template?.data.settings)) {
           const prototype=this.prototypes.get(particle.actor);if(!prototype)continue;
+          // Old explosion records retain their birth for the longer smoke
+          // tail. Reconstruct an aged prop fragment before its first render;
+          // otherwise loading that tail would throw the crate apart again.
+          // This legacy replay is bounded by the six-second record lifetime.
+          // Knights separately save live contact/position state directly.
+          const age=Math.min(6,Math.max(0,game.time-effect.birth));
+          let alive=true;
+          while(alive&&particle.age<age-1e-8)alive=stepNativeDebris(particle,Math.min(.05,age-particle.age),
+            (start,end,min,max)=>world.collider.trace(start,end,min,max,world.physicalModels,false));
+          if(!alive)continue;
+          if(age>0)particle.restoredAt=game.time;
           const original=prototype.userData.mesh,materials=(Array.isArray(original.material)?original.material:[original.material]).map(m=>{const copy=m.clone();copy.transparent=true;return copy;});
           const root=new THREE.Group(),mesh=new THREE.Mesh(original.geometry,materials);mesh.position.copy(original.position);mesh.rotation.copy(original.rotation);mesh.scale.copy(original.scale);root.add(mesh);
           mesh.userData.actorLighting=createActorLighting(prototype.userData.template?.data.settings||{});
@@ -86,7 +97,8 @@ export class DestructibleEffects {
     }
     const active=[];
     for(const particle of this.particles) {
-      if(!stepNativeDebris(particle,dt,(start,end,min,max)=>world.collider.trace(start,end,min,max,world.physicalModels,false))) {
+      const step=particle.restoredAt===game.time?0:dt;delete particle.restoredAt;
+      if(!stepNativeDebris(particle,step,(start,end,min,max)=>world.collider.trace(start,end,min,max,world.physicalModels,false))) {
         particle.mesh.removeFromParent();particle.materials.forEach(m=>m.dispose());continue;
       }
       particle.mesh.position.fromArray(particle.position);particle.mesh.quaternion.fromArray(particle.orientation);

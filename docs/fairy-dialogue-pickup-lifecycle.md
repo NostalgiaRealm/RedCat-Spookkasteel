@@ -92,6 +92,49 @@ projectile factory type 11; its constructor at `0x4308c0` identifies
 release/cancel stops it, matching the native stop entry `0x436a30`. The loop
 also obeys pause/resume.
 
+### Pickup playback tail correction (2026-10-13)
+
+The reported abrupt ending of the 50-point bag was traced to the HTML audio
+playback path. `ICoinL.wav` itself is intact: the imported, installed and CD
+files match byte for byte (SHA-256
+`f781514e3c628736dfc81ede68e3f60637ce4be69aed1c48339d68c952cc0106`).
+It contains 4,089 mono PCM samples at 11,025 Hz, or 0.370884 seconds. The
+original recording already ends quite sharply, with substantial energy in
+its final 10 milliseconds; this fix does not invent a longer recording.
+
+A browser AudioWorklet capture exposed a further, small cutoff in the port:
+the media `ended` event arrived while about 100 output samples at 44.1 kHz
+(2.268 milliseconds) remained. `GameAudio.release()` immediately paused the
+media element, suppressing those queued samples. The media playhead still
+reported the full duration, which is why earlier duration-only checks missed
+the problem. Three repeat captures reproduced it. The final 100 samples had
+RMS 0.002969 in the port versus 0.093018 in the reference recording.
+
+Pickup-group sounds now use the existing decoded Web Audio voice. Natural
+completion follows the audio renderer's buffer completion, so cleanup occurs
+after the full waveform has rendered. Original files, sound selection, gain,
+pitch and independent overlapping voices are preserved. The small decoded
+sound cache remains bounded to eight entries and clears when changing levels.
+Pause/resume preserves the sample position; failed decoding or explicit reset
+releases the pending-pickup guard. Browsers without Web Audio retain the media
+fallback. Music, dialogue and ambience scheduling are unchanged.
+
+Focused verification:
+
+```sh
+node --test tests/pickup-audio-tail.test.mjs
+node --test --test-name-pattern='pickup router|level-transition pickup guard' tests/fairy-audio-lifecycle.test.mjs
+node tests/pickup-audio-tail-scenes.mjs
+node tests/pickup-audio-tail-scenes.mjs --electron
+```
+
+The browser/Electron check captures the real pickup router's rendered S/M/L
+output and compares every sample with the original decoded PCM, including the
+last 100 samples. Diagnostics, source-file audits and before/after waveform
+captures are retained in
+[`temp_work/icoinl-tail-2026-10-13/`](../temp_work/icoinl-tail-2026-10-13/).
+No release build or unrelated test suite is involved.
+
 ## Focused verification
 
 Nine new tests in `tests/fairy-audio-lifecycle.test.mjs` cover complete FIFO

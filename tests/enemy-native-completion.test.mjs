@@ -54,7 +54,8 @@ test('guardian approaches instead of causing distant melee damage, then attacks 
 });
 
 test('knight can hit during the end of its active strike window, only once',()=>{
- const g=new Gameplay(level([enemy(2,{classname:'StandingEnemy'})])),o=g.objects[0];o.animationDurations={attack:1};
+ const g=new Gameplay(level([enemy(2,{classname:'StandingEnemy'})])),o=g.objects[0];
+ o.ambush.phase='awake';o.animationState='idle';o.animationDurations={attack:1.8}; // Native knight rate 1.8: one-second strike.
  g.update(.01,[0,0,60]);assert.equal(o.pendingAttack.until,.71);
  tick(g,.65,[0,0,120]);assert.equal(g.state.health,10);assert.ok(o.pendingAttack);
  g.update(.02,[0,0,60]);assert.equal(g.state.health,7);assert.equal(o.pendingAttack,null);
@@ -82,14 +83,15 @@ test('failed pursuit search is cached instead of flooding blocked BSP routes eve
 });
 
 test('knight strike-window end survives save and shifts with a script freeze',()=>{
- const g=new Gameplay(level([enemy(2,{classname:'StandingEnemy'})])),o=g.objects[0];o.animationDurations={attack:1};
+ const g=new Gameplay(level([enemy(2,{classname:'StandingEnemy'})])),o=g.objects[0];
+ o.ambush.phase='awake';o.animationState='idle';o.animationDurations={attack:1.8};
  g.update(.01,[0,0,60]);const initial={...o.pendingAttack};
  g.scripts={cutscene:true};g.update(.1,[0,0,60]);
  assert.ok(Math.abs(o.pendingAttack.until-initial.until-.1)<1e-8);
  g.scripts=null;const restored=new Gameplay(g.level,{save:g.snapshot()});assert.deepEqual(restored.objects[0].pendingAttack,o.pendingAttack);
 });
 
-test('authored patrol steps never launch pursuit searches; actual chasing still can route',()=>{
+test('authored patrol and touch pursuit avoid searches; displaced actors retain bounded reacquisition',()=>{
  const g=new Gameplay(level([wp('a',0,0,['b']),wp('b',100,0),enemy(4,{StartPoint:'a'})])),o=g.objects.find(o=>o.kind==='enemy');
  let searches=0;const original=g.navigation.pursuitTarget.bind(g.navigation);
  g.navigation.pursuitTarget=(...args)=>{searches++;return original(...args);};
@@ -97,5 +99,8 @@ test('authored patrol steps never launch pursuit searches; actual chasing still 
  assert.equal(searches,0,'a known graph edge is already a route');assert.ok(o.position[0]>0);
  o.alerted=true;o.lastSeenAt=g.time;o.lastSeenPosition=[350,0,0];
  g.update(.02,[5000,0,0],{traceEnemy:clearTrace,lineOfSight:()=>false});
- assert.equal(searches,1,'remembered player position still uses pursuit navigation');
+ assert.equal(searches,0,'native touch pursuit keeps the unfinished authored edge');
+ o.position[2]+=60;o.patrol.reacquiring=true;
+ g.update(.02,[5000,0,0],{traceEnemy:clearTrace,lineOfSight:()=>false});
+ assert.equal(searches,1,'a displaced body can still reacquire its saved destination');
 });

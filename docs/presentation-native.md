@@ -45,7 +45,11 @@ the separate `fall1` transition during a normal jump. The imported jump1 is
 standing pose. Its pelvis rises and returns within that same motion.
 
 The reconstruction previously switched to `fall1` the instant vertical speed
-became negative. It now continues the full non-looping `jump1` across the apex.
+became negative. It now continues the full `jump1` across the apex. The 12 October audit
+confirmed that native repeats it during prolonged flight, rather than holding
+its final frame; the port now does the same. See
+[RedCat animation recovery](redcat-animations-native.md) for all clip rates,
+transition blending and saved motion phases.
 For a ledge drop, `0x4363a0` tests whether the downward floor distance increased
 by **more than 80**; `0x4d6720` performs the probe and `0x4d67f0` returns that
 distance. Ordinary small steps retain their ordinary locomotion pose. A large
@@ -89,7 +93,8 @@ only legacy age-only saves reconstruct an earlier activation.
 Deliberate portability differences remain: a fixed 60 Hz simulation and a
 per-fairy random stream instead of the original variable frame times and shared
 global random sequence. The recovered 800 ms trails use a linear opacity fade;
-the exact native trail-history attenuation curve has not been established.
+the later [ribbon recovery](fairy-ribbon-fade-native.md) establishes the native
+100/255 starting alpha, cutoff, endpoint timestamps, PTrail artwork and width1.92.
 Audio playheads are not part of visual effect snapshots. These limits do not
 mean the particle integrator, pool or color cycle is still unimplemented, and
 controlled numerical/rendering checks do not claim pixel-identical original

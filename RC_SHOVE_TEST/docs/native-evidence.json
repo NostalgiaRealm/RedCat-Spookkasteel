@@ -1,0 +1,241 @@
+{
+  "originalExecutable": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat",
+  "executableSha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5",
+  "originalRedCatActorSha256": "931d3a279c8b49094a0710cb82224e5df0caa287fce69322dce79872924e5e48",
+  "importedRedCatActorSha256": "931d3a279c8b49094a0710cb82224e5df0caa287fce69322dce79872924e5e48",
+  "animations": [
+    {
+      "name": "walkbwl",
+      "duration": 2.666680097579956
+    },
+    {
+      "name": "walkbwr",
+      "duration": 2.600013017654419
+    },
+    {
+      "name": "fall2",
+      "duration": 1.266672968864441
+    },
+    {
+      "name": "fall1",
+      "duration": 1.8666759729385376
+    },
+    {
+      "name": "strafer",
+      "duration": 0.9333379864692688
+    },
+    {
+      "name": "strafel",
+      "duration": 0.9333379864692688
+    },
+    {
+      "name": "jump2",
+      "duration": 0.9333379864692688
+    },
+    {
+      "name": "jump1",
+      "duration": 0.9333379864692688
+    },
+    {
+      "name": "re-spawn",
+      "duration": 3.2666831016540527
+    },
+    {
+      "name": "shoot1",
+      "duration": 1.9333430528640747
+    },
+    {
+      "name": "charge",
+      "duration": 0.9333379864692688
+    },
+    {
+      "name": "death",
+      "duration": 2.2666780948638916
+    },
+    {
+      "name": "hit",
+      "duration": 1.0666719675064087
+    },
+    {
+      "name": "walkbw",
+      "duration": 2.600013017654419
+    },
+    {
+      "name": "walkfw",
+      "duration": 0.9333379864692688
+    },
+    {
+      "name": "idle",
+      "duration": 0.9333379864692688
+    }
+  ],
+  "nativeMotionTable": [
+    {
+      "entryVA": "0x690130",
+      "stringVA": "0x68f7e0",
+      "name": "idle"
+    },
+    {
+      "entryVA": "0x690134",
+      "stringVA": "0x68f7d8",
+      "name": "walkfw"
+    },
+    {
+      "entryVA": "0x690138",
+      "stringVA": "0x68f7d0",
+      "name": "walkbw"
+    },
+    {
+      "entryVA": "0x69013c",
+      "stringVA": "0x68f7d0",
+      "name": "walkbw"
+    },
+    {
+      "entryVA": "0x690140",
+      "stringVA": "0x6901cc",
+      "name": "jump1"
+    },
+    {
+      "entryVA": "0x690144",
+      "stringVA": "0x6901c0",
+      "name": "re-spawn"
+    },
+    {
+      "entryVA": "0x690148",
+      "stringVA": "0x6901b8",
+      "name": "jump2"
+    },
+    {
+      "entryVA": "0x69014c",
+      "stringVA": "0x6901b0",
+      "name": "fall1"
+    },
+    {
+      "entryVA": "0x690150",
+      "stringVA": "0x6901a8",
+      "name": "strafel"
+    },
+    {
+      "entryVA": "0x690154",
+      "stringVA": "0x6901a0",
+      "name": "strafer"
+    },
+    {
+      "entryVA": "0x690158",
+      "stringVA": "0x68f380",
+      "name": "shoot1"
+    },
+    {
+      "entryVA": "0x69015c",
+      "stringVA": "0x68f7cc",
+      "name": "hit"
+    },
+    {
+      "entryVA": "0x690160",
+      "stringVA": "0x68f380",
+      "name": "shoot1"
+    },
+    {
+      "entryVA": "0x690164",
+      "stringVA": "0x68f7c4",
+      "name": "death"
+    },
+    {
+      "entryVA": "0x690168",
+      "stringVA": "0x6901b0",
+      "name": "fall1"
+    }
+  ],
+  "helperDirectCallers": [
+    {
+      "line": 73327,
+      "instruction": "4324a4:\te8 87 7a 00 00       \tcall   0x439f30",
+      "priorInstructions": [
+        "432499:\t51                   \tpush   ecx",
+        "43249a:\te8 53 82 1d 00       \tcall   0x60a6f2",
+        "43249f:\t83 c4 14             \tadd    esp,0x14",
+        "4324a2:\t8b c8                \tmov    ecx,eax"
+      ]
+    },
+    {
+      "line": 76443,
+      "instruction": "434e54:\te8 b7 50 00 00       \tcall   0x439f10",
+      "priorInstructions": [
+        "434e4b:\t83 c4 14             \tadd    esp,0x14",
+        "434e4e:\t8b f0                \tmov    esi,eax",
+        "434e50:\t8b ce                \tmov    ecx,esi",
+        "434e52:\t6a 04                \tpush   0x4"
+      ]
+    },
+    {
+      "line": 76451,
+      "instruction": "434e68:\te8 a3 50 00 00       \tcall   0x439f10",
+      "priorInstructions": [
+        "434e62:\t5e                   \tpop    esi",
+        "434e63:\tc3                   \tret",
+        "434e64:\t6a 02                \tpush   0x2",
+        "434e66:\t8b ce                \tmov    ecx,esi"
+      ]
+    },
+    {
+      "line": 76881,
+      "instruction": "4353dc:\te8 4f 4b 00 00       \tcall   0x439f30",
+      "priorInstructions": [
+        "4353d3:\tff 50 0c             \tcall   DWORD PTR [eax+0xc]",
+        "4353d6:\t84 c0                \ttest   al,al",
+        "4353d8:\t74 2f                \tje     0x435409",
+        "4353da:\t8b cf                \tmov    ecx,edi"
+      ]
+    },
+    {
+      "line": 77368,
+      "instruction": "435ae4:\te8 27 44 00 00       \tcall   0x439f10",
+      "priorInstructions": [
+        "435ad3:\t89 84 24 88 00 00 00 \tmov    DWORD PTR [esp+0x88],eax",
+        "435ada:\te8 13 4c 1d 00       \tcall   0x60a6f2",
+        "435adf:\t83 c4 14             \tadd    esp,0x14",
+        "435ae2:\t8b c8                \tmov    ecx,eax"
+      ]
+    },
+    {
+      "line": 271998,
+      "instruction": "4c6e00:\te8 0b 31 f7 ff       \tcall   0x439f10",
+      "priorInstructions": [
+        "4c6df7:\t83 c4 14             \tadd    esp,0x14",
+        "4c6dfa:\t8b e8                \tmov    ebp,eax",
+        "4c6dfc:\t8b cd                \tmov    ecx,ebp",
+        "4c6dfe:\t6a 04                \tpush   0x4"
+      ]
+    },
+    {
+      "line": 272029,
+      "instruction": "4c6e5d:\te8 ae 30 f7 ff       \tcall   0x439f10",
+      "priorInstructions": [
+        "4c6e4f:\te8 9c 30 f7 ff       \tcall   0x439ef0",
+        "4c6e54:\te9 b3 01 00 00       \tjmp    0x4c700c",
+        "4c6e59:\t6a 08                \tpush   0x8",
+        "4c6e5b:\t8b cd                \tmov    ecx,ebp"
+      ]
+    },
+    {
+      "line": 272064,
+      "instruction": "4c6ebd:\te8 4e 30 f7 ff       \tcall   0x439f10",
+      "priorInstructions": [
+        "4c6eaf:\te8 2c 30 f7 ff       \tcall   0x439ee0",
+        "4c6eb4:\te9 53 01 00 00       \tjmp    0x4c700c",
+        "4c6eb9:\t6a 02                \tpush   0x2",
+        "4c6ebb:\t8b cd                \tmov    ecx,ebp"
+      ]
+    },
+    {
+      "line": 272099,
+      "instruction": "4c6f1d:\te8 ee 2f f7 ff       \tcall   0x439f10",
+      "priorInstructions": [
+        "4c6f0f:\te8 cc 2f f7 ff       \tcall   0x439ee0",
+        "4c6f14:\te9 f3 00 00 00       \tjmp    0x4c700c",
+        "4c6f19:\t6a 01                \tpush   0x1",
+        "4c6f1b:\t8b cd                \tmov    ecx,ebp"
+      ]
+    }
+  ]
+}

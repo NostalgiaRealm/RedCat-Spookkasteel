@@ -29,8 +29,10 @@ finished. On the final life the death clip holds its last frame before game over
 pauses the game. This uses the existing game-over menu; it does not restore
 additional original game-over artwork.
 
-Save data carries the phase and elapsed time. Loading a mid-death save with
-remaining lives resumes that sequence instead of resetting the level. Pausing
+Save data carries the phase and elapsed time. Loading an older mid-death save
+with remaining lives resumes that sequence instead of resetting the level.
+New saves now [preserve the previous living state while RedCat is dead](autosave.md);
+normal saving resumes after checkpoint respawn restores health. Pausing
 stops its clock. Cutscenes retain their idle-pose and invulnerability rules.
 The clip rates/completion gates are recovered native behavior; the portable
 lifecycle integration does not claim every original animation blend or physics
@@ -84,7 +86,13 @@ was therefore too strong.
 - `node --test --test-name-pattern='death cancels an unreleased pellet' tests/player-projectiles.test.mjs`
   — the one affected existing death/respawn attack test.
 - `node tests/player-lifecycle-scenes.mjs` — the actual forest actor/controller,
-  hurt while falling, death save through the real load menu path, checkpoint
+  hurt while falling, explicitly seeded legacy death save through the real load path, checkpoint
   placement, protected respawn, paused clock and final death pose.
+- `node tests/death-save-scenes.mjs` — save refusal during death, preserved
+  latest/recovery data, profile-switch branches, legacy death-load compatibility
+  and successful saving after normal respawn. The focused 2026-10-18 run passed;
+  the larger lifecycle scene above was only adjusted to seed its legacy save
+  explicitly and was not rerun for this save guard. See the
+  [verification notes](../temp_work/death-save-2026-10-18/verified-fix.md).
 
 No builds or packages were generated.

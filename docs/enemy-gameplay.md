@@ -55,6 +55,33 @@ re-triggering sounds on load. Existing saves remain compatible.
 Restored attack, hurt and death clips seek to their saved phase rather than
 restarting while the simulation continues halfway through the action.
 
+The [14 October pursuit and hit follow-up](enemy-pursuit-interruptions-native.md)
+connects ordinary moving shooters to adjacent-node approach and skeletons to
+farthest-neighbor retreat. Skeletons face the current target while playing one
+authored `walkbw` clip; crossing AttackRange pauses only translation, and the
+clip completes the retreat child. Shared touching pursuit now includes green ghosts,
+touching spiders and zombies as well as green bats and guardians. Committed
+moving-shooter salvos finish after loss of sight or range, unless interrupted
+by a selected hit reaction. Their parent phases and wait deadlines survive
+saves and script freezes. Contact damage uses its own saved one-second
+cooldown, can apply during hurt, and is not reset by a hit reaction.
+
+Ordinary hits apply damage but choose the hit animation only on the recovered
+50% branch. The other branch plays hurt audio and leaves the action running.
+A selected reaction cancels the pending shot, remaining salvo and wait;
+another selected hit during that motion does not restart it. Dormant knights
+and gargoyles ignore health damage while still reacting, then remain vulnerable
+through wake and hurt. Bone Brutus accepts damage on its distinct one-in-three
+branch; Mushroom Brutus uses the common receiver. Fractional enemy HP is
+deliberately retained so small continuous damage ticks accumulate.
+
+Spider hurt cancels the old ascent/descent/return child. Its fresh alert uses
+current height: nearer the ceiling returns to StartPoint and descends; nearer
+the floor or tied enters active combat. Dormant skeleton normalization and
+save restoration preserve active hurt/death instead of replacing it with the
+bone pile pose. The port retains collision-constrained movement and floor
+settling for displaced spiders.
+
 ## Verification and limits
 
 Unit tests cover original settings, melee/ranged variants, strike timing,
@@ -80,8 +107,11 @@ implements [minimum-hop pursuit and combat refinements](native-completion-follow
 now use the recovered shared hull and subclass dispatch; mushroom ribbons are
 visual only, as established by the executable.
 
-Remaining boundaries include direct-chase endpoint selection, some attack
-interruptions, portable collision tolerances and saved per-enemy random streams.
+Remaining boundaries include off-graph collision recovery, the reachability of
+skeleton's dormant-hit start-before-hit branch, specialized boss interruptions
+beyond the confirmed Brutus receivers, the native wait first-check handoff,
+portable collision tolerances and saved per-enemy random streams. Ordinary authored pursuit endpoints and common hit
+interruptions now have recovered policies and implementations.
 These do not invalidate the recovered rules, but prevent a claim of complete
 native parity. The tests are controlled scenes, not a complete campaign
 playthrough or frame-by-frame comparison with the original executable.

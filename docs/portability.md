@@ -23,7 +23,7 @@ Remaining work before a macOS release:
 1. Produce and test the bundles on actual Intel and Apple Silicon hardware; neither is a validated release yet.
 2. Verify WebGL rendering, pointer lock, fullscreen, Retina resolution, media codecs, controls and save restoration.
 3. Review Mac lifecycle behavior: the current shell quits when its last window closes.
-4. Add the intended app icon, Developer ID signing, notarization and a distribution target such as DMG. Signing needs a macOS host; Linux/Windows are not a complete substitute for that release pipeline.
+4. Configure Developer ID signing, notarization and a distribution target such as DMG. The original app icon is already configured as `assets/icons/redcat.icns`; verify its appearance in the resulting bundle. Signing needs a macOS host; Linux/Windows are not a complete substitute for that release pipeline.
 
 See the build guide for command options, output paths and the distinction between local ad-hoc bundles and public distribution. The current source does not configure a universal Mac release or a macOS CI workflow.
 

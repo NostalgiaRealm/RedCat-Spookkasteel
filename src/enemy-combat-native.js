@@ -16,7 +16,8 @@ export function enemySalvoSize(object) {
 // CRcGuardian inherits CRcTouchEnemy; the shared collision callback at
 // 0x42def2–0x42df2a inflicts damage on body contact, at most once per second.
 export function usesTouchPursuit(object) {
-  return object.enemyType==='guardian'||object.enemyType==='bat'&&object.variant===1;
+  return object.enemyType==='guardian'||object.enemyType==='zombie'||
+    ['spider','bat','ghost'].includes(object.enemyType)&&!object.ranged;
 }
 
 // CRcTouchBatAttack / shared CRcTouchEnemy: rand()%3 at 0x40ae9c.

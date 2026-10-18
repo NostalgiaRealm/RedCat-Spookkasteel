@@ -79,13 +79,19 @@ are kept in the corresponding `redcat.player-options.v1` key. Deletion removes
 only the selected player's keys and recovery database. If an open window blocks
 cleanup, the menu reports it instead of deleting other data.
 
-Switching is allowed only from the main menu. It saves the previous world under
+Switching is allowed only from the main menu. It saves a living previous world under
 its original owner, drains pending recovery writes, loads the next history,
 commits the selected player, and disposes the old world. A world-owner guard
 prevents quit/autosave callbacks from storing that retired world in another
 player's slot. Failed metadata writes leave the prior selection/list intact;
 stale writes from another window are rejected. Corrupt profile metadata is
 reported and preserved rather than replaced with an empty list.
+
+A defeated world is retired without saving its zero-health state, preserving
+that player's last living save and recovery history. This expected refusal to
+save does not block switching. A real storage failure while saving a living
+world still blocks the switch. Both branches were checked through the actual
+player menu in the [death-save regression](../temp_work/death-save-2026-10-18/verified-fix.md).
 
 Storage remains local to the desktop installation or browser origin/profile.
 It is not account authentication or synchronization between devices.
