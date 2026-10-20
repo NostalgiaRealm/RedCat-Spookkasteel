@@ -78,6 +78,16 @@ v = (dot(position, texinfo.vectorV) / texinfo.drawScaleV + texinfo.shiftV) / tex
 
 PNG rows and V both run downward. In Three.js set `texture.flipY = false`, use repeat wrapping and the appropriate sRGB color space for the color map. Textures marked `colorKey` are RGBA; other textures are RGB. Only surfaces whose flags contain `16` use transparency; apply alpha test on those surfaces to honor the color key. Whole-face opacity is provided separately as group `alpha`.
 
+`texture-transparency.json` is a small Boolean array in the same order as
+`level.json.textures`. Unlike `colorKey`, which indicates that the bitmap can
+use transparency, each entry records whether its exported image actually has
+transparent pixels. The importer writes `has_alpha and 255 in indexed` for
+each original texture. Castle wooden doors such as `drcstl0` support color
+keying but contain no keyed pixels; Graveyard grilles contain real cutouts.
+Room-loading readiness uses this distinction without decoding pixels during
+play. Missing metadata retains conservative readiness. It does not change
+texture rendering, face alpha tests, collision or scripts.
+
 Texture-info flags: mirror `1`, fullbright `2`, sky `4`, emissive compiler light `8`, transparent `16`, Gouraud `32`, flat `64`, no lightmap `32768`. Texture flags are distinct: texture skybox is `1`.
 
 ### Original baked lighting

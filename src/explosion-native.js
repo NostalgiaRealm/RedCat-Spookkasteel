@@ -2,6 +2,21 @@ import {nativeEffectRandom} from './debris-native.js';
 
 const number=(value,fallback=0)=>Number.isFinite(Number(value))?Number(value):fallback;
 const mix=(a,b,t)=>a+(b-a)*t;
+// Production explosion records are immutable spawn descriptions. Damage and
+// rendering need the same seeded cohort, but only rendering mutates smoke's
+// transient render fields. A private cache avoids constructing it twice and
+// never adds visual state to JSON saves; the public factory stays fresh.
+const blastCohorts=new WeakMap();
+export function nativeBlastsForEffect(effect) {
+  const conf=effect.settings?.explosion||{},min=effect.bounds?.min,max=effect.bounds?.max;
+  const values=[effect.id,effect.birth,...effect.position,min?.[0],min?.[1],min?.[2],max?.[0],max?.[1],max?.[2],
+    conf.NrExplosions,conf.SizePercentage,conf.SmokeOnly,conf.Green];
+  let cached=blastCohorts.get(effect);
+  if(!cached||values.some((value,i)=>value!==cached.values[i])) {
+    cached={values,blasts:createNativeBlasts(effect)};blastCohorts.set(effect,cached);
+  }
+  return cached.blasts;
+}
 
 // RcExplosion 0x58d904 selects expl6; 0x58d92f..0x58d988 sets its
 // instance gain from SizePercentage (also for zero-size, debris-only blasts).

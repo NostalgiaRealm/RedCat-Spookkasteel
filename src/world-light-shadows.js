@@ -1,4 +1,4 @@
-import {actorFloorShadowPoint,traceActorFloorBsp} from './actor-floor-lighting.js';
+import {actorFloorShadowPoint,actorBspRayBlocked} from './actor-floor-lighting.js';
 import {worldLightFrame,worldLightLuxelStrength} from './world-lighting.js';
 
 /** Reproduce import_levels.py's atlas packing, including its duplicated edge
@@ -80,7 +80,7 @@ export class WorldLightShadows {
         const endpoint=actorFloorShadowPoint(tile.face,this.collision.planes[tile.face[20]],[col,row]);
         if(!endpoint)continue;
         this.stats.traces++;
-        if(traceActorFloorBsp(this.collision,p,endpoint,0)) {
+        if(actorBspRayBlocked(this.collision,p,endpoint,0)) {
           this.data[(y+row)*this.width+x+col]|=bit;this.stats.blocked++;
         }
       }

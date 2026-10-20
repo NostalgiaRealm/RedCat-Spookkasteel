@@ -1,13 +1,16 @@
 {
   "name": "redcat-spookkasteel-port",
+  "version": "1.0.0",
   "description": "An independent portable reconstruction using the original RedCat Spookkasteel assets",
   "private": true,
   "type": "module",
   "main": "electron/main.cjs",
   "author": "RedCat portable reconstruction contributors",
   "scripts": {
+    "prestart": "node tools/refresh-web-cache.mjs",
     "start": "electron .",
     "serve": "node tools/serve.mjs",
+    "web:refresh": "node tools/refresh-web-cache.mjs",
     "android:prepare": "node tools/prepare-android.mjs",
     "test": "node --test tests/*.test.mjs",
     "test:smoke": "node tests/smoke.mjs",
@@ -26,6 +29,7 @@
     "test:actor-placement": "node tests/actor-placement-scenes.mjs",
     "test:portals": "node tests/portal-beam-scenes.mjs",
     "test:desktop": "node tests/desktop.mjs",
+    "test:web-cache": "node tests/web-cache-scenes.mjs",
     "build:linux": "node tools/package.mjs linux",
     "build:windows": "node tools/package.mjs windows"
   },

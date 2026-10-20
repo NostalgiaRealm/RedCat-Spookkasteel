@@ -12,7 +12,7 @@ val prepareGameAssets by tasks.registering(Exec::class) {
     commandLine("node", "tools/prepare-android.mjs", "--output", "android/app/build/generated/gameAssets")
     inputs.files(fileTree(gameRoot) {
         include("index.html", "src/**", "assets/**", "data/**", "node_modules/three/**")
-        include("package-lock.json", "tools/prepare-android.mjs")
+        include("package-lock.json", "tools/prepare-android.mjs", "tools/refresh-web-cache.mjs")
     })
     outputs.dir(gameAssets)
 }
@@ -26,8 +26,8 @@ android {
         applicationId = "com.nostalgiarealm.redcatspookkasteel"
         minSdk = 29
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.9.5-android-preview"
+        versionCode = 2
+        versionName = "1.0"
     }
 
     sourceSets["main"].assets.setSrcDirs(listOf(gameAssets))

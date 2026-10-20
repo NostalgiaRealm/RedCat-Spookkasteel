@@ -65,21 +65,103 @@ export function saveBeaconGeometry(origin,age,ceilingY=origin[1]+200) {
 
 function hash(name) {let h=2166136261;for(const c of name)h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0;}
 
+const EFFECT_BUFFER_IDLE_SECONDS=10;
+
+function effectAttribute(geometry,name,previous,count,itemSize,instanced,preserve) {
+  const array=new Float32Array(count*itemSize);
+  if(preserve&&previous)array.set(previous.array.subarray(0,Math.min(array.length,previous.array.length)));
+  const Type=instanced?THREE.InstancedBufferAttribute:THREE.BufferAttribute;
+  const attribute=new Type(array,itemSize).setUsage(THREE.DynamicDrawUsage);
+  geometry.setAttribute(name,attribute);return attribute;
+}
+
+function disposeEffectBuffer(batch) {
+  // WebGLAttributes cannot resize an uploaded attribute. Dispose while the
+  // old attributes are still attached, then replace them on this same owned
+  // geometry. Three also releases the VAO/instance-count limit at this point.
+  batch.geometry.dispose();delete batch.geometry._maxInstanceCount;
+  batch.gpuReleased=true;
+}
+
+function growEffectBuffer(batch,needed) {
+  if(needed<=batch.bufferCapacity)return;
+  let size=Math.max(1,batch.bufferCapacity);
+  while(size<needed&&size<batch.capacity)size=Math.min(batch.capacity,size*2);
+  batch.resizeBuffer(size);
+}
+
+function effectBufferActivity(batch,now) {
+  if(batch.count>0){batch.lastActive=now;batch.gpuReleased=false;return;}
+  if(batch.gpuReleased||now-batch.lastActive<EFFECT_BUFFER_IDLE_SECONDS)return;
+  if(batch.bufferCapacity!==batch.initialBufferCapacity)batch.resizeBuffer(batch.initialBufferCapacity,false);
+  else disposeEffectBuffer(batch);
+}
+
+function beginEffectView(batch,frustum) {
+  // Match the camera-local world/actor artwork range without changing any
+  // emitter clock, save state or audio scheduling. Whole primitive bounds
+  // below keep a nearby edge of a large flame, halo or ribbon visible.
+  batch.frustum=frustum;
+  batch.rooms=batch.world.geometryStream?.rooms;
+  const camera=batch.world.camera,range=batch.world.geometryStream?.viewRadius;
+  batch.viewRange=camera&&Number.isFinite(range)&&range>=0?range:Infinity;
+  if(batch.viewRange!==Infinity) {
+    if(camera.matrixWorld)batch.viewPosition.setFromMatrixPosition(camera.matrixWorld);
+    else batch.viewPosition.copy(camera.position);
+  }
+}
+
+// 0: outside; 1: intersects; 2: entirely inside the view. Reuse the
+// fixed-tick cloud bounds across high-refresh redraws without pausing its
+// simulation. Only a fully enclosed cloud may bypass per-particle tests.
+function spoutCloudVisibility(state,frustum) {
+  const bounds=state.spoutDrawBounds||(state.spoutDrawBounds={box:new THREE.Box3()});
+  // A cloud crossing a view edge still needs the original individual tests.
+  // Delay this optional broad-phase probe briefly in that case, rather than
+  // repeating both tests on every high-refresh frame. No draw is omitted.
+  if(bounds.nextProbe>state.spout.ticks&&bounds.spout===state.spout&&bounds.particles===state.particles&&bounds.count===state.particles.length)return 1;
+  if(bounds.spout!==state.spout||bounds.ticks!==state.spout.ticks||bounds.particles!==state.particles||bounds.count!==state.particles.length||!Number.isSafeInteger(state.spout.ticks)) {
+    bounds.box.makeEmpty();let size=0,finite=true;
+    const min=bounds.box.min,max=bounds.box.max;
+    for(const p of state.particles)if(!(p.opacity<=0)) {
+      const [x,y,z]=p.position;
+      if(!Number.isFinite(x+y+z+p.size)){finite=false;break;}
+      min.x=Math.min(min.x,x);min.y=Math.min(min.y,y);min.z=Math.min(min.z,z);
+      max.x=Math.max(max.x,x);max.y=Math.max(max.y,y);max.z=Math.max(max.z,z);
+      size=Math.max(size,Math.abs(p.size));
+    }
+    // BillboardBatch's sphere includes the native spout shader's extra
+    // half-unit XY quad. The small rounding margin also makes full-cloud
+    // acceptance conservative at large world coordinates.
+    if(finite&&!bounds.box.isEmpty()) {
+      const extent=Math.max(Math.abs(min.x),Math.abs(min.y),Math.abs(min.z),Math.abs(max.x),Math.abs(max.y),Math.abs(max.z));
+      bounds.box.expandByScalar(Math.hypot(size,size)*.5+Math.SQRT1_2+(extent+size+1)*1e-10);
+      if(!Number.isFinite(min.x+min.y+min.z+max.x+max.y+max.z))finite=false;
+    }
+    bounds.finite=finite;bounds.spout=state.spout;bounds.ticks=state.spout.ticks;bounds.particles=state.particles;bounds.count=state.particles.length;
+  }
+  if(!bounds.finite)return 1;
+  if(bounds.box.isEmpty())return 0;
+  const min=bounds.box.min,max=bounds.box.max;let inside=true;
+  for(const plane of frustum.planes) {
+    const n=plane.normal;
+    if(n.x*(n.x>=0?max.x:min.x)+n.y*(n.y>=0?max.y:min.y)+n.z*(n.z>=0?max.z:min.z)+plane.constant<0)return 0;
+    if(n.x*(n.x>=0?min.x:max.x)+n.y*(n.y>=0?min.y:max.y)+n.z*(n.z>=0?min.z:max.z)+plane.constant<0)inside=false;
+  }
+  bounds.nextProbe=inside?0:state.spout.ticks+15;
+  return inside?2:1;
+}
+
 // All flames with the same artwork share one draw call; no per-particle lights.
-class BillboardBatch {
+export class BillboardBatch {
   constructor(world,map,additive=false,capacity=8192,depthTest=true) {
     this.world=world;this.capacity=capacity;this.count=0;
+    this.bufferCapacity=0;this.initialBufferCapacity=Math.min(capacity,64);this.lastActive=-Infinity;this.gpuReleased=true;
+    this.sphere=new THREE.Sphere();this.frustum=null;this.viewPosition=new THREE.Vector3();this.viewRange=Infinity;
     const source=new THREE.PlaneGeometry(1,1),geometry=world.track(new THREE.InstancedBufferGeometry());
+    this.geometry=geometry;
     geometry.index=source.index;geometry.attributes.position=source.attributes.position;geometry.attributes.uv=source.attributes.uv;
-    this.positions=new THREE.InstancedBufferAttribute(new Float32Array(capacity*3),3).setUsage(THREE.DynamicDrawUsage);
-    this.sizes=new THREE.InstancedBufferAttribute(new Float32Array(capacity*2),2).setUsage(THREE.DynamicDrawUsage);
-    this.colors=new THREE.InstancedBufferAttribute(new Float32Array(capacity*4),4).setUsage(THREE.DynamicDrawUsage);
-    this.rotations=new THREE.InstancedBufferAttribute(new Float32Array(capacity),1).setUsage(THREE.DynamicDrawUsage);
-    this.diagonalScales=new THREE.InstancedBufferAttribute(new Float32Array(capacity*2),2).setUsage(THREE.DynamicDrawUsage);
-    this.nativeSpouts=new THREE.InstancedBufferAttribute(new Float32Array(capacity),1).setUsage(THREE.DynamicDrawUsage);
-    geometry.setAttribute('effectNativeSpout',this.nativeSpouts);
-    geometry.setAttribute('effectDiagonal',this.diagonalScales);geometry.setAttribute('effectRotation',this.rotations);
-    geometry.setAttribute('effectPosition',this.positions);geometry.setAttribute('effectSize',this.sizes);geometry.setAttribute('effectColor',this.colors);geometry.instanceCount=0;
+    this.resizeBuffer(this.initialBufferCapacity);geometry.instanceCount=0;
     const material=world.track(new THREE.ShaderMaterial({uniforms:{map:{value:map}},transparent:true,depthWrite:false,depthTest,blending:additive?THREE.AdditiveBlending:THREE.NormalBlending,
       vertexShader:`attribute vec3 effectPosition;attribute vec2 effectSize;attribute vec4 effectColor;attribute float effectRotation;attribute vec2 effectDiagonal;attribute float effectNativeSpout;varying vec2 effectUv;varying vec4 effectTint;
 void main(){
@@ -113,8 +195,46 @@ void main(){
 }` }));
     this.mesh=new THREE.Mesh(geometry,material);this.mesh.frustumCulled=false;this.mesh.renderOrder=2;world.scene.add(this.mesh);
   }
-  add(position,width,height,tint,opacity,rotation=0,diagonalScale=null,nativeSpout=0) {if(this.count>=this.capacity||opacity<=0)return;const i=this.count++;this.positions.setXYZ(i,...position);this.sizes.setXY(i,width,height);this.colors.setXYZW(i,...tint,clamp(opacity));this.rotations.setX(i,rotation);this.diagonalScales.setXY(i,diagonalScale?.[0]??1,diagonalScale?.[1]??1);this.nativeSpouts.setX(i,nativeSpout);}
-  flush(){this.mesh.geometry.instanceCount=this.count;this.mesh.visible=this.count>0;for(const a of [this.positions,this.sizes,this.colors,this.rotations,this.diagonalScales,this.nativeSpouts])a.needsUpdate=true;}
+  resizeBuffer(size,preserve=true) {
+    if(this.bufferCapacity)disposeEffectBuffer(this);
+    const geometry=this.geometry;
+    this.positions=effectAttribute(geometry,'effectPosition',this.positions,size,3,true,preserve);
+    this.sizes=effectAttribute(geometry,'effectSize',this.sizes,size,2,true,preserve);
+    this.colors=effectAttribute(geometry,'effectColor',this.colors,size,4,true,preserve);
+    this.rotations=effectAttribute(geometry,'effectRotation',this.rotations,size,1,true,preserve);
+    this.diagonalScales=effectAttribute(geometry,'effectDiagonal',this.diagonalScales,size,2,true,preserve);
+    this.nativeSpouts=effectAttribute(geometry,'effectNativeSpout',this.nativeSpouts,size,1,true,preserve);
+    this.bufferCapacity=size;
+  }
+  beginView(frustum=null){beginEffectView(this,frustum);}
+  add(position,width,height,tint,opacity,rotation=0,diagonalScale=null,nativeSpout=0,skipFrustum=false) {
+    if(this.count>=this.capacity||opacity<=0)return;
+    let radius;
+    if(this.viewRange!==Infinity) {
+      const dx=position[0]-this.viewPosition.x,dy=position[1]-this.viewPosition.y,dz=position[2]-this.viewPosition.z,distance2=dx*dx+dy*dy+dz*dz;
+      if(distance2>this.viewRange*this.viewRange) {
+        radius=Math.hypot(width,height)*.5*Math.max(Math.abs(diagonalScale?.[0]??1),Math.abs(diagonalScale?.[1]??1))+(nativeSpout?Math.SQRT1_2:0);
+        if(distance2>(this.viewRange+radius)**2)return;
+      }
+    }
+    if(this.frustum&&!skipFrustum) {
+      this.sphere.center.fromArray(position);
+      this.sphere.radius=radius??(Math.hypot(width,height)*.5*Math.max(Math.abs(diagonalScale?.[0]??1),Math.abs(diagonalScale?.[1]??1))+(nativeSpout?Math.SQRT1_2:0));
+      if(!this.frustum.intersectsSphere(this.sphere))return;
+    }
+    if(this.rooms?.active&&!this.rooms.sphereAllowed(position,radius??(Math.hypot(width,height)*.5*Math.max(Math.abs(diagonalScale?.[0]??1),Math.abs(diagonalScale?.[1]??1))+(nativeSpout?Math.SQRT1_2:0))))return;
+    growEffectBuffer(this,this.count+1);
+    const i=this.count++;this.positions.setXYZ(i,...position);this.sizes.setXY(i,width,height);this.colors.setXYZW(i,...tint,clamp(opacity));this.rotations.setX(i,rotation);this.diagonalScales.setXY(i,diagonalScale?.[0]??1,diagonalScale?.[1]??1);this.nativeSpouts.setX(i,nativeSpout);
+  }
+  flush(now=performance.now()/1000){growEffectBuffer(this,this.count);this.mesh.geometry.instanceCount=this.count;this.mesh.visible=this.count>0;for(const a of [this.positions,this.sizes,this.colors,this.rotations,this.diagonalScales,this.nativeSpouts])uploadEffectRange(a,this.count);effectBufferActivity(this,now);}
+}
+
+// Capacity is reserved for busy fights, not the amount of live artwork in
+// every frame. Upload only the prefix used by the current draw, avoiding
+// multi-megabyte transfers for a handful of flames on integrated graphics.
+function uploadEffectRange(attribute,count) {
+  if(count<=0)return;
+  attribute.clearUpdateRanges();attribute.addUpdateRange(0,count*attribute.itemSize);attribute.needsUpdate=true;
 }
 
 const BEAM_U=[0,1,0,1,1,0],BEAM_V_END=[false,false,true,false,true,true];
@@ -122,18 +242,28 @@ const BEAM_U=[0,1,0,1,1,0],BEAM_V_END=[false,false,true,false,true,true];
 export class BeamBatch {
   constructor(world,map,capacity=512) {
     this.world=world;this.count=0;this.capacity=capacity;
+    this.bufferCapacity=0;this.initialBufferCapacity=Math.min(capacity,32);this.lastActive=-Infinity;this.gpuReleased=true;
+    this.frustum=null;this.bounds=new THREE.Box3();this.viewPosition=new THREE.Vector3();this.viewRange=Infinity;
     this.start=new THREE.Vector3();this.end=new THREE.Vector3();this.side=new THREE.Vector3();
     this.direction=new THREE.Vector3();this.toward=new THREE.Vector3();
     this.points=Array.from({length:6},()=>new THREE.Vector3());
     const geometry=world.track(new THREE.BufferGeometry());
-    this.positions=new THREE.BufferAttribute(new Float32Array(capacity*18),3).setUsage(THREE.DynamicDrawUsage);
-    this.colors=new THREE.BufferAttribute(new Float32Array(capacity*24),4).setUsage(THREE.DynamicDrawUsage);
-    const uv=new Float32Array(capacity*12);for(let i=0;i<capacity;i++)uv.set([0,0,1,0,0,1,1,0,1,1,0,1],i*12);
-    this.uvs=new THREE.BufferAttribute(uv,2).setUsage(THREE.DynamicDrawUsage);
-    geometry.setAttribute('position',this.positions);geometry.setAttribute('color',this.colors);geometry.setAttribute('uv',this.uvs);geometry.setDrawRange(0,0);
+    this.geometry=geometry;this.resizeBuffer(this.initialBufferCapacity);geometry.setDrawRange(0,0);
     this.mesh=new THREE.Mesh(geometry,world.track(new THREE.MeshBasicMaterial({map,vertexColors:true,transparent:true,depthWrite:false,side:THREE.DoubleSide})));
     this.mesh.frustumCulled=false;this.mesh.renderOrder=1;world.scene.add(this.mesh);
   }
+  resizeBuffer(size,preserve=true) {
+    if(this.bufferCapacity)disposeEffectBuffer(this);
+    const geometry=this.geometry;
+    this.positions=effectAttribute(geometry,'position',this.positions,size*6,3,false,preserve);
+    this.colors=effectAttribute(geometry,'color',this.colors,size*6,4,false,preserve);
+    const previous=this.uvs;
+    this.uvs=effectAttribute(geometry,'uv',null,size*6,2,false,false);
+    for(let i=0;i<size;i++)this.uvs.array.set([0,0,1,0,0,1,1,0,1,1,0,1],i*12);
+    if(preserve&&previous)this.uvs.array.set(previous.array.subarray(0,Math.min(this.uvs.array.length,previous.array.length)));
+    this.bufferCapacity=size;
+  }
+  beginView(frustum=null){beginEffectView(this,frustum);}
   add(ray,camera,cameraDirection=null,uvs=null) {
     if(this.count>=this.capacity)return;
     const start=this.start.fromArray(ray.start),end=this.end.fromArray(ray.end),side=this.side;
@@ -154,6 +284,19 @@ export class BeamBatch {
   }
   addPoints(points,color,opacity,uvStart=0,uvEnd=1,uvs=null,colors=null) {
     if(this.count>=this.capacity)return;
+    if(this.frustum||this.viewRange!==Infinity||this.rooms?.active) {
+      // All six vertices are already in world space, including the final
+      // ribbon width and Gargoyle artwork expansion. Enclose the complete
+      // quad rather than culling its centre or either endpoint. Padding also
+      // encloses Float32 upload rounding at the authored world coordinates.
+      const box=this.bounds;box.makeEmpty();for(let i=0;i<6;i++)box.expandByPoint(points[i]);
+      const magnitude=Math.max(Math.abs(box.min.x),Math.abs(box.min.y),Math.abs(box.min.z),Math.abs(box.max.x),Math.abs(box.max.y),Math.abs(box.max.z));
+      box.expandByScalar(1e-5+magnitude*2**-22);
+      if(this.viewRange!==Infinity&&box.distanceToPoint(this.viewPosition)>this.viewRange)return;
+      if(this.frustum&&!this.frustum.intersectsBox(box))return;
+      if(this.rooms?.active&&!this.rooms.boxAllowed(box.min,box.max))return;
+    }
+    growEffectBuffer(this,this.count+1);
     for(let i=0;i<6;i++) {
       const point=points[i],tint=colors?.[i]||color,p=(this.count*6+i)*3,c=(this.count*6+i)*4,u=(this.count*6+i)*2;
       this.positions.array[p]=point.x;this.positions.array[p+1]=point.y;this.positions.array[p+2]=point.z;
@@ -162,7 +305,7 @@ export class BeamBatch {
     }
     this.count++;
   }
-  flush(){this.mesh.geometry.setDrawRange(0,this.count*6);this.mesh.visible=this.count>0;this.positions.needsUpdate=this.colors.needsUpdate=this.uvs.needsUpdate=true;}
+  flush(now=performance.now()/1000){growEffectBuffer(this,this.count);this.mesh.geometry.setDrawRange(0,this.count*6);this.mesh.visible=this.count>0;for(const a of [this.positions,this.colors,this.uvs])uploadEffectRange(a,this.count*6);effectBufferActivity(this,now);}
 }
 
 export function nearestWorldLights(lights,camera,playerLight=null,maximum=8) {
@@ -209,10 +352,21 @@ export class WorldEffects {
     effects.enemyDeaths=new EnemyDeathEffects(world,gameplay);
     effects.enemyCombat=new EnemyCombatEffects(world,gameplay);
     effects.decals=new DecalEffects(world,gameplay,new Map(textures));
-    effects.attachLights();effects.update(0);return effects;
+    effects.attachLights();
+    effects.destructibles.prepareNearby(undefined,Infinity,true);
+    await world.actorTextures?.settle();
+    const impactWaves=effects.destructibles.prepareImpactWaves(effects.batches);
+    // Compile fragment variants against the final scene light layout while
+    // loading, rather than stalling on the first crate or armour breakup.
+    await effects.destructibles.renderPool.compile();
+    await world.knightRenderPool?.compile();
+    effects.destructibles.renderPool.warmDraw(impactWaves?[impactWaves]:[]);
+    world.knightRenderPool?.warmDraw();
+    effects.update(0);return effects;
   }
   constructor(world,gameplay,manifest) {
     this.world=world;this.gameplay=gameplay;this.manifest=manifest;this.entries=new Map();this.batches=new Map();this.beamBatches=new Map();this.beams=[];this.lights=[];
+    this.spriteFrustum=new THREE.Frustum();this.spriteProjection=new THREE.Matrix4();
     this.playerLight=new PlayerWorldLight(world);
     this.coronaVisibility=new CoronaVisibilityCache();this.cameraForward=new THREE.Vector3();
     for(const object of gameplay.objects)if(EFFECT_CLASSES.has(object.entity.classname)) {
@@ -276,6 +430,11 @@ export class WorldEffects {
     for(const batch of [...this.batches.values(),...this.beamBatches.values()])batch.count=0;
     if(this.coronaBatch)this.coronaBatch.count=0;
     const eye=this.world.camera.position.toArray(),direction=(this.world.camera.getWorldDirection?.(this.cameraForward)||this.cameraForward.set(0,0,-1)).toArray(),coronas=[];
+    const cullSprites=this.world.camera.projectionMatrix&&this.world.camera.matrixWorldInverse;
+    if(cullSprites)this.spriteFrustum.setFromProjectionMatrix(this.spriteProjection.multiplyMatrices(this.world.camera.projectionMatrix,this.world.camera.matrixWorldInverse));
+    for(const batch of this.batches.values())if(batch.beginView)batch.beginView(cullSprites?this.spriteFrustum:null);else batch.frustum=cullSprites?this.spriteFrustum:null;
+    for(const batch of this.beamBatches.values())if(batch.beginView)batch.beginView(cullSprites?this.spriteFrustum:null);else batch.frustum=cullSprites?this.spriteFrustum:null;
+    if(this.coronaBatch)if(this.coronaBatch.beginView)this.coronaBatch.beginView(cullSprites?this.spriteFrustum:null);else this.coronaBatch.frustum=cullSprites?this.spriteFrustum:null;
     this.torches.update(eye);
     for(const state of this.entries.values())if(state.object.entity.classname==='EffectCoronaEntity') {
       const {object}=state,origin=this.position(object);
@@ -306,7 +465,7 @@ export class WorldEffects {
         // Its full extent is bitmap dimensions * scale, not radius * 2.
         // Coreff is 64x64: button/candle halos were eight times too small.
         const artwork=this.manifest.textures[CORONA],scale=radius*.25;
-        if(radius>0&&artwork)this.coronaBatch?.add(origin,artwork.width*scale,artwork.height*scale,color(e.Color),1);
+        if(radius>0&&artwork&&this.world.geometryStream?.rooms?.originAllowed(origin)!==false)this.coronaBatch?.add(origin,artwork.width*scale,artwork.height*scale,color(e.Color),1);
       } else if(enabled&&e.classname==='EffectBeamEntity') {
         const endpoints=beamEndpoints(this.gameplay,object,(a,b)=>this.world.collider.trace(a,b,[0,0,0],[0,0,0],this.world.physicalModels,null));
         if(endpoints)this.addBeam({...endpoints,width:number(e,'Width',5),color:color(e.Color),opacity:number(e,'ColorAlpha',255)/255},BEAM);
@@ -349,8 +508,9 @@ export class WorldEffects {
     }
     const playerLight=this.playerLight.update();if(playerLight)this.lights.push(playerLight);
     this.world.syncActorLighting?.(this.lights);
-    for(const batch of [...this.batches.values(),...this.beamBatches.values()])batch.flush();
-    this.coronaBatch?.flush();
+    const bufferTime=performance.now()/1000;
+    for(const batch of [...this.batches.values(),...this.beamBatches.values()])batch.flush(bufferTime);
+    this.coronaBatch?.flush(bufferTime);
     // Keep the player's small pool of light stable in busy rooms, using one
     // of the existing eight slots rather than increasing shader/light cost.
     const nearest=nearestWorldLights(this.lights,this.world.camera.position,playerLight);
@@ -383,8 +543,17 @@ export class WorldEffects {
     const direction=this.torches.direction(state.object)||target.map((v,i)=>v-origin[i]);
     state.spout.update(dt,origin,direction,state.active,enableSerial);
     state.clock=state.spout.time;state.particles=state.spout.particles;
-    for(const p of state.particles)batch.add(p.position,p.size,p.size,state.spout.tint,p.opacity,0,null,1);
-    if(dt>0&&state.active&&state.spout.finished&&!state.particles.length)state.object.enabled=state.active=false;
+    if(!state.particles.length) {
+      if(dt>0&&state.active&&state.spout.finished)state.object.enabled=state.active=false;
+      return;
+    }
+    // Large torch sprites can overlap a floor in their conservative bounds.
+    // Keep an unrelated room's emitter out of the draw, while its particles,
+    // lifetime, activation and sound clocks continue normally above.
+    if(this.world?.geometryStream?.rooms?.originAllowed(origin)===false)return;
+    const visibility=batch.frustum&&state.particles.length>1?spoutCloudVisibility(state,batch.frustum):1;
+    if(visibility===2)for(const p of state.particles)batch.add(p.position,p.size,p.size,state.spout.tint,p.opacity,0,null,1,true);
+    else if(visibility)for(const p of state.particles)batch.add(p.position,p.size,p.size,state.spout.tint,p.opacity,0,null,1);
   }
   updateTeleporter(state,origin,dt) {
     const {object}=state,e=object.entity;

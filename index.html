@@ -5,10 +5,136 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self'; object-src 'none'">
 <link rel="icon" href="assets/icons/redcat.ico" type="image/x-icon">
 <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-<title>RedCat Spookkasteel</title><link rel="stylesheet" href="src/style.css">
-<link rel="stylesheet" href="src/touch-controls.css">
-<link rel="stylesheet" href="src/loading-screen.css">
-<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
+<title>RedCat Spookkasteel</title><link rel="stylesheet" href="./src/style.css?v=d9dab5e182c57958e1008ae8">
+<link rel="stylesheet" href="./src/touch-controls.css?v=d9dab5e182c57958e1008ae8">
+<link rel="stylesheet" href="./src/loading-screen.css?v=d9dab5e182c57958e1008ae8">
+<script type="importmap" id="game-importmap">
+{
+  "imports": {
+    "./node_modules/three/build/three.core.js": "./node_modules/three/build/three.core.js?v=d9dab5e182c57958e1008ae8",
+    "./node_modules/three/build/three.module.js": "./node_modules/three/build/three.module.js?v=d9dab5e182c57958e1008ae8",
+    "./src/actor-collision-index.js": "./src/actor-collision-index.js?v=d9dab5e182c57958e1008ae8",
+    "./src/actor-collision.js": "./src/actor-collision.js?v=d9dab5e182c57958e1008ae8",
+    "./src/actor-floor-lighting.js": "./src/actor-floor-lighting.js?v=d9dab5e182c57958e1008ae8",
+    "./src/actor-geometry.js": "./src/actor-geometry.js?v=d9dab5e182c57958e1008ae8",
+    "./src/actor-light-sampling.js": "./src/actor-light-sampling.js?v=d9dab5e182c57958e1008ae8",
+    "./src/actor-light-visibility.js": "./src/actor-light-visibility.js?v=d9dab5e182c57958e1008ae8",
+    "./src/actor-lighting.js": "./src/actor-lighting.js?v=d9dab5e182c57958e1008ae8",
+    "./src/actor-materials.js": "./src/actor-materials.js?v=d9dab5e182c57958e1008ae8",
+    "./src/actor-placement.js": "./src/actor-placement.js?v=d9dab5e182c57958e1008ae8",
+    "./src/actor-render-residency.js": "./src/actor-render-residency.js?v=d9dab5e182c57958e1008ae8",
+    "./src/actor-texture-stream.js": "./src/actor-texture-stream.js?v=d9dab5e182c57958e1008ae8",
+    "./src/actor-world-lighting.js": "./src/actor-world-lighting.js?v=d9dab5e182c57958e1008ae8",
+    "./src/ambience-ranges.js": "./src/ambience-ranges.js?v=d9dab5e182c57958e1008ae8",
+    "./src/android-host.js": "./src/android-host.js?v=d9dab5e182c57958e1008ae8",
+    "./src/animation.js": "./src/animation.js?v=d9dab5e182c57958e1008ae8",
+    "./src/audio-settings.js": "./src/audio-settings.js?v=d9dab5e182c57958e1008ae8",
+    "./src/audio.js": "./src/audio.js?v=d9dab5e182c57958e1008ae8",
+    "./src/autosave.js": "./src/autosave.js?v=d9dab5e182c57958e1008ae8",
+    "./src/beam-contacts.js": "./src/beam-contacts.js?v=d9dab5e182c57958e1008ae8",
+    "./src/boss-ai.js": "./src/boss-ai.js?v=d9dab5e182c57958e1008ae8",
+    "./src/bsp-visibility.js": "./src/bsp-visibility.js?v=d9dab5e182c57958e1008ae8",
+    "./src/camera-control.js": "./src/camera-control.js?v=d9dab5e182c57958e1008ae8",
+    "./src/campaign-progress.js": "./src/campaign-progress.js?v=d9dab5e182c57958e1008ae8",
+    "./src/cheats.js": "./src/cheats.js?v=d9dab5e182c57958e1008ae8",
+    "./src/collision.js": "./src/collision.js?v=d9dab5e182c57958e1008ae8",
+    "./src/cutscene-skip.js": "./src/cutscene-skip.js?v=d9dab5e182c57958e1008ae8",
+    "./src/davi-vm.js": "./src/davi-vm.js?v=d9dab5e182c57958e1008ae8",
+    "./src/debriefing.js": "./src/debriefing.js?v=d9dab5e182c57958e1008ae8",
+    "./src/debris-native.js": "./src/debris-native.js?v=d9dab5e182c57958e1008ae8",
+    "./src/debris-render-pool.js": "./src/debris-render-pool.js?v=d9dab5e182c57958e1008ae8",
+    "./src/decal-effects.js": "./src/decal-effects.js?v=d9dab5e182c57958e1008ae8",
+    "./src/destructible-damage.js": "./src/destructible-damage.js?v=d9dab5e182c57958e1008ae8",
+    "./src/destructible-effects.js": "./src/destructible-effects.js?v=d9dab5e182c57958e1008ae8",
+    "./src/difficulty.js": "./src/difficulty.js?v=d9dab5e182c57958e1008ae8",
+    "./src/door-audio.js": "./src/door-audio.js?v=d9dab5e182c57958e1008ae8",
+    "./src/enemies.js": "./src/enemies.js?v=d9dab5e182c57958e1008ae8",
+    "./src/enemy-ambush.js": "./src/enemy-ambush.js?v=d9dab5e182c57958e1008ae8",
+    "./src/enemy-animation-rules.js": "./src/enemy-animation-rules.js?v=d9dab5e182c57958e1008ae8",
+    "./src/enemy-combat-effects.js": "./src/enemy-combat-effects.js?v=d9dab5e182c57958e1008ae8",
+    "./src/enemy-combat-native.js": "./src/enemy-combat-native.js?v=d9dab5e182c57958e1008ae8",
+    "./src/enemy-death-effects.js": "./src/enemy-death-effects.js?v=d9dab5e182c57958e1008ae8",
+    "./src/enemy-flight.js": "./src/enemy-flight.js?v=d9dab5e182c57958e1008ae8",
+    "./src/enemy-hit-native.js": "./src/enemy-hit-native.js?v=d9dab5e182c57958e1008ae8",
+    "./src/enemy-navigation.js": "./src/enemy-navigation.js?v=d9dab5e182c57958e1008ae8",
+    "./src/enemy-projectile-origins.js": "./src/enemy-projectile-origins.js?v=d9dab5e182c57958e1008ae8",
+    "./src/enemy-projectiles.js": "./src/enemy-projectiles.js?v=d9dab5e182c57958e1008ae8",
+    "./src/enemy-shooter-native.js": "./src/enemy-shooter-native.js?v=d9dab5e182c57958e1008ae8",
+    "./src/enemy-waypoint-steering.js": "./src/enemy-waypoint-steering.js?v=d9dab5e182c57958e1008ae8",
+    "./src/environment-interactions.js": "./src/environment-interactions.js?v=d9dab5e182c57958e1008ae8",
+    "./src/explosion-damage.js": "./src/explosion-damage.js?v=d9dab5e182c57958e1008ae8",
+    "./src/explosion-native.js": "./src/explosion-native.js?v=d9dab5e182c57958e1008ae8",
+    "./src/fairy-effects.js": "./src/fairy-effects.js?v=d9dab5e182c57958e1008ae8",
+    "./src/fullscreen-preference.js": "./src/fullscreen-preference.js?v=d9dab5e182c57958e1008ae8",
+    "./src/gamepad-input.js": "./src/gamepad-input.js?v=d9dab5e182c57958e1008ae8",
+    "./src/gamepad-menu.js": "./src/gamepad-menu.js?v=d9dab5e182c57958e1008ae8",
+    "./src/gameplay-audio.js": "./src/gameplay-audio.js?v=d9dab5e182c57958e1008ae8",
+    "./src/gameplay-settings.js": "./src/gameplay-settings.js?v=d9dab5e182c57958e1008ae8",
+    "./src/gameplay.js": "./src/gameplay.js?v=d9dab5e182c57958e1008ae8",
+    "./src/gargoyle-blast.js": "./src/gargoyle-blast.js?v=d9dab5e182c57958e1008ae8",
+    "./src/ghost-materials.js": "./src/ghost-materials.js?v=d9dab5e182c57958e1008ae8",
+    "./src/graveyard-maze.js": "./src/graveyard-maze.js?v=d9dab5e182c57958e1008ae8",
+    "./src/hud.js": "./src/hud.js?v=d9dab5e182c57958e1008ae8",
+    "./src/intro-playback.js": "./src/intro-playback.js?v=d9dab5e182c57958e1008ae8",
+    "./src/knight-debris.js": "./src/knight-debris.js?v=d9dab5e182c57958e1008ae8",
+    "./src/liquids.js": "./src/liquids.js?v=d9dab5e182c57958e1008ae8",
+    "./src/loading-screen.js": "./src/loading-screen.js?v=d9dab5e182c57958e1008ae8",
+    "./src/locomotion-audio.js": "./src/locomotion-audio.js?v=d9dab5e182c57958e1008ae8",
+    "./src/main.js": "./src/main.js?v=d9dab5e182c57958e1008ae8",
+    "./src/menu-audio.js": "./src/menu-audio.js?v=d9dab5e182c57958e1008ae8",
+    "./src/model-transforms.js": "./src/model-transforms.js?v=d9dab5e182c57958e1008ae8",
+    "./src/motions.js": "./src/motions.js?v=d9dab5e182c57958e1008ae8",
+    "./src/movement-recovery.js": "./src/movement-recovery.js?v=d9dab5e182c57958e1008ae8",
+    "./src/moving-solids.js": "./src/moving-solids.js?v=d9dab5e182c57958e1008ae8",
+    "./src/music-fade.js": "./src/music-fade.js?v=d9dab5e182c57958e1008ae8",
+    "./src/pickup-placement.js": "./src/pickup-placement.js?v=d9dab5e182c57958e1008ae8",
+    "./src/player-animation.js": "./src/player-animation.js?v=d9dab5e182c57958e1008ae8",
+    "./src/player-inventory.js": "./src/player-inventory.js?v=d9dab5e182c57958e1008ae8",
+    "./src/player-lifecycle.js": "./src/player-lifecycle.js?v=d9dab5e182c57958e1008ae8",
+    "./src/player-menu.js": "./src/player-menu.js?v=d9dab5e182c57958e1008ae8",
+    "./src/player-movement.js": "./src/player-movement.js?v=d9dab5e182c57958e1008ae8",
+    "./src/player-profiles.js": "./src/player-profiles.js?v=d9dab5e182c57958e1008ae8",
+    "./src/player-projectiles.js": "./src/player-projectiles.js?v=d9dab5e182c57958e1008ae8",
+    "./src/player-shadow.js": "./src/player-shadow.js?v=d9dab5e182c57958e1008ae8",
+    "./src/player-world-light.js": "./src/player-world-light.js?v=d9dab5e182c57958e1008ae8",
+    "./src/presentation-native.js": "./src/presentation-native.js?v=d9dab5e182c57958e1008ae8",
+    "./src/projectile-animation.js": "./src/projectile-animation.js?v=d9dab5e182c57958e1008ae8",
+    "./src/projectile-collision.js": "./src/projectile-collision.js?v=d9dab5e182c57958e1008ae8",
+    "./src/projectile-hazards.js": "./src/projectile-hazards.js?v=d9dab5e182c57958e1008ae8",
+    "./src/projectile-impacts.js": "./src/projectile-impacts.js?v=d9dab5e182c57958e1008ae8",
+    "./src/projectile-lighting.js": "./src/projectile-lighting.js?v=d9dab5e182c57958e1008ae8",
+    "./src/projectile-visibility.js": "./src/projectile-visibility.js?v=d9dab5e182c57958e1008ae8",
+    "./src/quit-menu.js": "./src/quit-menu.js?v=d9dab5e182c57958e1008ae8",
+    "./src/recovery-saves.js": "./src/recovery-saves.js?v=d9dab5e182c57958e1008ae8",
+    "./src/render-quality.js": "./src/render-quality.js?v=d9dab5e182c57958e1008ae8",
+    "./src/reward-effects.js": "./src/reward-effects.js?v=d9dab5e182c57958e1008ae8",
+    "./src/room-visibility.js": "./src/room-visibility.js?v=d9dab5e182c57958e1008ae8",
+    "./src/script-camera.js": "./src/script-camera.js?v=d9dab5e182c57958e1008ae8",
+    "./src/script-host.js": "./src/script-host.js?v=d9dab5e182c57958e1008ae8",
+    "./src/skybox.js": "./src/skybox.js?v=d9dab5e182c57958e1008ae8",
+    "./src/slider-audio.js": "./src/slider-audio.js?v=d9dab5e182c57958e1008ae8",
+    "./src/spatial-audio.js": "./src/spatial-audio.js?v=d9dab5e182c57958e1008ae8",
+    "./src/spout-effects.js": "./src/spout-effects.js?v=d9dab5e182c57958e1008ae8",
+    "./src/streaming-gpu-preparation.js": "./src/streaming-gpu-preparation.js?v=d9dab5e182c57958e1008ae8",
+    "./src/streaming-work.js": "./src/streaming-work.js?v=d9dab5e182c57958e1008ae8",
+    "./src/targeting.js": "./src/targeting.js?v=d9dab5e182c57958e1008ae8",
+    "./src/teleporter-effects.js": "./src/teleporter-effects.js?v=d9dab5e182c57958e1008ae8",
+    "./src/third-person-camera.js": "./src/third-person-camera.js?v=d9dab5e182c57958e1008ae8",
+    "./src/torch-flames.js": "./src/torch-flames.js?v=d9dab5e182c57958e1008ae8",
+    "./src/touch-controls.js": "./src/touch-controls.js?v=d9dab5e182c57958e1008ae8",
+    "./src/touch-intro-hint.js": "./src/touch-intro-hint.js?v=d9dab5e182c57958e1008ae8",
+    "./src/world-effects.js": "./src/world-effects.js?v=d9dab5e182c57958e1008ae8",
+    "./src/world-light-shadows.js": "./src/world-light-shadows.js?v=d9dab5e182c57958e1008ae8",
+    "./src/world-lighting-material.js": "./src/world-lighting-material.js?v=d9dab5e182c57958e1008ae8",
+    "./src/world-lighting.js": "./src/world-lighting.js?v=d9dab5e182c57958e1008ae8",
+    "./src/world-streaming.js": "./src/world-streaming.js?v=d9dab5e182c57958e1008ae8",
+    "./src/world.js": "./src/world.js?v=d9dab5e182c57958e1008ae8",
+    "./src/zombie-grave-rise.js": "./src/zombie-grave-rise.js?v=d9dab5e182c57958e1008ae8",
+    "three": "./node_modules/three/build/three.module.js?v=d9dab5e182c57958e1008ae8",
+    "three/addons/": "./node_modules/three/examples/jsm/"
+  }
+}
+</script>
 </head>
 <body>
 <canvas id="game" aria-label="Spelwereld"></canvas>
@@ -61,7 +187,7 @@
 </dialog>
 <dialog id="about" class="panel about-panel" aria-labelledby="about-title">
 <div class="panel-top"><h2 id="about-title">Over</h2><button id="close-about" class="close" type="button" aria-label="Terug naar het hoofdmenu" autofocus>×</button></div>
-<p>RedCat Spookkasteel</p><p>Versie <strong>0.9.9</strong></p>
+<p>RedCat Spookkasteel</p><p>Versie <strong>1.0</strong></p>
 <p>Originele versie van <strong>Davilex Games</strong></p>
 <p>Nieuw leven in geblazen door <strong>Rick van den Bergh - Nostalgia Realm</strong></p>
 <section class="about-section" aria-labelledby="about-donations-title">
@@ -135,6 +261,6 @@
 <button id="back-cheats" class="secondary cheats-link">← Terug naar instellingen</button></section></div>
 <div id="help" class="overlay" hidden><section class="panel"><div class="panel-top"><h2>Op avontuur</h2><button id="close-help" class="close" aria-label="Sluiten">×</button></div><p><b>Aanraakbediening:</b> beweeg met de stick links en veeg rechts om rond te kijken. Spring en Schieten werken zolang je ze aanraakt. Houd Overslaan twee seconden vast tijdens een tussenfilmpje. Lopen schakelt rustig lopen in of uit; Camera wisselt de weergave. Menu opent pauze, instellingen en cheats. Bij vrij vliegen zijn Omhoog en Omlaag beschikbaar.</p><h3>Controller</h3><p>Sluit een controller aan en druk op een knop. Gebruik de linkerstick om te bewegen en de rechterstick om rond te kijken. De kijkgevoeligheid is instelbaar.</p><dl class="key-guide"><dt>A / ×</dt><dd>Springen / bevestigen</dd><dt>RT / R2 of RB / R1</dt><dd>Schieten; vasthouden voor BIG BENG</dd><dt>X / □</dt><dd>Gebruiken; twee seconden vasthouden om een scène over te slaan</dd><dt>LB / L1</dt><dd>Rustig lopen</dd><dt>Y / △</dt><dd>Camera wisselen</dd><dt>Start / Options / +</dt><dd>Pauzeren / hervatten</dd><dt>B / ○</dt><dd>Terug in menu’s; dalen bij vrij vliegen</dd><dt>Linkerstick / richtingsknoppen</dt><dd>Menu kiezen; links/rechts wijzigt een instelling</dd></dl><p>Bij vrij vliegen stijg je met A / ×. Opslaan, laden en cheats staan in het pauzemenu. Als de gebruikte controller losraakt, pauzeert het spel. Knopnamen volgen de standaard Xbox- of PlayStation-indeling; op andere controllers tellen de posities.</p><h3>Toetsenbord en muis</h3><dl class="key-guide"><dt>W A S D / pijlen</dt><dd>Bewegen</dd><dt>Muis</dt><dd>Rondkijken</dd><dt>Spatie</dt><dd>Springen</dd><dt>Shift</dt><dd>Rustig lopen</dd><dt>Linkermuisknop / Ctrl</dt><dd>Aanvallen</dd><dt>E</dt><dd>Gebruiken / twee seconden vasthouden om een scène over te slaan</dd><dt>V</dt><dd>Camera wisselen</dd><dt>F5 / F9</dt><dd>Opslaan / laden</dd><dt>Esc</dt><dd>Pauzeren</dd></dl><p>Je avontuur wordt elke minuut automatisch opgeslagen. Je kunt ook zelf opslaan met F5. Zit je vast? Kies in het menu Eerder opgeslagen avontuur laden om ongeveer 2, 5 of 10 minuten speeltijd terug te gaan.</p><p>Verzamel schatten, toverdrank en spiegelstukken. Klik in het spel om met de muis rond te kijken.</p></section></div>
 <div id="fatal" class="overlay" hidden><section class="panel"><h2>Het avontuur kon niet starten</h2><p id="fatal-message"></p><button id="fatal-close" class="primary">Terug naar het menu</button></section></div>
-<script type="module" src="src/main.js"></script>
+<script type="module" src="./src/main.js?v=d9dab5e182c57958e1008ae8"></script>
 <div id="fps-counter" hidden aria-label="Beelden per seconde"></div>
 </body></html>

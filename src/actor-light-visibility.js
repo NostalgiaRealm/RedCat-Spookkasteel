@@ -1,7 +1,6 @@
 import { doorPortalOpen } from './bsp-visibility.js';
-import { inverseModelTransform, traceActorFloorBsp } from './actor-floor-lighting.js';
+import { inverseModelTransform, modelTransformValues, sameModelTransform, actorBspRayBlocked } from './actor-floor-lighting.js';
 
-const ZERO=[0,0,0],IDENTITY=[0,0,0,1];
 const samePosition=(record,point)=>record&&record.x===point[0]&&record.y===point[1]&&record.z===point[2];
 
 /** AdamSunFinder's visibility gate (0x594df0) first checks the two world
@@ -12,7 +11,8 @@ export class ActorLightVisibility {
   constructor(world,metadata,pvs) {
     this.world=world;this.metadata=metadata;this.pvs=pvs;
     this.revision=0;this.sources=new WeakMap();this.origins=new WeakMap();
-    this.transforms=new Map();this.inverseTransforms=new Map();this.disabled=new Set();this.physical=[];
+    this.transforms=new Map();this.inverseTransforms=new Map();this.rotatedModels=new Set();this.disabled=new Set();this.physical=[];
+    this.physicalOrder=new Map();this.duplicatePhysical=false;this.rotatedPhysical=[];
     this.open=[];this.areas=new Map();this.doors=new Map();this.gameObjects=null;
     this.stats={queries:0,leafQueries:0,leafCacheHits:0,pvsRejected:0,areaRejected:0,traces:0};
     this.beginFrame();
@@ -23,35 +23,56 @@ export class ActorLightVisibility {
     let changed=false;
     const current=collider?.modelTransforms||new Map();
     for(const [model,value] of current) {
-      const values=[...(value.origin||ZERO),...(value.translation||ZERO),...(value.rotation||IDENTITY)];
       const old=this.transforms.get(model);
-      if(!old||values.some((value,i)=>value!==old[i])){changed=true;this.transforms.set(model,values);this.inverseTransforms.set(model,inverseModelTransform(value));}
+      if(!sameModelTransform(value,old)){
+        changed=true;this.transforms.set(model,modelTransformValues(value));this.inverseTransforms.set(model,inverseModelTransform(value));
+        const rotation=value.rotation;
+        if(rotation&&(rotation[0]||rotation[1]||rotation[2]))this.rotatedModels.add(model);else this.rotatedModels.delete(model);
+      }
     }
-    for(const model of this.transforms.keys())if(!current.has(model)){changed=true;this.transforms.delete(model);this.inverseTransforms.delete(model);}
+    for(const model of this.transforms.keys())if(!current.has(model)){changed=true;this.transforms.delete(model);this.inverseTransforms.delete(model);this.rotatedModels.delete(model);}
     const disabled=collider?.disabledModels||new Set();
-    if(disabled.size!==this.disabled.size||[...disabled].some(model=>!this.disabled.has(model))) {
+    let disabledChanged=disabled.size!==this.disabled.size;
+    if(!disabledChanged)for(const model of disabled)if(!this.disabled.has(model)){disabledChanged=true;break;}
+    if(disabledChanged) {
       changed=true;this.disabled=new Set(disabled);
     }
     const physical=world.physicalModels||[0];
     if(physical.length!==this.physical.length||physical.some((model,i)=>model!==this.physical[i])) {
-      changed=true;this.physical=[...physical];
+      changed=true;this.physical=Object.freeze([...physical]);
+      this.physicalOrder.clear();this.duplicatePhysical=false;
+      for(let i=0;i<this.physical.length;i++) {
+        const model=this.physical[i];
+        if(this.physicalOrder.has(model))this.duplicatePhysical=true;else this.physicalOrder.set(model,i);
+      }
     }
     const objects=world.gameplay?.objects;
     if(objects!==this.gameObjects) {
       this.gameObjects=objects;this.doors=new Map((objects||[]).filter(object=>object.kind==='door').map(object=>[object.modelIndex,object]));
       changed=true;
     }
-    const open=(this.metadata.areaPortals||[]).map(([model])=>{
+    const portals=this.metadata.areaPortals||[];
+    let portalChanged=portals.length!==this.open.length;
+    for(let i=0;i<portals.length;i++) {
+      const [model]=portals[i];
       const door=this.doors.get(model),motion=world.gameplay?.scripts?.players?.get(door?.id);
       const surfaces=world.modelMeshes?.get(model);
       // Synthetic callers without rendering metadata retain authored doors.
       const hasSurface=surfaces?surfaces.some(mesh=>mesh.material?.opacity!==0):true;
-      return doorPortalOpen(door,motion,hasSurface);
-    });
-    if(open.length!==this.open.length||open.some((value,i)=>value!==this.open[i])) {
-      this.open=open;this.areas.clear();changed=true;
+      const open=doorPortalOpen(door,motion,hasSurface);
+      if(open!==this.open[i]){this.open[i]=open;portalChanged=true;}
     }
-    if(changed)this.revision++;
+    if(portalChanged) {
+      this.open.length=portals.length;this.areas.clear();changed=true;
+    }
+    if(changed){this.revision++;this.rotatedPhysical=this.physical.filter(index=>this.rotatedModels.has(index));}
+  }
+
+  // Prime transform-derived bounds and the ordered spatial plan during level
+  // loading, before the first debris cohort starts querying Sun visibility.
+  prepare() {
+    this.beginFrame();
+    this.world.collider?.traceModelIndices?.(this.physical,[0,0,0],[0,0,0]);
   }
 
   findLeaf(point) {
@@ -97,12 +118,41 @@ export class ActorLightVisibility {
     // point branch 0x5c9f70 -> 0x5ca030 -> 0x5ca810 splits exactly at BSP
     // planes, with no player-collider contact skin. Its Boolean recursion is
     // the same exact split used for floor sampling; actors are excluded.
-    for(const index of this.physical) {
+    // Cull in world space before applying each brush's inverse pose. The
+    // original local bounds below allow one unit on every axis; after any
+    // rotation that projects by at most sqrt(3) units onto a world axis.
+    // Two units conservatively contain it, without changing the exact ray.
+    const collider=this.world.collider;
+    let indices=collider?.traceModelIndices?.(this.physical,
+      from.map((v,i)=>Math.min(v,to[i])-2),from.map((v,i)=>Math.max(v,to[i])+2))||this.physical;
+    // The legacy inverse-endpoint AABB can accept a rotated brush outside
+    // this world-space box. Keep all rotated candidates in caller order so
+    // even an unbounded solid leaf retains the original Boolean behavior.
+    if(this.rotatedPhysical.length&&indices!==this.physical) {
+      if(this.duplicatePhysical) {
+        const selected=new Set(indices);
+        indices=this.physical.filter(index=>selected.has(index)||this.rotatedModels.has(index));
+      } else {
+        const selected=[],rotated=this.rotatedPhysical;let a=0,b=0;
+        // Both lists are already in authored physical-model order. Merge only
+        // the nearby and rotated entries instead of rescanning every brush.
+        while(a<indices.length||b<rotated.length) {
+          if(a===indices.length)selected.push(rotated[b++]);
+          else if(b===rotated.length)selected.push(indices[a++]);
+          else if(indices[a]===rotated[b]){selected.push(indices[a++]);b++;}
+          else if(this.physicalOrder.get(indices[a])<this.physicalOrder.get(rotated[b]))selected.push(indices[a++]);
+          else selected.push(rotated[b++]);
+        }
+        indices=selected;
+      }
+    }
+    for(const index of indices) {
       const model=collision.models[index];if(!model||this.disabled.has(index))continue;
       const inverse=index?this.inverseTransforms.get(index):null;
+      if(inverse&&model.min&&model.max&&!inverse.intersectsBounds(from,to,model.min,model.max,1))continue;
       const a=inverse?inverse(from):from,b=inverse?inverse(to):to;
       if(index&&model.min&&model.max&&model.min.some((min,i)=>min>Math.max(a[i],b[i])+1||model.max[i]<Math.min(a[i],b[i])-1))continue;
-      if(traceActorFloorBsp(collision,a,b,model.root))return true;
+      if(actorBspRayBlocked(collision,a,b,model.root))return true;
     }
     return false;
   }

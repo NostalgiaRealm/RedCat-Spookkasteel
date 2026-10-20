@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { BspCollider, PlayerController } from './collision.js';
 import { moveSolidPlayer } from './moving-solids.js';
 import { ActorAnimator, ActorStateAnimator } from './animation.js';
+import {cloneActorPoseGeometry} from './actor-geometry.js';
 import { sampleCameraRoute } from './script-camera.js';
 import { PlayerCameraControl } from './camera-control.js';
 import { resolveThirdPersonCamera } from './third-person-camera.js';
@@ -10,6 +11,7 @@ import { trailOpacity } from './projectile-hazards.js';
 import { projectileVisibilityScale } from './projectile-visibility.js';
 import { projectileAnimationFrame } from './projectile-animation.js';
 import { triangleCollider, traceActors } from './actor-collision.js';
+import { ActorCollisionIndex } from './actor-collision-index.js';
 import { WorldEffects } from './world-effects.js';
 import { EnemyTargeting, targetAimPoint, targetDirection, targetableObject, transformedTargetBounds, targetMarkerPose } from './targeting.js';
 import { actorOrientation, attachedActorVisible, nativePlayerYaw } from './actor-placement.js';
@@ -22,14 +24,18 @@ import { placeSpider } from './enemy-ambush.js';
 import { isGhostEnemy, ghostMaterials } from './ghost-materials.js';
 import { enemyDeathOpacity, applyEnemyDeathOpacity } from './enemy-death-effects.js';
 import {stepNativeDebris} from './debris-native.js';
+import {DebrisRenderPool} from './debris-render-pool.js';
 import {KNIGHT_PARTS,knightDebrisLifetime,createKnightDebrisParticles,restoreKnightDebrisState,snapshotKnightDebrisState} from './knight-debris.js';
 import { posedEnemyProjectileOrigins } from './enemy-projectile-origins.js';
 import { createActorLighting, updateActorLighting, applyActorLighting } from './actor-lighting.js';
 import { ActorWorldLighting } from './actor-world-lighting.js';
 import { createActorFloorLighting } from './actor-floor-lighting.js';
 import { ActorLightVisibility } from './actor-light-visibility.js';
-import { WorldGeometryStream } from './world-streaming.js';
+import { WorldGeometryStream, WORLD_STREAMING } from './world-streaming.js';
 import { ActorRenderResidency } from './actor-render-residency.js';
+import { ActorTextureStream } from './actor-texture-stream.js';
+import { StreamingWorkQueue } from './streaming-work.js';
+import { StreamingGpuPreparation } from './streaming-gpu-preparation.js';
 import { PlayerShadow, PLAYER_SHADOW_TEXTURE } from './player-shadow.js';
 import { nativeSkyboxFaces } from './skybox.js';
 const json = async url => { const response=await fetch(url); if(!response.ok) throw new Error(`Ontbrekend spelbestand: ${url}`); return response.json(); };
@@ -70,12 +76,22 @@ const BURIED_DECORATIVE_ACTORS=new Set(['tree.act','kandela.act','cross5.act','p
 export class CastleWorld {
   constructor(renderer, settings) {
     this.renderer=renderer;this.settings=settings;this.scene=new THREE.Scene();
+    // The level scene is an identity container. Moving actors and brushes
+    // retain automatic matrices; static world chunks can reuse theirs.
+    this.scene.matrixAutoUpdate=false;
     this.scene.background=new THREE.Color('#28243f');
     this.camera=new THREE.PerspectiveCamera(settings.fov,1,1,15000);
-    this.yaw=0;this.pitch=0.16;this.elapsed=0;this.modelMeshes=new Map();this.actorInstances=new Map();this.actorCache=new Map();this.projectileMeshes=new Map();this.enemyDebris=new Map();this.resources=new Set();
+    this.yaw=0;this.pitch=0.16;this.elapsed=0;this.modelMeshes=new Map();this.actorInstances=new Map();this.actorCache=new Map();this.actorGeometryCache=new Map();this.projectileMeshes=new Map();this.enemyDebris=new Map();this.resources=new Set();
     this.scene.add(new THREE.HemisphereLight(0xffe8bc,0x505565,2.4));
     const sunlight=new THREE.DirectionalLight(0xffe0bd,2);sunlight.position.set(-500,1400,700);this.scene.add(sunlight);
     this.textureLoader=new THREE.TextureLoader();
+    this.streamingWork=new StreamingWorkQueue();this.streamingGpu=new StreamingGpuPreparation(renderer,this.streamingWork);
+    this.actorTextures=new ActorTextureStream({load:url=>this.texture(url),track:texture=>this.track(texture),
+      work:this.streamingWork,upload:texture=>renderer.initTexture?.(texture),
+      release:texture=>{texture.dispose();this.resources.delete(texture);},configure:texture=>{
+        texture.flipY=true;texture.colorSpace=THREE.SRGBColorSpace;texture.wrapS=texture.wrapT=THREE.RepeatWrapping;
+        texture.magFilter=THREE.LinearFilter;texture.anisotropy=Math.min(8,this.renderer.capabilities.getMaxAnisotropy());
+      }});
     this.targeting=new EnemyTargeting();this.cameraControl=new PlayerCameraControl();
     this.hazardMeshes=new Map();this.bossMachines=new Map();this.spiderWebs=new Map();
     this.skyBoundaryMeshes=[];
@@ -83,13 +99,20 @@ export class CastleWorld {
   track(resource){this.resources.add(resource);return resource;}
   async texture(url,linear=false) {
     const t=this.track(await this.textureLoader.loadAsync(url));t.flipY=false;
+    if(t.image?.decode)await t.image.decode();
     t.colorSpace=linear?THREE.NoColorSpace:THREE.SRGBColorSpace;
     t.wrapS=t.wrapT=THREE.RepeatWrapping;t.magFilter=THREE.LinearFilter;
     t.anisotropy=Math.min(8,this.renderer.capabilities.getMaxAnisotropy());return t;
   }
+  lazyActorTexture(url){
+    const prefix='assets/actors/';
+    if(url.startsWith(prefix))url=prefix+(this.actorResourceAliases?.textures?.[url.slice(prefix.length)]||url.slice(prefix.length));
+    return this.actorTextures.texture(url);
+  }
   async load(id,onProgress=()=>{}) {
     this.id=id;const base=`data/levels/${id}/`;this.level=await json(base+'level.json');const data=this.level;
-    [this.scriptProgram,this.motions,this.dialogue]=await Promise.all([json(`data/davi/${id}.json`),json(`data/motions/${id}.json`),json('data/dialogue/nl.json')]);
+    [this.scriptProgram,this.motions,this.dialogue,this.textureTransparency]=await Promise.all([json(`data/davi/${id}.json`),json(`data/motions/${id}.json`),json('data/dialogue/nl.json'),json(base+'texture-transparency.json').catch(()=>null)]);
+    if(!Array.isArray(this.textureTransparency)||this.textureTransparency.length!==data.textures.length)this.textureTransparency=null;
     onProgress('Originele geometrie en belichting laden…',.12);
     const [meshBuffer,lm,lmUv,lmFrames,floorMetadata,floorBytes,lightVisibility,lightPvs]=await Promise.all([
       binary(base+data.mesh.file),
@@ -109,6 +132,9 @@ export class CastleWorld {
     const invisibleModels=new Set();
     this.physicalModels=[0];
     for(let i=1;i<data.collision.models.length;i++)if(!triggerModels.has(i))this.physicalModels.push(i);
+    // Membership is fixed for the level; live door/brush state is kept in
+    // disabledModels and modelTransforms. Let collision cache this order.
+    Object.freeze(this.physicalModels);
     const liquidGroups=visibleLiquidGroups(data);
     const groups=data.groups.filter(group=>!triggerModels.has(group.model)||liquidGroups.has(group));
     this.geometryStream=new WorldGeometryStream(this,{
@@ -143,7 +169,11 @@ export class CastleWorld {
     const ground=this.collider.trace(this.player.position,this.player.position.map((v,i)=>i===1?v-180:v),this.player.mins,this.player.maxs,this.physicalModels);
     if(!ground.startSolid)this.player.position=ground.end;
     onProgress('RedCat en de bewoners van het kasteel laden…',.42);
-    try {this.actorManifest=await json('assets/actors/manifest.json');}catch{this.actorManifest={};}
+    [this.actorManifest,this.actorResourceAliases]=await Promise.all([
+      json('assets/actors/manifest.json').catch(()=>({})),
+      json('assets/actors/shared-resources.json').catch(()=>null)
+    ]);
+    if(this.actorResourceAliases?.format!=='redcat-actor-resources-v1')this.actorResourceAliases=null;
     this.actorOverrideManifest=await json('assets/actor-overrides/manifest.json');this.actorOverrideMaps=new Map();
     const projectileManifest=await json('assets/projectiles/manifest.json');
     this.projectileStyles=new Map();const frameTextures=new Map();
@@ -163,7 +193,7 @@ export class CastleWorld {
     this.trailTexture=await this.texture('assets/hazards/'+hazardManifest.mushroomTrail.texture);
     const entityActors=data.entities.filter(e=>e.classname==='AdamAnyActor');
     await Promise.all(entityActors.map(async e=>{
-      const actor=await this.makeActor(e.ActorFileName,{entity:e,scale:Number(e.Scale)>0?Number(e.Scale):undefined,rotation:[Number(e.RotateX||0),Number(e.RotateY||0),Number(e.RotateZ||0)]});
+      const actor=await this.makeActor(e.ActorFileName,{entity:e,deferTextures:true,scale:Number(e.Scale)>0?Number(e.Scale):undefined,rotation:[Number(e.RotateX||0),Number(e.RotateY||0),Number(e.RotateZ||0)]});
       if(actor){
         const animator=actor.userData.animator;
         if(animator){if(e.MotionName)animator.play(e.MotionName);const rate=Number(e.MotionSpeed??1);if(Number.isFinite(rate))animator.timeScale=rate;}
@@ -172,6 +202,7 @@ export class CastleWorld {
     }));
     this.redcat=await this.makeActor('redcat.act');
     if(this.redcat){this.scene.add(this.redcat);this.redcat.position.fromArray(this.player.position);if(this.redcat.userData.animator)this.redcat.userData.animator.transitionDuration=.25;}
+    this.actorTextures.pinRoot(this.redcat);await this.actorTextures.settle();
     const shadowMap=await this.texture(PLAYER_SHADOW_TEXTURE);
     shadowMap.wrapS=shadowMap.wrapT=THREE.ClampToEdgeWrapping;
     this.playerShadow=new PlayerShadow(this,shadowMap);
@@ -185,21 +216,30 @@ export class CastleWorld {
       if(!entry)return null;
       const path=typeof entry==='string'?entry:entry.file;
       const data=await json('assets/actors/'+path);
-      const geometry=this.track(new THREE.BufferGeometry());
-      geometry.setAttribute('position',new THREE.Float32BufferAttribute(data.positions,3));
-      geometry.setAttribute('normal',new THREE.Float32BufferAttribute(data.normals,3));
-      geometry.setAttribute('uv',new THREE.Float32BufferAttribute(data.uvs,2));geometry.setIndex(data.indices);
-      data.groups.forEach(g=>geometry.addGroup(g.start,g.count,g.materialIndex));
+      // The generated index aliases only byte-identical imported render data.
+      // Settings, values, clips and materials still belong to this definition.
+      // The first concurrent definition to finish can supply the shared body;
+      // no fetch of an otherwise-unused canonical actor is needed.
+      const geometryKey=this.actorResourceAliases?.geometry?.[stem]||stem;
+      const geometries=this.actorGeometryCache??=new Map();let geometry=geometries.get(geometryKey);
+      if(!geometry) {
+        geometry=this.track(new THREE.BufferGeometry());
+        geometry.setAttribute('position',new THREE.Float32BufferAttribute(data.positions,3));
+        geometry.setAttribute('normal',new THREE.Float32BufferAttribute(data.normals,3));
+        geometry.setAttribute('uv',new THREE.Float32BufferAttribute(data.uvs,2));geometry.setIndex(data.indices);
+        data.groups.forEach(g=>geometry.addGroup(g.start,g.count,g.materialIndex));
+        geometries.set(geometryKey,geometry);
+      }
       // Hekdoor is a closed grate with front/back faces ten units apart.
       // Native actor rendering culls backfaces (0x5cddac–0x5cddf6); showing
       // the rear face through the front's alpha holes draws a second gate.
       const side=['hekdoor','hekdoor_s1'].includes(stem)?THREE.FrontSide:THREE.DoubleSide;
-      const materials=await Promise.all(data.materials.map(async m=>{
-        const map=m.texture?await this.texture('assets/actors/'+m.texture):null;
+      const materials=data.materials.map(m=>{
+        const map=m.texture?this.lazyActorTexture('assets/actors/'+m.texture):null;
         // Actor importer flips V for the conventional Three.js texture origin.
         if(map){map.flipY=true;map.needsUpdate=true;}
         return this.track(new THREE.MeshLambertMaterial({map,color:m.texture?0xffffff:new THREE.Color().setRGB(...m.color,THREE.SRGBColorSpace),side,alphaTest:0.3}));
-      }));
+      });
       return {geometry,materials,data};
     })();
     this.actorCache.set(stem,promise);return promise;
@@ -208,14 +248,18 @@ export class CastleWorld {
     const template=await this.loadActor(name);if(!template)return null;
     const key=actorOverrideKey(options.entity),entry=this.actorOverrideManifest?.textures[key];
     if(entry) {
-      if(!this.actorOverrideMaps.has(key))this.actorOverrideMaps.set(key,this.texture('assets/actor-overrides/'+entry.file).then(map=>{map.flipY=true;return map;}));
-      options={...options,overrideMap:await this.actorOverrideMaps.get(key)};
+      if(!this.actorOverrideMaps.has(key))this.actorOverrideMaps.set(key,this.lazyActorTexture('assets/actor-overrides/'+entry.file));
+      options={...options,overrideMap:this.actorOverrideMaps.get(key)};
     }
-    return this.instantiateActor(template,options);
+    const actor=this.instantiateActor(template,options);
+    // Explicit ad-hoc/test actors keep makeActor's ready-to-render contract.
+    // Campaign actors and fragment prototypes opt into camera residency.
+    if(!options.deferTextures)await this.actorTextures.loadRoot(actor);
+    return actor;
   }
   instantiateActor(template,options={}) {
     const animated=template.data.animations?.length>0;
-    const geometry=animated?this.track(template.geometry.clone()):template.geometry;
+    const geometry=animated?this.track(cloneActorPoseGeometry(template.geometry)):template.geometry;
     const materials=template.materials.map(original=>{
       const material=this.track(original.clone());
       if(options.overrideMap){material.map=options.overrideMap;
@@ -283,11 +327,11 @@ export class CastleWorld {
       let name=obj.actor || obj.actorFile;
       if(!name && obj.kind==='pickup')name={ItemCoin:['imoneys','imoneym','imoneyl'][Math.max(0,Math.min(2,Number(e.Type)-1))],ItemHealth:['ihealths','ihealthm','ihealthl'][Math.max(0,Math.min(2,Number(e.Type)-1))],ItemPotion:'ipotion',ItemMirror:'imirror',ItemLife:'ilife',ItemHart:'hartcontainer',ItemHartContainer:'hartcontainer'}[e.classname];
       if(!name)return;
-      const actor=await this.makeActor(name,{entity:e,scale:Number(e.Scale)>0?Number(e.Scale):undefined});
+      const actor=await this.makeActor(name,{entity:e,deferTextures:true,scale:Number(e.Scale)>0?Number(e.Scale):undefined});
       if(actor){
         if(isGhostEnemy(obj)) {
-          this.ghostBodyMap??=this.texture('assets/ghosts/ghost.png').then(map=>{map.flipY=true;map.needsUpdate=true;return map;});
-          actor.userData.mesh.material=ghostMaterials(actor.userData.mesh.material,await this.ghostBodyMap,obj.variant,material=>this.track(material));
+          this.ghostBodyMap??=this.lazyActorTexture('assets/ghosts/ghost.png');
+          actor.userData.mesh.material=ghostMaterials(actor.userData.mesh.material,this.ghostBodyMap,obj.variant,material=>this.track(material));
         }
         actor.position.fromArray(gameplay.objectPosition(obj));actor.visible=actorVisible(obj,gameplay.time);this.scene.add(actor);this.actorInstances.set(obj.id,actor);
         if(obj.kind==='actor')this.configureDestructible(obj,actor);
@@ -313,6 +357,7 @@ export class CastleWorld {
             actor.position.fromArray(gameplay.objectPosition(obj));
             if(obj.yaw!==undefined)actor.rotation.y=obj.yaw;
             if(obj.rotation)actor.rotation.fromArray(obj.rotation);
+            actor.userData.animator?.flushGeometry?.();
             const mesh=actor.userData.mesh;actor.updateWorldMatrix(true,true);mesh.geometry.computeBoundingBox();
             return mesh.geometry.boundingBox.getCenter(new THREE.Vector3()).applyMatrix4(mesh.matrixWorld).toArray();
           };
@@ -343,7 +388,7 @@ export class CastleWorld {
               const hit=traceActors([record],start,end,[-radius,-radius,-radius],[radius,radius,radius],{fraction:1,startSolid:false},'canBeShot');
               return hit.fraction<1?hit.fraction:null;
             };
-            const parts=await Promise.all(['turbot','turtop','brcrate'].map(name=>this.makeActor(name,{scale:Number(obj.stats.MachineScale)||1.4})));
+            const parts=await Promise.all(['turbot','turtop','brcrate'].map(name=>this.makeActor(name,{deferTextures:true,scale:Number(obj.stats.MachineScale)||1.4})));
             // These auxiliary actors have no per-actor INI rotation. Their
             // source vertices use Z-up, just like Max's body and the crate.
             for(const part of parts.slice(0,2))if(part)part.userData.mesh.rotation.x=-Math.PI/2;
@@ -380,10 +425,32 @@ export class CastleWorld {
         (start,end,mins,maxs)=>placementCollider.trace(start,end,mins,maxs,this.physicalModels));
       actor.position.fromArray(gameplay.objectPosition(obj));
     }
-    if(gameplay.objects.some(obj=>obj.kind==='enemy'&&obj.actorFile==='knight'))this.knightParts=await Promise.all(KNIGHT_PARTS.map(name=>this.loadActor(name)));
+    if(gameplay.objects.some(obj=>obj.kind==='enemy'&&obj.actorFile==='knight')) {
+      this.knightParts=await Promise.all(KNIGHT_PARTS.map(name=>this.loadActor(name)));
+      if(this.knightParts.every(Boolean))this.prepareKnightRenderPool();
+    }
+    // Level objects and actor instances are created once, before play starts.
+    // Keep the authored iteration order, including disabled actors, without
+    // looking up every waypoint, script command and trigger every frame.
+    this.actorObjectPairs=gameplay.objects.flatMap(object=>{
+      const actor=this.actorInstances.get(object.id);return actor?[[object,actor]]:[];
+    });
+    this.mountedActorPairs=this.actorObjectPairs.filter(([object])=>object.kind==='actor'&&object.modelIndex!==undefined);
+    this.actorRoots=[...this.actorInstances.values(),...Array.from(this.bossMachines.values(),machine=>machine.root)];
+    this.knightTextureSources=this.actorObjectPairs.filter(([object])=>object.enemyType==='knight').map(([,actor])=>actor);
     this.syncModels();
+    // Saved player coordinates are restored before effects are constructed,
+    // while the final camera is restored afterward. Warm fragment cohorts in
+    // that restored room instead of using the level's old spawn neighborhood.
+    this.geometryStream?.rooms?.update(this.camera,{playerOnly:true});
     if(this.level)this.effects=await WorldEffects.create(this,gameplay);
-    this.actorResidency=new ActorRenderResidency({scene:this.scene,protectedRoots:[this.redcat],boundsVisible:box=>this.geometryStream.boundsVisible(box)});
+    // Build exact lighting query indices during loading. A burst of new
+    // fragments must not pay that one-time cost on its first visible frame.
+    this.actorFloorLighting?.prepare?.();this.actorLightVisibility?.prepare?.();
+    this.collider.traceModelIndices?.(this.physicalModels,[0,0,0],[0,0,0]);
+    this.actorResidency=new ActorRenderResidency({scene:this.scene,protectedRoots:[this.redcat],
+      nearDistance:WORLD_STREAMING.preloadRadius,retainDistance:WORLD_STREAMING.retainRadius,viewDistance:WORLD_STREAMING.viewRadius,
+      boundsVisible:box=>this.geometryStream.boundsVisible(box),boundsAllowed:box=>this.geometryStream.roomBoundsAllowed(box),boundsRequired:box=>this.geometryStream.roomBoundsRequired(box),boundsPreload:box=>this.geometryStream.roomBoundsPreload(box),preloadPosition:()=>this.geometryStream.preloadPosition,textures:this.actorTextures,preparation:this.streamingGpu});
     this.updateRenderResidency();
   }
   configureDestructible(object,actor) {
@@ -394,13 +461,31 @@ export class CastleWorld {
       const thresholds=object.actorSettings.damageThreshold||[object.health,object.health];
       object.health=(thresholds[0]+thresholds[1])/2;
     }
+    let pendingBounds=null;
     object.effectPosition=()=>{
+      actor.userData.animator?.flushGeometry?.();
       actor.updateWorldMatrix(true,true);
-      return new THREE.Box3().setFromObject(actor).getCenter(new THREE.Vector3()).toArray();
+      const box=new THREE.Box3().setFromObject(actor),position=box.getCenter(new THREE.Vector3()).toArray(),mesh=actor.userData.mesh;
+      // destroy() asks for the centre and its relative bounds consecutively.
+      // Reuse that posed box only for the same centre and unchanged simple
+      // actor; arbitrary compound/mutated actors keep the full query below.
+      pendingBounds=actor.boundingBox===undefined&&actor.children.length===1&&actor.children[0]===mesh&&
+        mesh.isMesh&&!mesh.isSkinnedMesh&&!mesh.isInstancedMesh&&!mesh.children.length&&mesh.boundingBox===undefined?
+        {position,box,geometry:mesh.geometry,version:mesh.geometry.attributes.position?.version,
+          matrix:[...mesh.matrixWorld.elements],bounds:mesh.geometry.boundingBox?[...mesh.geometry.boundingBox.min.toArray(),...mesh.geometry.boundingBox.max.toArray()]:null}:null;
+      return position;
     };
     object.effectBounds=position=>{
+      actor.userData.animator?.flushGeometry?.();
       actor.updateWorldMatrix(true,true);
-      const box=new THREE.Box3().setFromObject(actor),center=new THREE.Vector3().fromArray(position);
+      const pending=pendingBounds,mesh=actor.userData.mesh;pendingBounds=null;
+      const local=mesh?.geometry?.boundingBox;
+      const same=pending?.position===position&&actor.boundingBox===undefined&&actor.children.length===1&&actor.children[0]===mesh&&mesh.boundingBox===undefined&&!mesh.children.length&&
+        pending.geometry===mesh.geometry&&pending.version===mesh.geometry.attributes.position?.version&&
+        pending.matrix.every((v,i)=>v===mesh.matrixWorld.elements[i])&&pending.bounds&&local&&
+        pending.bounds[0]===local.min.x&&pending.bounds[1]===local.min.y&&pending.bounds[2]===local.min.z&&
+        pending.bounds[3]===local.max.x&&pending.bounds[4]===local.max.y&&pending.bounds[5]===local.max.z;
+      const box=same?pending.box:new THREE.Box3().setFromObject(actor),center=new THREE.Vector3().fromArray(position);
       return box.isEmpty()?{min:[0,0,0],max:[0,0,0]}:{min:box.min.sub(center).toArray(),max:box.max.sub(center).toArray()};
     };
     object.effectScale=()=>actor.userData.mesh?.scale.toArray()||[1,1,1];
@@ -409,11 +494,24 @@ export class CastleWorld {
     const game=this.gameplay;
     object.explosionActive=()=>actorVisible(object,game.time)&&attachedActorVisible(object,game);
     object.explosionMayReach=cell=>{
+      const animator=actor.userData.animator,mesh=actor.userData.mesh;
+      if(animator?.geometryPending&&animator.geometry===mesh?.geometry&&actor.children.length===1&&actor.children[0]===mesh) {
+        const rootScale=Math.max(Math.abs(actor.scale.x),Math.abs(actor.scale.y),Math.abs(actor.scale.z));
+        const scale=Math.max(Math.abs(mesh.scale.x),Math.abs(mesh.scale.y),Math.abs(mesh.scale.z))*rootScale;
+        // Each box-axis maximum is bounded by the current vertex radius.
+        // Thus 3*r encloses the sqrt(3)*norm(maxBBoxAxes) used below, with
+        // the same scaled child offset. This is conservative for this exact
+        // pose; it needs no animation-wide bounds or deferred vertex upload.
+        const radius=3*(animator.conservativePoseRadius?.()??Infinity)*scale+Math.sqrt(3)*mesh.position.length()*rootScale;
+        const origin=game.objectPosition(object);
+        if(Math.hypot(...origin.map((value,axis)=>value-cell.position[axis]))>cell.radius+radius)return false;
+      }
+      animator?.flushGeometry?.();
       // The current geometry bound is already updated by pose evaluation.
       // This conservative sphere rejects far actors without updating their
       // world matrices or constructing a posed box. sqrt(3) also encloses
       // the rotated AABB corners used by native radial damage.
-      const mesh=actor.userData.mesh,box=mesh?.geometry.boundingBox;
+      const box=mesh?.geometry.boundingBox;
       if(!box||actor.children.length!==1||actor.children[0]!==mesh)return true;
       const rootScale=Math.max(Math.abs(actor.scale.x),Math.abs(actor.scale.y),Math.abs(actor.scale.z));
       const scale=Math.max(Math.abs(mesh.scale.x),Math.abs(mesh.scale.y),Math.abs(mesh.scale.z))*rootScale;
@@ -422,13 +520,14 @@ export class CastleWorld {
       return Math.hypot(...origin.map((value,axis)=>value-cell.position[axis]))<=cell.radius+radius;
     };
     object.explosionBounds=()=>{
+      actor.userData.animator?.flushGeometry?.();
       // Hurt cells use the posed actor box, not the narrower movement hull.
       // Cache within a tick when several nearby crates explode together.
       const cached=actor.userData.explosionBounds,origin=game.objectPosition(object);
       const rotation=object.rotation?.join(',');
       if(cached?.time===game.time&&cached.yaw===object.yaw&&cached.rotation===rotation&&cached.bounds.origin.every((value,axis)=>value===origin[axis]))return cached.bounds;
       actor.position.fromArray(origin);
-      if(object.kind==='actor')actor.quaternion.copy(actorOrientation(object,actor.userData.template?.data.settings||{},game.scripts?.modelTransforms.get(object.modelIndex)));
+      if(object.kind==='actor')actorOrientation(object,actor.userData.template?.data.settings||{},game.scripts?.modelTransforms.get(object.modelIndex),actor.quaternion);
       else {
         if(object.yaw!==undefined)actor.rotation.y=object.yaw;
         if(object.rotation)actor.rotation.fromArray(object.rotation);
@@ -441,25 +540,90 @@ export class CastleWorld {
   }
   registerActorCollision(object,actor,overrideFlags={}) {
     const record=this.actorCollisionRecord(object,actor,overrideFlags);
-    if(record&&!this.collider.actors.includes(record))this.collider.actors.push(record);
+    if(record){
+      if(this.collider.actorIndex?.actors!==this.collider.actors)this.collider.actorIndex=new ActorCollisionIndex(this.collider.actors);
+      this.collider.actorIndex.add(record);
+    }
     return record;
   }
   actorCollisionRecord(object,actor,overrideFlags={}) {
     const flags={...actor.userData.template?.data.settings,...overrideFlags};
     if(!flags.blocksPlayer&&!flags.canBeShot&&!flags.blocksLOS)return;
+    const animator=actor.userData.animator;
+    // Off-screen props keep exact animation clocks, but need no bone/vertex
+    // sampling until a matching nearby collision query reaches their record.
+    // Enemies and unsupported geometry retain their existing eager path.
+    let deferred=object.kind==='actor'&&animator?.deferGeometry&&animator.geometryPending;
+    const poseRadius=deferred?(animator.conservativeAnimationRadius?.()??Infinity):Infinity;
+    deferred=deferred&&Number.isFinite(poseRadius);
+    if(!deferred)animator?.flushGeometry?.();
     actor.updateWorldMatrix(true,true);
     const mesh=actor.userData.mesh,geometry=mesh.geometry,positions=geometry.attributes.position,index=geometry.index;
     const cached=actor.userData.collisionRecord,matrix=mesh.matrixWorld.elements;
-    if(cached&&cached.matrix.every((v,i)=>v===matrix[i])&&cached.positionVersion===positions.version)return cached;
-    const vertices=[],triangles=[];
-    for(let i=0;i<positions.count;i++)vertices.push(new THREE.Vector3().fromBufferAttribute(positions,i).applyMatrix4(mesh.matrixWorld).toArray());
-    for(let i=0;i<(index?.count||positions.count);i+=3){
-      const triangle=triangleCollider([0,1,2].map(j=>vertices[index?index.getX(i+j):i+j]));
-      if(triangle)triangles.push(triangle);
+    let sameMatrix=!!cached;
+    if(cached)for(let i=0;i<16;i++)if(cached.matrix[i]!==matrix[i]){sameMatrix=false;break;}
+    const sameDeferredPose=!deferred||cached?.deferredClip===animator.sampledClip&&cached.deferredTime===animator.sampledTime&&
+      cached.deferredTransition===animator.sampledTransition&&cached.deferredWeight===animator.sampledWeight;
+    if(cached&&sameMatrix&&cached.positionVersion===positions.version) {
+      if(sameDeferredPose)return cached;
+      if(deferred&&cached.deferredRadius===poseRadius) {
+        // Every pose fits the same conservative envelope. Keep its spatial
+        // cells and arrays while invalidating only the exact narrow phase.
+        cached.dirty=true;cached.deferredClip=animator.sampledClip;cached.deferredTime=animator.sampledTime;
+        cached.deferredTransition=animator.sampledTransition;cached.deferredWeight=animator.sampledWeight;
+        return cached;
+      }
     }
     const record=cached||{};
-    Object.assign(record,{id:object.id,supportModelIndex:object.kind==='actor'?object.modelIndex:undefined,...flags,triangles,matrix:[...matrix],positionVersion:positions.version,
-      min:[0,1,2].map(i=>Math.min(...vertices.map(p=>p[i]))),max:[0,1,2].map(i=>Math.max(...vertices.map(p=>p[i]))),
+    if(!cached) {
+      // Keep exact posed triangles available to every collision/targeting
+      // consumer, but construct them only when a query reaches this actor.
+      // Distant animated torches otherwise rebuild hundreds of SAT axes each
+      // frame even though every sweep rejects their bounding box.
+      let triangles=[],min,max;
+      const prepare=()=>{
+        if(!record.dirty)return;
+        // The grid and caller masks have already rejected distant/irrelevant
+        // props. Materialize the pending current pose before the unchanged SAT.
+        actor.userData.animator?.flushGeometry?.();
+        const vertices=[],point=new THREE.Vector3(),transform=new THREE.Matrix4().fromArray(record.matrix);
+        min=[Infinity,Infinity,Infinity];max=[-Infinity,-Infinity,-Infinity];triangles=[];
+        for(let i=0;i<positions.count;i++) {
+          point.fromBufferAttribute(positions,i).applyMatrix4(transform);
+          const vertex=point.toArray();vertices.push(vertex);
+          for(let axis=0;axis<3;axis++){min[axis]=Math.min(min[axis],vertex[axis]);max[axis]=Math.max(max[axis],vertex[axis]);}
+        }
+        for(let i=0;i<(index?.count||positions.count);i+=3) {
+          const triangle=triangleCollider([0,1,2].map(j=>vertices[index?index.getX(i+j):i+j]));
+          if(triangle)triangles.push(triangle);
+        }
+        record.positionVersion=positions.version;record.dirty=false;
+      };
+      Object.defineProperties(record,{
+        triangles:{enumerable:true,get(){prepare();return triangles;}},
+        min:{enumerable:true,get(){prepare();return min;}},max:{enumerable:true,get(){prepare();return max;}}
+      });
+    }
+    let bounds;
+    if(deferred) {
+      // A matrix Frobenius norm bounds every current-pose vertex after parent,
+      // child and nonuniform scale/shear transforms. Retain an unbounded
+      // candidate if an unsupported transform cannot produce finite bounds.
+      const scale=Math.hypot(matrix[0],matrix[1],matrix[2],matrix[4],matrix[5],matrix[6],matrix[8],matrix[9],matrix[10]);
+      const radius=poseRadius*scale*(1+1e-12)+1e-6;
+      bounds=Number.isFinite(radius)&&Number.isFinite(matrix[12])&&Number.isFinite(matrix[13])&&Number.isFinite(matrix[14])?
+        new THREE.Box3(new THREE.Vector3(matrix[12]-radius,matrix[13]-radius,matrix[14]-radius),
+          new THREE.Vector3(matrix[12]+radius,matrix[13]+radius,matrix[14]+radius)):
+        new THREE.Box3(new THREE.Vector3(-Infinity,-Infinity,-Infinity),new THREE.Vector3(Infinity,Infinity,Infinity));
+    } else {
+      if(!geometry.boundingBox)geometry.computeBoundingBox();
+      bounds=new THREE.Box3().copy(geometry.boundingBox).applyMatrix4(mesh.matrixWorld);
+    }
+    Object.assign(record,{id:object.id,supportModelIndex:object.kind==='actor'?object.modelIndex:undefined,...flags,matrix:[...matrix],positionVersion:positions.version,
+      broadphaseMin:bounds.min.toArray(),broadphaseMax:bounds.max.toArray(),dirty:true,
+      deferredClip:deferred?animator.sampledClip:null,deferredTime:deferred?animator.sampledTime:NaN,
+      deferredTransition:deferred?animator.sampledTransition:null,deferredWeight:deferred?animator.sampledWeight:0,
+      deferredRadius:deferred?poseRadius:null,
       active:()=>actorVisible(object,this.gameplay.time)&&(object.kind!=='actor'||attachedActorVisible(object,this.gameplay))&&(object.kind!=='enemy'||object.health>0)});
     actor.userData.collisionRecord=record;
     return record;
@@ -467,24 +631,54 @@ export class CastleWorld {
   syncModels() {
     this.syncModelStates();
     const host=this.gameplay?.scripts;if(!host)return;
-    this.collider.modelTransforms=host.modelTransforms;
+    const poses=host.modelTransforms;
+    this.collider.modelTransforms=poses;
+    // Script poses are immutable snapshots in the managed map. A paused,
+    // distant brush needs no repeated matrix composition or mesh writes;
+    // its next actual pose change is still published before movement traces.
+    if(this.syncedPoseSource!==poses) {
+      this.unsubscribeModelPoses?.();this.unsubscribeModelPoses=null;
+      this.syncedPoseSource=poses;this.pendingModelPoses=null;
+      if(poses?.subscribe) {
+        const pending=this.pendingModelPoses=new Set(poses.keys());
+        this.unsubscribeModelPoses=poses.subscribe(index=>pending.add(index));
+      }
+    }
+    if(this.pendingModelPoses&&(this.syncedPoseMeshes!==this.modelMeshes||this.syncedPoseMeshCount!==this.modelMeshes.size)) {
+      for(const index of poses.keys())this.pendingModelPoses.add(index);
+      this.syncedPoseMeshes=this.modelMeshes;this.syncedPoseMeshCount=this.modelMeshes.size;
+    }
+    const indices=this.pendingModelPoses||poses.keys();
+    if(this.pendingModelPoses&&!this.pendingModelPoses.size)return;
     const origin=new THREE.Vector3(),rotation=new THREE.Quaternion(),offset=new THREE.Vector3();
-    for(const [index,t] of host.modelTransforms) {
+    for(const index of indices) {
+      const t=poses.get(index);if(!t)continue;
       rotation.fromArray(t.rotation);origin.fromArray(t.origin);
       offset.copy(origin).add(new THREE.Vector3(...t.translation)).sub(origin.clone().applyQuaternion(rotation));
       for(const mesh of this.modelMeshes.get(index)||[]){mesh.position.copy(offset);mesh.quaternion.copy(rotation);}
     }
+    this.pendingModelPoses?.clear();
   }
   syncActorLighting(lights=[]) {
     // Traversal also reaches mounted machine parts and temporary breakup
     // actors; their INI settings apply just like regular level actors.
-    this.scene.updateMatrixWorld(true);
+    // The ordinary frame just refreshed every residency-managed actor tree.
+    // Direct lighting callers still refresh the whole scene, since they may
+    // have moved an actor without running residency first.
+    if(!this.actorLightingMatricesPrepared)this.scene.updateMatrixWorld();
     this.actorFloorLighting?.beginFrame();this.actorLightVisibility?.beginFrame();
     const position=new THREE.Vector3(),bounds=new THREE.Box3();
     this.scene.traverseVisible(mesh=>{
       const state=mesh.userData.actorLighting;if(!state||this.actorResidency&&!this.actorResidency.isRendered(mesh))return;
-      // The scene update above already includes every mounted part and debris
-      // transform; getWorldPosition would walk/update its ancestors again.
+      // RedCat and temporary fragments are not owned by actor residency.
+      // Fragments may even have been created after that frame's residency
+      // update; refresh their current ancestor chain before sampling them.
+      // A pooled fragment keeps a static child-local matrix. Its moving
+      // parent does not mark that child dirty during an upward-only refresh;
+      // force the current world product before sampling light at its origin.
+      if(this.actorLightingMatricesPrepared&&!this.actorResidency?.meshRecords?.has(mesh))mesh.updateWorldMatrix(true,false,true);
+      // The prepared matrix includes mounted parts and debris transforms;
+      // getWorldPosition would walk/update its ancestors again.
       position.setFromMatrixPosition(mesh.matrixWorld);
       const root=position.toArray(),lighting=state.settings.lighting||{};
       if(!mesh.geometry.boundingBox)mesh.geometry.computeBoundingBox();
@@ -525,12 +719,11 @@ export class CastleWorld {
     // Motion timelines advance before player movement and projectile queries.
     // Move their attached collision surfaces at the same point in the frame;
     // animation clocks and enemy state advance once, in syncActors below.
-    for(const object of game.objects) {
-      if(object.kind!=='actor'||object.modelIndex===undefined)continue;
-      const actor=this.actorInstances.get(object.id);
+    const mounted=this.mountedActorPairs||game.objects.filter(object=>object.kind==='actor'&&object.modelIndex!==undefined).map(object=>[object,this.actorInstances.get(object.id)]);
+    for(const [object,actor] of mounted) {
       if(!actor?.userData.collisionRecord)continue;
       actor.position.fromArray(game.objectPosition(object));
-      actor.quaternion.copy(actorOrientation(object,actor.userData.template?.data.settings||{},game.scripts?.modelTransforms.get(object.modelIndex)));
+      actorOrientation(object,actor.userData.template?.data.settings||{},game.scripts?.modelTransforms.get(object.modelIndex),actor.quaternion);
       this.registerActorCollision(object,actor);
     }
   }
@@ -585,15 +778,16 @@ export class CastleWorld {
   syncActors(dt) {
     const game=this.gameplay;if(!game)return;
     const frozen=!!(game.scripts?.enemiesFrozen||game.scripts?.cutscene);
-    for(const obj of game.objects) {
-      const actor=this.actorInstances.get(obj.id);if(!actor)continue;
+    const actors=this.actorObjectPairs||game.objects.map(object=>[object,this.actorInstances.get(object.id)]);
+    for(const [obj,actor] of actors) {
+      if(!actor)continue;
       const corpse=obj.kind==='enemy'&&obj.health===0&&obj.animationState==='death'&&game.time<(obj.corpseUntil??((obj.animationUntil||0)+2));
       actor.visible=actorVisible(obj,game.time);
       if(obj.kind==='enemy')applyEnemyDeathOpacity(actor,enemyDeathOpacity(obj,game.time),material=>this.track(material));
       actor.position.fromArray(game.objectPosition?.(obj)||obj.position);
       if(obj.kind==='actor'||obj.kind==='pickup') {
         obj.actorAge=(obj.actorAge||0)+(obj.enabled?dt:0);
-        actor.quaternion.copy(actorOrientation(obj,actor.userData.template?.data.settings||{},game.scripts?.modelTransforms.get(obj.modelIndex)));
+        actorOrientation(obj,actor.userData.template?.data.settings||{},game.scripts?.modelTransforms.get(obj.modelIndex),actor.quaternion);
         actor.visible=actor.visible&&attachedActorVisible(obj,game);
       }
       if(obj.kind==='enemy'&&obj.yaw!==undefined)actor.rotation.y=obj.yaw;
@@ -610,14 +804,16 @@ export class CastleWorld {
         // Advance state clocks even off-screen so an attack or death cannot
         // resume from its first frame when the camera returns to the actor.
         const poseWasSampled=actor.userData.projectilePoseTime===game.time;
+        actor.userData.animator.deferGeometry=!!this.actorResidency&&!this.actorResidency.isRendered(actor);
         actor.userData.stateAnimator.update(obj,poseWasSampled?0:dt,frozen&&!(corpse&&game.scripts?.cutscene),game.time);
         delete actor.userData.projectilePoseTime;
       } else if(actor.userData.animator) {
         // Advance off-screen clocks too. Rendering may be culled, but a
         // chandelier's or cutscene double's pose must not depend on the camera.
         const animator=actor.userData.animator;
+        animator.deferGeometry=!!this.actorResidency&&!this.actorResidency.isRendered(actor);
         animator.time=(obj.actorAge||0)*animator.timeScale;
-        if(actor.visible&&actor.position.distanceToSquared(this.camera.position)<1800**2)animator.update(0);
+        if(actor.visible)animator.update(0);
       }
       if(obj.enemyType==='spider')this.syncSpiderWeb(obj,actor);
       if(obj.kind==='actor'&&actor.userData.collisionRecord)this.registerActorCollision(obj,actor);
@@ -643,23 +839,32 @@ export class CastleWorld {
     positions.setXYZ(1,object.position[0],object.position[1]+(object.collisionMaxs?.[1]||24)*.6,object.position[2]);
     positions.needsUpdate=true;line.geometry.computeBoundingSphere();line.visible=true;
   }
+  prepareKnightRenderPool() {
+    if(this.knightRenderPool)return;
+    this.knightPartActors=this.knightParts.map(template=>this.instantiateActor(template));
+    this.knightTextureResources=new Set(this.knightPartActors.flatMap(prototype=>[...this.actorTextures?.prepareRoot(prototype).resources||[]]));
+    this.knightRenderPool=new DebrisRenderPool(this,{opaqueUntilFade:true});
+    this.knightRenderPool.prewarm(this.knightPartActors.map(prototype=>({prototype,count:3})),27);
+  }
   createKnightDebris(object,actor) {
     this.enemyDebris??=new Map();
+    this.prepareKnightRenderPool();
     const scale=actor.userData.mesh.scale.x,settings=actor.userData.template?.data.settings||{};
     const saved=restoreKnightDebrisState(object.knightDebrisState);
     const particles=saved?.particles||createKnightDebrisParticles(object,scale,settings,this.knightParts);
     const parts=particles.map(particle=>{
-      const template=this.knightParts[KNIGHT_PARTS.indexOf(particle.actor)];
-      const piece=this.instantiateActor(template,{scale});
+      const prototype=this.knightPartActors[KNIGHT_PARTS.indexOf(particle.actor)];
+      const renderEntry=this.knightRenderPool.acquire(prototype,{scale}),piece=renderEntry.root;
       piece.position.fromArray(particle.position);piece.quaternion.fromArray(particle.orientation);this.scene.add(piece);
       const mesh=piece.userData.mesh,materials=Array.isArray(mesh.material)?mesh.material:[mesh.material];
-      return {actor:piece,particle,materials,opacity:materials.map(m=>m.opacity)};
+      return {actor:piece,particle,materials,opacity:materials.map(m=>m.opacity),renderEntry};
     });
     this.enemyDebris.set(object.id,{parts,object,age:saved?.age||0,life:saved?.life??knightDebrisLifetime(this.knightParts)});
     object.knightDebrisSnapshot=()=>snapshotKnightDebrisState(this.enemyDebris.get(object.id));
     delete object.knightDebrisState;
   }
   removeKnightDebrisPart(part) {
+    if(part.renderEntry){this.knightRenderPool.release(part.renderEntry,this.gameplay?.time||0);return;}
     this.scene.remove(part.actor);
     for(const material of part.materials){material.dispose();this.resources?.delete(material);}
     const mesh=part.actor.userData.mesh;
@@ -693,13 +898,12 @@ export class CastleWorld {
       }
       for(const part of debris.parts){
         part.actor.position.fromArray(part.particle.position);part.actor.quaternion.fromArray(part.particle.orientation);
-        for(let i=0;i<part.materials.length;i++){
-          const material=part.materials[i];material.opacity=part.opacity[i]*part.particle.opacity;
-          if(part.particle.opacity<1){material.transparent=true;material.depthWrite=false;material.alphaTest=Math.min(material.alphaTest,.003);}
-        }
+        this.knightRenderPool.setOpacity(part.renderEntry,part.particle.opacity);
+        part.materials=part.renderEntry.materials;part.opacity=part.renderEntry.materialOpacity;
       }
       if(!debris.parts.length)this.enemyDebris.delete(id);
     }
+    this.knightRenderPool?.trim(this.gameplay?.time||0);
   }
   syncProjectiles() {
     const active=new Set();this.projectileMeshes??=new Map();
@@ -926,7 +1130,13 @@ export class CastleWorld {
       this.syncActors(dt);
       this.syncModelStates();
     }
-    this.syncPlayer(dt,input);this.updateCamera(dt);this.syncProjectiles();this.syncTargetMarker();this.syncHazards();this.updateRenderResidency();this.residencyPrepared=true;this.effects?.update(dt);return p;
+    this.syncPlayer(dt,input);this.updateCamera(dt);this.syncProjectiles();this.syncTargetMarker();this.syncHazards();this.updateRenderResidency();this.residencyPrepared=true;
+    // Effects read managed actor poses and may create unmanaged fragments.
+    // Limit matrix reuse to this synchronous call; pause/restore/direct
+    // lighting calls must never inherit an earlier frame's preparation.
+    this.actorLightingMatricesPrepared=true;
+    try{this.effects?.update(dt);}finally{this.actorLightingMatricesPrepared=false;}
+    return p;
   }
   updateCamera(dt,snap=false) {
     const scripted=this.cameraControl.sync(this);
@@ -965,15 +1175,42 @@ export class CastleWorld {
   }
   updateRenderResidency(){
     this.geometryStream?.update();
-    this.actorResidency?.update([...this.actorInstances.values(),...Array.from(this.bossMachines.values(),machine=>machine.root)],this.camera,performance.now()/1000);
+    this.actorResidency?.update(this.actorRoots||[...this.actorInstances.values(),...Array.from(this.bossMachines.values(),machine=>machine.root)],this.camera,performance.now()/1000);
+    if(this.knightTextureResources&&this.knightTextureSources?.some(actor=>this.actorResidency?.isResident(actor)))
+      this.actorTextures?.request(this.knightTextureResources);
+    // Camera turns and scripted cuts can reveal an actor in this same frame.
+    // Resolve its current pose before lighting and renderer submission.
+    if(this.actorResidency)for(const actor of this.actorInstances.values())if(this.actorResidency.isRendered(actor))actor.userData.animator?.flushGeometry?.();
+  }
+  async settleActorTextures(){
+    this.updateRenderResidency();this.updateActorTextureResidency();
+    await this.actorResidency?.settle();await this.actorTextures?.settle();
+    this.updateRenderResidency();this.updateActorTextureResidency();
+  }
+  async prepareStreamingPrograms(){
+    if(!this.renderer.compileAsync)return;
+    // Shader variants do not require distant artwork. Compile with one tiny
+    // map while the loading screen is up, after actor/world lighting patches
+    // are installed. Later room entries reuse these programs and sampler slots.
+    const placeholder=new THREE.DataTexture(new Uint8Array([255,255,255,255]),1,1);placeholder.colorSpace=THREE.SRGBColorSpace;
+    const changed=[];
+    for(const {material}of this.geometryStream?.materials.values()||[])if(!material.map&&material.colorWrite!==false){changed.push(material);material.map=placeholder;material.needsUpdate=true;}
+    try{await this.renderer.compileAsync(this.scene,this.camera);}finally{for(const material of changed){material.map=null;material.needsUpdate=true;}placeholder.dispose();}
+  }
+  updateActorTextureResidency(){
+    this.actorTextures?.update(this.camera,{nearDistance:WORLD_STREAMING.preloadRadius,viewDistance:WORLD_STREAMING.viewRadius,
+      preloadPosition:this.geometryStream?.preloadPosition,
+      boundsAllowed:(position,radius)=>this.geometryStream?.rooms?.sphereAllowed(position,radius)??true,
+      boundsRequired:(position,radius)=>this.geometryStream?.rooms?.sphereRequired(position,radius)??true});
   }
   render(){
     if(!this.residencyPrepared)this.updateRenderResidency();this.residencyPrepared=false;
     // Retain the completed frame during an unexpected camera cut until the
     // new view is ready, instead of displaying holes or untextured walls.
-    if(this.geometryStream&&!this.geometryStream.readyForView)return;
+    this.updateActorTextureResidency();
+    if(this.geometryStream&&!this.geometryStream.readyForView||this.actorResidency?.readyForView===false||this.actorTextures?.readyForView===false)return;
     this.playerShadow?.update();
     this.renderer.render(this.scene,this.camera);
   }
-  dispose(){this.playerShadow?.dispose();this.actorResidency?.dispose();this.geometryStream?.dispose();this.effects?.dispose();for(const resource of this.resources)resource.dispose();this.resources.clear();this.scene.clear();this.enemyDebris?.clear();this.projectileMeshes?.clear();this.hazardMeshes.clear();this.bossMachines.clear();this.spiderWebs.clear();}
+  dispose(){this.streamingWork?.dispose();this.streamingGpu?.dispose();this.unsubscribeModelPoses?.();this.playerShadow?.dispose();this.actorResidency?.dispose();this.geometryStream?.dispose();this.effects?.dispose();this.knightRenderPool?.dispose();this.actorTextures?.dispose();for(const resource of this.resources)resource.dispose();this.resources.clear();this.scene.clear();this.enemyDebris?.clear();this.projectileMeshes?.clear();this.hazardMeshes.clear();this.bossMachines.clear();this.spiderWebs.clear();}
 }

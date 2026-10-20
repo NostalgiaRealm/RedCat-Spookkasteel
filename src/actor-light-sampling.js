@@ -4,7 +4,7 @@
 // Input colours are encoded RGB / 255, as in WorldEffects, not linear RGB.
 export const MAX_ACTOR_DYNAMIC_LIGHTS=32;
 
-const vector=value=>value?.length===3&&Array.from(value).every(Number.isFinite);
+const vector=value=>value?.length===3&&Number.isFinite(value[0])&&Number.isFinite(value[1])&&Number.isFinite(value[2]);
 const clamp=(value,low,high)=>Math.max(low,Math.min(high,value));
 
 export function actorDynamicLightLimit(maximum=2) {
@@ -18,18 +18,27 @@ export function sampleActorDynamicLights(position,lights=[],maximum=2) {
   const candidates=[];
   for(const light of lights) {
     if(light.active===false||!Number.isFinite(light.radius)||light.radius<=0||!vector(light.position)||!vector(light.color))continue;
-    const delta=light.position.map((value,i)=>value-position[i]);
-    const distanceSquared=delta.reduce((sum,value)=>sum+value*value,0);
+    // Preserve typed-array rounding for synthetic/import callers, while the
+    // normal world light arrays need no temporary difference vector.
+    const delta=Array.isArray(light.position)?null:light.position.map((value,i)=>value-position[i]);
+    const dx=delta?delta[0]:light.position[0]-position[0],dy=delta?delta[1]:light.position[1]-position[1],dz=delta?delta[2]:light.position[2]-position[2];
+    const distanceSquared=dx*dx+dy*dy+dz*dz;
     // Membership is tested before applying the native one-unit distance floor.
     if(distanceSquared>=light.radius*light.radius)continue;
-    candidates.push({light,delta,distanceSquared});
+    // Only the nearest authored maximum is used (normally two). Keep that
+    // small list ordered, without allocating/sorting every in-range light.
+    // Insert after equal distances to retain native input-order ties.
+    let index=candidates.length;
+    while(index>0&&distanceSquared<candidates[index-1].distanceSquared)index--;
+    if(index>=limit)continue;
+    candidates.splice(index,0,{light,delta,distanceSquared});
+    if(candidates.length>limit)candidates.pop();
   }
   // Equal distances keep input order, matching the native strict-greater sort.
-  candidates.sort((a,b)=>a.distanceSquared-b.distanceSquared);
-  return candidates.slice(0,limit).map(({light,delta,distanceSquared})=>{
+  return candidates.map(({light,delta,distanceSquared})=>{
     const distance=Math.max(1,Math.sqrt(distanceSquared));
     const attenuation=1-distance/light.radius;
-    return {light,position:[...light.position],direction:delta.map(value=>value/distance),
+    return {light,position:[...light.position],direction:delta?delta.map(value=>value/distance):light.position.map((value,i)=>(value-position[i])/distance),
       color:light.color.map(value=>value*attenuation),radius:light.radius,distance};
   });
 }

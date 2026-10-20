@@ -3,14 +3,18 @@ const mix=(a,b,t)=>a+(b-a)*t;
 const dot=(a,b)=>a.reduce((sum,v,i)=>sum+v*b[i],0);
 
 export function rotateNativeDebris(orientation,angles) {
-  let q=[...orientation];
   // 0x49ccf0/0x49cd90/0x49ce30 -> 0x5b31f0/0x5b32c0:
   // pre-multiply X, then Y, then Z rotations around the world axes.
-  for(let axis=0;axis<3;axis++) {
-    const [x,y,z,w]=q,c=Math.cos(angles[axis]/2),s=Math.sin(angles[axis]/2);
-    q=axis===0?[c*x+s*w,c*y-s*z,c*z+s*y,c*w-s*x]:axis===1?[c*x+s*z,c*y+s*w,c*z-s*x,c*w-s*y]:[c*x-s*y,c*y+s*x,c*z+s*w,c*w-s*z];
-  }
-  const length=Math.hypot(...q);return q.map(v=>v/length);
+  // Keep each pass's arithmetic order while avoiding intermediate quaternion
+  // arrays for every airborne fragment on every update.
+  let x=orientation[0],y=orientation[1],z=orientation[2],w=orientation[3];
+  let c=Math.cos(angles[0]/2),s=Math.sin(angles[0]/2);
+  const x1=c*x+s*w,y1=c*y-s*z,z1=c*z+s*y,w1=c*w-s*x;
+  c=Math.cos(angles[1]/2);s=Math.sin(angles[1]/2);
+  x=c*x1+s*z1;y=c*y1+s*w1;z=c*z1-s*x1;w=c*w1-s*y1;
+  c=Math.cos(angles[2]/2);s=Math.sin(angles[2]/2);
+  const x3=c*x-s*y,y3=c*y+s*x,z3=c*z+s*w,w3=c*w-s*z;
+  const length=Math.hypot(x3,y3,z3,w3);return [x3/length,y3/length,z3/length,w3/length];
 }
 
 // AddActorParticle (0x4a7360) uses the MSVC rand stream. Seed locally so an

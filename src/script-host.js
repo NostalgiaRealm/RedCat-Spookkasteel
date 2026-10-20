@@ -1,6 +1,7 @@
 import { DaviVM } from './davi-vm.js';
 import { MotionPlayer } from './motions.js';
 import { repairGraveyardMazeSave } from './graveyard-maze.js';
+import { ModelTransformMap } from './model-transforms.js';
 
 const number=(value,fallback=0)=>Number.isFinite(Number(value))?Number(value):fallback;
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
@@ -13,7 +14,7 @@ const isBoss=object=>object.kind==='enemy'&&['brutusm','brutusb','maxd','maxj','
 export class ScriptHost {
   constructor(gameplay,program,{motions={motions:[]},dialogue={},isDialoguePlaying=()=>false,replayLevel=false}={}) {
     this.game=gameplay;this.dialogue=dialogue;this.bindings=new Map();this.players=new Map();
-    this.modelTransforms=new Map();this.keyItems=new Set();this.missions=new Map();
+    this.modelTransforms=new ModelTransformMap();this.keyItems=new Set();this.missions=new Map();
     this.cutscene=false;this.playerVisible=true;this.enemiesFrozen=false;this.weaponsEnabled=true;
     this.isDialoguePlaying=isDialoguePlaying;this.pendingCutsceneStop=null;
     this.replayLevel=replayLevel===true;

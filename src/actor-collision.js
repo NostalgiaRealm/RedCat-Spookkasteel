@@ -46,10 +46,16 @@ export function traceActors(actors,start,end,mins,maxs,result,mask='blocksPlayer
   mask=typeof mask==='object'?mask.mask:mask;
   const delta=sub(end,start),center=start.map((v,i)=>v+(mins[i]+maxs[i])/2),extent=mins.map((v,i)=>(maxs[i]-v)/2);
   const sweepMin=start.map((v,i)=>Math.min(v,end[i])+mins[i]),sweepMax=start.map((v,i)=>Math.max(v,end[i])+maxs[i]);
-  const overlaps=item=>item.min[0]<=sweepMax[0]+1e-7&&item.max[0]>=sweepMin[0]-1e-7&&
-    item.min[1]<=sweepMax[1]+1e-7&&item.max[1]>=sweepMin[1]-1e-7&&
-    item.min[2]<=sweepMax[2]+1e-7&&item.max[2]>=sweepMin[2]-1e-7;
-  for(const actor of actors) {
+  const overlaps=item=>{
+    const low=item.broadphaseMin||item.min,high=item.broadphaseMax||item.max;
+    return low[0]<=sweepMax[0]+1e-7&&high[0]>=sweepMin[0]-1e-7&&
+      low[1]<=sweepMax[1]+1e-7&&high[1]>=sweepMin[1]-1e-7&&
+      low[2]<=sweepMax[2]+1e-7&&high[2]>=sweepMin[2]-1e-7;
+  };
+  // Include the sweep's existing contact tolerance in cell selection, too.
+  // A box straddling a cell boundary by roundoff must remain a candidate.
+  const candidates=actors.queryBounds?actors.queryBounds(sweepMin.map(value=>value-1e-7),sweepMax.map(value=>value+1e-7)):actors;
+  for(const actor of candidates) {
     // State predicates can inspect scripted visibility and attachment state.
     // Distant actors cannot intersect this sweep, so reject their bounds first.
     if(!actor[mask]||(ignoreId!==undefined&&actor.id===ignoreId)||(ignoreSupportModelIndex!==undefined&&actor.supportModelIndex===ignoreSupportModelIndex)||!overlaps(actor)||actor.active&&!actor.active())continue;

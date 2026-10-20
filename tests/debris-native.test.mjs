@@ -85,7 +85,7 @@ test('embedded corner contacts reflect along the nearest separating plane',()=>{
   assert.equal(calls,2);assert.equal(p.position[0],0);assert.ok(p.position[1]>1);assert.ok(p.velocity[1]>0);
 });
 
-test('a new explosion creates one bounded fragment cohort and disposes its cloned materials',()=>{
+test('a new explosion creates one bounded fragment cohort and pools then disposes its cloned materials',()=>{
   const geometry=new THREE.BoxGeometry(1,1,1),material=new THREE.MeshLambertMaterial(),mesh=new THREE.Mesh(geometry,material);
   const prototype=new THREE.Group();prototype.userData={mesh,template:{data:{settings:{debris:{...base,MinLifeTimeSeconds:.1,MaxLifeTimeSeconds:.1}}}}};
   const world={scene:new THREE.Scene(),collider:{trace:(start,end)=>({fraction:1,end})},physicalModels:[0]};
@@ -96,7 +96,8 @@ test('a new explosion creates one bounded fragment cohort and disposes its clone
   assert.notEqual(first.userData.actorLighting,second.userData.actorLighting);
   assert.equal(first.material[0].customProgramCacheKey(),'native-actor-lighting-2-2');
   let disposed=0;for(const p of effects.particles)for(const m of p.materials)m.addEventListener('dispose',()=>disposed++);
-  effects.update(.2,new Map());assert.equal(effects.particles.length,0);assert.equal(world.scene.children.length,0);assert.equal(disposed,40);
+  effects.update(.2,new Map());assert.equal(effects.particles.length,0);assert.equal(world.scene.children.length,0);assert.equal(disposed,0,'released fragments remain warm for the next nearby explosion');
   effects.update(.2,new Map());assert.equal(effects.particles.length,0);
-  effects.dispose();geometry.dispose();material.dispose();
+  game.time=10;effects.update(0,new Map());assert.equal(disposed,39,'idle burst capacity is discarded while one shader owner stays warm');
+  effects.dispose();assert.equal(disposed,40);geometry.dispose();material.dispose();
 });

@@ -2,6 +2,8 @@
 
 Implemented and checked on 18 October 2026 after high CPU usage was reported on a 2019 Intel Core i3. This pass reduces repeated calculations and drawing; it does not lower animation, enemy, collision, or effect update rates.
 
+A further browser optimization pass after the 0.9.9 release adds deferred hidden-actor poses, on-demand collision triangles, smaller effect uploads, particle culling and paused-frame reuse. See [the follow-up report](browser-cpu-performance-followup.md) for its changes, measurements and checks; the results below describe the first pass only.
+
 ## Changes
 
 - **Actor animation:** Gather the exact bounding box during skinning, then compute the bounding sphere from that box's center. This removes two redundant full vertex scans per changed pose. Bounds use the actual rounded Float32 vertex values. Packed rigid actors use this path; other layouts/morph targets retain Three.js bounds calculation. Normal lengths use direct square-root normalization, appropriate for the bounded original normals and rigid bone transforms.

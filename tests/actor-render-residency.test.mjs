@@ -85,6 +85,26 @@ test('player and nonmanaged scene consumers protect shared textures and geometry
   assert.equal(gd.length,1);assert.equal(td.length,1);
 });
 
+test('release protection inspects a shared chunk material once per query and observes subsequent texture changes',()=>{
+  const map=new THREE.Texture(),uniform=new THREE.Texture(),replacement=new THREE.Texture(),ignored=new THREE.Texture();
+  let currentMap=map,currentUniform=uniform,mapReads=0,uniformReads=0;
+  const material=new THREE.MeshBasicMaterial();Object.defineProperty(material,'map',{enumerable:true,get(){mapReads++;return currentMap;}});
+  material.uniforms={glow:{get value(){uniformReads++;return currentUniform;}}};
+  const scene=new THREE.Scene(),geometries=[];
+  for(let index=0;index<500;index++) {
+    const geometry=new THREE.BufferGeometry(),mesh=new THREE.Mesh(geometry,index%2?[material,material]:material);geometries.push(geometry);scene.add(mesh);
+  }
+  const managed=new THREE.Mesh(new THREE.BufferGeometry(),new THREE.MeshBasicMaterial({map:ignored}));scene.add(managed);
+  const residency=new ActorRenderResidency({scene,protectedRoots:[scene.children[0]]});residency.meshRecords.set(managed,{});
+  const candidates=new Set([...geometries,map,uniform,replacement,ignored,managed.geometry]);
+  let protectedSet=residency.protectedResources(candidates);
+  assert.equal(mapReads,1);assert.equal(uniformReads,1);assert.equal(protectedSet.size,502);
+  assert.ok(geometries.every(geometry=>protectedSet.has(geometry)),'every individual chunk geometry is still checked');
+  assert.ok(protectedSet.has(map)&&protectedSet.has(uniform));assert.ok(!protectedSet.has(ignored)&&!protectedSet.has(managed.geometry));
+  currentMap=currentUniform=replacement;protectedSet=residency.protectedResources(candidates);
+  assert.equal(mapReads,2);assert.equal(uniformReads,2);assert.ok(protectedSet.has(replacement));assert.ok(!protectedSet.has(map)&&!protectedSet.has(uniform));
+});
+
 test('removal and controller disposal restore original layers without changing gameplay visibility',()=>{
   const a=actor({position:[0,0,3000]}),b=actor({position:[0,0,3000]});a.mesh.layers.enable(3);b.root.visible=false;
   const residency=new ActorRenderResidency(),c=camera();residency.update([a.root,b.root],c,0);

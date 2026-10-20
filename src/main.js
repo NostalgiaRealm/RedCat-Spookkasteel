@@ -73,7 +73,7 @@ function createRecovery(playerId=profiles?.activeId){
   }});
 }
 let recovery=createRecovery();
-let renderer=null;const keys=new Set();let mouseAttack=false;const audio=new GameAudio({master:settings.volume});const menuAudio=new MenuAudio({volume:settings.volume});const sliderAudio=new SliderAudio(menuAudio);
+let renderer=null,worldRenderDirty=true,lastRenderedWorld=null;const keys=new Set();let mouseAttack=false;const audio=new GameAudio({master:settings.volume});const menuAudio=new MenuAudio({volume:settings.volume});const sliderAudio=new SliderAudio(menuAudio);
 let touchControls=null,touchEnabled=false;
 const gamepad=new GamepadInput(),gamepadMenu=new GamepadMenu();
 let controllerActive=false,controllerFrame=null;
@@ -89,6 +89,7 @@ debriefing.ready.catch(showError);
 const loadingScreen=new OriginalLoadingScreen($('loading'));
 loadingScreen.ready.catch(showError);
 try {renderer=new THREE.WebGLRenderer({canvas:$('game'),antialias:true,powerPreference:'high-performance'});renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.setPixelRatio(1);}catch(error){showError(new Error('WebGL 2 is niet beschikbaar. Controleer je grafische stuurprogramma. '+error.message));}
+renderer?.domElement.addEventListener('webglcontextrestored',()=>{worldRenderDirty=true;});
 function showError(error){console.error(error);$('fatal-message').textContent=error.message||String(error);$('fatal').hidden=false;$('loading').hidden=true;mode='error';touchControls?.reset();syncTouchUI();}
 function toast(message,duration=3500){$('toast').textContent=message;$('toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('visible'),duration);}
 function store(key,value){try{
@@ -189,7 +190,7 @@ function scriptedSound(event){
 function stopAudio(){chapterTransition=null;audio.reset();}
 function startMusic(){const object=gameplay.objects.find(o=>o.enabled&&o.entity.classname==='EffectMusic'&&o.entity.MusicAmbient);if(object){if(gameplay.scripts){if(!gameplay.scripts.musicState)gameplay.scripts.selectMusic(object,'ambient');}else audio.play({key:'music',sourceId:object.id,channel:'music',sound:object.entity.MusicAmbient,volume:object.volume??1,loop:true});}}
 function resolutionSize(){if(settings.resolution==='native')return [Math.min(7680,Math.round(innerWidth*devicePixelRatio)),Math.min(4320,Math.round(innerHeight*devicePixelRatio))];return settings.resolution.split('x').map(Number);}
-function resize(){if(!renderer)return;const [baseW,baseH]=resolutionSize();const [w,h]=scaledRenderSize(baseW,baseH,renderQuality.scale(settings.renderScale));renderer.setSize(w,h,false);if(world){world.camera.aspect=baseW/baseH;world.camera.fov=settings.fov;world.camera.updateProjectionMatrix();}$('render-info').textContent=`${w} × ${h} · ${settings.camera==='third'?'Derde persoon':'Eerste persoon'}`;}
+function resize(){if(!renderer)return;worldRenderDirty=true;const [baseW,baseH]=resolutionSize();const [w,h]=scaledRenderSize(baseW,baseH,renderQuality.scale(settings.renderScale));renderer.setSize(w,h,false);if(world){world.camera.aspect=baseW/baseH;world.camera.fov=settings.fov;world.camera.updateProjectionMatrix();}$('render-info').textContent=`${w} × ${h} · ${settings.camera==='third'?'Derde persoon':'Eerste persoon'}`;}
 function renderChapters(){
   if(!canStartCampaignLevel(campaign,selected)){selected=0;levelReplaySelected=false;}
   $('level-list').replaceChildren(...LEVELS.map((level,i)=>{
@@ -267,7 +268,7 @@ function syncTouchSettings(){
   updateCheatControls();syncTouchUI();
 }
 function toggleCamera(){if(!canTogglePlayerCamera(world))return;settings.camera=settings.camera==='third'?'first':'third';resize();store(SETTINGS_KEY,settings);}
-function pause(){if(mode!=='playing')return;mode='paused';clearInputs();syncTouchUI();document.exitPointerLock?.();$('pause').hidden=false;audio.pause();saveGame(true);}
+function pause(){if(mode!=='playing')return;mode='paused';worldRenderDirty=true;clearInputs();syncTouchUI();document.exitPointerLock?.();$('pause').hidden=false;audio.pause();saveGame(true);}
 function resume(){menuAudio.stop();if(!world||androidSuspended())return;if(gameplay.completed&&chapterTransition?.world!==world)return loadSave();if(gameplay.state.health<=0&&!(gameplay.playerReaction?.phase==='death'&&!gameplay.playerReaction.finished&&gameplay.state.lives>0))return startLevel(selected,null,null,{resumeReplayLevel:gameplay.scripts?.replayLevel===true});clearInputs();mode='playing';$('pause').hidden=true;$('settings').hidden=true;$('cheats').hidden=true;if(androidHost.enabled)audio.context?.resume()?.catch(()=>{});audio.resume();lastFrame=performance.now();syncTouchUI();requestLook();}
 function requestLook(event){if(controllerActive||touchEnabled||(mobileWeb&&!event)||event?.pointerType==='touch'||event?.sourceCapabilities?.firesTouchEvents)return;if(mode==='playing'&&!document.pointerLockElement){const result=$('game').requestPointerLock?.();result?.catch(()=>{if(event?.isTrusted)toast('Klik in het spel om rond te kijken.');});}}
 async function returnMenu(){if(world)saveGame(true);levelReplaySelected=false;mode='menu';menuAudio.showMenu();clearInputs();syncTouchUI();document.exitPointerLock?.();stopAudio();debriefing.hide();$('menu').hidden=false;$('hud').hidden=true;$('pause').hidden=true;$('settings').hidden=true;$('cheats').hidden=true;document.body.classList.remove('in-cutscene');$('subtitle').hidden=true;refreshContinue();renderChapters();}
@@ -370,7 +371,8 @@ async function startLevel(index,save=null,progress=null,{resetRecovery=false,new
     await world.attachGameplay(gameplay);loadingScreen.setProgress(.8);audio.setLevel(world.id);await audio.setSpatialWorld(world);audio.pause();audio.update(0,world.camera.position.toArray());startMusic();scripts.initialize(save?.game.scripts);world.syncModels();world.syncActors(0);
     if(save){world.cameraControl.restore(world);world.restorePlayerAnimation(save.playerAnimation);}
     world.updateCamera(1,true);audio.update(0,world.camera.position.toArray());selected=index;renderQuality.reset();resize();updateCheatControls();renderHud();
-    await world.geometryStream.settle();world.updateRenderResidency();world.effects?.update(0);
+    await world.geometryStream.settle();world.updateRenderResidency();world.effects?.update(0);await world.settleActorTextures();
+    await world.prepareStreamingPrograms();
     // Restore after script/effect reconstruction, while every voice is paused.
     // This replaces reconstruction audio without replaying script callbacks.
     if(save?.audio&&audio.restoreState(save.audio,{
@@ -413,7 +415,7 @@ function updateCheatControls(){
 }
 function applyNoClip(){
   let enabled=$('cheat-noclip').checked,result;
-  if(world&&pausedFromSettings){result=setNoClip(world,enabled);enabled=result.enabled;world.syncPlayer(0,{});world.updateCamera(1,true);}
+  if(world&&pausedFromSettings){result=setNoClip(world,enabled);enabled=result.enabled;world.syncPlayer(0,{});world.updateCamera(1,true);worldRenderDirty=true;}
   settings.noClip=enabled;$('cheat-noclip').checked=enabled;store(SETTINGS_KEY,settings);updateCheatControls();
   if(world&&pausedFromSettings)saveGame(true);
   $('cheat-status').textContent=result?.blocked?'Er is nu geen vrije plek om veilig te landen. Vrij vliegen blijft aan.':result?.returned?'Vrij vliegen uit. Je bent terug op een veilige plek.':enabled?'Vrij vliegen aan. Spatie omhoog, Shift omlaag.':'Vrij vliegen uit.';
@@ -616,24 +618,30 @@ function waitForWorldView(now){
   // The world updates residency after moving the camera. Only poll it here
   // while that view is incomplete; scanning twice on ordinary frames adds
   // work without preparing any additional camera position.
-  if(!stream.readyForView)stream.update();
-  if(stream.error){showError(stream.error);streamingWait=null;return true;}
-  if(!stream.readyForView){
-    if(!streamingWait){streamingWait={since:now,overlay:false};audio.pause();}
+  if(!stream.readyForView||world.actorResidency?.readyForView===false)world.updateRenderResidency();
+  if(world.actorTextures?.readyForView===false)world.updateActorTextureResidency();
+  const error=stream.error||world.actorResidency?.error||world.actorTextures?.error;
+  if(error){audio.pause();showError(error);streamingWait=null;return true;}
+  if(!stream.readyForView||world.actorResidency?.readyForView===false||world.actorTextures?.readyForView===false){
+    if(!streamingWait)streamingWait={since:now,overlay:false,audioPaused:false};
     if(now-streamingWait.since>250&&!streamingWait.overlay){
+      // A one-frame graphics wait must not stop/recreate every music and
+      // sound source. Keep audio flowing through brief preparation delays;
+      // pause it only when a sustained wait actually shows the loading UI.
+      streamingWait.audioPaused=!audio.paused;if(streamingWait.audioPaused)audio.pause();
       streamingWait.overlay=true;loadingScreen.show(selected,{streaming:true});
     }
-    // No simulation, dialogue, recovery clock or autosave advances behind a
-    // loading view. The frame clock still advances, avoiding a catch-up step.
+    // Simulation and save clocks stay held. Short waits leave playback alone;
+    // sustained loading also holds audio. No catch-up simulation step follows.
     return true;
   }
-  if(streamingWait){if(streamingWait.overlay)$('loading').hidden=true;streamingWait=null;audio.resume();}
+  if(streamingWait){if(streamingWait.overlay)$('loading').hidden=true;const resumeAudio=streamingWait.audioPaused;streamingWait=null;if(resumeAudio)audio.resume();}
   return false;
 }
 let frameRequest=0;
 function androidSuspended(){return androidHost.enabled&&(!androidHost.active||document.hidden);}
 function scheduleFrame(){if(!frameRequest&&!androidSuspended())frameRequest=requestAnimationFrame(frame);}
-function frame(now){frameRequest=0;if(androidSuspended())return;scheduleFrame();androidHost.setKeepAwake(mode==='playing'||mode==='intro');const realDt=Math.max(0,(now-lastFrame)/1000),dt=Math.min(realDt,0.05);lastFrame=now;pollController(dt);syncTouchUI();const waiting=waitForWorldView(now);const rendering=!!world&&mode==='playing'&&!waiting&&!document.hidden;
+function frame(now){frameRequest=0;if(androidSuspended())return;scheduleFrame();androidHost.setKeepAwake(mode==='playing'||mode==='intro');const realDt=Math.max(0,(now-lastFrame)/1000),dt=Math.min(realDt,0.05);lastFrame=now;if(!document.hidden)world?.streamingWork?.pump(now);pollController(dt);syncTouchUI();const waiting=waitForWorldView(now);const rendering=!!world&&mode==='playing'&&!waiting&&!document.hidden;
 if(renderQuality.sample(realDt,rendering,settings.renderScale))resize();
 $('fps-counter').hidden=!settings.showFps||!rendering;
 if(settings.showFps&&rendering){const label=renderQuality.fps===null?'FPS: …':`${Math.round(renderQuality.fps)} FPS`;if($('fps-counter').textContent!==label)$('fps-counter').textContent=label;}
@@ -645,7 +653,11 @@ if(waiting)return;if(world&&mode==='playing'){
   touchIntroHint.update({playing:mode==='playing',touch:touchEnabled&&!controllerActive,cutscene:!!gameplay.scripts?.cutscene,camera:gameplay.scripts?.camera});
   desktopIntroHint.update({playing:mode==='playing',enabled:!touchEnabled||controllerActive,cutscene:!!gameplay.scripts?.cutscene,camera:gameplay.scripts?.camera});
   advanceChapterTransition(realDt);
-}if(mode==='debriefing')debriefing.update(realDt);if(world&&['playing','paused'].includes(mode))world.render();}
+}if(mode==='debriefing')debriefing.update(realDt);
+// Paused menus keep their last completed world frame. Redraw after display,
+// camera/context changes or pending streaming, while controller/UI polling
+// continues normally.
+if(world&&!document.hidden&&(mode==='playing'||mode==='paused'&&(worldRenderDirty||lastRenderedWorld!==world||world.geometryStream?.readyForView===false||world.actorResidency?.readyForView===false||world.actorTextures?.readyForView===false))){world.render();lastRenderedWorld=world;worldRenderDirty=false;}}
 touchControls=new TouchControls({onLook:(dx,dy)=>{if(mode==='playing')world?.look(dx,dy);},onGesture:()=>{if(mode==='playing'&&!streamingWait)audio.resume();},onAction:action=>{if(mode!=='playing')return;if(action==='camera')toggleCamera();}});
 syncTouchSettings();
 window.__redcat={get world(){return world;},get gameplay(){return gameplay;},get mode(){return mode;},get settings(){return settings;},get audio(){return audio;},get touchEnabled(){return touchEnabled;},get controllerActive(){return controllerActive;},get recovery(){return recovery;},profiles,playerMenu,gamepad,touchControls,readInput,startLevel,pause,resume,saveGame,loadSave,resize,renderHud};

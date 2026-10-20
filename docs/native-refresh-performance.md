@@ -1,22 +1,85 @@
-# Native refresh and performance
+# Frame pacing and performance
 
-The game uses `requestAnimationFrame` for its update and rendering loop. Chromium
-schedules this against the display refresh rate; there is no fixed 60 FPS game
-timer. Movement uses elapsed time rather than a fixed distance per frame. A
-120 Hz display gives each frame about 8.33 ms, so following the display refresh
-also requires the game and GPU to finish their work within that budget.
+The game uses `requestAnimationFrame` for its update and rendering loop, with
+elapsed-time movement rather than a fixed distance per frame. It has no fixed
+60 FPS game timer. Browser-managed frame pacing normally follows display refresh;
+the desktop source now requests uncapped scheduling as described below.
 
-Keep display synchronization enabled. Disabling VSync or Chromium's frame limiter
-is not necessary for native refresh and can cause unnecessary GPU load or tearing.
-The desktop display mode is selected through the operating system; the game does
-not change its refresh rate or assume that every display is 120 Hz.
+## Uncapped desktop FPS — 18 October 2026
+
+At the user's request, Electron now adds `disable-frame-rate-limit` before
+startup completes. Chromium's [switch implementation](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/components/viz/common/switches.cc)
+removes its compositor frame limiter and also disables GPU VSync. The existing
+OpenGL/ANGLE and X11/Wayland choices are preserved. No Vulkan/MangoHud changes,
+timer-based rendering replacement or game-speed multiplier were introduced.
+
+Restart the source game using the usual command, including the existing Wayland
+override if desired:
+
+```sh
+npm start -- --ozone-platform=wayland
+```
+
+FPS can now exceed the monitor's refresh when the hardware has headroom. This
+uses more CPU/GPU work than limiting rendering to refresh; the monitor and
+compositor still determine what is physically displayed. To restore the former
+display-synchronized behavior for one launch:
+
+```sh
+REDCAT_VSYNC=1 npm start -- --ozone-platform=wayland
+```
+
+The same environment option works with `Start-RedCat.sh` once the executable it
+launches includes this source change. The launcher prefers existing `dist`
+packages, which have **not** been rebuilt. Use `npm start` to test current source.
+An explicit MangoHud/driver limit can still impose its own cap.
+
+Browser tabs and Android retain their existing frame loop. A web page cannot
+apply Electron's startup switch to a visitor's browser; normal browser
+[`requestAnimationFrame` pacing](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame)
+still applies there. A Chromium user can choose startup flags themselves, but
+the hosted game does not force global browser settings.
+
+### Focused source verification
+
+Native Wayland, current source, isolated profiles, 800 × 600 forest fixture,
+one-second warmup and three-second sample. Damage/encounter triggers and authored
+camera/motion timelines are disabled; sound is muted. This is a short check of
+frame scheduling, not a campaign/FPS guarantee.
+
+| Mode | Submitted world frames/s | Real sample | Simulation advanced |
+| --- | ---: | ---: | ---: |
+| `REDCAT_VSYNC=1` | 144.0 | 3.0001 s | 3.0006 s |
+| Default uncapped | 747.3 | 3.0015 s | 3.0020 s |
+
+The launcher's X11 backend also passed: **801.2 submitted frames/s**, with
+3.0023 seconds of simulation during a 3.0019-second sample. Its reported display
+frequency is 143.87 Hz. These short entrance-scene results show that pacing is
+uncapped; they do not predict FPS elsewhere in the game.
+
+Both samples retain the same grounded player position, record no zero-delta game
+updates and no WebGL/page errors. Pause produces zero world updates/draws during
+the 500 ms check; resume draws immediately. Electron's Wayland display-frequency
+field is zero on this host, so 144 Hz is the observed synchronized callback rate,
+not a claimed successful display-frequency API reading.
+
+Evidence, source backups and reproduction remain under
+`temp_work/fps-uncap-2026-10-18/`, including `check.mjs`, `wayland-sync-ready/`
+and `wayland-uncapped/`, plus `x11-uncapped/`. The first harness navigation raced Electron's initial
+navigation; that failed attempt is retained. The corrected harness waits for
+initial startup before reloading seeded settings. Both variants also recorded
+three console fetch failures around this reload; their raw reports are retained.
+No renderer page errors or GL errors occur during the measured game. Only
+frame/pause/resume behavior, startup syntax and whitespace were checked; previous
+campaign suites were not rerun. No packages were generated.
 
 ## MangoHud
 
 MangoHud can impose its own FPS limit, independent of the display and game. For
 example, `fps_limit=60,30,0` starts with a 60 FPS limit. Its default
 `Shift` + `F1` shortcut cycles through those limits; `0` means unlimited by
-MangoHud, while Chromium's normal display synchronization still applies.
+MangoHud. Desktop source now also removes Chromium's limiter unless
+`REDCAT_VSYNC=1` is set; browsers and older packages retain normal display pacing.
 
 When started through `Start-RedCat.sh` with MangoHud enabled (`MANGOHUD=1` or a
 `libMangoHud` library in `LD_PRELOAD`), the launcher removes the inherited cap for
@@ -118,4 +181,4 @@ projectile sweeps through original animated props. No packages were generated.
 
 ## Later CPU optimization pass
 
-The [18 October 2026 CPU performance report](low-end-cpu-performance.md) records a separate measured reduction in repeated animation, lighting, gameplay, effect and HUD work for slower devices. It preserves the native-refresh scheduling described here and reports CPU update times separately from displayed FPS.
+The [18 October 2026 CPU performance report](low-end-cpu-performance.md) records a separate measured reduction in repeated animation, lighting, gameplay, effect and HUD work for slower devices. Those changes preserved the then-current native-refresh scheduling and report CPU update times separately from displayed FPS. The subsequent desktop uncapping above changes scheduling only; the CPU/GPU work reductions remain in place.

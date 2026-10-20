@@ -2,7 +2,22 @@ import { worldLightFrame, worldLightLuxelStrength, worldLightmapLuxel } from './
 
 const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
 const ZERO=[0,0,0];
+const IDENTITY=[0,0,0,1];
 const CONTENTS_SOLID=67;
+
+// Host transform objects can be replaced without changing their numbers.
+// Compare those numbers directly; lighting checks every brush every frame.
+export function sameModelTransform(value,values) {
+  if(!values)return false;
+  const origin=value.origin||ZERO,translation=value.translation||ZERO,rotation=value.rotation||IDENTITY;
+  for(let i=0;i<3;i++)if(origin[i]!==values[i]||translation[i]!==values[i+3])return false;
+  for(let i=0;i<4;i++)if(rotation[i]!==values[i+6])return false;
+  return true;
+}
+
+export function modelTransformValues(value) {
+  return [...(value.origin||ZERO),...(value.translation||ZERO),...(value.rotation||IDENTITY)];
+}
 
 export function inverseModelTransform(value) {
   if(!value)return null;
@@ -12,7 +27,23 @@ export function inverseModelTransform(value) {
     const tx=2*(y*p[2]-z*p[1]),ty=2*(z*p[0]-x*p[2]),tz=2*(x*p[1]-y*p[0]);
     return [p[0]+w*tx+y*tz-z*ty,p[1]+w*ty+z*tx-x*tz,p[2]+w*tz+x*ty-y*tx];
   };
-  return p=>rotate(p.map((v,i)=>v-origin[i]-translation[i])).map((v,i)=>v+origin[i]);
+  const inverse=p=>rotate(p.map((v,i)=>v-origin[i]-translation[i])).map((v,i)=>v+origin[i]);
+  // Preserve the old inverse-endpoint AABB rejection without allocating four
+  // arrays per rejected brush. Keep the arithmetic order of rotate() above;
+  // points that pass still use that original conversion and exact BSP trace.
+  inverse.intersectsBounds=(a,b,min,max,padding=0)=>{
+    const ax=a[0]-origin[0]-translation[0],ay=a[1]-origin[1]-translation[1],az=a[2]-origin[2]-translation[2];
+    const bx=b[0]-origin[0]-translation[0],by=b[1]-origin[1]-translation[1],bz=b[2]-origin[2]-translation[2];
+    const atx=2*(y*az-z*ay),aty=2*(z*ax-x*az),atz=2*(x*ay-y*ax);
+    const btx=2*(y*bz-z*by),bty=2*(z*bx-x*bz),btz=2*(x*by-y*bx);
+    const x0=ax+w*atx+y*atz-z*aty+origin[0],x1=bx+w*btx+y*btz-z*bty+origin[0];
+    if(min[0]>Math.max(x0,x1)+padding||max[0]<Math.min(x0,x1)-padding)return false;
+    const y0=ay+w*aty+z*atx-x*atz+origin[1],y1=by+w*bty+z*btx-x*btz+origin[1];
+    if(min[1]>Math.max(y0,y1)+padding||max[1]<Math.min(y0,y1)-padding)return false;
+    const z0=az+w*atz+x*aty-y*atx+origin[2],z1=bz+w*btz+x*bty-y*btx+origin[2];
+    return !(min[2]>Math.max(z0,z1)+padding||max[2]<Math.min(z0,z1)-padding);
+  };
+  return inverse;
 }
 
 /** Native floor lighting traces points, not the actor collision hull. Keep the
@@ -35,6 +66,33 @@ export function traceActorFloorBsp(collision,start,end,root=collision.models[0].
     return far.node===undefined?{solid:true,node,point:mid,plane:record[2]}:far;
   };
   return visit(root,start,end);
+}
+
+// Boolean light rays need no crossed-plane records or midpoint vectors. Keep
+// the same arithmetic, traversal order and guards as traceActorFloorBsp, using
+// scalar stack arguments so a cohort of fragments creates no per-node garbage.
+function blockedBspRay(nodes,planes,leaves,node,ax,ay,az,bx,by,bz,depth,stats) {
+  while(true) {
+    if(stats)stats.nodeVisits++;
+    if(node<0)return Boolean(leaves[-node-1]?.contents&CONTENTS_SOLID);
+    if(depth>512)throw new Error('Invalid actor lighting BSP depth');
+    const record=nodes[node],plane=planes[record[2]];
+    const da=plane[0]*ax+plane[1]*ay+plane[2]*az-plane[3];
+    const db=plane[0]*bx+plane[1]*by+plane[2]*bz-plane[3];
+    // Single-child branches need no recursive call; keep explicit depth and
+    // visit accounting identical to the detailed trace's recursive descent.
+    if(da>=0&&db>=0){node=record[0];depth++;continue;}
+    if(da<0&&db<0){node=record[1];depth++;continue;}
+    const side=da<0?1:0,t=da/(da-db),mx=ax+(bx-ax)*t,my=ay+(by-ay)*t,mz=az+(bz-az)*t;
+    if(blockedBspRay(nodes,planes,leaves,record[side],ax,ay,az,mx,my,mz,depth+1,stats))return true;
+    node=record[1-side];ax=mx;ay=my;az=mz;depth++;
+  }
+}
+export function actorBspRayBlocked(collision,start,end,root=collision.models[0].root,stats=null) {
+  // Array.map preserves typed-array midpoint rounding. Native runtime points
+  // are ordinary arrays; unusual typed callers retain the original contract.
+  if(!Array.isArray(start)||!Array.isArray(end))return Boolean(traceActorFloorBsp(collision,start,end,root,stats));
+  return blockedBspRay(collision.nodes,collision.planes,collision.leaves,root,start[0],start[1],start[2],end[0],end[1],end[2],0,stats);
 }
 
 /** Light_GetLightmapRGB uses integer truncation at one luxel, never filtered
@@ -78,7 +136,12 @@ export function actorFloorShadowPoint(face,plane,luxel) {
  * repeated traversal for stationary actors without caching moving lights. */
 export function createActorFloorLighting(collision,metadata,bytes,collider=null) {
   if(metadata.nodeFaces.length!==collision.nodes.length)throw new Error('Actor floor BSP node count differs');
-  const cache=new WeakMap(),frames=new Map(),transforms=new Map(),transformValues=new Map(),shadowCache=new Map();
+  const cache=new WeakMap(),frames=new Map(),transforms=new Map(),transformValues=new Map(),shadowCache=new Map(),rotatedModels=new Set();
+  // Exact3's fallback visits every authored brush, including nonphysical
+  // models, in file order. Reuse the collider's conservative spatial plan
+  // before converting each ray to brush space; debris may make this query
+  // dozens of times per frame, usually far from every animated brush.
+  const brushModels=Object.freeze(Array.from({length:Math.max(0,collision.models.length-1)},(_,i)=>i+1));
   let modelRevision=0,disabled=new Set();
   // Call once per rendered update. Comparing authored model numbers avoids a
   // revision bump merely because the host allocated a new transform object.
@@ -87,20 +150,29 @@ export function createActorFloorLighting(collision,metadata,bytes,collider=null)
     let changed=false;
     const current=collider.modelTransforms||new Map();
     for(const [index,value] of current) {
-      const values=[...(value.origin||ZERO),...(value.translation||ZERO),...(value.rotation||[0,0,0,1])];
       const old=transformValues.get(index);
-      if(!old||values.some((v,i)=>v!==old[i])) {
-        changed=true;transformValues.set(index,values);transforms.set(index,inverseModelTransform(value));
+      if(!sameModelTransform(value,old)) {
+        changed=true;transformValues.set(index,modelTransformValues(value));transforms.set(index,inverseModelTransform(value));
+        const rotation=value.rotation;
+        if(rotation&&(rotation[0]||rotation[1]||rotation[2]))rotatedModels.add(index);else rotatedModels.delete(index);
       }
     }
-    for(const index of transformValues.keys())if(!current.has(index)){changed=true;transformValues.delete(index);transforms.delete(index);}
+    for(const index of transformValues.keys())if(!current.has(index)){changed=true;transformValues.delete(index);transforms.delete(index);rotatedModels.delete(index);}
     const currentDisabled=collider.disabledModels||new Set();
-    if(disabled.size!==currentDisabled.size||[...disabled].some(index=>!currentDisabled.has(index))) {
+    let disabledChanged=disabled.size!==currentDisabled.size;
+    if(!disabledChanged)for(const index of disabled)if(!currentDisabled.has(index)){disabledChanged=true;break;}
+    if(disabledChanged) {
       changed=true;disabled=new Set(currentDisabled);
     }
     if(changed)modelRevision++;
   }
   beginFrame();
+  // Build/refit the shared frozen-list query plan while loading, instead of
+  // making the first destroyed crate pay that one-time setup cost.
+  function prepare() {
+    beginFrame();
+    collider?.traceModelIndices?.(brushModels,ZERO,ZERO);
+  }
   // Large coplanar nodes (the forest floor contains >700 faces) otherwise
   // scan hundreds of bounds per moving actor. Index their expanded bounds
   // once at level load, while retaining exact native face ordering.
@@ -140,10 +212,20 @@ export function createActorFloorLighting(collision,metadata,bytes,collider=null)
     // Exact3 visits authored models in order and returns the first hit, not
     // the closest hit across all models. A valid world floor thus wins even
     // when an animated platform is physically closer to the actor.
-    if(!hit&&collider)for(model=1;model<collision.models.length;model++) {
+    let modelCandidates=brushModels;
+    if(!hit&&collider?.traceModelIndices) {
+      modelCandidates=collider.traceModelIndices(brushModels,[position[0],end[1],position[2]],position);
+      // Legacy inverse-space endpoint boxes may overlap a rotated brush even
+      // when the ray's world box does not. Retain those brushes to preserve
+      // the original bounds/BSP result, including unusual unbounded leaves.
+      if(rotatedModels.size)modelCandidates=[...new Set([...modelCandidates,...rotatedModels].filter(index=>index>0&&index<collision.models.length))].sort((a,b)=>a-b);
+    }
+    if(!hit&&collider)for(model of modelCandidates) {
       if(disabled.has(model))continue;
-      const inverse=transforms.get(model),a=inverse?inverse(position):position,b=inverse?inverse(end):end;
+      const inverse=transforms.get(model);
       const bounds=collider.modelBounds?.[model];
+      if(bounds&&inverse&&!inverse.intersectsBounds(position,end,...bounds))continue;
+      const a=inverse?inverse(position):position,b=inverse?inverse(end):end;
       if(bounds&&bounds[0].some((v,i)=>v>Math.max(a[i],b[i])||bounds[1][i]<Math.min(a[i],b[i])))continue;
       hit=traceActorFloorBsp(collision,a,b,collision.models[model].root,stats);
       if(hit)break;
@@ -214,11 +296,11 @@ export function createActorFloorLighting(collision,metadata,bytes,collider=null)
       const key=`${surface.index}:${surface.luxel}:${light.position}`;
       if(shadowCache.has(key)){stats.shadowCacheHits++;return shadowCache.get(key);}
       stats.shadowTraces++;
-      const visible=!traceActorFloorBsp(collision,light.position,surface.shadowPoint,0);
+      const visible=!actorBspRayBlocked(collision,light.position,surface.shadowPoint,0);
       if(shadowCache.size>=4096)shadowCache.delete(shadowCache.keys().next().value);
       shadowCache.set(key,visible);return visible;
     });
     return worldLightmapLuxel(surface.base,dynamic,surface.frame,surface.luxel).map(value=>Math.min(.3,value));
   }
-  return {sample,locate,beginFrame,stats};
+  return {sample,locate,beginFrame,prepare,stats};
 }

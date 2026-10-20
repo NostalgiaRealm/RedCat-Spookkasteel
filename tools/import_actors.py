@@ -367,6 +367,8 @@ def main():
         except Exception as exc:errors[path.name]=str(exc);print(f'{path.name}: {exc}',file=sys.stderr,flush=True)
     manifest={'format':'redcat-actors-v1','actors':actors,'errors':errors}
     (args.output/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
+    from import_actor_resources import write_shared_resources
+    write_shared_resources(args.output)
     return 1 if errors else 0
 
 

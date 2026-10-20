@@ -839,11 +839,19 @@ export class Gameplay {
   modelState(index) {
     // An item's Model is its moving support, not geometry owned by the item.
     // Collecting a potion must not remove the bridge beneath the player.
-    const objects=(this.modelObjects.get(index)||[]).filter(o=>!['pickup','actor'].includes(o.kind));
-    const onlyTriggers=objects.length>0&&objects.every(o=>o.kind==='trigger');
-    const door=objects.find(o=>o.kind==='door');
-    return {visible:(!onlyTriggers||this.liquidModels.has(index))&&objects.every(o=>o.visible&&!o.collected&&o.health>0)&&!(door?.open&&!door.hasMotion),
-      solid:!onlyTriggers&&!(door?.open&&!door.hasMotion)&&objects.every(o=>o.visible&&!o.collected&&o.health>0&&o.entity.PlayerCollision!=='0'),
+    // Distant brushes still need immediate script/collision state, but not
+    // fresh filtered arrays and repeated scans twice per display frame.
+    let count=0,onlyTriggers=true,visible=true,solid=true,door;
+    for(const object of this.modelObjects.get(index)||[]) {
+      if(object.kind==='pickup'||object.kind==='actor')continue;
+      count++;if(object.kind!=='trigger')onlyTriggers=false;
+      if(!door&&object.kind==='door')door=object;
+      const present=!!(object.visible&&!object.collected&&object.health>0);
+      visible=visible&&present;solid=solid&&present&&object.entity.PlayerCollision!=='0';
+    }
+    onlyTriggers=onlyTriggers&&count>0;
+    return {visible:(!onlyTriggers||this.liquidModels.has(index))&&visible&&!(door?.open&&!door.hasMotion),
+      solid:!onlyTriggers&&!(door?.open&&!door.hasMotion)&&solid,
       open:door?.open||false,openFraction:door?.openFraction||0};
   }
 

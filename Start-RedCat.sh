@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 set -eu
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-# Let Chromium follow the display refresh instead of inheriting MangoHud's
-# global FPS cap. Keep an explicit per-launch cap and all other HUD settings.
+# Avoid inheriting MangoHud's global FPS cap. Keep an explicit per-launch
+# cap and all other HUD settings.
 case "${MANGOHUD-}:${LD_PRELOAD-}" in
   1:*|*libMangoHud*)
     hud_options=$(printf '%s' "${MANGOHUD_CONFIG-}" | tr -d '[:space:]')

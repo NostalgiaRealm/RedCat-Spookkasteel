@@ -159,42 +159,57 @@ Resolve test failures before creating packages. Some original-file comparison te
 
 Keep source validation and package validation separate. An existing `dist/`
 package still contains the source and metadata from when it was generated:
-changing the Over dialog to **0.9.9** does not update a previously built **0.9.8**
+changing the Over dialog to **1.0** does not update a previously built **0.9.9**
 package. Record the executable/package version, source revision or file hashes,
 platform, inputs and checks for each release run. Source tests and older-package
-checks do not certify an unbuilt 0.9.9 release, and Linux browser/Electron checks
-do not certify Windows, macOS or ARM hardware. The current validation pass is
-source-only; new packages require a later build and their own validation.
+checks do not certify a new 1.0.0 release, and Linux browser/Electron checks
+do not certify Windows, macOS or ARM hardware. The 20 October 2026 release
+refresh replaces the earlier 1.0.0 packages with the cache-coherence fix; artifact
+checks are retained in `temp_work/release-1.0.0-final-2026-10-20/`, separately
+from source checks. Native runtime validation beyond Linux x64 remains pending.
 
 ## 5. Generate portable packages when ready
 
-**Only run this section when you intend to create new builds.** Close the game first. These commands update the corresponding directories under `dist/`; copy an older build elsewhere first if you want to preserve it. The **Over** dialog has a display version, but `package.json` intentionally has no package version. Electron-builder requires numeric package metadata, so supply `REDCAT_PACKAGE_VERSION` only for that packaging command. It is injected into the generated package metadata without modifying the source, lockfile or displayed version. Use three dot-separated integers chosen for your distribution; the helper has no default. Without this value, the packaging command stops before creating a build.
+**Only run this section when you intend to create new builds.** Close the game first. These commands update the corresponding directories under `dist/`; copy an older build elsewhere first if you want to preserve it. The current source displays **1.0** in **Over** and uses **1.0.0** in `package.json` and the root lockfile. The packaging helper still requires an explicit `REDCAT_PACKAGE_VERSION` for each packaging command; use `1.0.0` for this release. It overrides the generated package metadata without modifying the source, lockfile or displayed version. Use three dot-separated integers chosen for your distribution; the helper has no default. Without this value, the packaging command stops before creating a build.
 
-For the upcoming **0.9.9** release, enter **0.9.9** at the version prompts below
-(or set `REDCAT_PACKAGE_VERSION=0.9.9` in Bash / `$env:REDCAT_PACKAGE_VERSION = '0.9.9'`
+For the **1.0.0** release, enter **1.0.0** at the version prompts below
+(or set `REDCAT_PACKAGE_VERSION=1.0.0` in Bash / `$env:REDCAT_PACKAGE_VERSION = '1.0.0'`
 in PowerShell). Use the same version for every desktop architecture. The current
-Over dialog displays 0.9.9; the separate Android preview's version remains its
-own development metadata until an Android release is prepared. No new package
-is created by updating this documentation or the display version.
+Over dialog displays **1.0**; the separate Android preview uses `versionName = "1.0"`
+and `versionCode = 2`. No new package is created by updating this documentation
+or the display version.
 
 ### Available targets and current limits
 
-As checked on 5 October 2026, the lockfile pins Electron **44.3.0** and electron-builder **26.15.3**. The installed Electron checksum manifest includes Linux, Windows and macOS binaries for both x64 and ARM64. The game's only production npm dependency is Three.js; it has no architecture-specific native game addons. The same imported assets and level data can be packaged for each target. These architectures are also listed in [electron-builder's version 26 documentation](https://www.electron.build/v26/docs/architecture/).
+As checked on 20 October 2026, the lockfile pins Electron **44.3.0** and electron-builder **26.15.3**. The installed Electron checksum manifest includes Linux, Windows and macOS binaries for both x64 and ARM64. The game's only production npm dependency is Three.js; it has no architecture-specific native game addons. The same imported assets and level data can be packaged for each target. These architectures are also listed in [electron-builder's version 26 documentation](https://www.electron.build/v26/docs/architecture/).
 
 | Target | Build host for the instructions below | Current project status | Output under `dist/` |
 | --- | --- | --- | --- |
-| Linux x64 | Linux | Existing packaging helper | `linux-unpacked/` |
-| Windows x64 | Windows or Linux | Existing packaging helper | `win-unpacked/` |
-| Linux ARM64 | Linux, including an x64 build host | Direct CLI recipe; package and ARM hardware validation still needed | `linux-arm64-unpacked/` |
-| Windows ARM64 | Windows x64; Linux cross-packaging recipe also included | Direct CLI recipe; package and Windows ARM hardware validation still needed | `win-arm64-unpacked/` |
-| macOS Intel (x64) | macOS | Direct CLI recipe; package and Intel Mac validation still needed | `mac/RedCat Spookkasteel.app` |
-| macOS Apple Silicon (ARM64) | macOS, preferably Apple Silicon for local testing | Direct CLI recipe; package and Apple Silicon validation still needed | `mac-arm64/RedCat Spookkasteel.app` |
+| Linux x64 | Linux | 1.0.0 portable package; local packaged-runtime check | `linux-unpacked/` |
+| Windows x64 | Windows or Linux | Unsigned 1.0.0 cross-package; Windows runtime validation pending | `win-unpacked/` |
+| Linux ARM64 | Linux, including an x64 build host | 1.0.0 cross-package; ARM hardware runtime validation pending | `linux-arm64-unpacked/` |
+| Windows ARM64 | Windows or Linux | Unsigned 1.0.0 cross-package; Windows ARM runtime validation pending | `win-arm64-unpacked/` |
+| macOS Intel (x64) | macOS for signing/testing; Linux for unsigned bundles | Unsigned 1.0.0 bundle; Intel Mac runtime validation pending | `mac/RedCat Spookkasteel.app` |
+| macOS Apple Silicon (ARM64) | macOS for signing/testing; Linux for unsigned bundles | Unsigned 1.0.0 bundle; Apple Silicon runtime validation pending | `mac-arm64/RedCat Spookkasteel.app` |
 
-**The ARM64 and macOS recipes have not been built or run as part of this documentation update.** Their commands and output paths were checked against the installed packaging code. Availability of an Electron binary does not establish that this game's graphics, audio, controls and saves work on every device.
+All six desktop target directories were generated for 0.9.9. The 1.0.0 release
+pass generates fresh packages from current source. Packaging and inspecting an
+archive establish its contents, architecture and metadata; they do not establish
+that graphics, audio, controls and saves work on the corresponding hardware.
+Only Linux x64 has local native runtime coverage; other native platforms remain
+unvalidated. The Windows and Linux portable directories are unsigned, and Mac
+bundles generated on Linux are unsigned and not notarized.
 
 `npm run build:linux` and `npm run build:windows` currently hardcode **x64**, even on an ARM machine. Appending `-- --arm64` to either script does not change that. There is no `build:mac` script. The additional recipes below call the locally installed electron-builder directly, retaining the project's file list and asset packaging configuration. `--publish never` prevents uploading artifacts; `dir` creates an unpacked directory or app bundle, not an installer.
 
 For these direct calls, pass `-c.extraMetadata.version` explicitly: setting `REDCAT_PACKAGE_VERSION` alone only works with the project's helper. Use the same three-part numeric metadata version described above, with each part between 0 and 65535. `npx --no-install` uses the builder installed by `npm ci`; do not replace it with an unpinned download. The CLI syntax is documented in the [version 26 CLI reference](https://www.electron.build/v26/docs/cli/).
+
+Before using the direct `npx --no-install electron-builder` recipes below, run
+`npm run web:refresh` once after your final source edits. This updates the HTML
+import map's cache keys so browsers cannot combine new game code with older
+cached dependencies. `npm start`, `npm run serve`, `npm run build:linux`,
+`npm run build:windows`, and `npm run android:prepare` already do this automatically.
+The refresh itself creates no release package.
 
 Install Node and dependencies for the **build host**, not the target architecture. Run `npm ci` again when changing host OS or CPU architecture rather than copying `node_modules`. The builder selects the target Electron download using the architecture flag. The game data does not need reimporting for ARM64.
 
@@ -279,7 +294,7 @@ npx --no-install electron-builder --win dir --arm64 --publish never \
   "-c.extraMetadata.version=$REDCAT_PACKAGE_VERSION"
 ```
 
-This uses the same unsigned `dir` configuration as the existing Windows x64 package. `win.signExecutable: false` disables signing while allowing the builder to apply the original game's icon and executable metadata. Do not replace this with `signAndEditExecutable: false`, which also skips the icon update. The ARM64 cross-packaging path remains unverified; installer creation or signing would have additional requirements and is not covered by this command.
+This uses the same unsigned `dir` configuration as the existing Windows x64 package. `win.signExecutable: false` disables signing while allowing the builder to apply the original game's icon and executable metadata. Do not replace this with `signAndEditExecutable: false`, which also skips the icon update. The ARM64 cross-packaging command successfully generated the 0.9.9 package on Linux; native Windows ARM runtime validation remains pending. Installer creation or signing would have additional requirements and is not covered by this command.
 
 Copy the **whole** `dist/win-arm64-unpacked/` directory to Windows on ARM. Launch `RedCat Spookkasteel.exe` from that directory, or use this command from the project root on the target machine:
 
@@ -291,7 +306,7 @@ Copy the **whole** `dist/win-arm64-unpacked/` directory to Windows on ARM. Launc
 
 ### macOS Intel and Apple Silicon
 
-Use a **Mac** for these recipes. The builder supports both macOS architectures, but macOS code signing requires macOS. These instructions do not provide a working signed Mac build from Linux or Windows; use a Mac or a macOS CI runner instead. See the [cross-platform build restrictions](https://www.electron.build/v26/docs/features/multi-platform-build/).
+Use a **Mac** for the signed development recipes and runtime checks below. Unsigned app bundles for both architectures can also be cross-packaged on Linux, as done for 0.9.9 and repeated for 1.0.0. macOS code signing requires macOS; use a Mac or a macOS CI runner for a signed release. See the [cross-platform build restrictions](https://www.electron.build/v26/docs/features/multi-platform-build/).
 
 Install Node.js 22.12+ for the Mac's own architecture: x64 on Intel, ARM64 on Apple Silicon. Copy the source and complete imported `assets/` and `data/`, then run these commands in Terminal, replacing the checkout path:
 
@@ -334,6 +349,21 @@ Either Mac architecture can select either package architecture for this game's c
 
 These are **local development bundles**. `mac.identity=-` requests ad-hoc signing without a Developer ID certificate, and `mac.notarize=false` skips notarization. Keep the entire `.app` bundle intact. The pinned builder supplies default Electron entitlements, including JIT and library-validation permissions, while retaining its hardened-runtime default. An ad-hoc signature does not provide the trust of a signed and notarized public release. These options follow the [version 26 macOS signing configuration](https://www.electron.build/v26/docs/mac/#code-signing).
 
+For **unsigned Linux cross-packaging**, run from the project root with the same
+metadata version for both architectures:
+
+```sh
+npx --no-install electron-builder --mac dir --x64 --publish never \
+  "-c.extraMetadata.version=$REDCAT_PACKAGE_VERSION" -c.mac.notarize=false
+npx --no-install electron-builder --mac dir --arm64 --publish never \
+  "-c.extraMetadata.version=$REDCAT_PACKAGE_VERSION" -c.mac.notarize=false
+```
+
+The installed builder explicitly skips Mac signing on Linux. These commands do
+not make a signed or notarized Mac release, and the generated apps cannot be
+runtime-tested on the Fedora host. Archive each whole output directory with
+symbolic links preserved (`zip -yr`) so framework links remain intact.
+
 The original game's icon is configured for macOS, Windows and Linux; see [App icon](app-icon.md) for its source and regeneration instructions. For public Mac distribution, configure a Developer ID signing identity and notarization credentials on the Mac/CI runner, replace these development overrides, and choose a distribution target such as DMG. Those release settings and artifacts are not currently configured or validated in this project. See [electron-builder's code-signing guide](https://www.electron.build/v26/docs/features/code-signing/).
 
 Before describing either Mac target as supported, verify WebGL rendering, Retina resolutions, fullscreen, pointer lock, keyboard/controller input, audio/video playback, saving and restoring on that hardware. The current Electron shell also quits when its last window closes; Mac-specific lifecycle polish remains separate from producing an app bundle.
@@ -359,4 +389,4 @@ When validating a new platform, first check startup and visible gameplay, contro
 
 An initial Kotlin/WebView Android project now exists in `android/`, targeting Android 16/API 36 with minimum API 29. See [Android setup and validation](../ANDROID.md) for the pinned JDK/SDK, `npm run android:prepare`, focused compile/check commands and later APK/AAB steps. Kotlin compilation and checks pass; no Android package has been generated or validated on a device yet.
 
-The ARM64 recipes above are desktop packages. Electron's desktop wrapper cannot produce an Android APK/AAB. The separate Android shell now implements local content loading and lifecycle/audio integration; physical-device, save-recovery and release validation remain. Browser touch overlays and Gamepad API controls are already implemented. Linux/Windows ARM64 and both macOS architectures also still need the platform validation described above before release. See [portability.md](portability.md) for the remaining steps.
+The ARM64 recipes above are desktop packages. Electron's desktop wrapper cannot produce an Android APK/AAB. The separate Android shell now implements local content loading and lifecycle/audio integration; physical-device, save-recovery and release validation remain. Browser touch overlays and Gamepad API controls are already implemented. Linux/Windows ARM64, Windows x64 and both macOS architectures still need the native runtime validation described above; published cross-packages must retain that limitation. See [portability.md](portability.md) for the remaining steps.

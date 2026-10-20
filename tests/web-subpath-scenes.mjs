@@ -90,10 +90,10 @@ try {
   await page.screenshot({path:path.join(root,'artifacts/web-subpath-forest.png')});
   const networkPaths=[...new Set(browserRequests.filter(url=>/^https?:/.test(url)))];
   assert.ok(networkPaths.every(url=>url.startsWith(base)||url===origin+prefix.slice(0,-1)+'?skipIntro&source=subpath-check'),'all application resources stay under the prefix');
-  for(const required of ['node_modules/three/build/three.module.js','node_modules/three/build/three.core.js','node_modules/three/examples/jsm/math/ImprovedNoise.js','data/levels/lvl00a/level.json','data/levels/lvl00a/mesh.bin','data/davi/lvl00a.json','data/motions/lvl00a.json','data/dialogue/nl.json','assets/actors/manifest.json','assets/effects/manifest.json'])assert.ok(networkPaths.includes(base+required),`requested prefixed ${required}`);
+  for(const required of ['node_modules/three/build/three.module.js','node_modules/three/build/three.core.js','node_modules/three/examples/jsm/math/ImprovedNoise.js','data/levels/lvl00a/level.json','data/levels/lvl00a/mesh.bin','data/davi/lvl00a.json','data/motions/lvl00a.json','data/dialogue/nl.json','assets/actors/manifest.json','assets/effects/manifest.json'])assert.ok(networkPaths.some(url=>new URL(url).pathname===prefix+required),`requested prefixed ${required}`);
   assert.ok(networkPaths.some(url=>url.startsWith(base+'assets/voices/')),'original dialogue audio stays prefixed');
   report.network={uniqueRequests:networkPaths.length,outsidePrefix:networkPaths.filter(url=>!url.startsWith(base)&&!url.includes('?skipIntro&source=subpath-check')),paths:networkPaths.map(url=>url.replace(origin,''))};
   assert.deepEqual(errors,[]);
   await writeFile(path.join(root,'artifacts/web-subpath-scenes.json'),JSON.stringify({report,errors},null,2)+'\n');
-  console.log('PASS local /redcatspookkasteel/ static-prefix fixture: query-preserving canonical redirect; unversioned menu; Three core/addon importmap; original intro and audio; actual forest geometry/actors/scripts; media byte ranges; missing module404; no application requests escaped the prefix. Nginx itself was not run.');
+  console.log('PASS local /redcatspookkasteel/ static-prefix fixture: query-preserving canonical redirect; versioned modules; Three core/addon importmap; original intro and audio; actual forest geometry/actors/scripts; media byte ranges; missing module404; no application requests escaped the prefix. Nginx itself was not run.');
 }finally{await browser?.close();server.closeAllConnections();await new Promise(resolve=>server.close(resolve));}

@@ -156,6 +156,12 @@ export class NativeSpoutEffect {
     }
     this.enableSerial=enableSerial;
     this.remainder+=Math.min(dt,.25);
-    while(this.remainder+1e-10>=SPOUT_STEP){this.remainder=Math.max(0,this.remainder-SPOUT_STEP);this.ticks++;this.step(origin,direction);}
+    while(this.remainder+1e-10>=SPOUT_STEP){
+      this.remainder=Math.max(0,this.remainder-SPOUT_STEP);this.ticks++;
+      // Empty disabled emitters have no births, colour changes or live-slot
+      // integration. Keep the exact clock arithmetic for saves and re-enable
+      // timers, but avoid revisiting all 15 inert templates every tick.
+      if(this.particles.length||this.enabled&&(!this.finished||this.cycling))this.step(origin,direction);
+    }
   }
 }

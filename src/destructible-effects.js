@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {createNativeDebris,stepNativeDebris} from './debris-native.js';
-import {createNativeBlasts,nativeSmokeState} from './explosion-native.js';
-import {createActorLighting,applyActorLighting} from './actor-lighting.js';
+import {nativeBlastsForEffect,nativeSmokeState} from './explosion-native.js';
+import {DebrisRenderPool} from './debris-render-pool.js';
 import {projectileImpactSprite,projectileImpactWave,IMPACT_WAVE_TEXTURE} from './projectile-impacts.js';
 
 export function explosionFrame(age) {
@@ -21,12 +21,38 @@ export class DestructibleEffects {
   static async create(world,game) {
     const effect=new DestructibleEffects(world,game),names=new Set();
     for(const object of game.objects)if(object.kind==='actor')for(const type of object.actorSettings?.debris?.types||[])names.add(type.actor.toLowerCase().replace(/\.act$/,''));
-    await Promise.all([...names].map(async name=>{const actor=await world.makeActor(name);if(actor)effect.prototypes.set(name,actor);}));
+    await Promise.all([...names].map(async name=>{const actor=await world.makeActor(name,{deferTextures:true});if(actor)effect.prototypes.set(name,actor);}));
+    effect.sources=game.objects.filter(object=>object.kind==='actor'&&object.actorSettings?.debris?.types?.length);
+    // Keep every artwork's shader warm, then reserve the larger cohorts only
+    // near the player. This covers stacked props without retaining a full
+    // level's maximum possible fragment count.
+    effect.renderPool.prewarm([...effect.prototypes.values()].map(prototype=>({prototype,count:1})));
     return effect;
   }
-  constructor(world,game){this.world=world;this.game=game;this.seen=new Set();this.present=new Set();this.particles=[];this.blasts=[];this.prototypes=new Map();}
+  constructor(world,game){this.world=world;this.game=game;this.seen=new Set();this.present=new Set();this.particles=[];this.blasts=[];this.prototypes=new Map();this.renderPool=new DebrisRenderPool(world);this.sources=[];this.nextReserve=-Infinity;this.reserveRequests=[];this.reservePending=false;}
+  prepareNearby(position=this.world.player?.position,creationBudget=8,force=false) {
+    if(!position)return;
+    if(force||this.game.time>=this.nextReserve) {
+      this.nextReserve=this.game.time+.25;
+      const counts=new Map();
+      for(const object of this.sources) {
+        if(object.enabled===false||object.visible===false||object.health<=0)continue;
+        const origin=this.game.objectPosition(object);
+        if(origin.reduce((sum,value,i)=>sum+(value-position[i])**2,0)>512**2)continue;
+        if(this.world.geometryStream?.rooms?.active&&!this.world.geometryStream.rooms.sphereAllowed(origin,32))continue;
+        for(const type of object.actorSettings.debris.types) {
+          const name=String(type.actor||'').toLowerCase().replace(/\.act$/,''),prototype=this.prototypes.get(name);
+          if(prototype)counts.set(prototype,(counts.get(prototype)||0)+Math.max(Number(type.MinNr)||0,Number(type.MaxNr)||0));
+        }
+      }
+      this.reserveRequests=[...counts].map(([prototype,count])=>({prototype,count}));this.reservePending=true;
+      for(const prototype of counts.keys())this.world.actorTextures?.requestRoot(prototype);
+    }
+    if(this.reservePending){const result=this.renderPool.reserve(this.reserveRequests,128,creationBudget);this.reservePending=result.remaining>0&&result.created>0;}
+  }
   update(dt,batches) {
     const {world,game}=this;
+    if(dt>0)this.prepareNearby();
     let waveCount=0;
     for(const effect of game.projectileImpacts||[]) {
       const sprite=projectileImpactSprite(effect,game.time);
@@ -57,7 +83,7 @@ export class DestructibleEffects {
       this.present.add(effect.id);
       if(!this.seen.has(effect.id)) {
         this.seen.add(effect.id);
-        this.blasts.push(...createNativeBlasts(effect));
+        this.blasts.push(...nativeBlastsForEffect(effect));
         for(const particle of debrisParticles(effect,name=>this.prototypes.get(name)?.userData.template?.data.settings)) {
           const prototype=this.prototypes.get(particle.actor);if(!prototype)continue;
           // Old explosion records retain their birth for the longer smoke
@@ -71,13 +97,9 @@ export class DestructibleEffects {
             (start,end,min,max)=>world.collider.trace(start,end,min,max,world.physicalModels,false));
           if(!alive)continue;
           if(age>0)particle.restoredAt=game.time;
-          const original=prototype.userData.mesh,materials=(Array.isArray(original.material)?original.material:[original.material]).map(m=>{const copy=m.clone();copy.transparent=true;return copy;});
-          const root=new THREE.Group(),mesh=new THREE.Mesh(original.geometry,materials);mesh.position.copy(original.position);mesh.rotation.copy(original.rotation);mesh.scale.copy(original.scale);root.add(mesh);
-          mesh.userData.actorLighting=createActorLighting(prototype.userData.template?.data.settings||{});
-          for(const material of materials)applyActorLighting(material,mesh.userData.actorLighting);
-          if(effect.scale)mesh.scale.fromArray(effect.scale);
-          particle.materialOpacity=materials.map(m=>m.opacity);
-          root.position.fromArray(particle.position);world.scene.add(root);particle.mesh=root;particle.materials=materials;this.particles.push(particle);
+          const entry=this.renderPool.acquire(prototype,{scale:effect.scale}),{root,materials}=entry;
+          particle.materialOpacity=entry.materialOpacity;
+          root.position.fromArray(particle.position);world.scene.add(root);particle.mesh=root;particle.materials=materials;particle.renderEntry=entry;this.particles.push(particle);
         }
       }
     }
@@ -99,15 +121,17 @@ export class DestructibleEffects {
     for(const particle of this.particles) {
       const step=particle.restoredAt===game.time?0:dt;delete particle.restoredAt;
       if(!stepNativeDebris(particle,step,(start,end,min,max)=>world.collider.trace(start,end,min,max,world.physicalModels,false))) {
-        particle.mesh.removeFromParent();particle.materials.forEach(m=>m.dispose());continue;
+        this.renderPool.release(particle.renderEntry,game.time);continue;
       }
       particle.mesh.position.fromArray(particle.position);particle.mesh.quaternion.fromArray(particle.orientation);
       for(let i=0;i<particle.materials.length;i++)particle.materials[i].opacity=particle.materialOpacity[i]*particle.opacity;
       active.push(particle);
     }
     this.particles=active;
+    this.renderPool.trim(game.time);
   }
   createImpactWaves(map) {
+    if(this.impactWaves)return;
     const geometry=this.world.track(new THREE.BufferGeometry()),indices=[];
     const positions=new THREE.BufferAttribute(new Float32Array(256*12),3).setUsage(THREE.DynamicDrawUsage);
     const uvs=new THREE.BufferAttribute(new Float32Array(256*8),2).setUsage(THREE.DynamicDrawUsage);
@@ -118,5 +142,10 @@ export class DestructibleEffects {
     const mesh=new THREE.Mesh(geometry,material);mesh.frustumCulled=false;mesh.renderOrder=2;this.world.scene.add(mesh);
     this.impactWaves={mesh,positions,uvs,colors};
   }
-  dispose(){this.impactWaves?.mesh.removeFromParent();this.impactWaves=null;for(const particle of this.particles){particle.mesh.removeFromParent();particle.materials.forEach(m=>m.dispose());}this.particles=[];this.blasts=[];this.seen.clear();this.present.clear();this.prototypes.clear();}
+  prepareImpactWaves(batches) {
+    const map=batches.get(IMPACT_WAVE_TEXTURE)?.mesh.material.uniforms.map.value;
+    if(map)this.createImpactWaves(map);
+    return this.impactWaves?.mesh;
+  }
+  dispose(){this.impactWaves?.mesh.removeFromParent();this.impactWaves=null;this.renderPool.dispose();this.particles=[];this.blasts=[];this.seen.clear();this.present.clear();this.prototypes.clear();}
 }

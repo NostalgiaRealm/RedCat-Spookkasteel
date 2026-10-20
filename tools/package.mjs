@@ -1,11 +1,12 @@
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {build, createTargets, Platform} from 'electron-builder';
+import {refreshWebCache} from './refresh-web-cache.mjs';
 
 const projectDir=fileURLToPath(new URL('../',import.meta.url));
 
-// Electron requires package metadata even though package.json has no version.
-// Inject it only when packaging; the menu's display version is maintained separately.
+// Packaging still requires an explicit distribution version. It overrides the
+// source package version only in the output; the menu display stays separate.
 export function packageOptions(platform,packageVersion=process.env.REDCAT_PACKAGE_VERSION){
   if(!['linux','windows'].includes(platform))throw new Error('Choose linux or windows as the packaging target.');
   if(typeof packageVersion!=='string'||!packageVersion.trim())throw new Error('Electron packaging requires REDCAT_PACKAGE_VERSION (three dot-separated integers). See docs/building.md. No build was started.');
@@ -15,6 +16,10 @@ export function packageOptions(platform,packageVersion=process.env.REDCAT_PACKAG
 }
 
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
-  try{await build(packageOptions(process.argv[2]));}
+  try{
+    const options=packageOptions(process.argv[2]);
+    await refreshWebCache({projectDir});
+    await build(options);
+  }
   catch(error){console.error(error.message);process.exitCode=1;}
 }

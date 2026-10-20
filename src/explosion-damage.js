@@ -1,4 +1,4 @@
-import {createNativeBlasts} from './explosion-native.js';
+import {nativeBlastsForEffect} from './explosion-native.js';
 import {damageDestructible} from './destructible-damage.js';
 
 const number=(value,fallback=0)=>Number.isFinite(Number(value))?Number(value):fallback;
@@ -13,7 +13,7 @@ export function createNativeExplosionDamage(effect) {
   const radius=Math.trunc(Math.max(0,number(conf.SizePercentage))*.01*700);
   const rate=Math.max(0,number(conf.DamagePercentage))*1.875;
   if(!radius||!rate)return [];
-  return createNativeBlasts(effect).map(blast=>({sourceId:effect.sourceId,birth:blast.birth,
+  return nativeBlastsForEffect(effect).map(blast=>({sourceId:effect.sourceId,birth:blast.birth,
     position:[...blast.position],radius,rate,activatedAt:null}));
 }
 

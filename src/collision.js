@@ -3,6 +3,7 @@ import { traceActors } from './actor-collision.js';
 import { GAMEPLAY_SETTINGS } from './gameplay-settings.js';
 import { PLAYER_MOVEMENT, playerInputVelocity } from './player-movement.js';
 import { MovementRecovery } from './movement-recovery.js';
+import { ModelTransformMap } from './model-transforms.js';
 const jumpSettings=GAMEPLAY_SETTINGS.game.Player;
 export const PLAYER_JUMP={gravity:jumpSettings.Gravitation*32,height:jumpSettings.JumpHeight*32,
   minTapTime:jumpSettings.SJumpMinTapTime/1000,maxTapTime:jumpSettings.SJumpMaxTapTime/1000,
@@ -91,8 +92,104 @@ const collisionModelBounds = ({models,nodes,leaves}) => models.map((model,index)
   }
   return [min,max];
 });
+
+// The campaign's physical-model list is frozen after loading. Only those
+// immutable lists can cache membership/order: arbitrary mutable query lists
+// keep their original iteration semantics. The tree stores authored bounds;
+// transformed brushes are considered separately at their current pose below.
+const modelQueryPlan = (indices,bounds) => {
+  const positions=new Map(),always=[],entries=[],byIndex=new Map();
+  for(let order=0;order<indices.length;order++) {
+    const index=indices[order],box=bounds[index];
+    if(!box||!box[0].every(Number.isFinite)||!box[1].every(Number.isFinite))always.push(order);
+    else {
+      let orders=positions.get(index);if(!orders)positions.set(index,orders=[]);orders.push(order);
+      const entry={index,order,min:box[0],max:box[1]};entries.push(entry);
+      let indexed=byIndex.get(index);if(!indexed)byIndex.set(index,indexed=[]);indexed.push(entry);
+    }
+  }
+  const build=items=>{
+    if(!items.length)return null;
+    const min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];
+    for(const item of items)for(let axis=0;axis<3;axis++) {
+      min[axis]=Math.min(min[axis],item.min[axis]);max[axis]=Math.max(max[axis],item.max[axis]);
+    }
+    if(items.length<=6){const node={min,max,items};for(const item of items)item.node=node;return node;}
+    let axis=0;for(let i=1;i<3;i++)if(max[i]-min[i]>max[axis]-min[axis])axis=i;
+    items.sort((a,b)=>(a.min[axis]+a.max[axis])-(b.min[axis]+b.max[axis])||a.order-b.order);
+    const middle=items.length>>1;
+    const node={min,max,left:build(items.slice(0,middle)),right:build(items.slice(middle))};
+    node.left.parent=node;node.right.parent=node;return node;
+  };
+  return {positions,always,byIndex,tree:build(entries)};
+};
+const refitModelNode = node => {
+  const items=node.items||[node.left,node.right];
+  for(let axis=0;axis<3;axis++) {
+    let min=Infinity,max=-Infinity;
+    for(const item of items){min=Math.min(min,item.min[axis]);max=Math.max(max,item.max[axis]);}
+    node.min[axis]=min;node.max[axis]=max;
+  }
+};
+const boundsOverlap = (min,max,queryMin,queryMax) =>
+  !(min[0]>queryMax[0]+1e-7||max[0]<queryMin[0]-1e-7||
+    min[1]>queryMax[1]+1e-7||max[1]<queryMin[1]-1e-7||
+    min[2]>queryMax[2]+1e-7||max[2]<queryMin[2]-1e-7);
 export class BspCollider {
-  constructor(data) { this.data = data; this.disabledModels = new Set(); this.modelTransforms = new Map(); this.actors=[];this.modelBounds=collisionModelBounds(data);this.modelTransformCache=new Map(); }
+  constructor(data) { this.data = data; this.disabledModels = new Set(); this.modelTransforms = new Map(); this.actors=[];this.modelBounds=collisionModelBounds(data);this.modelTransformCache=new Map();this.modelQueryPlans=new WeakMap(); }
+  traceModelIndices(indices,min,max) {
+    // Tiny, mutable and non-finite queries retain the full original scan. In
+    // particular, never let a NaN query disappear through spatial rejection.
+    if(indices.length<16||!Object.isFrozen(indices)||!min.every(Number.isFinite)||!max.every(Number.isFinite)||min.some((v,i)=>v>max[i]))return indices;
+    const transforms=this.modelTransforms,tracked=transforms instanceof ModelTransformMap;
+    // Ordinary Maps may contain mutable vectors. With many transformed models
+    // their full scan is cheaper and keeps that public contract unchanged.
+    if(!tracked&&transforms.size>indices.length/4)return indices;
+    let plans=this.modelQueryPlans.get(indices);
+    if(!plans){plans={};this.modelQueryPlans.set(indices,plans);}
+    let plan;
+    if(tracked) {
+      if(plans.trackedMap!==transforms) {
+        plans.unsubscribe?.();plans.trackedMap=transforms;
+        plans.tracked=modelQueryPlan(indices,this.modelBounds);
+        plans.tracked.dirty=new Set(plans.tracked.byIndex.keys());
+        plans.unsubscribe=transforms.subscribe(index=>{if(plans.tracked.byIndex.has(index))plans.tracked.dirty.add(index);});
+      }
+      plan=plans.tracked;
+      for(const index of plan.dirty) {
+        let bounds=this.modelBounds[index];
+        try {const transform=this.transformForModel(index);if(transform)bounds=transform.bounds(...bounds);}
+        catch {bounds=[[-Infinity,-Infinity,-Infinity],[Infinity,Infinity,Infinity]];}
+        // Invalid poses stay spatially unbounded: the original trace below
+        // still throws if enabled, and still ignores disabled invalid models.
+        for(const entry of plan.byIndex.get(index)) {
+          entry.min=bounds[0];entry.max=bounds[1];
+          for(let node=entry.node;node;node=node.parent)refitModelNode(node);
+        }
+      }
+      plan.dirty.clear();
+    } else {
+      plan=plans.generic;
+      if(!plan)plan=plans.generic=modelQueryPlan(indices,this.modelBounds);
+    }
+    const orders=plan.always.slice();
+    const visit=node=>{
+      if(!node||!boundsOverlap(node.min,node.max,min,max))return;
+      if(node.items) {
+        for(const item of node.items)if((tracked||!transforms.has(item.index))&&boundsOverlap(item.min,item.max,min,max))orders.push(item.order);
+      } else {visit(node.left);visit(node.right);}
+    };
+    visit(plan.tree);
+    // Map replacement and in-place pose mutations are deliberately live. Even
+    // a brush whose authored bounds are far away may now cross this sweep.
+    if(!tracked)for(const index of transforms.keys())if(this.modelBounds[index]) {
+      const positions=plan.positions.get(index);if(positions)for(const order of positions)orders.push(order);
+    }
+    // Strict nearest-hit comparisons and start-solid penetration lists depend
+    // on caller order, including duplicate model IDs. Restore it exactly.
+    orders.sort((a,b)=>a-b);
+    return orders.map(order=>indices[order]);
+  }
   transformForModel(index) {
     // Motion samples replace their objects frequently; moving-solid traces
     // also temporarily set old/destination poses and then restore them. Compare
@@ -121,7 +218,10 @@ export class BspCollider {
     const {models,nodes,planes,leaves}=this.data;
     const low=position.map((v,i)=>v+mins[i]),high=position.map((v,i)=>v+maxs[i]);
     const isPoint=mins.every((v,i)=>v===maxs[i]);let contents=0;
-    for(const index of modelIndices) {
+    // The model collision boxes include each original render box, so this
+    // candidate pass also conservatively contains every liquid/empty cell
+    // considered by the unchanged contents clipping below.
+    for(const index of this.traceModelIndices(modelIndices,low,high)) {
       const model=models[index];if(!model||this.disabledModels.has(index))continue;
       const transform=this.transformForModel(index);
       const [boundsMin,boundsMax]=transform&&model.min&&model.max?transform.bounds(model.min,model.max):[model.min,model.max];
@@ -146,7 +246,7 @@ export class BspCollider {
     const boxMin = start.map((v,i)=>Math.min(v,end[i])+mins[i]);
     const boxMax = start.map((v,i)=>Math.max(v,end[i])+maxs[i]);
     const center = boxMin.map((v,i)=>(v+boxMax[i])*0.5), extent = boxMin.map((v,i)=>(boxMax[i]-v)*0.5);
-    for(const modelIndex of modelIndices) {
+    for(const modelIndex of this.traceModelIndices(modelIndices,boxMin,boxMax)) {
       if(!models[modelIndex] || this.disabledModels.has(modelIndex)) continue;
       // Model zero is the stationary world, even if a caller supplies a transform.
       const transform=this.transformForModel(modelIndex);
@@ -166,17 +266,20 @@ export class BspCollider {
           const [min,max]=transform?transform.bounds(leaf.min,leaf.max):[leaf.min,leaf.max];
           if(min.some((v,i)=>v>boxMax[i] || max[i]<boxMin[i])) return;
         }
-        let enter=-Infinity, leave=1, normal=[0,1,0], outside=false, endOutside=false, nearest=-Infinity, exitNormal=null;
+        let enter=-Infinity, leave=1, normalPlane=null,normalSign=1, outside=false, endOutside=false, nearest=-Infinity, exitPlane=null,exitSign=1;
         for(let j=0;j<leaf.numSides;j++) {
           const side=leafSides[leaf.firstSide+j], p=plane(side[0]), sign=side[1] ? -1 : 1;
-          const n=[p[0]*sign,p[1]*sign,p[2]*sign];
-          const d=p[3]*sign-n.reduce((sum,v,i)=>sum+v*(v>0?mins[i]:maxs[i]),0);
-          const ds=dot(n,start)-d, de=dot(n,end)-d;
-          if(ds>nearest){nearest=ds;exitNormal=n;}
+          const nx=p[0]*sign,ny=p[1]*sign,nz=p[2]*sign;
+          // Keep reduce's original leading zero and left-to-right additions.
+          // Only a selected hit/penetration needs an allocated normal vector.
+          const offset=((0+nx*(nx>0?mins[0]:maxs[0]))+ny*(ny>0?mins[1]:maxs[1]))+nz*(nz>0?mins[2]:maxs[2]);
+          const d=p[3]*sign-offset;
+          const ds=(nx*start[0]+ny*start[1]+nz*start[2])-d,de=(nx*end[0]+ny*end[1]+nz*end[2])-d;
+          if(ds>nearest){nearest=ds;exitPlane=p;exitSign=sign;}
           if(ds>0) outside=true; if(de>0) endOutside=true;
           if(ds>0 && de>=ds) return;
           if(ds<=0 && de<=0) continue;
-          if(ds>de) { const t=(ds-0.05)/(ds-de); if(t>enter) { enter=t; normal=n; } }
+          if(ds>de) { const t=(ds-0.05)/(ds-de); if(t>enter) { enter=t; normalPlane=p;normalSign=sign; } }
           else leave=Math.min(leave,(ds+0.05)/(ds-de));
         }
         if(!outside) {
@@ -184,13 +287,13 @@ export class BspCollider {
           // Moving brushes need the shortest outward displacement from each
           // intersected convex leaf, not the default floor normal of a trace
           // whose starting hull is already inside the newly moved solid.
-          (result.penetrations??=[]).push({normal:exitNormal,distance:Math.max(0,-nearest)+.08,modelIndex});
+          (result.penetrations??=[]).push({normal:exitPlane?[exitPlane[0]*exitSign,exitPlane[1]*exitSign,exitPlane[2]*exitSign]:null,distance:Math.max(0,-nearest)+.08,modelIndex});
           if(!endOutside) { result.fraction=0; result.modelIndex=modelIndex; }
           else if(result.fraction===1) result.modelIndex=modelIndex;
           return;
         }
         if(enter<leave && enter>-Infinity && enter<result.fraction) {
-          result.fraction=Math.max(0,enter); result.normal=normal; result.modelIndex=modelIndex;
+          result.fraction=Math.max(0,enter); result.normal=[normalPlane[0]*normalSign,normalPlane[1]*normalSign,normalPlane[2]*normalSign]; result.modelIndex=modelIndex;
         }
       };
       const visit = id => {

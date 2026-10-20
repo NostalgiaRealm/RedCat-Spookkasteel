@@ -50,10 +50,10 @@ test('distant chunks release independent buffers; shared textures stay until the
   stream.dispose();assert.equal(releases.length,2);
 });
 
-test('visible distant surfaces and moved brushes stay complete; graphics never change authored visibility',async()=>{
+test('far visible sections stay unloaded until approached, and moved brushes use current nearby bounds',async()=>{
   const {world,stream}=fixture();
   world.camera.lookAt(20000,20,0);await stream.settle();
-  assert.equal(stream.chunks[1].resident,true,'no hard far-distance cutoff for visible rooms');
+  assert.equal(stream.chunks[1].resident,false,'looking at a remote room no longer loads its artwork');
   const moving=stream.chunks[1].mesh;moving.position.x=-20000;
   world.camera.lookAt(0,20,0);await stream.settle();
   assert.equal(moving.layers.mask,1,'current transformed brush bounds are used');
@@ -82,7 +82,7 @@ function circlingFixture(angles) {
   const camera=new THREE.PerspectiveCamera(65,1,1,30000);camera.lookAt(0,0,-1);
   const vertices=new Float32Array(angles.length*3*11),groups=[],faceSpans=[];
   for(let i=0;i<angles.length;i++) {
-    const angle=angles[i]*Math.PI/180,x=Math.sin(angle)*5000,z=-Math.cos(angle)*5000;
+    const angle=angles[i]*Math.PI/180,x=Math.sin(angle)*1500,z=-Math.cos(angle)*1500;
     for(const [vertex,offset]of [[0,[-40,-40,0]],[1,[40,-40,0]],[2,[0,40,0]]])vertices.set([x+offset[0],offset[1],z],(i*3+vertex)*11);
     groups.push({model:0,start:i*3,count:3,texture:i});faceSpans.push([i,i*3,3]);
   }

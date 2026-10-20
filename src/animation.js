@@ -1,8 +1,66 @@
-// Rigid skeletal animation for Genesis3D actors. Each instance owns its geometry.
+// Rigid skeletal animation for Genesis3D actors. Each instance owns its pose;
+// immutable clip preparation and geometry UV/index arrays can be shared.
 // Original vertex coordinates are local to one bone; pose = parent * attachment * key.
 import { Box3, Sphere } from 'three';
 
 const identity = new Float64Array([1,0,0,0,1,0,0,0,1,0,0,0]);
+const localBoneRadii=new WeakMap(),animationRadii=new WeakMap(),preparedClips=new WeakMap();
+function actorLocalBoneRadii(data) {
+  let cached=localBoneRadii.get(data);if(cached)return cached;
+  const {localPositions,joints,bones}=data;
+  if(!localPositions||!joints||!bones||localPositions.length!==joints.length*3)return {valid:false};
+  const radii=new Float64Array(bones.length);let unbound=0,valid=true;
+  for(let i=0;i<joints.length;i++) {
+    const joint=joints[i],radius=Math.hypot(localPositions[i*3],localPositions[i*3+1],localPositions[i*3+2]);
+    if(!Number.isInteger(joint)||joint< -1||joint>=bones.length||!Number.isFinite(radius)){valid=false;break;}
+    if(joint<0)unbound=Math.max(unbound,radius);else radii[joint]=Math.max(radii[joint],radius);
+  }
+  cached={valid,radii,unbound};localBoneRadii.set(data,cached);return cached;
+}
+
+// A broad-phase envelope for every clip and native transition. This is a
+// mathematical bound, not sampled animation bounds: Hermite's endpoint terms
+// are convex and both tangent basis functions have magnitude <= 4/27. Keys
+// and transition quaternions are normalized, so their linear norm is one.
+// Only exact, current-pose triangles decide a collision after this test.
+function actorAnimationRadius(data,prepared,radii) {
+  if(animationRadii.has(data))return animationRadii.get(data);
+  let radius=radii.unbound;
+  if(!radii.valid){animationRadii.set(data,Infinity);return Infinity;}
+  const norms=new Float64Array(data.bones.length),translations=new Float64Array(data.bones.length);
+  const margin=1+1e-12;
+  for(let i=0;i<data.bones.length;i++) {
+    const bone=data.bones[i],a=bone.attachment;
+    if(!a||a.length!==12||!Array.from(a).every(Number.isFinite)||!Number.isInteger(bone.parent)||bone.parent>=i||bone.parent< -1){radius=Infinity;break;}
+    let translationRadius=0;
+    for(const entry of prepared.values()) {
+      const track=entry.tracks[i],channel=track?.translation;
+      if(track?.rotation&&!track.rotation.values.every(Number.isFinite)){translationRadius=Infinity;break;}
+      if(!channel?.times.length)continue;
+      const maxima=[0,0,0],incoming=[0,0,0],outgoing=[0,0,0];
+      for(let j=0;j<channel.values.length;j++)maxima[j%3]=Math.max(maxima[j%3],Math.abs(channel.values[j]));
+      if(channel.interpolation!==0) {
+        for(let j=0;j<track.tangents.incoming.length;j++)incoming[j%3]=Math.max(incoming[j%3],Math.abs(track.tangents.incoming[j]));
+        for(let j=0;j<track.tangents.outgoing.length;j++)outgoing[j%3]=Math.max(outgoing[j%3],Math.abs(track.tangents.outgoing[j]));
+      }
+      translationRadius=Math.max(translationRadius,Math.hypot(...maxima.map((v,c)=>v+4/27*(incoming[c]+outgoing[c])))*margin);
+    }
+    // sqrt(max absolute row sum of A^T A) bounds the spectral norm without
+    // compounding the much looser Frobenius norm down a long bone hierarchy.
+    let normSquared=0;
+    for(let row=0;row<3;row++) {
+      let sum=0;
+      for(let column=0;column<3;column++)sum+=Math.abs(a[row]*a[column]+a[3+row]*a[3+column]+a[6+row]*a[6+column]);
+      normSquared=Math.max(normSquared,sum);
+    }
+    const attachmentNorm=Math.sqrt(normSquared)*margin,parentNorm=bone.parent<0?1:norms[bone.parent];
+    norms[i]=parentNorm*attachmentNorm*margin;
+    translations[i]=((bone.parent<0?0:translations[bone.parent])+parentNorm*(Math.hypot(a[9],a[10],a[11])+attachmentNorm*translationRadius))*margin;
+    radius=Math.max(radius,translations[i]+norms[i]*radii.radii[i]);
+  }
+  radius=Number.isFinite(radius)&&radius<3.4e38?radius*(1+2**-23)+1e-6:Infinity;
+  animationRadii.set(data,radius);return radius;
+}
 
 function multiply(out, a, b) {
   for (let row=0;row<3;row++) {
@@ -37,6 +95,20 @@ function hermiteTangents(channel) {
     }
   }
   return {incoming,outgoing};
+}
+
+function prepareActorClips(data) {
+  let prepared=preparedClips.get(data);if(prepared)return prepared;
+  // Imported actor definitions are immutable for their level lifetime. Build
+  // track lookup and Hermite tangents once, rather than once per enemy/torch.
+  prepared=new Map((data.animations||[]).map(clip=>{
+    const byName=new Map(clip.tracks.map(track=>[track.bone,track]));
+    return [clip.name.toLowerCase(),{clip,tracks:data.bones.map(bone=>{
+      const track=byName.get(bone.name);
+      return track?{...track,tangents:track.translation?hermiteTangents(track.translation):null}:null;
+    })}];
+  }));
+  preparedClips.set(data,prepared);return prepared;
 }
 
 function translation(out, channel, tangents, time) {
@@ -97,16 +169,14 @@ export class ActorAnimator {
     // State controllers opt in to the native transition; fixed authored poses
     // need no outgoing-pose cache.
     this.transitionDuration=0;this.transition=null;this.sampledTransition=null;this.sampledWeight=0;
-    this.transforms=data.bones.map(()=>new Float64Array(12));
-    this.prepared=new Map((data.animations||[]).map(clip=>{
-      const byName=new Map(clip.tracks.map(track=>[track.bone,track]));
-      return [clip.name.toLowerCase(),{clip,tracks:data.bones.map(bone=>{
-        const track=byName.get(bone.name);
-        return track?{...track,tangents:track.translation?hermiteTangents(track.translation):null}:null;
-      })}];
-    }));
+    this.boneTransforms=data.bones.map(()=>new Float64Array(12));
+    this.localBoneRadii=actorLocalBoneRadii(data);this.conservativeRadius=undefined;
+    this.prepared=prepareActorClips(data);
+    this.animationRadius=actorAnimationRadius(data,this.prepared,this.localBoneRadii);
     this.p=new Float64Array(3);this.q=new Float64Array(4);this.key=new Float64Array(12);this.local=new Float64Array(12);
   }
+
+  get transforms(){this.flushPose();return this.boneTransforms;}
 
   play(name, loop=true, restart=false) {
     const entry=this.prepared.get(String(name).toLowerCase());
@@ -174,12 +244,22 @@ export class ActorAnimator {
       transition.sampleWeight=transition.weight;
       transition.weight=Math.max(0,transition.weight-transitionDt/this.transitionDuration);
     }
-    const weight=transition?.sampleWeight||0,blend=weight*weight*(3-2*weight);
+    const weight=transition?.sampleWeight||0;
     if(this.sampledClip===this.clip&&this.sampledTime===this.time&&this.sampledTransition===transition&&this.sampledWeight===weight)return;
+    this.posePending=this.geometryPending=true;
+    this.sampledClip=this.clip;this.sampledTime=this.time;this.sampledTransition=transition;this.sampledWeight=weight;
+    this.sampledTracks=this.tracks;
+    if(!this.deferGeometry)this.flushGeometry();
+  }
+
+  flushPose() {
+    if(!this.posePending)return;
+    this.conservativeRadius=undefined;
+    const transition=this.sampledTransition,weight=this.sampledWeight,blend=weight*weight*(3-2*weight);
     for(let i=0;i<this.data.bones.length;i++) {
-      const bone=this.data.bones[i],track=this.tracks[i];
-      translation(this.p,track?.translation,track?.tangents,this.time);
-      rotation(this.q,track?.rotation,this.time);
+      const bone=this.data.bones[i],track=this.sampledTracks[i];
+      translation(this.p,track?.translation,track?.tangents,this.sampledTime);
+      rotation(this.q,track?.rotation,this.sampledTime);
       if(blend>0) {
         for(let c=0;c<3;c++)this.p[c]+=(transition.positions[i*3+c]-this.p[c])*blend;
         for(let c=0;c<4;c++)this.blendQ[c]=transition.rotations[i*4+c];
@@ -187,8 +267,48 @@ export class ActorAnimator {
       }
       compose(this.key,this.p,this.q);
       multiply(this.local,bone.attachment,this.key);
-      multiply(this.transforms[i],bone.parent>=0?this.transforms[bone.parent]:identity,this.local);
+      multiply(this.boneTransforms[i],bone.parent>=0?this.boneTransforms[bone.parent]:identity,this.local);
     }
+    this.posePending=false;
+  }
+
+  // Bound the exact current skeletal pose without skinning its vertices. A
+  // bone's linear transform is bounded by its Frobenius norm; translation
+  // and the largest local vertex radius then enclose every attached vertex.
+  // This only rejects distant explosion targets. Nearby actors still flush
+  // their original geometry and use its exact posed box before taking damage.
+  conservativePoseRadius() {
+    const position=this.geometry.getAttribute('position'),radii=this.localBoneRadii;
+    if(!this.sampledClip||!radii?.valid||!position||position.itemSize!==3||position.normalized||
+      position.isInterleavedBufferAttribute||!(position.array instanceof Float32Array)||position.count!==this.data.joints.length||
+      this.geometry.morphAttributes.position)return Infinity;
+    this.flushPose();
+    if(this.conservativeRadius!==undefined)return this.conservativeRadius;
+    let radius=radii.unbound;
+    for(let i=0;i<radii.radii.length;i++) {
+      const matrix=this.boneTransforms[i];
+      const norm=Math.hypot(matrix[0],matrix[1],matrix[2],matrix[3],matrix[4],matrix[5],matrix[6],matrix[7],matrix[8]);
+      radius=Math.max(radius,Math.hypot(matrix[9],matrix[10],matrix[11])+norm*radii.radii[i]);
+    }
+    // Skinning writes Float32 positions. Enclose their rounding, including
+    // subnormal values; overflowing/nonfinite data keeps the original path.
+    this.conservativeRadius=Number.isFinite(radius)&&radius<3.4e38?radius*(1+2**-23)+1e-6:Infinity;
+    return this.conservativeRadius;
+  }
+
+  conservativeAnimationRadius() {
+    const position=this.geometry.getAttribute('position');
+    if(!this.sampledClip||!position||position.itemSize!==3||position.normalized||position.isInterleavedBufferAttribute||
+      !(position.array instanceof Float32Array)||position.count!==this.data.joints.length||this.geometry.morphAttributes.position||
+      this.sampledWeight<0||this.sampledWeight>1)return Infinity;
+    return this.animationRadius;
+  }
+
+  // Off-camera actors keep their clocks and transition state current. Bone
+  // queries and rendering/collision materialize that exact current pose.
+  flushGeometry() {
+    if(!this.geometryPending)return;
+    this.flushPose();
     const position=this.geometry.getAttribute('position'),normal=this.geometry.getAttribute('normal');
     const {localPositions,localNormals,joints,normalJoints}=this.data;
     // Imported rigid actors have packed, unnormalized XYZ positions and no
@@ -198,7 +318,7 @@ export class ActorAnimator {
       position.count===joints.length&&!this.geometry.morphAttributes.position;
     let minX=Infinity,minY=Infinity,minZ=Infinity,maxX=-Infinity,maxY=-Infinity,maxZ=-Infinity;
     for(let i=0;i<joints.length;i++) {
-      const offset=i*3,m=joints[i]>=0?this.transforms[joints[i]]:identity;
+      const offset=i*3,m=joints[i]>=0?this.boneTransforms[joints[i]]:identity;
       const x=localPositions[offset],y=localPositions[offset+1],z=localPositions[offset+2];
       position.array[offset]=m[0]*x+m[1]*y+m[2]*z+m[9];
       position.array[offset+1]=m[3]*x+m[4]*y+m[5]*z+m[10];
@@ -211,7 +331,7 @@ export class ActorAnimator {
         maxX=Math.max(maxX,px);maxY=Math.max(maxY,py);maxZ=Math.max(maxZ,pz);
       }
       if(normal && localNormals) {
-        const n=normalJoints[i]>=0?this.transforms[normalJoints[i]]:identity;
+        const n=normalJoints[i]>=0?this.boneTransforms[normalJoints[i]]:identity;
         const nx=localNormals[offset],ny=localNormals[offset+1],nz=localNormals[offset+2];
         const a=n[0]*nx+n[1]*ny+n[2]*nz,b=n[3]*nx+n[4]*ny+n[5]*nz,c=n[6]*nx+n[7]*ny+n[8]*nz;
         // Actor normals and rigid bone rotations are bounded; the direct
@@ -234,7 +354,7 @@ export class ActorAnimator {
     } else {
       this.geometry.computeBoundingBox();this.geometry.computeBoundingSphere();
     }
-    this.sampledClip=this.clip;this.sampledTime=this.time;this.sampledTransition=transition;this.sampledWeight=weight;
+    this.geometryPending=false;
   }
 }
 

@@ -10,10 +10,10 @@ carry out; no server or DNS changes have been made.
 
 ## 1. Prepare the files on your computer
 
-Use `/home/rick/RCSPOOK_NEW`, including its complete imported `assets/` and
-`data/` directories. A source-only checkout is insufficient because those
-directories are ignored by Git. See [building.md](building.md) for importing
-missing original assets. Do not upload the older `dist/` desktop packages.
+Use `/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW`, including its
+complete imported `assets/` and `data/` directories. Check that these directories
+are present; see [building.md](building.md) for importing missing original
+assets. Do not upload the older `dist/` desktop packages.
 
 The web directory should contain:
 
@@ -37,13 +37,15 @@ Otherwise, you can use the dependency already installed there.
 To prepare a separate upload directory, run these commands **on your computer**:
 
 ```sh
-cd /home/rick/RCSPOOK_NEW
+cd "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW"
 test -f node_modules/three/build/three.module.js
 test -f node_modules/three/build/three.core.js
 test -f assets/media/intronl.webm
 test -f data/levels/lvl00a/level.json
 
-REDCAT_STAGE=$(mktemp -d /tmp/redcat-web.XXXXXX)
+npm run web:refresh
+mkdir -p temp_work
+REDCAT_STAGE=$(mktemp -d "$PWD/temp_work/redcat-web.XXXXXX")
 mkdir -p "$REDCAT_STAGE/redcatspookkasteel/node_modules"
 cp -a index.html src assets data "$REDCAT_STAGE/redcatspookkasteel/"
 cp -a node_modules/three "$REDCAT_STAGE/redcatspookkasteel/node_modules/"
@@ -54,6 +56,12 @@ Continue only if the checks succeed. The current files need approximately
 180 MB of disk space. This is a file copy, not a desktop build. The published
 tree does not need the rest of `node_modules`, `electron/`, development tools,
 tests, screenshots, logs, original Windows executables or the ISO.
+
+`npm run web:refresh` updates the content-based cache keys in `index.html` for
+the complete JavaScript module graph and its stylesheets. Run it after source
+edits and before copying the web files. It does not compile or package the game.
+The generated import map must travel with the matching `src/` and Three.js
+files; giving only `main.js` a version query does not refresh its dependencies.
 
 ## 2. Upload into the subdirectory
 
@@ -131,9 +139,10 @@ resources must return 404, rather than an SPA fallback page. The MIME mapping
 lets browsers recognize JavaScript modules, JSON, images and media. See the
 official [Nginx root, location, types and try_files documentation](https://nginx.org/en/docs/http/ngx_http_core_module.html).
 
-`expires -1` makes clients revalidate cached content. The game currently uses
-stable filenames, so long-lived immutable caching could mix old code and new
-assets after an update. This setting also avoids replacing an existing site's
+`expires -1` makes clients revalidate cached content. JavaScript and stylesheet
+URLs now include content-based cache keys, but the entry HTML and game data
+still need revalidation. Do not cache `index.html` as immutable. This setting
+also avoids replacing an existing site's
 `add_header` inheritance. See [Nginx response-header directives](https://nginx.org/en/docs/http/ngx_http_headers_module.html).
 
 Do not place these locations directly at the top of `nginx.conf` or create a
@@ -220,7 +229,8 @@ from the Electron desktop app. Mobile browsers automatically enable the [touch o
 ## Updates, saves and troubleshooting
 
 - For updates, copy matching `index.html`, `src/`, `assets/`, `data/` and Three.js
-  files from the same source version. Keep a previous release for rollback.
+  files from the same source version after `npm run web:refresh`. Keep a previous
+  release for rollback.
   Upload a complete replacement directory first and switch it into place when
   ready; avoid changing individual files while people are loading the game.
 - Saves, unlocked levels and settings live in each visitor's browser storage,
@@ -229,8 +239,9 @@ from the Electron desktop app. Mobile browsers automatically enable the [touch o
   Keep the hostname and protocol stable across updates. Another copy of this
   game on the same origin shares the same RedCat storage keys, even at another
   URL path.
-- If the menu still shows a release number, check that you uploaded current source rather
-  than a prepared desktop package. Revalidate browser/CDN caches after updates.
+- If the menu shows an older version or loading fails after an update, check
+  that the uploaded source files belong to the same release and that caches
+  revalidate them. The version in Over alone does not prove every module is current.
 - If the console reports a module MIME error or `Unexpected token '<'`, inspect
   the failing URL: a missing file is likely being replaced by an HTML error or
   fallback page. Also check the Nginx MIME configuration and Three.js core file.
@@ -246,7 +257,84 @@ from the Electron desktop app. Mobile browsers automatically enable the [touch o
   SELinux hosts, content labels. A black 3D view with successful asset requests
   calls for a browser WebGL/graphics-driver check.
 
+### Mixed cached code can look like a broken save
+
+On 20 October 2026, the published 1.0 site failed to continue an existing Caves
+save with `this.actorResidency?.settle is not a function`. The live Chromium tab
+had retained **0.9.9** `src/actor-render-residency.js` while loading the current
+`src/world.js`. The old module did not implement `settle()`. Fresh responses
+from the server matched the current source, but lacked `Cache-Control` and
+`Expires` headers.
+
+A reload bypassing the HTTP cache, followed by **Verder spelen**, loaded the
+same save successfully. No save conversion or gameplay-code change was needed.
+For an affected browser, use **Ctrl+Shift+R** and then continue the adventure.
+Do **not** clear site data, local storage or IndexedDB: those contain the saves
+and recovery points.
+
+The local source now prevents this particular old/new module combination with
+a generated import map in `index.html`. All application modules and their
+Three.js dependencies use the same content-derived revision in their URLs.
+Changing even a nested dependency changes the revision of the entire graph.
+The stylesheets and entry script receive that revision too. Unchanged source
+keeps the same URLs, so repeat visits can still reuse cached code. This changes
+no storage keys, saved progress, or asset-streaming behavior.
+
+Refresh these keys with `npm run web:refresh` before a manual website upload.
+Source startup, the local server, the desktop packaging helpers and Android
+asset preparation also refresh them automatically. Upload the refreshed
+`index.html` with the matching files. This safeguard does not make an incomplete
+upload atomic or refresh an entry HTML file that a proxy is still serving from
+an old cache, so keep the deployment and revalidation rules below.
+
+For a lasting hosting fix, apply the `expires -1;` rule from the location above
+to the actual game responses. It should produce `Cache-Control: no-cache`,
+allowing cached files to be reused only after checking the server. Verify the
+public response, rather than assuming a hosting-panel setting took effect:
+
+```sh
+curl -sS -D - -o /dev/null \
+  https://games.nostalgiarealm.com/redcatspookkasteel/
+curl -sS -D - -o /dev/null \
+  https://games.nostalgiarealm.com/redcatspookkasteel/src/actor-render-residency.js
+```
+
+If those responses lack `Cache-Control: no-cache`, check which Nginx location
+actually serves them and whether a reverse proxy/CDN overrides the policy.
+`ETag` and `Last-Modified` alone do not require revalidation on every visit.
+After correcting the policy, invalidate previously cached game responses at
+any CDN and have affected clients hard-reload once. Keep ordinary artwork
+caching separate if tuning it later. Adding a version query only to `main.js`
+does not version its relative module imports and does not resolve this class
+of mismatch throughout the dependency graph.
+
 ## Focused local check
+
+The cache regression can be checked independently:
+
+```sh
+npm run web:refresh
+node --test tests/web-cache.test.mjs
+npm run test:web-cache
+```
+
+The browser check uses the `v0.9.9` Git tag to seed a real HTTP cache with the old
+actor module. It reproduces the exact `settle is not a function` error before
+loading the updated entry page and continuing a save. It requires Chromium
+(`CHROME_PATH` can select the executable). An optional `REDCAT_TEST_SAVE` path
+selects an older save fixture read-only; otherwise it creates an isolated
+first-level save. It never connects to your running game or public website.
+Browser profiles, copied fixtures and reports are retained in `temp_work/`.
+
+On 20 October 2026, the older Graveyard-save check passed: the unversioned
+0.9.9 actor was reused from cache, the refreshed entry requested all 119
+JavaScript modules with the current revision, and **Verder spelen** restored
+the exact saved position and health with no browser errors. The save bytes
+were unchanged by loading; the subsequent pause performed the game's normal
+autosave. A narrow-viewport reload also passed. This verifies loading and
+cache separation, not a full campaign playthrough.
+
+The broader hosting/path check is separate:
 
 ```sh
 node tests/web-subpath-scenes.mjs

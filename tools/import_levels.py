@@ -179,6 +179,7 @@ def export_level(source: Path, output: Path):
     palettes, pixels = chunks[23][2], chunks[19][2]
     transparent_textures = {info[-1] for info in infos if info[10] & 16}
     textures = []
+    texture_transparency = []
     for i, (raw_name, flags, width, height, offset, palette) in enumerate(raw_textures):
         name = raw_name.split(b'\0', 1)[0].decode('cp1252')
         require(0 < width <= 8192 and 0 < height <= 8192, f'Invalid texture dimensions: {name}')
@@ -197,6 +198,12 @@ def export_level(source: Path, output: Path):
         filename = f'textures/{i:03d}.png'
         png(out / filename, width, height, decoded, 4 if has_alpha else 3)
         textures.append({'name': name, 'file': filename, 'width': width, 'height': height, 'flags': flags, 'colorKey': has_alpha})
+        # A color-key-capable texture can still be entirely opaque (Castle
+        # wooden doors are an example). Visibility readiness needs the actual
+        # pixels, without decoding/readback on a live room-transition frame.
+        texture_transparency.append(has_alpha and 255 in indexed)
+
+    (out / 'texture-transparency.json').write_text(json.dumps(texture_transparency, separators=(',', ':')) + '\n', encoding='utf-8')
 
     models, face_models = [], [-1] * len(faces)
     for i, model in enumerate(raw_models):

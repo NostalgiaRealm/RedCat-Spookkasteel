@@ -11,6 +11,10 @@ const aboutLinks = new Set([
 protocol.registerSchemesAsPrivileged([{ scheme: 'redcat', privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true } }]);
 // The original artwork is sRGB; use the same output space on every desktop.
 app.commandLine.appendSwitch('force-color-profile','srgb');
+// Let requestAnimationFrame run above the display refresh without changing
+// the time-based game loop or graphics backend. Keep an opt-in synchronized
+// launch for users who prefer lower resource use: REDCAT_VSYNC=1 npm start.
+if (process.env.REDCAT_VSYNC !== '1') app.commandLine.appendSwitch('disable-frame-rate-limit');
 if (process.platform === 'linux') {
   // Ozone chooses the native window system before the main script executes.
   // Never change ozone-platform here: doing so can create a Wayland window

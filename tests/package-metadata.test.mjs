@@ -4,12 +4,12 @@ import {readFile} from 'node:fs/promises';
 import {Packager,Platform,Arch} from 'electron-builder';
 import {packageOptions} from '../tools/package.mjs';
 
-test('source and root lockfile have no game release number',async()=>{
+test('source and root lockfile agree on the game release version',async()=>{
   const metadata=JSON.parse(await readFile(new URL('../package.json',import.meta.url),'utf8'));
   const lock=JSON.parse(await readFile(new URL('../package-lock.json',import.meta.url),'utf8'));
-  assert.equal(Object.hasOwn(metadata,'version'),false);
-  assert.equal(Object.hasOwn(lock,'version'),false);
-  assert.equal(Object.hasOwn(lock.packages[''],'version'),false);
+  assert.match(metadata.version,/^\d+\.\d+\.\d+$/);
+  assert.equal(lock.version,metadata.version);
+  assert.equal(lock.packages[''].version,metadata.version);
   assert.equal(lock.packages['node_modules/three'].version,metadata.dependencies.three);
 });
 

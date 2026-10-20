@@ -3,6 +3,7 @@ import {createHash} from 'node:crypto';
 import {constants} from 'node:fs';
 import {lstat, mkdir, mkdtemp, open, readdir, readFile, rename, rm, writeFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
+import {refreshWebCache} from './refresh-web-cache.mjs';
 
 const projectDirectory = fileURLToPath(new URL('../', import.meta.url));
 export const DEFAULT_ANDROID_OUTPUT = 'android/app/build/generated/gameAssets';
@@ -163,7 +164,9 @@ export function parseAndroidArguments(args) {
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
-    const {output, manifest} = await prepareAndroidAssets(parseAndroidArguments(process.argv.slice(2)));
+    const options = parseAndroidArguments(process.argv.slice(2));
+    await refreshWebCache({projectDir:projectDirectory});
+    const {output, manifest} = await prepareAndroidAssets(options);
     console.log(`Prepared ${manifest.fileCount} runtime files (${manifest.totalBytes} bytes) in ${path.join(output, 'www')}`);
     console.log(`Runtime SHA-256: ${manifest.contentSha256}`);
   } catch (error) {
