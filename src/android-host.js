@@ -8,6 +8,8 @@ export class AndroidHost {
     this.active = !this.enabled;
     this.keepAwake = null;
     this.listener = null;
+    this.exportSequence = 0;
+    this.exports = new Map();
   }
 
   connect({onSuspend = () => {}, onForeground = () => {}, onBack = () => {}} = {}) {
@@ -19,6 +21,14 @@ export class AndroidHost {
         this.active = message.active;
         if (changed) (this.active ? onForeground : onSuspend)();
       } else if (message?.type === 'back' && this.active) onBack();
+      else if (message?.type === 'export-result') {
+        const pending = this.exports.get(message.id);
+        if (!pending) return;
+        this.exports.delete(message.id);
+        if (message.canceled === true) pending.resolve(false);
+        else if (message.ok === true) pending.resolve({saved:true});
+        else pending.reject(new Error(message.error || 'Het avontuur kon niet worden geëxporteerd.'));
+      }
     };
     this.window.addEventListener('redcat:android', this.listener);
     this.send({type:'ready'});
@@ -38,9 +48,25 @@ export class AndroidHost {
     this.send({type:'keep-awake', enabled});
   }
   quit() { return this.send({type:'quit'}); }
+  exportSave({filename, text} = {}) {
+    if (!this.enabled || !this.listener) return Promise.reject(new Error('Android-export is niet beschikbaar.'));
+    if (this.exports.size) return Promise.reject(new Error('Er is al een exportvenster geopend.'));
+    if (typeof filename !== 'string' || !/^RedCat-Spookkasteel-[A-Za-z0-9_-]{1,100}\.json$/.test(filename) ||
+        typeof text !== 'string' || !text.length || new TextEncoder().encode(text).length > 32 * 1024 * 1024) {
+      return Promise.reject(new Error('Het exportbestand is ongeldig of te groot (maximaal 32 MiB).'));
+    }
+    const id = `save-${++this.exportSequence}`;
+    return new Promise((resolve, reject) => {
+      this.exports.set(id, {resolve, reject});
+      try { this.send({type:'export-save', id, filename, text}); }
+      catch (error) { this.exports.delete(id); reject(error); }
+    });
+  }
   dispose() {
     if (this.listener) this.window.removeEventListener('redcat:android', this.listener);
     this.listener = null;
+    for (const pending of this.exports.values()) pending.reject(new Error('Het exportvenster is gesloten.'));
+    this.exports.clear();
   }
 }
 

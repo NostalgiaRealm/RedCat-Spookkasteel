@@ -1,0 +1,670 @@
+/* Original 800 × 600 menu composition. Portrait layouts retain the same
+   imported artwork but reflow controls instead of shrinking touch targets. */
+#menu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: auto;
+  background: #071f43;
+}
+#menu::before { display: none; }
+.native-menu-frame {
+  position: relative;
+  width: min(100%, 133.333333dvh);
+  aspect-ratio: 4 / 3;
+  flex: none;
+  container-type: inline-size;
+  color: white;
+  font-family: "Comic Sans MS", "Comic Neue", cursive;
+  background: #103577 url("../assets/menu/mainscre.png") center / 100% 100% no-repeat;
+  isolation: isolate;
+}
+.native-menu-frame[data-page="adventure"] { background-image: url("../assets/menu/adventur.png"); }
+.native-menu-frame[data-page="difficulty"] { background-image: url("../assets/menu/difficul.png"); }
+.native-menu-frame[data-page="quickplay"] { background-image: url("../assets/menu/quickpla.png"); }
+.native-menu-frame[data-page="startinfo"] { background-image: url("../assets/menu/startgam.png"); }
+.native-menu-frame[data-page="highscores"] { background-image: url("../assets/menu/highscor.png"); }
+.native-menu-frame p,
+.native-menu-frame h2 { font-family: inherit; color: white; font-weight: normal; }
+.native-menu-frame .original-menu-button {
+  width: 21.875cqw;
+  height: 8.375cqw;
+  min-height: 0;
+  padding: 0 1.5cqw 0 7.5cqw;
+  font: normal 2.125cqw / 1.15 "Comic Sans MS", "Comic Neue", cursive;
+  text-align: left;
+  text-shadow: none;
+}
+.native-menu-frame button:focus-visible {
+  outline: 2px solid #fff695;
+  outline-offset: -3px;
+}
+.original-help {
+  --paw-idle: url("../assets/menu/02220000.png");
+  --paw-hover: url("../assets/menu/02220001.png");
+  --paw-pressed: url("../assets/menu/02220002.png");
+}
+.original-next {
+  --paw-idle: url("../assets/menu/02120000.png");
+  --paw-hover: url("../assets/menu/02120001.png");
+  --paw-pressed: url("../assets/menu/02120002.png");
+}
+.original-previous {
+  --paw-idle: url("../assets/menu/02130000.png");
+  --paw-hover: url("../assets/menu/02130001.png");
+  --paw-pressed: url("../assets/menu/02130002.png");
+}
+.native-choice[aria-pressed="true"],
+.native-choice[aria-checked="true"] {
+  background-image: url("../assets/menu/00060002.png");
+}
+.native-menu-logo {
+  position: absolute;
+  top: 1.166667%;
+  left: 1%;
+  width: 16%;
+  height: auto;
+}
+#native-help,
+.native-menu-frame #open-quit {
+  position: absolute;
+  top: 0;
+  z-index: 2;
+}
+#native-help { left: 56%; }
+.native-menu-frame #open-quit { left: 78%; right: auto; }
+#native-menu-title {
+  position: absolute;
+  left: 1%;
+  top: 12%;
+  margin: 0;
+  color: #ffff00;
+  font-size: 2.5cqw;
+  line-height: 1.4;
+}
+#native-menu-description {
+  position: absolute;
+  left: 12.5%;
+  top: 16.666667%;
+  width: 75%;
+  margin: 0;
+  font-size: 2.125cqw;
+  line-height: 1.38;
+}
+.native-menu-page {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.native-menu-page button,
+.native-menu-page a,
+.native-menu-page input,
+.native-menu-page summary,
+.native-menu-page table { pointer-events: auto; }
+.native-home-choices,
+.native-adventure-choices {
+  position: absolute;
+  top: 37.166667%;
+  left: 38.125%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+#native-start-extras {
+  position: absolute;
+  left: 2.5%;
+  bottom: 1.5%;
+  width: 50%;
+  z-index: 3;
+  font-size: 1.875cqw;
+}
+#native-start-extras summary {
+  width: fit-content;
+  padding: 1.5cqw 1cqw;
+  cursor: pointer;
+  color: white;
+}
+.native-extra-actions {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background: #092756;
+  border: 1px solid #c6e9ff;
+  box-shadow: 0 4px 18px #0008;
+}
+.native-menu-frame .text-button {
+  padding: 1cqw;
+  color: white;
+  text-align: center;
+  text-decoration: underline;
+  font-size: 1.875cqw;
+}
+.native-menu-frame .text-button:hover { color: #ffff00; }
+.native-footer {
+  position: absolute;
+  inset: auto 0 0;
+  height: 11.166667%;
+  padding: 0;
+  margin: 0;
+  max-width: none;
+  border: none;
+  display: block;
+}
+.native-footer-left {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  gap: 0;
+}
+.native-footer #native-previous { position: absolute; left: 56%; bottom: 0; }
+.native-footer #native-next,
+.native-footer #native-start,
+.native-footer #play-level { position: absolute; right: 0; bottom: 0; }
+#native-difficulties {
+  position: absolute;
+  left: 11.25%;
+  right: 11.25%;
+  top: 33.333333%;
+  display: flex;
+  justify-content: space-between;
+}
+.native-difficulty {
+  position: relative;
+  width: 22.5cqw;
+  height: 30.625cqw;
+  padding: 0;
+  border: none;
+  background: none;
+  color: white;
+}
+.native-difficulty img { display: block; width: 100%; height: 100%; }
+.native-difficulty span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2.25cqw;
+  font-size: 2.25cqw;
+}
+.native-menu-frame #level-list {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 35%;
+  display: grid;
+  grid-template-columns: repeat(5, 18.75cqw);
+  justify-content: space-around;
+  gap: 0;
+}
+.native-menu-frame .level-card,
+.native-menu-frame .level-card.selected {
+  position: relative;
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  width: 18.75cqw;
+  height: 21.375cqw;
+  overflow: visible;
+  background: none;
+  box-shadow: none;
+  text-align: center;
+}
+.native-menu-frame .level-card img {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  margin: 0;
+}
+.native-menu-frame .level-card .card-info {
+  position: absolute;
+  bottom: 1.25cqw;
+  left: 1cqw;
+  right: 1cqw;
+  display: block;
+  padding: 0 !important;
+  color: white;
+}
+.native-menu-frame .level-card .card-info b {
+  font-size: 1.875cqw;
+  line-height: 1.1;
+  font-weight: normal;
+  color: white;
+}
+.native-menu-frame .card-info small,
+.native-menu-frame .level-card .selected-mark { display: none; }
+.native-menu-frame .level-card:disabled { cursor: default; }
+.native-start-details {
+  position: absolute;
+  left: 21.25%;
+  top: 73.666667%;
+  width: 50%;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 26% 74%;
+  gap: 0;
+  font-size: 2cqw;
+  line-height: 3cqw;
+}
+.native-start-details dt { color: white; }
+.native-start-details dd { margin: 0; overflow-wrap: anywhere; }
+.native-start-heading {
+  position: absolute;
+  top: 27%;
+  margin: 0;
+  font-size: 2.333333cqw;
+  font-weight: normal;
+}
+#native-start-mode { left: 22.25%; }
+#native-start-control { left: 61.25%; }
+#native-start-picture,
+#native-start-control-picture {
+  position: absolute;
+  top: 32%;
+  width: 25%;
+  height: auto;
+}
+#native-start-picture { left: 21%; }
+#native-start-control-picture { left: 61%; }
+#native-start-control-label {
+  position: absolute;
+  top: 67%;
+  left: 61%;
+  width: 29%;
+  margin: 0;
+  font-size: 2cqw;
+  line-height: 1.4;
+}
+#native-start-level {
+  position: absolute;
+  top: 67%;
+  left: 21.25%;
+  margin: 0;
+  font-size: 2.333333cqw;
+}
+#native-score-table {
+  position: absolute;
+  left: 19.875%;
+  top: 22.833333%;
+  width: 60.625%;
+  height: auto;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 2.125cqw;
+  text-align: left;
+}
+#native-score-table th,
+#native-score-table td { padding: .7cqw 1.5cqw; font-weight: normal; }
+#native-score-table thead { height: 5.25cqw; color: #ffff00; }
+#native-score-table tbody tr { height: 4cqw; }
+#native-score-table th:nth-child(1) { width: 36.5%; }
+#native-score-table th:nth-child(2) { width: 35.9%; }
+#native-score-table th:nth-child(3) { width: 27.6%; }
+#native-score-table td { vertical-align: top; overflow-wrap: anywhere; }
+
+/* Extended settings, recovery and credits retain every port option, using the
+   original blue artwork and legible scrollable HTML controls. */
+#settings, #help { background: #061841d9; backdrop-filter: none; }
+#settings { padding: 12px; }
+#settings > .panel, #help > .panel, #about,
+#new-adventure-warning, #recovery-saves, #cheats > .panel, #key-settings {
+  color: white;
+  border: 1px solid #c6e9ff;
+  border-radius: 0;
+  background: #103577 url("../assets/menu/mainscre.png") center / cover no-repeat;
+  font-family: "Comic Sans MS", "Comic Neue", cursive;
+}
+#settings .panel h2, #help .panel h2, #about h2,
+#new-adventure-warning h2, #recovery-saves h2, #cheats .panel h2, #key-settings h2 {
+  color: #ffff00;
+  font-family: inherit;
+  font-weight: normal;
+}
+#settings .setting span, #settings .setting small, #settings .settings-note,
+#help p, #help dt, #help dd, #about p, #about h3, #about dd,
+#new-adventure-warning p, #recovery-saves p, #cheats p,
+#key-settings p, #key-settings .setting span { color: white; }
+#settings .setting select { background: #062c6d; color: white; border-color: #a7d6ff; }
+#settings .setting input { accent-color: #e969ed; }
+#settings .close, #help .close, #about .close, #recovery-saves .close,
+.player-screen .close, #key-settings .close {
+  color: #aa48b4;
+  border: 2px solid white;
+  background: #addef5;
+}
+.native-settings-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; }
+.native-settings-links .original-menu-button,
+#settings .original-menu-button,
+#help .original-menu-button,
+#about .original-menu-button,
+.player-screen .original-menu-button,
+.player-prompt .original-menu-button,
+#quit-confirmation .original-menu-button {
+  font-family: "Comic Sans MS", "Comic Neue", cursive;
+  font-weight: normal;
+}
+#key-settings {
+  width: min(765px, calc(100vw - 24px));
+  max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background-image: url("../assets/menu/editbgnd.png");
+}
+#key-settings::backdrop { background: #0009; }
+#key-settings .panel-top h2 { font-size: 26px; }
+#key-settings .close { flex: none; }
+#key-settings .key-binding-button {
+  border: 1px solid #b3d7ff;
+  border-radius: 0;
+  background: #12396f;
+  color: white;
+  min-height: 44px;
+}
+#key-settings .key-binding-button[aria-pressed="true"] { background: #416aa1; border-color: #ffff66; }
+#key-settings .original-menu-button { font: normal 17px "Comic Sans MS", "Comic Neue", cursive; }
+#key-settings .native-settings-links { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding-top: 8px; }
+#key-settings .original-menu-button { width: 100%; max-width: 175px; height: auto; aspect-ratio: 175 / 67; justify-self: center; }
+@media (max-width: 700px) {
+  #key-settings .native-settings-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 580px) {
+  #key-settings { padding: 16px; }
+  #key-settings .setting { gap: 8px; }
+  #key-settings .key-binding-button { max-width: 62%; padding: 10px; font-size: 14px; }
+  #key-settings .native-settings-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #key-settings .original-menu-button { padding-left: 40px; padding-right: 4px; font-size: 14px; }
+}
+
+/* The original options form is 765 × 574. Its two tall option panels and
+   audio-control surrounds are separate imported resources, not CSS replicas. */
+#settings > .native-options-frame {
+  position: relative;
+  flex: none;
+  width: 765px;
+  max-width: calc(100vw - 24px);
+  min-height: 574px;
+  padding: 0;
+  margin: auto;
+  background-image: url("../assets/menu/editbgnd.png");
+  background-size: 100% 100%;
+  container-type: inline-size;
+  scroll-padding-bottom: 80px;
+}
+.native-options-logo { position: absolute; left: 8px; top: 7px; width: 128px; height: auto; }
+#native-settings-help { position: absolute; top: 0; right: 0; }
+#settings #native-settings-title { position: absolute; left: 8px; top: 72px; margin: 0; font-size: 19px; }
+#native-settings-base { position: absolute; left: 0; top: 104px; right: 0; height: 401px; }
+.native-option-column {
+  position: absolute;
+  top: 0;
+  width: 204px;
+  height: 401px;
+  background: url("../assets/menu/06150000.png") center / 100% 100% no-repeat;
+}
+.native-control-column { left: 64px; }
+.native-quality-column { left: 280px; }
+.native-option-column h3 { margin: 10px 0 0; text-align: center; font-size: 16px; font-weight: normal; }
+.native-option-current {
+  position: absolute;
+  top: 46px;
+  left: calc(50% - 24.5px);
+  width: 49px;
+  height: 49px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+}
+.native-option-current img { width: 49px; height: 47px; flex: none; }
+.native-option-current span { display: none; }
+.native-option-choices {
+  position: absolute;
+  left: 16px;
+  width: 175px;
+  top: 113px;
+  bottom: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.native-option-choices .original-menu-button {
+  width: 175px;
+  height: 67px;
+  min-height: 0;
+  padding: 0 5px 0 60px;
+  font-size: 16px;
+  text-align: left;
+}
+.native-option-choices button[aria-pressed="true"] { background-image: url("../assets/menu/00060002.png"); }
+.native-option-choices button[data-control="keyboard"] { font-size: 14px; line-height: 1.05; }
+.native-option-column .native-option-configure {
+  position: absolute;
+  top: 317px;
+  left: 16px;
+  width: 175px;
+  height: 67px;
+  padding: 0 4px 0 52px;
+  font-size: 16px;
+  text-align: left;
+}
+.native-option-configure:hover { color: #ffff00; }
+.native-audio-slider {
+  position: absolute;
+  left: 512px;
+  width: 234px;
+  height: 99px;
+  background: url("../assets/menu/00120000.png") center / 100% 100% no-repeat;
+}
+.native-effects-slider { top: 0; }
+.native-music-slider { top: 128px; }
+#open-more-settings {
+  position: absolute;
+  left: 541px;
+  top: 245px;
+  width: 175px;
+  height: 67px;
+  padding: 0 5px 0 52px;
+  font-size: 16px;
+  line-height: 1.05;
+  text-align: left;
+}
+.native-audio-slider > span { position: absolute; top: 6px; left: 0; right: 0; text-align: center; font-size: 17px; }
+.native-audio-slider input[type="range"] {
+  position: absolute;
+  left: 14px;
+  bottom: 18px;
+  width: 206px;
+  height: 38px;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+.native-audio-slider input::-webkit-slider-runnable-track { height: 36px; background: transparent; }
+.native-audio-slider input::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 8px;
+  height: 36px;
+  border: 1px solid #ffffce;
+  background: #f2ed55;
+}
+.native-audio-slider input::-moz-range-track { height: 36px; background: transparent; }
+.native-audio-slider input::-moz-range-thumb { width: 7px; height: 34px; border: 1px solid #ffffce; border-radius: 0; background: #f2ed55; }
+.native-settings-extra { position: relative; margin: 0 24px; }
+.native-settings-extra:not([open]) { display: none; }
+.native-settings-extra[open] { padding-top: 0; margin-top: 523px; }
+.native-settings-extra summary { padding: 12px 0; color: #ffff00; font-size: 19px; cursor: pointer; }
+.native-options-actions { position: absolute; right: 0; bottom: 0; display: flex; justify-content: flex-end; gap: 0; }
+.native-options-actions .original-menu-button { font-size: 17px; padding-left: 53px; padding-right: 4px; }
+.native-options-frame:has(.native-settings-extra[open]) .native-options-actions { position: sticky; bottom: 0; margin-top: 12px; background: #143375ec; z-index: 2; }
+
+@media (max-width: 800px) {
+  #settings > .native-options-frame { max-width: 765px; width: 100%; }
+}
+@media (max-width: 760px) {
+  #settings > .native-options-frame { min-height: 0; padding: 100px 12px 0; }
+  #native-settings-base { position: relative; top: 0; height: auto; display: grid; grid-template-columns: repeat(2, 204px); justify-content: center; align-items: start; gap: 18px 12px; }
+  .native-option-column { position: relative; left: auto; }
+  .native-audio-slider { position: relative; left: auto; top: auto; width: 204px; background-size: 100% 100%; }
+  .native-audio-slider input[type="range"] { left: 12px; width: 180px; }
+  #open-more-settings { position: relative; left: auto; top: auto; grid-column: 2; justify-self: center; }
+  .native-settings-extra[open] { margin: 12px 0 0; }
+  .native-options-actions { position: relative; margin-top: 18px; right: auto; bottom: auto; }
+}
+@media (max-width: 480px) {
+  #settings > .native-options-frame { padding-left: 6px; padding-right: 6px; }
+  #native-settings-base { grid-template-columns: minmax(0, 234px); }
+  #open-more-settings { grid-column: 1; }
+  .native-option-column { width: 234px; max-width: 100%; }
+  .native-option-choices, .native-option-column .native-option-configure { left: calc(50% - 87.5px); }
+  .native-audio-slider { width: 234px; max-width: 100%; }
+  .native-audio-slider input[type="range"] { left: 6%; width: 88%; }
+  .native-options-actions .original-menu-button { width: 50%; height: auto; aspect-ratio: 175 / 67; padding-left: 44px; font-size: 15px; }
+  #settings .setting { flex-wrap: wrap; }
+  #settings .setting span { flex-basis: 100%; }
+  #settings .setting select { max-width: 100%; }
+}
+@media (max-width: 580px) {
+  .player-screen-header { align-items: center; gap: 6px; }
+  .player-screen-header img { width: min(96px, 24vw); flex: none; }
+  .player-screen #native-player-help { width: 145px; height: 56px; padding-left: 50px; margin: 0 0 0 auto; font-size: 15px; }
+  .player-screen-header .close { position: static; flex: none; width: 36px; min-width: 36px; height: 36px; min-height: 36px; padding: 0; }
+}
+@media (max-width: 359px) {
+  .player-screen #native-player-help { width: 130px; height: 50px; padding-left: 45px; }
+}
+
+/* A portrait phone cannot fit five cards at usable touch sizes in a 4:3
+   letterbox. Keep the same page/flow/art, but let content scroll vertically. */
+@media (max-aspect-ratio: 4/5) {
+  #menu { align-items: flex-start; }
+  .native-menu-frame {
+    width: 100%;
+    min-height: 100dvh;
+    aspect-ratio: auto;
+    padding: calc(85px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));
+    background-size: auto 100%;
+    container-type: normal;
+    display: flex;
+    flex-direction: column;
+  }
+  .native-menu-logo {
+    top: calc(7px + env(safe-area-inset-top));
+    left: max(8px, env(safe-area-inset-left));
+    width: 96px;
+  }
+  .native-menu-frame .original-menu-button {
+    width: 155px;
+    height: 60px;
+    min-height: 44px;
+    padding: 0 8px 0 52px;
+    font-size: 15px;
+  }
+  #native-help, .native-menu-frame #open-quit { top: calc(2px + env(safe-area-inset-top)); }
+  #native-help { left: auto; right: 145px; width: 102px; padding-left: 35px; font-size: 13px; background-size: 100% 75%; }
+  .native-menu-frame #open-quit { left: auto; right: 0; width: 145px; padding-left: 51px; font-size: 15px; }
+  #native-menu-title, #native-menu-description {
+    position: static;
+    width: auto;
+    margin: 0;
+  }
+  #native-menu-title { font-size: 22px; }
+  #native-menu-description { margin: 10px 0 20px; font-size: 16px; }
+  .native-menu-page { position: static; flex: 1; }
+  .native-home-choices, .native-adventure-choices {
+    position: static;
+    align-items: center;
+    margin: 20px 0;
+  }
+  #native-start-extras { position: relative; left: auto; bottom: auto; width: 100%; margin-top: 18px; font-size: 16px; }
+  #native-start-extras summary { padding: 12px 8px; }
+  .native-extra-actions { position: static; margin: 0 0 24px; gap: 8px; }
+  .native-menu-frame .text-button { padding: 12px 8px; font-size: 15px; min-height: 44px; }
+  .native-footer {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+    min-height: 60px;
+    margin-top: 20px;
+  }
+  .native-footer-left { position: static; width: 100%; justify-content: space-between; }
+  .native-footer #native-previous, .native-footer #native-next,
+  .native-footer #native-start, .native-footer #play-level { position: static; }
+  .native-footer #native-next, .native-footer #native-start,
+  .native-footer #play-level { margin-left: auto; }
+  #native-difficulties {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 12px 0;
+  }
+  .native-difficulty { width: 135px; height: 184px; }
+  .native-difficulty span { bottom: 12px; font-size: 17px; }
+  .native-menu-frame #level-list {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 150px));
+    justify-content: center;
+    gap: 14px 8px;
+    margin: 12px 0;
+  }
+  .native-menu-frame .level-card, .native-menu-frame .level-card.selected {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 150 / 171;
+  }
+  .native-menu-frame .level-card .card-info { left: 8px; right: 8px; bottom: 10px; }
+  .native-menu-frame .level-card .card-info b { font-size: 15px; }
+  .native-start-details {
+    position: static;
+    width: auto;
+    font-size: 16px;
+    grid-template-columns: 42% 58%;
+    line-height: 1.5;
+    gap: 12px 0;
+    margin: 18px 0 26px;
+  }
+  [data-menu-page="startinfo"] { display: flex; flex-direction: column; }
+  .native-start-heading { position: static; font-size: 19px; text-align: center; margin: 15px 0 10px; }
+  #native-start-mode { order: 0; }
+  #native-start-picture { order: 1; }
+  #native-start-level { position: static; order: 2; font-size: 19px; text-align: center; margin-top: 10px; }
+  .native-start-details { order: 3; }
+  #native-start-control { order: 4; }
+  #native-start-control-picture { order: 5; }
+  #native-start-control-label { position: static; order: 6; width: auto; font-size: 17px; text-align: center; margin: 10px 0 16px; }
+  #native-start-extras { order: 7; }
+  #native-start-picture, #native-start-control-picture { position: static; display: block; width: 200px; max-width: 75%; margin: 0 auto; }
+  .native-menu-frame[data-page="highscores"] { background-image: url("../assets/menu/mainscre.png"); }
+  #native-score-table {
+    position: static;
+    width: 100%;
+    height: auto;
+    font-size: 15px;
+    margin: 15px 0;
+    background: #7196c875;
+  }
+  #native-score-table thead { height: 44px; }
+  #native-score-table tbody tr { height: 40px; }
+  #native-score-table th, #native-score-table td { padding: 10px 8px; border: 1px solid #c5dcff77; }
+}
+@media (max-width: 359px) and (max-aspect-ratio: 4/5) {
+  .native-menu-frame { padding-left: 8px; padding-right: 8px; }
+  .native-menu-logo { width: 80px; }
+  #native-help { right: 130px; width: 100px; }
+  .native-menu-frame #open-quit { width: 130px; padding-left: 45px; }
+  .native-footer-left .original-menu-button { width: 150px; font-size: 14px; }
+}

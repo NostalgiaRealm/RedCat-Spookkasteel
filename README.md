@@ -62,6 +62,12 @@ Open **http://127.0.0.1:4173**. Use the server rather than opening `index.html` 
 
 Browser saves belong to that website's address and browser profile. They are separate from desktop saves. This project uses its own save format; importing original Windows-game saves is not implemented.
 
+To keep a copy of a player's current progress, open **Spelerlijst**, select the
+player and choose **Exporteren**. This downloads a JSON backup, or opens the
+system file picker in the desktop/Android app. Exporting does not change the
+active player or overwrite their save. See [save export](docs/save-export.md)
+for the file format and current restore limitations.
+
 ### From a prepared desktop package
 
 If you have a prepared package, it includes Electron and the imported resources; Node.js, Python, the CD and Wine are not needed to play.
@@ -74,6 +80,22 @@ If you have a prepared package, it includes Electron and the imported resources;
 **The launcher scripts prefer an existing package in `dist/`.** That package may be older than the source. Use `npm start` to try source changes; consult the [build guide](docs/building.md) to regenerate packages.
 
 ## Work completed
+
+### Original menu and portable help
+
+The original **Hoofdmenu → Avontuur / Snelspel / Highscores** flow uses the
+imported page backgrounds, button states, chapter and difficulty artwork, music
+and spoken button responses. Spelerlijst keeps separate player progress.
+Instellingen groups resolution, render scale and MSAA (Off/2x/4x/8x) under
+**Geavanceerd** and the
+other added options under **Meer instellingen**, below the music slider. Keyboard
+bindings can be changed. Gameplay touch controls and the touch Menu
+button remain available.
+
+The original Dutch help has been converted from Windows WinHelp into a local,
+searchable viewer with context-sensitive topics and navigation. See
+[menu reconstruction](docs/original-menu-native.md) for original evidence and
+the adaptations needed for modern platforms.
 
 ### Original worlds, scripts and puzzles
 

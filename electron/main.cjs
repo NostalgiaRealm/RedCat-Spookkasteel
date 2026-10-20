@@ -1,6 +1,8 @@
-const { app, BrowserWindow, ipcMain, protocol, net, screen, Menu, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, protocol, net, screen, Menu, shell, dialog } = require('electron');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
+const { writeFile } = require('node:fs/promises');
+const { createSaveExporter } = require('./save-export.cjs');
 const aboutLinks = new Set([
   'https://ko-fi.com/nostalgiarealm',
   'https://www.nostalgiarealm.com/',
@@ -74,6 +76,7 @@ app.whenReady().then(() => {
     return { fullscreen: win.isFullScreen(), size: win.getContentSize() };
   });
   ipcMain.handle('app:quit', () => app.quit());
+  ipcMain.handle('save:export', createSaveExporter({getWindow: () => win, dialog, writeFile}));
   win.loadURL('redcat://game/index.html');
 });
 app.on('window-all-closed', () => app.quit());

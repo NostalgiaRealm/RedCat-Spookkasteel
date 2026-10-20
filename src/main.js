@@ -4,6 +4,12 @@ import { Gameplay } from './gameplay.js';
 import { ScriptHost } from './script-host.js';
 import { GameAudio } from './audio.js';
 import { MenuAudio } from './menu-audio.js';
+import { OriginalMenu } from './original-menu.js';
+import { NativeHelp } from './native-help.js';
+import { HIGHSCORES_KEY, recordHighscore } from './menu-highscores.js';
+import { createSaveExport, downloadSaveExport } from './save-export.js';
+import { normalizeControlBindings, readKeyboardInput, bindingPressed, controlBindingLabel } from './control-bindings.js';
+import { KeySettingsMenu } from './key-settings-menu.js';
 import { SliderAudio, SLIDER_VOICES } from './slider-audio.js';
 import { QuitMenu } from './quit-menu.js';
 import { PlayerProfiles } from './player-profiles.js';
@@ -26,12 +32,13 @@ import { FullscreenPreference, normalizeFullscreenPreference } from './fullscree
 import { GamepadInput } from './gamepad-input.js';
 import { GamepadMenu } from './gamepad-menu.js';
 import { RenderQuality, normalizeRenderScale, scaledRenderSize } from './render-quality.js';
+import { MsaaRenderer, normalizeMsaa, effectiveMsaa } from './msaa-renderer.js';
 import { AndroidHost } from './android-host.js';
 import { OriginalLoadingScreen } from './loading-screen.js';
 const androidHost=new AndroidHost();
 const $=id=>document.getElementById(id);
 const LEVELS=[{id:'lvl00a',name:'Het Bos',subtitle:'Waar het avontuur begint'},{id:'lvl01a',name:'Het Kasteel',subtitle:'Achter de kasteeldeur'},{id:'lvl02a',name:'Het Kerkhof',subtitle:'Tussen de oude graven'},{id:'lvl03a',name:'De Grotten',subtitle:'Diep onder het kasteel'},{id:'lvl04a',name:'De Toren',subtitle:'Het geheim van de heks'}];
-const DEFAULTS={resolution:'native',renderScale:100,showFps:false,fullscreen:true,fov:65,sensitivity:1,volume:0.6,autoIntro:true,camera:'third',noClip:false,difficulty:'Normal',touchControls:'auto'};
+const DEFAULTS={resolution:'native',renderScale:100,msaa:4,showFps:false,fullscreen:true,fov:65,sensitivity:1,volume:0.6,effectsVolume:1,musicVolume:1,autoIntro:true,camera:'third',noClip:false,difficulty:'Normal',touchControls:'auto'};
 const SETTINGS_KEY='redcat.settings.v1',SAVE_KEY='redcat.save.v1',PROGRESS_KEY='redcat.progress.v1';
 const PLAYER_OPTIONS_KEY='redcat.player-options.v1';
 const PLAYER_KEYS=new Set([SAVE_KEY,PROGRESS_KEY,PLAYER_OPTIONS_KEY,TOUCH_INTRO_HINT_KEY,DESKTOP_INTRO_HINT_KEY]);
@@ -46,12 +53,16 @@ const settings={...DEFAULTS,...stored};
 const playerOptions=readStored(PLAYER_OPTIONS_KEY)||(profiles?.activeId==='legacy'?{difficulty:stored.difficulty,noClip:stored.noClip}:{});
 settings.difficulty=playerOptions.difficulty??DEFAULTS.difficulty;settings.noClip=playerOptions.noClip??false;
 settings.renderScale=normalizeRenderScale(settings.renderScale);
+settings.msaa=normalizeMsaa(settings.msaa);
 settings.showFps=settings.showFps===true;
 const renderQuality=new RenderQuality();
 settings.fullscreen=normalizeFullscreenPreference(stored.fullscreen);
 if(!Number.isFinite(settings.fov)||settings.fov<45||settings.fov>90)settings.fov=65;
 if(!Number.isFinite(settings.sensitivity)||settings.sensitivity<0.2||settings.sensitivity>2)settings.sensitivity=1;
 if(!Number.isFinite(settings.volume)||settings.volume<0||settings.volume>1)settings.volume=.6;
+for(const key of ['effectsVolume','musicVolume'])if(!Number.isFinite(settings[key])||settings[key]<0||settings[key]>1)settings[key]=1;
+settings.controlBindings=normalizeControlBindings(settings.controlBindings);
+if(!['keyboard','gamepad','joystick'].includes(settings.controlDevice))settings.controlDevice='keyboard';
 if(!['first','third'].includes(settings.camera))settings.camera='third';
 settings.noClip=settings.noClip===true;
 settings.difficulty=normalizeDifficulty(settings.difficulty);
@@ -62,6 +73,7 @@ $('difficulty').replaceChildren(...DIFFICULTIES.map(({value,label})=>new Option(
 if(![...$('resolution').options].some(o=>o.value===settings.resolution))settings.resolution='native';
 let selected=0,world=null,gameplay=null,mode='menu',pausedFromSettings=false,toastTimer,lastFrame=performance.now(),chapterTransition=null;
 let levelReplaySelected=false;
+let originalMenu=null;
 let streamingWait=null;
 const autosave=new AutosaveClock();
 let recoveryError=false;
@@ -73,7 +85,7 @@ function createRecovery(playerId=profiles?.activeId){
   }});
 }
 let recovery=createRecovery();
-let renderer=null,worldRenderDirty=true,lastRenderedWorld=null;const keys=new Set();let mouseAttack=false;const audio=new GameAudio({master:settings.volume});const menuAudio=new MenuAudio({volume:settings.volume});const sliderAudio=new SliderAudio(menuAudio);
+let renderer=null,msaaRenderer=null,worldRenderDirty=true,lastRenderedWorld=null;const keys=new Set();let mouseAttack=false;const audio=new GameAudio({master:settings.volume,channels:{effects:settings.effectsVolume,voices:settings.effectsVolume,music:settings.musicVolume}});const menuAudio=new MenuAudio({volume:settings.volume,channels:{effects:settings.effectsVolume,music:settings.musicVolume}});const sliderAudio=new SliderAudio(menuAudio);
 let touchControls=null,touchEnabled=false;
 const gamepad=new GamepadInput(),gamepadMenu=new GamepadMenu();
 let controllerActive=false,controllerFrame=null;
@@ -88,8 +100,8 @@ const debriefing=new OriginalDebriefing($('debriefing'),continueDebriefing,{mobi
 debriefing.ready.catch(showError);
 const loadingScreen=new OriginalLoadingScreen($('loading'));
 loadingScreen.ready.catch(showError);
-try {renderer=new THREE.WebGLRenderer({canvas:$('game'),antialias:true,powerPreference:'high-performance'});renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.setPixelRatio(1);}catch(error){showError(new Error('WebGL 2 is niet beschikbaar. Controleer je grafische stuurprogramma. '+error.message));}
-renderer?.domElement.addEventListener('webglcontextrestored',()=>{worldRenderDirty=true;});
+try {renderer=new THREE.WebGLRenderer({canvas:$('game'),antialias:false,powerPreference:'high-performance'});renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.setPixelRatio(1);msaaRenderer=new MsaaRenderer(renderer,settings.msaa);}catch(error){showError(new Error('WebGL 2 is niet beschikbaar. Controleer je grafische stuurprogramma. '+error.message));}
+renderer?.domElement.addEventListener('webglcontextrestored',()=>{worldRenderDirty=true;refreshMsaaOptions();});
 function showError(error){console.error(error);$('fatal-message').textContent=error.message||String(error);$('fatal').hidden=false;$('loading').hidden=true;mode='error';touchControls?.reset();syncTouchUI();}
 function toast(message,duration=3500){$('toast').textContent=message;$('toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('visible'),duration);}
 function store(key,value){try{
@@ -97,8 +109,8 @@ function store(key,value){try{
   if(key===SETTINGS_KEY&&profiles)localStorage.setItem(profiles.key(PLAYER_OPTIONS_KEY),JSON.stringify({difficulty:value.difficulty,noClip:value.noClip}));
   localStorage.setItem(storageKey(key),JSON.stringify(value));return true;
 }catch{toast('Opslaan is niet gelukt: lokale opslag is niet beschikbaar.');return false;}}
-function refreshContinue(){const hasSave=validSave(readStored(SAVE_KEY));$('continue').hidden=!hasSave;$('start').hidden=hasSave;$('start-over').hidden=!hasSave;$('play-level').hidden=!hasSave||!levelReplaySelected;$('load-save').disabled=!hasSave;}
-function refreshPlayerName(){$('current-player').textContent=profiles?`Speler: ${profiles.active.name}`:'Spelerlijst niet beschikbaar';}
+function refreshContinue(){const hasSave=validSave(readStored(SAVE_KEY));$('load-save').disabled=!hasSave;originalMenu?.refresh();}
+function refreshPlayerName(){$('current-player').textContent=profiles?`Speler: ${profiles.active.name}`:'Spelerlijst niet beschikbaar';originalMenu?.home();}
 async function selectPlayer(id){
   if(!profiles||profileSwitching||mode!=='menu')throw new Error('Ga eerst terug naar het hoofdmenu om van speler te wisselen.');
   if(id===profiles.activeId)return true;
@@ -143,6 +155,17 @@ async function removePlayer(id){
   });
   if(!removed||cleanupErrors.length)return 'Speler verwijderd. Sluit andere spelvensters om alle oude opslag op te ruimen.';
   return 'Speler verwijderd.';
+}
+async function exportPlayer(id){
+  if(!profiles||profileSwitching||mode!=='menu')throw new Error('Ga eerst terug naar het hoofdmenu.');
+  const player=profiles.list().find(entry=>entry.id===id);
+  if(!player)throw new Error('Deze speler bestaat niet meer.');
+  // The requested player may be different from the currently selected one.
+  // Read only that namespace; exporting neither switches nor modifies it.
+  const read=key=>{const raw=localStorage.getItem(profiles.key(key,id));return raw===null?null:JSON.parse(raw);};
+  const exported=createSaveExport({playerName:player.name,save:read(SAVE_KEY),progress:read(PROGRESS_KEY),options:read(PLAYER_OPTIONS_KEY)});
+  const exportFile=androidHost.enabled?file=>androidHost.exportSave(file):window.desktop?.exportSave;
+  return downloadSaveExport(exported,{exportFile});
 }
 function validSave(save){return validAdventureSave(save);}
 function adventureSnapshot(){return {version:1,level:world.id,position:[...world.player.position],lastSafe:[...world.player.lastSafe],playerMotion:world.player.snapshotMotion(),playerAnimation:world.snapshotPlayerAnimation(),noClip:world.player.noClip,yaw:world.yaw,pitch:world.pitch,game:gameplay.snapshot(),audio:audio.saveState(),savedAt:new Date().toISOString()};}
@@ -190,7 +213,7 @@ function scriptedSound(event){
 function stopAudio(){chapterTransition=null;audio.reset();}
 function startMusic(){const object=gameplay.objects.find(o=>o.enabled&&o.entity.classname==='EffectMusic'&&o.entity.MusicAmbient);if(object){if(gameplay.scripts){if(!gameplay.scripts.musicState)gameplay.scripts.selectMusic(object,'ambient');}else audio.play({key:'music',sourceId:object.id,channel:'music',sound:object.entity.MusicAmbient,volume:object.volume??1,loop:true});}}
 function resolutionSize(){if(settings.resolution==='native')return [Math.min(7680,Math.round(innerWidth*devicePixelRatio)),Math.min(4320,Math.round(innerHeight*devicePixelRatio))];return settings.resolution.split('x').map(Number);}
-function resize(){if(!renderer)return;worldRenderDirty=true;const [baseW,baseH]=resolutionSize();const [w,h]=scaledRenderSize(baseW,baseH,renderQuality.scale(settings.renderScale));renderer.setSize(w,h,false);if(world){world.camera.aspect=baseW/baseH;world.camera.fov=settings.fov;world.camera.updateProjectionMatrix();}$('render-info').textContent=`${w} × ${h} · ${settings.camera==='third'?'Derde persoon':'Eerste persoon'}`;}
+function resize(){if(!renderer)return;worldRenderDirty=true;const [baseW,baseH]=resolutionSize();const [w,h]=scaledRenderSize(baseW,baseH,renderQuality.scale(settings.renderScale));renderer.setSize(w,h,false);msaaRenderer?.setSize(renderer.domElement.width,renderer.domElement.height);if(world){world.camera.aspect=baseW/baseH;world.camera.fov=settings.fov;world.camera.updateProjectionMatrix();}$('render-info').textContent=`${w} × ${h} · ${settings.camera==='third'?'Derde persoon':'Eerste persoon'}`;}
 function renderChapters(){
   if(!canStartCampaignLevel(campaign,selected)){selected=0;levelReplaySelected=false;}
   $('level-list').replaceChildren(...LEVELS.map((level,i)=>{
@@ -213,7 +236,6 @@ function renderChapters(){
       $('level-list').querySelector(`[data-level="${level.id}"]`).focus({preventScroll:true});
     };paint();return b;
   }));
-  $('start').firstChild.textContent=selected===0?'Start avontuur ':'Start dit level ';
   $('play-level').title=`${LEVELS[selected].name} spelen`;
   refreshContinue();
 }
@@ -233,7 +255,7 @@ function cancelAdventureStart(){
   menuAudio.stopVoice();
   pendingAdventureLevel=null;pendingNewAdventure=false;$('new-adventure-warning').close();
   const origin=pendingAdventureOrigin;pendingAdventureOrigin=null;
-  (origin?.isConnected&&!origin.hidden?origin:$('continue').hidden?$('start'):$('continue')).focus();
+  (origin?.isConnected&&!origin.hidden?origin:$('native-start')).focus();
 }
 function confirmAdventureStart(){
   if(pendingAdventureLevel===null)return;
@@ -242,11 +264,12 @@ function confirmAdventureStart(){
 }
 
 function clearInputs(){keys.clear();mouseAttack=false;touchControls?.reset();gamepad.reset();controllerFrame=null;skipHold.reset();updateSkipIndicator();}
-function syncTouchUI(){touchControls?.setContext({playing:mode==='playing'&&!controllerActive,cutscene:!!gameplay?.scripts?.cutscene,noClip:!!world?.player.noClip});$('game-menu').hidden=mode!=='playing'||controllerActive||!(touchEnabled||mobileWeb);}
+function syncTouchUI(){touchControls?.setContext({playing:mode==='playing'&&!controllerActive,cutscene:!!gameplay?.scripts?.cutscene,noClip:!!world?.player.noClip});$('game-menu').hidden=mode!=='playing'||controllerActive||!touchEnabled;}
 function syncSkipLabel(){
-  $('cutscene-skip').setAttribute('aria-label',controllerActive?'Houd X of vierkant twee seconden ingedrukt om over te slaan':touchEnabled?'Houd Overslaan twee seconden ingedrukt':'Houd E twee seconden ingedrukt om over te slaan');
+  const keyLabel=controlBindingLabel(settings.controlBindings,'use');
+  $('cutscene-skip').setAttribute('aria-label',controllerActive?'Houd X of vierkant twee seconden ingedrukt om over te slaan':touchEnabled?'Houd Overslaan twee seconden ingedrukt':`Houd ${keyLabel} twee seconden ingedrukt om over te slaan`);
   const label=$('cutscene-skip').querySelector('b');
-  label.textContent=controllerActive?'X /':touchEnabled?'2s':'E';
+  label.textContent=controllerActive?'X /':touchEnabled?'2s':keyLabel;
   if(controllerActive){
     // Draw the PlayStation button outline without relying on a font glyph.
     const square=document.createElement('span');square.className='controller-square';square.setAttribute('aria-hidden','true');
@@ -259,6 +282,7 @@ function setControllerActive(active){
   if(active){keys.clear();mouseAttack=false;document.exitPointerLock?.();}
   else gamepadMenu.reset();
   syncSkipLabel();syncTouchUI();
+  if(mode==='menu')originalMenu?.refresh();
 }
 function syncTouchSettings(){
   touchEnabled=touchControlsEnabled(settings.touchControls,touchEnvironment);touchControls?.setEnabled(touchEnabled);
@@ -271,7 +295,7 @@ function toggleCamera(){if(!canTogglePlayerCamera(world))return;settings.camera=
 function pause(){if(mode!=='playing')return;mode='paused';worldRenderDirty=true;clearInputs();syncTouchUI();document.exitPointerLock?.();$('pause').hidden=false;audio.pause();saveGame(true);}
 function resume(){menuAudio.stop();if(!world||androidSuspended())return;if(gameplay.completed&&chapterTransition?.world!==world)return loadSave();if(gameplay.state.health<=0&&!(gameplay.playerReaction?.phase==='death'&&!gameplay.playerReaction.finished&&gameplay.state.lives>0))return startLevel(selected,null,null,{resumeReplayLevel:gameplay.scripts?.replayLevel===true});clearInputs();mode='playing';$('pause').hidden=true;$('settings').hidden=true;$('cheats').hidden=true;if(androidHost.enabled)audio.context?.resume()?.catch(()=>{});audio.resume();lastFrame=performance.now();syncTouchUI();requestLook();}
 function requestLook(event){if(controllerActive||touchEnabled||(mobileWeb&&!event)||event?.pointerType==='touch'||event?.sourceCapabilities?.firesTouchEvents)return;if(mode==='playing'&&!document.pointerLockElement){const result=$('game').requestPointerLock?.();result?.catch(()=>{if(event?.isTrusted)toast('Klik in het spel om rond te kijken.');});}}
-async function returnMenu(){if(world)saveGame(true);levelReplaySelected=false;mode='menu';menuAudio.showMenu();clearInputs();syncTouchUI();document.exitPointerLock?.();stopAudio();debriefing.hide();$('menu').hidden=false;$('hud').hidden=true;$('pause').hidden=true;$('settings').hidden=true;$('cheats').hidden=true;document.body.classList.remove('in-cutscene');$('subtitle').hidden=true;refreshContinue();renderChapters();}
+async function returnMenu(){if(world)saveGame(true);levelReplaySelected=false;mode='menu';menuAudio.showMenu();clearInputs();syncTouchUI();document.exitPointerLock?.();stopAudio();debriefing.hide();$('menu').hidden=false;$('hud').hidden=true;$('pause').hidden=true;$('settings').hidden=true;$('cheats').hidden=true;document.body.classList.remove('in-cutscene');$('subtitle').hidden=true;refreshContinue();renderChapters();originalMenu?.home();}
 const dialogueStarted=line=>{$('subtitle').textContent=line.text||'';$('subtitle').hidden=!line.text;};
 const dialogueEnded=()=>{$('subtitle').hidden=true;};
 function handleGameEvent(event){
@@ -338,15 +362,15 @@ async function startLevel(index,save=null,progress=null,{resetRecovery=false,new
   if(!canStartCampaignLevel(campaign,index)){toast('Dit level is nog vergrendeld. Voltooi eerst het vorige level.');return false;}
   if(!renderer){showError(new Error('Geen WebGL-renderer beschikbaar.'));return;}
   levelReplaySelected=false;
-  const fromMenu=mode==='menu';
-  menuAudio.stop();const menuStart=fromMenu?menuAudio.say(['rcmn32.wav']):Promise.resolve();
+  const fromMenu=mode==='menu',quickplay=fromMenu&&!save&&originalMenu?.flow==='quickplay';
+  menuAudio.stop();const menuStart=fromMenu?menuAudio.say([quickplay?'rcmn43.wav':'rcmn32.wav']):Promise.resolve();
   const resetSkills=newAdventure&&index===0&&!save&&!progress;
   const replayLevel=resetSkills?false:typeof resumeReplayLevel==='boolean'?resumeReplayLevel:isCampaignLevelReplay(campaign,index,{save});
   mode='loading';clearInputs();syncTouchUI();document.exitPointerLock?.();stopAudio();debriefing.hide();
   clearTimeout(toastTimer);$('toast').classList.remove('visible');
   touchIntroHint.start({level:LEVELS[index].id,touch:touchEnabled,restored:!!save||replayLevel});
   desktopIntroHint.start({level:LEVELS[index].id,enabled:!touchEnabled||controllerActive,restored:!!save||replayLevel});
-  loadingScreen.show(index);$('menu').hidden=true;$('pause').hidden=true;$('settings').hidden=true;$('cheats').hidden=true;$('fatal').hidden=true;$('hud').hidden=true;
+  loadingScreen.show(index,{gameType:quickplay?'Snelspel':'Avontuur'});$('menu').hidden=true;$('pause').hidden=true;$('settings').hidden=true;$('cheats').hidden=true;$('fatal').hidden=true;$('hud').hidden=true;
   await menuStart;
   let next;
   try {
@@ -373,6 +397,7 @@ async function startLevel(index,save=null,progress=null,{resetRecovery=false,new
     world.updateCamera(1,true);audio.update(0,world.camera.position.toArray());selected=index;renderQuality.reset();resize();updateCheatControls();renderHud();
     await world.geometryStream.settle();world.updateRenderResidency();world.effects?.update(0);await world.settleActorTextures();
     await world.prepareStreamingPrograms();
+    await msaaRenderer?.compile(world.scene,world.camera);
     // Restore after script/effect reconstruction, while every voice is paused.
     // This replaces reconstruction audio without replaying script callbacks.
     if(save?.audio&&audio.restoreState(save.audio,{
@@ -400,8 +425,19 @@ async function startLevel(index,save=null,progress=null,{resetRecovery=false,new
 }
 async function loadAdventure(save){if(profileSwitching||profileInitError)return false;if(!validSave(save)){toast('Geen geldig opgeslagen avontuur gevonden.');return false;}campaign=readCampaignProgress(campaign,save);store(PROGRESS_KEY,campaign);const index=LEVELS.findIndex(l=>l.id===save.level);const dead=save.game.state?.health<=0&&!(save.game.playerReaction?.phase==='death'&&save.game.state.lives>0);const ok=await startLevel(index,dead?null:save,null,{resumeReplayLevel:dead?save.game.scripts?.replayLevel===true:null});if(ok&&save.game.completed)showDebriefing();return ok===true;}
 async function loadSave(){return loadAdventure(readStored(SAVE_KEY));}
-function showSettings(){menuAudio.say(['mn_red24.wav']);pausedFromSettings=mode==='playing'||mode==='paused';if(mode==='playing')pause();$('pause').hidden=true;$('settings').hidden=false;$('resolution').value=settings.resolution;$('render-scale').value=settings.renderScale;$('render-scale-value').textContent=settings.renderScale+'%';$('show-fps').checked=settings.showFps;$('fullscreen').disabled=!window.desktop&&!androidHost.enabled&&(!document.fullscreenEnabled||!document.documentElement.requestFullscreen);$('fullscreen').checked=settings.fullscreen&&!$('fullscreen').disabled;$('fov').value=settings.fov;$('fov-value').textContent=settings.fov+'°';$('sensitivity').value=settings.sensitivity;$('volume').value=settings.volume;$('auto-intro').checked=settings.autoIntro;$('camera-mode').value=settings.camera;$('difficulty').value=settings.difficulty;$('touch-controls-setting').value=settings.touchControls;sliderAudio.reset(Object.fromEntries(Object.keys(SLIDER_VOICES).map(id=>[id,$(id).value])));}
-function closeSettings({keepVoice=false}={}){sliderAudio.cancel();if(!keepVoice)menuAudio.stopVoice();menuAudio.setVolume(settings.volume);$('settings').hidden=true;$('cheats').hidden=true;if(pausedFromSettings)$('pause').hidden=false;}
+let draftControlDevice=settings.controlDevice;
+function refreshNativeSettings(){
+  const control={keyboard:['06010000','Muis en toetsenbord'],gamepad:['06030000','Gamepad'],joystick:['06020000','Joystick']}[draftControlDevice];
+  $('native-control-icon').src=`assets/menu/${control[0]}.png`;$('native-control-value').textContent=control[1];
+  for(const button of $('native-control-config').querySelectorAll('[data-control]'))button.setAttribute('aria-pressed',String(button.dataset.control===draftControlDevice));
+  $('open-key-settings').disabled=draftControlDevice!=='keyboard';
+  const scale=Number($('render-scale').value),quality=scale<=50?'low':scale<=75?'normal':'high';
+  const visual={low:['06160000','Laag'],normal:['06170000','Normaal'],high:['06180000','Hoog']}[quality];
+  $('native-quality-icon').src=`assets/menu/${visual[0]}.png`;$('native-quality-value').textContent=visual[1];
+  for(const button of $('native-quality').querySelectorAll('[data-quality]'))button.setAttribute('aria-pressed',String(button.dataset.quality===quality));
+}
+function showSettings(){menuAudio.say(['mn_red24.wav','mn_in01.wav']);pausedFromSettings=mode==='playing'||mode==='paused';if(mode==='playing')pause();$('pause').hidden=true;$('settings').hidden=false;$('resolution').value=settings.resolution;$('msaa').value=String(settings.msaa);refreshMsaaOptions();$('render-scale').value=settings.renderScale;$('render-scale-value').textContent=settings.renderScale+'%';$('show-fps').checked=settings.showFps;$('fullscreen').disabled=!window.desktop&&!androidHost.enabled&&(!document.fullscreenEnabled||!document.documentElement.requestFullscreen);$('fullscreen').checked=settings.fullscreen&&!$('fullscreen').disabled;$('fov').value=settings.fov;$('fov-value').textContent=settings.fov+'°';$('sensitivity').value=settings.sensitivity;$('volume').value=settings.volume;$('volume-effects').value=settings.effectsVolume;$('volume-music').value=settings.musicVolume;$('auto-intro').checked=settings.autoIntro;$('camera-mode').value=settings.camera;$('difficulty').value=settings.difficulty;$('touch-controls-setting').value=settings.touchControls;draftControlDevice=settings.controlDevice;$('native-settings-advanced').open=false;$('native-settings-more').open=false;refreshNativeSettings();sliderAudio.reset(Object.fromEntries(Object.keys(SLIDER_VOICES).map(id=>[id,$(id).value])));}
+function closeSettings({keepVoice=false}={}){sliderAudio.cancel();if(!keepVoice)menuAudio.stopVoice();menuAudio.setVolume(settings.volume);menuAudio.setChannels({effects:settings.effectsVolume,music:settings.musicVolume});$('settings').hidden=true;$('cheats').hidden=true;if(pausedFromSettings)$('pause').hidden=false;originalMenu?.refresh();}
 function showCheats(){sliderAudio.cancel();menuAudio.stopVoice();
   $('settings').hidden=true;$('cheats').hidden=false;$('cheat-noclip').checked=settings.noClip;
   $('cheat-supplies').disabled=!pausedFromSettings||!gameplay||gameplay.completed||gameplay.state.health<=0;
@@ -411,7 +447,8 @@ function showCheats(){sliderAudio.cancel();menuAudio.stopVoice();
 function closeCheats(){$('cheats').hidden=true;$('settings').hidden=false;$('open-cheats').focus();}
 function updateCheatControls(){
   if(touchEnabled){$('controls-hint').textContent=settings.noClip?'Stick · vliegen · Omhoog / Omlaag · Schieten · Menu':'Stick · bewegen · veeg rechts · kijken · Spring · Schieten · Menu';return;}
-  $('controls-hint').textContent=settings.noClip?'NO-CLIP · WASD / pijlen · vliegen · SPATIE · omhoog · SHIFT · omlaag · CTRL / klik · aanval · ESC · menu':'WASD / pijlen · bewegen · SPATIE · springen · CTRL / klik · aanval · E · gebruiken · ESC · menu';
+  const key=action=>controlBindingLabel(settings.controlBindings,action);
+  $('controls-hint').textContent=settings.noClip?`NO-CLIP · ${key('forward')} · vliegen · ${key('jump')} · omhoog · ${key('walk')} · omlaag · ${key('attack')} / klik · schieten · ESC · menu`:`${key('forward')} · bewegen · ${key('jump')} · springen · ${key('attack')} / klik · schieten · ${key('use')} · gebruiken · ESC · menu`;
 }
 function applyNoClip(){
   let enabled=$('cheat-noclip').checked,result;
@@ -463,7 +500,7 @@ function skipDialogue(){
 }
 async function applySettings(){
   sliderAudio.cancel();menuAudio.say(['rcmn1.wav']);
-  const updated={resolution:$('resolution').value,renderScale:normalizeRenderScale(Number($('render-scale').value)),showFps:$('show-fps').checked,fullscreen:$('fullscreen').checked,fov:Number($('fov').value),sensitivity:Number($('sensitivity').value),volume:Number($('volume').value),autoIntro:$('auto-intro').checked,camera:$('camera-mode').value,difficulty:normalizeDifficulty($('difficulty').value),touchControls:normalizeTouchPreference($('touch-controls-setting').value)};
+  const updated={resolution:$('resolution').value,msaa:normalizeMsaa(Number($('msaa').value)),renderScale:normalizeRenderScale(Number($('render-scale').value)),showFps:$('show-fps').checked,fullscreen:$('fullscreen').checked,fov:Number($('fov').value),sensitivity:Number($('sensitivity').value),volume:Number($('volume').value),effectsVolume:Number($('volume-effects').value),musicVolume:Number($('volume-music').value),controlDevice:draftControlDevice,autoIntro:$('auto-intro').checked,camera:$('camera-mode').value,difficulty:normalizeDifficulty($('difficulty').value),touchControls:normalizeTouchPreference($('touch-controls-setting').value)};
   try {
     const [width,height]=updated.resolution==='native'?[Math.max(800,Math.round(screen.width*.85)),Math.max(600,Math.round(screen.height*.85))]:updated.resolution.split('x').map(Number);
     if(window.desktop)await window.desktop.applyDisplay({width,height,fullscreen:updated.fullscreen});
@@ -476,7 +513,7 @@ async function applySettings(){
       }else await document.documentElement.requestFullscreen();
     }
     else if(!updated.fullscreen&&document.fullscreenElement)await document.exitFullscreen();
-    if(updated.resolution!==settings.resolution||updated.renderScale!==settings.renderScale)renderQuality.reset();Object.assign(settings,updated);fullscreenPreference?.setEnabled(updated.fullscreen);store(SETTINGS_KEY,settings);clearInputs();syncTouchSettings();audio.setMaster(settings.volume);menuAudio.setVolume(settings.volume);$('intro-video').volume=settings.volume;resize();closeSettings({keepVoice:true});
+    if(updated.resolution!==settings.resolution||updated.renderScale!==settings.renderScale||updated.msaa!==settings.msaa)renderQuality.reset();Object.assign(settings,updated);msaaRenderer?.setSamples(settings.msaa);fullscreenPreference?.setEnabled(updated.fullscreen);store(SETTINGS_KEY,settings);clearInputs();syncTouchSettings();setControllerActive(settings.controlDevice!=='keyboard'&&gamepad.connected);audio.channels={...audio.channels,effects:settings.effectsVolume,voices:settings.effectsVolume,music:settings.musicVolume};audio.setMaster(settings.volume);menuAudio.setVolume(settings.volume);menuAudio.setChannels({effects:settings.effectsVolume,music:settings.musicVolume});$('intro-video').volume=settings.volume;resize();closeSettings({keepVoice:true});
   }catch(error){toast('Beeldinstellingen konden niet worden toegepast.');console.error(error);}
 }
 let introReturn='menu';
@@ -496,7 +533,7 @@ function androidBack(){
   if(mode==='playing'){pause();return;}
   const root=controllerMenuRoot();
   if(root?.id==='pause'){returnMenu();return;}
-  if(root?.id==='menu'){quitMenu.open();return;}
+  if(root?.id==='menu'){if(!originalMenu.back())quitMenu.open();return;}
   controllerBack(root);
 }
 if(androidHost.enabled){
@@ -508,15 +545,49 @@ if(androidHost.enabled){
     else if(androidHost.active){lastFrame=performance.now();scheduleFrame();startAutomaticIntro();}
   });
 }
-$('start').onclick=()=>requestAdventureStart();$('start-over').onclick=()=>{menuAudio.say(['rcmn29.wav']);requestAdventureStart(0,$('start-over'));};$('continue').onclick=loadSave;$('resume').onclick=resume;$('restart').onclick=()=>startLevel(selected);$('save').onclick=()=>saveGame();$('return-menu').onclick=returnMenu;
-$('play-level').onclick=()=>{if(levelReplaySelected)requestAdventureStart(selected,$('play-level'),false);};
+$('resume').onclick=resume;$('restart').onclick=()=>startLevel(selected);$('save').onclick=()=>saveGame();$('return-menu').onclick=returnMenu;
 $('game-menu').onclick=pause;$('load-save').onclick=loadSave;
 $('open-about').onclick=()=>$('about').showModal();$('close-about').onclick=()=>{$('about').close();menuAudio.say(['rcmn2.wav']);};
 $('open-recovery').onclick=showRecoverySaves;$('pause-recovery').onclick=showRecoverySaves;$('close-recovery').onclick=()=>{$('recovery-saves').close();menuAudio.say(['rcmn2.wav']);};
 $('cancel-new-adventure').onclick=cancelAdventureStart;$('confirm-new-adventure').onclick=confirmAdventureStart;
 $('new-adventure-warning').addEventListener('cancel',event=>{event.preventDefault();cancelAdventureStart();});
-$('open-settings').onclick=showSettings;$('pause-settings').onclick=showSettings;$('close-settings').onclick=()=>{closeSettings();menuAudio.say(['rcmn2.wav']);};$('apply-settings').onclick=applySettings;$('render-scale').oninput=()=>$('render-scale-value').textContent=$('render-scale').value+'%';$('fov').oninput=()=>$('fov-value').textContent=$('fov').value+'°';
-for(const id of Object.keys(SLIDER_VOICES))$(id).addEventListener('input',()=>{if($('settings').hidden)return;if(id==='volume')menuAudio.setVolume(Number($('volume').value));sliderAudio.input(id,$(id).value);});
+function refreshMsaaOptions() {
+  const supported = msaaRenderer?.supported || [0];
+  for (const option of $('msaa').options) {
+    const samples = Number(option.value);
+    option.disabled = !supported.includes(samples);
+    option.textContent = samples ? `${samples}x${option.disabled ? ' · niet ondersteund' : ''}` : 'Uit';
+  }
+  const requested = normalizeMsaa(Number($('msaa').value));
+  const effective = effectiveMsaa(requested, supported);
+  $('msaa-status').textContent = requested !== effective
+    ? `Dit apparaat ondersteunt ${requested}x niet. Hier wordt ${effective ? effective + 'x MSAA' : 'geen MSAA'} gebruikt.`
+    : 'Maakt randen van 3D-objecten gladder. Meer samples vragen meer grafisch geheugen en rekenkracht. Na automatisch uitschakelen kun je MSAA hier weer aanzetten.';
+}
+$('msaa').onchange=refreshMsaaOptions;
+$('open-settings').onclick=showSettings;$('pause-settings').onclick=showSettings;$('close-settings').onclick=()=>{closeSettings();menuAudio.say(['rcmn2.wav']);};$('apply-settings').onclick=applySettings;$('render-scale').oninput=()=>{$('render-scale-value').textContent=$('render-scale').value+'%';refreshNativeSettings();};$('fov').oninput=()=>$('fov-value').textContent=$('fov').value+'°';
+const extraSettingsSections = ['advanced', 'more'];
+for (const name of extraSettingsSections) {
+  const section = $(`native-settings-${name}`);
+  const button = $(`open-${name}-settings`);
+  button.onclick = () => {
+    // One section at a time; keep all draft values until OK or Annuleren.
+    for (const other of extraSettingsSections) $(`native-settings-${other}`).open = other === name;
+    section.scrollIntoView({block: 'nearest'});
+    section.querySelector('summary').focus({preventScroll: true});
+  };
+  section.addEventListener('toggle', () => button.setAttribute('aria-expanded', String(section.open)));
+}
+for(const button of $('native-control-config').querySelectorAll('[data-control]'))button.onclick=()=>{
+  draftControlDevice=button.dataset.control;refreshNativeSettings();menuAudio.say([{keyboard:'mn_in02.wav',gamepad:'mn_in03.wav',joystick:'mn_in04.wav'}[draftControlDevice]]);
+};
+for(const button of $('native-quality').querySelectorAll('[data-quality]'))button.onclick=()=>{
+  // The original presets selected obsolete renderer modes. In the portable
+  // renderer these are resolution-scale presets; all advanced options remain.
+  $('render-scale').value={low:50,normal:75,high:100}[button.dataset.quality];$('render-scale-value').textContent=$('render-scale').value+'%';refreshNativeSettings();
+  menuAudio.say([{low:'mn_in08.wav',normal:'rcmn20.wav',high:'mn_in09.wav'}[button.dataset.quality]]);
+};
+for(const id of Object.keys(SLIDER_VOICES))$(id).addEventListener('input',()=>{if($('settings').hidden)return;if(id==='volume')menuAudio.setVolume(Number($('volume').value));if(id==='volume-effects'||id==='volume-music')menuAudio.setChannels({effects:Number($('volume-effects').value),music:Number($('volume-music').value)});sliderAudio.input(id,$(id).value);});
 function announceDifficultySelector(){if($('settings').hidden)return;sliderAudio.cancel();menuAudio.say(['rcmn30.wav']);}
 // pointerdown precedes native picker selection; a click handler can instead fire
 // after change and overwrite the selected difficulty's announcement.
@@ -532,19 +603,43 @@ $('open-cheats').onclick=showCheats;$('close-cheats').onclick=closeCheats;$('bac
 $('open-help').onclick=()=>$('help').hidden=false;$('close-help').onclick=()=>{$('help').hidden=true;menuAudio.say(['rcmn2.wav']);};$('fatal-close').onclick=()=>{$('fatal').hidden=true;returnMenu();};$('play-intro').onclick=()=>playIntro();$('skip-intro').onclick=finishIntro;$('intro-video').onended=finishIntro;$('intro-video').onerror=introFailed;
 async function quitGame(){saveGame(true);await pendingRecoveryCapture;stopAudio();if(androidHost.enabled)androidHost.quit();else if(window.desktop)await window.desktop.quit();else window.close();}
 const quitMenu=new QuitMenu({dialog:$('quit-confirmation'),openButton:$('open-quit'),yesButton:$('quit-yes'),noButton:$('quit-no'),status:$('quit-status'),audio:menuAudio,closeGame:quitGame,browser:!window.desktop&&!androidHost.enabled});
-const playerMenu=new PlayerMenu({profiles,audio:menuAudio,selectPlayer,removePlayer,error:profileInitError,canOpen:()=>{
+const playerMenu=new PlayerMenu({profiles,audio:menuAudio,selectPlayer,removePlayer,exportPlayer,error:profileInitError,canOpen:()=>{
   if(mode!=='menu'||profileSwitching)return false;
   clearInputs();return true;
 }});
+const keySettings=new KeySettingsMenu({audio:menuAudio,getBindings:()=>settings.controlBindings,onApply:bindings=>{
+  if(!store(SETTINGS_KEY,{...settings,controlBindings:bindings}))return false;
+  settings.controlBindings=bindings;clearInputs();syncSkipLabel();updateCheatControls();return true;
+}});
+const nativeHelp=new NativeHelp({audio:menuAudio});
+$('native-player-help').onclick=()=>nativeHelp.open('players');
+$('native-settings-help').onclick=()=>nativeHelp.open('settings');
+$('native-key-help').onclick=()=>{keySettings.cancelCapture();nativeHelp.open('keys');};
+originalMenu=new OriginalMenu({audio:menuAudio,
+  getState:()=>{
+    const save=readStored(SAVE_KEY),hasSave=validSave(save);
+    return {name:profiles?.active.name||'Speler',hasSave,difficulty:settings.difficulty,level:selected,controlDevice:settings.controlDevice,touchEnabled,controllerActive,savedScore:save?.game?.state?.score||0,
+      savedLevel:hasSave?Math.max(0,LEVELS.findIndex(level=>level.id===save.level)):0,
+      savedDifficulty:normalizeDifficulty(save?.game?.difficulty||settings.difficulty),levels:LEVELS};
+  },
+  setDifficulty:value=>{settings.difficulty=value;store(SETTINGS_KEY,settings);},
+  launch:({kind,origin})=>kind==='continue'?loadSave():requestAdventureStart(kind==='new'?0:selected,origin,kind==='new'),
+  scores:()=>{
+    const table=recordHighscore(readStored(HIGHSCORES_KEY),profiles?.active,readStored(SAVE_KEY));
+    store(HIGHSCORES_KEY,table);
+    return table.entries.map(entry=>({...entry,level:LEVELS.find(level=>level.id===entry.level)?.name||'Klaar!'}));
+  },
+  help:page=>nativeHelp.open(page==='startinfo'?`start-${originalMenu.flow}`:page)
+});
 $('game').addEventListener('click',requestLook);
 window.addEventListener('keydown',e=>{
   if(e.isTrusted)setControllerActive(false);
-  if(playerMenu.openDialog||$('new-adventure-warning').open||$('recovery-saves').open||$('about').open)return;
+  if($('native-help-viewer').open||keySettings.isOpen||playerMenu.openDialog||$('new-adventure-warning').open||$('recovery-saves').open||$('about').open)return;
   if(mode==='debriefing'){if(['ControlLeft','ControlRight','Space','Enter'].includes(e.code)){e.preventDefault();if(!e.repeat)continueDebriefing();}return;}
-  if(e.code==='Escape'){if($('quit-confirmation').open){e.preventDefault();quitMenu.cancel();return;}if(mode==='intro'){finishIntro();return;}if(!$('cheats').hidden){closeCheats();return;}if(!$('settings').hidden){closeSettings();return;}if(!$('help').hidden){$('help').hidden=true;return;}if(mode==='playing')pause();else if(mode==='paused')resume();return;}
+  if(e.code==='Escape'){if($('quit-confirmation').open){e.preventDefault();quitMenu.cancel();return;}if(mode==='intro'){finishIntro();return;}if(!$('cheats').hidden){closeCheats();return;}if(!$('help').hidden){$('help').hidden=true;return;}if(!$('settings').hidden){closeSettings();return;}if(mode==='playing')pause();else if(mode==='paused')resume();else if(mode==='menu')originalMenu.back();return;}
   if(mode!=='playing')return;e.preventDefault();keys.add(e.code);
   if(e.repeat)return;
-  if(e.code==='KeyP')pause();if(e.code==='KeyV')toggleCamera();
+  if(e.code==='KeyP')pause();if(bindingPressed(new Set([e.code]),settings.controlBindings,'camera'))toggleCamera();
   if(e.code==='F5')saveGame();if(e.code==='F9')loadSave();
 });
 window.addEventListener('keyup',e=>keys.delete(e.code));
@@ -559,23 +654,25 @@ window.addEventListener('resize',()=>{clearInputs();resize();});window.addEventL
 let fullscreenPreference=window.desktop||androidHost.enabled?null:new FullscreenPreference(document,{
   enabled:settings.fullscreen,shouldRequest:()=>$('settings').hidden&&$('cheats').hidden,
 });
-function readInput(){const touch=touchControls?.readInput()||{},pad=controllerFrame?.input||{},clamp=value=>Math.max(-1,Math.min(1,value));return {
-  forward:clamp(Number(keys.has('KeyW')||keys.has('ArrowUp'))-Number(keys.has('KeyS')||keys.has('ArrowDown'))+(touch.forward||0)+(pad.forward||0)),
-  right:clamp(Number(keys.has('KeyD'))-Number(keys.has('KeyA'))+(touch.right||0)+(pad.right||0)),
-  turn:Number(keys.has('ArrowLeft'))-Number(keys.has('ArrowRight')),
-  jump:keys.has('Space')||!!touch.jump||!!pad.jump,
-  descend:keys.has('ShiftLeft')||keys.has('ShiftRight')||!!touch.descend||!!pad.descend,
-  walk:keys.has('ShiftLeft')||keys.has('ShiftRight')||!!touch.walk||!!pad.walk,
-  attack:mouseAttack||keys.has('ControlLeft')||keys.has('ControlRight')||!!touch.attack||!!pad.attack,
-  use:(keys.has('KeyE')||!!touch.use||!!pad.use)&&!skipHold.consumed
+function readInput(){const keyboard=readKeyboardInput(keys,settings.controlBindings),touch=touchControls?.readInput()||{},pad=controllerFrame?.input||{},clamp=value=>Math.max(-1,Math.min(1,value));return {
+  forward:clamp(keyboard.forward+(touch.forward||0)+(pad.forward||0)),
+  right:clamp(keyboard.right+(touch.right||0)+(pad.right||0)),
+  turn:keyboard.turn,
+  jump:keyboard.jump||!!touch.jump||!!pad.jump,
+  descend:keyboard.descend||!!touch.descend||!!pad.descend,
+  walk:keyboard.walk||!!touch.walk||!!pad.walk,
+  attack:mouseAttack||keyboard.attack||!!touch.attack||!!pad.attack,
+  use:(keyboard.use||!!touch.use||!!pad.use)&&!skipHold.consumed
 };}
 function controllerMenuRoot(){
-  for(const id of ['player-delete-dialog','player-name-dialog','player-list','quit-confirmation','new-adventure-warning','recovery-saves','about'])if($(id).open)return $(id);
-  for(const id of ['fatal','intro','cheats','settings','help','pause','debriefing','menu'])if(!$(id).hidden)return $(id);
+  for(const id of ['native-help-viewer','key-settings','player-delete-dialog','player-name-dialog','player-list','quit-confirmation','new-adventure-warning','recovery-saves','about'])if($(id).open)return $(id);
+  for(const id of ['fatal','intro','cheats','help','settings','pause','debriefing','menu'])if(!$(id).hidden)return $(id);
   return null;
 }
 function controllerBack(root){
   switch(root?.id){
+    case 'native-help-viewer':nativeHelp.back();break;
+    case 'key-settings':keySettings.back();break;
     case 'player-delete-dialog':case 'player-name-dialog':case 'player-list':playerMenu.back(root.id);break;
     case 'quit-confirmation':quitMenu.cancel();break;
     case 'new-adventure-warning':cancelAdventureStart();break;
@@ -587,6 +684,7 @@ function controllerBack(root){
     case 'intro':finishIntro();break;
     case 'pause':resume();break;
     case 'fatal':$('fatal-close').click();break;
+    case 'menu':originalMenu.back();break;
   }
 }
 function pollController(dt){
@@ -594,7 +692,7 @@ function pollController(dt){
   controllerFrame=gamepad.poll(dt,{enabled,context:mode==='playing'&&!root?'gameplay':`menu:${root?.id||mode}`});
   const status=!gamepad.status.available?'Controller niet beschikbaar. Gebruik in een browser HTTPS of localhost.':gamepad.connected?`Controller: ${gamepad.id}`:'Controller: sluit een controller aan en druk op een knop.';
   if($('controller-status').textContent!==status)$('controller-status').textContent=status;
-  if(controllerFrame.disconnected){pause();return;}
+  if(controllerFrame.disconnected){pause();setControllerActive(false);return;}
   if(!enabled)return;
   if(controllerFrame.active)setControllerActive(true);
   const actions=controllerFrame.actions;
@@ -642,12 +740,16 @@ let frameRequest=0;
 function androidSuspended(){return androidHost.enabled&&(!androidHost.active||document.hidden);}
 function scheduleFrame(){if(!frameRequest&&!androidSuspended())frameRequest=requestAnimationFrame(frame);}
 function frame(now){frameRequest=0;if(androidSuspended())return;scheduleFrame();androidHost.setKeepAwake(mode==='playing'||mode==='intro');const realDt=Math.max(0,(now-lastFrame)/1000),dt=Math.min(realDt,0.05);lastFrame=now;if(!document.hidden)world?.streamingWork?.pump(now);pollController(dt);syncTouchUI();const waiting=waitForWorldView(now);const rendering=!!world&&mode==='playing'&&!waiting&&!document.hidden;
-if(renderQuality.sample(realDt,rendering,settings.renderScale))resize();
+if(renderQuality.updateSettings(realDt,rendering,settings)){
+  msaaRenderer?.setSamples(settings.msaa);
+  store(SETTINGS_KEY,settings);
+  resize();
+}
 $('fps-counter').hidden=!settings.showFps||!rendering;
 if(settings.showFps&&rendering){const label=renderQuality.fps===null?'FPS: …':`${Math.round(renderQuality.fps)} FPS`;if($('fps-counter').textContent!==label)$('fps-counter').textContent=label;}
 if(waiting)return;if(world&&mode==='playing'){
   recovery.advance(realDt);
-  try{if(skipHold.update(realDt,keys.has('KeyE')||!!touchControls?.readInput().use||!!controllerFrame?.input.use,!!gameplay.scripts?.cutscene))skipDialogue();updateSkipIndicator();const input=readInput();if(controllerFrame)world.look(controllerFrame.look.x*900*dt,controllerFrame.look.y*900*dt);world.update(dt,input);syncTouchUI();gameplayAudio.update(dt,world,gameplay,input);audio.update(dt,world.camera.position.toArray());}catch(error){showError(error);return;}
+  try{if(skipHold.update(realDt,bindingPressed(keys,settings.controlBindings,'use')||!!touchControls?.readInput().use||!!controllerFrame?.input.use,!!gameplay.scripts?.cutscene))skipDialogue();updateSkipIndicator();const input=readInput();if(controllerFrame)world.look(controllerFrame.look.x*900*dt,controllerFrame.look.y*900*dt);world.update(dt,input);syncTouchUI();gameplayAudio.update(dt,world,gameplay,input);audio.update(dt,world.camera.position.toArray());}catch(error){showError(error);return;}
   if(mode==='playing'){autosave.update(realDt,()=>saveGame(true));if(recovery.needsCapture)saveGame(true);}
   renderHud();
   touchIntroHint.update({playing:mode==='playing',touch:touchEnabled&&!controllerActive,cutscene:!!gameplay.scripts?.cutscene,camera:gameplay.scripts?.camera});
@@ -657,10 +759,10 @@ if(waiting)return;if(world&&mode==='playing'){
 // Paused menus keep their last completed world frame. Redraw after display,
 // camera/context changes or pending streaming, while controller/UI polling
 // continues normally.
-if(world&&!document.hidden&&(mode==='playing'||mode==='paused'&&(worldRenderDirty||lastRenderedWorld!==world||world.geometryStream?.readyForView===false||world.actorResidency?.readyForView===false||world.actorTextures?.readyForView===false))){world.render();lastRenderedWorld=world;worldRenderDirty=false;}}
+if(world&&!document.hidden&&(mode==='playing'||mode==='paused'&&(worldRenderDirty||lastRenderedWorld!==world||world.geometryStream?.readyForView===false||world.actorResidency?.readyForView===false||world.actorTextures?.readyForView===false))){world.render(msaaRenderer?.render);lastRenderedWorld=world;worldRenderDirty=false;}}
 touchControls=new TouchControls({onLook:(dx,dy)=>{if(mode==='playing')world?.look(dx,dy);},onGesture:()=>{if(mode==='playing'&&!streamingWait)audio.resume();},onAction:action=>{if(mode!=='playing')return;if(action==='camera')toggleCamera();}});
 syncTouchSettings();
-window.__redcat={get world(){return world;},get gameplay(){return gameplay;},get mode(){return mode;},get settings(){return settings;},get audio(){return audio;},get touchEnabled(){return touchEnabled;},get controllerActive(){return controllerActive;},get recovery(){return recovery;},profiles,playerMenu,gamepad,touchControls,readInput,startLevel,pause,resume,saveGame,loadSave,resize,renderHud};
+window.__redcat={get world(){return world;},get gameplay(){return gameplay;},get mode(){return mode;},get settings(){return settings;},get audio(){return audio;},get touchEnabled(){return touchEnabled;},get controllerActive(){return controllerActive;},get recovery(){return recovery;},profiles,playerMenu,originalMenu,keySettings,menuAudio,gamepad,touchControls,readInput,startLevel,pause,resume,saveGame,loadSave,resize,renderHud};
 store(PROGRESS_KEY,campaign);store(PLAYER_OPTIONS_KEY,{difficulty:settings.difficulty,noClip:settings.noClip});refreshPlayerName();renderChapters();refreshContinue();resize();scheduleFrame();
 if(window.desktop){
   const [width,height]=settings.resolution==='native'?[Math.max(800,Math.round(screen.width*.85)),Math.max(600,Math.round(screen.height*.85))]:resolutionSize();

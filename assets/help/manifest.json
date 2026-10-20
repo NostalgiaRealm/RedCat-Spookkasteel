@@ -1,0 +1,663 @@
+{
+  "version": 1,
+  "title": "Help RedCat Spookkasteel",
+  "source": {
+    "path": "Agent/REDCAT.HLP",
+    "sha256": "cdda82596b88875f78d7435389ba081cddf1a26a87abe548370b2150197442aa",
+    "topicCount": 38,
+    "bitmapCount": 0,
+    "notes": [
+      "Extracted from the original Dutch WinHelp file; original wording preserved.",
+      "Symbol-font arrows and bullets converted to Unicode.",
+      "Two leaked link-destination identifiers removed from visible text.",
+      "Six native topic jumps preserved; two malformed level jumps repaired from their shipped destinations.",
+      "RoboHelp infrastructure topics without a mapped help topic omitted.",
+      "Menu.hlp is unrelated German Urlaubs Raser help and is deliberately excluded."
+    ]
+  },
+  "contexts": {
+    "home": "h_mainmenu",
+    "adventure": "h_adventure_menu",
+    "levels": "h_quickplaymenu",
+    "quickplay": "h_quickplaymenu",
+    "difficulty": "h_chose_difficulty_normal",
+    "start": "h_startscreenmenu_advent",
+    "start-adventure": "h_startscreenmenu_advent",
+    "start-quickplay": "h_startscreenmenu_quickplay",
+    "highscores": "h_highscores_show",
+    "players": "h_playerlistmenu",
+    "settings": "h_settingsmenu",
+    "controls": "h_controls",
+    "keys": "h_set_keys"
+  },
+  "groups": [
+    {
+      "title": "Hoofdmenu",
+      "topics": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        39
+      ]
+    },
+    {
+      "title": "Spelerlijst",
+      "topics": [
+        27,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "title": "Avontuur en Snelspel",
+      "topics": [
+        10,
+        15,
+        11,
+        31
+      ]
+    },
+    {
+      "title": "Moeilijkheid",
+      "topics": [
+        33,
+        34,
+        35,
+        42
+      ]
+    },
+    {
+      "title": "Startinfo",
+      "topics": [
+        14,
+        41,
+        40,
+        43,
+        44,
+        45,
+        46
+      ]
+    },
+    {
+      "title": "Instellingen",
+      "topics": [
+        29,
+        23,
+        30,
+        28,
+        24,
+        32,
+        25,
+        26
+      ]
+    },
+    {
+      "title": "Toetsen instellen",
+      "topics": [
+        13,
+        16,
+        17
+      ]
+    },
+    {
+      "title": "Highscores",
+      "topics": [
+        1,
+        12
+      ]
+    }
+  ],
+  "topics": [
+    {
+      "id": "h_Playerlist",
+      "nativeId": 2,
+      "nativeHash": "BE4M1I",
+      "title": "Wat moet ik in de Spelerslijst doen?",
+      "paragraphs": [
+        "Hier kun je de speler kiezen waarmee je wilt spelen. Is het de eerste keer dat je RedCat Spookkasteel speelt? Dan kun je hier meteen je naam intypen.",
+        "Heb je al eerder gespeeld? Klik dan op de naam waarmee je wilt spelen.",
+        "Klik daarna op OK onder in het scherm."
+      ],
+      "html": "<p>Hier kun je de speler kiezen waarmee je wilt spelen. Is het de eerste keer dat je RedCat Spookkasteel speelt? Dan kun je hier meteen je naam intypen.</p><p>Heb je al eerder gespeeld? Klik dan op de naam waarmee je wilt spelen.</p><p>Klik daarna op OK onder in het scherm.</p>",
+      "links": []
+    },
+    {
+      "id": "h_new_player",
+      "nativeId": 3,
+      "nativeHash": "AIJPGP",
+      "title": "Hoe maak ik een nieuwe speler?",
+      "paragraphs": [
+        "Klik op de knop Nieuw. Je krijgt dan een schermpje te zien waar je een naam kunt invullen.",
+        "Als je de naam hebt ingevuld waarmee je wilt spelen, klik je op OK onder in het scherm."
+      ],
+      "html": "<p>Klik op de knop Nieuw. Je krijgt dan een schermpje te zien waar je een naam kunt invullen.</p><p>Als je de naam hebt ingevuld waarmee je wilt spelen, klik je op OK onder in het scherm.</p>",
+      "links": []
+    },
+    {
+      "id": "h_remove_player",
+      "nativeId": 4,
+      "nativeHash": "14I1Q.W",
+      "title": "Hoe haal ik een speler weg?",
+      "paragraphs": [
+        "Om een speler te verwijderen, kies je eerst een speler. Daarna klik je op Verwijderen. Zo, die is weg!"
+      ],
+      "html": "<p>Om een speler te verwijderen, kies je eerst een speler. Daarna klik je op Verwijderen. Zo, die is weg!</p>",
+      "links": []
+    },
+    {
+      "id": "h_mainmenu",
+      "nativeId": 5,
+      "nativeHash": "461OIZ",
+      "title": "Hoofdmenu",
+      "paragraphs": [
+        "Wat is Avontuur?",
+        "Wat is Snelspel?",
+        "Wat is Highscore?",
+        "Wat doe ik bij Instellingen?",
+        "Wat is de spelerslijst?"
+      ],
+      "html": "<p>Wat is Avontuur?</p><p>Wat is Snelspel?</p><p>Wat is Highscore?</p><p>Wat doe ik bij Instellingen?</p><p>Wat is de spelerslijst?</p>",
+      "links": []
+    },
+    {
+      "id": "h_Adventure",
+      "nativeId": 6,
+      "nativeHash": "4Z5J_6G",
+      "title": "Wat is Avontuur?",
+      "paragraphs": [
+        "Avontuur is één van de twee spelmogelijkheden.",
+        "Je kunt Avontuur kiezen als je meteen wilt beginnen aan de grote spannende opdracht om WhizzKitty te bevrijden!",
+        "Je doorloopt –als het goed gaat- 5 verschillende levels. De levels worden steeds moeilijker, maar jij wordt natuurlijk ook steeds beter!"
+      ],
+      "html": "<p>Avontuur is één van de twee spelmogelijkheden.</p><p>Je kunt Avontuur kiezen als je meteen wilt beginnen aan de grote spannende opdracht om WhizzKitty te bevrijden!</p><p>Je doorloopt –als het goed gaat- 5 verschillende levels. De levels worden steeds moeilijker, maar jij wordt natuurlijk ook steeds beter!</p>",
+      "links": []
+    },
+    {
+      "id": "h_quickplay",
+      "nativeId": 7,
+      "nativeHash": "KVJI.R",
+      "title": "Wat is Snelspel?",
+      "paragraphs": [
+        "Snelspel is één van de twee spelmogelijkheden. Je kunt het Snelspel kiezen als je wilt oefenen of snel even wilt griezelen.",
+        "Je speelt in het Snelspel één level dat je zelf uitkiest. Zo kun je bijvoorbeeld je favoriete level weer opnieuw spelen."
+      ],
+      "html": "<p>Snelspel is één van de twee spelmogelijkheden. Je kunt het Snelspel kiezen als je wilt oefenen of snel even wilt griezelen.</p><p>Je speelt in het Snelspel één level dat je zelf uitkiest. Zo kun je bijvoorbeeld je favoriete level weer opnieuw spelen.</p>",
+      "links": []
+    },
+    {
+      "id": "h_Highscore",
+      "nativeId": 8,
+      "nativeHash": "XPZHNG",
+      "title": "Wat is Highscores?",
+      "paragraphs": [
+        "Een highscore is een hele hoge score. In de Highscorelijst staat wie de meeste punten heeft gehaald. Dat zijn natuurlijk alleen de allerbeste spelers.",
+        "Zit jij erbij?"
+      ],
+      "html": "<p>Een highscore is een hele hoge score. In de Highscorelijst staat wie de meeste punten heeft gehaald. Dat zijn natuurlijk alleen de allerbeste spelers.</p><p>Zit jij erbij?</p>",
+      "links": []
+    },
+    {
+      "id": "h_settings",
+      "nativeId": 9,
+      "nativeHash": "Q8J17M",
+      "title": "Wat doe ik bij Instellingen?",
+      "paragraphs": [
+        "Met de knop Instellingen verander je de instellingen van het huidige spel.",
+        "Hier kun je de besturing, de muziek, geluidseffecten of het beeld veranderen."
+      ],
+      "html": "<p>Met de knop Instellingen verander je de instellingen van het huidige spel.</p><p>Hier kun je de besturing, de muziek, geluidseffecten of het beeld veranderen.</p>",
+      "links": []
+    },
+    {
+      "id": "h_mmenu_playerlist",
+      "nativeId": 39,
+      "nativeHash": "10ZBNKO",
+      "title": "Wat is de Spelerslijst?",
+      "paragraphs": [
+        "Als je de knop Spelerslijst kiest ga je terug naar de spelerslijst waar je van speler kan veranderen."
+      ],
+      "html": "<p>Als je de knop Spelerslijst kiest ga je terug naar de spelerslijst waar je van speler kan veranderen.</p>",
+      "links": []
+    },
+    {
+      "id": "h_adventure_menu",
+      "nativeId": 10,
+      "nativeHash": "MHY37G",
+      "title": "Avontuurmenu",
+      "paragraphs": [
+        "Het Avontuur spelen",
+        "Vorig of nieuw spel kiezen"
+      ],
+      "html": "<p>Het Avontuur spelen</p><p>Vorig of nieuw spel kiezen</p>",
+      "links": []
+    },
+    {
+      "id": "h_chose_difficulty_easy",
+      "nativeId": 33,
+      "nativeHash": "WYLKI6",
+      "title": "Wat is Makkelijk?",
+      "paragraphs": [
+        "Makkelijk is voor spelers die nog niet zo vaak gespeeld hebben, zoals jonge kinderen. Het spel is overal wat makkelijker.",
+        "Zo zijn alle betoverde vijandjes niet erg sterk."
+      ],
+      "html": "<p>Makkelijk is voor spelers die nog niet zo vaak gespeeld hebben, zoals jonge kinderen. Het spel is overal wat makkelijker.</p><p>Zo zijn alle betoverde vijandjes niet erg sterk.</p>",
+      "links": []
+    },
+    {
+      "id": "h_chose_difficulty_normal",
+      "nativeId": 34,
+      "nativeHash": "I0ANRK",
+      "title": "Wat is Normaal?",
+      "paragraphs": [
+        "Normaal is voor spelers die al wat vaker gespeeld hebben, zoals wat oudere kinderen.",
+        "De betoverde vijanden zijn al aardig sterk."
+      ],
+      "html": "<p>Normaal is voor spelers die al wat vaker gespeeld hebben, zoals wat oudere kinderen.</p><p>De betoverde vijanden zijn al aardig sterk.</p>",
+      "links": []
+    },
+    {
+      "id": "h_chose_difficulty_difficult",
+      "nativeId": 35,
+      "nativeHash": "1YMLXNK",
+      "title": "Wat is Moeilijk?",
+      "paragraphs": [
+        "Moeilijk is echt voor spelers die al veel geoefend hebben.",
+        "Alle vijanden zijn sterk en maken je het behoorlijk lastig."
+      ],
+      "html": "<p>Moeilijk is echt voor spelers die al veel geoefend hebben.</p><p>Alle vijanden zijn sterk en maken je het behoorlijk lastig.</p>",
+      "links": []
+    },
+    {
+      "id": "h_startscreen_change_difficulty",
+      "nativeId": 42,
+      "nativeHash": "1125PZ_",
+      "title": "Hoe kan ik de Moeilijkheid veranderen?",
+      "paragraphs": [
+        "Je kunt de Moeilijkheid veranderen, door een keer op Vorige te klikken. Je komt dan weer in het Moeilijkheidsmenu."
+      ],
+      "html": "<p>Je kunt de Moeilijkheid veranderen, door een keer op Vorige te klikken. Je komt dan weer in het Moeilijkheidsmenu.</p>",
+      "links": []
+    },
+    {
+      "id": "h_startscreen",
+      "nativeId": 14,
+      "nativeHash": "05JYG",
+      "title": "Wat zie ik op het startinfoscherm?",
+      "paragraphs": [
+        "Je ziet hier:",
+        "• de naam waar je mee speelt,",
+        "• de gekozen moeilijkheid,",
+        "• het level dat je gaat spelen,",
+        "• de ingestelde besturing.",
+        "Is alles ingesteld zoals jij het wilt? Klik dan op Start om het spel te beginnen."
+      ],
+      "html": "<p>Je ziet hier:</p><p>• de naam waar je mee speelt,</p><p>• de gekozen moeilijkheid,</p><p>• het level dat je gaat spelen,</p><p>• de ingestelde besturing.</p><p>Is alles ingesteld zoals jij het wilt? Klik dan op Start om het spel te beginnen.</p>",
+      "links": []
+    },
+    {
+      "id": "h_startscreen_change_level_Adv",
+      "nativeId": 43,
+      "nativeHash": "QX4RV0",
+      "title": "Hoe kan ik het Level veranderen? (Avontuur)",
+      "paragraphs": [
+        "Je kunt van level veranderen door met een andere speler te gaan spelen. Klik twee keer op Vorige. Je bent nu weer in het Hoofdmenu. Klik op de Spelerslijst. Kies hier de speler met het level dat je wilt gaan spelen.",
+        "Je kunt ook gewoon een nieuw spel beginnen. Je begint dan weer bij level 1; Het Bos.",
+        "Je kunt ook een ander level gaan spelen door het Snelspel te kiezen. Klik twee keer op Vorige. Je komt nu weer in het Hoofdmenu, waar je het Snelspel kan kiezen."
+      ],
+      "html": "<p>Je kunt van level veranderen door met een andere speler te gaan spelen. Klik twee keer op Vorige. Je bent nu weer in het Hoofdmenu. Klik op de Spelerslijst. Kies hier de speler met het level dat je wilt gaan spelen.</p><p>Je kunt ook gewoon een nieuw spel beginnen. Je begint dan weer bij level 1; Het Bos.</p><p>Je kunt ook een ander level gaan spelen door het Snelspel te kiezen. Klik twee keer op Vorige. Je komt nu weer in het Hoofdmenu, waar je het Snelspel kan kiezen.</p>",
+      "links": []
+    },
+    {
+      "id": "h_startscreen_change_level_Quick",
+      "nativeId": 44,
+      "nativeHash": "124WO15",
+      "title": "Hoe kan ik het Level veranderen? (Snelspel)",
+      "paragraphs": [
+        "Klik op Vorige. Klik in het volgende scherm nog een keer op Vorige. Je komt nu weer in het scherm waarin je de Griezelplek moet kiezen. Je kunt hier een ander level kiezen, waar je het Snelspel wilt gaan spelen, door erop te klikken.",
+        "Let op! Sommige levels kunnen op slot zitten! Die kun je pas gaan spelen als je in het Avontuur dat level hebt bereikt."
+      ],
+      "html": "<p>Klik op Vorige. Klik in het volgende scherm nog een keer op Vorige. Je komt nu weer in het scherm waarin je de Griezelplek moet kiezen. Je kunt hier een ander level kiezen, waar je het Snelspel wilt gaan spelen, door erop te klikken.</p><p>Let op! Sommige levels kunnen op slot zitten! Die kun je pas gaan spelen als je in het Avontuur dat level hebt bereikt.</p>",
+      "links": []
+    },
+    {
+      "id": "h_startscreen_change_name",
+      "nativeId": 45,
+      "nativeHash": "EMEHIN",
+      "title": "Hoe kan ik de Naam veranderen?",
+      "paragraphs": [
+        "Klik een aantal keer op Vorige, totdat je weer in het Hoofdmenu bent.",
+        "Klik in het Hoofdmenu op Spelerslijst. Je kunt daar van naam veranderen."
+      ],
+      "html": "<p>Klik een aantal keer op Vorige, totdat je weer in het Hoofdmenu bent.</p><p>Klik in het Hoofdmenu op Spelerslijst. Je kunt daar van naam veranderen.</p>",
+      "links": []
+    },
+    {
+      "id": "h_startscreen_change_controls",
+      "nativeId": 46,
+      "nativeHash": "169C4WI",
+      "title": "Hoe kan ik de Besturing veranderen?",
+      "paragraphs": [
+        "Klik een aantal keer op Vorige, totdat je weer in het Hoofdmenu bent.",
+        "Klik in het Hoofdmenu op Instellingen. Klik daarna in het Instellingenmenu op Besturing. Hier kun je jouw ingestelde besturing wijzigen."
+      ],
+      "html": "<p>Klik een aantal keer op Vorige, totdat je weer in het Hoofdmenu bent.</p><p>Klik in het Hoofdmenu op Instellingen. Klik daarna in het Instellingenmenu op Besturing. Hier kun je jouw ingestelde besturing wijzigen.</p>",
+      "links": []
+    },
+    {
+      "id": "h_quickplaymenu",
+      "nativeId": 15,
+      "nativeHash": "FKQLAP",
+      "title": "Snelspelmenu",
+      "paragraphs": [
+        "Welke Griezelplekken kan ik kiezen?",
+        "Waarom kan ik sommige Griezelplekken niet kiezen?"
+      ],
+      "html": "<p>Welke Griezelplekken kan ik kiezen?</p><p>Waarom kan ik sommige Griezelplekken niet kiezen?</p>",
+      "links": []
+    },
+    {
+      "id": "h_chose_quickplay",
+      "nativeId": 11,
+      "nativeHash": "1YK2Z7O",
+      "title": "Welke Griezelplekken kan ik kiezen?",
+      "paragraphs": [
+        "Je kunt kiezen uit de volgende levels: Het Bos, Het Kasteel, Het Kerkhof, De Grotten of De Toren.",
+        "Klik op de griezelplek van je keuze. Klik daarna op Volgende.",
+        "Maar let op! Soms kan je een level nog niet kiezen omdat het nog ‘op slot’ zit."
+      ],
+      "html": "<p>Je kunt kiezen uit de volgende levels: Het Bos, Het Kasteel, Het Kerkhof, De Grotten of De Toren.</p><p>Klik op de griezelplek van je keuze. Klik daarna op Volgende.</p><p>Maar let op! Soms kan je een level nog niet kiezen omdat het nog ‘op slot’ zit.</p>",
+      "links": []
+    },
+    {
+      "id": "h_quickplay_levellocks",
+      "nativeId": 31,
+      "nativeHash": "16T.Z5Y",
+      "title": "Waarom kan ik sommige Griezelplekken niet kiezen?",
+      "paragraphs": [
+        "Sommige griezelplekken kunnen op slot zitten. Deze kun je dan nog niet kiezen.",
+        "Op die plekken kun je pas komen als je in het Avontuur dat level hebt bereikt."
+      ],
+      "html": "<p>Sommige griezelplekken kunnen op slot zitten. Deze kun je dan nog niet kiezen.</p><p>Op die plekken kun je pas komen als je in het Avontuur dat level hebt bereikt.</p>",
+      "links": []
+    },
+    {
+      "id": "h_controls",
+      "nativeId": 23,
+      "nativeHash": "NH3CP1",
+      "title": "Hoe bestuur ik het spel met toetsenbord?",
+      "paragraphs": [
+        "De standaardinstelling:",
+        "Vooruit lopen ↑",
+        "Achteruit lopen ↓",
+        "Naar rechts draaien →",
+        "Naar links draaien ←",
+        "Springen Spatiebalk",
+        "Schieten Ctrl",
+        "Ontwijken Alt"
+      ],
+      "html": "<p>De standaardinstelling:</p><p>Vooruit lopen ↑</p><p>Achteruit lopen ↓</p><p>Naar rechts draaien →</p><p>Naar links draaien ←</p><p>Springen Spatiebalk</p><p>Schieten Ctrl</p><p>Ontwijken Alt</p>",
+      "links": []
+    },
+    {
+      "id": "h_controls_joystick",
+      "nativeId": 30,
+      "nativeHash": "DCD7N0",
+      "title": "Hoe bestuur ik het spel met joystick of gamepad?",
+      "paragraphs": [
+        "Het voor- en achteruitlopen staat standaard ingesteld. Voor de knoppen is de standaardinstelling:",
+        "Knop 1 - schieten",
+        "Knop 2 - springen",
+        "Knop 3 - stapje opzij"
+      ],
+      "html": "<p>Het voor- en achteruitlopen staat standaard ingesteld. Voor de knoppen is de standaardinstelling:</p><p>Knop 1 - schieten</p><p>Knop 2 - springen</p><p>Knop 3 - stapje opzij</p>",
+      "links": []
+    },
+    {
+      "id": "h_controls_change",
+      "nativeId": 28,
+      "nativeHash": "UHA9F1",
+      "title": "Hoe kan ik de ingestelde besturing veranderen?",
+      "paragraphs": [
+        "Als je andere toetsen van je toetsenbord voor de functies wilt gebruiken, klik je op Instellen.",
+        "De besturing van joystick of gamepad kun je niet zelf veranderen."
+      ],
+      "html": "<p>Als je andere toetsen van je toetsenbord voor de functies wilt gebruiken, klik je op Instellen.</p><p>De besturing van joystick of gamepad kun je niet zelf veranderen.</p>",
+      "links": []
+    },
+    {
+      "id": "h_screen",
+      "nativeId": 24,
+      "nativeHash": "THYSGB",
+      "title": "Hoe kan ik de weergave verbeteren?",
+      "paragraphs": [
+        "De weergave staat standaard op hoge kwaliteit. Maar misschien is voor jouw computer een andere weergave beter.",
+        "Is jouw computer niet zo snel of heb je geen 3D-kaart? Klik dan op Laag.",
+        "Heb je een normale computer en een 3D-kaart? Klik dan op Normaal.",
+        "Heb je een snelle computer en een 3D-kaart? Klik dan op Hoog."
+      ],
+      "html": "<p>De weergave staat standaard op hoge kwaliteit. Maar misschien is voor jouw computer een andere weergave beter.</p><p>Is jouw computer niet zo snel of heb je geen 3D-kaart? Klik dan op Laag.</p><p>Heb je een normale computer en een 3D-kaart? Klik dan op Normaal.</p><p>Heb je een snelle computer en een 3D-kaart? Klik dan op Hoog.</p>",
+      "links": []
+    },
+    {
+      "id": "h_screen_novideocard",
+      "nativeId": 32,
+      "nativeHash": "_XXL7B",
+      "title": "Waarom kan ik bij Weergave geen Hoge of Normale kwaliteit kiezen?",
+      "paragraphs": [
+        "Je kunt niet Hoog of Normaal kiezen omdat je geen 3D-kaart hebt.",
+        "Zonder 3D-kaart moet je het spel op Laag zetten. Anders zou je een langzaam en schokkerig beeld krijgen."
+      ],
+      "html": "<p>Je kunt niet Hoog of Normaal kiezen omdat je geen 3D-kaart hebt.</p><p>Zonder 3D-kaart moet je het spel op Laag zetten. Anders zou je een langzaam en schokkerig beeld krijgen.</p>",
+      "links": []
+    },
+    {
+      "id": "h_volume_music",
+      "nativeId": 25,
+      "nativeHash": "ZL26E",
+      "title": "Hoe kan ik de muziek harder of zachter zetten?",
+      "paragraphs": [
+        "Gebruik de schuifbalk onder het kopje Muziek, om het muziekgeluid harder of zachter te zetten.",
+        "Naar rechts is harder, naar links is zachter. Hoe zachter de muziek, hoe minder eng het spel!"
+      ],
+      "html": "<p>Gebruik de schuifbalk onder het kopje Muziek, om het muziekgeluid harder of zachter te zetten.</p><p>Naar rechts is harder, naar links is zachter. Hoe zachter de muziek, hoe minder eng het spel!</p>",
+      "links": []
+    },
+    {
+      "id": "h_soundeffects",
+      "nativeId": 26,
+      "nativeHash": "6__K_84",
+      "title": "Hoe kan ik de geluidseffecten harder of zachter zetten?",
+      "paragraphs": [
+        "Je kunt de schuifbalk onder Geluidseffecten gebruiken om de geluidseffecten in het spel harder of zachter te zetten.",
+        "Naar rechts is harder, naar links is zachter. Wil je het spel minder griezelig laten klinken? Zet ze dan heel zacht!"
+      ],
+      "html": "<p>Je kunt de schuifbalk onder Geluidseffecten gebruiken om de geluidseffecten in het spel harder of zachter te zetten.</p><p>Naar rechts is harder, naar links is zachter. Wil je het spel minder griezelig laten klinken? Zet ze dan heel zacht!</p>",
+      "links": []
+    },
+    {
+      "id": "h_set_keys",
+      "nativeId": 13,
+      "nativeHash": "PLKSIM",
+      "title": "Hoe stel ik een andere toets in?",
+      "paragraphs": [
+        "Klik op de functietoets op het scherm, die je wilt veranderen. De instelling verdwijnt. Druk nu op je toetsenbord de toets in, die je voor die functie wilt gebruiken. Doe het hetzelfde voor elke toets die je wilt instellen. Klik daarna op OK.",
+        "Je kunt ook de knop Instellen aanklikken. De computer gaat dan alle functietoetsen na. Je moet dan steeds op je toetsenbord de toets indrukken, die je voor de functie wilt gebruiken."
+      ],
+      "html": "<p>Klik op de functietoets op het scherm, die je wilt veranderen. De instelling verdwijnt. Druk nu op je toetsenbord de toets in, die je voor die functie wilt gebruiken. Doe het hetzelfde voor elke toets die je wilt instellen. Klik daarna op OK.</p><p>Je kunt ook de knop Instellen aanklikken. De computer gaat dan alle functietoetsen na. Je moet dan steeds op je toetsenbord de toets indrukken, die je voor de functie wilt gebruiken.</p>",
+      "links": []
+    },
+    {
+      "id": "h_config_keys",
+      "nativeId": 16,
+      "nativeHash": "12WPQBY",
+      "title": "Wat doe ik bij de knop Instellen?",
+      "paragraphs": [
+        "Als je op Instellen klikt, kun je alle toetsen één voor één veranderen. De computer begint te knipperen bij de functietoets Links: de instelling is verdwenen. Druk nu op je toetsenbord de toets in, die je voor Links wilt gebruiken. De computer gaat op deze manier alle functietoetsen na. Druk steeds op je toetsenbord de toets in, die je voor de functie wilt gebruiken. Als je alle functietoetsen hebt ingesteld, klik je op OK.",
+        "Wil je toch weer de standaardinstelling terug? Klik dan op Standaard en daarna op OK."
+      ],
+      "html": "<p>Als je op Instellen klikt, kun je alle toetsen één voor één veranderen. De computer begint te knipperen bij de functietoets Links: de instelling is verdwenen. Druk nu op je toetsenbord de toets in, die je voor Links wilt gebruiken. De computer gaat op deze manier alle functietoetsen na. Druk steeds op je toetsenbord de toets in, die je voor de functie wilt gebruiken. Als je alle functietoetsen hebt ingesteld, klik je op OK.</p><p>Wil je toch weer de standaardinstelling terug? Klik dan op Standaard en daarna op OK.</p>",
+      "links": []
+    },
+    {
+      "id": "h_standard_keys",
+      "nativeId": 17,
+      "nativeHash": "2AA.HCT",
+      "title": "Wat betekent Standaard?",
+      "paragraphs": [
+        "Als je op Standaard klikt, krijgen de toetsen weer de standaardinstelling:",
+        "Vooruit lopen ↑",
+        "Achteruit lopen ↓",
+        "Naar rechts draaien →",
+        "Naar links draaien ←",
+        "Springen Spatiebalk",
+        "Schieten Ctrl",
+        "Ontwijken Alt"
+      ],
+      "html": "<p>Als je op Standaard klikt, krijgen de toetsen weer de standaardinstelling:</p><p>Vooruit lopen ↑</p><p>Achteruit lopen ↓</p><p>Naar rechts draaien →</p><p>Naar links draaien ←</p><p>Springen Spatiebalk</p><p>Schieten Ctrl</p><p>Ontwijken Alt</p>",
+      "links": []
+    },
+    {
+      "id": "h_highscores_expl",
+      "nativeId": 1,
+      "nativeHash": "KUC77E",
+      "title": "Wat betekent Highscores?",
+      "paragraphs": [
+        "Highscore is natuurlijk Engels. Het betekent de hoogste score!",
+        "Op de lijst van Highscores staan de allerhoogste scores en wie deze scores heeft gehaald.",
+        "Als je op deze lijst staat, ben je een goede spokenvechter! En sta je bovenaan, dan ben je de allerbeste!"
+      ],
+      "html": "<p>Highscore is natuurlijk Engels. Het betekent de hoogste score!</p><p>Op de lijst van Highscores staan de allerhoogste scores en wie deze scores heeft gehaald.</p><p>Als je op deze lijst staat, ben je een goede spokenvechter! En sta je bovenaan, dan ben je de allerbeste!</p>",
+      "links": []
+    },
+    {
+      "id": "h_highscores_show",
+      "nativeId": 12,
+      "nativeHash": "KUPR6P",
+      "title": "Wat kan ik zien bij Highscores?",
+      "paragraphs": [
+        "Hier zie je de hoogste scores van de beste spelers.",
+        "Je ziet ook in welk level de speler is. Bovendien kun je zien of de speler het Avontuur al heeft uitgespeeld."
+      ],
+      "html": "<p>Hier zie je de hoogste scores van de beste spelers.</p><p>Je ziet ook in welk level de speler is. Bovendien kun je zien of de speler het Avontuur al heeft uitgespeeld.</p>",
+      "links": []
+    },
+    {
+      "id": "h_playerlistmenu",
+      "nativeId": 27,
+      "nativeHash": "LSUZAH",
+      "title": "Spelerslijstmenu",
+      "paragraphs": [
+        "Wat moet ik in de spelerslijst doen?",
+        "Hoe maak ik een nieuwe speler aan?",
+        "Hoe haal ik een speler weg?"
+      ],
+      "html": "<p>Wat moet ik in de spelerslijst doen?</p><p>Hoe maak ik een nieuwe speler aan?</p><p>Hoe haal ik een speler weg?</p>",
+      "links": []
+    },
+    {
+      "id": "h_startscreenmenu_advent",
+      "nativeId": 41,
+      "nativeHash": "18ISARO",
+      "title": "Startschermmenu (Avontuur)",
+      "paragraphs": [
+        "Wat zie ik op het startscherm?",
+        "Hoe verander ik de naam waarmee ik wil spelen.",
+        "Hoe kan ik de moeilijkheid van het spel veranderen?",
+        "Hoe kan ik het level veranderen?",
+        "Hoe verander ik de besturing van het spel?"
+      ],
+      "html": "<p>Wat zie ik op het startscherm?</p><p>Hoe verander ik de naam waarmee ik wil spelen.</p><p>Hoe kan ik de moeilijkheid van het spel veranderen?</p><p>Hoe kan ik het level veranderen?</p><p>Hoe verander ik de besturing van het spel?</p>",
+      "links": [
+        {
+          "paragraph": 1,
+          "label": "naam",
+          "target": "h_startscreen_change_name",
+          "nativeHash": "EMEHIN",
+          "source": "native-jump"
+        },
+        {
+          "paragraph": 2,
+          "label": "moeilijkheid",
+          "target": "h_startscreen_change_difficulty",
+          "nativeHash": "1125PZ_",
+          "source": "native-jump"
+        },
+        {
+          "paragraph": 3,
+          "label": "level",
+          "target": "h_startscreen_change_level_Adv",
+          "nativeHash": "QX4RV0",
+          "source": "repaired-native-destination"
+        },
+        {
+          "paragraph": 4,
+          "label": "besturing",
+          "target": "h_startscreen_change_controls",
+          "nativeHash": "169C4WI",
+          "source": "native-jump"
+        }
+      ]
+    },
+    {
+      "id": "h_startscreenmenu_quickplay",
+      "nativeId": 40,
+      "nativeHash": "1XVSO8_",
+      "title": "Startschermmenu (Snelspel)",
+      "paragraphs": [
+        "Wat zie ik op het startscherm?",
+        "Hoe verander ik de naam waarmee ik wil spelen.",
+        "Hoe kan ik de moeilijkheid van het spel veranderen?",
+        "Hoe kan ik het level veranderen?",
+        "Hoe verander ik de besturing van het spel?"
+      ],
+      "html": "<p>Wat zie ik op het startscherm?</p><p>Hoe verander ik de naam waarmee ik wil spelen.</p><p>Hoe kan ik de moeilijkheid van het spel veranderen?</p><p>Hoe kan ik het level veranderen?</p><p>Hoe verander ik de besturing van het spel?</p>",
+      "links": [
+        {
+          "paragraph": 1,
+          "label": "naam",
+          "target": "h_startscreen_change_name",
+          "nativeHash": "EMEHIN",
+          "source": "native-jump"
+        },
+        {
+          "paragraph": 2,
+          "label": "moeilijkheid",
+          "target": "h_startscreen_change_difficulty",
+          "nativeHash": "1125PZ_",
+          "source": "native-jump"
+        },
+        {
+          "paragraph": 3,
+          "label": "level",
+          "target": "h_startscreen_change_level_Quick",
+          "nativeHash": "124WO15",
+          "source": "repaired-native-destination"
+        },
+        {
+          "paragraph": 4,
+          "label": "besturing",
+          "target": "h_startscreen_change_controls",
+          "nativeHash": "169C4WI",
+          "source": "native-jump"
+        }
+      ]
+    },
+    {
+      "id": "h_settingsmenu",
+      "nativeId": 29,
+      "nativeHash": "JGOTWD",
+      "title": "Instellingenmenu",
+      "paragraphs": [
+        "Hoe kan ik het spel besturen?",
+        "Hoe kan ik de weergave verbeteren?",
+        "Hoe kan ik de muziek harder of zachter zetten?",
+        "Hoe kan ik de geluidseffecten harder of zachter zetten?"
+      ],
+      "html": "<p>Hoe kan ik het spel besturen?</p><p>Hoe kan ik de weergave verbeteren?</p><p>Hoe kan ik de muziek harder of zachter zetten?</p><p>Hoe kan ik de geluidseffecten harder of zachter zetten?</p>",
+      "links": []
+    }
+  ]
+}

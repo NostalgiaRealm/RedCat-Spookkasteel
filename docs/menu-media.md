@@ -50,10 +50,17 @@ output filename, dimensions, and SHA-256 checksums of both source archives.
 | `11010000.png`, `11020000.png`, `11030000.png` | Gamepad, keyboard, joystick art | 200 × 200 |
 | `cover.jpg` | Optional original front cover scan, uncropped | 1600 × 1613 on this copy |
 
-The game was authored for a 4:3 presentation. The new launcher can place these
-assets in a responsive widescreen layout; preserve the aspect ratio of each image.
+The game was authored for a 4:3 presentation. The restored menu uses that
+composition on landscape displays and reflows the same assets for portrait
+touch screens. All 124 imported resources were checked against the native
+archive. See [menu implementation and evidence](original-menu-native.md).
 The original logo and illustrations are low resolution, so high definition output
 does not create additional source-art detail.
+
+The original Dutch Windows help is imported from **`Agent/REDCAT.HLP`** with
+`tools/import_menu_help.py`. Its 38 mapped topics are displayed by the portable
+Help viewer; it requires neither WinHelp nor Microsoft Agent. The installation's
+top-level `Menu.hlp` belongs to an unrelated German racing game and is not used.
 
 The level loading screen uses separate original 256 × 256 illustrations from
 `Bitmaps/levelbg1.bmp` through `levelbg5.bmp`, together with the original loading

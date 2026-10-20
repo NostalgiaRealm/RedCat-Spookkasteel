@@ -3,8 +3,8 @@ import {MAX_PLAYERS, PLAYER_NAME_MAX_LENGTH} from './player-profiles.js';
 // RcHcMenu's TfrmPlayer, TfrmPlayerName and delete confirmation. Profile data
 // stays outside the UI; selecting a row does not switch the running adventure.
 export class PlayerMenu {
-  constructor({profiles, audio, selectPlayer, removePlayer, canOpen = () => true, error = null, document = globalThis.document}) {
-    Object.assign(this, {profiles, audio, selectPlayer, removePlayer, canOpen, error, document});
+  constructor({profiles, audio, selectPlayer, removePlayer, exportPlayer = null, canOpen = () => true, error = null, document = globalThis.document}) {
+    Object.assign(this, {profiles, audio, selectPlayer, removePlayer, exportPlayer, canOpen, error, document});
     this.$ = id => document.getElementById(id);
     this.dialog = this.$('player-list');
     this.nameDialog = this.$('player-name-dialog');
@@ -17,6 +17,7 @@ export class PlayerMenu {
     bind('player-cancel', () => this.cancel());
     bind('player-add', () => this.openName());
     bind('player-remove', () => this.openDelete());
+    bind('player-export', () => this.exportSelected());
     bind('player-select', () => this.confirm());
     bind('player-name-cancel', () => this.cancelName());
     bind('player-delete-yes', () => this.confirmDelete());
@@ -64,6 +65,7 @@ export class PlayerMenu {
     const players = this.profiles?.list() || [];
     this.$('player-add').disabled = this.busy || this.pending || !this.profiles || players.length >= MAX_PLAYERS;
     this.$('player-remove').disabled = this.busy || this.pending || players.length <= 1;
+    this.$('player-export').disabled = this.busy || this.pending || !this.profiles || !this.exportPlayer;
     this.$('player-select').disabled = this.busy || this.pending || !this.profiles;
     for (const button of this.$('player-choices').children) button.disabled = this.busy || this.pending;
   }
@@ -151,5 +153,25 @@ export class PlayerMenu {
       this.audio.say(['rcmn1.wav']); this.dialog.close(); this.$('open-players').focus();
     } catch (error) {this.render(error.message);}
     finally {this.busy = false; this.updateControls();}
+  }
+
+  async exportSelected() {
+    if (this.busy || this.pending || !this.dialog.open || !this.exportPlayer ||
+        !this.profiles?.list().some(player => player.id === this.selected)) return;
+    // Capture the selected owner before awaiting a file picker. Exporting never
+    // changes the active profile and never writes back into its saved adventure.
+    const selected = this.selected;
+    this.busy = true; this.updateControls();
+    this.$('player-list-status').textContent = 'Opgeslagen avontuur exporteren…';
+    try {
+      const result = await this.exportPlayer(selected);
+      this.$('player-list-status').textContent = result?.status === 'cancelled' || result === false ?
+        'Exporteren geannuleerd.' : result?.status === 'downloaded' ?
+          'Het exportbestand is aan je browserdownloads toegevoegd.' : 'Het opgeslagen avontuur is geëxporteerd.';
+    } catch (error) {
+      this.$('player-list-status').textContent = error.message || 'Het opgeslagen avontuur kon niet worden geëxporteerd.';
+    } finally {
+      this.busy = false; this.updateControls(); this.$('player-export').focus();
+    }
   }
 }

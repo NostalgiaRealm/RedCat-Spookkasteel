@@ -35,3 +35,36 @@ test('pause/resume and volume changes retain the active announcement',async()=>{
  assert.equal(clips[0].volume,.2);assert.ok(menu.voice);menu.resume();assert.equal(clips[0].plays,2);
  clips[0].onended();assert.equal(await done,true);
 });
+test('effects and music channels change independently without restarting either',async()=>{
+ const {menu,clips,calls}=setup();menu.startMusic();
+ const done=menu.selectLevel(0);
+ const generation=menu.generation;
+ menu.setChannels({effects:.5,music:.25});
+ assert.equal(clips[0].volume,.3);
+ assert.equal(menu.music.channels.music,.25);
+ assert.equal(clips[0].plays,1);assert.equal(calls.length,1);
+ assert.equal(menu.generation,generation);
+ menu.pause();menu.setChannels({effects:.2});menu.setVolume(.5);
+ assert.equal(clips[0].volume,.1);
+ assert.equal(menu.music.channels.music,.25,'partial update preserves music setting');
+ menu.resume();clips[0].onended();await tick();
+ assert.equal(clips[1].volume,.1,'queued half uses the latest effects setting');
+ assert.equal(clips[1].plays,1);clips[1].onended();
+ assert.equal(await done,true);
+});
+test('channel changes reapply mixer gain while retaining authored mixer channels',()=>{
+ const {menu,calls}=setup(),masters=[];
+ menu.music.channels.voices=.8;
+ menu.music.setMaster=value=>masters.push(value);
+ menu.setChannels({effects:0,music:.4});
+ assert.deepEqual(masters,[.6]);
+ assert.equal(menu.music.channels.voices,.8);
+ assert.equal(menu.channels.effects,0);
+ menu.setChannels({effects:NaN,music:Infinity});
+ assert.equal(menu.channels.effects,0);
+ assert.equal(menu.channels.music,.4);
+ menu.setChannels({effects:2,music:-2});
+ assert.equal(menu.channels.effects,1);
+ assert.equal(menu.channels.music,0);
+ assert.equal(calls.length,0,'gain changes do not start stopped music');
+});

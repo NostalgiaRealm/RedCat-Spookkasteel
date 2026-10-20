@@ -24,13 +24,13 @@ export class OriginalLoadingScreen {
     if(!this.manifest)return;
     const {text,levels}=this.manifest;
     this.title.textContent=text.WaitText;
-    this.mode.textContent=text['GameType0.msg'];
+    this.mode.textContent=this.gameType==='Snelspel'?(text['GameType1.msg']||'Snelspel'):text['GameType0.msg'];
     this.message.textContent=`${text.LoadingTXT} ${levels[this.index]}`;
     this.picture.src=`assets/loading/level${this.index+1}.png`;
     this.picture.alt=levels[this.index];
   }
-  show(index,{streaming=false}={}) {
-    this.index=index;this.value=0;this.applyLevel();
+  show(index,{streaming=false,gameType=streaming?this.gameType:'Avontuur'}={}) {
+    this.index=index;this.gameType=gameType;this.value=0;this.applyLevel();
     this.setProgress(streaming?null:0);this.element.hidden=false;
   }
   setProgress(value) {

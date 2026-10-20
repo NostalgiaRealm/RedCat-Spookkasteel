@@ -33,6 +33,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
@@ -43,8 +44,34 @@ import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 import org.json.JSONObject
 import java.io.ByteArrayInputStream
+import java.util.concurrent.Executors
 
 class MainActivity : ComponentActivity() {
+    private companion object {
+        const val MAX_EXPORT_BYTES = 32 * 1024 * 1024
+        // JSON.stringify escapes the file text a second time for the message.
+        const val MAX_EXPORT_MESSAGE_CHARS = MAX_EXPORT_BYTES * 2 + 4096
+    }
+    private data class PendingExport(val id: String, val view: WebView, val bytes: ByteArray)
+    private val exportWriter = Executors.newSingleThreadExecutor()
+    private var pendingExport: PendingExport? = null
+    private val exportDocument = registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
+        val request = pendingExport
+        pendingExport = null
+        if (request != null && request.view === webView) {
+            if (uri == null) exportResult(request.id, request.view, canceled = true)
+            else exportWriter.execute {
+                val error = runCatching {
+                    contentResolver.openOutputStream(uri, "wt")?.use { it.write(request.bytes) }
+                        ?: throw java.io.IOException("De gekozen locatie kan niet worden beschreven.")
+                }.exceptionOrNull()
+                handler.post {
+                    exportResult(request.id, request.view,
+                        error = if (error == null) null else "Het avontuur kon niet worden opgeslagen op de gekozen locatie.")
+                }
+            }
+        }
+    }
     private lateinit var root: FrameLayout
     private lateinit var audioManager: AudioManager
     private lateinit var focusRequest: AudioFocusRequest
@@ -208,7 +235,12 @@ class MainActivity : ComponentActivity() {
                     sender, message, sourceOrigin, isMainFrame, _ ->
                 if (sender === webView && isMainFrame && GameUrls.isGameOrigin(sourceOrigin.toString())) {
                     val data = runCatching { message.data }.getOrNull()
-                    if (data != null && data.length <= 4096) receiveMessage(data)
+                    // Only this explicit, bounded operation may exceed the
+                    // ordinary 4 KiB bridge-message limit.
+                    if (data != null && (data.length <= 4096 ||
+                            (data.length <= MAX_EXPORT_MESSAGE_CHARS && data.startsWith("{\"type\":\"export-save\",")))) {
+                        receiveMessage(data)
+                    }
                 }
             }
         } else {
@@ -223,6 +255,7 @@ class MainActivity : ComponentActivity() {
 
     private fun receiveMessage(data: String) {
         val message = runCatching { JSONObject(data) }.getOrNull() ?: return
+        if (data.length > 4096 && message.optString("type") != "export-save") return
         when (message.optString("type")) {
             "ready" -> { pageReady = true; publishLifecycle() }
             "fullscreen" -> if (message.opt("enabled") is Boolean) {
@@ -235,7 +268,47 @@ class MainActivity : ComponentActivity() {
             }
             // The web adapter completes its normal save before sending quit.
             "quit" -> finish()
+            "export-save" -> exportSave(message)
         }
+    }
+
+    private fun exportSave(message: JSONObject) {
+        val view = webView ?: return
+        val id = message.optString("id")
+        if (!Regex("[A-Za-z0-9_-]{1,80}").matches(id)) return
+        if (pendingExport != null) {
+            exportResult(id, view, error = "Er is al een exportvenster geopend.")
+            return
+        }
+        val filename = message.optString("filename")
+        val text = message.optString("text")
+        if (!Regex("RedCat-Spookkasteel-[A-Za-z0-9_-]{1,100}\\.json").matches(filename) ||
+                text.isEmpty() || text.length > MAX_EXPORT_BYTES) {
+            exportResult(id, view, error = "Het exportbestand is ongeldig of te groot (maximaal 32 MiB).")
+            return
+        }
+        val bytes = text.toByteArray(Charsets.UTF_8)
+        val bundle = runCatching { JSONObject(text) }.getOrNull()
+        val save = bundle?.optJSONObject("save")
+        if (bytes.size > MAX_EXPORT_BYTES || bundle?.optString("format") != "redcat-spookkasteel-save" ||
+                bundle.optInt("formatVersion") != 1 || save?.optInt("version") != 1 ||
+                save.optJSONObject("game") == null || save.optJSONArray("position")?.length() != 3 ||
+                bundle.optJSONObject("player")?.opt("name") !is String) {
+            exportResult(id, view, error = "Het bestand is geen geldig opgeslagen RedCat-avontuur.")
+            return
+        }
+        pendingExport = PendingExport(id, view, bytes)
+        try { exportDocument.launch(filename) }
+        catch (_: RuntimeException) {
+            pendingExport = null
+            exportResult(id, view, error = "Het Android-bestandsvenster kon niet worden geopend.")
+        }
+    }
+
+    private fun exportResult(id: String, view: WebView, canceled: Boolean = false, error: String? = null) {
+        if (view !== webView) return
+        sendEvent(JSONObject().put("type", "export-result").put("id", id)
+            .put("ok", !canceled && error == null).put("canceled", canceled).put("error", error))
     }
 
     private fun watchStartup(view: WebView) {
@@ -327,6 +400,7 @@ class MainActivity : ComponentActivity() {
     private fun disposeGameView(rendererGone: Boolean = false) {
         val old = webView
         webView = null
+        pendingExport = null
         pageReady = false
         keepAwakeRequested = false
         updateKeepAwake()
@@ -391,6 +465,7 @@ class MainActivity : ComponentActivity() {
         if (noisyReceiverRegistered) unregisterReceiver(noisyReceiver)
         audioManager.abandonAudioFocusRequest(focusRequest)
         disposeGameView()
+        exportWriter.shutdown()
         super.onDestroy()
     }
 }

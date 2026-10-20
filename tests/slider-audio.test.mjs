@@ -3,11 +3,15 @@ import assert from 'node:assert/strict';
 import {SliderAudio,SLIDER_VOICES} from '../src/slider-audio.js';
 const tick=()=>new Promise(r=>setImmediate(r));
 function setup(values){const calls=[],ends=[];const feedback=new SliderAudio({say(files){calls.push(files[0]);return new Promise(r=>ends.push(r));}});feedback.reset(values);return {feedback,calls,ends};}
-test('all four sliders choose the requested original WAV by direction',async()=>{
+test('all settings sliders choose the requested original WAV by direction',async()=>{
  for(const [id,voices] of Object.entries(SLIDER_VOICES)){
   const {feedback,calls,ends}=setup({[id]:50});feedback.input(id,40);assert.deepEqual(calls,[voices.lower]);
   ends.shift()(true);await tick();feedback.input(id,60);assert.deepEqual(calls,[voices.lower,voices.higher]);
  }
+});
+test('both original sound sliders use softer and louder announcements',()=>{
+ assert.deepEqual(SLIDER_VOICES['volume-effects'],{lower:'rcmn15.wav',higher:'rcmn16.wav'});
+ assert.deepEqual(SLIDER_VOICES['volume-music'],SLIDER_VOICES['volume-effects']);
 });
 test('rapid drag keeps full words and coalesces direction reversals',async()=>{
  const {feedback,calls,ends}=setup({fov:65});feedback.input('fov',66);feedback.input('fov',67);feedback.input('fov',64);feedback.input('fov',63);

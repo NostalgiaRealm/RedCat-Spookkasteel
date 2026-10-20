@@ -1,4 +1,4 @@
-const CONTROLS = 'button, input:not([type="hidden"]), select, a[href]';
+const CONTROLS = 'button, input:not([type="hidden"]), select, a[href], summary';
 
 function available(element) {
   if (!element?.isConnected || element.matches(':disabled') ||
@@ -69,7 +69,7 @@ export class GamepadMenu {
   scroll(root, delta) {
     if(!root || !delta)return;
     // Panels on narrow screens and long dialogs must be readable without a mouse.
-    const candidates=[this.focused,...root.querySelectorAll('.panel'),root].filter(Boolean);
+    const candidates=[this.focused,...root.querySelectorAll('[data-gamepad-scroll]'),...root.querySelectorAll('.panel'),root].filter(Boolean);
     for(const element of candidates) {
       const style=element.ownerDocument.defaultView.getComputedStyle(element);
       if(/auto|scroll/.test(style.overflowY)&&element.scrollHeight>element.clientHeight+1){

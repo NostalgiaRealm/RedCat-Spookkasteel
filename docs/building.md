@@ -159,10 +159,10 @@ Resolve test failures before creating packages. Some original-file comparison te
 
 Keep source validation and package validation separate. An existing `dist/`
 package still contains the source and metadata from when it was generated:
-changing the Over dialog to **1.0** does not update a previously built **0.9.9**
+changing the Over dialog to **1.0.1** does not update a previously built **1.0.0**
 package. Record the executable/package version, source revision or file hashes,
 platform, inputs and checks for each release run. Source tests and older-package
-checks do not certify a new 1.0.0 release, and Linux browser/Electron checks
+checks do not certify a new 1.0.1 release, and Linux browser/Electron checks
 do not certify Windows, macOS or ARM hardware. The 20 October 2026 release
 refresh replaces the earlier 1.0.0 packages with the cache-coherence fix; artifact
 checks are retained in `temp_work/release-1.0.0-final-2026-10-20/`, separately
@@ -170,20 +170,20 @@ from source checks. Native runtime validation beyond Linux x64 remains pending.
 
 ## 5. Generate portable packages when ready
 
-**Only run this section when you intend to create new builds.** Close the game first. These commands update the corresponding directories under `dist/`; copy an older build elsewhere first if you want to preserve it. The current source displays **1.0** in **Over** and uses **1.0.0** in `package.json` and the root lockfile. The packaging helper still requires an explicit `REDCAT_PACKAGE_VERSION` for each packaging command; use `1.0.0` for this release. It overrides the generated package metadata without modifying the source, lockfile or displayed version. Use three dot-separated integers chosen for your distribution; the helper has no default. Without this value, the packaging command stops before creating a build.
+**Only run this section when you intend to create new builds.** Close the game first. These commands update the corresponding directories under `dist/`; copy an older build elsewhere first if you want to preserve it. The current source displays **1.0.1** in **Over** and uses **1.0.1** in `package.json` and the root lockfile. The packaging helper still requires an explicit `REDCAT_PACKAGE_VERSION` for each packaging command; use `1.0.1` for this source version. It overrides the generated package metadata without modifying the source, lockfile or displayed version. Use three dot-separated integers chosen for your distribution; the helper has no default. Without this value, the packaging command stops before creating a build.
 
-For the **1.0.0** release, enter **1.0.0** at the version prompts below
-(or set `REDCAT_PACKAGE_VERSION=1.0.0` in Bash / `$env:REDCAT_PACKAGE_VERSION = '1.0.0'`
+For **1.0.1** packages, enter **1.0.1** at the version prompts below
+(or set `REDCAT_PACKAGE_VERSION=1.0.1` in Bash / `$env:REDCAT_PACKAGE_VERSION = '1.0.1'`
 in PowerShell). Use the same version for every desktop architecture. The current
-Over dialog displays **1.0**; the separate Android preview uses `versionName = "1.0"`
-and `versionCode = 2`. No new package is created by updating this documentation
+Over dialog displays **1.0.1**; the separate Android preview uses `versionName = "1.0.1"`
+and `versionCode = 3`. No new package is created by updating this documentation
 or the display version.
 
 ### Available targets and current limits
 
 As checked on 20 October 2026, the lockfile pins Electron **44.3.0** and electron-builder **26.15.3**. The installed Electron checksum manifest includes Linux, Windows and macOS binaries for both x64 and ARM64. The game's only production npm dependency is Three.js; it has no architecture-specific native game addons. The same imported assets and level data can be packaged for each target. These architectures are also listed in [electron-builder's version 26 documentation](https://www.electron.build/v26/docs/architecture/).
 
-| Target | Build host for the instructions below | Current project status | Output under `dist/` |
+| Target | Build host for the instructions below | Last packaged status (1.0.0) | Output under `dist/` |
 | --- | --- | --- | --- |
 | Linux x64 | Linux | 1.0.0 portable package; local packaged-runtime check | `linux-unpacked/` |
 | Windows x64 | Windows or Linux | Unsigned 1.0.0 cross-package; Windows runtime validation pending | `win-unpacked/` |
@@ -193,7 +193,8 @@ As checked on 20 October 2026, the lockfile pins Electron **44.3.0** and electro
 | macOS Apple Silicon (ARM64) | macOS for signing/testing; Linux for unsigned bundles | Unsigned 1.0.0 bundle; Apple Silicon runtime validation pending | `mac-arm64/RedCat Spookkasteel.app` |
 
 All six desktop target directories were generated for 0.9.9. The 1.0.0 release
-pass generates fresh packages from current source. Packaging and inspecting an
+pass generated fresh packages from its source snapshot. Updating the source to
+1.0.1 does not regenerate or validate these packages. Packaging and inspecting an
 archive establish its contents, architecture and metadata; they do not establish
 that graphics, audio, controls and saves work on the corresponding hardware.
 Only Linux x64 has local native runtime coverage; other native platforms remain

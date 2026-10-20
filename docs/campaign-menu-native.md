@@ -121,20 +121,21 @@ listed in [replayed introductions](replayed-level-intros-native.md).
 
 ## Saved-adventure menu
 
-With a valid current save, **Verder spelen** becomes the yellow primary action,
-**Start avontuur** is hidden, and **Start opnieuw** appears as a secondary
-action. Start opnieuw always starts the Forest, even if another chapter was
-selected. Selecting an unlocked chapter only changes the selection and reveals
-**Level Spelen** when a save exists. Players can select another chapter without
-opening a warning or changing their save. Clicking **Level Spelen** or
-**Start opnieuw** displays the overwrite warning with **Annuleren** focused initially;
+The restored original menu (20 October 2026) routes **Avontuur** to **Startinfo**
+when a valid save exists; **Start!** continues that adventure. Without a save,
+Avontuur first asks for the difficulty. **Meer opties → Opnieuw beginnen**
+always starts the Forest, even if another chapter was selected.
+**Snelspel** allows selecting an unlocked chapter, choosing its difficulty and
+reviewing Startinfo without changing a save. **Level Spelen** appears there
+when a save already exists. Clicking **Level Spelen** or **Opnieuw beginnen**
+displays the overwrite warning with **Annuleren** focused initially;
 mouse, keyboard, touch and controller cancellation preserve the current save
 and all recovery checkpoints.
 
 Only a confirmed, successfully loaded adventure replaces the current save and
 starts a new recovery timeline. The old save remains available while assets
 are loading. Earned chapter unlocks and preferences remain profile settings.
-Malformed saves do not hide the fresh-start button.
+Malformed saves do not prevent starting a fresh adventure.
 
 Starting a completely new adventure also resets earned abilities to the
 Forest's original starting state. Power shots, BIG BENG and SuperSkippie must
@@ -148,11 +149,15 @@ Continue and Forest replay with learned upgrades, cancellation, deferred reset
 while loading, the original Forest starting skill mask, and reload persistence.
 Evidence is retained in `temp_work/new-adventure-skills-2026-10-03/`.
 
-Focused verification: `node tests/new-adventure-warning-scenes.mjs`. This checks
+Historical flat-menu verification: `node tests/new-adventure-warning-scenes.mjs`. This checked
 fresh/invalid saves, desktop/portrait layout, primary button color, warning
 cancellation (including controller), Continue restoration, chapter replay and
 confirmed Forest restart with recovery reset. Evidence is retained in
 `temp_work/saved-adventure-menu-2026-10-03/`. No builds were created.
+Those historical selectors and primary-button colors predate the restored
+original menu. Current navigation, cancellation and save-preservation checks
+are documented in [original-menu-native.md](original-menu-native.md); they
+cover the new page flow while retaining the same save safeguards.
 
 
 ## Automatic tutorial suppression on replay

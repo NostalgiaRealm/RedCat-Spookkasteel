@@ -16,10 +16,13 @@ speak. Selecting another level cancels the previous announcement.
 | De Grotten | RCMN36.wav | RCMN41.wav |
 | De Kasteel Toren | RCMN37.wav | RCMN42.wav |
 
-Starting or continuing a level from the main menu plays `RCMN32.wav` before
-level initialization. Restarts from the pause menu and chapter transitions do
+Starting or continuing **Avontuur** from the menu plays `RCMN32.wav` before
+level initialization. Starting **Snelspel** plays the recovered `RCMN43.wav`.
+The earlier flat menu used `RCMN32.wav` for both; the restored original menu
+now follows the distinct native start handlers. Restarts from the pause menu and chapter transitions do
 not play this cue. Clicking **Start opnieuw** plays `RCMN29.wav` alongside the
-existing confirmation dialog. Opening **Instellingen** plays `mn_red24.wav`,
+existing confirmation dialog. Opening **Instellingen** plays `mn_red24.wav`
+followed by the options screen's `Mn_In01.wav`,
 including from the pause menu, without resuming paused gameplay audio.
 
 Menu voices use a separate channel, follow the volume setting and pause when
@@ -27,6 +30,12 @@ the app loses focus. A rejected play request or media error releases a pending
 start operation rather than blocking the game. All files were already imported;
 no asset conversion was needed. Descriptive spoken text supplied alongside file
 names is documentation only, not a subtitle or UI change.
+
+The restored multi-screen menu also implements Avontuur/Snelspel/Highscores
+selection (`RCMN10/11/12`), Volgende/Vorige (`RCMN5/6`), control and quality
+selection, key configuration and context-sensitive Help. See
+[original menu reconstruction](original-menu-native.md) for the verified
+handlers, complete sound mapping and portable adaptations.
 
 Focused checks: `node --test tests/menu-audio.test.mjs`; menu wiring check in
 `temp_work/menu-audio/browser-check.mjs` (voice elements simulated, real menu
@@ -61,7 +70,7 @@ Desktop/mobile screenshots and the imported-art contact sheet are retained in
 
 ## Slider voice feedback
 
-Changing **Geluid** down plays `RCMN15.wav` (Zachter); changing it up plays
+Changing **Geluid**, **Geluidseffecten** or **Muziek** down plays `RCMN15.wav` (Zachter); changing it up plays
 `RCMN16.wav` (Harder). **Kijkgevoeligheid**, **Gezichtsveld**, and **Renderschaal**
 use `RCMN23.wav` (Lager) and `RCMN22.wav` (Hoger), respectively.
 
@@ -71,7 +80,8 @@ in the same direction are coalesced, and only the latest changed direction waits
 Opening settings, assigning saved values and unchanged values do not trigger
 slider feedback. Leaving settings cancels pending feedback. The sound slider
 previews menu audio at its current value; closing without applying restores the
-saved volume. Zero volume remains silent.
+saved volume and channel levels. Effects and music have independent gains;
+the port's master volume remains under Geavanceerd. Zero volume remains silent.
 
 Focused checks: `tests/slider-audio.test.mjs` and
 `temp_work/slider-audio/browser-check.mjs` (actual controls with simulated voice
@@ -81,8 +91,10 @@ playback). No new builds created.
 
 The settings apply button is labelled **OK** and plays `RCMN1.wav` on click.
 Applying settings does not cut off this confirmation voice. The X buttons in
-Instellingen, Besturing, Over and the recovery-save chooser play `RCMN2.wav`
+Besturing, Over and the recovery-save chooser play `RCMN2.wav`
 while closing their screen. The Cheats back arrow is unchanged.
+The original Instellingen **Annuleren** button and key-configuration cancel
+action also play `RCMN2.wav`.
 
 Focused browser verification: `temp_work/menu-ok-close/browser-check.mjs`
 checks the label, applied settings, all four X actions, and that the OK cue

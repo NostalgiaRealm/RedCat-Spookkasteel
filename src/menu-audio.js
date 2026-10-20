@@ -1,13 +1,15 @@
 import {GameAudio} from './audio.js';
 
 export const LEVEL_MENU_VOICES = Array.from({length:5},(_,i)=>[`rcmn${33+i}.wav`,`rcmn${38+i}.wav`]);
+const channelGain=(value,fallback)=>typeof value==='number'&&Number.isFinite(value)?Math.min(1,Math.max(0,value)):fallback;
 
 // Independent of the paused level mixer: settings remain audible while gameplay
 // is paused. Sequencing follows media completion, never estimated WAV durations.
 export class MenuAudio {
-  constructor({volume=.6,music=new GameAudio({master:volume}),createAudio=url=>new Audio(url)}={}) {
+  constructor({volume=.6,music=new GameAudio({master:volume}),createAudio=url=>new Audio(url),channels={}}={}) {
     this.music=music;this.volume=volume;this.createAudio=createAudio;this.generation=0;
     this.voice=null;this.cancelVoice=null;this.musicWanted=false;this.paused=false;
+    this.channels={effects:1,music:1};this.setChannels(channels);
   }
   showMenu(){
     this.stopVoice();this.resume();this.startMusic();
@@ -19,7 +21,16 @@ export class MenuAudio {
     if(this.paused)this.music.pause();
   }
   stopMusic(){this.musicWanted=false;this.music.playMusic({stop:true});}
-  setVolume(volume){this.volume=volume;this.music.setMaster(volume);if(this.voice)this.voice.volume=volume;}
+  setVolume(volume){this.volume=volume;this.music.setMaster(volume);if(this.voice)this.voice.volume=volume*this.channels.effects;}
+  setChannels({effects,music}={}){
+    this.channels.effects=channelGain(effects,this.channels.effects);
+    this.channels.music=channelGain(music,this.channels.music);
+    // Reapply the existing records without restarting music or announcements.
+    // The shared mixer retains authored WAV gain and its native volume curve.
+    this.music.channels={...this.music.channels,music:this.channels.music};
+    this.music.setMaster?.(this.volume);
+    if(this.voice)this.voice.volume=this.volume*this.channels.effects;
+  }
   stopVoice(){this.generation++;this.cancelVoice?.();this.cancelVoice=null;this.voice=null;}
   stop(){this.stopVoice();this.stopMusic();}
   async say(files,{retryOnGesture=false}={}){
@@ -29,7 +40,7 @@ export class MenuAudio {
     for(const clip of clips){
       if(generation!==this.generation)return false;
       const completed=await new Promise(resolve=>{
-        this.voice=clip;clip.volume=this.volume;
+        this.voice=clip;clip.volume=this.volume*this.channels.effects;
         const finish=result=>{clip.onended=null;clip.onerror=null;clip.pause();if(this.voice===clip){this.voice=null;this.cancelVoice=null;}resolve(result);};
         this.cancelVoice=()=>finish(false);clip.onended=()=>finish(true);clip.onerror=()=>finish(false);
         // Autoplay denial must not leave a level-start operation waiting forever.

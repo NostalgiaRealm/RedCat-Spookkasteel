@@ -1203,14 +1203,14 @@ export class CastleWorld {
       boundsAllowed:(position,radius)=>this.geometryStream?.rooms?.sphereAllowed(position,radius)??true,
       boundsRequired:(position,radius)=>this.geometryStream?.rooms?.sphereRequired(position,radius)??true});
   }
-  render(){
+  render(renderScene=null){
     if(!this.residencyPrepared)this.updateRenderResidency();this.residencyPrepared=false;
     // Retain the completed frame during an unexpected camera cut until the
     // new view is ready, instead of displaying holes or untextured walls.
     this.updateActorTextureResidency();
     if(this.geometryStream&&!this.geometryStream.readyForView||this.actorResidency?.readyForView===false||this.actorTextures?.readyForView===false)return;
     this.playerShadow?.update();
-    this.renderer.render(this.scene,this.camera);
+    if(renderScene)renderScene(this.scene,this.camera);else this.renderer.render(this.scene,this.camera);
   }
   dispose(){this.streamingWork?.dispose();this.streamingGpu?.dispose();this.unsubscribeModelPoses?.();this.playerShadow?.dispose();this.actorResidency?.dispose();this.geometryStream?.dispose();this.effects?.dispose();this.knightRenderPool?.dispose();this.actorTextures?.dispose();for(const resource of this.resources)resource.dispose();this.resources.clear();this.scene.clear();this.enemyDebris?.clear();this.projectileMeshes?.clear();this.hazardMeshes.clear();this.bossMachines.clear();this.spiderWebs.clear();}
 }

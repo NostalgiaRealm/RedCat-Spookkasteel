@@ -55,3 +55,34 @@ test('Android automatic render size caps pixels without stretching portrait or u
   assert.deepEqual(androidRenderSize(360,640,1),[360,640]);
   assert.deepEqual(androidRenderSize(NaN,0,-1),[1,1]);
 });
+
+test('Android save export correlates document picker results and treats cancellation as cancellation', async () => {
+  const {window,messages,emit} = nativeWindow(), host = new AndroidHost(window);
+  host.connect();
+  const payload = {filename:'RedCat-Spookkasteel-Rick-2026-10-20T120000Z.json',text:'{"format":"redcat-spookkasteel-save"}'};
+  const pending = host.exportSave(payload), request = messages.at(-1);
+  assert.deepEqual(request,{type:'export-save',id:'save-1',...payload});
+  await assert.rejects(host.exportSave(payload),/al een exportvenster/);
+  emit({type:'export-result',id:'unrelated',ok:true});
+  assert.equal(host.exports.size,1);
+  emit({type:'export-result',id:request.id,canceled:true});
+  assert.equal(await pending,false);
+  const next = host.exportSave(payload);
+  emit({type:'export-result',id:'save-2',ok:true});
+  assert.deepEqual(await next,{saved:true});
+  const failed = host.exportSave(payload);
+  emit({type:'export-result',id:'save-3',error:'Geen ruimte'});
+  await assert.rejects(failed,/Geen ruimte/);
+});
+
+test('Android save export validates names and byte limits and rejects disposed requests', async () => {
+  const {window,messages} = nativeWindow(), host = new AndroidHost(window);
+  host.connect();
+  await assert.rejects(host.exportSave({filename:'../bad.json',text:'{}'}),/ongeldig/);
+  await assert.rejects(host.exportSave({filename:'RedCat-Spookkasteel-Rick.json',text:'é'.repeat(17*1024*1024)}),/te groot/);
+  assert.equal(messages.length,1);
+  const pending=host.exportSave({filename:'RedCat-Spookkasteel-Rick.json',text:'{}'});
+  host.dispose();
+  await assert.rejects(pending,/gesloten/);
+  assert.equal(host.exports.size,0);
+});

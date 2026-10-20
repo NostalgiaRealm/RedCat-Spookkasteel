@@ -1,0 +1,34 @@
+#native-help-viewer {
+  width: min(960px, 96vw); height: min(760px, 94dvh);
+  max-width: 96vw; max-height: 94dvh; margin: auto; padding: 0;
+  border: 2px solid #d1d6e3; border-radius: 0; background: #fffff0;
+  color: #111; box-shadow: 0 10px 50px #0009; overflow: hidden;
+  font-family: system-ui, sans-serif;
+}
+#native-help-viewer[open] { display: flex; flex-direction: column; }
+.help-viewer-header { display: flex; gap: 12px; align-items: center; justify-content: space-between; padding: 8px 12px; background: #143d8a; color: white; }
+.help-viewer-header h2 { margin: 0; color: white; font: bold 18px/1.3 system-ui,sans-serif; }
+#native-help-close { min-width: 40px; min-height: 40px; padding: 0; font-size: 26px; }
+.help-viewer-toolbar { display: flex; align-items: center; gap: 8px; padding: 8px; flex-wrap: wrap; background: #e9e9e3; border-bottom: 1px solid #999; }
+.help-viewer-toolbar button, #native-help-close { background: #f0f0ec; color: #111; border: 1px solid #777; border-radius: 2px; }
+.help-viewer-toolbar button { min-height: 40px; padding: 6px 16px; }
+.help-viewer-toolbar label { display: flex; align-items: center; flex: 1; gap: 8px; margin: 0; }
+#native-help-search { width: 100%; min-width: 0; height: 38px; border: 1px solid #888; border-radius: 0; color: #111; background: white; padding: 6px; }
+.help-viewer-body { display: flex; min-height: 0; flex: 1; }
+#native-help-topics { width: 31%; flex: none; overflow: auto; background: #fff; border-right: 1px solid #aaa; padding: 12px; }
+#native-help-topics h3 { color: #143d8a; font-size: 15px; margin: 12px 0 4px; }
+#native-help-topics button { display: block; width: 100%; text-align: left; min-height: 42px; background: transparent; color: #153e79; font-size: 14px; padding: 7px; border: 0; }
+#native-help-topics button[aria-current="true"] { background: #dbeaff; color: #111; font-weight: bold; }
+#native-help-content { overflow: auto; min-width: 0; flex: 1; padding: 20px 24px; font-size: 16px; line-height: 1.6; }
+#native-help-content h2 { color: #111; font: bold 23px/1.3 system-ui,sans-serif; margin: 0 0 20px; }
+#native-help-content p { color: #111; margin: 0 0 1em; white-space: pre-line; }
+.help-topic-link { display: inline; padding: 0; border: 0; border-radius: 0; background: transparent; color: #087340; font: inherit; text-decoration: underline; cursor: pointer; }
+.help-viewer-note { margin: 0; border-top: 1px solid #aaa; background: #e9e9e3; padding: 8px 12px; color: #444; font-size: 12px; line-height: 1.4; }
+#native-help-viewer :focus-visible { outline: 2px solid #2765c9; outline-offset: 1px; }
+#native-player-help { margin-left: auto; margin-right: 8px; }
+@media (max-width: 600px) {
+  .help-viewer-body { flex-direction: column; }
+  #native-help-topics { width: 100%; max-height: 25%; min-height: 90px; border-right: 0; border-bottom: 1px solid #aaa; padding: 6px 12px; }
+  #native-help-content { padding: 16px; }
+  .help-viewer-toolbar label { flex-basis: 100%; }
+}

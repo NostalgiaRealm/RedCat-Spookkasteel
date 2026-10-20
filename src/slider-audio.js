@@ -1,5 +1,7 @@
 export const SLIDER_VOICES = {
   volume: {lower:'rcmn15.wav', higher:'rcmn16.wav'},
+  'volume-effects': {lower:'rcmn15.wav', higher:'rcmn16.wav'},
+  'volume-music': {lower:'rcmn15.wav', higher:'rcmn16.wav'},
   sensitivity: {lower:'rcmn23.wav', higher:'rcmn22.wav'},
   fov: {lower:'rcmn23.wav', higher:'rcmn22.wav'},
   'render-scale': {lower:'rcmn23.wav', higher:'rcmn22.wav'},

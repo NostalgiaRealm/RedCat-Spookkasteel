@@ -3,7 +3,7 @@
 Reviewed against the project documentation and current source on **6 October
 2026**. Here, **native** means the original Windows game. This catalog records
 the current deliberate departures; validation/performance fixes were added
-18–19 October 2026.
+18–19 October 2026, and portable original-menu adaptations on 20 October 2026.
 Superseded tuning and reverted experiments
 are not instructions to restore old behavior. The linked feature notes provide
 the original evidence, implementation details and their recorded checks.
@@ -30,6 +30,8 @@ subfolders for later comparison.
   reliable floor lighting and a camera that avoids RedCat's body near walls.
 - Widescreen/resolution settings, touch/controller input, responsive menus and
   scoreboards, and bounded rendering/navigation/effect work.
+- Portable original Help, per-player save export, retained advanced menu
+  settings and a leaderboard that keeps each player's best result.
 
 ## Saving, access and recovery
 
@@ -39,7 +41,8 @@ subfolders for later comparison.
 | Preserve living saves | Reject new saves while RedCat has no health, preserving the latest living save and recovery history through death, menu/quit and player changes. Saving resumes after respawn; existing death-animation saves remain loadable. | [Autosaves](autosave.md), [focused evidence](../temp_work/death-save-2026-10-18/verified-fix.md) |
 | Recovery history | Offer saves from approximately 2, 5 and 10 minutes of playing time ago. Retain at most eleven minute checkpoints; older ones are discarded. Paused/offline time does not age them. | [Recovery storage and retention](autosave.md#retention-and-storage) |
 | Transient-state continuity | New saves retain smoke/flame pools, knight fragment physics, active WAV positions, dialogue queues, loop waits and crossfade progress. Loading continues these states instead of restarting them. This extends the port's save format; it is not a claim about the original RCR format. | [Effect continuity](effects-save-continuity.md), [audio continuity](audio-save-continuity.md) |
-| Safer adventure replacement | When a save exists, highlight **Verder spelen**, hide **Start avontuur**, and offer **Start opnieuw** with confirmation. Selecting an unlocked chapter reveals **Level Spelen**; only clicking that button opens the chapter-start warning before replacing the adventure and its recovery history. Replacement occurs only after the new level loads successfully. | [Starting a new adventure](autosave.md#starting-a-new-adventure), [menu implementation](../src/main.js) |
+| Safer adventure replacement | The original **Avontuur → Startinfo** route continues an existing save. **Meer opties → Opnieuw beginnen** retains confirmation; **Snelspel** selects a chapter without replacing the save until **Level Spelen** is confirmed. Replacement occurs only after the new level loads successfully. | [Starting a new adventure](autosave.md#starting-a-new-adventure), [original menu](original-menu-native.md) |
+| Export a player's save | **Spelerlijst → Exporteren** downloads the selected player's primary save and permanent progress without switching players or changing their saves. Browser download, desktop file picker and Android document picker share the same JSON format. This is an export format, not native RCR compatibility or a new import feature. | [Save export](save-export.md) |
 | Optional cheats | A settings submenu fills mirror pieces and potions to their limits, adds 9000 points, unlocks all chapters, or enables free flight. Supplies do not collect actual level objects or complete their scripts. | [Cheat implementation](../src/cheats.js), [chapter access](campaign-menu-native.md) |
 | Invulnerable no-clip | Free flight ignores all damage, including enemies, liquids, beams and scripted kills. Exiting inside geometry seeks a safe position; if none is available, flight and protection stay enabled. | [No-clip protection](player-protection-progress-and-local-audio.md#no-clip-protection) |
 | Campaign ownership | Unlocks and earned abilities are stored separately from individual checkpoints. Earlier chapter replays and recovery loads retain them. A confirmed new adventure resets shooting upgrades, SuperSkippie and played-level history; chapter unlocks and preferences remain. | [Permanent abilities](player-protection-progress-and-local-audio.md#earned-abilities-across-chapter-replays), [replay history](replayed-level-intros-native.md#automatic-replay-policy-in-the-port) |
@@ -169,6 +172,34 @@ Current portal, Fleurifee and smoke/flame snapshots preserve their particle
 state, and knight fragments and audio now retain their live state too. Original
 Windows RCR save import and additional platform validation remain separate work.
 
+## Portable original menu and Help
+
+The original menu artwork, page flow, button sounds and Dutch help content
+are restored. The following adaptations deliberately remain:
+
+- **Geavanceerd** contains resolution, render scale and selectable MSAA
+  (Uit/2x/4x/8x, subject to device support). Other added options
+  remain under **Meer instellingen**, below the music slider. Automatic
+  touch/controller support and the gameplay touch Menu button remain available.
+- Original 800×600 screens scale on wide displays and reflow on narrow portrait
+  displays, so controls stay accessible.
+- Windows Help/Microsoft Agent is replaced by a searchable in-game viewer
+  containing the original 38 Dutch topics. Six native crosslinks are retained;
+  two malformed original links are repaired. Old hardware-specific instructions
+  remain identifiable as original text.
+- Keyboard remapping exposes eleven actions instead of the original seven.
+  Quality presets use 50%, 75% and 100% rendering scale; these are portable
+  mappings, not recovered DirectDraw device settings.
+- Highscores retain one best entry per player and their actual chapter,
+  avoiding repeated duplicate entries and the original misleading **Klaar!**
+  label on older entries.
+- Player saves, recent recovery saves, restart safeguards and save export
+  remain available alongside the original menu routes.
+
+See [native menu evidence and verification](original-menu-native.md) and
+[save export](save-export.md). None of these changes adds another campaign
+save mode or changes the intentional gameplay audio scheduling.
+
 ## Interesting findings: power-move and green crates
 
 The original has a **power-move flag**, but no confirmed playable input,
@@ -232,7 +263,6 @@ are not new departures merely because the remake initially lacked them.
 Likewise, the unused mushroom `TrailDamage` field and removed invented enemy
 smoke trails are corrected research findings, not invitations to add mechanics.
 
-This review changed documentation only. It did not rerun gameplay tests, import
-assets, generate packages or deploy website files. Source inspection and the
-linked recorded evidence establish the catalog's scope; a new campaign run is
-still needed to validate current end-to-end playability.
+This catalog summarizes source changes and their linked evidence; it does not
+establish that a release package has been rebuilt or deployed. Each feature's
+notes state the focused checks performed and any remaining validation limits.
