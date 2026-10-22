@@ -1,0 +1,56 @@
+{
+  "evidence_id": "ev_6795a746830eb73b6ae10c2de6dcea5958d13da8a4e1564ab8b8721344ddee7b",
+  "subject": {
+    "name": "RcHcGame.dat",
+    "digest": {
+      "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+    },
+    "format": "pe",
+    "architecture": "x86",
+    "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+  },
+  "provider": {
+    "id": "hopper",
+    "name": "Hopper Disassembler",
+    "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+  },
+  "analysis_profile": {
+    "provider": {
+      "id": "hopper",
+      "name": "Hopper Disassembler",
+      "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+    },
+    "parameters": {
+      "target_kind": "executable",
+      "target_format": "pe",
+      "architecture": "x86",
+      "available_architectures": [
+        "x86"
+      ],
+      "loader": {
+        "source": "derived",
+        "arguments": [
+          "-l",
+          "WinPE",
+          "--intel-32"
+        ]
+      }
+    },
+    "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+  },
+  "predicate_type": "rea.analysis",
+  "operation": "procedure_pseudo_code",
+  "parameters": {
+    "procedure": "0x49d9d0"
+  },
+  "raw_result": null,
+  "normalized_result": "    esp = esp - 0x4;\n    decomp_var_4 = esi;\n    esi = ecx;\n    (*(*esi + 0x5c))(decomp_var_4);\n    eax = esi[0x81];\n    if (eax != 0x0) {\n            (eax)(esi);\n            esp = (esp - 0x4) + 0x4;\n    }\n    sub_505400(byte_6b9760);\n    sub_49da10();\n    eax = sub_502220();\n    return eax;\n",
+  "confidence": "observed",
+  "authority": "shipped-artifact",
+  "environment": null,
+  "limitations": [
+    "Results depend on Hopper's completed static analysis."
+  ],
+  "locations": [],
+  "evidence_links": []
+}

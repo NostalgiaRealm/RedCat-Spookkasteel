@@ -1,0 +1,17 @@
+✔ visible room geometry and textures no longer activate in an unbounded burst (27.714314ms)
+✔ explicit load settling drains bounded preparation without needing the game frame loop (63.037742ms)
+✔ leaving a room cancels its queued geometry and image preparation (7.741764ms)
+✔ returning during a cancelled upload microtask reacquires real maps instead of activating null artwork (63.886526ms)
+✔ actors wait for warmed buffers, share preparation across owners and remain independent of gameplay visibility (6.62413ms)
+✔ actors just outside the camera view prepare ahead of turns without drawing or admitting unrelated rooms (1.209903ms)
+✔ closed-door preloads do not hold the complete current room; opening the doorway makes its artwork required (23.639659ms)
+✔ actual transparency metadata covers every original level texture and distinguishes Castle wood from Graveyard grilles (42.226427ms)
+✔ camera travel prefetch is capped and teleports never project remote loading neighborhoods (1.486081ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 299.602172

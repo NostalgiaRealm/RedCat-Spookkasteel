@@ -1,0 +1,75 @@
+--- temp_work/explosion-damage-2026-10-14/baseline/gameplay.js	2026-10-14 00:12:12.699611944 +0200
++++ src/gameplay.js	2026-10-14 00:15:24.337235897 +0200
+@@ -28,6 +28,7 @@
+ import {createGargoyleBlast,advanceGargoyleBlasts,restoreGargoyleBlasts} from './gargoyle-blast.js';
+ import {createRewardEffect,retainRewardEffects,restoreRewardEffects} from './reward-effects.js';
+ import {nativeExplosionSound} from './explosion-native.js';
++import {createNativeExplosionDamage,advanceExplosionDamage,restoreExplosionDamage} from './explosion-damage.js';
+ import {cancelPendingGraveyardMazeExit,resetGraveyardMaze} from './graveyard-maze.js';
+ import {pickupPosition} from './pickup-placement.js';
+ import {enemyMotionRate,nativeEnemyIdleCycle,enemyIdleClip} from './enemy-animation-rules.js';
+@@ -70,7 +71,7 @@
+     this.level=level;this.onEvent=onEvent;this.settings=settings;this.difficulty=difficulty;
+     this.time=0;this.hitCooldown=0;this.attackCooldown=0;this.previousUse=false;this.completed=false;
+     this.projectiles=[];this.gargoyleBlasts=[];this.nextProjectileId=1;this.projectileImpacts=[];
+-    this.rewardEffects=[];
++    this.rewardEffects=[];this.explosionDamage=[];
+     this.hazards=new ProjectileHazards(settings,difficulty);this.environmentFeedbackCooldown=0;
+     this.volumeCollider=level.collision?.nodes?new BspCollider(level.collision):null;
+     this.liquidModels=new Set([...visibleLiquidGroups(level)].map(g=>g.model));
+@@ -274,7 +275,7 @@
+   respawn() {
+     this.cancelPlayerCharge();
+     this.state.health=this.state.maxHealth;this.hitCooldown=2;this.completed=false;
+-    this.hazards.clear();this.projectiles=[];this.gargoyleBlasts=[];this.environmentFeedbackCooldown=0;
++    this.hazards.clear();this.projectiles=[];this.gargoyleBlasts=[];this.explosionDamage=[];this.environmentFeedbackCooldown=0;
+     this.pendingPlayerAttack=null;this.playerAttackUntil=0;this.attackCooldown=0;
+     this.playerReaction=beginPlayerReaction('respawn');
+     for(const object of this.triggers)object.inside=false;
+@@ -327,8 +328,10 @@
+     if(object.health<=0)return;object.health=0;object.enabled=false;
+     if(object.kind==='actor'){
+       const position=object.effectPosition?.()||[...this.objectPosition(object)];
+-      (this.explosions||=[]).push({id:object.id+':'+this.time,sourceId:object.id,birth:this.time,position,
+-        bounds:object.effectBounds?.(position),scale:object.effectScale?.(),settings:object.actorSettings||{}});
++      const effect={id:object.id+':'+this.time,sourceId:object.id,birth:this.time,position,
++        bounds:object.effectBounds?.(position),scale:object.effectScale?.(),settings:object.actorSettings||{}};
++      (this.explosions||=[]).push(effect);
++      this.explosionDamage.push(...createNativeExplosionDamage(effect));
+       const sound=nativeExplosionSound(object.actorSettings);
+       if(sound)this.emit('scriptSound',{...sound,spatial:true,position});
+     }
+@@ -743,7 +746,7 @@
+     this.emit('attack',{id:projectile.id,kind:shot.kind,origin,direction:dir});
+   }
+ 
+-  update(dt,playerPosition,{attack=false,use=false,forward=[0,0,-1],lineOfSight=()=>true,traceShot=null,traceEnemy=null,traceProjectile=null,traceBeam=null,releaseOrigin=null,aimTarget=null,attackTarget=null,touchedModels=[],environmentContents=0,previousPlayerPosition=playerPosition}={}) {
++  update(dt,playerPosition,{attack=false,use=false,forward=[0,0,-1],lineOfSight=()=>true,explosionLineOfSight=lineOfSight,traceShot=null,traceEnemy=null,traceProjectile=null,traceBeam=null,releaseOrigin=null,aimTarget=null,attackTarget=null,touchedModels=[],environmentContents=0,previousPlayerPosition=playerPosition}={}) {
+     dt=clamp(n(dt),0,0.1);this.time+=dt;this.playerPosition=v3(playerPosition);
+     this.rewardEffects=retainRewardEffects(this.rewardEffects,this.time);
+     const wasRecovering=this.playerReaction?.phase==='death'||this.playerReaction?.phase==='respawn';
+@@ -773,6 +776,8 @@
+     if(this.state.lives!==lives||this.state.health<=0)return;
+     this.hazards.advance(dt,{frozen:!!this.scripts?.enemiesFrozen,playerPosition,previousPlayerPosition,damage:(amount,source)=>this.damage(amount,source)});
+     if(this.state.lives!==lives||this.state.health<=0)return;
++    advanceExplosionDamage(this,dt,playerPosition,explosionLineOfSight);
++    if(this.state.lives!==lives||this.state.health<=0)return;
+     this.updateProjectiles(dt,this.playerPosition,traceProjectile||traceShot,lineOfSight);
+     if(this.state.lives!==lives||this.state.health<=0)return;
+     this.updatePlayerAttackInput(dt,attack,this.playerPosition,forward,attackTarget?.());
+@@ -831,6 +836,7 @@
+       playerCharge:this.playerCharge?{age:this.playerCharge.age}:null,
+       pendingPlayerAttack:this.pendingPlayerAttack?{...this.pendingPlayerAttack,position:[...this.pendingPlayerAttack.position],forward:[...this.pendingPlayerAttack.forward]}:null,
+       gargoyleBlasts:restoreGargoyleBlasts(this.gargoyleBlasts),
++      explosionDamage:restoreExplosionDamage(this.explosionDamage,this.time),
+       nextProjectileId:this.nextProjectileId,projectiles:this.projectiles.map(p=>({...p,position:[...p.position],velocity:[...p.velocity]})),
+       projectileImpacts:restoreProjectileImpacts(this.projectileImpacts,this.time),
+       rewardEffects:restoreRewardEffects(this.rewardEffects,this.time),
+@@ -873,6 +879,7 @@
+     this.projectileImpacts=restoreProjectileImpacts(save.projectileImpacts,this.time);
+     this.rewardEffects=restoreRewardEffects(save.rewardEffects,this.time);
+     this.gargoyleBlasts=restoreGargoyleBlasts(save.gargoyleBlasts);
++    this.explosionDamage=restoreExplosionDamage(save.explosionDamage,this.time);
+     this.nextProjectileId=Math.max(1,n(save.nextProjectileId,1));
+     this.attackCooldown=Math.max(0,n(save.attackCooldown));this.playerAttackSerial=n(save.playerAttackSerial);this.playerAttackUntil=n(save.playerAttackUntil);
+     this.playerReaction=restorePlayerReaction(save.playerReaction,this.state.health,this.state.lives);

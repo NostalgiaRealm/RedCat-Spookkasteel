@@ -1,0 +1,717 @@
+ ANDROID.md                                         |   212 +
+ RC_ACTOR_TEST/.gitignore                           |     3 +
+ RC_ACTOR_TEST/README.md                            |   108 +
+ RC_ACTOR_TEST/Start-Actor-Test.sh                  |     7 +
+ RC_ACTOR_TEST/assets/actors/bat.json               |     1 +
+ RC_ACTOR_TEST/assets/actors/batfly.json            |     1 +
+ RC_ACTOR_TEST/assets/actors/batg.json              |     1 +
+ RC_ACTOR_TEST/assets/actors/brcrate.json           |     1 +
+ RC_ACTOR_TEST/assets/actors/brutus.json            |     1 +
+ RC_ACTOR_TEST/assets/actors/brutusm.json           |     1 +
+ RC_ACTOR_TEST/assets/actors/fep_test5.json         |     1 +
+ RC_ACTOR_TEST/assets/actors/k_active.json          |     1 +
+ RC_ACTOR_TEST/assets/actors/knight.json            |     1 +
+ RC_ACTOR_TEST/assets/actors/knight2.json           |     1 +
+ RC_ACTOR_TEST/assets/actors/knight3.json           |     1 +
+ RC_ACTOR_TEST/assets/actors/manifest.json          |  2308 +
+ RC_ACTOR_TEST/assets/actors/maxd.json              |     1 +
+ RC_ACTOR_TEST/assets/actors/maxj.json              |     1 +
+ RC_ACTOR_TEST/assets/actors/maxtest1.json          |     1 +
+ RC_ACTOR_TEST/assets/actors/mxmach.json            |     1 +
+ RC_ACTOR_TEST/assets/actors/plant.json             |     1 +
+ RC_ACTOR_TEST/assets/actors/redcat.json            |     1 +
+ RC_ACTOR_TEST/assets/actors/redcat2.json           |     1 +
+ RC_ACTOR_TEST/assets/actors/spider.json            |     1 +
+ RC_ACTOR_TEST/assets/actors/spiderg.json           |     1 +
+ RC_ACTOR_TEST/assets/actors/textures/bat-0.png     |   Bin 0 -> 20803 bytes
+ RC_ACTOR_TEST/assets/actors/textures/batfly-0.png  |   Bin 0 -> 20803 bytes
+ RC_ACTOR_TEST/assets/actors/textures/batg-0.png    |   Bin 0 -> 21401 bytes
+ RC_ACTOR_TEST/assets/actors/textures/brcrate-0.png |   Bin 0 -> 5894 bytes
+ RC_ACTOR_TEST/assets/actors/textures/brutus-0.png  |   Bin 0 -> 22675 bytes
+ RC_ACTOR_TEST/assets/actors/textures/brutusm-0.png |   Bin 0 -> 24508 bytes
+ .../assets/actors/textures/fep_test5-0.png         |   Bin 0 -> 23404 bytes
+ .../assets/actors/textures/k_active-0.png          |   Bin 0 -> 28039 bytes
+ RC_ACTOR_TEST/assets/actors/textures/knight-0.png  |   Bin 0 -> 28039 bytes
+ RC_ACTOR_TEST/assets/actors/textures/knight2-0.png |   Bin 0 -> 28039 bytes
+ RC_ACTOR_TEST/assets/actors/textures/knight3-0.png |   Bin 0 -> 28039 bytes
+ RC_ACTOR_TEST/assets/actors/textures/maxd-0.png    |   Bin 0 -> 22901 bytes
+ RC_ACTOR_TEST/assets/actors/textures/maxj-0.png    |   Bin 0 -> 23751 bytes
+ .../assets/actors/textures/maxtest1-0.png          |   Bin 0 -> 20827 bytes
+ RC_ACTOR_TEST/assets/actors/textures/mxmach-0.png  |   Bin 0 -> 33506 bytes
+ RC_ACTOR_TEST/assets/actors/textures/plant-0.png   |   Bin 0 -> 23404 bytes
+ RC_ACTOR_TEST/assets/actors/textures/redcat-0.png  |   Bin 0 -> 46976 bytes
+ RC_ACTOR_TEST/assets/actors/textures/redcat2-0.png |   Bin 0 -> 47598 bytes
+ RC_ACTOR_TEST/assets/actors/textures/spider-0.png  |   Bin 0 -> 24625 bytes
+ RC_ACTOR_TEST/assets/actors/textures/spiderg-0.png |   Bin 0 -> 23182 bytes
+ .../assets/actors/textures/tstwitch-0.png          |   Bin 0 -> 24076 bytes
+ RC_ACTOR_TEST/assets/actors/textures/turbot-0.png  |   Bin 0 -> 33506 bytes
+ RC_ACTOR_TEST/assets/actors/textures/turtop-0.png  |   Bin 0 -> 33506 bytes
+ .../assets/actors/textures/whizztest8-0.png        |   Bin 0 -> 19846 bytes
+ RC_ACTOR_TEST/assets/actors/textures/witch-0.png   |   Bin 0 -> 24076 bytes
+ RC_ACTOR_TEST/assets/actors/textures/witch-1.png   |   Bin 0 -> 1732 bytes
+ RC_ACTOR_TEST/assets/actors/textures/wkkooi-0.png  |   Bin 0 -> 19837 bytes
+ RC_ACTOR_TEST/assets/actors/textures/wkkooi-1.png  |   Bin 0 -> 26359 bytes
+ RC_ACTOR_TEST/assets/actors/tstwitch.json          |     1 +
+ RC_ACTOR_TEST/assets/actors/turbot.json            |     1 +
+ RC_ACTOR_TEST/assets/actors/turtop.json            |     1 +
+ RC_ACTOR_TEST/assets/actors/whizztest8.json        |     1 +
+ RC_ACTOR_TEST/assets/actors/witch.json             |     1 +
+ RC_ACTOR_TEST/assets/actors/wkkooi.json            |     1 +
+ RC_ACTOR_TEST/assets/audio/rcjump1.wav             |   Bin 0 -> 12316 bytes
+ RC_ACTOR_TEST/assets/audio/rcshoot1.wav            |   Bin 0 -> 6984 bytes
+ RC_ACTOR_TEST/assets/audio/rcshoot4.wav            |   Bin 0 -> 12286 bytes
+ RC_ACTOR_TEST/assets/audio/rcwalk1.wav             |   Bin 0 -> 1796 bytes
+ RC_ACTOR_TEST/assets/audio/rcwalk2.wav             |   Bin 0 -> 1832 bytes
+ RC_ACTOR_TEST/assets/effects/alejan-alejan_a.png   |   Bin 0 -> 21549 bytes
+ RC_ACTOR_TEST/assets/effects/beam-beam_a.png       |   Bin 0 -> 141 bytes
+ RC_ACTOR_TEST/assets/effects/blast-blast_a.png     |   Bin 0 -> 33241 bytes
+ RC_ACTOR_TEST/assets/effects/coreff-coreff_a.png   |   Bin 0 -> 2247 bytes
+ RC_ACTOR_TEST/assets/effects/dc_brk-dc_brk_a.png   |   Bin 0 -> 11091 bytes
+ .../assets/effects/electricwave-electricwave_a.png |   Bin 0 -> 25689 bytes
+ .../assets/effects/energybeam-energybeam_a.png     |   Bin 0 -> 4197 bytes
+ .../assets/effects/expl_gen01-expl_gen_a_01.png    |   Bin 0 -> 940 bytes
+ .../effects/expl_gen01_red-expl_gen_a_01.png       |   Bin 0 -> 930 bytes
+ .../effects/expl_gen01_yel-expl_gen_a_01.png       |   Bin 0 -> 954 bytes
+ .../assets/effects/expl_gen02-expl_gen_a_02.png    |   Bin 0 -> 1557 bytes
+ .../effects/expl_gen02_red-expl_gen_a_02.png       |   Bin 0 -> 1542 bytes
+ .../effects/expl_gen02_yel-expl_gen_a_02.png       |   Bin 0 -> 1559 bytes
+ .../assets/effects/expl_gen03-expl_gen_a_03.png    |   Bin 0 -> 2153 bytes
+ .../effects/expl_gen03_red-expl_gen_a_03.png       |   Bin 0 -> 2126 bytes
+ .../effects/expl_gen03_yel-expl_gen_a_03.png       |   Bin 0 -> 2160 bytes
+ .../assets/effects/expl_gen04-expl_gen_a_04.png    |   Bin 0 -> 2548 bytes
+ .../effects/expl_gen04_red-expl_gen_a_04.png       |   Bin 0 -> 2490 bytes
+ .../effects/expl_gen04_yel-expl_gen_a_04.png       |   Bin 0 -> 2560 bytes
+ .../assets/effects/expl_gen05-expl_gen_a_05.png    |   Bin 0 -> 2751 bytes
+ .../effects/expl_gen05_red-expl_gen_a_05.png       |   Bin 0 -> 2641 bytes
+ .../effects/expl_gen05_yel-expl_gen_a_05.png       |   Bin 0 -> 2771 bytes
+ .../assets/effects/expl_gen06-expl_gen_a_06.png    |   Bin 0 -> 2771 bytes
+ .../effects/expl_gen06_red-expl_gen_a_06.png       |   Bin 0 -> 2511 bytes
+ .../effects/expl_gen06_yel-expl_gen_a_06.png       |   Bin 0 -> 2827 bytes
+ .../assets/effects/expl_gen07-expl_gen_a_07.png    |   Bin 0 -> 2356 bytes
+ .../effects/expl_gen07_red-expl_gen_a_07.png       |   Bin 0 -> 2441 bytes
+ .../effects/expl_gen07_yel-expl_gen_a_07.png       |   Bin 0 -> 2441 bytes
+ .../assets/effects/expl_gen08-expl_gen_a_08.png    |   Bin 0 -> 1440 bytes
+ .../effects/expl_gen08_red-expl_gen_a_08.png       |   Bin 0 -> 1259 bytes
+ .../effects/expl_gen08_yel-expl_gen_a_08.png       |   Bin 0 -> 1459 bytes
+ .../assets/effects/explosie01-explosie01_a.png     |   Bin 0 -> 429 bytes
+ .../assets/effects/explosie02-explosie02_a.png     |   Bin 0 -> 728 bytes
+ .../assets/effects/explosie03-explosie03_a.png     |   Bin 0 -> 1109 bytes
+ .../assets/effects/explosie04-explosie04_a.png     |   Bin 0 -> 1357 bytes
+ .../assets/effects/explosie05-explosie05_a.png     |   Bin 0 -> 1485 bytes
+ .../assets/effects/explosie06-explosie06_a.png     |   Bin 0 -> 1425 bytes
+ .../assets/effects/explosie07-explosie07_a.png     |   Bin 0 -> 1244 bytes
+ .../assets/effects/explosie08-explosie08_a.png     |   Bin 0 -> 1069 bytes
+ RC_ACTOR_TEST/assets/effects/flame03-a_flame.png   |   Bin 0 -> 1795 bytes
+ RC_ACTOR_TEST/assets/effects/fleuri-fleuri_a.png   |   Bin 0 -> 5946 bytes
+ RC_ACTOR_TEST/assets/effects/fleurl7-fleurl7_a.png |   Bin 0 -> 10440 bytes
+ RC_ACTOR_TEST/assets/effects/fleurl8-fleurl8_a.png |   Bin 0 -> 6590 bytes
+ RC_ACTOR_TEST/assets/effects/kaboom-kaboom_a.png   |   Bin 0 -> 4293 bytes
+ RC_ACTOR_TEST/assets/effects/kaboom2-kaboom2_a.png |   Bin 0 -> 4376 bytes
+ RC_ACTOR_TEST/assets/effects/lilly-lilly_a.png     |   Bin 0 -> 5230 bytes
+ RC_ACTOR_TEST/assets/effects/manifest.json         |   428 +
+ RC_ACTOR_TEST/assets/effects/rcsdw-rcsdw_a.png     |   Bin 0 -> 1151 bytes
+ RC_ACTOR_TEST/assets/effects/sand-sand_a.png       |   Bin 0 -> 8391 bytes
+ RC_ACTOR_TEST/assets/effects/score0-score0_a.png   |   Bin 0 -> 2646 bytes
+ RC_ACTOR_TEST/assets/effects/score1-score1_a.png   |   Bin 0 -> 3779 bytes
+ RC_ACTOR_TEST/assets/effects/score2-score2_a.png   |   Bin 0 -> 4988 bytes
+ RC_ACTOR_TEST/assets/effects/score3-score3_a.png   |   Bin 0 -> 4684 bytes
+ RC_ACTOR_TEST/assets/effects/score4-score4_a.png   |   Bin 0 -> 4439 bytes
+ RC_ACTOR_TEST/assets/effects/secr2-secr2_a.png     |   Bin 0 -> 3215 bytes
+ .../assets/effects/smoke_05-smoke_green_a.png      |   Bin 0 -> 4406 bytes
+ .../assets/effects/smoke_blue-smoke_green_a.png    |   Bin 0 -> 4513 bytes
+ .../assets/effects/smoke_brown-smoke_green_a.png   |   Bin 0 -> 4473 bytes
+ .../assets/effects/smoke_green-smoke_green_a.png   |   Bin 0 -> 4269 bytes
+ .../assets/effects/smoke_red-smoke_green_a.png     |   Bin 0 -> 4572 bytes
+ RC_ACTOR_TEST/assets/effects/spark8-spark8_a.png   |   Bin 0 -> 4326 bytes
+ RC_ACTOR_TEST/assets/effects/star-star_a.png       |   Bin 0 -> 2449 bytes
+ RC_ACTOR_TEST/assets/effects/strail-strail_a.png   |   Bin 0 -> 2284 bytes
+ RC_ACTOR_TEST/assets/effects/ufohole-ufohole_a.png |   Bin 0 -> 11517 bytes
+ RC_ACTOR_TEST/assets/hud/icons.png                 |   Bin 0 -> 56471 bytes
+ RC_ACTOR_TEST/assets/hud/manifest.json             |   180 +
+ RC_ACTOR_TEST/assets/hud/target.png                |   Bin 0 -> 3939 bytes
+ RC_ACTOR_TEST/assets/icons/redcat.ico              |   Bin 0 -> 8291 bytes
+ RC_ACTOR_TEST/assets/icons/redcat.png              |   Bin 0 -> 3723 bytes
+ RC_ACTOR_TEST/assets/projectiles/bone-00.png       |   Bin 0 -> 831 bytes
+ RC_ACTOR_TEST/assets/projectiles/bone-01.png       |   Bin 0 -> 744 bytes
+ RC_ACTOR_TEST/assets/projectiles/bone-02.png       |   Bin 0 -> 813 bytes
+ RC_ACTOR_TEST/assets/projectiles/bone-03.png       |   Bin 0 -> 881 bytes
+ RC_ACTOR_TEST/assets/projectiles/goo-00.png        |   Bin 0 -> 7469 bytes
+ RC_ACTOR_TEST/assets/projectiles/goo-01.png        |   Bin 0 -> 7465 bytes
+ RC_ACTOR_TEST/assets/projectiles/goo-02.png        |   Bin 0 -> 7562 bytes
+ RC_ACTOR_TEST/assets/projectiles/goo-03.png        |   Bin 0 -> 7402 bytes
+ RC_ACTOR_TEST/assets/projectiles/goo-04.png        |   Bin 0 -> 7280 bytes
+ RC_ACTOR_TEST/assets/projectiles/goo-05.png        |   Bin 0 -> 7528 bytes
+ RC_ACTOR_TEST/assets/projectiles/jesterBall-00.png |   Bin 0 -> 1423 bytes
+ RC_ACTOR_TEST/assets/projectiles/jesterBall-01.png |   Bin 0 -> 1183 bytes
+ RC_ACTOR_TEST/assets/projectiles/jesterBall-02.png |   Bin 0 -> 1225 bytes
+ RC_ACTOR_TEST/assets/projectiles/jesterBall-03.png |   Bin 0 -> 1390 bytes
+ RC_ACTOR_TEST/assets/projectiles/magicBall-00.png  |   Bin 0 -> 7126 bytes
+ RC_ACTOR_TEST/assets/projectiles/magicBall-01.png  |   Bin 0 -> 7213 bytes
+ RC_ACTOR_TEST/assets/projectiles/magicBall-02.png  |   Bin 0 -> 7225 bytes
+ RC_ACTOR_TEST/assets/projectiles/magicBall-03.png  |   Bin 0 -> 6651 bytes
+ RC_ACTOR_TEST/assets/projectiles/magicBall-04.png  |   Bin 0 -> 6836 bytes
+ RC_ACTOR_TEST/assets/projectiles/magicBall-05.png  |   Bin 0 -> 6793 bytes
+ RC_ACTOR_TEST/assets/projectiles/magma-00.png      |   Bin 0 -> 2185 bytes
+ RC_ACTOR_TEST/assets/projectiles/magma-01.png      |   Bin 0 -> 2216 bytes
+ RC_ACTOR_TEST/assets/projectiles/magma-02.png      |   Bin 0 -> 2223 bytes
+ RC_ACTOR_TEST/assets/projectiles/magma-03.png      |   Bin 0 -> 2211 bytes
+ RC_ACTOR_TEST/assets/projectiles/manifest.json     |   339 +
+ RC_ACTOR_TEST/assets/projectiles/mushroom-00.png   |   Bin 0 -> 1263 bytes
+ RC_ACTOR_TEST/assets/projectiles/mushroom-01.png   |   Bin 0 -> 1181 bytes
+ RC_ACTOR_TEST/assets/projectiles/mushroom-02.png   |   Bin 0 -> 1258 bytes
+ RC_ACTOR_TEST/assets/projectiles/mushroom-03.png   |   Bin 0 -> 1295 bytes
+ RC_ACTOR_TEST/assets/projectiles/power-00.png      |   Bin 0 -> 2005 bytes
+ RC_ACTOR_TEST/assets/projectiles/power-01.png      |   Bin 0 -> 1983 bytes
+ RC_ACTOR_TEST/assets/projectiles/power-02.png      |   Bin 0 -> 1967 bytes
+ RC_ACTOR_TEST/assets/projectiles/power-03.png      |   Bin 0 -> 2053 bytes
+ RC_ACTOR_TEST/assets/projectiles/power-04.png      |   Bin 0 -> 1998 bytes
+ RC_ACTOR_TEST/assets/projectiles/power-05.png      |   Bin 0 -> 1996 bytes
+ RC_ACTOR_TEST/assets/projectiles/skull-00.png      |   Bin 0 -> 1808 bytes
+ RC_ACTOR_TEST/assets/projectiles/skull-01.png      |   Bin 0 -> 1790 bytes
+ RC_ACTOR_TEST/assets/projectiles/skull-02.png      |   Bin 0 -> 1765 bytes
+ RC_ACTOR_TEST/assets/projectiles/skull-03.png      |   Bin 0 -> 1791 bytes
+ RC_ACTOR_TEST/assets/projectiles/spark-01.png      |   Bin 0 -> 1932 bytes
+ RC_ACTOR_TEST/assets/projectiles/spark-02.png      |   Bin 0 -> 2132 bytes
+ RC_ACTOR_TEST/assets/projectiles/spark-03.png      |   Bin 0 -> 1887 bytes
+ RC_ACTOR_TEST/assets/projectiles/spark-04.png      |   Bin 0 -> 2116 bytes
+ RC_ACTOR_TEST/assets/projectiles/super-00.png      |   Bin 0 -> 6507 bytes
+ RC_ACTOR_TEST/assets/projectiles/super-01.png      |   Bin 0 -> 6727 bytes
+ RC_ACTOR_TEST/assets/projectiles/super-02.png      |   Bin 0 -> 6707 bytes
+ RC_ACTOR_TEST/assets/projectiles/super-03.png      |   Bin 0 -> 6791 bytes
+ RC_ACTOR_TEST/assets/projectiles/super-04.png      |   Bin 0 -> 6731 bytes
+ RC_ACTOR_TEST/assets/projectiles/super-05.png      |   Bin 0 -> 6763 bytes
+ RC_ACTOR_TEST/electron/launch.cjs                  |     7 +
+ RC_ACTOR_TEST/electron/main.cjs                    |    73 +
+ RC_ACTOR_TEST/electron/runtime.cjs                 |    28 +
+ RC_ACTOR_TEST/index.html                           |    17 +
+ RC_ACTOR_TEST/package-lock.json                    |   174 +
+ RC_ACTOR_TEST/package.json                         |    14 +
+ RC_ACTOR_TEST/source-snapshot.json                 |   261 +
+ RC_ACTOR_TEST/src/main.js                          |   149 +
+ RC_ACTOR_TEST/src/native/actor-collision.js        |    83 +
+ RC_ACTOR_TEST/src/native/actor-floor-lighting.js   |   224 +
+ RC_ACTOR_TEST/src/native/actor-light-sampling.js   |    49 +
+ RC_ACTOR_TEST/src/native/actor-light-visibility.js |   129 +
+ RC_ACTOR_TEST/src/native/actor-lighting.js         |   107 +
+ RC_ACTOR_TEST/src/native/actor-materials.js        |    10 +
+ RC_ACTOR_TEST/src/native/actor-placement.js        |    40 +
+ RC_ACTOR_TEST/src/native/actor-render-residency.js |   126 +
+ RC_ACTOR_TEST/src/native/actor-world-lighting.js   |    73 +
+ RC_ACTOR_TEST/src/native/ambience-ranges.js        |    31 +
+ RC_ACTOR_TEST/src/native/animation.js              |   282 +
+ RC_ACTOR_TEST/src/native/audio-settings.js         |   346 +
+ RC_ACTOR_TEST/src/native/audio.js                  |   283 +
+ RC_ACTOR_TEST/src/native/beam-contacts.js          |    63 +
+ RC_ACTOR_TEST/src/native/boss-ai.js                |   251 +
+ RC_ACTOR_TEST/src/native/bsp-visibility.js         |    67 +
+ RC_ACTOR_TEST/src/native/camera-control.js         |    44 +
+ RC_ACTOR_TEST/src/native/collision.js              |   342 +
+ RC_ACTOR_TEST/src/native/debriefing.js             |   103 +
+ RC_ACTOR_TEST/src/native/debris-native.js          |   111 +
+ RC_ACTOR_TEST/src/native/decal-effects.js          |    78 +
+ RC_ACTOR_TEST/src/native/destructible-effects.js   |   110 +
+ RC_ACTOR_TEST/src/native/difficulty.js             |    13 +
+ RC_ACTOR_TEST/src/native/door-audio.js             |    23 +
+ RC_ACTOR_TEST/src/native/enemies.js                |    94 +
+ RC_ACTOR_TEST/src/native/enemy-ambush.js           |   147 +
+ RC_ACTOR_TEST/src/native/enemy-animation-rules.js  |    23 +
+ RC_ACTOR_TEST/src/native/enemy-combat-effects.js   |    39 +
+ RC_ACTOR_TEST/src/native/enemy-combat-native.js    |    27 +
+ RC_ACTOR_TEST/src/native/enemy-death-effects.js    |    94 +
+ RC_ACTOR_TEST/src/native/enemy-flight.js           |   101 +
+ RC_ACTOR_TEST/src/native/enemy-navigation.js       |   305 +
+ .../src/native/enemy-projectile-origins.js         |    49 +
+ RC_ACTOR_TEST/src/native/enemy-projectiles.js      |    40 +
+ .../src/native/enemy-waypoint-steering.js          |    73 +
+ .../src/native/environment-interactions.js         |    43 +
+ RC_ACTOR_TEST/src/native/explosion-native.js       |    65 +
+ RC_ACTOR_TEST/src/native/fairy-effects.js          |   214 +
+ RC_ACTOR_TEST/src/native/gameplay-audio.js         |   124 +
+ RC_ACTOR_TEST/src/native/gameplay-settings.js      |     3 +
+ RC_ACTOR_TEST/src/native/gameplay.js               |   934 +
+ RC_ACTOR_TEST/src/native/gargoyle-blast.js         |    76 +
+ RC_ACTOR_TEST/src/native/ghost-materials.js        |    23 +
+ RC_ACTOR_TEST/src/native/graveyard-maze.js         |    73 +
+ RC_ACTOR_TEST/src/native/hud.js                    |    57 +
+ RC_ACTOR_TEST/src/native/liquids.js                |    47 +
+ RC_ACTOR_TEST/src/native/locomotion-audio.js       |    32 +
+ RC_ACTOR_TEST/src/native/motions.js                |   262 +
+ RC_ACTOR_TEST/src/native/movement-recovery.js      |   143 +
+ RC_ACTOR_TEST/src/native/moving-solids.js          |    77 +
+ RC_ACTOR_TEST/src/native/pickup-placement.js       |    39 +
+ RC_ACTOR_TEST/src/native/player-animation.js       |    56 +
+ RC_ACTOR_TEST/src/native/player-inventory.js       |     8 +
+ RC_ACTOR_TEST/src/native/player-lifecycle.js       |    29 +
+ RC_ACTOR_TEST/src/native/player-movement.js        |    21 +
+ RC_ACTOR_TEST/src/native/player-projectiles.js     |    42 +
+ RC_ACTOR_TEST/src/native/player-shadow.js          |    53 +
+ RC_ACTOR_TEST/src/native/player-world-light.js     |    28 +
+ RC_ACTOR_TEST/src/native/presentation-native.js    |    48 +
+ RC_ACTOR_TEST/src/native/projectile-animation.js   |    35 +
+ RC_ACTOR_TEST/src/native/projectile-collision.js   |    10 +
+ RC_ACTOR_TEST/src/native/projectile-hazards.js     |   149 +
+ RC_ACTOR_TEST/src/native/projectile-impacts.js     |    80 +
+ RC_ACTOR_TEST/src/native/projectile-lighting.js    |    10 +
+ RC_ACTOR_TEST/src/native/projectile-visibility.js  |    11 +
+ RC_ACTOR_TEST/src/native/reward-effects.js         |    63 +
+ RC_ACTOR_TEST/src/native/script-camera.js          |    53 +
+ RC_ACTOR_TEST/src/native/skybox.js                 |    62 +
+ RC_ACTOR_TEST/src/native/spatial-audio.js          |    85 +
+ RC_ACTOR_TEST/src/native/spout-effects.js          |   106 +
+ RC_ACTOR_TEST/src/native/targeting.js              |    78 +
+ RC_ACTOR_TEST/src/native/teleporter-effects.js     |   217 +
+ RC_ACTOR_TEST/src/native/third-person-camera.js    |    65 +
+ RC_ACTOR_TEST/src/native/torch-flames.js           |    74 +
+ RC_ACTOR_TEST/src/native/world-effects.js          |   487 +
+ RC_ACTOR_TEST/src/native/world-light-shadows.js    |    96 +
+ .../src/native/world-lighting-material.js          |    89 +
+ RC_ACTOR_TEST/src/native/world-lighting.js         |    55 +
+ RC_ACTOR_TEST/src/native/world-streaming.js        |   263 +
+ RC_ACTOR_TEST/src/native/world.js                  |   928 +
+ RC_ACTOR_TEST/src/native/zombie-grave-rise.js      |    54 +
+ RC_ACTOR_TEST/src/room.js                          |   169 +
+ RC_ACTOR_TEST/style.css                            |     9 +
+ RC_ACTOR_TEST/tests/desktop.mjs                    |    39 +
+ RC_ACTOR_TEST/tests/scene.mjs                      |   221 +
+ RC_ACTOR_TEST/vendor/THREE-LICENSE.txt             |    21 +
+ RC_ACTOR_TEST/vendor/three.core.js                 | 60586 +++++++++++++++++++
+ RC_ACTOR_TEST/vendor/three.module.js               | 19719 ++++++
+ RC_COIN_TEST/.gitignore                            |     3 +
+ RC_COIN_TEST/README.md                             |    67 +
+ RC_COIN_TEST/Start-Coin-Test.sh                    |     7 +
+ RC_COIN_TEST/assets/actors/icoinl.json             |     1 +
+ RC_COIN_TEST/assets/actors/icoinm.json             |     1 +
+ RC_COIN_TEST/assets/actors/icoins.json             |     1 +
+ RC_COIN_TEST/assets/actors/imoneyl.json            |     1 +
+ RC_COIN_TEST/assets/actors/imoneym.json            |     1 +
+ RC_COIN_TEST/assets/actors/imoneys.json            |     1 +
+ RC_COIN_TEST/assets/actors/manifest.json           |   645 +
+ RC_COIN_TEST/assets/actors/redcat.json             |     1 +
+ RC_COIN_TEST/assets/actors/textures/icoinl-0.png   |   Bin 0 -> 7439 bytes
+ RC_COIN_TEST/assets/actors/textures/icoinm-0.png   |   Bin 0 -> 8560 bytes
+ RC_COIN_TEST/assets/actors/textures/icoins-0.png   |   Bin 0 -> 9374 bytes
+ RC_COIN_TEST/assets/actors/textures/imoneyl-0.png  |   Bin 0 -> 6113 bytes
+ RC_COIN_TEST/assets/actors/textures/imoneyl-1.png  |   Bin 0 -> 11092 bytes
+ RC_COIN_TEST/assets/actors/textures/imoneyl-2.png  |   Bin 0 -> 6113 bytes
+ RC_COIN_TEST/assets/actors/textures/imoneym-0.png  |   Bin 0 -> 6113 bytes
+ RC_COIN_TEST/assets/actors/textures/imoneym-1.png  |   Bin 0 -> 11092 bytes
+ RC_COIN_TEST/assets/actors/textures/imoneym-2.png  |   Bin 0 -> 6113 bytes
+ RC_COIN_TEST/assets/actors/textures/imoneys-0.png  |   Bin 0 -> 6113 bytes
+ RC_COIN_TEST/assets/actors/textures/imoneys-1.png  |   Bin 0 -> 11092 bytes
+ RC_COIN_TEST/assets/actors/textures/imoneys-2.png  |   Bin 0 -> 6113 bytes
+ RC_COIN_TEST/assets/actors/textures/redcat-0.png   |   Bin 0 -> 46976 bytes
+ RC_COIN_TEST/assets/audio/icoinl.wav               |   Bin 0 -> 8294 bytes
+ RC_COIN_TEST/assets/audio/icoinm.wav               |   Bin 0 -> 9338 bytes
+ RC_COIN_TEST/assets/audio/icoins.wav               |   Bin 0 -> 10418 bytes
+ RC_COIN_TEST/assets/audio/rcjump1.wav              |   Bin 0 -> 12316 bytes
+ RC_COIN_TEST/assets/audio/rcshoot1.wav             |   Bin 0 -> 6984 bytes
+ RC_COIN_TEST/assets/audio/rcshoot4.wav             |   Bin 0 -> 12286 bytes
+ RC_COIN_TEST/assets/audio/rcwalk1.wav              |   Bin 0 -> 1796 bytes
+ RC_COIN_TEST/assets/audio/rcwalk2.wav              |   Bin 0 -> 1832 bytes
+ RC_COIN_TEST/assets/effects/alejan-alejan_a.png    |   Bin 0 -> 21549 bytes
+ RC_COIN_TEST/assets/effects/beam-beam_a.png        |   Bin 0 -> 141 bytes
+ RC_COIN_TEST/assets/effects/blast-blast_a.png      |   Bin 0 -> 33241 bytes
+ RC_COIN_TEST/assets/effects/coreff-coreff_a.png    |   Bin 0 -> 2247 bytes
+ RC_COIN_TEST/assets/effects/dc_brk-dc_brk_a.png    |   Bin 0 -> 11091 bytes
+ .../assets/effects/electricwave-electricwave_a.png |   Bin 0 -> 25689 bytes
+ .../assets/effects/energybeam-energybeam_a.png     |   Bin 0 -> 4197 bytes
+ .../assets/effects/expl_gen01-expl_gen_a_01.png    |   Bin 0 -> 940 bytes
+ .../effects/expl_gen01_red-expl_gen_a_01.png       |   Bin 0 -> 930 bytes
+ .../effects/expl_gen01_yel-expl_gen_a_01.png       |   Bin 0 -> 954 bytes
+ .../assets/effects/expl_gen02-expl_gen_a_02.png    |   Bin 0 -> 1557 bytes
+ .../effects/expl_gen02_red-expl_gen_a_02.png       |   Bin 0 -> 1542 bytes
+ .../effects/expl_gen02_yel-expl_gen_a_02.png       |   Bin 0 -> 1559 bytes
+ .../assets/effects/expl_gen03-expl_gen_a_03.png    |   Bin 0 -> 2153 bytes
+ .../effects/expl_gen03_red-expl_gen_a_03.png       |   Bin 0 -> 2126 bytes
+ .../effects/expl_gen03_yel-expl_gen_a_03.png       |   Bin 0 -> 2160 bytes
+ .../assets/effects/expl_gen04-expl_gen_a_04.png    |   Bin 0 -> 2548 bytes
+ .../effects/expl_gen04_red-expl_gen_a_04.png       |   Bin 0 -> 2490 bytes
+ .../effects/expl_gen04_yel-expl_gen_a_04.png       |   Bin 0 -> 2560 bytes
+ .../assets/effects/expl_gen05-expl_gen_a_05.png    |   Bin 0 -> 2751 bytes
+ .../effects/expl_gen05_red-expl_gen_a_05.png       |   Bin 0 -> 2641 bytes
+ .../effects/expl_gen05_yel-expl_gen_a_05.png       |   Bin 0 -> 2771 bytes
+ .../assets/effects/expl_gen06-expl_gen_a_06.png    |   Bin 0 -> 2771 bytes
+ .../effects/expl_gen06_red-expl_gen_a_06.png       |   Bin 0 -> 2511 bytes
+ .../effects/expl_gen06_yel-expl_gen_a_06.png       |   Bin 0 -> 2827 bytes
+ .../assets/effects/expl_gen07-expl_gen_a_07.png    |   Bin 0 -> 2356 bytes
+ .../effects/expl_gen07_red-expl_gen_a_07.png       |   Bin 0 -> 2441 bytes
+ .../effects/expl_gen07_yel-expl_gen_a_07.png       |   Bin 0 -> 2441 bytes
+ .../assets/effects/expl_gen08-expl_gen_a_08.png    |   Bin 0 -> 1440 bytes
+ .../effects/expl_gen08_red-expl_gen_a_08.png       |   Bin 0 -> 1259 bytes
+ .../effects/expl_gen08_yel-expl_gen_a_08.png       |   Bin 0 -> 1459 bytes
+ .../assets/effects/explosie01-explosie01_a.png     |   Bin 0 -> 429 bytes
+ .../assets/effects/explosie02-explosie02_a.png     |   Bin 0 -> 728 bytes
+ .../assets/effects/explosie03-explosie03_a.png     |   Bin 0 -> 1109 bytes
+ .../assets/effects/explosie04-explosie04_a.png     |   Bin 0 -> 1357 bytes
+ .../assets/effects/explosie05-explosie05_a.png     |   Bin 0 -> 1485 bytes
+ .../assets/effects/explosie06-explosie06_a.png     |   Bin 0 -> 1425 bytes
+ .../assets/effects/explosie07-explosie07_a.png     |   Bin 0 -> 1244 bytes
+ .../assets/effects/explosie08-explosie08_a.png     |   Bin 0 -> 1069 bytes
+ RC_COIN_TEST/assets/effects/flame03-a_flame.png    |   Bin 0 -> 1795 bytes
+ RC_COIN_TEST/assets/effects/fleuri-fleuri_a.png    |   Bin 0 -> 5946 bytes
+ RC_COIN_TEST/assets/effects/fleurl7-fleurl7_a.png  |   Bin 0 -> 10440 bytes
+ RC_COIN_TEST/assets/effects/fleurl8-fleurl8_a.png  |   Bin 0 -> 6590 bytes
+ RC_COIN_TEST/assets/effects/kaboom-kaboom_a.png    |   Bin 0 -> 4293 bytes
+ RC_COIN_TEST/assets/effects/kaboom2-kaboom2_a.png  |   Bin 0 -> 4376 bytes
+ RC_COIN_TEST/assets/effects/lilly-lilly_a.png      |   Bin 0 -> 5230 bytes
+ RC_COIN_TEST/assets/effects/manifest.json          |   428 +
+ RC_COIN_TEST/assets/effects/rcsdw-rcsdw_a.png      |   Bin 0 -> 1151 bytes
+ RC_COIN_TEST/assets/effects/sand-sand_a.png        |   Bin 0 -> 8391 bytes
+ RC_COIN_TEST/assets/effects/score0-score0_a.png    |   Bin 0 -> 2646 bytes
+ RC_COIN_TEST/assets/effects/score1-score1_a.png    |   Bin 0 -> 3779 bytes
+ RC_COIN_TEST/assets/effects/score2-score2_a.png    |   Bin 0 -> 4988 bytes
+ RC_COIN_TEST/assets/effects/score3-score3_a.png    |   Bin 0 -> 4684 bytes
+ RC_COIN_TEST/assets/effects/score4-score4_a.png    |   Bin 0 -> 4439 bytes
+ RC_COIN_TEST/assets/effects/secr2-secr2_a.png      |   Bin 0 -> 3215 bytes
+ .../assets/effects/smoke_05-smoke_green_a.png      |   Bin 0 -> 4406 bytes
+ .../assets/effects/smoke_blue-smoke_green_a.png    |   Bin 0 -> 4513 bytes
+ .../assets/effects/smoke_brown-smoke_green_a.png   |   Bin 0 -> 4473 bytes
+ .../assets/effects/smoke_green-smoke_green_a.png   |   Bin 0 -> 4269 bytes
+ .../assets/effects/smoke_red-smoke_green_a.png     |   Bin 0 -> 4572 bytes
+ RC_COIN_TEST/assets/effects/spark8-spark8_a.png    |   Bin 0 -> 4326 bytes
+ RC_COIN_TEST/assets/effects/star-star_a.png        |   Bin 0 -> 2449 bytes
+ RC_COIN_TEST/assets/effects/strail-strail_a.png    |   Bin 0 -> 2284 bytes
+ RC_COIN_TEST/assets/effects/ufohole-ufohole_a.png  |   Bin 0 -> 11517 bytes
+ RC_COIN_TEST/assets/hud/icons.png                  |   Bin 0 -> 56471 bytes
+ RC_COIN_TEST/assets/hud/manifest.json              |   180 +
+ RC_COIN_TEST/assets/hud/target.png                 |   Bin 0 -> 3939 bytes
+ RC_COIN_TEST/assets/icons/redcat.ico               |   Bin 0 -> 8291 bytes
+ RC_COIN_TEST/assets/icons/redcat.png               |   Bin 0 -> 3723 bytes
+ RC_COIN_TEST/assets/projectiles/bone-00.png        |   Bin 0 -> 831 bytes
+ RC_COIN_TEST/assets/projectiles/bone-01.png        |   Bin 0 -> 744 bytes
+ RC_COIN_TEST/assets/projectiles/bone-02.png        |   Bin 0 -> 813 bytes
+ RC_COIN_TEST/assets/projectiles/bone-03.png        |   Bin 0 -> 881 bytes
+ RC_COIN_TEST/assets/projectiles/goo-00.png         |   Bin 0 -> 7469 bytes
+ RC_COIN_TEST/assets/projectiles/goo-01.png         |   Bin 0 -> 7465 bytes
+ RC_COIN_TEST/assets/projectiles/goo-02.png         |   Bin 0 -> 7562 bytes
+ RC_COIN_TEST/assets/projectiles/goo-03.png         |   Bin 0 -> 7402 bytes
+ RC_COIN_TEST/assets/projectiles/goo-04.png         |   Bin 0 -> 7280 bytes
+ RC_COIN_TEST/assets/projectiles/goo-05.png         |   Bin 0 -> 7528 bytes
+ RC_COIN_TEST/assets/projectiles/jesterBall-00.png  |   Bin 0 -> 1423 bytes
+ RC_COIN_TEST/assets/projectiles/jesterBall-01.png  |   Bin 0 -> 1183 bytes
+ RC_COIN_TEST/assets/projectiles/jesterBall-02.png  |   Bin 0 -> 1225 bytes
+ RC_COIN_TEST/assets/projectiles/jesterBall-03.png  |   Bin 0 -> 1390 bytes
+ RC_COIN_TEST/assets/projectiles/magicBall-00.png   |   Bin 0 -> 7126 bytes
+ RC_COIN_TEST/assets/projectiles/magicBall-01.png   |   Bin 0 -> 7213 bytes
+ RC_COIN_TEST/assets/projectiles/magicBall-02.png   |   Bin 0 -> 7225 bytes
+ RC_COIN_TEST/assets/projectiles/magicBall-03.png   |   Bin 0 -> 6651 bytes
+ RC_COIN_TEST/assets/projectiles/magicBall-04.png   |   Bin 0 -> 6836 bytes
+ RC_COIN_TEST/assets/projectiles/magicBall-05.png   |   Bin 0 -> 6793 bytes
+ RC_COIN_TEST/assets/projectiles/magma-00.png       |   Bin 0 -> 2185 bytes
+ RC_COIN_TEST/assets/projectiles/magma-01.png       |   Bin 0 -> 2216 bytes
+ RC_COIN_TEST/assets/projectiles/magma-02.png       |   Bin 0 -> 2223 bytes
+ RC_COIN_TEST/assets/projectiles/magma-03.png       |   Bin 0 -> 2211 bytes
+ RC_COIN_TEST/assets/projectiles/manifest.json      |   339 +
+ RC_COIN_TEST/assets/projectiles/mushroom-00.png    |   Bin 0 -> 1263 bytes
+ RC_COIN_TEST/assets/projectiles/mushroom-01.png    |   Bin 0 -> 1181 bytes
+ RC_COIN_TEST/assets/projectiles/mushroom-02.png    |   Bin 0 -> 1258 bytes
+ RC_COIN_TEST/assets/projectiles/mushroom-03.png    |   Bin 0 -> 1295 bytes
+ RC_COIN_TEST/assets/projectiles/power-00.png       |   Bin 0 -> 2005 bytes
+ RC_COIN_TEST/assets/projectiles/power-01.png       |   Bin 0 -> 1983 bytes
+ RC_COIN_TEST/assets/projectiles/power-02.png       |   Bin 0 -> 1967 bytes
+ RC_COIN_TEST/assets/projectiles/power-03.png       |   Bin 0 -> 2053 bytes
+ RC_COIN_TEST/assets/projectiles/power-04.png       |   Bin 0 -> 1998 bytes
+ RC_COIN_TEST/assets/projectiles/power-05.png       |   Bin 0 -> 1996 bytes
+ RC_COIN_TEST/assets/projectiles/skull-00.png       |   Bin 0 -> 1808 bytes
+ RC_COIN_TEST/assets/projectiles/skull-01.png       |   Bin 0 -> 1790 bytes
+ RC_COIN_TEST/assets/projectiles/skull-02.png       |   Bin 0 -> 1765 bytes
+ RC_COIN_TEST/assets/projectiles/skull-03.png       |   Bin 0 -> 1791 bytes
+ RC_COIN_TEST/assets/projectiles/spark-01.png       |   Bin 0 -> 1932 bytes
+ RC_COIN_TEST/assets/projectiles/spark-02.png       |   Bin 0 -> 2132 bytes
+ RC_COIN_TEST/assets/projectiles/spark-03.png       |   Bin 0 -> 1887 bytes
+ RC_COIN_TEST/assets/projectiles/spark-04.png       |   Bin 0 -> 2116 bytes
+ RC_COIN_TEST/assets/projectiles/super-00.png       |   Bin 0 -> 6507 bytes
+ RC_COIN_TEST/assets/projectiles/super-01.png       |   Bin 0 -> 6727 bytes
+ RC_COIN_TEST/assets/projectiles/super-02.png       |   Bin 0 -> 6707 bytes
+ RC_COIN_TEST/assets/projectiles/super-03.png       |   Bin 0 -> 6791 bytes
+ RC_COIN_TEST/assets/projectiles/super-04.png       |   Bin 0 -> 6731 bytes
+ RC_COIN_TEST/assets/projectiles/super-05.png       |   Bin 0 -> 6763 bytes
+ RC_COIN_TEST/electron/launch.cjs                   |     7 +
+ RC_COIN_TEST/electron/main.cjs                     |    73 +
+ RC_COIN_TEST/electron/runtime.cjs                  |    28 +
+ RC_COIN_TEST/index.html                            |    29 +
+ RC_COIN_TEST/package-lock.json                     |   174 +
+ RC_COIN_TEST/package.json                          |    14 +
+ RC_COIN_TEST/source-snapshot.json                  |   245 +
+ RC_COIN_TEST/src/main.js                           |   119 +
+ RC_COIN_TEST/src/native/actor-collision.js         |    83 +
+ RC_COIN_TEST/src/native/actor-floor-lighting.js    |   224 +
+ RC_COIN_TEST/src/native/actor-light-sampling.js    |    49 +
+ RC_COIN_TEST/src/native/actor-light-visibility.js  |   129 +
+ RC_COIN_TEST/src/native/actor-lighting.js          |   107 +
+ RC_COIN_TEST/src/native/actor-materials.js         |    10 +
+ RC_COIN_TEST/src/native/actor-placement.js         |    40 +
+ RC_COIN_TEST/src/native/actor-render-residency.js  |   126 +
+ RC_COIN_TEST/src/native/actor-world-lighting.js    |    73 +
+ RC_COIN_TEST/src/native/ambience-ranges.js         |    31 +
+ RC_COIN_TEST/src/native/animation.js               |   282 +
+ RC_COIN_TEST/src/native/audio-settings.js          |   346 +
+ RC_COIN_TEST/src/native/audio.js                   |   283 +
+ RC_COIN_TEST/src/native/beam-contacts.js           |    63 +
+ RC_COIN_TEST/src/native/boss-ai.js                 |   251 +
+ RC_COIN_TEST/src/native/bsp-visibility.js          |    67 +
+ RC_COIN_TEST/src/native/camera-control.js          |    44 +
+ RC_COIN_TEST/src/native/collision.js               |   342 +
+ RC_COIN_TEST/src/native/debriefing.js              |   103 +
+ RC_COIN_TEST/src/native/debris-native.js           |   111 +
+ RC_COIN_TEST/src/native/decal-effects.js           |    78 +
+ RC_COIN_TEST/src/native/destructible-effects.js    |   110 +
+ RC_COIN_TEST/src/native/difficulty.js              |    13 +
+ RC_COIN_TEST/src/native/door-audio.js              |    23 +
+ RC_COIN_TEST/src/native/enemies.js                 |    94 +
+ RC_COIN_TEST/src/native/enemy-ambush.js            |   147 +
+ RC_COIN_TEST/src/native/enemy-animation-rules.js   |    23 +
+ RC_COIN_TEST/src/native/enemy-combat-effects.js    |    39 +
+ RC_COIN_TEST/src/native/enemy-combat-native.js     |    27 +
+ RC_COIN_TEST/src/native/enemy-death-effects.js     |    94 +
+ RC_COIN_TEST/src/native/enemy-flight.js            |   101 +
+ RC_COIN_TEST/src/native/enemy-navigation.js        |   305 +
+ .../src/native/enemy-projectile-origins.js         |    49 +
+ RC_COIN_TEST/src/native/enemy-projectiles.js       |    40 +
+ RC_COIN_TEST/src/native/enemy-waypoint-steering.js |    73 +
+ .../src/native/environment-interactions.js         |    43 +
+ RC_COIN_TEST/src/native/explosion-native.js        |    65 +
+ RC_COIN_TEST/src/native/fairy-effects.js           |   214 +
+ RC_COIN_TEST/src/native/gameplay-audio.js          |   124 +
+ RC_COIN_TEST/src/native/gameplay-settings.js       |     3 +
+ RC_COIN_TEST/src/native/gameplay.js                |   934 +
+ RC_COIN_TEST/src/native/gargoyle-blast.js          |    76 +
+ RC_COIN_TEST/src/native/ghost-materials.js         |    23 +
+ RC_COIN_TEST/src/native/graveyard-maze.js          |    73 +
+ RC_COIN_TEST/src/native/hud.js                     |    57 +
+ RC_COIN_TEST/src/native/liquids.js                 |    47 +
+ RC_COIN_TEST/src/native/locomotion-audio.js        |    32 +
+ RC_COIN_TEST/src/native/motions.js                 |   262 +
+ RC_COIN_TEST/src/native/movement-recovery.js       |   143 +
+ RC_COIN_TEST/src/native/moving-solids.js           |    77 +
+ RC_COIN_TEST/src/native/pickup-placement.js        |    39 +
+ RC_COIN_TEST/src/native/player-animation.js        |    56 +
+ RC_COIN_TEST/src/native/player-inventory.js        |     8 +
+ RC_COIN_TEST/src/native/player-lifecycle.js        |    29 +
+ RC_COIN_TEST/src/native/player-movement.js         |    21 +
+ RC_COIN_TEST/src/native/player-projectiles.js      |    42 +
+ RC_COIN_TEST/src/native/player-shadow.js           |    53 +
+ RC_COIN_TEST/src/native/player-world-light.js      |    28 +
+ RC_COIN_TEST/src/native/presentation-native.js     |    48 +
+ RC_COIN_TEST/src/native/projectile-animation.js    |    35 +
+ RC_COIN_TEST/src/native/projectile-collision.js    |    10 +
+ RC_COIN_TEST/src/native/projectile-hazards.js      |   149 +
+ RC_COIN_TEST/src/native/projectile-impacts.js      |    80 +
+ RC_COIN_TEST/src/native/projectile-lighting.js     |    10 +
+ RC_COIN_TEST/src/native/projectile-visibility.js   |    11 +
+ RC_COIN_TEST/src/native/reward-effects.js          |    63 +
+ RC_COIN_TEST/src/native/script-camera.js           |    53 +
+ RC_COIN_TEST/src/native/skybox.js                  |    62 +
+ RC_COIN_TEST/src/native/spatial-audio.js           |    85 +
+ RC_COIN_TEST/src/native/spout-effects.js           |   106 +
+ RC_COIN_TEST/src/native/targeting.js               |    78 +
+ RC_COIN_TEST/src/native/teleporter-effects.js      |   217 +
+ RC_COIN_TEST/src/native/third-person-camera.js     |    65 +
+ RC_COIN_TEST/src/native/torch-flames.js            |    74 +
+ RC_COIN_TEST/src/native/world-effects.js           |   487 +
+ RC_COIN_TEST/src/native/world-light-shadows.js     |    96 +
+ RC_COIN_TEST/src/native/world-lighting-material.js |    89 +
+ RC_COIN_TEST/src/native/world-lighting.js          |    55 +
+ RC_COIN_TEST/src/native/world-streaming.js         |   263 +
+ RC_COIN_TEST/src/native/world.js                   |   928 +
+ RC_COIN_TEST/src/native/zombie-grave-rise.js       |    54 +
+ RC_COIN_TEST/src/room.js                           |   101 +
+ RC_COIN_TEST/style.css                             |     7 +
+ RC_COIN_TEST/tests/desktop.mjs                     |    25 +
+ RC_COIN_TEST/tests/scene.mjs                       |   136 +
+ RC_COIN_TEST/vendor/THREE-LICENSE.txt              |    21 +
+ RC_COIN_TEST/vendor/three.core.js                  | 60586 +++++++++++++++++++
+ RC_COIN_TEST/vendor/three.module.js                | 19719 ++++++
+ RC_SHOVE_TEST/.npmrc                               |     4 +
+ RC_SHOVE_TEST/DEPENDENCY_PROVENANCE.json           |    42 +
+ RC_SHOVE_TEST/POWER-MOVE-ORIGINAL.md               |   164 +
+ RC_SHOVE_TEST/README.md                            |   128 +
+ RC_SHOVE_TEST/Start-Shove-Test.sh                  |     8 +
+ RC_SHOVE_TEST/assets/actors/redcat.json            |     1 +
+ RC_SHOVE_TEST/assets/actors/textures/redcat-0.png  |   Bin 0 -> 46976 bytes
+ RC_SHOVE_TEST/assets/crate-textures/030.png        |   Bin 0 -> 5320 bytes
+ RC_SHOVE_TEST/assets/crate-textures/038.png        |   Bin 0 -> 3523 bytes
+ RC_SHOVE_TEST/assets/crate-textures/044.png        |   Bin 0 -> 5639 bytes
+ RC_SHOVE_TEST/assets/crate-textures/064.png        |   Bin 0 -> 3624 bytes
+ RC_SHOVE_TEST/assets/crate-textures/065.png        |   Bin 0 -> 4171 bytes
+ .../assets/native-crate-collision-boxes.json       |   924 +
+ RC_SHOVE_TEST/assets/native-crate-puzzle.json      |     1 +
+ .../docs/native-crate-collision-boxes.json         |   924 +
+ RC_SHOVE_TEST/docs/native-crate-entities.json      |   106 +
+ RC_SHOVE_TEST/docs/native-evidence.json            |   241 +
+ RC_SHOVE_TEST/docs/native-shove-investigation.md   |   254 +
+ RC_SHOVE_TEST/docs/original-settings-excerpts.txt  |   103 +
+ RC_SHOVE_TEST/electron/launch.cjs                  |     3 +
+ RC_SHOVE_TEST/electron/main.cjs                    |    76 +
+ RC_SHOVE_TEST/electron/postinstall.cjs             |    21 +
+ RC_SHOVE_TEST/electron/runtime.cjs                 |    28 +
+ RC_SHOVE_TEST/index.html                           |    34 +
+ RC_SHOVE_TEST/package-lock.json                    |   184 +
+ RC_SHOVE_TEST/package.json                         |    19 +
+ RC_SHOVE_TEST/src/actor-loader.js                  |    57 +
+ RC_SHOVE_TEST/src/animation.js                     |   195 +
+ RC_SHOVE_TEST/src/main.js                          |   191 +
+ RC_SHOVE_TEST/src/simulation.js                    |    71 +
+ RC_SHOVE_TEST/style.css                            |    20 +
+ RC_SHOVE_TEST/tests/puzzle.test.mjs                |    73 +
+ README.md                                          |     4 +-
+ RELEASE_NOTES_0.9.7                                |    95 +
+ RELEASE_NOTES_0.9.8                                |   110 +
+ RELEASE_NOTES_0.9.9                                |   144 +
+ android/.gitignore                                 |     6 +
+ android/app/build.gradle.kts                       |    65 +
+ android/app/src/main/AndroidManifest.xml           |    27 +
+ .../redcatspookkasteel/GameAssets.kt               |   101 +
+ .../nostalgiarealm/redcatspookkasteel/GameUrls.kt  |    40 +
+ .../redcatspookkasteel/HttpByteRange.kt            |    68 +
+ .../redcatspookkasteel/MainActivity.kt             |   396 +
+ .../drawable-nodpi/redcat_launcher_foreground.png  |   Bin 0 -> 2958 bytes
+ .../main/res/drawable/ic_launcher_foreground.xml   |     5 +
+ .../app/src/main/res/mipmap-anydpi/ic_launcher.xml |     5 +
+ android/app/src/main/res/values/strings.xml        |    14 +
+ android/app/src/main/res/values/themes.xml         |    12 +
+ .../app/src/main/res/xml/data_extraction_rules.xml |    26 +
+ .../redcatspookkasteel/GameUrlsTest.kt             |    46 +
+ .../redcatspookkasteel/HttpByteRangeTest.kt        |    58 +
+ android/build.gradle.kts                           |     4 +
+ android/gradle.properties                          |     3 +
+ android/gradle/wrapper/gradle-wrapper.jar          |   Bin 0 -> 43705 bytes
+ android/gradle/wrapper/gradle-wrapper.properties   |     8 +
+ android/gradlew                                    |   251 +
+ android/gradlew.bat                                |    94 +
+ android/settings.gradle.kts                        |    16 +
+ assets/effects/manifest.json                       |     9 +-
+ assets/effects/ptrail-ptrail_a.png                 |   Bin 0 -> 134 bytes
+ docs/audio-completion-native.md                    |     5 +-
+ docs/audio-media-lifetime.md                       |   111 +
+ docs/audio-save-continuity.md                      |    70 +
+ docs/audio.md                                      |    11 +-
+ docs/autosave.md                                   |    33 +-
+ docs/boss-interruptions-native.md                  |   124 +
+ docs/boss-phases-native.md                         |    29 +-
+ docs/building.md                                   |    22 +-
+ docs/campaign-validation-2026-10-18.md             |   399 +
+ docs/debris-native-recovery.md                     |     4 +
+ docs/effects-save-continuity.md                    |    88 +
+ docs/enemy-actor-animations-native.md              |   245 +
+ docs/enemy-death-effects-native.md                 |    45 +-
+ docs/enemy-gameplay.md                             |    34 +-
+ docs/enemy-lifecycles-native.md                    |   132 +
+ docs/enemy-pursuit-interruptions-native.md         |   242 +
+ docs/enemy-waypoint-movement.md                    |    65 +-
+ docs/explosion-damage-native.md                    |   247 +
+ docs/fairy-dialogue-pickup-lifecycle.md            |    43 +
+ docs/fairy-idle-audio-native.md                    |    86 +
+ docs/fairy-ribbon-fade-native.md                   |   109 +
+ docs/fairy-save-restoration.md                     |    13 +-
+ docs/fairy-skip-audio-2026-09-22.md                |     4 +
+ docs/gameplay-reconstruction.md                    |     8 +-
+ docs/graveyard-sky-native.md                       |     7 +-
+ docs/intentional-fixes-and-findings.md             |    21 +-
+ docs/low-end-cpu-performance.md                    |    69 +
+ docs/movement-recovery.md                          |    75 +-
+ docs/music-fade-native.md                          |    48 +
+ docs/native-parity-audit.md                        |   163 +-
+ docs/native-refresh-performance.md                 |     4 +
+ docs/native-visuals-2026-09-22.md                  |    21 +-
+ docs/patrol-boss-native.md                         |    70 +-
+ docs/player-abilities-native.md                    |    17 +-
+ docs/player-profiles-native.md                     |     8 +-
+ docs/player-projectiles-native.md                  |     5 +-
+ ...ayer-reactions-and-projectile-contact-native.md |    14 +-
+ docs/portability.md                                |     2 +-
+ docs/presentation-native.md                        |     9 +-
+ docs/projectile-impacts-native.md                  |    10 +-
+ docs/redcat-animations-native.md                   |   173 +
+ docs/release-source-validation-2026-10-15.md       |    93 +
+ docs/shooter-wait-native.md                        |    86 +
+ docs/skeleton-hit-native.md                        |   104 +
+ docs/skyboxes-native.md                            |   118 +
+ docs/spout-effects-native.md                       |     6 +-
+ docs/world-light-shadows-native.md                 |    19 +-
+ electron/main.cjs                                  |     1 +
+ index.html                                         |     2 +-
+ src/animation.js                                   |   149 +-
+ src/audio.js                                       |   125 +-
+ src/boss-ai.js                                     |    77 +-
+ src/collision.js                                   |     6 +-
+ src/destructible-damage.js                         |    23 +
+ src/destructible-effects.js                        |    14 +-
+ src/enemy-ambush.js                                |   137 +-
+ src/enemy-animation-rules.js                       |    28 +
+ src/enemy-combat-native.js                         |     3 +-
+ src/enemy-hit-native.js                            |    46 +
+ src/enemy-navigation.js                            |    69 +-
+ src/enemy-shooter-native.js                        |   148 +
+ src/explosion-damage.js                            |   116 +
+ src/explosion-native.js                            |    13 +
+ src/fairy-effects.js                               |    89 +-
+ src/gameplay.js                                    |   186 +-
+ src/hud.js                                         |    24 +-
+ src/knight-debris.js                               |    51 +
+ src/main.js                                        |    37 +-
+ src/movement-recovery.js                           |    79 +-
+ src/music-fade.js                                  |    15 +
+ src/player-animation.js                            |    41 +-
+ src/player-projectiles.js                          |     2 +-
+ src/script-host.js                                 |    10 +-
+ src/skybox.js                                      |    36 +
+ src/spout-effects.js                               |    55 +
+ src/world-effects.js                               |    76 +-
+ src/world.js                                       |   197 +-
+ tests/animation-bounds.test.mjs                    |    52 +
+ tests/audio-release-lifetime.test.mjs              |   106 +
+ tests/audio-save-continuity.test.mjs               |   153 +
+ tests/audio-save-scenes.mjs                        |    73 +
+ tests/boss-phases.test.mjs                         |   105 +-
+ tests/boss-script-regressions.test.mjs             |     6 +-
+ tests/campaign-late-progression.test.mjs           |   154 +
+ tests/death-save-scenes.mjs                        |   184 +
+ tests/destructible-threshold.test.mjs              |   113 +
+ tests/effects-save-continuity.test.mjs             |   116 +
+ tests/enemy-ambush-flight.test.mjs                 |     2 +-
+ tests/enemy-ambush-hit.test.mjs                    |   160 +
+ tests/enemy-animation-native.test.mjs              |   237 +
+ tests/enemy-animation-rules.test.mjs               |   119 +
+ tests/enemy-animation-scenes.mjs                   |    73 +
+ tests/enemy-animation.test.mjs                     |     6 +-
+ tests/enemy-committed-attacks.test.mjs             |    63 +
+ tests/enemy-cursor-reservations.test.mjs           |    94 +
+ tests/enemy-death-effects.test.mjs                 |    31 +-
+ tests/enemy-hit-native.test.mjs                    |    95 +
+ tests/enemy-lifecycles-native.test.mjs             |    75 +
+ tests/enemy-native-completion.test.mjs             |    13 +-
+ tests/enemy-native-pursuit.test.mjs                |   103 +
+ tests/enemy-route-endpoints.test.mjs               |    16 +
+ tests/enemy-shooter-integration.test.mjs           |   199 +
+ tests/enemy-shooter-native.test.mjs                |   166 +
+ tests/enemy-skeleton-retreat.test.mjs              |   110 +
+ tests/enemy-touch-hit.test.mjs                     |    46 +
+ tests/enemy-waypoint-steering.test.mjs             |     9 +-
+ tests/environment-interactions.test.mjs            |     5 +-
+ tests/explosion-damage.test.mjs                    |   192 +
+ tests/explosion-tail-save.test.mjs                 |    59 +
+ tests/fairy-idle-audio-scenes.mjs                  |    46 +
+ tests/fairy-idle-audio.test.mjs                    |    71 +
+ tests/fairy-ribbon-native.test.mjs                 |   123 +
+ tests/gameplay-update-work.test.mjs                |    95 +
+ tests/hud-redraw.test.mjs                          |   141 +
+ tests/knight-attack-music.test.mjs                 |     2 +-
+ tests/mirror-audio-transition-scenes.mjs           |     3 +-
+ tests/movement-recovery.test.mjs                   |   166 +
+ tests/music-fade-native.test.mjs                   |    35 +
+ tests/painting-spider.test.mjs                     |     5 +-
+ tests/pickup-audio-tail-scenes.mjs                 |    78 +
+ tests/pickup-audio-tail.test.mjs                   |    55 +
+ tests/player-abilities.test.mjs                    |    13 +-
+ tests/player-animation-native.test.mjs             |   136 +
+ tests/player-animation-scenes.mjs                  |    74 +
+ tests/player-lifecycle-scenes.mjs                  |     9 +-
+ tests/presentation.test.mjs                        |     4 +-
+ tests/render-cpu-allocation.test.mjs               |   141 +
+ tests/skybox-scenes.mjs                            |   203 +-
+ tests/skybox.test.mjs                              |    28 +-
+ tests/zombie-grave-rise.test.mjs                   |     2 +-
+ tools/import_world_effects.py                      |     1 +
+ tools/package.mjs                                  |     4 +-
+ 716 files changed, 201691 insertions(+), 476 deletions(-)

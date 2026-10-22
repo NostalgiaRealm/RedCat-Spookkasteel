@@ -1,0 +1,27 @@
+✔ enemy transitions freeze the outgoing pose and use a 250 ms Hermite bone blend at any playback rate (18.603518ms)
+✔ rapid enemy state changes retain an outgoing pose above half weight and replace it below half (2.627304ms)
+✔ initial gameplay poses and dormant skeletons skip preview blends and retain geometry caches (3.923096ms)
+✔ paused transitions and completed one-shots leave position and normal uploads unchanged (4.041396ms)
+✔ gameplay snapshots restore the exact in-progress enemy blend and its next frame (6.209222ms)
+✔ same-frame projectile queries and actor synchronization advance an enemy transition only once (3.25957ms)
+✔ cutscenes freeze living enemy poses while visible corpses continue their death motion (3.254391ms)
+✔ Dungeon Max machine snapshots restore both barrel poses and deduplicate release-frame blending (4.397984ms)
+✔ native common motion samples retain the CRT modulo shape, with fixed knight and separate boss rates (0.775845ms)
+✔ knight swing, damage window and rendering use the same native 1.8 speed (5.574026ms)
+✔ randomized attack, hurt and death durations stay aligned with the selected motion and corpse fade (3.931426ms)
+✔ plant idle chooses all four original nonlooping clips and resamples only on completion (13.514758ms)
+✔ gargoyle idle variants and selected speeds persist with their exact pose through a game save (9.786721ms)
+✔ walking keeps its sampled rate and old saved walks do not restart during grave emergence (1.393312ms)
+✔ blank scenery motion stays in bind pose while authored clips and all moving hands remain animated (98.182138ms)
+✔ knight wakes at 1.7, waits before attacking, and retracts at -1.7 after memory expires (9.017865ms)
+✔ reverse start pose and lifecycle deadline survive saves without losing playback direction (5.237628ms)
+✔ gargoyles use the native no-start idle fallback and settle once their alert is lost (1.65534ms)
+✔ skeleton wake uses the sampled native rate, then returns to a pile after losing the player (2.859703ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 222.434969

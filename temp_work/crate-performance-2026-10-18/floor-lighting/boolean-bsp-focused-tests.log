@@ -1,0 +1,43 @@
+✔ exact downward point trace retains the native floor node and no hull epsilon (1.253853ms)
+✔ floor uses one truncated native texel with authored shifts, not bilinear atlas samples (1.046884ms)
+✔ ordered native face bounding boxes allow twenty units around a face (0.312808ms)
+✔ ambient RGB caps each channel at native .3 after raw dynamic lightmap addition (0.365628ms)
+✔ stationary actor cache retains surfaces and invalid results without retaining light state (0.366258ms)
+✔ native model fallback samples transformed brush space and invalidates only on actual changes (0.438057ms)
+✔ first authored world hit wins over a closer brush floor, matching Exact3 order (0.952814ms)
+✔ rotated brush fallback samples the local BSP plane while the ray remains world vertical (0.236528ms)
+✔ shadow endpoints use native texture-to-world vectors and oriented plane offset (0.165219ms)
+✔ shadowed floor lights test the sampled luxel against world BSP and cache stable visibility (0.453957ms)
+✔ imported level 1 has bounded native floor samples at authored actor positions (21.064171ms)
+✔ imported level 2 has bounded native floor samples at authored actor positions (19.55912ms)
+✔ imported level 3 has bounded native floor samples at authored actor positions (23.428307ms)
+✔ imported level 4 has bounded native floor samples at authored actor positions (28.536395ms)
+✔ imported level 5 has bounded native floor samples at authored actor positions (7.407004ms)
+✔ Sun visibility checks directed native PVS before tracing world and brush models (1.60659ms)
+✔ solid clusters are rejected but a missing PVS row bypasses connected-area filtering (0.233829ms)
+✔ closed area portals reject Sun lighting and authored opening motion invalidates the cache (0.280608ms)
+✔ actor/source leaf caches preserve exact point sides including bounds exterior and moved lights (0.202519ms)
+✔ moving/disabled brush changes bump revision only when values change (0.305128ms)
+✔ native Sun point rays honor transformed brushes and exact wall edges without contact skin (0.367827ms)
+✔ boolean light rays retain exact plane endpoints, contents masks and typed midpoint rounding (4.412153ms)
+✔ boolean light rays retain the exact invalid-depth guard (0.827725ms)
+✔ level 1: 18,000 world and rotated-brush boolean rays exactly match detailed floor traversal (74.018017ms)
+✔ level 2: 18,000 world and rotated-brush boolean rays exactly match detailed floor traversal (56.981511ms)
+✔ level 3: 18,000 world and rotated-brush boolean rays exactly match detailed floor traversal (46.821293ms)
+✔ level 4: 18,000 world and rotated-brush boolean rays exactly match detailed floor traversal (43.631403ms)
+✔ level 5: 18,000 world and rotated-brush boolean rays exactly match detailed floor traversal (35.518703ms)
+✔ native world-only obstruction keeps visible luxels and rejects samples behind solid geometry (1.52899ms)
+✔ window and clip contents block light, water and empty leaves do not (1.321582ms)
+✔ atlas edges duplicate nearest sample without overwriting another light bit (0.335568ms)
+✔ pulses, disabled lamps and renderer slot reorder reuse stable identity bits without traces (0.879415ms)
+✔ moving a source or growing its radius rebuilds only that light, clears old obstruction (0.574296ms)
+✔ fullbright/Gouraud/no-lightmap faces are excluded and an unused bit can be recycled (0.973394ms)
+✔ all five authored Tower light masks match independent native luxel audit and imported atlas UVs (64.558395ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 321.307313

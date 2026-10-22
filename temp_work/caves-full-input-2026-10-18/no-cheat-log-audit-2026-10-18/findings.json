@@ -1,0 +1,42 @@
+{
+  "verdict": "No direct cheat or fixture import found in the reviewed records; retain explicit runtime qualifications.",
+  "scope_end_live_line": 440,
+  "water_air_handoff_live_line": 414,
+  "source_hotload_live_lines": [
+    80,
+    81,
+    82
+  ],
+  "native_source_reload_live_lines": [
+    282,
+    287,
+    288
+  ],
+  "native_recovery_selection_live_lines": [
+    185,
+    272
+  ],
+  "direct_native_saves": 19,
+  "runtime_qualifications": [
+    "Manual requestAnimationFrame stepping and pointer-lock stub",
+    "Read-only collision/enemy/platform observations",
+    "Keyboard events plus world.look camera adapter",
+    "MovementRecovery source hot-load",
+    "Event/frame observer wrappers"
+  ],
+  "limitations": [
+    "No audit of later live commands",
+    "No exhaustive engine or filesystem audit",
+    "Path-based helper injections are not all historically content-addressed",
+    "Initial directory freshness inferred from driver/setup rather than independent forensic verification"
+  ],
+  "artifacts": [
+    "audit.txt",
+    "manifest.json",
+    "checks.json",
+    "commands.jsonl",
+    "live-commands.jsonl",
+    "resume-responses-2026-10-18.jsonl",
+    "referenced-sources/"
+  ]
+}

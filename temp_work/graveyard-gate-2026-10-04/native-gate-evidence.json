@@ -1,0 +1,213 @@
+{
+  "sourceHashes": {
+    "Levels/lvl02a.bsp": "0ead8d93e1802b3edf8cbcd3135e6e042179061ccdb4511fdc1921fe4e01f095",
+    "Levels/lvl02a.dso": "0a415a5e8f8826eed1ce20c64f5e435fae0f5acd68509cd9f5afa96edf424101",
+    "Actors/hekdoor.act": "a1b9ff8ca2b42a3a7aada6be9b01f9629afbeb8ff3783835e86aceaf05fde95d",
+    "RcHcGame.dat": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+  },
+  "rawEntitiesMatchImported": true,
+  "gateEntityCount": 1,
+  "entities": {
+    "16": {
+      "classname": "%Model%",
+      "%name%": "hekdoor_trigger",
+      "origin": "3532.000000 -48.000000 1664.000000"
+    },
+    "262": {
+      "ActorFileName": "hekdoor.act",
+      "AfterDestroyCommand": "",
+      "classname": "AdamAnyActor",
+      "ContainsAmmoType": "0",
+      "ContainsHealthType": "0",
+      "ContainsSecret": "1",
+      "DaviName": "hekacteur",
+      "DaviNameGroup": "",
+      "DiscardOnLowEndPC": "0",
+      "MotionName": "",
+      "MotionSpeed": "1.0",
+      "Origin": "3568 -64 1456",
+      "PlaceMethod": "0",
+      "RotateCommands": "",
+      "RotateX": "0.0",
+      "RotateY": "0.0",
+      "RotateZ": "0.0",
+      "Scale": "1",
+      "%name%": "AdamAnyActor71"
+    },
+    "263": {
+      "ActorFileName": "brcrate.act",
+      "AfterDestroyCommand": "hekacteur.destroy",
+      "classname": "AdamAnyActor",
+      "ContainsAmmoType": "0",
+      "ContainsHealthType": "0",
+      "ContainsSecret": "1",
+      "DaviName": "brcrate_hek",
+      "DaviNameGroup": "",
+      "DiscardOnLowEndPC": "0",
+      "MotionName": "",
+      "MotionSpeed": "1.0",
+      "Origin": "3568 -63 1489",
+      "PlaceMethod": "0",
+      "RotateCommands": "",
+      "RotateX": "0.0",
+      "RotateY": "0.0",
+      "RotateZ": "0.0",
+      "Scale": "-1.0",
+      "%name%": "AdamAnyActor72",
+      "AltBitmapAlphaFileName": "smoke_green_a.bmp",
+      "AltBitmapFileName": "smoke_green.bmp",
+      "AlternativeBitmap": "0",
+      "AlternativeColour": "0.0 0.0 0.0",
+      "Targetable": "1"
+    }
+  },
+  "compiledCrateHandlers": [
+    {
+      "offset": 2438,
+      "tag": 62,
+      "index": 0,
+      "kind": "handler",
+      "name": "AfterDestroyCommand",
+      "type": {
+        "code": 0,
+        "name": "void",
+        "classRef": null
+      },
+      "parameters": [
+        {
+          "offset": 2466,
+          "tag": 53,
+          "index": 0,
+          "kind": "parameter",
+          "name": "@self",
+          "type": {
+            "code": 4,
+            "name": "object",
+            "classRef": {
+              "path": [
+                {
+                  "tag": 66,
+                  "index": 0
+                }
+              ],
+              "id": "42:0",
+              "name": "CAdamScriptGameObject",
+              "kind": "class"
+            }
+          },
+          "stackOffset": -4,
+          "endOffset": 2483,
+          "id": "42:0/3d:53/3e:0/35:0"
+        }
+      ],
+      "locals": [],
+      "instructions": [
+        {
+          "offset": 2489,
+          "opcode": 3,
+          "destination": {
+            "tag": 1,
+            "offset": 2490,
+            "type": 4
+          },
+          "source": {
+            "tag": 2,
+            "offset": 2492,
+            "ref": {
+              "path": [
+                {
+                  "tag": 54,
+                  "index": 16
+                }
+              ],
+              "id": "36:16",
+              "name": "hekacteur",
+              "kind": "object"
+            }
+          }
+        },
+        {
+          "offset": 2497,
+          "opcode": 3,
+          "destination": {
+            "tag": 3,
+            "offset": 2498
+          },
+          "source": {
+            "tag": 4,
+            "offset": 2499,
+            "ref": {
+              "path": [
+                {
+                  "tag": 60,
+                  "index": 5
+                },
+                {
+                  "tag": 66,
+                  "index": 0
+                }
+              ],
+              "id": "42:0/3c:5",
+              "name": "Destroy",
+              "kind": "method"
+            },
+            "callFlag": 1
+          }
+        },
+        {
+          "offset": 2508,
+          "opcode": 0,
+          "target": -2
+        }
+      ],
+      "handlers": [],
+      "owner": {
+        "path": [
+          {
+            "tag": 54,
+            "index": 17
+          }
+        ],
+        "id": "36:17",
+        "name": "brcrate_hek",
+        "kind": "object"
+      },
+      "endOffset": 2521,
+      "id": "42:0/3d:53/3e:0"
+    }
+  ],
+  "actor": {
+    "bounds": {
+      "min": [
+        -59.95412826538086,
+        -10.05860424041748,
+        0.18349100649356842
+      ],
+      "max": [
+        59.954132080078125,
+        9.999999974752427e-07,
+        120.18348693847656
+      ]
+    },
+    "indices": 72,
+    "triangleCount": 24,
+    "vertexCount": 48,
+    "windingNormalDotProductRange": [
+      599.9997467920429,
+      7200.000245461784
+    ],
+    "allTriangleWindingMatchesNormals": true,
+    "iniInitialRotationDegrees": [
+      -90.0,
+      0.0,
+      0.0
+    ],
+    "worldZPlanes": [
+      1456,
+      1466,
+      1456.0586,
+      1466.0586
+    ]
+  },
+  "nativeZeroConstant": 0.0
+}

@@ -1,0 +1,29 @@
+✔ visible room geometry and textures no longer activate in an unbounded burst (24.435544ms)
+✔ explicit load settling drains bounded preparation without needing the game frame loop (62.24703ms)
+✔ leaving a room cancels its queued geometry and image preparation (6.551332ms)
+✔ returning during a cancelled upload microtask reacquires real maps instead of activating null artwork (62.871147ms)
+✔ actors wait for warmed buffers, share preparation across owners and remain independent of gameplay visibility (6.392392ms)
+✔ actors just outside the camera view prepare ahead of turns without drawing or admitting unrelated rooms (1.153493ms)
+✔ decoded actor maps upload through the frame queue before becoming render-ready (4.879192ms)
+✔ explicit actor load settling pumps bounded work and yields rather than deadlocking before the first frame (0.875035ms)
+✔ visible and pinned maps outrank background requests without retaining old priority forever (0.609596ms)
+✔ an expired decoded map skips graphics preparation and can be requested again (0.494937ms)
+✔ a fresh owner of the same map keeps an already decoded request alive (0.479717ms)
+✔ level disposal resolves staged actor work without a future frame or a disposed-handle upload (0.401857ms)
+✔ preparation failures propagate through settle and never expose a ready placeholder (0.636686ms)
+✔ without a shared work queue the standalone actor loader remains immediately usable (0.206679ms)
+✔ GPU eviction invalidates readiness and re-entry budgets a retained decoded-image upload without fetching again (0.615567ms)
+✔ GPU-evicted retained images still expire and a later owner fetches fresh artwork (1.233632ms)
+✔ streaming preparation shares one frame budget, prioritizes visible work and cancels obsolete rooms (10.151819ms)
+✔ a burst of tiny jobs is capped even on a fast CPU and explicit loading yields between budgets (0.441197ms)
+✔ preparation errors propagate, while disposing cancels all queued work without running it (0.845585ms)
+✔ GPU preparation is deduplicated, draws zero triangles privately, restores state and rewarms after eviction (10.492607ms)
+✔ obsolete actor buffer uploads are cancelled and GPU exceptions leave the displayed target unchanged (8.000853ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 221.352176

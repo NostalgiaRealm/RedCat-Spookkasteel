@@ -1,0 +1,32 @@
+{
+  "checks": [
+    "desktop: intro actually advances without interaction under blocked audible autoplay; controls fit",
+    "desktop: click/tap enables sound without rewinding or changing volume",
+    "desktop: skip cleans playback and manual replay starts with sound"
+  ],
+  "errors": [],
+  "samples": [
+    {
+      "label": "desktop",
+      "mode": "intro",
+      "time": 0.255034,
+      "duration": 74.038,
+      "paused": false,
+      "muted": true,
+      "volume": 0.6,
+      "src": "assets/media/intronl.webm",
+      "action": "Geluid inschakelen",
+      "actionHidden": false,
+      "attempts": [
+        {
+          "muted": false,
+          "result": "NotAllowedError"
+        },
+        {
+          "muted": true,
+          "result": "playing"
+        }
+      ]
+    }
+  ]
+}

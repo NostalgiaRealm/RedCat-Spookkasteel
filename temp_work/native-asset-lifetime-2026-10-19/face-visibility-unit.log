@@ -1,0 +1,14 @@
+✔ a mixed-room static chunk submits individual PVS faces without rebuilding vertex or index storage (4.659708ms)
+✔ invalid-camera visibility draws conservatively and returning to the same cached PVS restores filtering (1.354661ms)
+✔ PVS render filtering does not remove hidden faces from CPU surface queries (1.318472ms)
+✔ unreferenced faces, moving brushes and depth-only sky retain conservative whole-face coverage (1.207191ms)
+✔ eviction releases filtered geometry and reloading rebuilds indices for the current camera leaf (0.785685ms)
+✔ large packed chunks use 32-bit indices and preserve complete triangle spans (1.026103ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 66.96574

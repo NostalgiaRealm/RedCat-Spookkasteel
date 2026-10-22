@@ -1,0 +1,27 @@
+✔ ordinary closer selects before strict range completion and preserves its selected mid-edge target (1.968049ms)
+✔ a no-destination closer enters shoot outside attack range instead of inventing another endpoint (0.130529ms)
+✔ whole salvo remains committed and inter-shot wait begins only after complete shoot motion (0.248279ms)
+✔ after-salvo chance chooses another closer without an unconditional extra wait or memory gate (0.14681ms)
+✔ a completed parent wait shoots at inclusive attack range and otherwise re-enters closer (0.163239ms)
+✔ skeleton retreat range stops movement but its one-shot child completes only at the animation deadline (0.586687ms)
+✔ completed retreat holds its last motion while too close, refreshes memory, and never replays the same child (0.168649ms)
+✔ an active retreat without a destination still shortcuts to a new shot before its clip ends (0.128939ms)
+✔ skeleton retreat failure shoots immediately; expired memory ends its completed child first (0.164979ms)
+✔ safe waypoint reacquisition forwards its explicit destination and native edges bypass search (0.187659ms)
+✔ phase state remains plain save data and wait deadlines can be shifted across a freeze (0.214899ms)
+✔ bosses and non-ranged touch variants retain separate states, and missing paths retain the portable fallback (0.132329ms)
+✔ imported skeleton backward clip and Gameplay deadline use WalkMotionFactor squared (1) (20.428247ms)
+✔ imported skeleton backward clip and Gameplay deadline use WalkMotionFactor squared (2) (9.07905ms)
+✔ retreat can stop and resume on range while its original clip, edge, and refreshed memory remain active (9.278888ms)
+✔ motion completion while RedCat is still too close holds the last imported pose without replaying retreat (11.359247ms)
+✔ mid-retreat fresh save restores the exact backward pose and remaining child (1) (7.637898ms)
+✔ mid-retreat fresh save restores the exact backward pose and remaining child (2) (6.508994ms)
+✔ freeze and cutscene preserve the retreat pose and shift its single animation deadline (10.471102ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 153.74499

@@ -1,0 +1,27 @@
+✔ restores music layers, native fade phase and remembered tracks without changing scheduling (2.586273ms)
+✔ restores overlapping pickup tails, keyed effects and delayed replay countdown without rerandomizing (1.015524ms)
+✔ restored dialogue keeps active offset and FIFO; reconstruction and stale callbacks never duplicate lines (0.610526ms)
+✔ metadata-delayed seeks never play an introduction and respect pause/reset while pending (0.456227ms)
+✔ immediate saves retain a pending seek even when HAVE_NOTHING accepts it but reports zero (0.486147ms)
+✔ a restored replay delay may expire before metadata without seeking errors or an early replay (0.759025ms)
+✔ legacy/cross-level states leave reconstructed playback untouched; malformed entries are bounded (0.412457ms)
+✔ decoded WAV voices restore offsets across decode, pause and cancellation without stale playback (6.24508ms)
+✔ one-shots saved at EOF complete once without replaying the file on either audio backend (0.792875ms)
+✔ matching reconstructed moving emitter binding survives playback restoration (0.306938ms)
+✔ dialogue FIFO preserves every WAV through delayed loading, pause, expiry and final completion (1.729349ms)
+✔ pause covers every playing channel and pending sound, preserving delayed-loop countdowns (0.399677ms)
+✔ explicit dialogue skip and reset remove queued tails; playback errors cannot stall a sequence (0.425007ms)
+✔ all 31 authored fairy locations activate exactly their own Davi binding and stop their idle on deactivation (108.387401ms)
+✔ native cutscene finish waits for the actual voice end and keeps its fairy present; skip stays immediate (36.637224ms)
+✔ a second fairy encounter replaces the first and legacy saves keep only the fairy at the saved player (11.243058ms)
+✔ pickup router selects complete native S/M/L recordings and overlapping pickups keep separate tails (0.490817ms)
+✔ BIG BENG charge sound follows its native hold, pause and release lifetime (0.420227ms)
+✔ level-transition pickup guard waits for every ending, freezes with pause, and clears on failure or reset (0.272758ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 254.495547

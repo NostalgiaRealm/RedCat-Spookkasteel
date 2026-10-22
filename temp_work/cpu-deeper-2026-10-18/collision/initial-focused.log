@@ -1,0 +1,36 @@
+✔ broad phase preserves crossing, start-solid, zero-length and exact hull-boundary contacts (2.120426ms)
+✔ translated and rotated brush bounds follow replacement and in-place pose changes (1.53441ms)
+✔ collision leaf bounds extend undersized render metadata and missing bounds fall back (0.234369ms)
+✔ world exterior, disabled brushes and nearest-model ordering remain unchanged (0.301848ms)
+✔ distant model rejection avoids narrow-phase leaf visits (0.352108ms)
+✔ bounded randomized rotated hull sweeps match unpruned traversal (14.557155ms)
+✔ lvl02a authored collision matches unpruned traversal around static and moved models (29.849956ms)
+✔ lvl03a authored collision matches unpruned traversal around static and moved models (20.551657ms)
+✔ stationary trace and contents queries reuse transformed planes and model/leaf bounds (3.000021ms)
+✔ in-place translation, rotation and pivot mutations immediately invalidate the pose (3.571027ms)
+✔ temporary old and destination poses restore exact collision without retaining historical poses (35.899736ms)
+✔ deleting a pose restores stationary bounds and reinserting it moves collision again (0.679625ms)
+✔ invalid mutations still fail validation after a valid pose has been cached (1.034993ms)
+✔ world model remains stationary and transform defaults and normalized quaternions stay valid (0.646486ms)
+✔ swept hull stops at an expanded solid wall, with outward normal (1.695799ms)
+✔ parallel movement outside a solid leaves full motion available (0.127669ms)
+✔ slide projects motion onto wall instead of passing through it (0.264048ms)
+✔ disabled moving model does not block movement (0.129859ms)
+✔ original level 1: spawn settles and player can walk/jump (16.047336ms)
+✔ original level 2: spawn settles and player can walk/jump (13.222294ms)
+✔ original level 3: spawn settles and player can walk/jump (13.290544ms)
+✔ original level 4: spawn settles and player can walk/jump (19.98339ms)
+✔ original level 5: spawn settles and player can walk/jump (6.595007ms)
+✔ translated brush collision follows motion beyond the original leaf bounds (0.613496ms)
+✔ model zero stays fixed and shared BSP leaves are visited for each model instance (0.213108ms)
+✔ rotated convex planes expand against the world AABB around an offset pivot (0.206429ms)
+✔ rotated BSP partition traversal uses the moved plane and world sweep extent (0.184908ms)
+✔ rotated collision honors inverted leaf sides and the nearest model hit (0.339798ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 121.45073

@@ -1,0 +1,26 @@
+✔ each level selects its complete original background WAV as an indefinite loop (68.64559ms)
+✔ returning after combat has faded out restores the background playhead before playback begins (0.518066ms)
+✔ returning during a crossfade reverses the existing layer without duplicate music or a position reset (0.488757ms)
+✔ pause freezes both music layers, positions and crossfade clocks then resumes from the same positions (0.889144ms)
+✔ explicit music stop and level reset discard remembered positions and all fading layers (0.467017ms)
+✔ fallback EOF events repeat complete tracks indefinitely without a replay delay or early restart (0.261808ms)
+✔ an EOF delivered while paused remains silent until resume and restarts at the beginning (0.154679ms)
+✔ selecting the same filename preserves playback while updating authored volume and owner (0.178108ms)
+✔ a track stopped exactly at EOF resumes at zero instead of trying to seek past its duration (0.232099ms)
+✔ Web Audio loops the full decoded sample range repeatedly without media seeking or a new source (5.400154ms)
+✔ buffered music preserves its sample offset across combat and pause with no introduction replay (0.658395ms)
+✔ reset during a pending music decode cannot resurrect the released source or refill its cache (0.513107ms)
+✔ music decoded while paused remains silent and starts exactly once when resumed (0.685966ms)
+✔ music retains at most two decoded tracks independently of the eight short-effect buffers (0.950404ms)
+✔ native portal frequency remains .075 with shared decoding and positional stereo gain (3.301369ms)
+✔ slow native sounds preserve sample position across pause/resume and stop pending decodes (0.861424ms)
+✔ native terminal zero frequency uses original rate and ordinary audio keeps its media behavior (0.243229ms)
+✔ slow native one-shot completion releases once and delayed loops restart without duplicate sources (1.837667ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 120.93015

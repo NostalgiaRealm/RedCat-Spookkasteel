@@ -1,0 +1,114 @@
+[
+  {
+    "evidence_id": "ev_9b3b96be36dd3c7618aa41e0d3ca26905d838dc304ce64429ff8166ae065cb49",
+    "subject": {
+      "name": "RcHcGame.dat",
+      "digest": {
+        "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+      },
+      "format": "pe",
+      "architecture": "x86",
+      "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+    },
+    "provider": {
+      "id": "hopper",
+      "name": "Hopper Disassembler",
+      "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+    },
+    "analysis_profile": {
+      "provider": {
+        "id": "hopper",
+        "name": "Hopper Disassembler",
+        "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+      },
+      "parameters": {
+        "target_kind": "executable",
+        "target_format": "pe",
+        "architecture": "x86",
+        "available_architectures": [
+          "x86"
+        ],
+        "loader": {
+          "source": "derived",
+          "arguments": [
+            "-l",
+            "WinPE",
+            "--intel-32"
+          ]
+        }
+      },
+      "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+    },
+    "predicate_type": "rea.analysis",
+    "operation": "procedure_assembly",
+    "parameters": {
+      "procedure": "0x4ad9a0"
+    },
+    "raw_result": null,
+    "normalized_result": "0x4ad9a0: mov eax, dword [esp+arg_0]\n0x4ad9a4: mov edx, dword [esp+arg_4]\n0x4ad9a8: mov dword [ecx+0x48], eax\n0x4ad9ab: mov dword [ecx+0x4c], edx\n0x4ad9ae: ret 0x8",
+    "confidence": "observed",
+    "authority": "shipped-artifact",
+    "environment": null,
+    "limitations": [
+      "Results depend on Hopper's completed static analysis."
+    ],
+    "locations": [],
+    "evidence_links": []
+  },
+  {
+    "evidence_id": "ev_77975695753af37661d0029af3ed401c35e2d81be6cbf627fc3c0de33f02db1a",
+    "subject": {
+      "name": "RcHcGame.dat",
+      "digest": {
+        "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+      },
+      "format": "pe",
+      "architecture": "x86",
+      "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+    },
+    "provider": {
+      "id": "hopper",
+      "name": "Hopper Disassembler",
+      "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+    },
+    "analysis_profile": {
+      "provider": {
+        "id": "hopper",
+        "name": "Hopper Disassembler",
+        "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+      },
+      "parameters": {
+        "target_kind": "executable",
+        "target_format": "pe",
+        "architecture": "x86",
+        "available_architectures": [
+          "x86"
+        ],
+        "loader": {
+          "source": "derived",
+          "arguments": [
+            "-l",
+            "WinPE",
+            "--intel-32"
+          ]
+        }
+      },
+      "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+    },
+    "predicate_type": "rea.analysis",
+    "operation": "procedure_assembly",
+    "parameters": {
+      "procedure": "0x4ad2e0"
+    },
+    "raw_result": null,
+    "normalized_result": "0x4ad2e0: mov edx, dword [ecx+0x14]\n0x4ad2e3: inc edx\n0x4ad2e4: mov dword [ecx+0x14], edx\n0x4ad2e7: mov eax, edx\n0x4ad2e9: mov edx, dword [esp+arg_0]\n0x4ad2ed: mov dword [edx+0x28], eax\n0x4ad2f0: mov eax, dword [esp+arg_0]\n0x4ad2f4: lea edx, dword [esp+arg_0]\n0x4ad2f8: mov dword [eax+0x2c], ecx\n0x4ad2fb: mov eax, dword [ecx+0x20]\n0x4ad2fe: add ecx, 0x18\n0x4ad301: push edx\n0x4ad302: push 0x1\n0x4ad304: push eax\n0x4ad305: call sub_53cff0\n0x4ad30a: ret 0x4",
+    "confidence": "observed",
+    "authority": "shipped-artifact",
+    "environment": null,
+    "limitations": [
+      "Results depend on Hopper's completed static analysis."
+    ],
+    "locations": [],
+    "evidence_links": []
+  }
+]

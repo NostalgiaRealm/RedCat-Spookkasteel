@@ -1,0 +1,20 @@
+✔ grounded patrol reaches the actual waypoint before turning at the graveyard corner (406.38802ms)
+✔ all three original graveyard frogs continue far-player patrols beyond the former corner stall (605.521982ms)
+✔ a previously stuck frog resumes the same authored route after save/load with the player far away (788.566313ms)
+✔ grounded tangent movement stays on the near side of a solid wall (379.272113ms)
+✔ original ground direction speeds and instantaneous stop are independent of frame rate (11.409784ms)
+✔ analog input keeps its magnitude, normalizes diagonals before speeds, and turns with yaw (0.211619ms)
+✔ jump carries takeoff momentum after release and yaw changes only the small airborne steering (0.243828ms)
+✔ walking off an edge carries launch velocity, then landing clears it before the next step (0.302208ms)
+✔ SuperSkippie slows horizontal displacement only on the boost trigger frame (0.242368ms)
+✔ environment velocity uses the ground multiplier; fan launches and noclip retain their own rules (0.239868ms)
+✔ jump inherits moving support velocity once, then flight retains it after leaving the support (0.196888ms)
+✔ midair saves resume the same trajectory and legacy or invalid saves safely start at rest (0.634356ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2310.102792

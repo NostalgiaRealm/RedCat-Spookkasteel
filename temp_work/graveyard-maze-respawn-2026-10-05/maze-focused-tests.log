@@ -1,0 +1,20 @@
+✔ death after every original maze stage and during moving hedges restores the replayable initial layout (771.482777ms)
+✔ the real death clip reaches one respawn and does not retrigger the maze at the old death position (60.47542ms)
+✔ fatal damage cancels an unfinished final button before it can start the maze exit cutscene (85.391052ms)
+✔ nonfatal damage leaves an unfinished final button able to commit its original completion callback (43.69055ms)
+✔ committed final button and fully open maze stay solved across respawn and save/load (226.989988ms)
+✔ save/load during death or after reset retains reset transforms and permits the original route again (198.680707ms)
+✔ maze retry preserves loot, enemy defeats, the crate secret, painting globals and the independent moving hedge (65.800908ms)
+✔ respawn does not reset a different levels original puzzle progress or motion (8.151661ms)
+✔ older saves with no motion-started fields still reset an unfinished maze after death (100.695971ms)
+✔ loading an older death save cancels its pending final-button callback before timelines advance (92.903157ms)
+✔ loading the stranded entrance pattern repairs only the maze and retains the saved level progress (95.213423ms)
+✔ loading viable intermediate, moving-door or committed maze saves does not rewind their progress (276.367784ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2114.557181

@@ -1,0 +1,44 @@
+<!doctype html><meta charset="utf-8"><base href="/">
+<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {CastleWorld} from '/src/world.js';
+import {DebrisRenderPool} from '/src/debris-render-pool.js';
+import {createActorLighting,applyActorLighting,updateActorLighting} from '/src/actor-lighting.js';
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setSize(512,384);renderer.setPixelRatio(1);document.body.style.margin='0';document.body.append(renderer.domElement);
+const world=new CastleWorld(renderer,{fov:62});world.actorManifest=await(await fetch('/assets/actors/manifest.json')).json();
+world.actorOverrideManifest={textures:{}};world.actorOverrideMaps=new Map();world.scene.background=new THREE.Color('#263451');
+const names=[...new Set(Object.values(world.actorManifest.actors).flatMap(actor=>(actor.settings?.debris?.types||[]).map(type=>type.actor.toLowerCase().replace(/\.act$/,''))))].sort();
+const knights=new Set(['knhd','knbrst','knhip','knllg','knrlg','knlrm','knrrm','knlns','knax']);
+const prototypes=new Map(await Promise.all(names.map(async name=>[name,await world.makeActor(name)])));
+const props=new DebrisRenderPool(world),characters=new DebrisRenderPool(world,{opaqueUntilFade:true});
+const gl=renderer.getContext(),before=new Uint8Array(512*384*4),after=new Uint8Array(before.length);
+function shade(mesh) {
+  const state=mesh.userData.actorLighting;
+  updateActorLighting(state,[1,2,3],.75,[{position:[20,30,40],radius:150,color:[.4,.8,.6]}],{sun:{normal:[.3,.8,-.5],color:[140,150,180]},ambient:[.16,.2,.1]});
+}
+function baseline(prototype,opacity,character,scale) {
+  const original=prototype.userData.mesh,root=new THREE.Group(),materials=(Array.isArray(original.material)?original.material:[original.material]).map(source=>{
+    const material=source.clone();
+    if(!character)material.transparent=true;
+    if(character&&opacity<1){material.transparent=true;material.depthWrite=false;material.alphaTest=Math.min(material.alphaTest,.003);}
+    material.opacity*=opacity;return material;
+  }),mesh=new THREE.Mesh(original.geometry,materials);
+  mesh.position.copy(original.position);mesh.quaternion.copy(original.quaternion);mesh.scale.fromArray(scale);mesh.userData.actorLighting=createActorLighting(prototype.userData.template.data.settings);
+  materials.forEach(material=>applyActorLighting(material,mesh.userData.actorLighting));root.add(mesh);return{root,mesh,materials};
+}
+window.checkCase=({name,opacity,turn,character})=>{
+  const prototype=prototypes.get(name),scale=[.83,1.24,.91],reference=baseline(prototype,opacity,character,scale),pool=character?characters:props,pooled=pool.acquire(prototype,{scale});
+  pool.setOpacity(pooled,opacity);
+  for(const item of [reference,pooled]){item.root.rotation.set(.2,turn,-.4);item.root.position.set(3,4,5);shade(item.mesh);}
+  reference.root.updateWorldMatrix(true,true);const bounds=new THREE.Box3().setFromObject(reference.root),centre=bounds.getCenter(new THREE.Vector3()),size=bounds.getSize(new THREE.Vector3()).length();
+  world.camera.aspect=512/384;world.camera.updateProjectionMatrix();world.camera.position.copy(centre).add(new THREE.Vector3(size*.65,size*.35,size*.9));world.camera.lookAt(centre);
+  world.scene.add(reference.root);reference.root.updateWorldMatrix(true,true);renderer.render(world.scene,world.camera);gl.readPixels(0,0,512,384,gl.RGBA,gl.UNSIGNED_BYTE,before);reference.root.removeFromParent();
+  world.scene.add(pooled.root);pooled.root.updateWorldMatrix(true,true);renderer.render(world.scene,world.camera);gl.readPixels(0,0,512,384,gl.RGBA,gl.UNSIGNED_BYTE,after);
+  let changedPixels=0,maxDelta=0,totalDelta=0;
+  for(let index=0;index<before.length;index+=4){let changed=false;for(let channel=0;channel<4;channel++){const delta=Math.abs(before[index+channel]-after[index+channel]);maxDelta=Math.max(maxDelta,delta);totalDelta+=delta;changed||=delta!==0;}changedPixels+=changed;}
+  const result={name,opacity,turn,character,changedPixels,maxDelta,totalDelta,draws:renderer.info.render.calls,glError:gl.getError()};
+  pool.release(pooled,0);reference.materials.forEach(material=>material.dispose());return result;
+};
+window.fixture={names,knights:[...knights]};
+</script>

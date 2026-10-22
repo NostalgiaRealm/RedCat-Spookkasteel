@@ -1,0 +1,1063 @@
+{
+  "levels": [
+    {
+      "id": "lvl00a",
+      "name": "Het Bos",
+      "genericFragmentSources": 2,
+      "sourceArtworkCount": 1,
+      "sourceArtworks": {
+        "wkcrate": 2
+      },
+      "fragmentArtworkCount": 2,
+      "fragmentArtworks": [
+        "wkcrate_s1",
+        "wkcrate_s2"
+      ],
+      "knightEnemies": 0,
+      "maximumOnePropCohort": 15,
+      "theoreticalAllPropsAtOnce": 30,
+      "sources": [
+        {
+          "id": "AdamAnyActor36",
+          "daviName": "wkrat_1",
+          "actor": "wkcrate",
+          "initiallyEnabled": true,
+          "targetable": true,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "wkcrate_s1",
+              "maxCount": 8
+            },
+            {
+              "actor": "wkcrate_s2",
+              "maxCount": 7
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor66",
+          "daviName": "hidebox",
+          "actor": "wkcrate",
+          "initiallyEnabled": true,
+          "targetable": true,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "wkcrate_s1",
+              "maxCount": 8
+            },
+            {
+              "actor": "wkcrate_s2",
+              "maxCount": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lvl01a",
+      "name": "Het Kasteel",
+      "genericFragmentSources": 0,
+      "sourceArtworkCount": 0,
+      "sourceArtworks": {},
+      "fragmentArtworkCount": 0,
+      "fragmentArtworks": [],
+      "knightEnemies": 22,
+      "maximumOnePropCohort": 0,
+      "theoreticalAllPropsAtOnce": 0,
+      "sources": []
+    },
+    {
+      "id": "lvl02a",
+      "name": "Het Kerkhof",
+      "genericFragmentSources": 32,
+      "sourceArtworkCount": 7,
+      "sourceArtworks": {
+        "brcrate": 3,
+        "glaslood": 2,
+        "glaslood1": 5,
+        "grafdum": 14,
+        "hekdoor": 1,
+        "plankdum": 6,
+        "wkcrate": 1
+      },
+      "fragmentArtworkCount": 10,
+      "fragmentArtworks": [
+        "brcrate_s1",
+        "brcrate_s2",
+        "brok1",
+        "brok2",
+        "brok3",
+        "glashard",
+        "hekdoor_s1",
+        "plank_s",
+        "wkcrate_s1",
+        "wkcrate_s2"
+      ],
+      "knightEnemies": 0,
+      "maximumOnePropCohort": 18,
+      "theoreticalAllPropsAtOnce": 443,
+      "sources": [
+        {
+          "id": "AdamAnyActor40",
+          "daviName": "",
+          "actor": "glaslood",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "glashard",
+              "maxCount": 15
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor71",
+          "daviName": "hekacteur",
+          "actor": "hekdoor",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 2,
+          "fragments": [
+            {
+              "actor": "hekdoor_s1",
+              "maxCount": 2
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor72",
+          "daviName": "brcrate_hek",
+          "actor": "brcrate",
+          "initiallyEnabled": true,
+          "targetable": true,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "brcrate_s1",
+              "maxCount": 8
+            },
+            {
+              "actor": "brcrate_s2",
+              "maxCount": 7
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor93",
+          "daviName": "graf1_deksel",
+          "actor": "grafdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 18,
+          "fragments": [
+            {
+              "actor": "brok1",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok2",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok3",
+              "maxCount": 12
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor94",
+          "daviName": "graf2_deksel",
+          "actor": "grafdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 18,
+          "fragments": [
+            {
+              "actor": "brok1",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok2",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok3",
+              "maxCount": 12
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor95",
+          "daviName": "graf3_deksel",
+          "actor": "grafdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 18,
+          "fragments": [
+            {
+              "actor": "brok1",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok2",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok3",
+              "maxCount": 12
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor96",
+          "daviName": "graf4_deksel",
+          "actor": "grafdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 18,
+          "fragments": [
+            {
+              "actor": "brok1",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok2",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok3",
+              "maxCount": 12
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor98",
+          "daviName": "kerkdeurlinks_dummy",
+          "actor": "grafdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 18,
+          "fragments": [
+            {
+              "actor": "brok1",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok2",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok3",
+              "maxCount": 12
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor99",
+          "daviName": "kerkdeurlinks_dummy2",
+          "actor": "grafdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 18,
+          "fragments": [
+            {
+              "actor": "brok1",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok2",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok3",
+              "maxCount": 12
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor100",
+          "daviName": "kerkdeurrechts_dummy",
+          "actor": "grafdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 18,
+          "fragments": [
+            {
+              "actor": "brok1",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok2",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok3",
+              "maxCount": 12
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor101",
+          "daviName": "kerkdeurrechts_dummy2",
+          "actor": "grafdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 18,
+          "fragments": [
+            {
+              "actor": "brok1",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok2",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok3",
+              "maxCount": 12
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor102",
+          "daviName": "heg_brcrate",
+          "actor": "brcrate",
+          "initiallyEnabled": true,
+          "targetable": true,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "brcrate_s1",
+              "maxCount": 8
+            },
+            {
+              "actor": "brcrate_s2",
+              "maxCount": 7
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor103",
+          "daviName": "mausodeur_dum1",
+          "actor": "grafdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 18,
+          "fragments": [
+            {
+              "actor": "brok1",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok2",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok3",
+              "maxCount": 12
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor104",
+          "daviName": "mausodeur_dum2",
+          "actor": "grafdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 18,
+          "fragments": [
+            {
+              "actor": "brok1",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok2",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok3",
+              "maxCount": 12
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor171",
+          "daviName": "",
+          "actor": "glaslood",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "glashard",
+              "maxCount": 15
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor172",
+          "daviName": "",
+          "actor": "glaslood1",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "glashard",
+              "maxCount": 15
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor173",
+          "daviName": "",
+          "actor": "glaslood1",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "glashard",
+              "maxCount": 15
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor174",
+          "daviName": "",
+          "actor": "glaslood1",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "glashard",
+              "maxCount": 15
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor175",
+          "daviName": "",
+          "actor": "glaslood1",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "glashard",
+              "maxCount": 15
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor176",
+          "daviName": "",
+          "actor": "glaslood1",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "glashard",
+              "maxCount": 15
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor193",
+          "daviName": "plankdum1",
+          "actor": "plankdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 4,
+          "fragments": [
+            {
+              "actor": "plank_s",
+              "maxCount": 4
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor194",
+          "daviName": "plankdum2",
+          "actor": "plankdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 4,
+          "fragments": [
+            {
+              "actor": "plank_s",
+              "maxCount": 4
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor195",
+          "daviName": "plankdum3",
+          "actor": "plankdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 4,
+          "fragments": [
+            {
+              "actor": "plank_s",
+              "maxCount": 4
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor196",
+          "daviName": "plankdum4",
+          "actor": "plankdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 4,
+          "fragments": [
+            {
+              "actor": "plank_s",
+              "maxCount": 4
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor197",
+          "daviName": "plankdum5",
+          "actor": "plankdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 4,
+          "fragments": [
+            {
+              "actor": "plank_s",
+              "maxCount": 4
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor207",
+          "daviName": "grafact1",
+          "actor": "grafdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 18,
+          "fragments": [
+            {
+              "actor": "brok1",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok2",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok3",
+              "maxCount": 12
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor208",
+          "daviName": "grafact2",
+          "actor": "grafdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 18,
+          "fragments": [
+            {
+              "actor": "brok1",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok2",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok3",
+              "maxCount": 12
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor209",
+          "daviName": "grafact3",
+          "actor": "grafdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 18,
+          "fragments": [
+            {
+              "actor": "brok1",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok2",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok3",
+              "maxCount": 12
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor210",
+          "daviName": "grafact4",
+          "actor": "grafdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 18,
+          "fragments": [
+            {
+              "actor": "brok1",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok2",
+              "maxCount": 3
+            },
+            {
+              "actor": "brok3",
+              "maxCount": 12
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor240",
+          "daviName": "",
+          "actor": "brcrate",
+          "initiallyEnabled": true,
+          "targetable": true,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "brcrate_s1",
+              "maxCount": 8
+            },
+            {
+              "actor": "brcrate_s2",
+              "maxCount": 7
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor241",
+          "daviName": "",
+          "actor": "wkcrate",
+          "initiallyEnabled": true,
+          "targetable": true,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "wkcrate_s1",
+              "maxCount": 8
+            },
+            {
+              "actor": "wkcrate_s2",
+              "maxCount": 7
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor242",
+          "daviName": "plankdum_exit",
+          "actor": "plankdum",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 4,
+          "fragments": [
+            {
+              "actor": "plank_s",
+              "maxCount": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lvl03a",
+      "name": "De Grotten",
+      "genericFragmentSources": 15,
+      "sourceArtworkCount": 3,
+      "sourceArtworks": {
+        "brcrate": 8,
+        "rotsexp1": 3,
+        "wkcrate": 4
+      },
+      "fragmentArtworkCount": 6,
+      "fragmentArtworks": [
+        "brcrate_s1",
+        "brcrate_s2",
+        "r_part01",
+        "r_part02",
+        "wkcrate_s1",
+        "wkcrate_s2"
+      ],
+      "knightEnemies": 0,
+      "maximumOnePropCohort": 15,
+      "theoreticalAllPropsAtOnce": 204,
+      "sources": [
+        {
+          "id": "AdamAnyActor9",
+          "daviName": "rotsexplosie",
+          "actor": "rotsexp1",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 8,
+          "fragments": [
+            {
+              "actor": "r_part01",
+              "maxCount": 3
+            },
+            {
+              "actor": "r_part02",
+              "maxCount": 5
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor10",
+          "daviName": "rotsexpolsie1",
+          "actor": "rotsexp1",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 8,
+          "fragments": [
+            {
+              "actor": "r_part01",
+              "maxCount": 3
+            },
+            {
+              "actor": "r_part02",
+              "maxCount": 5
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor11",
+          "daviName": "rotsexplosie2",
+          "actor": "rotsexp1",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 8,
+          "fragments": [
+            {
+              "actor": "r_part01",
+              "maxCount": 3
+            },
+            {
+              "actor": "r_part02",
+              "maxCount": 5
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor61",
+          "daviName": "water_crate01",
+          "actor": "brcrate",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "brcrate_s1",
+              "maxCount": 8
+            },
+            {
+              "actor": "brcrate_s2",
+              "maxCount": 7
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor62",
+          "daviName": "water_crate02",
+          "actor": "brcrate",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "brcrate_s1",
+              "maxCount": 8
+            },
+            {
+              "actor": "brcrate_s2",
+              "maxCount": 7
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor63",
+          "daviName": "water_crate03",
+          "actor": "brcrate",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "brcrate_s1",
+              "maxCount": 8
+            },
+            {
+              "actor": "brcrate_s2",
+              "maxCount": 7
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor64",
+          "daviName": "water_crate04",
+          "actor": "brcrate",
+          "initiallyEnabled": true,
+          "targetable": true,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "brcrate_s1",
+              "maxCount": 8
+            },
+            {
+              "actor": "brcrate_s2",
+              "maxCount": 7
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor65",
+          "daviName": "water_crate05",
+          "actor": "brcrate",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "brcrate_s1",
+              "maxCount": 8
+            },
+            {
+              "actor": "brcrate_s2",
+              "maxCount": 7
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor66",
+          "daviName": "water_crate06",
+          "actor": "brcrate",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "brcrate_s1",
+              "maxCount": 8
+            },
+            {
+              "actor": "brcrate_s2",
+              "maxCount": 7
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor67",
+          "daviName": "water_crate07",
+          "actor": "brcrate",
+          "initiallyEnabled": true,
+          "targetable": false,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "brcrate_s1",
+              "maxCount": 8
+            },
+            {
+              "actor": "brcrate_s2",
+              "maxCount": 7
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor68",
+          "daviName": "earth_crate",
+          "actor": "brcrate",
+          "initiallyEnabled": true,
+          "targetable": true,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "brcrate_s1",
+              "maxCount": 8
+            },
+            {
+              "actor": "brcrate_s2",
+              "maxCount": 7
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor82",
+          "daviName": "wk_crate04",
+          "actor": "wkcrate",
+          "initiallyEnabled": true,
+          "targetable": true,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "wkcrate_s1",
+              "maxCount": 8
+            },
+            {
+              "actor": "wkcrate_s2",
+              "maxCount": 7
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor83",
+          "daviName": "wk_crate05",
+          "actor": "wkcrate",
+          "initiallyEnabled": true,
+          "targetable": true,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "wkcrate_s1",
+              "maxCount": 8
+            },
+            {
+              "actor": "wkcrate_s2",
+              "maxCount": 7
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor84",
+          "daviName": "wk_crate06",
+          "actor": "wkcrate",
+          "initiallyEnabled": true,
+          "targetable": true,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "wkcrate_s1",
+              "maxCount": 8
+            },
+            {
+              "actor": "wkcrate_s2",
+              "maxCount": 7
+            }
+          ]
+        },
+        {
+          "id": "AdamAnyActor85",
+          "daviName": "wk_crate07",
+          "actor": "wkcrate",
+          "initiallyEnabled": true,
+          "targetable": true,
+          "fragmentMax": 15,
+          "fragments": [
+            {
+              "actor": "wkcrate_s1",
+              "maxCount": 8
+            },
+            {
+              "actor": "wkcrate_s2",
+              "maxCount": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lvl04a",
+      "name": "De Kasteeltoren",
+      "genericFragmentSources": 0,
+      "sourceArtworkCount": 0,
+      "sourceArtworks": {},
+      "fragmentArtworkCount": 0,
+      "fragmentArtworks": [],
+      "knightEnemies": 0,
+      "maximumOnePropCohort": 0,
+      "theoreticalAllPropsAtOnce": 0,
+      "sources": []
+    }
+  ],
+  "allGenericArtworks": [
+    "brcrate_s1",
+    "brcrate_s2",
+    "brok1",
+    "brok2",
+    "brok3",
+    "glashard",
+    "hekdoor_s1",
+    "plank_s",
+    "r_part01",
+    "r_part02",
+    "wkcrate_s1",
+    "wkcrate_s2"
+  ],
+  "knightArtworks": [
+    "knhd",
+    "knbrst",
+    "knhip",
+    "knllg",
+    "knrlg",
+    "knlrm",
+    "knrrm",
+    "knlns",
+    "knax"
+  ],
+  "missingPrototypes": [],
+  "allGenericArtworkCount": 12,
+  "currentFragmentArtworkUnion": [
+    "brcrate_s1",
+    "brcrate_s2",
+    "brok1",
+    "brok2",
+    "brok3",
+    "glashard",
+    "hekdoor_s1",
+    "knax",
+    "knbrst",
+    "knhd",
+    "knhip",
+    "knllg",
+    "knlns",
+    "knlrm",
+    "knrlg",
+    "knrrm",
+    "plank_s",
+    "r_part01",
+    "r_part02",
+    "wkcrate_s1",
+    "wkcrate_s2"
+  ],
+  "currentFragmentArtworkUnionCount": 21,
+  "animationClips": {
+    "brcrate_s1": 0,
+    "brcrate_s2": 0,
+    "brok1": 0,
+    "brok2": 0,
+    "brok3": 0,
+    "glashard": 0,
+    "hekdoor_s1": 0,
+    "knax": 0,
+    "knbrst": 0,
+    "knhd": 0,
+    "knhip": 0,
+    "knllg": 0,
+    "knlns": 0,
+    "knlrm": 0,
+    "knrlg": 0,
+    "knrrm": 0,
+    "plank_s": 0,
+    "r_part01": 0,
+    "r_part02": 0,
+    "wkcrate_s1": 0,
+    "wkcrate_s2": 0
+  }
+}

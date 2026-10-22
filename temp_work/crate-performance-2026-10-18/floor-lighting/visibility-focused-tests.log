@@ -1,0 +1,42 @@
+✖ Sun ray candidates preserve rotated local bounds tolerance with tracked brush poses (3.581298ms)
+✔ Sun ray candidates preserve rotated local bounds tolerance with ordinary brush poses (5.342467ms)
+✔ level 1 Sun/debris obstruction matches all-brush rays through moving and disabled poses (45.230482ms)
+✔ level 2 Sun/debris obstruction matches all-brush rays through moving and disabled poses (35.280603ms)
+✔ level 3 Sun/debris obstruction matches all-brush rays through moving and disabled poses (43.93555ms)
+✔ level 4 Sun/debris obstruction matches all-brush rays through moving and disabled poses (64.355415ms)
+✔ level 5 Sun/debris obstruction matches all-brush rays through moving and disabled poses (27.62957ms)
+✔ Sun visibility checks directed native PVS before tracing world and brush models (1.416241ms)
+✔ solid clusters are rejected but a missing PVS row bypasses connected-area filtering (0.222749ms)
+✔ closed area portals reject Sun lighting and authored opening motion invalidates the cache (0.249248ms)
+✔ actor/source leaf caches preserve exact point sides including bounds exterior and moved lights (0.228589ms)
+✔ moving/disabled brush changes bump revision only when values change (0.257218ms)
+✔ native Sun point rays honor transformed brushes and exact wall edges without contact skin (0.306358ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 12
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 276.189114
+
+✖ failing tests:
+
+test at tests/actor-light-visibility-broadphase.test.mjs:26:35
+✖ Sun ray candidates preserve rotated local bounds tolerance with tracked brush poses (3.581298ms)
+  AssertionError [ERR_ASSERTION]: -3,3,-2 → -3,-3,-2
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-light-visibility-broadphase.test.mjs:37:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

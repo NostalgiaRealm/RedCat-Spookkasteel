@@ -1,0 +1,131 @@
+--- source-before/world.js
++++ src/world.js
+@@ -2,6 +2,7 @@
+ import { BspCollider, PlayerController } from './collision.js';
+ import { moveSolidPlayer } from './moving-solids.js';
+ import { ActorAnimator, ActorStateAnimator } from './animation.js';
++import {cloneActorPoseGeometry} from './actor-geometry.js';
+ import { sampleCameraRoute } from './script-camera.js';
+ import { PlayerCameraControl } from './camera-control.js';
+ import { resolveThirdPersonCamera } from './third-person-camera.js';
+@@ -80,7 +81,7 @@
+     this.scene.matrixAutoUpdate=false;
+     this.scene.background=new THREE.Color('#28243f');
+     this.camera=new THREE.PerspectiveCamera(settings.fov,1,1,15000);
+-    this.yaw=0;this.pitch=0.16;this.elapsed=0;this.modelMeshes=new Map();this.actorInstances=new Map();this.actorCache=new Map();this.projectileMeshes=new Map();this.enemyDebris=new Map();this.resources=new Set();
++    this.yaw=0;this.pitch=0.16;this.elapsed=0;this.modelMeshes=new Map();this.actorInstances=new Map();this.actorCache=new Map();this.actorGeometryCache=new Map();this.projectileMeshes=new Map();this.enemyDebris=new Map();this.resources=new Set();
+     this.scene.add(new THREE.HemisphereLight(0xffe8bc,0x505565,2.4));
+     const sunlight=new THREE.DirectionalLight(0xffe0bd,2);sunlight.position.set(-500,1400,700);this.scene.add(sunlight);
+     this.textureLoader=new THREE.TextureLoader();
+@@ -103,7 +104,11 @@
+     t.wrapS=t.wrapT=THREE.RepeatWrapping;t.magFilter=THREE.LinearFilter;
+     t.anisotropy=Math.min(8,this.renderer.capabilities.getMaxAnisotropy());return t;
+   }
+-  lazyActorTexture(url){return this.actorTextures.texture(url);}
++  lazyActorTexture(url){
++    const prefix='assets/actors/';
++    if(url.startsWith(prefix))url=prefix+(this.actorResourceAliases?.textures?.[url.slice(prefix.length)]||url.slice(prefix.length));
++    return this.actorTextures.texture(url);
++  }
+   async load(id,onProgress=()=>{}) {
+     this.id=id;const base=`data/levels/${id}/`;this.level=await json(base+'level.json');const data=this.level;
+     [this.scriptProgram,this.motions,this.dialogue,this.textureTransparency]=await Promise.all([json(`data/davi/${id}.json`),json(`data/motions/${id}.json`),json('data/dialogue/nl.json'),json(base+'texture-transparency.json').catch(()=>null)]);
+@@ -164,7 +169,11 @@
+     const ground=this.collider.trace(this.player.position,this.player.position.map((v,i)=>i===1?v-180:v),this.player.mins,this.player.maxs,this.physicalModels);
+     if(!ground.startSolid)this.player.position=ground.end;
+     onProgress('RedCat en de bewoners van het kasteel laden…',.42);
+-    try {this.actorManifest=await json('assets/actors/manifest.json');}catch{this.actorManifest={};}
++    [this.actorManifest,this.actorResourceAliases]=await Promise.all([
++      json('assets/actors/manifest.json').catch(()=>({})),
++      json('assets/actors/shared-resources.json').catch(()=>null)
++    ]);
++    if(this.actorResourceAliases?.format!=='redcat-actor-resources-v1')this.actorResourceAliases=null;
+     this.actorOverrideManifest=await json('assets/actor-overrides/manifest.json');this.actorOverrideMaps=new Map();
+     const projectileManifest=await json('assets/projectiles/manifest.json');
+     this.projectileStyles=new Map();const frameTextures=new Map();
+@@ -207,11 +216,20 @@
+       if(!entry)return null;
+       const path=typeof entry==='string'?entry:entry.file;
+       const data=await json('assets/actors/'+path);
+-      const geometry=this.track(new THREE.BufferGeometry());
+-      geometry.setAttribute('position',new THREE.Float32BufferAttribute(data.positions,3));
+-      geometry.setAttribute('normal',new THREE.Float32BufferAttribute(data.normals,3));
+-      geometry.setAttribute('uv',new THREE.Float32BufferAttribute(data.uvs,2));geometry.setIndex(data.indices);
+-      data.groups.forEach(g=>geometry.addGroup(g.start,g.count,g.materialIndex));
++      // The generated index aliases only byte-identical imported render data.
++      // Settings, values, clips and materials still belong to this definition.
++      // The first concurrent definition to finish can supply the shared body;
++      // no fetch of an otherwise-unused canonical actor is needed.
++      const geometryKey=this.actorResourceAliases?.geometry?.[stem]||stem;
++      const geometries=this.actorGeometryCache??=new Map();let geometry=geometries.get(geometryKey);
++      if(!geometry) {
++        geometry=this.track(new THREE.BufferGeometry());
++        geometry.setAttribute('position',new THREE.Float32BufferAttribute(data.positions,3));
++        geometry.setAttribute('normal',new THREE.Float32BufferAttribute(data.normals,3));
++        geometry.setAttribute('uv',new THREE.Float32BufferAttribute(data.uvs,2));geometry.setIndex(data.indices);
++        data.groups.forEach(g=>geometry.addGroup(g.start,g.count,g.materialIndex));
++        geometries.set(geometryKey,geometry);
++      }
+       // Hekdoor is a closed grate with front/back faces ten units apart.
+       // Native actor rendering culls backfaces (0x5cddac–0x5cddf6); showing
+       // the rear face through the front's alpha holes draws a second gate.
+@@ -241,7 +259,7 @@
+   }
+   instantiateActor(template,options={}) {
+     const animated=template.data.animations?.length>0;
+-    const geometry=animated?this.track(template.geometry.clone()):template.geometry;
++    const geometry=animated?this.track(cloneActorPoseGeometry(template.geometry)):template.geometry;
+     const materials=template.materials.map(original=>{
+       const material=this.track(original.clone());
+       if(options.overrideMap){material.map=options.overrideMap;
+--- source-before/animation.js
++++ src/animation.js
+@@ -1,9 +1,10 @@
+-// Rigid skeletal animation for Genesis3D actors. Each instance owns its geometry.
++// Rigid skeletal animation for Genesis3D actors. Each instance owns its pose;
++// immutable clip preparation and geometry UV/index arrays can be shared.
+ // Original vertex coordinates are local to one bone; pose = parent * attachment * key.
+ import { Box3, Sphere } from 'three';
+ 
+ const identity = new Float64Array([1,0,0,0,1,0,0,0,1,0,0,0]);
+-const localBoneRadii=new WeakMap(),animationRadii=new WeakMap();
++const localBoneRadii=new WeakMap(),animationRadii=new WeakMap(),preparedClips=new WeakMap();
+ function actorLocalBoneRadii(data) {
+   let cached=localBoneRadii.get(data);if(cached)return cached;
+   const {localPositions,joints,bones}=data;
+@@ -96,6 +97,20 @@
+   return {incoming,outgoing};
+ }
+ 
++function prepareActorClips(data) {
++  let prepared=preparedClips.get(data);if(prepared)return prepared;
++  // Imported actor definitions are immutable for their level lifetime. Build
++  // track lookup and Hermite tangents once, rather than once per enemy/torch.
++  prepared=new Map((data.animations||[]).map(clip=>{
++    const byName=new Map(clip.tracks.map(track=>[track.bone,track]));
++    return [clip.name.toLowerCase(),{clip,tracks:data.bones.map(bone=>{
++      const track=byName.get(bone.name);
++      return track?{...track,tangents:track.translation?hermiteTangents(track.translation):null}:null;
++    })}];
++  }));
++  preparedClips.set(data,prepared);return prepared;
++}
++
+ function translation(out, channel, tangents, time) {
+   if(!channel || !channel.times.length){out.fill(0);return;}
+   const i=interval(channel,time),j=Math.min(i+1,channel.times.length-1);
+@@ -156,13 +171,7 @@
+     this.transitionDuration=0;this.transition=null;this.sampledTransition=null;this.sampledWeight=0;
+     this.boneTransforms=data.bones.map(()=>new Float64Array(12));
+     this.localBoneRadii=actorLocalBoneRadii(data);this.conservativeRadius=undefined;
+-    this.prepared=new Map((data.animations||[]).map(clip=>{
+-      const byName=new Map(clip.tracks.map(track=>[track.bone,track]));
+-      return [clip.name.toLowerCase(),{clip,tracks:data.bones.map(bone=>{
+-        const track=byName.get(bone.name);
+-        return track?{...track,tangents:track.translation?hermiteTangents(track.translation):null}:null;
+-      })}];
+-    }));
++    this.prepared=prepareActorClips(data);
+     this.animationRadius=actorAnimationRadius(data,this.prepared,this.localBoneRadii);
+     this.p=new Float64Array(3);this.q=new Float64Array(4);this.key=new Float64Array(12);this.local=new Float64Array(12);
+   }

@@ -1,0 +1,26 @@
+✔ lazy actor triangles match eager sweeps through rotated, moving and newly animated props (22.554057ms)
+✔ effect batches upload only live vertices/instances through growth, shrinking and empty frames (2.660233ms)
+✔ sprite culling rejects distant artwork while retaining large, rotated, expanded and native spout edges (0.678875ms)
+✔ deferred skinning preserves live bone transforms, transitions, save state and exact later vertices (64.082924ms)
+✔ camera re-entry and hidden collision queries resolve the current pose without advancing its clock (1.604429ms)
+✔ a disabled animator retains its last evaluated pose even if a new clip is selected before skinning (1.276312ms)
+✔ orientation cache follows authored/runtime turns, rotating pickups, moving supports and independent callers (1.002663ms)
+✔ small initial effect storage grows without changing live Float32 data or geometry ownership (3.048451ms)
+✔ effect batches keep their original maximums, custom limits, material states and culling (2.894002ms)
+✔ idle effect buffers release once after ten seconds, shrink, then resume in the same flush (0.700185ms)
+✔ empty or frustum-rejected billboard submissions never grow storage (1.057494ms)
+✔ beam bounds reject only complete quads outside each frustum plane and retain crossing vertices (0.633726ms)
+✔ accepted broad beam, ribbon and Gargoyle quads retain every coordinate, UV and vertex color (0.793075ms)
+✔ beam scratch vectors preserve exact previous vertices, colours and ribbon UVs across consecutive rays (2.619624ms)
+✔ discs and custom coloured quads preserve earlier batch data, capacity and upload state (1.358771ms)
+✔ precomputed light distances retain stable ties, player priority, eligibility and eight-light limit (0.536487ms)
+✔ light order matches previous calculation after camera, light position and radius changes (1.52569ms)
+✔ actor lighting reads freshly updated scene matrices for mounted parts and debris without ancestor refreshes (3.262259ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 181.678778

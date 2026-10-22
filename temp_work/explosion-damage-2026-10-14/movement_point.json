@@ -1,0 +1,56 @@
+{
+  "evidence_id": "ev_5ae1ce6ac90fef9f301d94971f0a17f7815551895988d13dc6cd39019230d3c2",
+  "subject": {
+    "name": "RcHcGame.dat",
+    "digest": {
+      "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+    },
+    "format": "pe",
+    "architecture": "x86",
+    "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+  },
+  "provider": {
+    "id": "hopper",
+    "name": "Hopper Disassembler",
+    "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+  },
+  "analysis_profile": {
+    "provider": {
+      "id": "hopper",
+      "name": "Hopper Disassembler",
+      "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+    },
+    "parameters": {
+      "target_kind": "executable",
+      "target_format": "pe",
+      "architecture": "x86",
+      "available_architectures": [
+        "x86"
+      ],
+      "loader": {
+        "source": "derived",
+        "arguments": [
+          "-l",
+          "WinPE",
+          "--intel-32"
+        ]
+      }
+    },
+    "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+  },
+  "predicate_type": "rea.analysis",
+  "operation": "procedure_pseudo_code",
+  "parameters": {
+    "procedure": "0x4dbea0"
+  },
+  "raw_result": null,
+  "normalized_result": "    var_C = *0x0;\n    *0x0 = &var_C;\n    decomp_var_20 = ebp;\n    decomp_var_24 = esi;\n    esp = esp - 0x28;\n    decomp_var_28 = edi;\n    ecx = arg_108;\n    esi = arg_0;\n    if (ecx != esi) {\n            if (ecx != 0x0) {\n                    eax = ecx[0x5];\n                    ecx[0x5] = eax - 0x1;\n                    if (eax == 0x1) {\n                            esp = esp - 0x4;\n                            sub_5abfc0(0x0);\n                    }\n            }\n            arg_108 = esi;\n            if (esi != 0x0) {\n                    esi[0x5] = esi[0x5] + 0x1;\n            }\n    }\n    if (arg_108 == 0x0) {\n            esp = esp - 0x4;\n            var_1C = arg_0;\n            sub_4040a0(0x0);\n            ecx = ecx | 0xffffffff;\n            asm { repne scasb al, byte [edi] };\n            sub_4040f0(byte_6b3f70, !ecx - 0x1);\n            (sub_5a07f0())();\n            esp = (esp - 0x18) + 0x10 - 0x4;\n            sub_4040a0(0x1);\n    }\n    sub_556710();\n    if (arg_108 == 0x0) {\n            decomp_var_2c = ebx;\n            var_1C = arg_0;\n            sub_4040a0(0x0);\n            ecx = ecx | 0xffffffff;\n            esp = esp - 0xc;\n            decomp_var_30 = 0x1;\n            asm { repne scasb al, byte [edi] };\n            ebx = !ecx - 0x1;\n            esp = esp - 0x4;\n            eax = sub_401940(ebx, decomp_var_30, decomp_var_2c);\n            bool_5 = true;\n            bool_4 = true;\n            if (eax != 0x0) {\n                    *var_18 = *byte_6b3f70;\n                    esp = esp - 0x4;\n                    decomp_var_30 = ebx;\n                    asm { rep movsb  byte [edi], byte [esi] };\n                    sub_404190(decomp_var_30);\n                    esi = arg_0;\n            }\n            (sub_5a07f0())();\n            sub_4040a0(0x1);\n            esp = ((esp - 0x10) + 0x10 - 0x4) + 0x4;\n    }\n    esp = esp - 0x4;\n    (*(*arg_108 + 0x4))(&arg_194);\n    if (arg_108 == 0x0) {\n            esp = esp - 0x4;\n            sub_4040a0(0x0);\n            ecx = ecx | 0xffffffff;\n            asm { repne scasb al, byte [edi] };\n            sub_4040f0(byte_6b3f70, !ecx - 0x1);\n            (sub_5a07f0())();\n            esp = (esp - 0x18) + 0x10 - 0x4;\n            sub_4040a0(0x1);\n    }\n    eax = sub_5569b0();\n    if (esi != 0x0) {\n            eax = esi[0x5];\n            eax = eax - 0x1;\n            esi[0x5] = eax;\n            if (eax == 0x0) {\n                    esp = esp - 0x4;\n                    eax = sub_5abfc0(0x0);\n            }\n    }\n    *0x0 = var_C;\n    return eax;\n",
+  "confidence": "observed",
+  "authority": "shipped-artifact",
+  "environment": null,
+  "limitations": [
+    "Results depend on Hopper's completed static analysis."
+  ],
+  "locations": [],
+  "evidence_links": []
+}

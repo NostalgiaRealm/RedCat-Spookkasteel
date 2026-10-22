@@ -1,0 +1,207 @@
+{
+  "checks": [
+    "unlock-all cheat enables chapter access without marking any chapter played",
+    "first Forest visit keeps authored tutorial, ability and boss triggers; history is recorded without changing the current first-play session",
+    "Continue and two-minute recovery retain first-play mode despite Forest already being recorded as played",
+    "first visit to a cheat-unlocked Castle remains first-play",
+    "chapter-card replay takes native tutorial skip branch while retaining Forest ability and boss gates",
+    "replay mode survives browser reload, Continue and two-minute recovery",
+    "cancelling Start opnieuw preserves current save, played history and recovery snapshots",
+    "failed first Cave load does not record the level as played or replace saves",
+    "failed Start opnieuw does not clear played history or recovery snapshots",
+    "confirmed new adventure clears old played history only after successful load, restores first-play tutorials and retains unlocks"
+  ],
+  "sessions": [
+    {
+      "name": "first Forest start",
+      "level": "lvl00a",
+      "replay": false,
+      "nativeType": 0,
+      "snapshotReplay": false,
+      "savedReplay": false,
+      "score": 0,
+      "progress": {
+        "version": 1,
+        "highestUnlocked": 4,
+        "playedLevels": [
+          "lvl00a"
+        ]
+      },
+      "errors": [],
+      "forestTriggers": {
+        "csmc02_tr": true,
+        "csmc06_tr": true,
+        "csmc10_tr": true
+      }
+    },
+    {
+      "name": "first-play Continue",
+      "level": "lvl00a",
+      "replay": false,
+      "nativeType": 0,
+      "snapshotReplay": false,
+      "savedReplay": false,
+      "score": 0,
+      "progress": {
+        "version": 1,
+        "highestUnlocked": 4,
+        "playedLevels": [
+          "lvl00a"
+        ]
+      },
+      "errors": [],
+      "forestTriggers": {
+        "csmc02_tr": true,
+        "csmc06_tr": true,
+        "csmc10_tr": true
+      }
+    },
+    {
+      "name": "two-minute recovery first-play",
+      "level": "lvl00a",
+      "replay": false,
+      "nativeType": 0,
+      "snapshotReplay": false,
+      "savedReplay": false,
+      "score": 101,
+      "progress": {
+        "version": 1,
+        "highestUnlocked": 4,
+        "playedLevels": [
+          "lvl00a"
+        ]
+      },
+      "errors": [],
+      "forestTriggers": {
+        "csmc02_tr": true,
+        "csmc06_tr": true,
+        "csmc10_tr": true
+      }
+    },
+    {
+      "name": "first cheat-unlocked Castle visit",
+      "level": "lvl01a",
+      "replay": false,
+      "nativeType": 0,
+      "snapshotReplay": false,
+      "savedReplay": false,
+      "score": 0,
+      "progress": {
+        "version": 1,
+        "highestUnlocked": 4,
+        "playedLevels": [
+          "lvl00a",
+          "lvl01a"
+        ]
+      },
+      "errors": [],
+      "forestTriggers": {
+        "csmc02_tr": null,
+        "csmc06_tr": null,
+        "csmc10_tr": null
+      }
+    },
+    {
+      "name": "Forest chapter-card replay",
+      "level": "lvl00a",
+      "replay": true,
+      "nativeType": 1,
+      "snapshotReplay": true,
+      "savedReplay": true,
+      "score": 0,
+      "progress": {
+        "version": 1,
+        "highestUnlocked": 4,
+        "playedLevels": [
+          "lvl00a",
+          "lvl01a"
+        ]
+      },
+      "errors": [],
+      "forestTriggers": {
+        "csmc02_tr": false,
+        "csmc06_tr": true,
+        "csmc10_tr": true
+      }
+    },
+    {
+      "name": "replay Continue after browser reload",
+      "level": "lvl00a",
+      "replay": true,
+      "nativeType": 1,
+      "snapshotReplay": true,
+      "savedReplay": true,
+      "score": 0,
+      "progress": {
+        "version": 1,
+        "highestUnlocked": 4,
+        "playedLevels": [
+          "lvl00a",
+          "lvl01a"
+        ]
+      },
+      "errors": [],
+      "forestTriggers": {
+        "csmc02_tr": false,
+        "csmc06_tr": true,
+        "csmc10_tr": true
+      }
+    },
+    {
+      "name": "two-minute recovery replay",
+      "level": "lvl00a",
+      "replay": true,
+      "nativeType": 1,
+      "snapshotReplay": true,
+      "savedReplay": true,
+      "score": 202,
+      "progress": {
+        "version": 1,
+        "highestUnlocked": 4,
+        "playedLevels": [
+          "lvl00a",
+          "lvl01a"
+        ]
+      },
+      "errors": [],
+      "forestTriggers": {
+        "csmc02_tr": false,
+        "csmc06_tr": true,
+        "csmc10_tr": true
+      }
+    },
+    {
+      "name": "confirmed new adventure",
+      "level": "lvl00a",
+      "replay": false,
+      "nativeType": 0,
+      "snapshotReplay": false,
+      "savedReplay": false,
+      "score": 0,
+      "progress": {
+        "version": 1,
+        "highestUnlocked": 4,
+        "playedLevels": [
+          "lvl00a"
+        ]
+      },
+      "errors": [],
+      "forestTriggers": {
+        "csmc02_tr": true,
+        "csmc06_tr": true,
+        "csmc10_tr": true
+      }
+    }
+  ],
+  "errors": [],
+  "injectedFailures": [
+    {
+      "level": "lvl03a",
+      "message": "Expected property name or '}' in JSON at position 2 (line 1 column 3)"
+    },
+    {
+      "level": "lvl00a",
+      "message": "Expected property name or '}' in JSON at position 2 (line 1 column 3)"
+    }
+  ]
+}

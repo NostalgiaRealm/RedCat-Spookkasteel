@@ -1,0 +1,8 @@
+<!doctype html><html><head><link rel="stylesheet" href="../../src/style.css"></head><body class="in-cutscene" style="background:black">
+<div style="position:absolute;left:0;top:100px;width:200px;height:200px;background:#060407"></div>
+<div style="position:absolute;left:200px;top:100px;width:200px;height:200px;background:#000000"></div>
+<canvas id="probe" width="200" height="200" style="position:absolute;left:400px;top:100px"></canvas>
+<div style="position:absolute;left:600px;top:100px;width:200px;height:200px;background:#ffffff"></div>
+<div id="cinema-top" class="cinema-bar"></div><div id="cinema-bottom" class="cinema-bar"></div>
+<script>const gl=document.getElementById('probe').getContext('webgl2');gl.clearColor(0,0,0,1);gl.clear(gl.COLOR_BUFFER_BIT);</script>
+</body></html>

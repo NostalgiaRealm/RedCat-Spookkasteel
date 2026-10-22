@@ -1,0 +1,25 @@
+✔ all levels gain exactly sixteen missing hand flames without duplicating sixteen existing flames or touching static fixtures (25.603683ms)
+✔ hand flames and their lights follow the rendered wick across animation, rotation and scale (8.839739ms)
+✖ integration emits alpha-masked flames at the moving tip, uses eight light slots and respects disable, pause and distance (8.969578ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 161.687724
+
+✖ failing tests:
+
+test at tests/torch-flames.test.mjs:72:1
+✖ integration emits alpha-masked flames at the moving tip, uses eight light slots and respects disable, pause and distance (8.969578ms)
+  TypeError: Cannot read properties of undefined (reading 'removeFromParent')
+      at WorldEffects.dispose (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/src/world-effects.js:451:91)
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/torch-flames.test.mjs:101:11)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)

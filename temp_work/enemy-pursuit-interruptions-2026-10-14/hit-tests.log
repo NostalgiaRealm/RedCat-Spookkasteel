@@ -1,0 +1,28 @@
+✔ a committed plant shot releases once even if RedCat moves out of range and behind cover (3.796679ms)
+✔ standing-shooter salvo finishes without new visibility gates or invented between-shot waits (1.83687ms)
+✔ gargoyle finishes a committed salvo after alert memory expires (3.290832ms)
+✔ a selected hit reaction cancels an unreleased shot and death cannot emit it later (1.79463ms)
+✔ knight melee still requires RedCat inside the actual strike range (0.527948ms)
+✔ saved and frozen committed release retains its remaining deadline (1.703041ms)
+✔ ordinary hits choose reaction or sound-only continuation without changing damage or awareness (3.59666ms)
+✔ selected hits during hurt keep its original pose deadline and entry sound (0.238699ms)
+✔ stone inactive immunity alerts on the first hit, and fresh alert wake follows its hit reaction (1.471802ms)
+✔ a sound-only hit wakes stone enemies through ordinary alert without cancelling another state (0.240519ms)
+✔ reaction choice and pending stone alert survive save/load and script freezes (2.701625ms)
+✔ lethal ordinary damage cancels all pending attacks and awards only one defeat (0.465857ms)
+✔ Bone Brutus only accepts damage on its native one-in-three hit branch (0.236629ms)
+✔ accepted ranged attack starts castle Action before impact without enlarging knight perception (24.849803ms)
+✔ empty shots, props, inactive targets and rejected attacks do not trigger enemy music (93.052368ms)
+✔ a free-aim hit gives a distant knight native hit memory and music expires after disengagement (13.189178ms)
+✔ an aimed attack that misses has a finite music duration (13.590765ms)
+✔ a non-damaging knight hit still refreshes native awareness and remembered player position (10.543812ms)
+✔ defeat clears attack music only after the final enemy, with boss music retaining priority (11.284597ms)
+✔ ranged attack music survives saving and frozen gameplay then expires normally (34.106113ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 280.871335

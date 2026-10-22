@@ -1,0 +1,45 @@
+✔ offscreen actor parking skips scene traversal and restores on camera turns without gameplay visibility changes (3.771679ms)
+✔ parked actor direct queries and same-frame reveal preserve transformed scene ancestry (1.129264ms)
+✔ nested roots and externally reparented or removed actors keep their owner hierarchy (1.282683ms)
+✔ unmanaged child lights and presentation effects never enter the actor parking branch (2.016609ms)
+✔ removal and disposal restore owned roots and their original layers (0.363088ms)
+✔ deferred native prop collision matches eager current-pose triangles through motion and transitions (506.998884ms)
+✔ masked, ignored, hidden and carried props retain deferred geometry until an exact query needs it (0.580836ms)
+✔ off-screen generic props retain current animation clocks and exact collision at any distance (5.070432ms)
+✔ parked and GPU-released mounted props remain exact remote collision surfaces after scripted motion (5.838507ms)
+✔ stationary managed brush poses stop mesh writes while live brush states remain checked (3.180472ms)
+✔ pose map replacement, clears and new model collections do not leave stale subscriptions or transforms (0.590096ms)
+✔ ordinary mutable pose maps retain immediate numeric in-place updates (0.285909ms)
+✔ one-pass brush state preserves triggers, liquids, pickups, doors and live controller changes (22.915151ms)
+✔ player rides a translated floor while collision remains solid at its new position (5.031142ms)
+✔ script teleport supersedes floor carry during the same frame (0.948535ms)
+✔ a translating brush sweeps a stationary player instead of trapping or passing through the hull (5.519439ms)
+✔ a hinged door sweeps its arc and leaves RedCat free to move beside it (4.718693ms)
+✔ a wall-blocked door rejects its movement and cannot crush the player or teleport through a wall (1.225043ms)
+✔ the same brush transaction carries moving floors and refuses a ceiling crush (0.960045ms)
+✔ only committed support carrying contributes to takeoff momentum, never rejected moves or side pushes (2.077329ms)
+✔ world motion handoff adds actual platform carry to a jump and resets support velocity on the next frame (3.443941ms)
+✔ carrying ignores the floor own mounted prop at its previous pose while unrelated props still block (1.539051ms)
+✔ no-clip and disabled trigger brushes never push or stall the player (0.140109ms)
+✔ rejected motion segments wait before emitting their event or completion and resume without repeats (0.448288ms)
+✔ a motion event teleport supersedes the displacement already accepted before that event (1.454961ms)
+✔ the original tower witch door does not strand the player inside its opening leaf (8.024935ms)
+✔ only drawable chunks join normal scene traversal; camera turns restore them immediately (5.029492ms)
+✔ normal scene matrix and visible traversals skip parked children, but direct geometry queries remain current (3.716049ms)
+✔ unchanged static chunk matrices are not multiplied each frame and moving representatives update once (0.828865ms)
+✔ stream disposal removes its hidden branch and every chunk without changing authored visibility (0.550817ms)
+✔ chunk partition preserves every authored face and material in all five levels (153.92131ms)
+✔ distant chunks release independent buffers; shared textures stay until their last resident user leaves (4.748863ms)
+✔ far visible sections stay unloaded until approached, and moved brushes use current nearby bounds (0.905825ms)
+✔ distant decal rays use CPU source faces even when their render chunks are unloaded (1.376662ms)
+✔ leaving a level during an outstanding texture request releases its late result (0.542887ms)
+✔ camera turns preload distant surfaces outside the rendered view before they become visible (0.728886ms)
+✔ repeated five second camera circles reuse resident buffers and textures, then evict after leaving (3.096502ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 618.117923

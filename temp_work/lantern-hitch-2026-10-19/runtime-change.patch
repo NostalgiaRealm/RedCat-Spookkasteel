@@ -1,0 +1,312 @@
+--- source-before/actor-render-residency.js
++++ src/actor-render-residency.js
+@@ -26,12 +26,14 @@
+ // Render residency never owns gameplay visibility, animation clocks, collision,
+ // or CPU asset data. A turned camera can immediately upload the retained data.
+ export class ActorRenderResidency {
+-  constructor({nearDistance=1024,retainDistance=1536,viewDistance=Infinity,releaseDelay=2,scene=null,protectedRoots=[],boundsVisible=()=>true,boundsAllowed=()=>true,boundsRequired=()=>true,preloadPosition=()=>null,textures=null,preparation=null}={}) {
++  constructor({nearDistance=1024,retainDistance=1536,viewDistance=Infinity,releaseDelay=2,scene=null,protectedRoots=[],boundsVisible=()=>true,boundsAllowed=()=>true,boundsRequired=()=>true,boundsCurrent=()=>false,boundsPreload=()=>false,preloadPosition=()=>null,textures=null,preparation=null}={}) {
+     this.nearDistance=nearDistance;this.retainDistance=Math.max(nearDistance,retainDistance);
+     this.viewDistance=Math.max(nearDistance,viewDistance);
+     this.releaseDelay=releaseDelay;this.scene=scene;this.protectedRoots=protectedRoots;this.boundsVisible=boundsVisible;
+     this.boundsAllowed=boundsAllowed;
+     this.boundsRequired=boundsRequired;
++    this.boundsCurrent=boundsCurrent;
++    this.boundsPreload=boundsPreload;
+     this.preloadPosition=preloadPosition;
+     this.textures=textures;this.preparation=preparation;this.readyForView=true;
+     this.records=new Map();this.meshRecords=new Map();this.resources=new Map();
+@@ -66,7 +68,7 @@
+     // every unchanged actor and texture at display refresh rate.
+     for(const resource of record.resources) {
+       let state=this.resources.get(resource);
+-      if(!state){state={released:false,resident:0,owners:0,nextReleaseCheck:-Infinity};this.resources.set(resource,state);}
++      if(!state){state={released:false,resident:0,owners:0,nextReleaseCheck:-Infinity,priority:0};this.resources.set(resource,state);}
+       state.owners++;
+     }
+     this.records.set(root,record);return record;
+@@ -103,7 +105,7 @@
+   update(roots,camera,time=0) {
+     if(!camera)return this.stats;
+     this.lastUpdate={roots,camera,time};this.readyForView=true;
+-    for(const state of this.resources.values())state.priority=1;
++    for(const state of this.resources.values())state.priority=0;
+     const activeRoots=new Set(roots);
+     for(const [root,record]of this.records)if(!activeRoots.has(root)) {
+       this.restoreRoot(root);
+@@ -138,10 +140,14 @@
+       // camera frustum. Nearby hidden actors can remain preloaded without draws.
+       const inView=allowed&&visible&&distance<=this.viewDistance&&this.frustum.intersectsBox(record.bounds)&&this.boundsVisible(record.bounds);
+       const requiredForView=inView&&this.boundsRequired(record.roomBounds);
+-      const ahead=allowed&&visible&&distance<=this.viewDistance&&this.preloadFrustum.intersectsBox(record.bounds)&&this.boundsVisible(record.bounds);
++      const ahead=allowed&&visible&&distance<=this.viewDistance&&this.preloadFrustum.intersectsBox(record.bounds);
+       const lead=this.preloadPosition();
+-      const wanted=allowed&&visible&&distance<=this.viewDistance&&(distance<=this.nearDistance||ahead||lead&&record.bounds.distanceToPoint(lead)<=this.nearDistance);
+-      if(wanted)this.textures?.request(record.resources,undefined,requiredForView?2:1);
++      const near=distance<=this.nearDistance||lead&&record.bounds.distanceToPoint(lead)<=this.nearDistance;
++      const currentRoom=allowed&&this.boundsCurrent(record.roomBounds);
++      const preparedRoom=this.boundsPreload(record.roomBounds);
++      const wanted=visible&&distance<=this.viewDistance&&(allowed&&(near||ahead||currentRoom)||preparedRoom);
++      const priority=requiredForView?2:near||ahead?1:0;
++      if(wanted)this.textures?.request(record.resources,undefined,priority);
+       const textureReady=!this.textures||this.textures.ready(record.resources);
+       if(wanted)record.lastWanted=time;
+       const resident=wanted||(allowed&&record.resident&&visible&&(distance<=this.retainDistance||time-record.lastWanted<this.releaseDelay));
+@@ -154,7 +160,7 @@
+       let buffersReady=true;
+       if(resident&&this.preparation)for(const resource of record.resources)if(resource.isBufferGeometry&&!this.preparation.ready(resource)) {
+         const state=this.resources.get(resource);
+-        if(requiredForView)state.priority=2;
++        state.priority=Math.max(state.priority,priority);
+         this.preparation.request(resource,()=>!this.preparation.disposed&&state.resident>0,
+           ()=>state.priority);
+         buffersReady=false;
+--- source-before/actor-texture-stream.js
++++ src/actor-texture-stream.js
+@@ -55,6 +55,7 @@
+   async loadRoot(root){this.requestRoot(root);await this.settle();}
+   pump() {
+     while(!this.disposed&&this.running<this.concurrency&&this.queue.length) {
++      this.queue.sort((a,b)=>b.entry.priority-a.entry.priority);
+       const {entry,resolve}=this.queue.shift(),pending=entry.promise;this.running++;
+       const wanted=()=>!this.disposed&&(this.pinned.has(entry.texture)||this.clock()-entry.lastWanted<this.idleSeconds);
+       Promise.resolve().then(async()=>{
+--- source-before/main.js
++++ src/main.js
+@@ -621,17 +621,21 @@
+   if(!stream.readyForView||world.actorResidency?.readyForView===false)world.updateRenderResidency();
+   if(world.actorTextures?.readyForView===false)world.updateActorTextureResidency();
+   const error=stream.error||world.actorResidency?.error||world.actorTextures?.error;
+-  if(error){showError(error);streamingWait=null;return true;}
++  if(error){audio.pause();showError(error);streamingWait=null;return true;}
+   if(!stream.readyForView||world.actorResidency?.readyForView===false||world.actorTextures?.readyForView===false){
+-    if(!streamingWait){streamingWait={since:now,overlay:false};audio.pause();}
++    if(!streamingWait)streamingWait={since:now,overlay:false,audioPaused:false};
+     if(now-streamingWait.since>250&&!streamingWait.overlay){
++      // A one-frame graphics wait must not stop/recreate every music and
++      // sound source. Keep audio flowing through brief preparation delays;
++      // pause it only when a sustained wait actually shows the loading UI.
++      streamingWait.audioPaused=!audio.paused;if(streamingWait.audioPaused)audio.pause();
+       streamingWait.overlay=true;loadingScreen.show(selected,{streaming:true});
+     }
+-    // No simulation, dialogue, recovery clock or autosave advances behind a
+-    // loading view. The frame clock still advances, avoiding a catch-up step.
++    // Simulation and save clocks stay held. Short waits leave playback alone;
++    // sustained loading also holds audio. No catch-up simulation step follows.
+     return true;
+   }
+-  if(streamingWait){if(streamingWait.overlay)$('loading').hidden=true;streamingWait=null;audio.resume();}
++  if(streamingWait){if(streamingWait.overlay)$('loading').hidden=true;const resumeAudio=streamingWait.audioPaused;streamingWait=null;if(resumeAudio)audio.resume();}
+   return false;
+ }
+ let frameRequest=0;
+--- source-before/room-visibility.js
++++ src/room-visibility.js
+@@ -2,6 +2,7 @@
+ import {BspVisibility,doorPortalOpen} from './bsp-visibility.js';
+ 
+ const FULL=[-1,-1,1,1];
++const PRELOAD_HOLD_SECONDS=12;
+ const overlaps=(a,b)=>[Math.max(a[0],b[0]),Math.max(a[1],b[1]),Math.min(a[2],b[2]),Math.min(a[3],b[3])];
+ 
+ // Graphics ownership follows authored BSP areas, not the distance through a
+@@ -26,6 +27,9 @@
+     }
+     this.faceAreas=sets.map(set=>[...set].sort((a,b)=>a-b));
+     this.allowed=new Uint8Array(metadata.areas?.length||0);
++    this.currentAreaMask=new Uint8Array(this.allowed.length);this.currentAreaIndex=-1;
++    this.preloadAreas=new Uint8Array(this.allowed.length);this.preloadRevision=0;
++    this.preloadUntil=new Float64Array(this.allowed.length);this.preloadAnchor=-1;
+     this.viewAreas=new Uint8Array(this.allowed.length);this.viewRevision=0;
+     this.active=false;this.area=-1;this.lastArea=-1;this.lastPlayerArea=-1;this.revision=0;
+     this.doors=new Map();this.objects=null;this.projection=new THREE.Matrix4();this.corner=new THREE.Vector4();
+@@ -69,7 +73,7 @@
+     const rect=overlaps(FULL,[left-.02,bottom-.02,right+.02,top+.02]);
+     return rect[0]<=rect[2]&&rect[1]<=rect[3]?rect:null;
+   }
+-  update(camera,{playerOnly=false}={}) {
++  update(camera,{playerOnly=false,now=performance.now()/1000}={}) {
+     const objects=this.world.gameplay?.objects;
+     if(objects!==this.objects){this.objects=objects;this.doors=new Map((objects||[]).filter(o=>o.kind==='door').map(o=>[o.modelIndex,o]));}
+     const player=this.world.player,position=player?.position,eye=camera.position.toArray();
+@@ -90,17 +94,28 @@
+     if(!remote&&body&&playerArea<0&&this.lastPlayerArea>=0){area=this.lastPlayerArea;this.lastOrigin=this.lastPlayerOrigin;}
+     if(unknownRemote)area=-1;else if(area<0)area=this.lastArea;
+     const active=area>=0&&this.allowed.length>0,next=new Uint8Array(this.allowed.length),view=new Uint8Array(this.allowed.length);
++    const preload=new Uint8Array(this.allowed.length),reachable=new Uint8Array(this.allowed.length),open=new Map();
++    if(!active||area!==this.preloadAnchor)this.preloadUntil.fill(0);
++    this.preloadAnchor=active?area:-1;
+     if(active) {
+       if(area===playerArea)this.lastOrigin=body;
+       else if(area===cameraArea)this.lastOrigin=eye;
+       this.lastArea=area;next[area]=1;view[area]=1;
+       for(const edge of this.edges[area]||[])next[edge.area]=1;
++      // Connectivity only validates already admitted preparation; it never
++      // floods admission into the rest of the open level. A shut portal must
++      // cancel a retained far room even before its short grace expires.
++      const connected=[area];reachable[area]=1;
++      for(let i=0;i<connected.length;i++)for(const edge of this.edges[connected[i]]||[]) {
++        if(!open.has(edge.model))open.set(edge.model,this.portalOpen(edge.model));
++        if(open.get(edge.model)&&!reachable[edge.area]){reachable[edge.area]=1;connected.push(edge.area);}
++      }
+       // More distant rooms may remain visibly connected through several open
+       // doors. Intersect their projected apertures, rather than flooding every
+       // open room or hiding an unobstructed view after one graph edge.
+       if(cameraArea>=0) {
+         this.projection.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);
+-        const coverage=new Map([[area,FULL]]),pending=[{area,rect:FULL}],rects=new Map(),open=new Map();
++        const coverage=new Map([[area,FULL]]),pending=[{area,rect:FULL}],rects=new Map();
+         while(pending.length) {
+           const current=pending.shift();
+           for(const edge of this.edges[current.area]||[]) {
+@@ -122,27 +137,42 @@
+       // presenting the room already in view. An invalid inspection camera
+       // keeps conservative readiness, as do missing room/portal metadata.
+       if(cameraArea<0)view.set(next);else if(next[cameraArea])view[cameraArea]=1;
++      // A portal's projected rectangle can leave the view for a few frames
++      // during a turn and then return. Complete/keep its admitted room in the
++      // background instead of disposing and immediately reallocating it.
++      // Drawing and required-view masks remain exact. Changing anchor room,
++      // closing the connection or expiry releases this preparation promptly.
++      for(let i=0;i<preload.length;i++) {
++        if(!reachable[i]){this.preloadUntil[i]=0;continue;}
++        if(next[i])this.preloadUntil[i]=now+PRELOAD_HOLD_SECONDS;
++        if(next[i]||this.preloadUntil[i]>now)preload[i]=1;
++      }
+     }
+     if(active!==this.active||next.some((v,i)=>v!==this.allowed[i])){this.revision++;this.grid.clear();}
+     if(active!==this.active||view.some((v,i)=>v!==this.viewAreas[i]))this.viewRevision++;
+-    this.area=area;this.active=active;this.allowed=next;this.viewAreas=view;
++    if(active!==this.active||preload.some((v,i)=>v!==this.preloadAreas[i]))this.preloadRevision++;
++    if(area!==this.currentAreaIndex||active!==this.active){this.currentAreaMask.fill(0);if(active)this.currentAreaMask[area]=1;this.currentAreaIndex=area;}
++    this.area=area;this.active=active;this.allowed=next;this.viewAreas=view;this.preloadAreas=preload;
+     // During an ordinary/no-clip inspection the camera can enter unrelated
+     // rooms or solid space. Keep the selected player's room PVS in that case;
+     // its real geometry must not disappear just because a ceiling lies
+     // between the inspection camera and the room. Authored views stay camera-led.
+     this.visibilityPosition=active&&!remote&&!next[cameraArea]?this.lastOrigin:null;
+-    this.stats={area,active,allowedAreas:[...next.keys()].filter(i=>next[i]),viewAreas:[...view.keys()].filter(i=>view[i])};
++    this.stats={area,active,allowedAreas:[...next.keys()].filter(i=>next[i]),viewAreas:[...view.keys()].filter(i=>view[i]),preloadAreas:[...preload.keys()].filter(i=>preload[i])};
+   }
+   areasAllowed(areas){return !this.active||!areas?.length||areas.some(area=>this.allowed[area]);}
+   areasRequired(areas){return !this.active||!areas?.length||areas.some(area=>this.viewAreas[area]);}
++  areasPreload(areas){return this.active&&Boolean(areas?.some(area=>this.preloadAreas[area]));}
+   boundsRequired(min,max){return this.boundsAllowed(min,max,this.viewAreas);}
++  boundsCurrent(min,max){return this.active&&this.boundsAllowed(min,max,this.currentAreaMask,false);}
++  boundsPreload(min,max){return this.active&&this.boundsAllowed(min,max,this.preloadAreas,false);}
+   sphereRequired(center,radius){return this.boundsRequired(center.map(v=>v-radius),center.map(v=>v+radius));}
+   originAllowed(position) {
+     if(!this.active)return true;
+     const area=this.areaAt(position);
+     return area>=0?Boolean(this.allowed[area]):this.sphereAllowed(position,16);
+   }
+-  boundsAllowed(min,max,mask=this.allowed) {
++  boundsAllowed(min,max,mask=this.allowed,unknownAllowed=true) {
+     if(!this.active)return true;
+     const {nodes,planes,models}=this.world.level.collision;let found=false;
+     const visit=id=>{
+@@ -156,7 +186,7 @@
+     };
+     // A fully buried decorative fixture must not vanish because its origin
+     // lies in solid space. Missing ownership remains conservative.
+-    return visit(models[0].root)||!found;
++    return visit(models[0].root)||unknownAllowed&&!found;
+   }
+   sphereAllowed(center,radius) {
+     if(!this.active)return true;
+--- source-before/world-streaming.js
++++ src/world-streaming.js
+@@ -83,6 +83,7 @@
+   }
+   pump() {
+     while(!this.disposed&&this.running<WORLD_STREAMING.textureConcurrency&&this.queue.length) {
++      this.queue.sort((a,b)=>(b.entry.priority?.()??1)-(a.entry.priority?.()??1));
+       const {key,entry,resolve,reject}=this.queue.shift();
+       if(!entry.refs){if(this.entries.get(key)===entry)this.entries.delete(key);resolve(null);continue;}
+       this.running++;let decoded=null;
+@@ -175,7 +176,7 @@
+     const textureEntry=this.textures.entries.get(chunk.group.texture);
+     if(!chunk.sky&&textureEntry) {
+       (textureEntry.chunks??=new Set()).add(chunk);
+-      textureEntry.priority=()=>{for(const c of textureEntry.chunks)if(c.request&&c.requiredForView)return 2;return 1;};
++      textureEntry.priority=()=>{let priority=0;for(const c of textureEntry.chunks)if(c.request)priority=Math.max(priority,c.preloadPriority??1);return priority;};
+     }
+     const job=texture.then(map=>{
+       if(this.disposed||chunk.request!==request)return;
+@@ -253,7 +254,7 @@
+     this.projection.copy(camera.projectionMatrix);
+     this.projection.elements[0]*=.5;this.projection.elements[5]*=.5;
+     this.preloadFrustum.setFromProjectionMatrix(this.projection.multiply(camera.matrixWorldInverse));
+-    this.rooms.update(camera);
++    this.rooms.update(camera,{now});
+     const eye=this.rooms.visibilityPosition||camera.position.toArray(),leaf=this.visibility.findLeaf(eye);
+     // Authored cameras keep their own PVS. Ordinary exterior inspections may
+     // use the selector's current/last valid player room. Without a valid PVS
+@@ -296,13 +297,22 @@
+       chunk.inView=roomAllowed&&inRange&&chunk.mesh.visible&&potentiallyVisible&&this.frustum.intersectsBox(chunk.bounds);
+       chunk.requiredForView=chunk.inView&&(chunk.group.model===0?this.rooms.areasRequired(chunk.areas):this.roomBoundsRequired(chunk.bounds));
+       const near=roomAllowed&&inRange&&(distance<=WORLD_STREAMING.preloadRadius||chunk.bounds.distanceToPoint(this.preloadPosition)<=WORLD_STREAMING.preloadRadius);
+-      const ahead=inRange&&chunk.mesh.visible&&potentiallyVisible&&this.preloadFrustum.intersectsBox(chunk.bounds);
+-      if(!roomAllowed){if(chunk.request)this.unload(chunk);continue;}
+-      if(near||ahead){chunk.lastNeeded=now;if(!chunk.request)wanted.push({chunk,distance});}
++      // The present camera leaf's PVS is a drawing test, not a prediction of
++      // what a nearby leaf will reveal. Room admission still bounds prefetch.
++      const ahead=roomAllowed&&inRange&&chunk.mesh.visible&&this.preloadFrustum.intersectsBox(chunk.bounds);
++      // Finish admitted open-connected rooms in the background, including
++      // surfaces behind the camera/current PVS. A briefly lost portal view
++      // keeps this preparation through a turn without adding any draws.
++      // Closed neighbors still use only the near/ahead preload margin.
++      const preparedRoom=inRange&&chunk.mesh.visible&&
++        (chunk.group.model===0?this.rooms.areasPreload(chunk.areas):this.roomBoundsPreload(chunk.bounds));
++      chunk.preloadPriority=chunk.requiredForView?2:near||ahead?1:0;
++      if(!roomAllowed&&!preparedRoom){if(chunk.request)this.unload(chunk);continue;}
++      if(near||ahead||preparedRoom){chunk.lastNeeded=now;if(!chunk.request)wanted.push({chunk,distance});}
+       else if(chunk.request&&distance>WORLD_STREAMING.retainRadius&&now-chunk.lastNeeded>WORLD_STREAMING.retainSeconds)this.unload(chunk);
+     }
+     // Visible surfaces take priority over the surrounding preload margin.
+-    wanted.sort((a,b)=>Number(b.chunk.requiredForView)-Number(a.chunk.requiredForView)||a.distance-b.distance);
++    wanted.sort((a,b)=>b.chunk.preloadPriority-a.chunk.preloadPriority||a.distance-b.distance);
+     for(const {chunk}of wanted)this.request(chunk);
+     let budget=12000;
+     this.ready.sort((a,b)=>Number(b.chunk.requiredForView)-Number(a.chunk.requiredForView));
+@@ -310,7 +320,7 @@
+       if(entry.chunk.request!==entry.request)return false;
+       if(this.work) {
+         const activation=this.work.enqueue(()=>this.activate(entry),{valid:()=>!this.disposed&&entry.chunk.request===entry.request,
+-          priority:()=>entry.chunk.requiredForView?2:1});
++          priority:()=>entry.chunk.preloadPriority??1});
+         this.activations.add(activation);
+         activation.catch(error=>{this.error??=error;}).finally(()=>this.activations.delete(activation));
+         return false;
+@@ -376,6 +386,20 @@
+     const required=this.rooms.boundsRequired(min.toArray(),max.toArray());
+     (this.roomViewVisibility??=new WeakMap()).set(box,{revision,minX:min.x,minY:min.y,minZ:min.z,maxX:max.x,maxY:max.y,maxZ:max.z,required});return required;
+   }
++  roomBoundsCurrent(box) {
++    if(!this.rooms.active)return false;
++    const {min,max}=box,old=this.roomCurrentVisibility?.get(box),area=this.rooms.area;
++    if(old&&old.area===area&&old.minX===min.x&&old.minY===min.y&&old.minZ===min.z&&old.maxX===max.x&&old.maxY===max.y&&old.maxZ===max.z)return old.current;
++    const current=this.rooms.boundsCurrent(min.toArray(),max.toArray());
++    (this.roomCurrentVisibility??=new WeakMap()).set(box,{area,minX:min.x,minY:min.y,minZ:min.z,maxX:max.x,maxY:max.y,maxZ:max.z,current});return current;
++  }
++  roomBoundsPreload(box) {
++    if(!this.rooms.active)return false;
++    const {min,max}=box,old=this.roomPreloadVisibility?.get(box),revision=this.rooms.preloadRevision;
++    if(old&&old.revision===revision&&old.minX===min.x&&old.minY===min.y&&old.minZ===min.z&&old.maxX===max.x&&old.maxY===max.y&&old.maxZ===max.z)return old.preload;
++    const preload=this.rooms.boundsPreload(min.toArray(),max.toArray());
++    (this.roomPreloadVisibility??=new WeakMap()).set(box,{revision,minX:min.x,minY:min.y,minZ:min.z,maxX:max.x,maxY:max.y,maxZ:max.z,preload});return preload;
++  }
+   traceSurface(start,end) {
+     this.refreshSceneMatrices();
+     const a=new THREE.Vector3(...start),direction=new THREE.Vector3(...end).sub(a),length=direction.length();
+--- source-before/world.js
++++ src/world.js
+@@ -432,7 +432,7 @@
+     this.collider.traceModelIndices?.(this.physicalModels,[0,0,0],[0,0,0]);
+     this.actorResidency=new ActorRenderResidency({scene:this.scene,protectedRoots:[this.redcat],
+       nearDistance:WORLD_STREAMING.preloadRadius,retainDistance:WORLD_STREAMING.retainRadius,viewDistance:WORLD_STREAMING.viewRadius,
+-      boundsVisible:box=>this.geometryStream.boundsVisible(box),boundsAllowed:box=>this.geometryStream.roomBoundsAllowed(box),boundsRequired:box=>this.geometryStream.roomBoundsRequired(box),preloadPosition:()=>this.geometryStream.preloadPosition,textures:this.actorTextures,preparation:this.streamingGpu});
++      boundsVisible:box=>this.geometryStream.boundsVisible(box),boundsAllowed:box=>this.geometryStream.roomBoundsAllowed(box),boundsRequired:box=>this.geometryStream.roomBoundsRequired(box),boundsPreload:box=>this.geometryStream.roomBoundsPreload(box),preloadPosition:()=>this.geometryStream.preloadPosition,textures:this.actorTextures,preparation:this.streamingGpu});
+     this.updateRenderResidency();
+   }
+   configureDestructible(object,actor) {

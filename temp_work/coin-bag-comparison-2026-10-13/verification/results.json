@@ -1,0 +1,78 @@
+{
+  "passed": true,
+  "mode": "comparison",
+  "checks": [
+    "six original actor models and textures",
+    "paired room labels",
+    "six contact pickups and exact money/score",
+    "matching pickup audio",
+    "five-spoke and score effects",
+    "V camera toggle and retained mode after R reset",
+    "reset restores six pickups and labels",
+    "pause",
+    "no missing resources or renderer errors"
+  ],
+  "pickups": [
+    {
+      "id": "wood",
+      "actor": "icoins",
+      "money": 1,
+      "score": 5,
+      "sound": "icoins.wav",
+      "cumulativeScore": 5,
+      "cumulativeMoney": 1
+    },
+    {
+      "id": "bag-small",
+      "actor": "imoneys",
+      "money": 1,
+      "score": 5,
+      "sound": "icoins.wav",
+      "cumulativeScore": 10,
+      "cumulativeMoney": 2
+    },
+    {
+      "id": "silver",
+      "actor": "icoinm",
+      "money": 5,
+      "score": 25,
+      "sound": "icoinm.wav",
+      "cumulativeScore": 35,
+      "cumulativeMoney": 7
+    },
+    {
+      "id": "bag-medium",
+      "actor": "imoneym",
+      "money": 5,
+      "score": 25,
+      "sound": "icoinm.wav",
+      "cumulativeScore": 60,
+      "cumulativeMoney": 12
+    },
+    {
+      "id": "gold",
+      "actor": "icoinl",
+      "money": 10,
+      "score": 50,
+      "sound": "icoinl.wav",
+      "cumulativeScore": 110,
+      "cumulativeMoney": 22
+    },
+    {
+      "id": "bag-large",
+      "actor": "imoneyl",
+      "money": 10,
+      "score": 50,
+      "sound": "icoinl.wav",
+      "cumulativeScore": 160,
+      "cumulativeMoney": 32
+    }
+  ],
+  "totalScore": 160,
+  "totalMoney": 32,
+  "audioDurations": {
+    "icoins.wav": 0.46720833333333334,
+    "icoinm.wav": 0.41822916666666665,
+    "icoinl.wav": 0.370875
+  }
+}

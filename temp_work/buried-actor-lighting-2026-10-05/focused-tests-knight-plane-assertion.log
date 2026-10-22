@@ -1,0 +1,37 @@
+✔ buried-floor recovery opts in only confirmed decorative assets and standing knights (20.269603ms)
+✖ ten buried standing knights recover while twelve original samples and animated-pose caches remain intact (44.423044ms)
+✔ production actor lighting recovers the 27 buried decorations and preserves every valid sample across all five levels (167.089416ms)
+✔ production recovery keeps its setup bounds during geometry animation but invalidates on transformed placement (32.093835ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 3
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 356.103845
+
+✖ failing tests:
+
+test at tests/buried-actor-lighting.test.mjs:70:1
+✖ ten buried standing knights recover while twelve original samples and animated-pose caches remain intact (44.423044ms)
+  AssertionError [ERR_ASSERTION]: the recovered luxel belongs to the adjacent floor one unit above the root
+  + actual - expected
+  
+  + 87.08604431152344
+  - 87
+  
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/buried-actor-lighting.test.mjs:89:16)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 87.08604431152344,
+    expected: 87,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

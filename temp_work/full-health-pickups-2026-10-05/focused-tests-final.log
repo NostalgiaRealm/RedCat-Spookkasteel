@@ -1,0 +1,38 @@
+✔ original forest imports correct entities and normal-difficulty frog attributes (19.303669ms)
+✔ safe commands honor escaped newlines, comments, named doors and unsupported branches (0.546978ms)
+✔ enter trigger fires once, leaving runs its own command, max trigger count persists (1.321055ms)
+✔ touch and shot switches respect maximum count and trigger original named commands (0.331668ms)
+✔ pickups score exactly once, health caps and blocked line of sight prevents pickup (0.609388ms)
+✔ repeatable touch switch changes on entry rather than oscillating every frame (0.247919ms)
+✔ attack requires aim and line of sight, defeats enemy, runs destruction command (1.662744ms)
+✔ snapshot restores mutable state and prevents item farming after load (1.812953ms)
+✔ damage cooldown, death and checkpoint respawn are deterministic (0.293359ms)
+✔ original level transition target is normalized and emitted once (0.321968ms)
+✔ timer and script closes wait until the player leaves the doorway (0.468399ms)
+✔ capacity pickups use the original golden heart actor in every authored level and restored saves (104.746034ms)
+✔ native container adds two max HP without healing; a lost half-heart can be refilled (1.008366ms)
+✔ full-health healing hearts collect once with score, effects, sound and pickup command (1.283085ms)
+✔ native small/medium/large heal 1/2/20 HP and fractional healing caps at maximum health (0.182329ms)
+✔ legacy half-capacity saves migrate once without removing wounds or reviving a dead player (1.803904ms)
+✔ cutscenes prevent enemy, continuous and lethal damage; normal damage resumes afterwards (0.18331ms)
+✔ pickup pinwheel uses five original textured triangles with native orbit and tapered width (1.792844ms)
+✔ pickup colours cycle one component at a time and re-sampling never advances a paused effect (0.913026ms)
+✔ every collectible emits the corresponding original score artwork exactly once (1.948173ms)
+✔ disabled pickups do not create reward effects (0.178479ms)
+✔ enemy kills award their authored score once; wounds, scenery and the zero-score witch do not (1.110706ms)
+✔ pickup effects capture the current model transform without following later movement (0.350529ms)
+✔ enemy score starts at the rendered bounds centre, with a collision-bounds fallback (0.320468ms)
+✔ save/load preserves active effect age and cannot replay collected items or dead enemies (1.692944ms)
+✔ cutscenes allow reward retirement while redraws at paused game time do not advance it (2.330521ms)
+✔ effect restoration rejects malformed, future and expired records while preserving legacy saves (0.331229ms)
+✔ burst pickup traffic stays bounded and keeps the newest 128 effects (2.078132ms)
+✔ native score quads expand, rise and fade for one second on pickups or 1.5 seconds on enemies (0.236669ms)
+✔ score artwork stays upright and finite under oblique or directly overhead cameras (0.203159ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 187.011471

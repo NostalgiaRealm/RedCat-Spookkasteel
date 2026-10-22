@@ -1,0 +1,363 @@
+docs/audio-completion-native.md:22:(`0x4cce54`). Consequently the portable router plays the same original sound
+docs/audio-completion-native.md:25:Many moving models intentionally use type 4, so the router does not give every
+docs/audio-completion-native.md:27:[world-action audio update](world-action-audio.md) adds an intentional, bounded
+docs/audio-completion-native.md:28:fallback for named visible door panels that otherwise use `empty.wav`.
+docs/audio-completion-native.md:30:invisible barriers do not receive that fallback; native nonempty door types
+docs/audio-completion-native.md:50:files are not proof of a stone/wood material table; this native selection
+docs/audio-completion-native.md:57:physics are portable. The follow-up [presentation recovery](presentation-native-recovery.md)
+docs/audio-completion-native.md:96:The portable router now plays them from `assets/voices`, positioned at the
+docs/audio-completion-native.md:97:boss. It does not invent idle/alert clips absent from the native method.
+docs/audio-completion-native.md:117:is saved separately from its filename: Action and Special intentionally share
+docs/audio-completion-native.md:125:The fade envelope is a portable linear amplitude interpolation; the native
+docs/actor-collision.md:14:stop blocking. The mesh sweep is a portable reconstruction, not a recovered
+docs/actor-collision.md:25:collision. This composition is part of the portable movement reconstruction,
+docs/actor-collision.md:26:not a claim that the native engine uses the same filtering mechanism.
+docs/camera-native-status.md:3:Executable address references are version-specific; see [reference build notes](native-reference-builds.md) before relying on native addresses.
+docs/camera-native-status.md:41:frame milliseconds. A portable runtime using seconds should divide by 1,000.
+docs/camera-native-status.md:74:`0x0050227b`. `SetEnabled` compares the requested flag with the stored value at
+docs/camera-native-status.md:82:does not itself show a native rewind operation in the inspected command path;
+docs/camera-native-status.md:84:choice, not assumed native semantics.
+docs/camera-native-status.md:87:behavior. It is not a native/portable visual comparison or a campaign
+docs/camera-native-status.md:112:The portable sampler integrates the piecewise constant distance bands directly
+docs/bookcase-touch.md:21:when opening was requested: it tried to reverse just as the rotation began.
+docs/asset-formats.md:3:`tools/import_levels.py` reads the five original RedCat Spookkasteel `.bsp` files and writes a portable representation. It needs Python 3 and only the standard library. It never executes the original EXEs, DATs or DLLs and never changes source assets.
+docs/asset-formats.md:40:## Portable schema, version 1
+docs/asset-formats.md:87:For Three.js: bind these coordinates as `uv1`, set light-map texture `channel = 1`, `flipY = false`, `generateMipmaps = false`, and linear min/mag filters. Treat original RGB lightmap samples as linear intensity (`NoColorSpace`). Use vertex colors **only on Gouraud surfaces** when enabling light maps, to avoid multiplying the same baked lighting twice. The eleven-float RGB remains a fallback for renderers without lightmap support.
+docs/actor-lighting-native.md:28:  default-Sun fallback at `0x49d2d0` copies its own raw RGB and normalized normal
+docs/actor-lighting-native.md:31:  actual Sun is available. With neither fallback and no visible Sun, the wrapper
+docs/actor-lighting-native.md:117:leak is not replicated. If authored texture shifts invalidate every native
+docs/actor-lighting-native.md:197:the recovered CPU arithmetic. Existing shader deviations in the recorded
+docs/actor-lighting-native.md:226:cross-actor ambient leaks are deliberately avoided. No builds were generated.
+docs/enemy-ambush-flight.md:5:and the requested ability to damage cave Max by shooting his vehicle.
+docs/enemy-ambush-flight.md:63:health, as requested by the user. These parts retain physical player collision;
+docs/enemy-ambush-flight.md:64:Max's own ammunition still ignores his assembly. This deliberately supersedes
+docs/enemy-ambush-flight.md:65:the earlier portable interpretation of the vehicle parts as cover that only
+docs/enemy-ambush-flight.md:123:at `0x429900`, which calls `0x4248d0` to retire the actor. The portable generic
+docs/bat-native.md:40:## Portable correction and verification
+docs/bat-native.md:76:This fixed body hull is a deliberate reconstruction approximation. The
+docs/bat-native.md:87:implementation. The portable state animator applies that mapping only to
+docs/bat-native.md:105:Portable collision, overlap recovery and saved per-enemy RNG remain deliberate
+docs/gargoyle-attacks-native.md:18:  original speed, deviation, lifetime, radius and damage. The muzzle comes
+docs/gargoyle-attacks-native.md:24:  deliberately travels beyond the target; it is not the collision projectile.
+docs/gargoyle-attacks-native.md:31:  20 units/second, with +15 Y and a shared X/Z deviation of
+docs/gargoyle-attacks-native.md:105:A fallback side vector prevents a zero-area ribbon when viewed directly
+docs/boss-phases-native.md:32:  authored `JesterMaxPoint` (or its appended spawn fallback), reappears with a
+docs/boss-phases-native.md:70:The cave level deliberately has two `maxd.act` instances: the standing-enemy
+docs/boss-phases-native.md:90:pursuit endpoints and body-clearance safeguards remain portable choices. Some
+docs/boss-phases-native.md:99:later explicit gameplay requirement, the portable implementation now forwards
+docs/boss-phases-native.md:101:This supersedes the earlier portable shield-only interpretation. It retains
+docs/boss-phases-native.md:113:or bounce. Exact Genesis collision roundoff remains outside the portable backend's
+docs/brush-visibility-camera-recovery.md:26:The cave rotating-room doorway deliberately consists of two separate brushes:
+docs/brush-visibility-camera-recovery.md:54:The portable camera code also leaves the preferred first/third-person setting
+docs/brush-visibility-camera-recovery.md:59:silently queue a different player perspective for later. Deliberate changes
+docs/campaign-menu-native.md:25:One native limitation is deliberately not reproduced: the fifth-card branch
+docs/campaign-menu-native.md:29:is unverified. The portable menu keeps the Tower accessible as soon as its
+docs/campaign-menu-native.md:32:The portable completion event already comes from each level's original Davi
+docs/campaign-menu-native.md:37:The explicit portable cheat **Instellingen → Cheats → Alle levels vrijspelen**
+docs/campaign-menu-native.md:51:| State | Artwork used by the portable control | Actual dimensions |
+docs/campaign-menu-native.md:69:## Portable storage and migration
+docs/davi-format.md:1:# Davi-Script 27 binary grammar and portable IR
+docs/davi-format.md:13:execution also depends on the portable VM and game-object implementations.
+docs/debriefing-and-hearts-native.md:24:the four bonuses. Money counts bags, not bag value. The portable overview counts
+docs/enemy-combat-effects-native.md:7:`0x404b20` starts the actor effect `0x477cd0(actor,false)` when departing; `0x404bd0` starts the same effect with `true` after relocation. `0x476860` allocates fifteen particles and loads `strail.bmp` / `strail_a.bmp`. The original rendering at `0x477126` uses RGB `(211,63,255)`.
+docs/enemy-combat-effects-native.md:11:| Property | Departure | Arrival |
+docs/enemy-combat-effects-native.md:19:The portable effect evaluates those envelopes continuously instead of reproducing native frame integration. Boss state stores effect origin, phase and age, so arrival does not move a departing swirl to the new position, save restoration does not emit a second lifecycle event, and a script freeze pauses the swirl. Each particle expires after one second; the bounded effect record expires after 1.5 seconds. `bossTeleportEffect` announces actual departure and arrival starts for audio integration.
+docs/enemy-combat-effects-native.md:71:node --test --test-name-pattern='native non-ribbon|Jester departure' tests/enemy-combat-effects.test.mjs
+docs/ghost-transparency-native.md:39:## Portable implementation
+docs/ghost-transparency-native.md:50:These are portable rendering choices; the original Direct3D render-state flags
+docs/nginx-hosting.md:130:resources must return 404, rather than an SPA fallback page. The MIME mapping
+docs/nginx-hosting.md:236:  fallback page. Also check the Nginx MIME configuration and Three.js core file.
+docs/fairy-dialogue-pickup-lifecycle.md:15:and `DaviNameGroup`; editor labels are a fallback only. Object-ID lookups used
+docs/fairy-dialogue-pickup-lifecycle.md:20:encounters: forest `fairy12` and castle `fairy3`. To meet the requested behavior
+docs/fairy-dialogue-pickup-lifecycle.md:26:its ordinary departure path. For legacy saves with several enabled fairies,
+docs/fairy-dialogue-pickup-lifecycle.md:32:and ordinary departure remains one `Magiev12.wav`. Departure stops appearance,
+docs/fairy-dialogue-pickup-lifecycle.md:33:idle and legacy fairy sounds before its separate departure cue. Explicit skip
+docs/fairy-dialogue-pickup-lifecycle.md:34:stops every fairy sound and clears the effect, including the departure tail.
+docs/fairy-dialogue-pickup-lifecycle.md:59:The browser completion queue is a portability correction for the requested
+docs/portal-audio-native.md:22:The portable equivalent is playback rate 1.
+docs/portal-audio-native.md:32:## Portable playback contract
+docs/motions.md:3:Executable address references are version-specific; see [reference build notes](native-reference-builds.md) before relying on native addresses.
+docs/motions.md:106:seconds, not a normalized fraction. Native `SetEnabled` at `0x00501da0` changes
+docs/davi-vm-opcodes.md:3:Executable address references are version-specific; see [reference build notes](native-reference-builds.md) before relying on native addresses.
+docs/davi-vm-opcodes.md:5:The portable interpreter executes the sequential IR emitted by `tools/import_scripts.py`. Instruction order, jump destinations, variable identities and event ownership come from the original `.dso` files. They are not reconstructed from nearby string literals. The original game executable was inspected as data with `objdump`; no original native machine code is run by this implementation.
+docs/davi-vm-opcodes.md:17:- `0x005ec3a0`, `0x005ec740`: typed stack push and pop. Integers/strings/object pointers occupy four native bytes; doubles occupy eight. The portable evaluator stores tagged JS values instead of machine pointers.
+docs/davi-vm-opcodes.md:47:Native binary dispatcher `0x005f8740` and its disassembler `0x005f7f50` establish: 1 addition, 2 multiplication, 3 subtraction, 4 division, 5 >=, 6 <=, 7 >, 8 <, 9 equality, 10 inequality, 11 logical OR, 12 logical AND, 14 remainder, 15 integer division, 16 exponentiation. Integer arithmetic uses signed 32-bit results and truncating division. Logical and comparison results are integer 0/1. The portable interpreter rejects unsupported types/operators and division by zero rather than silently continuing.
+docs/davi-vm-opcodes.md:49:Unary/cast dispatcher `0x005fc230` establishes negation, logical NOT, numeric/string casts and several math operators. Implemented mappings are recorded directly in `daviUnary`. Unmapped operators fail explicitly. These additional unary/math operations are not present in the supplied campaign, and their full language-wide edge-case parity is not claimed. In particular, JS floating-point formatting and native x87 intermediate precision can differ outside the actual campaign cases.
+docs/building.md:3:This guide covers running the source, making the existing Linux x64 and Windows x64 portable directories, and experimental packaging for Linux ARM64, Windows ARM64, macOS Intel and macOS Apple Silicon. The game uses JavaScript, Three.js and Electron; building it does not compile or run the original Genesis3D executable. Imported assets from your own copy of the game are required.
+docs/building.md:101:below are available for deliberate release validation.
+docs/building.md:156:This launches Electron against the **source** and checks gameplay, resolution switching and actual native window presentation. It does not build packages. Leave `REDCAT_EXECUTABLE` and `REDCAT_LAUNCHER` unset for this source check; those environment variables are overrides for testing an existing packaged executable. The Linux presentation check uses ImageMagick's `import` utility. A headless browser pass alone does not prove that a native desktop window displays correctly.
+docs/building.md:160:## 5. Generate portable packages when ready
+docs/building.md:162:**Only run this section when you intend to create new builds.** Close the game first. These commands update the corresponding directories under `dist/`; copy an older build elsewhere first if you want to preserve it. The **Over** dialog has a display version, but `package.json` intentionally has no package version. Electron-builder requires numeric package metadata, so supply `REDCAT_PACKAGE_VERSION` only for that packaging command. It is injected into the generated package metadata without modifying the source, lockfile or displayed version. Use three dot-separated integers chosen for your distribution; the helper has no default. Without this value, the packaging command stops before creating a build.
+docs/building.md:201:The root project's `Start-RedCat.sh` also selects X11/XWayland and finds the build at its expected relative path. It is not required inside a standalone portable directory. There is currently no AppImage, RPM or DEB target configured.
+docs/building.md:225:This is an unsigned portable directory, not an installer. The current configuration disables Windows executable signing/editing and has been packaged on Linux without Wine. Different targets, signing or installer generation may need additional platform tools. Generating the directory on Linux does not replace a test on an actual Windows machine.
+docs/building.md:327:All these desktop outputs include Electron, the game code and imported assets. Players do not need Node, npm, Python, Wine, the original installation or a mounted CD at runtime. Keep every file in a portable directory, or the complete macOS `.app` bundle, together. Each target still requires the operating-system libraries and graphics support expected by its Electron build.
+docs/building.md:329:When validating a new platform, first check startup and visible gameplay, controls, resolution/fullscreen, complete music/video playback and save/load on the target device. A package generated on another OS or CPU cannot establish those results. The existing Linux-specific desktop presentation test is not a macOS or Windows certification test. If native npm addons are added later, revisit cross-packaging: they may need target-specific prebuilt binaries or a target-host compiler, as described in the [cross-platform build guide](https://www.electron.build/v26/docs/features/multi-platform-build/).
+docs/difficulty-native.md:3:The settings menu offers **Makkelijk**, **Normaal** and **Moeilijk**, matching `Settings/menu.ini` entries 49, 50 and 51 in the original installation. `PlayerDef.ini` sets `General/DifficultyLevel=1`; the portable default is therefore Normaal.
+docs/difficulty-native.md:28:The selected preference applies when starting or restarting a level, or proceeding to the next level. It does not replace an active enemy's health, reset an ongoing boss phase, or alter ammunition already in flight. This matches the original menu's selection before launching gameplay, while placing the control in the requested settings menu.
+docs/audio.md:7:The portable mixer in `src/audio.js` now reads the original sound gains exported
+docs/audio.md:12:loader did. Spatial hearing distances also include the user's intentional
+docs/audio.md:28:Existing portable master volume preferences and saves are retained.
+docs/audio.md:39:uses 175.5 meters with the same factor after the requested hearing-range
+docs/audio.md:63:active idle is exempt from camera-PVS muting. These are intentional mix
+docs/audio.md:91:visual flash, which the port now preserves. The mixer uses portable HTML media
+docs/audio.md:121:replay fallback. Music stays nonspatial and uses the existing volume controls.
+docs/audio.md:157:playhead preservation, quick fade reversal and pause/resume on the HTML fallback.
+docs/actor-floor-lighting-native.md:14:Performance is bounded by the BSP query and a local face lookup. Large coplanar nodes use a grid built once when the level loads, preserving original face ordering. An actor-owned weak cache reuses its floor lookup while its root remains stationary; current dynamic lights are still evaluated each frame. The original trace tests models in authored order, so a world floor wins even when a moving brush is closer. When the world trace misses, the sampler also tests brush models in their transformed space. `beginFrame()` compares model transforms once per frame and invalidates fallback caches only when those transforms or enabled states actually change. No per-frame mesh traversal, triangle raycast, image readback or atlas decoding is used.
+docs/actor-floor-lighting-native.md:16:Portable safeguards and remaining limits:
+docs/actor-floor-lighting-native.md:23:Focused checks: `node --test tests/actor-floor-lighting.test.mjs` covers exact point intersections, nearest-luxel indexing, authored shifts, bounds tolerance, ambient cap, dynamic contribution, stationary caching, authored model priority, transformed brush fallback, native shadow endpoints, wall occlusion, stable shadow caching and bounded sampling in all five imported levels. `python3 tools/import_actor_floor_lighting.py --check` verifies metadata against all five original BSP files.
+docs/actor-floor-lighting-native.md:37:Decorative `tree.act` instances opt into an additional recovery pass, also shared by the verified cases below. When the root starts in solid space, the sampler tries at most five points inside the actor's transformed setup bounds: the center and four horizontal sides at one quarter of its height. The first valid floor supplies its original lightmap color, including a legitimately black sample; the normal 0.3 ambient cap and dynamic-light calculation still apply. It does not change geometry, collision or Sun visibility. This is a local compatibility repair, not an assertion that native Genesis3D used these probes.
+docs/actor-floor-lighting-native.md:54:All 37 recover on the first center probe inside their own setup bounds, returning a floor on static world model zero. The original INIs enable ambient lighting without an override. The repair adds `kandela.act`, `cross5.act` and `pbench.act` to the explicit decorative asset list; that list, including `tree.act`, requires an `AdamAnyActor` entity. The knight exception requires both `knight.act` and `StandingEnemy`. It does not move actors, change collisions or turn them emissive. The root and native Sun reference stay intact. Normal visibility, death fading and render residency still apply before lighting.
+docs/actor-floor-lighting-native.md:56:The existing tree fix already covers nine affected castle trees as well as the 60 forest trees. Nine further corner-tree placements have valid native samples and remain unchanged. Other audited cases deliberately retain their existing handling:
+docs/painting-spider-native.md:70:portable setup previously started its floor query inside the roof, failed
+docs/world-light-shadows-native.md:29:portable floating-point arithmetic remain separate renderer differences.
+docs/world-light-shadows-native.md:32:source; it was not a new native-game playthrough. Evidence and bounded assembly
+docs/world-light-shadows-native.md:82:the original failing reports remain available as diagnostic history.
+docs/world-light-shadows-native.md:152:| 1 — Het Bos (`lvl00a`) | Six 256 x 256 faces, including the existing missing-face fallback | No |
+docs/world-light-shadows-native.md:154:| 3 — Het Kerkhof (`lvl02a`) | Six 256 x 256 faces, including the existing missing-face fallback | No |
+docs/world-light-shadows-native.md:166:Face order, orientation, sRGB interpretation and missing-face fallback remain
+docs/door-activation-native.md:4:passages. A door's editor origin can intentionally differ from its brush,
+docs/door-activation-native.md:31:also bypassed intentionally offset one-way areas. Contact doors tested brush
+docs/boss-script-regressions.md:24:The portable host now gives this class priority while retaining authored
+docs/boss-script-regressions.md:41:The portable host performs these selections when a boss is enabled or defeated,
+docs/portability.md:9:The existing npm packaging helpers target x64 Linux and x64 Windows. Both include Electron and imported resources. [The build guide](building.md#5-generate-portable-packages-when-ready) also gives experimental direct-CLI recipes for Linux ARM64 and Windows ARM64 using the pinned Electron binaries. Those packages and target devices have not yet been validated. The helpers still force x64, and the root launchers do not discover the ARM64 output directories; use the explicit build and launch commands in that guide.
+docs/enemy-waypoint-movement.md:17:  waypoint on the requested angular side. Bearing is `atan2(-deltaZ, deltaX)`;
+docs/enemy-waypoint-movement.md:19:  The requested radius is zero. These are waypoint paths, not continuous orbits.
+docs/enemy-waypoint-movement.md:47:that distance is not the native behavior. A separate fixture places RedCat on
+docs/enemy-waypoint-movement.md:54:cached, and interrupted jobs resume within a fair shared budget. Bat fallback
+docs/enemy-waypoint-movement.md:59:Bat fallback candidates are scored before sweeping. The first clear candidate
+docs/enemy-waypoint-movement.md:64:waypoint commitment. These fallback routes remain collision-safety adaptations.
+docs/enemy-waypoint-movement.md:83:brief concurrent unit-check caveat, not a claimed FPS improvement or proof on
+docs/enemy-waypoint-movement.md:110:portable safeguards. Off-node bodies approach their saved waypoint safely;
+docs/gameplay-sound-native.md:31:The portable router now selects these cues from each projectile event's kind,
+docs/gameplay-sound-native.md:45:the portable copies are in `assets/voices`, not `assets/audio`.
+docs/gameplay-sound-native.md:79:numerals. The portable importer normalizes case only.
+docs/gameplay-sound-native.md:83:not the level's Davi-Script instruction stream. The native event categories
+docs/gameplay-sound-native.md:105:one second after a salvo, deviation 0.05 and attack range 175. Spider types
+docs/gameplay-sound-native.md:117:and INI scale, with an intentional bounded enlargement for distant-shot
+docs/portal-native-recovery.md:15:| `0x475030–0x4751ec` | Trace vertically from the authored origin to find the floor and ceiling, with a ceiling fallback 200 units above the origin. |
+docs/portal-native-recovery.md:35:the floor and starts the blast on contact (`0x4745e9–0x474628`). The portable
+docs/portal-native-recovery.md:82:The portable implementation steps recovered Euler operations at 60 Hz.
+docs/portal-native-recovery.md:117:  Three.js falloff. The eight-light world rendering budget remains a portable limit.
+docs/portal-native-recovery.md:120:  phases, trajectories and artwork replace the substantial approximation;
+docs/portal-native-recovery.md:123:  not the native process-wide random stream. Other native random consumers
+docs/environment-interactions-native.md:50:The portable controller uses 32 world units per metre, adds the vectors
+docs/environment-interactions-native.md:98:are the portable collision tolerances, per-effect random sequence and native
+docs/destruction-audio-native.md:10:That file is original, but it is not the recording selected by the native
+docs/destruction-audio-native.md:32:explosion. Their optional `ExplodeParticleFallSoundType` and
+docs/knight-attack-music.md:37:To provide the requested immediate onset, an accepted attack against the valid
+docs/knight-attack-music.md:40:trigger does not grant early AI awareness; impact supplies the native awareness
+docs/target-eligibility-native.md:49:none qualifies does the button fallback call `0x42cf40` at `0x42c5ad`.
+docs/graveyard-maze-recovery.md:3:This is an intentional change from the original game. An unfinished attempt at
+docs/graveyard-maze-recovery.md:25:sequence, or open exit. `motionStarted` alone is deliberately insufficient:
+docs/fairy-skip-audio-2026-09-22.md:11:The imported filenames are normalized to lowercase for portable asset lookup.
+docs/fairy-skip-audio-2026-09-22.md:30:departure sound for a skipped transient. Disabled future fairy encounters remain
+docs/fairy-skip-audio-2026-09-22.md:49:covered the corrected sound sequence, normal departure, skipping before and
+docs/fairy-skip-audio-2026-09-22.md:56:node --test --test-name-pattern='fairy appearance|ordinary fairy departure' tests/fairy-skip-audio.test.mjs
+docs/fairy-skip-audio-2026-09-22.md:58:node --test --test-name-pattern='skipping during fairy departure' tests/fairy-skip-audio.test.mjs
+docs/enemy-projectile-origins-native.md:53:deviation, and emits at `0x41c7a0`. It increments the index at `0x41c7a3` and
+docs/enemy-projectile-origins-native.md:61:fallback position; normal rendered campaign actors have the recovered bones.
+docs/gameplay-reconstruction.md:3:The application now executes the original compiled level scripts, using a portable
+docs/gameplay-reconstruction.md:6:attacks, boss phases, player actions and effects run in the portable engine.
+docs/gameplay-reconstruction.md:50:portable playback interval explicitly extends to the final marker while retaining
+docs/gameplay-reconstruction.md:68:offset framing retain portable adaptations; see [camera evidence](camera-native-status.md).
+docs/gameplay-reconstruction.md:100:fixtures is not proof of identical native gameplay.
+docs/gameplay-reconstruction.md:105:[building.md](building.md) for deliberate release validation. Available broader
+docs/gameplay-reconstruction.md:112:are not a full campaign playthrough or a comparison against native game footage.
+docs/gameplay-reconstruction.md:181:constants and rendering approximations are documented in `world-effects-native.md`.
+docs/gameplay-reconstruction.md:228:the earlier analytic approximation. Current saves preserve the live pool;
+docs/gameplay-reconstruction.md:230:renderer/collision tolerances remain portable differences. See
+docs/graveyard-performance-regression.md:103:submission measured separately. They show the improvement in spikes rather than
+docs/spout-effects-native.md:105:Unlike the billboard basis, these two cone tangents are **not normalized**
+docs/spout-effects-native.md:148:it should be described as a deliberate stable simulation clock rather than
+docs/spout-effects-native.md:179:particle-to-camera vector and signed world Y, with signed Z fallback near
+docs/spout-effects-native.md:204:## Preserved intentional torch behavior
+docs/spout-effects-native.md:206:The user requested flames and lights to follow moving hand-torch tips, including
+docs/spout-effects-native.md:207:flames missing from original authoring. This intentional enhancement must remain;
+docs/spout-effects-native.md:227:## Portable implementation and verification
+docs/spout-effects-native.md:242:Deliberate portability differences:
+docs/spout-effects-native.md:252:- The radial billboard basis has a finite fallback for looking exactly vertically
+docs/spout-effects-native.md:285:Sound/music scheduling was deliberately left as previously tuned. Before/after
+docs/world-streaming.md:12:it actually frees its GPU allocation. World textures are requested as sections
+docs/world-streaming.md:70:requested again only when they entered the rendered view. The resulting
+docs/world-streaming.md:141:eviction view. A deliberately delayed visible texture held game time and the
+docs/source-followup-2026-09-22.md:21:| Fleurifee appearance/disappearance effects inaccurate | Recovered halo/rays, accelerated waypoint movement, hover, orbit timing and timed particle emissions replace the approximation. Departure preserves live particles, fills vacant pool slots and plays its original sound. |
+docs/source-followup-2026-09-22.md:32:scripts, and recovered executable/Genesis3D behavior. Portable differences
+docs/world-light-falloff-research.md:73:active lights remain a portable rendering budget; the native engine supports
+docs/player-world-light-native.md:26:  does not gate it on the model's render visibility. The portable light thus
+docs/player-world-light-native.md:33:## Portable integration
+docs/native-visuals-2026-09-22.md:64:trigger an unrestricted whole-map fallback merely by looking up. An intentional
+docs/native-visuals-2026-09-22.md:84:report. A deliberate camera position above the map verifies that PVS fallback
+docs/native-visuals-2026-09-22.md:97:  The portable pulse applies the native per-tick update, including the initial
+docs/native-visuals-2026-09-22.md:135:  slot's oscillator phase. Departure fills vacancies without replacing living
+docs/native-visuals-2026-09-22.md:155:fallback; rendering does not recompute the trajectory.
+docs/native-visuals-2026-09-22.md:159:The native operations run at a fixed60Hz in the portable renderer instead of
+docs/native-visuals-2026-09-22.md:173:or already-played departure sounds. An already expired legacy saved age remains
+docs/native-visuals-2026-09-22.md:188:layers/departure/re-enable/audio, actual cave PVS data and index bounds, portal
+docs/native-visuals-2026-09-22.md:192:50-particle departure and exterior-camera PVS fallback, with no browser or HTTP
+docs/native-visuals-2026-09-22.md:206:timer priority and pool backpressure, slot retention on departure/re-enable,
+docs/native-visuals-2026-09-22.md:210:at4 seconds, then50 occupied star slots with no central body/light after departure.
+docs/native-visuals-2026-09-22.md:227:- `artifacts/fleurifee-native-departure.png`
+docs/native-completion-followup.md:16:  and terminal nodes, body clearance and a short retry cache remain portable
+docs/native-completion-followup.md:24:  The portable per-enemy saved RNG remains different from the Windows CRT's
+docs/native-completion-followup.md:79:portable precision differences remain; see [world falloff](world-light-falloff-research.md)
+docs/native-completion-followup.md:104:Authored gains, FIFO full-WAV dialogue, pause/resume and intentionally shorter
+docs/native-completion-followup.md:105:ambience ranges remain in effect. Fleurifee retains the requested threefold
+docs/mushroom-trail-native.md:68:Ribbon geometry remains the native 6.4 units wide; any deliberate display-size
+docs/mushroom-trail-native.md:71:Further inspection resolves the former damage approximation: **the ribbon does
+docs/player-shadow-native.md:29:## Portable integration
+docs/player-shadow-native.md:38:This deliberately avoids the native no-hit fallback at actor height minus
+docs/player-shadow-native.md:40:the portable controller's small skin tolerance and actor collision rules.
+docs/native-reference-builds.md:12:remapped; do not use them to patch either binary. The portable runtime does not
+docs/native-reference-builds.md:23:[enemy waypoint decisions](enemy-waypoint-movement.md). Their remaining portable
+docs/intentional-fixes-and-findings.md:1:## Intentional change/fixes from the original game
+docs/intentional-fixes-and-findings.md:3:- An unfinished graveyard maze now resets its walls and triggers after death. In the original game, this would've otherwise cause a soft-lock and same went for the remake before version 0.9.4
+docs/intentional-fixes-and-findings.md:5:- The cave `trigger_cuts04` contains an original authoring inconsistency: it asks `RcHasAllPotions(2)` but awards `RcEnableSkill(4)`. The latter sets the power-move flag, which cannot produce BIG BENG. The portable host corrects that one native call to index 2, only during this named trigger's `CommandOnEnter` in `lvl03a`. The original VM still evaluates the potion gate and chooses `cutscene04a` or `cutscene04b`. Calling index 4 anywhere else retains the original bit-16 mapping. The corrected skill event also allows the campaign to retain the right reward.
+docs/intentional-fixes-and-findings.md:30:The original skill setter maps index 4 to bit 16 (`0x436ea0`); the settings contain `ReqPotionPowerMove`. That is evidence of a stored capability, not proof of an available action. The bit-test helper `0x439f10` has gameplay callers for shooting bits 4 and 2 (`0x434e54`, `0x434e68`) and jump bit 8 (`0x435ae4`). The other direct callers are debug-menu checks. The full-mask getter `0x439f30` is used in shooting/aiming paths, not a recovered bit-16 move. The imported actor/input definitions also provide no identified shove clip or input.
+docs/player-reactions-and-projectile-contact-native.md:35:The clip rates/completion gates are recovered native behavior; the portable
+docs/source-fixes-2026-09-22.md:39:Only tests covering changed behavior were run, plus the specifically requested
+docs/source-fixes-2026-09-22.md:53:records remaining work and intentional portable differences.
+docs/player-movement-native.md:1:# Player movement: native evidence and portable integration
+docs/player-movement-native.md:29:It therefore does not establish a native acceleration, friction, or
+docs/player-movement-native.md:69:AlwaysRun is enabled. The portable game's camera-relative keyboard,
+docs/player-movement-native.md:95:`0x435732–0x43574b`; its ordinary fallback also uses the same vector
+docs/player-movement-native.md:184:However, native animation switches are skipped if the requested animation
+docs/player-movement-native.md:191:in the same update. It is not sound to describe native slowdown as
+docs/player-movement-native.md:194:The portable game intentionally retains the existing correction that
+docs/player-movement-native.md:197:boost-tick 0.4 multiplier in the portable controller. This is an explicit
+docs/player-movement-native.md:200:portable one-boost-per-flight guard remains described in
+docs/player-movement-native.md:207:It does not replace the portable BSP/axis-aligned hull collision implementation
+docs/player-movement-native.md:210:`jump2` selection remain deliberate adaptations. Tests of native scalar
+docs/player-movement-native.md:211:values and the actual graveyard staircase validate the portable
+docs/player-movement-native.md:212:integration; they do not prove frame-for-frame native collision parity.
+docs/player-movement-native.md:216:moves and door side pushes do not add launch momentum. This uses the portable
+docs/player-abilities-native.md:23:which cannot produce BIG BENG. The portable host corrects that one native call
+docs/player-abilities-native.md:53:repeatedly jump or boost. The portable controller allows one boost before the
+docs/player-abilities-native.md:100:portable collision system; it does not claim identical Genesis3D frame
+docs/hud-targeting-cutscene-skip.md:36:and Player.DetectionRange (480). The portable selector follows these rules,
+docs/hud-targeting-cutscene-skip.md:49:smoothing use the portable renderer; the original camera's full spring solver
+docs/hud-targeting-cutscene-skip.md:52:## Requested new skip control
+docs/hud-targeting-cutscene-skip.md:68:The original `GRintro3` dialogue entry has a voice and intentionally empty
+docs/hud-targeting-cutscene-skip.md:70:internal resource ID as fallback text. The witch's laughter still plays.
+docs/world-effects-native.md:11:- `0x46c090` places six starts on an 11-unit ring, 23.5 units below the authored origin, separated by 60 degrees. They converge half a unit below the origin. The seventh ray targets an upward world trace, with a 200-unit height fallback when no ceiling is hit.
+docs/world-effects-native.md:26:Dynamic light function characters map `a` through `z` to normalized values, using the authored period and interpolation switch. World surfaces combine dynamic contributions with baked light at each original luxel, clamp before interpolation/texture modulation, and use cached native BSP obstruction for authored shadow-casting lights. The world shader has eight slots, with RedCat's small light reserved and the other lights selected by distance. Actors independently select their configured number of lights from the complete list and use recovered root-reference, raw-RGB vertex lighting; they do not inherit the world's eight-slot cutoff. See [world falloff](world-light-falloff-research.md), [world shadows](world-light-shadows-native.md) and [actor lighting](actor-lighting-native.md). The requested [moving hand-torch enhancement](torch-flames.md) adds bounded local lights; it does not make every particle a lamp.
+docs/world-effects-native.md:39:Contact timers and once-only state survive saves. A lethal beam hit stops the update before other hazards can damage the newly respawned player. Hurt feedback is rate-limited separately from the environmental health loss. The segment/hull algorithm is a portable collision implementation; native source for its exact intersection tolerance has not been recovered.
+docs/world-effects-native.md:45:`TeleporterFX.Show` is an animation command. Native `0x472840–0x47287b` accepts it only while the object is enabled, and `0x475720–0x475730` ignores another Show during the active sequence. The old generic visibility-only handling could not start the effect. The portable command now starts a saved 6.8-second flight plus a 300 ms terminal flash, while the original Davi-Script/motion events still control RedCat's animation, camera, relocation and exit timing. For example, the tower's `telepoort01` model motion starts `telepfx01.Show` after about 0.2 seconds.
+docs/world-effects-native.md:49:The portal now uses the recovered bounded 250-slot particle simulation: authored corner emitters, seek/orbit transitions, 2.1-second beam contraction, ceiling-to-floor energy quads, scrolling UVs, the shrinking horizontal blast and the camera-facing terminal flash. Native emission delays, channel cycling, reused-slot wiggle and the final outward burst replace the analytic approximation. Saved pools resume exactly without replaying level time; old saves use a bounded warmup. See [portal recovery](portal-native-recovery.md).
+docs/world-effects-native.md:53:Portable differences remain: fixed 60 Hz simulation, locally seeded randomness,
+docs/world-effects-native.md:56:than remaining generic approximations. The native shadow path itself only
+docs/world-action-audio.md:7:`idlefee1.wav` keeps its existing authored gain and active/deactivated lifetime. Its entire distance curve is expanded by exactly three. After the later requested ambience-range increases, the current castle near/far 17.55/87.75 m becomes 52.65/263.25 m, and cave 17.55/105.3 m becomes 52.65/315.9 m. The other levels multiply the current configured minimum radius by three, also scaling the maximum. `src/ambience-ranges.js` contains these intentional mix adjustments; they are not claims about original native attenuation.
+docs/world-action-audio.md:17:To satisfy the requested audible doors, `door-audio.js` explicitly gives visible type-4 door panels an existing normal/secret door recording. The bounded panel names cover castle doors/fence, graveyard church/frogger/maze panels and cave laboratory doors. This is a deliberate deviation from native silence. Type-4 steps, slopes, moving hedges and other mechanisms remain excluded. Visible mechanisms explicitly authored as type 1/2/3 retain their original sound choice, including the chapel lift.
+docs/world-action-audio.md:19:The former forest `deur1_mc`–`deur12_mc` fallback was incorrect: all twelve are invisible area-control barriers with only zero-opacity `Air_Wtr01` faces, DoorType 4, and no touch/proximity activation. Walking through successive authored triggers opens and closes them, causing the reported repeated door snippets. These barriers are silent again; their callbacks and collision transitions still execute. The actual forest `knopdeur_l_mc`/`knopdeur_r_mc` gate panels retain their type-1 sound. Automatic door cues also require a non-hidden object and at least one visible non-sky brush surface when level geometry is available. This excludes faceless controllers and the graveyard's invisible `rc_fall_mc` cinematic carrier. Enabled/locked status is deliberately not used as a visibility test: real script-operated and secret doors retain their cues.
+docs/world-action-audio.md:23:## Portal departure and arrival
+docs/world-action-audio.md:27:The existing pad startup `Magiev18.wav` remains. A fresh scripted TeleporterFX.Show arms its terminal cue; the corresponding actual RedCat disappearance or reappearance emits `Magiev1.wav` once at that pad. This aligns the native terminal sample to the requested actor transition instead of duplicating startup audio. The later [portal audio audit](portal-audio-native.md) found no per-frame terminal gain envelope in the native portal class. The complete terminal WAV now finishes beyond the visual flash; the slow decoded loop and authored playback rates are also implemented. If no matching actor transition consumed the cue, the terminal visual stage emits it once as a fallback.
+docs/world-action-audio.md:35:`node --test tests/world-action-sounds.test.mjs` checks seven cases: the exact threefold fairy curve in every level and independence from camera moves; collision contact on the original chapel button plus all native button types; native door samples and bounded type-4 fallbacks; two sequential shared secret-door callbacks without double playback; the heart-container cue; all eleven original portal journeys with sounds on the exact visibility-changing callback; and pending portal save/restore, ordinary visibility calls, and skip behavior.
+docs/native-projectile-animation.md:81:Any deliberate distant-projectile visibility adjustment must remain a render
+docs/native-projectile-animation.md:83:The requested readability improvement is documented in
+docs/script-vm-investigation.md:4:**Current status (5 October 2026):** the complete format-27 parser, portable
+docs/script-vm-investigation.md:13:Executable address references are version-specific; see [reference build notes](native-reference-builds.md) before relying on native addresses.
+docs/script-vm-investigation.md:19:portable gameplay module skipped unsupported script behavior. That limitation
+docs/script-vm-investigation.md:140:file. It did not itself implement a VM; the subsequent portable implementation
+docs/witch-mirrors-native.md:27:requires the last local mirror pickup (`HasLastMirror`). The existing portable
+docs/witch-mirrors-native.md:48:The portable visibility predicate previously hid disabled zombies, but retained
+docs/witch-mirrors-native.md:74:These checks cover the requested presentation and handoff, not a new claim of
+docs/projectile-visibility.md:32:## Deliberate visibility improvement
+docs/projectile-visibility.md:34:The requested readability adjustment is separate from native timing. Small,
+docs/fairy-save-restoration.md:5:`CFairy`/`CParticle` implementation. This is a portable save-format improvement,
+docs/fairy-save-restoration.md:11:colour channel/direction, both pulses, rotation, activation/departure flags and
+docs/fairy-save-restoration.md:16:Restoration renders the saved state immediately, including an already departing
+docs/fairy-save-restoration.md:17:fairy. It neither simulates the entire past nor respawns a missing departure
+docs/fairy-save-restoration.md:19:Appearance and already-played departure sounds do not replay; the audio sample's
+docs/fairy-save-restoration.md:24:Legacy age-only saves retain the earlier replay fallback; their missing particle
+docs/fairy-save-restoration.md:29:departing, dormant/reused, fractional-step, malformed and legacy snapshots, audio
+docs/water-native.md:6:are read only; the portable game does not load or patch the executable.
+docs/water-native.md:21:The graveyard moat is deliberately opaque. Its original brush occupies
+docs/water-native.md:35:rendering of every trigger model suppressed their deliberately visible faces.
+docs/projectile-impacts-native.md:54:first six cells multiply it by .4; the last two use .0001, deliberately shrinking
+docs/projectile-impacts-native.md:109:Portable BSP and actor traces remain the remake's collision backend, so geometry
+docs/player-protection-progress-and-local-audio.md:16:This is an intentional convenience requested for the remake, not native behavior.
+docs/player-protection-progress-and-local-audio.md:29:`Start opnieuw` is the intentional exception: a successfully loaded new
+docs/player-protection-progress-and-local-audio.md:40:## Deliberately shorter sound ranges
+docs/player-protection-progress-and-local-audio.md:59:These are the current `src/ambience-ranges.js` values after the requested
+docs/player-protection-progress-and-local-audio.md:67:as requested; they intentionally differ from the original game's long reach.
+docs/rolling-stones-native.md:37:The upper trigger boxes are narrow but deliberate. Their Z extents are
+docs/rolling-stones-native.md:45:## Portable repair and save compatibility
+docs/rolling-stones-native.md:58:constructor range (path start through full playback end). Existing portable
+docs/rolling-stones-native.md:68:stones that were subsequently disabled by an intentional outside-section
+docs/rolling-stones-native.md:78:saves and repeat loading, intentional disable/resume, and the two original
+docs/ufo-impact-decal-native.md:46:## Portable implementation
+docs/vertical-fan-native.md:67:zeros its Y at `0x4dc621`. Clearing the portable controller's separate wind
+docs/vertical-fan-native.md:84:repair, not a claim that all native jump/support momentum is reproduced.
+docs/native-parity-audit.md:45:   boundaries. Preserve the requested overhead camera protection near walls,
+docs/native-parity-audit.md:46:   anti-stuck recovery, bounded lighting/navigation work and deliberate audio
+docs/native-parity-audit.md:57:The requested native follow-up is now implemented in the areas supported by
+docs/native-parity-audit.md:66:| Pursuit and attacks | Native minimum-hop graph search, stored sampled salvos, spider return/ascent, all three touch-pursuit choices and knight strike windows are implemented. Patrols bypass full pursuit search. Native touching-enemy waypoint scoring/timing, uniform random patrols and shared node reservations were recovered on 2026-10-05, replacing continuous orbits. Bat fallback searches now share the original 16/48 trace limits; see [waypoint movement](enemy-waypoint-movement.md) and the [graveyard regression fix](graveyard-performance-regression.md). |
+docs/native-parity-audit.md:69:| Spatial audio | Native directional stereo, BSP/PVS/area audibility and wall-distance attenuation are implemented. Requested ambience limits and fairy hearing exceptions are retained. |
+docs/native-parity-audit.md:99:  solver remain portable adaptations. Moving-brush side pushes and blocked-move
+docs/native-parity-audit.md:104:  beam/flash geometry and sound frequencies now replace the earlier approximations.
+docs/native-parity-audit.md:106:  spin and settling are recovered too. Fixed-step timing, local RNG and portable collision tolerances
+docs/native-parity-audit.md:119:  Sound/music scheduling retains its intentional port behavior. Fixed 60 Hz,
+docs/native-parity-audit.md:120:  local RNG and regenerated smoke/flame pools on save loading remain portable
+docs/native-parity-audit.md:124:  pulse/color state. Active and departing effects survive actual menu save/load
+docs/native-parity-audit.md:140:  cross-actor ambient leak are deliberately not reproduced. See
+docs/native-parity-audit.md:192:Preserve deliberate user-requested differences: shorter/quieter ambience,
+docs/native-parity-audit.md:194:history, and repairs to native content mistakes. The subsequently requested
+docs/native-parity-audit.md:197:intentional difference rather than a recovered native flame attachment;
+docs/native-parity-audit.md:206:five level cards, settings/help access, requested removals and no browser errors.
+docs/player-projectiles-native.md:42:The portable update integrates that acceleration continuously to keep travel
+docs/player-projectiles-native.md:75:the simulation retains a fallback muzzle offset for headless tests or missing
+docs/player-projectiles-native.md:83:portable BSP/actor traces still do not claim bit-identical Genesis3D collision
+docs/presentation-native.md:59:layering, orbital motion, color cycling, the 50-slot particle pool, and departure
+docs/presentation-native.md:64:explains why loading character actors alone could not display it. The native
+docs/presentation-native.md:86:state, including trails, random state, departure particles and fractional tick;
+docs/presentation-native.md:89:Deliberate portability differences remain: a fixed 60 Hz simulation and a
+docs/cave-ambience-range.md:3:This is an intentional departure from the original game, requested by the user.
+docs/cave-ambience-range.md:24:## Chosen portable range
+docs/cave-ambience-range.md:32:choice, not a recovered native constant: after the user's later range increases,
+docs/torch-flames.md:3:This is an intentional enhancement requested by the user, including fixtures
+docs/enemy-gameplay.md:12:portable mixer at their authored gain:
+docs/enemy-gameplay.md:64:decoded playback for the player and the six requested enemy families.
+docs/enemy-gameplay.md:84:interruptions, portable collision tolerances and saved per-enemy random streams.
+docs/replayed-level-intros-native.md:17:The original script API is **GetGameType**, not RcGetGameMode. The native
+docs/replayed-level-intros-native.md:82:## Skill encounters deliberately retained
+docs/replayed-level-intros-native.md:149:session. These are portable product rules separate from the original GetGameType
+docs/targetable-props-camera.md:11:`Player.DetectionRange` (480 world units); the original button fallback uses
+docs/targetable-props-camera.md:62:fixed overview. This does not claim to reproduce the native camera spring solver.
+docs/zombie-activation-native.md:46:This investigation did not establish the native timing of the zombie's
+docs/zombie-activation-native.md:124:The physical activation check also found that the first zombie's portable
+docs/zombie-activation-native.md:133:portable collision adaptation, not a claim about native AI instructions, and
+docs/graveyard-and-fairy-corrections.md:43:including those activated by callbacks during the skip and any departure
+docs/patrol-boss-native.md:9:not establish complete native AI parity.
+docs/patrol-boss-native.md:20:`UnlinkStartPoint` prevents a departed start from being chosen again.
+docs/patrol-boss-native.md:27:topology according to whichever enemy first requested a route. Movement still
+docs/patrol-boss-native.md:55:Choosing pursuit endpoints for arbitrary actor positions remains a portable
+docs/patrol-boss-native.md:84:waypoint before choosing another edge, allowing only 0.1 unit for the portable
+docs/patrol-boss-native.md:91:slide response is a portable collision refinement, not a claim of recovered
+docs/patrol-boss-native.md:130:independent value in `[-BulletDeviation,+BulletDeviation]`, then normalizes again
+docs/patrol-boss-native.md:170:  [waypoint movement](enemy-waypoint-movement.md). Portable pursuit endpoints,
+docs/patrol-boss-native.md:178:  native attachments, with a fallback only when actor data is unavailable.
+docs/patrol-boss-native.md:183:  bounce or secondary explosion. Portable collision tolerances remain a boundary.
+docs/presentation-native-recovery.md:20:The original's scrolling speed depended on frame rate; the portable clock
+docs/presentation-native-recovery.md:21:intentionally makes it stable across displays.
+docs/presentation-native-recovery.md:39:The portable visibility cache limits BSP traces to eight per update and
+docs/enemy-death-effects-native.md:17:The portable renderer evaluates the continuous form of that acceleration, `position = origin + velocity × age + (0,0.8,0) × age²`. The native engine advances velocity before position each frame, so its exact path retains a small frame-rate-dependent integration difference. Texture, tint, count, launch direction, launch speed, acceleration and timing come from the executable; exact individual pixels across renderers are not claimed.
+docs/enemy-death-effects-native.md:19:Fading multiplies each instance's existing material opacity and alpha texture, preserving translucent ghosts and unrelated actors that share a template. The cutout threshold is reduced during fading to prevent a second abrupt disappearance. Dead enemies remain non-colliding and do not become targetable again. The scripted witch's immediate retirement stays separate. Knights keep their existing detached-armour animation, with a final fade and a one-shot guard that prevents pieces from reappearing while the generic corpse deadline remains active. Their breakup still uses the separate `createKnightDebris` / `updateEnemyDebris` path in `src/world.js`, with a fixed 3.5-second lifetime and reconstructed launch, collision and spin. The later [native debris recovery](debris-native-recovery.md) applies to destructible actor fragments through `DestructibleEffects`; it has not replaced this knight-specific path. Native parity for detached-armour trajectory and lifetime therefore remains unverified.
+docs/graveyard-sky-native.md:43:beyond it fails the depth test. This is a portable rendering implementation of
+docs/moving-solid-collision.md:24:## Portable implementation
+docs/moving-solid-collision.md:35:and the small separation tolerance are portable collision approximations,
+docs/debris-native-recovery.md:19:| `0x49ccf0`, `0x5b31f0`, `0x5b32c0` | Spin pre-multiplies world-axis X, Y, then Z rotations; it does not add Euler angles. The portable renderer composes the equivalent quaternion. |
+docs/debris-native-recovery.md:33:## Portable boundaries
+docs/debris-native-recovery.md:41:Collision uses the portable BSP collider rather than Genesis's `AdamTrace`.
+docs/debris-native-recovery.md:45:contacts. Skin tolerances and exact corner contacts therefore remain portable
+docs/debris-native-recovery.md:64:| `0x58e917`, `0x58eb7b`, `0x4ada4e`, `0x4adb04`, `0x4adc02` | Smoke starts at 200 ms, repeating every 400 ms. The cell's expiry calculation adds its start offset to the requested lifetime, then starts that duration on first activation: ideal scheduled emission is 200/600/1000/1400 ms. The final boundary can vary by one frame in the original. |
+docs/debris-native-recovery.md:75:or unbounded emission occur during playback. The existing portable limit of
+docs/native-refresh-performance.md:10:is not necessary for native refresh and can cause unnecessary GPU load or tearing.
+docs/native-refresh-performance.md:57:54.8 FPS was dominated by CPU updates, not a software-rendering fallback.
+docs/movement-recovery.md:3:This is an intentional convenience added to the remake. RedCat and independently
+docs/movement-recovery.md:34:position. History fallbacks are limited to 192 units.
+docs/movement-recovery.md:70:- In the actual Level 2 map, a deliberately seeded shallow overlap beside
+docs/audio-native.md:27:semantics; the portable importer should normalize case.
+docs/audio-native.md:52:and `EffectsVolume=100`, with no `SoundVolume`, so the latter's native fallback
+docs/audio-native.md:61:separate gameplay channels. A portable mixer may expose separate user controls,
+docs/audio-native.md:83:silence, the portable waveform gain equivalent is therefore:
+docs/audio-native.md:107:`0x54daf0` reads `Computer.ini`'s `3DSound` values as fallbacks, then reads
+docs/audio-native.md:171:visibility/obstruction and camera listener. The port retains deliberate local

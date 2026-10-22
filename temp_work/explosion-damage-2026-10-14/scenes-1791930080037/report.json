@@ -1,0 +1,2699 @@
+{
+  "out": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/temp_work/explosion-damage-2026-10-14/scenes-1791930080037",
+  "errors": [],
+  "setup": {
+    "crate": {
+      "id": "AdamAnyActor72",
+      "position": [
+        3568,
+        -63,
+        1489
+      ],
+      "settings": {
+        "scale": 1,
+        "initialRotationDegrees": [
+          -90,
+          0,
+          0
+        ],
+        "rotationDegreesPerSecond": [
+          0,
+          0,
+          0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          1,
+          1
+        ],
+        "explosion": {
+          "DamagePercentage": 25,
+          "SizePercentage": 25,
+          "NrExplosions": 1,
+          "Electric": 0,
+          "SmokeOnly": 0,
+          "Green": 0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1,
+          "TestCollision": 1,
+          "MustRotate": 1,
+          "RotationSpeed": 100,
+          "FloorOffset": 5,
+          "MinLifeTimeSeconds": 3,
+          "MaxLifeTimeSeconds": 4,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1,
+          "types": [
+            {
+              "actor": "brcrate_s1.act",
+              "MinNr": 5,
+              "MaxNr": 8,
+              "MinVelocity": 125,
+              "MaxVelocity": 180
+            },
+            {
+              "actor": "brcrate_s2.act",
+              "MinNr": 5,
+              "MaxNr": 7,
+              "MinVelocity": 200,
+              "MaxVelocity": 250
+            }
+          ]
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155,
+            155,
+            155
+          ],
+          "sunColor": [
+            155,
+            155,
+            155
+          ],
+          "sunNormal": [
+            0,
+            1,
+            0
+          ],
+          "sunIntensityFactor": 1,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90,
+            90,
+            255
+          ],
+          "end": [
+            255,
+            90,
+            90
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2
+        }
+      }
+    },
+    "gate": {
+      "id": "AdamAnyActor71",
+      "health": 100
+    },
+    "near": {
+      "id": "MovingEnemy29",
+      "type": "skeleton"
+    },
+    "far": {
+      "id": "MovingEnemy30",
+      "type": "skeleton"
+    },
+    "initialHealth": {
+      "player": 20,
+      "near": 100,
+      "far": 100,
+      "crate": 1,
+      "gate": 100
+    }
+  },
+  "results": {
+    "near": {
+      "before": {
+        "player": 20,
+        "near": 100,
+        "far": 100,
+        "crate": 1,
+        "gate": 100
+      },
+      "at15": {
+        "player": 17.558613255765636,
+        "near": 89.7980583398635,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "midpoint": {
+        "player": 16.74481767435418,
+        "near": 86.397411119818,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "full": {
+        "player": 13.48963534870975,
+        "near": 72.79482223964179,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "afterExpiry": {
+        "player": 13.48963534870975,
+        "near": 72.79482223964179,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "positions": {
+        "point": [
+          3677.41216,
+          -8.380158853225709,
+          1487.9862398791504
+        ],
+        "feet": [
+          3677.41216,
+          -62.46015885322571,
+          1487.9862398791504
+        ],
+        "distance": 114.23659658795863,
+        "playerOffset": 54.08,
+        "candidates": [
+          {
+            "point": [
+              3677.41216,
+              -8.380158853225709,
+              1487.9862398791504
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3673.834371760352,
+              -8.380158853225709,
+              1515.162239614915
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3663.344827397366,
+              -8.380158853225709,
+              1540.4862398791504
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3646.658372024587,
+              -8.380158853225709,
+              1562.232451903738
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3624.91216,
+              -8.380158853225709,
+              1578.9189072765164
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3599.5881597357647,
+              -8.380158853225709,
+              1589.4084516395026
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3572.41216,
+              -8.380158853225709,
+              1592.9862398791504
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3545.236160264235,
+              -8.380158853225709,
+              1589.4084516395026
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3519.91216,
+              -8.380158853225709,
+              1578.9189072765164
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3498.1659479754126,
+              -8.380158853225709,
+              1562.232451903738
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3481.479492602634,
+              -8.380158853225709,
+              1540.4862398791504
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3470.9899482396477,
+              -8.380158853225709,
+              1515.162239614915
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3467.41216,
+              -8.380158853225709,
+              1487.9862398791504
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3470.9899482396477,
+              -8.380158853225709,
+              1460.8102401433857
+            ],
+            "visible": false
+          },
+          {
+            "point": [
+              3481.479492602634,
+              -8.380158853225709,
+              1435.4862398791504
+            ],
+            "visible": false
+          },
+          {
+            "point": [
+              3498.165947975412,
+              -8.380158853225709,
+              1413.7400278545629
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3519.91216,
+              -8.380158853225709,
+              1397.0535724817844
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3545.236160264235,
+              -8.380158853225709,
+              1386.5640281187982
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3572.41216,
+              -8.380158853225709,
+              1382.9862398791504
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3599.5881597357643,
+              -8.380158853225709,
+              1386.5640281187982
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3624.91216,
+              -8.380158853225709,
+              1397.0535724817844
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3646.658372024587,
+              -8.380158853225709,
+              1413.7400278545629
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3663.344827397366,
+              -8.380158853225709,
+              1435.4862398791504
+            ],
+            "visible": false
+          },
+          {
+            "point": [
+              3673.834371760352,
+              -8.380158853225709,
+              1460.8102401433857
+            ],
+            "visible": false
+          }
+        ],
+        "nearBounds": {
+          "origin": [
+            3677.41216,
+            -43.38015885322571,
+            1487.9862398791504
+          ],
+          "min": [
+            3627.6829714624023,
+            -46.03873481719972,
+            1468.4419724154664
+          ],
+          "max": [
+            3729.5040957299802,
+            -22.195308160476674,
+            1507.530488460083
+          ]
+        },
+        "nearActive": true,
+        "farBounds": {
+          "origin": [
+            4277.41216,
+            -43.38015885322571,
+            1487.9862398791504
+          ],
+          "min": [
+            4257.867892536316,
+            -46.03873481719972,
+            1435.89430414917
+          ],
+          "max": [
+            4296.9564085809325,
+            -22.195308160476674,
+            1537.715428416748
+          ]
+        }
+      },
+      "activeAtStart": [
+        {
+          "sourceId": "AdamAnyActor72",
+          "birth": 100,
+          "position": [
+            3572.41216,
+            -53.38015885322571,
+            1487.9862398791504
+          ],
+          "radius": 175,
+          "rate": 46.875
+        },
+        {
+          "sourceId": "AdamAnyActor71",
+          "birth": 100,
+          "position": [
+            3588.298072218628,
+            -25.31811029860765,
+            1459.7679525230606
+          ],
+          "radius": 175,
+          "rate": 46.875
+        }
+      ],
+      "expiredCells": 0,
+      "expectedPlayerDamage": 6.510364651290146,
+      "changedUnrelated": [],
+      "otherDestroyables": [
+        {
+          "id": "AdamAnyActor6",
+          "before": 100,
+          "position": [
+            974,
+            -56,
+            1787
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor7",
+          "before": 100,
+          "position": [
+            1150,
+            -56,
+            1787
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor8",
+          "before": 100,
+          "position": [
+            966,
+            -56,
+            2395
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor9",
+          "before": 100,
+          "position": [
+            1142,
+            -56,
+            2395
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor11",
+          "before": 100,
+          "position": [
+            925,
+            -65,
+            2020
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor12",
+          "before": 100,
+          "position": [
+            966,
+            24,
+            2427
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor13",
+          "before": 100,
+          "position": [
+            1142,
+            24,
+            2427
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor14",
+          "before": 100,
+          "position": [
+            966,
+            24,
+            1755
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor15",
+          "before": 100,
+          "position": [
+            1142,
+            24,
+            1755
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor16",
+          "before": 100,
+          "position": [
+            1438,
+            24,
+            1755
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor17",
+          "before": 100,
+          "position": [
+            1606,
+            24,
+            1755
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor18",
+          "before": 100,
+          "position": [
+            1438,
+            -56,
+            1787
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor19",
+          "before": 100,
+          "position": [
+            1606,
+            -56,
+            1787
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor20",
+          "before": 100,
+          "position": [
+            2254,
+            24,
+            2427
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor21",
+          "before": 100,
+          "position": [
+            2086,
+            24,
+            2427
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor23",
+          "before": 100,
+          "position": [
+            2070,
+            -64,
+            1771
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor24",
+          "before": 100,
+          "position": [
+            2078,
+            -56,
+            2395
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor25",
+          "before": 100,
+          "position": [
+            2254,
+            -56,
+            2395
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor37",
+          "before": 100,
+          "position": [
+            1504,
+            64,
+            2224
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor38",
+          "before": 100,
+          "position": [
+            80,
+            632,
+            322
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor39",
+          "before": 100,
+          "position": [
+            -80,
+            632,
+            323
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor40",
+          "before": 1,
+          "position": [
+            112,
+            568,
+            180
+          ],
+          "after": 1
+        },
+        {
+          "id": "AdamAnyActor41",
+          "before": 100,
+          "position": [
+            -1556,
+            512,
+            -1116
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor42",
+          "before": 100,
+          "position": [
+            3815,
+            -63,
+            2270
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor43",
+          "before": 100,
+          "position": [
+            2704,
+            8,
+            2128
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor44",
+          "before": 100,
+          "position": [
+            2704,
+            8,
+            1720
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor45",
+          "before": 100,
+          "position": [
+            3032,
+            8,
+            1720
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor46",
+          "before": 100,
+          "position": [
+            3032,
+            8,
+            2128
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor47",
+          "before": 100,
+          "position": [
+            2392,
+            0,
+            1828
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor48",
+          "before": 100,
+          "position": [
+            2392,
+            0,
+            1987
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor49",
+          "before": 100,
+          "position": [
+            3176,
+            0,
+            1828
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor50",
+          "before": 100,
+          "position": [
+            3176,
+            0,
+            1988
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor51",
+          "before": 100,
+          "position": [
+            3228,
+            16,
+            2172
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor52",
+          "before": 100,
+          "position": [
+            3228,
+            16,
+            2343
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor53",
+          "before": 100,
+          "position": [
+            3924,
+            16,
+            2343
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor54",
+          "before": 100,
+          "position": [
+            3924,
+            16,
+            2175
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor55",
+          "before": 100,
+          "position": [
+            3440,
+            -198,
+            2243
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor57",
+          "before": 100,
+          "position": [
+            3439,
+            -198,
+            2460
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor58",
+          "before": 100,
+          "position": [
+            2128,
+            -80,
+            -504
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor59",
+          "before": 100,
+          "position": [
+            2128,
+            -96,
+            -1192
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor60",
+          "before": 100,
+          "position": [
+            1216,
+            -40,
+            -1016
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor73",
+          "before": 100,
+          "position": [
+            3488,
+            32,
+            1480
+          ],
+          "after": 82.49914103336647
+        },
+        {
+          "id": "AdamAnyActor74",
+          "before": 100,
+          "position": [
+            3648,
+            32,
+            1480
+          ],
+          "after": 79.22429469754661
+        },
+        {
+          "id": "AdamAnyActor75",
+          "before": 100,
+          "position": [
+            2976,
+            -104,
+            1656
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor76",
+          "before": 100,
+          "position": [
+            2969,
+            -67,
+            1648
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor77",
+          "before": 100,
+          "position": [
+            2972,
+            16,
+            1232
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor78",
+          "before": 100,
+          "position": [
+            2972,
+            16,
+            872
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor79",
+          "before": 100,
+          "position": [
+            2932,
+            16,
+            1232
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor80",
+          "before": 100,
+          "position": [
+            2932,
+            16,
+            872
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor81",
+          "before": 100,
+          "position": [
+            3300,
+            -64,
+            1116
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor82",
+          "before": 100,
+          "position": [
+            3272,
+            36,
+            1040
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor84",
+          "before": 100,
+          "position": [
+            3924,
+            16,
+            992
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor85",
+          "before": 100,
+          "position": [
+            3924,
+            16,
+            824
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor86",
+          "before": 100,
+          "position": [
+            3916,
+            -64,
+            992
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor87",
+          "before": 100,
+          "position": [
+            3888,
+            -56,
+            824
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor90",
+          "before": 100,
+          "position": [
+            1728,
+            64,
+            2228
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor92",
+          "before": 100,
+          "position": [
+            1424,
+            -64,
+            3368
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor93",
+          "before": 100,
+          "position": [
+            3812,
+            -64,
+            992
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor94",
+          "before": 100,
+          "position": [
+            2592,
+            -64,
+            520
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor95",
+          "before": 100,
+          "position": [
+            2256,
+            -64,
+            1108
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor96",
+          "before": 100,
+          "position": [
+            2244,
+            -64,
+            256
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor97",
+          "before": 100,
+          "position": [
+            2760,
+            536,
+            -800
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor98",
+          "before": 100,
+          "position": [
+            -578,
+            626,
+            0
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor99",
+          "before": 100,
+          "position": [
+            -580,
+            570,
+            0
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor100",
+          "before": 100,
+          "position": [
+            592,
+            624,
+            0
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor101",
+          "before": 100,
+          "position": [
+            592,
+            560,
+            0
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor102",
+          "before": 1,
+          "position": [
+            -1300,
+            512,
+            -1560
+          ],
+          "after": 1
+        },
+        {
+          "id": "AdamAnyActor103",
+          "before": 100,
+          "position": [
+            1828,
+            -128,
+            -2592
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor104",
+          "before": 100,
+          "position": [
+            1788,
+            -192,
+            -2596
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor105",
+          "before": 100,
+          "position": [
+            72,
+            528,
+            -288
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor106",
+          "before": 100,
+          "position": [
+            -72,
+            528,
+            -288
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor107",
+          "before": 100,
+          "position": [
+            -72,
+            528,
+            -144
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor108",
+          "before": 100,
+          "position": [
+            72,
+            528,
+            -144
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor109",
+          "before": 100,
+          "position": [
+            3316,
+            528,
+            -1836
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor110",
+          "before": 100,
+          "position": [
+            3316,
+            528,
+            -1988
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor111",
+          "before": 100,
+          "position": [
+            3472,
+            528,
+            -1836
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor112",
+          "before": 100,
+          "position": [
+            3472,
+            528,
+            -1292
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor114",
+          "before": 100,
+          "position": [
+            3340,
+            528,
+            -1292
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor115",
+          "before": 100,
+          "position": [
+            2564,
+            528,
+            -1844
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor116",
+          "before": 100,
+          "position": [
+            2564,
+            528,
+            -2000
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor117",
+          "before": 100,
+          "position": [
+            2340,
+            528,
+            -1616
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor118",
+          "before": 100,
+          "position": [
+            2196,
+            528,
+            -1616
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor119",
+          "before": 100,
+          "position": [
+            2844,
+            528,
+            -1248
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor120",
+          "before": 100,
+          "position": [
+            2844,
+            528,
+            -1456
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor121",
+          "before": 100,
+          "position": [
+            2620,
+            528,
+            -1460
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor122",
+          "before": 100,
+          "position": [
+            2620,
+            528,
+            -1248
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor123",
+          "before": 100,
+          "position": [
+            1456,
+            528,
+            -1360
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor124",
+          "before": 100,
+          "position": [
+            1592,
+            528,
+            -1360
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor125",
+          "before": 100,
+          "position": [
+            1840,
+            528,
+            -1136
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor126",
+          "before": 100,
+          "position": [
+            1840,
+            528,
+            -992
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor127",
+          "before": 100,
+          "position": [
+            1216,
+            528,
+            -992
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor128",
+          "before": 100,
+          "position": [
+            1216,
+            528,
+            -1132
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor129",
+          "before": 100,
+          "position": [
+            1480,
+            528,
+            -760
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor130",
+          "before": 100,
+          "position": [
+            1624,
+            528,
+            -760
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor131",
+          "before": 100,
+          "position": [
+            -842,
+            608,
+            -716
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor132",
+          "before": 100,
+          "position": [
+            1503,
+            64,
+            3115
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor133",
+          "before": 100,
+          "position": [
+            1728,
+            64,
+            3116
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor134",
+          "before": 100,
+          "position": [
+            1824,
+            -64,
+            3368
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor135",
+          "before": 100,
+          "position": [
+            1388,
+            -40,
+            2980
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor136",
+          "before": 100,
+          "position": [
+            1844,
+            -40,
+            2980
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor137",
+          "before": 100,
+          "position": [
+            552,
+            632,
+            116
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor138",
+          "before": 100,
+          "position": [
+            552,
+            632,
+            -116
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor139",
+          "before": 100,
+          "position": [
+            -548,
+            632,
+            -116
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor140",
+          "before": 100,
+          "position": [
+            -548,
+            632,
+            116
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor141",
+          "before": 100,
+          "position": [
+            3,
+            632,
+            -667
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor148",
+          "before": 100,
+          "position": [
+            1000,
+            528,
+            76
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor150",
+          "before": 100,
+          "position": [
+            1000,
+            528,
+            -536
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor151",
+          "before": 100,
+          "position": [
+            1052,
+            528,
+            -736
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor152",
+          "before": 100,
+          "position": [
+            -3260,
+            540,
+            -2408
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor153",
+          "before": 100,
+          "position": [
+            -3260,
+            540,
+            -2556
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor154",
+          "before": 100,
+          "position": [
+            -2820,
+            540,
+            -2408
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor155",
+          "before": 100,
+          "position": [
+            -2820,
+            540,
+            -2556
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor156",
+          "before": 100,
+          "position": [
+            -2820,
+            540,
+            -2980
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor157",
+          "before": 100,
+          "position": [
+            -2820,
+            540,
+            -3128
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor158",
+          "before": 100,
+          "position": [
+            -3260,
+            540,
+            -3128
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor159",
+          "before": 100,
+          "position": [
+            -3260,
+            540,
+            -2980
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor160",
+          "before": 100,
+          "position": [
+            -3164,
+            540,
+            -2680
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor161",
+          "before": 100,
+          "position": [
+            -2916,
+            540,
+            -2680
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor162",
+          "before": 100,
+          "position": [
+            -2924,
+            540,
+            -3252
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor163",
+          "before": 100,
+          "position": [
+            -3164,
+            540,
+            -3252
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor164",
+          "before": 100,
+          "position": [
+            -3160,
+            540,
+            -2860
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor165",
+          "before": 100,
+          "position": [
+            -2916,
+            540,
+            -2860
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor166",
+          "before": 100,
+          "position": [
+            -3132,
+            540,
+            -3412
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor167",
+          "before": 100,
+          "position": [
+            -2948,
+            540,
+            -3412
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor168",
+          "before": 100,
+          "position": [
+            -441,
+            520,
+            257
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor171",
+          "before": 1,
+          "position": [
+            -112,
+            568,
+            180
+          ],
+          "after": 1
+        },
+        {
+          "id": "AdamAnyActor172",
+          "before": 1,
+          "position": [
+            0,
+            552,
+            -416
+          ],
+          "after": 1
+        },
+        {
+          "id": "AdamAnyActor173",
+          "before": 1,
+          "position": [
+            178,
+            552,
+            -308
+          ],
+          "after": 1
+        },
+        {
+          "id": "AdamAnyActor174",
+          "before": 1,
+          "position": [
+            -175,
+            552,
+            -315
+          ],
+          "after": 1
+        },
+        {
+          "id": "AdamAnyActor175",
+          "before": 1,
+          "position": [
+            179,
+            552,
+            -123
+          ],
+          "after": 1
+        },
+        {
+          "id": "AdamAnyActor176",
+          "before": 1,
+          "position": [
+            -174,
+            552,
+            -117
+          ],
+          "after": 1
+        },
+        {
+          "id": "AdamAnyActor177",
+          "before": 100,
+          "position": [
+            1475,
+            64,
+            4022
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor178",
+          "before": 100,
+          "position": [
+            1699,
+            64,
+            4022
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor179",
+          "before": 100,
+          "position": [
+            3770,
+            -61,
+            1875
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor180",
+          "before": 100,
+          "position": [
+            2699,
+            0,
+            519
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor181",
+          "before": 100,
+          "position": [
+            2699,
+            0,
+            347
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor182",
+          "before": 100,
+          "position": [
+            2247,
+            0,
+            132
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor183",
+          "before": 100,
+          "position": [
+            2580,
+            0,
+            1459
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor184",
+          "before": 100,
+          "position": [
+            2131,
+            0,
+            1108
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor185",
+          "before": 100,
+          "position": [
+            2019,
+            0,
+            373
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor186",
+          "before": 100,
+          "position": [
+            1878,
+            0,
+            373
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor187",
+          "before": 100,
+          "position": [
+            1876,
+            0,
+            1075
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor188",
+          "before": 100,
+          "position": [
+            2020,
+            0,
+            1075
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor189",
+          "before": 100,
+          "position": [
+            1112,
+            -64,
+            -464
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor190",
+          "before": 100,
+          "position": [
+            1110,
+            -64,
+            -689
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor191",
+          "before": 100,
+          "position": [
+            1416,
+            11,
+            779
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor193",
+          "before": 100,
+          "position": [
+            3008,
+            -160,
+            -4048
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor194",
+          "before": 100,
+          "position": [
+            3232,
+            -160,
+            -3904
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor195",
+          "before": 100,
+          "position": [
+            3232,
+            -184,
+            -3688
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor196",
+          "before": 100,
+          "position": [
+            3232,
+            -184,
+            -3368
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor197",
+          "before": 100,
+          "position": [
+            3014,
+            -190,
+            -3232
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor198",
+          "before": 100,
+          "position": [
+            2085,
+            -231,
+            -3696
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor199",
+          "before": 100,
+          "position": [
+            4,
+            308,
+            -865
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor200",
+          "before": 1000,
+          "position": [
+            -3085,
+            3347,
+            -736
+          ],
+          "after": 1000
+        },
+        {
+          "id": "AdamAnyActor201",
+          "before": 100,
+          "position": [
+            1382,
+            -60,
+            -164
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor203",
+          "before": 100,
+          "position": [
+            221,
+            523,
+            110
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor205",
+          "before": 100,
+          "position": [
+            -782,
+            219,
+            588
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor207",
+          "before": 100,
+          "position": [
+            2384,
+            528,
+            -184
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor208",
+          "before": 100,
+          "position": [
+            2552,
+            528,
+            -184
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor209",
+          "before": 100,
+          "position": [
+            3256,
+            528,
+            -176
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor210",
+          "before": 100,
+          "position": [
+            3416,
+            528,
+            -168
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor211",
+          "before": 100,
+          "position": [
+            620,
+            -232,
+            -3972
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor212",
+          "before": 100,
+          "position": [
+            628,
+            -232,
+            -3640
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor213",
+          "before": 100,
+          "position": [
+            964,
+            -232,
+            -3636
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor214",
+          "before": 100,
+          "position": [
+            964,
+            -232,
+            -3976
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor215",
+          "before": 100,
+          "position": [
+            1816,
+            -64,
+            3616
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor219",
+          "before": 100,
+          "position": [
+            1564,
+            40,
+            2640
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor222",
+          "before": 100,
+          "position": [
+            984,
+            64,
+            2136
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor225",
+          "before": 100,
+          "position": [
+            3560,
+            64,
+            2340
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor227",
+          "before": 100,
+          "position": [
+            2692,
+            -64,
+            516
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor228",
+          "before": 100,
+          "position": [
+            2692,
+            -64,
+            348
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor229",
+          "before": 100,
+          "position": [
+            2152,
+            -64,
+            1112
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor230",
+          "before": 100,
+          "position": [
+            2584,
+            -64,
+            1456
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor231",
+          "before": 100,
+          "position": [
+            2244,
+            -64,
+            152
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor232",
+          "before": 100,
+          "position": [
+            1880,
+            -64,
+            380
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor233",
+          "before": 100,
+          "position": [
+            2020,
+            -64,
+            380
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor234",
+          "before": 100,
+          "position": [
+            1876,
+            -64,
+            1068
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor235",
+          "before": 100,
+          "position": [
+            2016,
+            -64,
+            1068
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor236",
+          "before": 100,
+          "position": [
+            2388,
+            532,
+            -292
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor237",
+          "before": 100,
+          "position": [
+            2548,
+            532,
+            -292
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor238",
+          "before": 100,
+          "position": [
+            3252,
+            532,
+            -280
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor239",
+          "before": 100,
+          "position": [
+            3416,
+            532,
+            -284
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor240",
+          "before": 1,
+          "position": [
+            1980,
+            -231,
+            -3274
+          ],
+          "after": 1
+        },
+        {
+          "id": "AdamAnyActor241",
+          "before": 1,
+          "position": [
+            1007,
+            -64,
+            2130
+          ],
+          "after": 1
+        },
+        {
+          "id": "AdamAnyActor242",
+          "before": 100,
+          "position": [
+            2791,
+            -184,
+            -3870
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor243",
+          "before": 100,
+          "position": [
+            845,
+            -224,
+            -2458
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor244",
+          "before": 100,
+          "position": [
+            1618,
+            -224,
+            -2434
+          ],
+          "after": 100
+        },
+        {
+          "id": "AdamAnyActor245",
+          "before": 100,
+          "position": [
+            1862,
+            -224,
+            -2010
+          ],
+          "after": 100
+        }
+      ],
+      "tickPerformance": {
+        "activeMs": [
+          23,
+          11.300000000745058,
+          8.899999998509884,
+          7.300000000745058,
+          7.399999998509884,
+          6.600000001490116,
+          8,
+          6,
+          7.800000000745058,
+          6.199999999254942,
+          6.300000000745058,
+          6.5,
+          6.5,
+          5.800000000745058,
+          6.300000000745058,
+          5.899999998509884
+        ],
+        "expiredMs": [
+          5.699999999254942,
+          5.800000000745058,
+          6.400000002235174,
+          5.399999998509884,
+          4.899999998509884,
+          4.800000000745058,
+          4.300000000745058,
+          4.899999998509884,
+          4.900000002235174,
+          4.699999999254942,
+          4.300000000745058,
+          4.199999999254942
+        ],
+        "objects": 1724,
+        "eligible": 190
+      },
+      "gate": {
+        "health": 0,
+        "visible": false,
+        "blocks": false
+      },
+      "visual": {
+        "changedPixels": 1196,
+        "sprites": [
+          {
+            "key": "explosie01.bmp|explosie01_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "explosie02.bmp|explosie02_a.bmp",
+            "count": 1
+          },
+          {
+            "key": "explosie03.bmp|explosie03_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "explosie04.bmp|explosie04_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "explosie05.bmp|explosie05_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "explosie06.bmp|explosie06_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "explosie07.bmp|explosie07_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "explosie08.bmp|explosie08_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "smoke_05.bmp|smoke_green_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "smoke_blue.bmp|smoke_green_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "smoke_brown.bmp|smoke_green_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "smoke_green.bmp|smoke_green_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "smoke_red.bmp|smoke_green_a.bmp",
+            "count": 0
+          }
+        ]
+      },
+      "scriptError": null
+    },
+    "restore": {
+      "midpoint": {
+        "player": 16.74481767435418,
+        "near": 86.397411119818,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "restoredMid": {
+        "player": 16.74481767435418,
+        "near": 86.397411119818,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "restoredEnd": {
+        "player": 13.48963534870975,
+        "near": 72.79482223964179,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "afterExpiry": {
+        "player": 13.48963534870975,
+        "near": 72.79482223964179,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "restoredCells": [
+        {
+          "sourceId": "AdamAnyActor72",
+          "birth": 100,
+          "position": [
+            3572.41216,
+            -53.38015885322571,
+            1487.9862398791504
+          ],
+          "radius": 175,
+          "rate": 46.875
+        },
+        {
+          "sourceId": "AdamAnyActor71",
+          "birth": 100,
+          "position": [
+            3588.298072218628,
+            -25.31811029860765,
+            1459.7679525230606
+          ],
+          "radius": 175,
+          "rate": 46.875
+        }
+      ],
+      "expiredCells": 0
+    },
+    "noClip": {
+      "before": {
+        "player": 20,
+        "near": 100,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "after": {
+        "player": 20,
+        "near": 72.79482223964179,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      }
+    },
+    "outside": {
+      "before": {
+        "player": 20,
+        "near": 100,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "after": {
+        "player": 20,
+        "near": 72.79482223964179,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "point": [
+        4072.41216,
+        -8.380158853225709,
+        1487.9862398791504
+      ]
+    },
+    "blocked": {
+      "before": {
+        "player": 20,
+        "near": 100,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "after": {
+        "player": 20,
+        "near": 72.79482223964179,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "point": [
+        3443.5243280214045,
+        -53.38015885322571,
+        1471.0178348905436
+      ],
+      "distance": 130.00000000000006,
+      "candidateCount": 72
+    },
+    "scriptError": null,
+    "reloadSaved": {
+      "health": {
+        "player": 16.74481767435418,
+        "near": 86.397411119818,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "time": 100.20000000000005,
+      "cells": [
+        {
+          "sourceId": "AdamAnyActor72",
+          "birth": 100,
+          "position": [
+            3572.41216,
+            -53.38015885322571,
+            1487.9862398791504
+          ],
+          "radius": 175,
+          "rate": 46.875
+        },
+        {
+          "sourceId": "AdamAnyActor71",
+          "birth": 100,
+          "position": [
+            3588.298072218628,
+            -25.31811029860765,
+            1459.7679525230606
+          ],
+          "radius": 175,
+          "rate": 46.875
+        }
+      ],
+      "position": [
+        3677.41216,
+        -62.46015885322571,
+        1487.9862398791504
+      ]
+    },
+    "reload": {
+      "initial": {
+        "health": {
+          "player": 16.74481767435418,
+          "near": 86.397411119818,
+          "far": 100,
+          "crate": 0,
+          "gate": 0
+        },
+        "time": 100.20000000000005,
+        "cells": [
+          {
+            "sourceId": "AdamAnyActor72",
+            "birth": 100,
+            "position": [
+              3572.41216,
+              -53.38015885322571,
+              1487.9862398791504
+            ],
+            "radius": 175,
+            "rate": 46.875
+          },
+          {
+            "sourceId": "AdamAnyActor71",
+            "birth": 100,
+            "position": [
+              3588.298072218628,
+              -25.31811029860765,
+              1459.7679525230606
+            ],
+            "radius": 175,
+            "rate": 46.875
+          }
+        ],
+        "position": [
+          3677.41216,
+          -62.46015885322571,
+          1487.9862398791504
+        ]
+      },
+      "visuals": {
+        "effects": [
+          {
+            "sourceId": "AdamAnyActor72",
+            "birth": 100
+          },
+          {
+            "sourceId": "AdamAnyActor71",
+            "birth": 100
+          }
+        ],
+        "blastCohorts": 2,
+        "sprites": [
+          {
+            "key": "explosie01.bmp|explosie01_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "explosie02.bmp|explosie02_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "explosie03.bmp|explosie03_a.bmp",
+            "count": 1
+          },
+          {
+            "key": "explosie04.bmp|explosie04_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "explosie05.bmp|explosie05_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "explosie06.bmp|explosie06_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "explosie07.bmp|explosie07_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "explosie08.bmp|explosie08_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "smoke_05.bmp|smoke_green_a.bmp",
+            "count": 2
+          },
+          {
+            "key": "smoke_blue.bmp|smoke_green_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "smoke_brown.bmp|smoke_green_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "smoke_green.bmp|smoke_green_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "smoke_red.bmp|smoke_green_a.bmp",
+            "count": 0
+          }
+        ]
+      },
+      "end": {
+        "player": 13.48963534870975,
+        "near": 72.79482223964179,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "afterExpiry": {
+        "player": 13.48963534870975,
+        "near": 72.79482223964179,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "expiredCells": 0,
+      "scriptError": null
+    }
+  }
+}

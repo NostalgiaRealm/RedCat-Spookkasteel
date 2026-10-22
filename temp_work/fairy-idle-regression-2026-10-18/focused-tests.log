@@ -1,0 +1,26 @@
+✔ dialogue FIFO preserves every WAV through delayed loading, pause, expiry and final completion (1.668407ms)
+✔ pause covers every playing channel and pending sound, preserving delayed-loop countdowns (0.423367ms)
+✔ explicit dialogue skip and reset remove queued tails; playback errors cannot stall a sequence (0.419437ms)
+✔ all 31 authored fairy locations activate exactly their own Davi binding and stop their idle on deactivation (111.214237ms)
+✔ native cutscene finish waits for the actual voice end and keeps its fairy present; skip stays immediate (35.793375ms)
+✔ a second fairy encounter replaces the first and legacy saves keep only the fairy at the saved player (11.346986ms)
+✔ pickup router selects complete native S/M/L recordings and overlapping pickups keep separate tails (0.498157ms)
+✔ BIG BENG charge sound follows its native hold, pause and release lifetime (0.421577ms)
+✔ level-transition pickup guard waits for every ending, freezes with pause, and clears on failure or reset (0.276528ms)
+✔ fairy idle uses one complete original-rate PCM loop at native base volume (3.830552ms)
+✔ legacy media save resumes the idle sample and gain once across pause and repeated reload (2.098174ms)
+✔ fairy deactivation before decode cannot start a late loop; other cues retain their gain and media path (0.764804ms)
+✔ fairy loop retains a working media fallback without Web Audio (0.198948ms)
+✔ fairy appearance plays Gri5FX11 once and loops original idlefee1, with silent periodic particles (16.789326ms)
+✔ ordinary fairy departure retains its separate visual burst and single departure cue (1.556288ms)
+✔ skipping during fairy departure clears its surviving tail and sound without touching future encounters (0.434257ms)
+✔ skipping before original fairy activation consumes that dialogue fairy and preserves future encounters (61.815182ms)
+✔ skipping an already visible skill fairy clears particles/audio and preserves the potion reward (19.959412ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 264.064814

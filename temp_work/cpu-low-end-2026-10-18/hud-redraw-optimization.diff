@@ -1,0 +1,58 @@
+--- temp_work/cpu-low-end-2026-10-18/before/src/hud.js
++++ src/hud.js
+@@ -38,20 +38,38 @@
+   return {scale,x:(width-drawWidth)/2,y:(height-drawHeight)/2,logicalWidth:drawWidth/scale,logicalHeight:(drawHeight-inset)/scale};
+ }
+ export class OriginalHud {
+-  constructor(canvas){this.canvas=canvas;this.context=canvas.getContext('2d');this.ready=this.load();}
++  constructor(canvas){
++    this.canvas=canvas;this.context=canvas.getContext('2d');this.lastDraw=null;
++    canvas.addEventListener('contextlost',()=>this.invalidate());
++    canvas.addEventListener('contextrestored',()=>this.invalidate());
++    this.ready=this.load();
++  }
++  invalidate(){this.lastDraw=null;}
+   async load(){
+     const response=await fetch('assets/hud/manifest.json');if(!response.ok)throw new Error('Originele HUD ontbreekt. Voer tools/import_hud.py uit.');
+     this.manifest=await response.json();this.atlas=new Image();this.atlas.src='assets/hud/'+this.manifest.atlas;await this.atlas.decode();
+   }
+   render(state,totalPotions,enemy,viewWidth,viewHeight,{bottomInset=0}={}){
+-    if(!this.atlas?.complete||!this.manifest)return;
++    if(!this.atlas?.complete||!this.manifest){this.invalidate();return;}
+     const canvas=this.canvas,rect=canvas.getBoundingClientRect(),pixelRatio=window.devicePixelRatio||1;
+     const width=Math.max(1,Math.round(rect.width*pixelRatio)),height=Math.max(1,Math.round(rect.height*pixelRatio));
+-    if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}
++    if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;this.invalidate();}
++    const target=enemy&&(enemy.kind===undefined||enemy.kind==='enemy')&&enemy.health>0?enemy:null;
++    // Gameplay/targets mutate in place. Cache their drawn values, together
++    // with the loaded artwork and layout, rather than object identities.
++    const draw=[this.atlas,this.atlas.currentSrc||this.atlas.src,this.manifest,this.manifest.width,this.manifest.height,
++      canvas.width,canvas.height,viewWidth,viewHeight,pixelRatio,bottomInset,
++      state.health,state.maxHealth||10,state.lives,state.potions,totalPotions,state.score,
++      target?enemyPortrait(target):null,target?.health,target?(target.maxHealth||target.health):null];
++    if(this.lastDraw&&draw.every((value,index)=>Object.is(value,this.lastDraw[index])))return;
++    // Resizing/restoring a canvas clears it. A failed draw must also leave
++    // the next frame dirty instead of retaining a partially cleared image.
++    this.invalidate();
+     const ctx=this.context;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,width,height);
+     // The game canvas is fitted without stretching, including fixed 4:3 modes.
+     const {scale,x,y,logicalWidth,logicalHeight}=hudViewport(this.manifest,width,height,viewWidth,viewHeight,{bottomInset,pixelRatio});
+     ctx.setTransform(scale,0,0,scale,x,y);ctx.imageSmoothingEnabled=true;
+     for(const c of hudCommands(this.manifest,state,totalPotions,enemy,logicalWidth,logicalHeight))ctx.drawImage(this.atlas,c.sx,c.sy,c.w,c.h,c.x,c.y,c.w,c.h);
++    this.lastDraw=draw;
+   }
+ }
+--- temp_work/cpu-low-end-2026-10-18/before/src/main.js
++++ src/main.js
+@@ -434,7 +434,10 @@
+ function renderHud(){
+   if(!gameplay||!world)return;
+   const state=gameplay.state;
+-  for(const key of ['health','lives','score','potions','mirror'])$(key).textContent=state[key]||0;
++  for(const key of ['health','lives','score','potions','mirror']) {
++    const element=$(key),value=String(state[key]||0);
++    if(element.textContent!==value)element.textContent=value;
++  }
+   originalHud.render(state,gameplay.totalPotions,world.targeting?.locked?world.targeting.target:null,$('game').width,$('game').height,{bottomInset:touchEnabled&&!controllerActive?200:0});
+ }
+ function updateSkipIndicator(){

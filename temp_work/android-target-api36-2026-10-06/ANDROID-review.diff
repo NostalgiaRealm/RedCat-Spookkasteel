@@ -1,0 +1,66 @@
+--- ANDROID.md (before)
++++ ANDROID.md
+@@ -1,27 +1,41 @@
+-# Roadmap: an Android 10.0+ app
++# Roadmap: an app targeting Android 16 / API 36+
+ 
+-This is a step-by-step implementation plan, checked against the project on **5 October 2026**. There is no Android app, Gradle project or Android build command in this repository yet. The commands near the end become usable only after the preceding work is implemented.
++This is a step-by-step implementation plan, checked against the project on **5 October 2026**, with the Android SDK target clarified on **6 October 2026**. There is no Android app, Gradle project or Android build command in this repository yet. The commands near the end become usable only after the preceding work is implemented.
+ 
+ The recommended starting point is a small **Kotlin Android app containing a WebView**, which runs the existing JavaScript/Three.js game and its imported assets. Keep one shared game implementation for desktop, browser and Android. The Electron executable and Linux ARM64 package cannot be turned into an APK; replace the application wrapper, not the game engine.
+ 
+ ## 1. Define the compatibility target
+ 
+-Support **Android 10.0 / API 29 and newer**, with these separate requirements:
++Target **Android 16 / API 36 or higher**, while retaining compatibility with **Android 10.0 / API 29 and newer**. The target API determines which Android behavior requirements the app implements; the minimum API determines which devices may install it.
+ 
+ | Setting or requirement | What to do |
+ | --- | --- |
+ | `minSdk` | Set to **29**. This is the oldest Android OS allowed to install the app. |
+-| `targetSdk` | Target a recent Android API and implement its behavior requirements. Do not set this to 29 just because Android 10 is the minimum. |
+-| `compileSdk` | Use an SDK compatible with the selected Android libraries and at least as new as `targetSdk`. |
++| `targetSdk` | Set to **36 or higher**: Android 16 or a later target required at release time. Implement and test that target's behavior requirements. |
++| `compileSdk` | Set to **36 or higher**, at least as new as `targetSdk` and compatible with the selected Android libraries. |
+ | WebView and GPU | Require a tested WebView provider with WebGL 2 and the browser APIs used by the game. Android 10 alone does not guarantee those capabilities. |
+ 
+-As of this document's date, Google Play requires new phone/tablet apps to target **API 36 or higher**. Recheck the requirement when implementing and releasing; increasing the target does not by itself remove API 29 support. See [Android 10 / API 29](https://developer.android.com/about/versions/10/setup-sdk), [SDK configuration](https://developer.android.com/build) and [Play target requirements](https://developer.android.com/google/play/requirements/target-sdk).
++As of **6 October 2026**, Google Play requires new phone/tablet apps to target **API 36 or higher**. This requirement applies to `targetSdk`; it does not require `minSdk = 36` or prevent supporting older devices. Recheck the target requirement when implementing and releasing. See [Android 16 / API 36 setup](https://developer.android.com/about/versions/16/setup-sdk), [SDK configuration](https://developer.android.com/build) and [Play target requirements](https://developer.android.com/google/play/requirements/target-sdk).
++
++The initial Gradle SDK configuration should therefore be:
++
++```kotlin
++android {
++    compileSdk = 36
++    defaultConfig {
++        minSdk = 29
++        targetSdk = 36
++    }
++}
++```
++
++Raise `targetSdk` and `compileSdk` together when adopting a newer target. Keep the minimum at 29 unless the project separately decides to drop Android 10 compatibility.
+ 
+ Use the existing browser game for an initial smoke check on a physical Android 10 device. Then use the minimal WebView shell from steps 2–4 to establish the oldest tested WebView provider version; a browser test does not exercise that provider. Check ES modules/import maps, WebGL 2, Web Audio, IndexedDB and video decoding. Add a readable compatibility screen before starting the game when essential features are missing. Do not advertise support for every Android 10 device until this is measured.
+ 
+ ## 2. Create the Android application shell
+ 
+-Install Android Studio, SDK platform/build tools, platform-tools (`adb`) and the JDK required by the chosen Android Gradle Plugin. Use the existing Node/npm prerequisites from [the build guide](docs/building.md) for preparing web files. Pin the Android toolchain and libraries, commit the Gradle wrapper, and choose versions whose minimum OS remains at or below API 29. See [Android build JDK requirements](https://developer.android.com/build/jdks).
++Install Android Studio, the **Android 16 / API 36 SDK or the newer selected SDK**, compatible build tools, platform-tools (`adb`) and the JDK required by the chosen Android Gradle Plugin. Use the existing Node/npm prerequisites from [the build guide](docs/building.md) for preparing web files. Pin the Android toolchain and libraries, commit the Gradle wrapper, and choose versions whose minimum OS remains at or below API 29. See [Android build JDK requirements](https://developer.android.com/build/jdks).
+ 
+ Create a new `android/` project with one activity hosting a hardware-accelerated WebView. Use AndroidX WebKit for local content loading. Assign a stable application ID, launcher icon, app name, increasing `versionCode` and readable `versionName`. There is no need to compile Genesis3D or introduce C++/the NDK for this design.
+ 
+@@ -116,7 +130,7 @@
+ 
+ ## 10. Validate the Android app on a small device matrix
+ 
+-Use an API 29 emulator for OS/lifecycle checks and **physical Android 10 hardware** for graphics, media and performance. Also test a recent Android release, a low-end ARM device, portrait/landscape layouts and a controller. Record model, OS, WebView version, RAM, render resolution and frame-time results.
++Test the **API 36-targeted build on Android 16 / API 36** for target-specific OS behavior, plus newer Android versions as available. Also use an API 29 emulator and **physical Android 10 hardware** to verify the minimum supported OS, including graphics, media and performance. Include a low-end ARM device, portrait/landscape layouts and a controller. Record model, OS, WebView version, RAM, render resolution and frame-time results. If adopting a target newer than 36, add tests on that target's Android release.
+ 
+ During implementation, run only tests for the changed systems. Before calling the Android app release-ready, make one deliberate Android campaign pass covering all five levels, boss fights, cutscenes, upgrades, portals, level transitions, complete audio loops, saving/recovery and prolonged play. Include airplane-mode cold startup, app-update save retention, background/process-death recovery and failure messages for unsupported graphics.
+ 
+@@ -148,4 +162,4 @@
+ 
+ Replace this roadmap's proposed commands with the actual setup and build steps once implemented. Record the tested OS/WebView/device range, default resolution, known limitations, asset delivery method, signing procedure and focused checks. If Google Play is chosen, recheck its target-SDK and asset-size requirements at release time; direct APK distribution still needs working Android lifecycle, storage and graphics.
+ 
+-The first useful milestone is **offline Level 1 on Android 10 with touch, audio and reliable save/resume**. A completed Android port additionally needs the full campaign and release checks above. No Android build or implementation was produced by writing this roadmap.
++The first useful milestone is **an API 36+ targeted build running offline Level 1 on Android 16 and Android 10, with touch, audio and reliable save/resume**. A completed Android port additionally needs the full campaign and release checks above. No Android build or implementation was produced by writing this roadmap.

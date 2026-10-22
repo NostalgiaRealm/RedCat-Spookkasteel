@@ -1,0 +1,11 @@
+--- docs/portability.md (before)
++++ docs/portability.md
+@@ -29,7 +29,7 @@
+ 
+ ## Android
+ 
+-For the ordered implementation plan, Android 10/API 29 requirements, proposed wrapper and eventual build commands, see [ANDROID.md](../ANDROID.md).
++For the ordered implementation plan targeting Android 16/API 36 or higher while retaining Android 10/API 29 compatibility, the proposed wrapper and eventual build commands, see [ANDROID.md](../ANDROID.md).
+ 
+ Use the same web core in an Android WebView-capable app shell. The current desktop Electron wrapper cannot be reused on Android.
+ 

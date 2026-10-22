@@ -1,0 +1,31 @@
+✔ restores music layers, native fade phase and remembered tracks without changing scheduling (2.401575ms)
+✔ restores overlapping pickup tails, keyed effects and delayed replay countdown without rerandomizing (0.923284ms)
+✔ restored dialogue keeps active offset and FIFO; reconstruction and stale callbacks never duplicate lines (0.609226ms)
+✔ metadata-delayed seeks never play an introduction and respect pause/reset while pending (0.401727ms)
+✔ immediate saves retain a pending seek even when HAVE_NOTHING accepts it but reports zero (0.503587ms)
+✔ a restored replay delay may expire before metadata without seeking errors or an early replay (0.645316ms)
+✔ legacy/cross-level states leave reconstructed playback untouched; malformed entries are bounded (0.394088ms)
+✔ decoded WAV voices restore offsets across decode, pause and cancellation without stale playback (4.115934ms)
+✔ matching reconstructed moving emitter binding survives playback restoration (0.236729ms)
+✔ each level selects its complete original background WAV as an indefinite loop (60.42154ms)
+✔ returning after combat has faded out restores the background playhead before playback begins (0.473387ms)
+✔ returning during a crossfade reverses the existing layer without duplicate music or a position reset (0.513967ms)
+✔ pause freezes both music layers, positions and crossfade clocks then resumes from the same positions (0.672346ms)
+✔ explicit music stop and level reset discard remembered positions and all fading layers (0.398168ms)
+✔ fallback EOF events repeat complete tracks indefinitely without a replay delay or early restart (0.197438ms)
+✔ an EOF delivered while paused remains silent until resume and restarts at the beginning (0.127099ms)
+✔ selecting the same filename preserves playback while updating authored volume and owner (0.137159ms)
+✔ a track stopped exactly at EOF resumes at zero instead of trying to seek past its duration (0.177679ms)
+✔ Web Audio loops the full decoded sample range repeatedly without media seeking or a new source (3.973104ms)
+✔ buffered music preserves its sample offset across combat and pause with no introduction replay (0.743715ms)
+✔ reset during a pending music decode cannot resurrect the released source or refill its cache (0.479217ms)
+✔ music decoded while paused remains silent and starts exactly once when resumed (0.412498ms)
+✔ music retains at most two decoded tracks independently of the eight short-effect buffers (0.892524ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 115.892012

@@ -1,0 +1,166 @@
+✔ a committed plant shot releases once even if RedCat moves out of range and behind cover (3.563751ms)
+✔ standing-shooter salvo finishes without new visibility gates or invented between-shot waits (1.748341ms)
+✔ gargoyle finishes a committed salvo after alert memory expires (3.373722ms)
+✖ damage still cancels an unreleased shot and death cannot emit it later (0.986144ms)
+✔ knight melee still requires RedCat inside the actual strike range (0.516547ms)
+✔ saved and frozen committed release retains its remaining deadline (2.511156ms)
+✔ ordinary hits choose reaction or sound-only continuation without changing damage or awareness (3.503691ms)
+✔ selected hits during hurt keep its original pose deadline and entry sound (0.240548ms)
+✔ stone inactive immunity alerts on the first hit, and fresh alert wake follows its hit reaction (1.456752ms)
+✔ a sound-only hit wakes stone enemies through ordinary alert without cancelling another state (0.185749ms)
+✔ reaction choice and pending stone alert survive save/load and script freezes (2.373717ms)
+✔ lethal ordinary damage cancels all pending attacks and awards only one defeat (0.484848ms)
+✔ Bone Brutus only accepts damage on its native one-in-three hit branch (0.237748ms)
+✖ accepted ranged attack starts castle Action before impact without enlarging knight perception (24.716444ms)
+✔ empty shots, props, inactive targets and rejected attacks do not trigger enemy music (91.173509ms)
+✖ a free-aim hit gives a distant knight native hit memory and music expires after disengagement (12.72568ms)
+✔ an aimed attack that misses has a finite music duration (12.807009ms)
+✖ a non-damaging knight hit still refreshes native awareness and remembered player position (10.636452ms)
+✖ defeat clears attack music only after the final enemy, with boss music retaining priority (11.616706ms)
+✖ ranged attack music survives saving and frozen gameplay then expires normally (32.71103ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 14
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 276.836917
+
+✖ failing tests:
+
+test at tests/enemy-committed-attacks.test.mjs:37:1
+✖ damage still cancels an unreleased shot and death cannot emit it later (0.986144ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + {
+  +   at: 0.49841480092212714
+  + }
+  - null
+  
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/enemy-committed-attacks.test.mjs:40:43)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { at: 0.49841480092212714 },
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/knight-attack-music.test.mjs:18:1
+✖ accepted ranged attack starts castle Action before impact without enlarging knight perception (24.716444ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ambient'
+  - 'action'
+  
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/knight-attack-music.test.mjs:23:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ambient',
+    expected: 'action',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/knight-attack-music.test.mjs:45:1
+✖ a free-aim hit gives a distant knight native hit memory and music expires after disengagement (12.72568ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  5 !== 4
+  
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/knight-attack-music.test.mjs:49:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 5,
+    expected: 4,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/knight-attack-music.test.mjs:67:1
+✖ a non-damaging knight hit still refreshes native awareness and remembered player position (10.636452ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ambient'
+  - 'action'
+  
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/knight-attack-music.test.mjs:72:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ambient',
+    expected: 'action',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/knight-attack-music.test.mjs:75:1
+✖ defeat clears attack music only after the final enemy, with boss music retaining priority (11.616706ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ambient'
+  - 'action'
+  
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/knight-attack-music.test.mjs:78:31)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ambient',
+    expected: 'action',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/knight-attack-music.test.mjs:86:1
+✖ ranged attack music survives saving and frozen gameplay then expires normally (32.71103ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ambient'
+  - 'action'
+  
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/knight-attack-music.test.mjs:89:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ambient',
+    expected: 'action',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

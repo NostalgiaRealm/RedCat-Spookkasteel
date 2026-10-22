@@ -1,0 +1,216 @@
+210: 			*BoneIndex = GE_POSE_ROOT_JOINT;
+211: 		}
+212: 	return GE_TRUE;
+213: }
+214: 
+215: 
+216: GENESISAPI geActor_Def *GENESISCC geActor_GetActorDef(const geActor *A)
+217: {
+218: 	assert( geActor_DefIsValid(A->ActorDefinition) != GE_FALSE );
+219: 	return A->ActorDefinition;
+220: }
+221: 
+222: GENESISAPI void GENESISCC geActor_DefCreateRef(geActor_Def *A)
+223: {
+224: 	assert( geActor_DefIsValid(A) != GE_FALSE );
+225: 	A->RefCount++;
+226: 	geActor_DefRefCount++;
+227: }
+228: 
+229: GENESISAPI geActor_Def *GENESISCC geActor_DefCreate(void)
+230: {
+231: 	geActor_Def *Ad;
+232: 
+233: 	Ad = GE_RAM_ALLOCATE_STRUCT( geActor_Def );
+234: 	if ( Ad == NULL )
+235: 		{
+236: 			geErrorLog_Add( ERR_ACTOR_ENOMEM , NULL);
+237: 			return NULL;
+238: 		}
+239: 
+240: 	Ad->Body				= NULL;
+241: 	Ad->MotionCount			= 0;
+242: 	Ad->MotionArray			= NULL;
+243: 	Ad->ValidityCheck		= Ad;
+244: 	Ad->RefCount            = 0;
+245: 	geActor_DefCount++;
+246: 	return Ad;
+247: }
+248: 
+249: GENESISAPI void GENESISCC geActor_CreateRef(geActor *Actor)
+250: {
+251: 	assert( geActor_IsValid(Actor) );
+252: 	Actor->RefCount ++;
+253: 	geActor_RefCount++;
+254: }
+255: 
+256: GENESISAPI geActor *GENESISCC geActor_Create(geActor_Def *ActorDefinition)
+257: {
+258: 	geActor *A;
+259: 	assert( geActor_DefIsValid(ActorDefinition)      != GE_FALSE );
+260: 	
+261: 	if (ActorDefinition->Body == NULL)
+262: 		{
+263: 			geErrorLog_AddString(-1,"geActor_Def must have a body before Actors can be created", NULL);
+264: 			return NULL;
+265: 		}
+266: 	assert( geBody_IsValid(ActorDefinition->Body) != GE_FALSE );
+267: 
+268: 	A = GE_RAM_ALLOCATE_STRUCT( geActor );
+269: 	if ( A == NULL )
+270: 		{
+271: 			geErrorLog_Add( ERR_ACTOR_ENOMEM , NULL);
+272: 			goto ActorCreateFailure;
+273: 		}
+274: 	A->Puppet = NULL;
+275: 	A->Pose   = NULL;
+276: 	A->CueMotion = NULL;
+277: 
+278: 	A->Pose = gePose_Create();
+279: 	if (A->Pose == NULL)
+280: 		{
+281: 			geErrorLog_Add(ERR_ACTOR_ENOMEM, NULL);
+282: 			goto ActorCreateFailure;
+283: 		}
+284: 	
+285: 	A->RefCount          = 0;
+286: 	A->BlendingType		 = GE_ACTOR_BLEND_HERMITE;
+287: 	A->ActorDefinition   = ActorDefinition;
+288: 	A->CueMotion		 = geMotion_Create(GE_TRUE);
+289: 	A->BoundingBoxCenterBoneIndex = GE_POSE_ROOT_JOINT;
+290: 	A->RenderHintExtBoxCenterBoneIndex = GE_POSE_ROOT_JOINT;
+291: 	A->RenderHintExtBoxEnabled = GE_FALSE;
+292: 	A->StepBoneIndex     = GE_POSE_ROOT_JOINT;
+293: 	geExtBox_Set(&(A->RenderHintExtBox), 0.0f,0.0f,0.0f,0.0f,0.0f,0.0f);
+294: 	if (A->CueMotion == NULL)
+295: 		{
+296: 			geErrorLog_Add( ERR_ACTOR_ENOMEM , NULL);
+297: 			goto ActorCreateFailure;
+298: 		}
+299: 
+300: 
+301: 	{
+302: 		int i; 
+303: 		int BoneCount;
+304: 
+305: 		BoneCount = geBody_GetBoneCount(A->ActorDefinition->Body);
+306: 		for (i=0; i<BoneCount; i++)
+307: 			{
+308: 				const char *Name;
+309: 				geXForm3d Attachment;
+310: 				int ParentBone;
+311: 				int Index;
+312: 				geBody_GetBone( A->ActorDefinition->Body, i, &Name,&Attachment, &ParentBone );
+313: 				if (gePose_AddJoint( A->Pose,
+314: 									ParentBone,Name,&Attachment,&Index)==GE_FALSE)
+315: 					{
+316: 						geErrorLog_Add(ERR_ACTOR_ENOMEM, NULL);
+317: 						goto ActorCreateFailure;
+318: 					}
+319: 			}
+320: 	}
+321: 
+322: 
+323: 	geVec3d_Clear(&(A->BoundingBoxMinCorner));
+324: 	geVec3d_Clear(&(A->BoundingBoxMaxCorner));
+325: 	assert( geActor_IsValid(A) != GE_FALSE );
+326: 	geActor_DefCreateRef(ActorDefinition);
+327: 	geActor_Count++;
+328: 	return A;
+329: 
+330: 	ActorCreateFailure:
+331: 	if ( A!= NULL)
+332: 		{
+333: 			if (A->Pose != NULL)
+334: 				gePose_Destroy(&(A->Pose));
+335: 			if (A->CueMotion != NULL)
+336: 				geMotion_Destroy(&(A->CueMotion));
+337: 			geRam_Free( A );
+338: 		}
+339: 	return NULL;
+340: }	
+341: 
+342: GENESISAPI geBoolean GENESISCC geActor_DefDestroy(geActor_Def **pActorDefinition)
+343: {
+344: 	int i;
+345: 	geActor_Def *Ad;
+346: 	assert(  pActorDefinition != NULL );
+347: 	assert( *pActorDefinition != NULL );
+348: 	assert( geActor_DefIsValid( *pActorDefinition ) != GE_FALSE );
+349: 
+350: 	Ad = *pActorDefinition;
+351: 
+352: 	if (Ad->RefCount > 0)
+353: 		{
+354: 			Ad->RefCount--;
+355: 			geActor_DefRefCount--;
+356: 			return GE_FALSE;
+357: 		}
+358: 
+359: 	if (Ad->Body != NULL)
+360: 		{
+361: 
+362: /*	02/21/2004 Wendell Buckner
+363:     DOT3 BUMPMAPPING */
+364: 		    geBody_DestroyTangentSpace( Ad->Body );
+365: 
+366: 			geBody_Destroy( &(Ad->Body) );
+367: 			Ad->Body = NULL;
+368: 		}
+369: 	if (Ad->MotionArray != NULL)
+370: 		{
+371: 			for (i=0; i<Ad->MotionCount; i++)
+372: 				{
+373: 					geMotion_Destroy( &(Ad->MotionArray[i]) );
+374: 					Ad->MotionArray[i] = NULL;
+375: 				}
+376: 			geRam_Free( Ad->MotionArray );
+377: 			Ad->MotionArray = NULL;
+378: 		}
+379: 				
+380: 	Ad->MotionCount = 0;
+381: 
+382: 	geRam_Free(*pActorDefinition);
+383: 	*pActorDefinition = NULL;
+384: 	geActor_DefCount--;
+385: 	return GE_TRUE;
+386: }
+387: 
+388: 
+389: GENESISAPI geBoolean GENESISCC geActor_Destroy(geActor **pA)
+390: {
+391: 	geActor *A;
+392: 	assert(  pA != NULL );
+393: 	assert( *pA != NULL );
+394: 	assert( geActor_IsValid(*pA) != GE_FALSE );
+395: 	
+396: 	A = *pA;
+397: 	if (A->RefCount > 0)
+398: 		{
+399: 			A->RefCount --;
+400: 			geActor_RefCount--;
+401: 			return GE_FALSE;
+402: 		}
+403: 
+404: 	geActor_DefDestroy(&(A->ActorDefinition));
+405: 	if (A->Puppet != NULL)
+406: 		{
+407: 			gePuppet_Destroy( &(A->Puppet) );
+408: 			A->Puppet = NULL;
+409: 		}
+410: 	if ( A->Pose != NULL )
+411: 		{
+412: 			gePose_Destroy( &( A->Pose ) );
+413: 			A->Pose = NULL;
+414: 		}
+415: 	if ( A->CueMotion != NULL )
+416: 		{
+417: 			geMotion_Destroy(&(A->CueMotion));
+418: 			A->CueMotion = NULL;
+419: 		}
+420: 	geRam_Free(*pA);
+421: 	geActor_Count--;
+422: 	*pA = NULL;
+423: 	return GE_TRUE;
+424: 
+425: }

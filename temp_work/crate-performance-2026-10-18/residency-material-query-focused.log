@@ -1,0 +1,16 @@
+✔ off-camera actors release only GPU resources after hysteresis and return immediately on camera turn (3.453559ms)
+✔ shared actor geometry and textures are retained until the last resident owner leaves (0.623926ms)
+✔ distant visible actors and large transformed assemblies stay complete (0.721946ms)
+✔ near-camera preload and distance hysteresis avoid repeated uploads at the boundary (0.898844ms)
+✔ nearby actors behind PVS stay preloaded without drawing while distant visible bounds stay intact (0.458357ms)
+✔ player and nonmanaged scene consumers protect shared textures and geometry (0.697546ms)
+✔ release protection inspects a shared chunk material once per query and observes subsequent texture changes (7.279617ms)
+✔ removal and controller disposal restore original layers without changing gameplay visibility (0.581317ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 77.375437

@@ -1,0 +1,32 @@
+✔ offscreen actor parking skips scene traversal and restores on camera turns without gameplay visibility changes (3.863673ms)
+✔ parked actor direct queries and same-frame reveal preserve transformed scene ancestry (1.141492ms)
+✔ nested roots and externally reparented or removed actors keep their owner hierarchy (1.37138ms)
+✔ unmanaged child lights and presentation effects never enter the actor parking branch (1.991366ms)
+✔ removal and disposal restore owned roots and their original layers (0.360338ms)
+✔ off-camera actors release only GPU resources after hysteresis and return immediately on camera turn (3.413227ms)
+✔ shared actor geometry and textures are retained until the last resident owner leaves (0.645595ms)
+✔ distant visible actors and large transformed assemblies stay complete (0.744595ms)
+✔ near-camera preload and distance hysteresis avoid repeated uploads at the boundary (0.884074ms)
+✔ nearby actors behind PVS stay preloaded without drawing while distant visible bounds stay intact (0.533526ms)
+✔ player and nonmanaged scene consumers protect shared textures and geometry (0.693425ms)
+✔ release protection inspects a shared chunk material once per query and observes subsequent texture changes (7.384549ms)
+✔ removal and controller disposal restore original layers without changing gameplay visibility (0.523657ms)
+✔ only drawable chunks join normal scene traversal; camera turns restore them immediately (5.255834ms)
+✔ normal scene matrix and visible traversals skip parked children, but direct geometry queries remain current (3.129219ms)
+✔ unchanged static chunk matrices are not multiplied each frame and moving representatives update once (0.948983ms)
+✔ stream disposal removes its hidden branch and every chunk without changing authored visibility (0.667325ms)
+✔ chunk partition preserves every authored face and material in all five levels (164.102001ms)
+✔ distant chunks release independent buffers; shared textures stay until their last resident user leaves (4.809077ms)
+✔ far visible sections stay unloaded until approached, and moved brushes use current nearby bounds (0.962383ms)
+✔ distant decal rays use CPU source faces even when their render chunks are unloaded (1.788018ms)
+✔ leaving a level during an outstanding texture request releases its late result (1.260251ms)
+✔ camera turns preload distant surfaces outside the rendered view before they become visible (0.715005ms)
+✔ repeated five second camera circles reuse resident buffers and textures, then evict after leaving (3.271467ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 261.752825

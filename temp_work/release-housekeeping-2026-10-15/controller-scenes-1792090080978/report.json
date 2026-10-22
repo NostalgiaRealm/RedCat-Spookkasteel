@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "menu focus, hidden/disabled controls, select/range/checkbox changes, scrolling and modal safety",
+    "controller navigates actual settings, help, About and recovery menus",
+    "forest opens through controller with safe confirm, fixed camera and held two-second cutscene skip",
+    "controller analog movement, look, jump, walk, held firing and camera toggle reach gameplay",
+    "source controller pause/resume, disconnect isolation, reconnect and keyboard takeover without cheats"
+  ],
+  "errors": [],
+  "method": "Simulated standard Gamepad API in headless Chrome, source fixtures and ordinary menu/forest input; not physical controller or campaign completion."
+}

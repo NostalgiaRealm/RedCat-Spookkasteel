@@ -1,0 +1,20 @@
+✔ off-camera actors release only GPU resources after hysteresis and return immediately on camera turn (3.599545ms)
+✔ shared actor geometry and textures are retained until the last resident owner leaves (0.643855ms)
+✔ distant visible actors and large transformed assemblies stay complete (1.378851ms)
+✔ near-camera preload and distance hysteresis avoid repeated uploads at the boundary (0.431327ms)
+✔ nearby actors behind PVS stay preloaded without drawing while distant visible bounds stay intact (0.526817ms)
+✔ player and nonmanaged scene consumers protect shared textures and geometry (0.684975ms)
+✔ removal and controller disposal restore original layers without changing gameplay visibility (0.520726ms)
+✔ lazy actor triangles match eager sweeps through rotated, moving and newly animated props (21.074798ms)
+✔ effect batches upload only live vertices/instances through growth, shrinking and empty frames (1.58216ms)
+✔ cached transforms match native Three matrices after parent, child, manual-matrix and reparent changes (1.314351ms)
+✔ deferred skinning preserves live bone transforms, transitions, save state and exact later vertices (58.946684ms)
+✔ orientation cache follows authored/runtime turns, rotating pickups, moving supports and independent callers (1.400391ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 170.055986

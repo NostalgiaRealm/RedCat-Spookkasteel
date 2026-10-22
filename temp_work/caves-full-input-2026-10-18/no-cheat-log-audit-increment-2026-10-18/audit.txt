@@ -1,0 +1,23 @@
+Incremental earned-campaign control-log audit — 18 October 2026
+
+Finding
+No fixture/save import, direct player or enemy health edit, manual position/upgrade/inventory/puzzle-state assignment, no-clip enable, direct damage call, or script-command invocation was found in live commands 441–531 or the inspected current helper sources they reference. This tail supports earned progression through Earth, Fire, the Caves fairy/Max exit, Tower and its bonus rooms, all five mirrors, Witch defeat, and the outro/menu. Earlier audit qualifications still apply, including the disclosed Castle recovery source hot-load and direct native Forest saves.
+
+Scope and retained chain
+This was read-only log/source inspection. No API4511 or gameplay access occurred. The earlier audit was not replaced. Its first 440 live records and first 381 response records match the present log prefixes byte for byte. manifest.json records the separate 441–530 snapshot and SHA-256 values. final-tail-manifest.json records command 531 and its response separately, plus combined log hashes through completion. All 91 tail response codes match their corresponding live commands. No reported noClip:true or cheat:true value was found. Current referenced helper sources are copied and hashed under referenced-sources/.
+
+Inputs, recovery and instrumentation
+Earth/Fire traversal and puzzle interaction use movement, jump, shooting and E events. The new Fire/Tower/finale helpers define ordinary-input sequences and read collision, enemy, charge and platform state. Their world.look calls are the existing camera/mouse adapter. The misleadingly broad name __skip is a loop that presses E during cutscenes; it does not clear a cutscene flag or invoke a script command. Charged-shot helpers inspect charge age and lock/phase, then release Ctrl. No direct boss health change is present.
+
+The tail contains 27 commands mentioning F5, one F9 command (506), and one native Recovery-menu selection for the 2-minute save (517). Counts describe command text, not guaranteed successful saves: some preceding guarded stages threw before reaching F5. Ordinary checkpoint deaths/respawns are retained around 508 and 513. No direct saveGame call appears in this tail. Storage operations export the current native save to evidence files; no storage write or save import appears. No new gameplay-class prototype hot-load appears in this tail. Helpers and media-event observers are instrumentation, and the controlled-frame/read-only-state caveats from the first audit remain.
+
+Completion and outro
+Live 523 records Witch health 0/disabled after ordinary aimed, charged, strafing inputs; live 525 reaches native completed Tower debrief with score 13150, HP12/max14, lives 5, mirror 5, skill 15, kills 89, coins 377 and secrets 7. Held inputs and unsupported-command lists are empty.
+
+The first outro attempt (526–527) fails at time 0 with a media-player creation error. Live 528 performs a normal browser reload and Continue, retaining the completed native save and identical final stats. Live 529 clicks the debrief button again; 530 only waits/observes. Final read-only command 531 records loadedmetadata/playing, pause at the full 55.047-second duration, then an actual ended event with mode=menu. No video seek, playback-rate change, synthetic ended event, skip input, forced completion flag or menu-state assignment appears after the retry starts. At final inspection the video has been cleared/reset by the native transition, so currentTime=0/ended=false coexist with the retained completed-playback event history. Final mode is menu, menuVisible=true, completed=true, noClip=false, errors=[], VMerror=null, unsupported=[], fatal=false.
+
+Limits
+This is a scoped log review, not an exhaustive engine/filesystem audit. Helper files were loaded by mutable path; their exact historical bytes were not embedded at every injection, including finale helper reloads at 514/517. Current copies were inspected, and logged commands/responses retain the actual attempts and failures, but cannot independently authenticate every historic helper version or rule out unlogged external actions. No stronger untouched-runtime or deathless/no-reload claim is supported.
+
+Evidence
+See checks.json for exact native save/reload line numbers, errors and source hashes; manifest.json and final-tail-manifest.json for the preserved snapshot chain. Authoritative final exports remain under temp_work/campaign-validation-2026-10-15/playthrough-1792088801065/: earned-outro-complete-2026-10-18.json, earned-campaign-completed-save-2026-10-18.json and earned-campaign-menu-2026-10-18.png.

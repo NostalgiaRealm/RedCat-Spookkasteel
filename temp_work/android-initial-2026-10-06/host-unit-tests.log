@@ -1,0 +1,26 @@
+✔ ordinary desktop and mobile browser hosts require no native handshake (0.628327ms)
+✔ native lifecycle waits for foreground, deduplicates events and blocks background Back (0.663386ms)
+✔ native display messages release keep-awake while suspended without a per-frame bridge call (0.198219ms)
+✔ Android automatic render size caps pixels without stretching portrait or ultrawide screens (0.214219ms)
+✔ allowed autoplay starts with the selected volume and needs no action (1.623122ms)
+✔ blocked audible autoplay retries muted and offers sound without rewinding (0.262938ms)
+✔ blocking both attempts leaves a play action that starts unmuted from the click (0.229499ms)
+✔ a rejected click remains recoverable without another automatic muted attempt (0.223859ms)
+✔ stopping while initial autoplay is pending prevents a late retry (0.211658ms)
+✔ stopping during the muted retry ignores its late failure (0.165929ms)
+✔ a late success from an older intro cannot hide a newer blocked movie action (0.163509ms)
+✔ a late rejection from an older intro cannot mute or restart its replacement (0.14113ms)
+✔ a new movie resets mute state left by the automatic browser fallback (0.184429ms)
+✔ zero volume stays silent and does not offer a misleading sound action (0.270649ms)
+✔ desktop playback does not automatically fall back to muted audio (0.167849ms)
+✔ unsupported media reports its error without an automatic retry (0.148039ms)
+✔ Android suspension keeps the movie position and resumes only from the play action (0.143729ms)
+✔ a pending autoplay cannot restart a suspended movie or replace its resume action (0.12204ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 42.870715

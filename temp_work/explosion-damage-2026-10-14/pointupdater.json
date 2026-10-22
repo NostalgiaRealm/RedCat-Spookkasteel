@@ -1,0 +1,56 @@
+{
+  "evidence_id": "ev_68ffbbab8898e8ff3c9f1c2b92e365d5d725165883d169cafe35eb89b91e65a8",
+  "subject": {
+    "name": "RcHcGame.dat",
+    "digest": {
+      "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+    },
+    "format": "pe",
+    "architecture": "x86",
+    "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+  },
+  "provider": {
+    "id": "hopper",
+    "name": "Hopper Disassembler",
+    "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+  },
+  "analysis_profile": {
+    "provider": {
+      "id": "hopper",
+      "name": "Hopper Disassembler",
+      "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+    },
+    "parameters": {
+      "target_kind": "executable",
+      "target_format": "pe",
+      "architecture": "x86",
+      "available_architectures": [
+        "x86"
+      ],
+      "loader": {
+        "source": "derived",
+        "arguments": [
+          "-l",
+          "WinPE",
+          "--intel-32"
+        ]
+      }
+    },
+    "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+  },
+  "predicate_type": "rea.analysis",
+  "operation": "procedure_pseudo_code",
+  "parameters": {
+    "procedure": "0x4dd490"
+  },
+  "raw_result": null,
+  "normalized_result": "    var_8 = sub_632168;\n    var_C = *0x0;\n    *0x0 = &var_C;\n    decomp_var_24 = ebx;\n    decomp_var_28 = ebp;\n    decomp_var_2c = esi;\n    esp = esp - 0x34;\n    eax = sub_4042e0(&var_20, edi);\n    esi = eax;\n    if (*esi == 0x0) {\n            ebx = 0x0;\n            var_1C = arg_0;\n            ecx = arg_0 | 0xffffffff;\n            var_18 = ebx;\n            asm { repne scasb al, byte [edi] };\n            sub_4040f0(byte_6b3f70, !ecx - 0x1);\n            (sub_5a07f0())();\n            eax = var_18;\n            esp = (esp - 0x18) + 0x10;\n            if (eax != ebx) {\n                    ecx = eax - 0x1;\n                    eax = *(int8_t *)(eax - 0x1);\n                    if (eax != 0x0 && eax != 0xff) {\n                            *(int8_t *)ecx = eax - 0x1;\n                    }\n                    else {\n                            sub_5fe5f0(ecx);\n                            esp = (esp - 0x4) + 0x4;\n                    }\n            }\n    }\n    edi = sub_4f3fd0();\n    eax = var_1C;\n    if (eax != 0x0) {\n            esi = eax[0x5];\n            eax[0x5] = esi - 0x1;\n            if (esi == 0x1) {\n                    esp = esp - 0x4;\n                    sub_5abfc0(0x0);\n            }\n    }\n    esi = &arg_224;\n    if (sub_59b1f0() != 0x0) {\n            esp = esp - 0x8;\n            sub_59df90(*esi, 0xffffffff, decomp_var_2c, decomp_var_28);\n            sub_598580(decomp_var_30);\n            sub_59b200();\n    }\n    eax = sub_59c810(&arg_4, arg_4, 0x42c80000, 0x0, decomp_var_2c, decomp_var_28, decomp_var_24, var_20);\n    esp = esp - 0x14;\n    sub_59b1d0(eax);\n    sub_5630e0();\n    if (sub_59b1f0() != 0x0) {\n            esp = esp - 0x4;\n            sub_59df90(*esi, decomp_var_2c, decomp_var_28, decomp_var_24);\n            if (sub_598570() > 0x0) {\n                    sub_59b200();\n            }\n    }\n    eax = sub_59b1f0();\n    if (eax != 0x0) {\n            esp = esp - 0x8;\n            sub_59df90(*esi, 0x1, decomp_var_2c, decomp_var_28);\n            eax = sub_598580(decomp_var_30);\n    }\n    *0x0 = var_8;\n    return eax;\n",
+  "confidence": "observed",
+  "authority": "shipped-artifact",
+  "environment": null,
+  "limitations": [
+    "Results depend on Hopper's completed static analysis."
+  ],
+  "locations": [],
+  "evidence_links": []
+}

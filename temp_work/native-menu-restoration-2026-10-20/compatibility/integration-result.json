@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "scope": "Native menu source integration, isolated browser storage",
+  "checks": [
+    "Original Help exposes all 38 topics, searches their text, and navigates back to the contextual topic.",
+    "Home \u2192 Snelspel \u2192 difficulty \u2192 Startinfo; selection only announces; replay confirmation preserves the existing save when cancelled.",
+    "Continuing an adventure previews its saved chapter and saved difficulty.",
+    "Opnieuw retains explicit overwrite confirmation and cancellation leaves the old save intact.",
+    "Exporteren downloads the selected inactive player\u2019s complete JSON without switching players or replacing the active save.",
+    "Spelerlijst create/select/delete keeps the original profile and its saved adventure separate.",
+    "Highscores displays rows and Stoppen \u2192 Nee returns without changing saves.",
+    "Original home and unlocked level cards remain reachable at 800\u00d7600, portrait and landscape mobile sizes.",
+    "All added settings remain present; independent volume and graphics preferences save; key remapping validates duplicates, discards Cancel, and applies OK.",
+    "A fresh adventure starts the real Forest through the restored menu without an overwrite warning.",
+    "Remapped gameplay keys and untouched WASD work; touch controls stay visible and functional; Menu retains pause/save/load/settings and returns home.",
+    "Startinfo presents native chapter and input artwork, saved player/score/difficulty, and keyboard/gamepad/joystick variants.",
+    "Controller navigation can open/close Meer opties and reach restart without changing the saved adventure.",
+    "Key-settings Help opens the original contextual topic, cancels active key capture, and returns to the unchanged draft.",
+    "All eight original Startinfo Help links navigate to their intended topics and back.",
+    "Quickplay uses RCMN43, shows Snelspel on the original loading screen, then starts the selected level."
+  ],
+  "pageErrors": [],
+  "badResponses": [],
+  "sourceRuns": [
+    "run-2026-10-20T16-48-06-633Z/report.json",
+    "run-2026-10-20T16-49-37-543Z/report.json",
+    "final-2026-10-20T17-01-35-594Z/report.json"
+  ],
+  "harnessCorrection": "First run passed all saved-menu checks but attempted to open a hidden details summary. The new Geavanceerd button is the intended control. Corrected only the harness and completed only the unfinished fresh-menu/input phase.",
+  "nativeAdapters": {
+    "desktopUnitTests": 3,
+    "androidBridgeUnitTests": 2,
+    "androidDeviceOrApkValidation": false
+  },
+  "limitations": [
+    "Original menu voice routing was captured with a resolved playback stub during browser navigation; actual voice ordering is covered separately by focused MenuAudio tests.",
+    "Opening cinematic was explicitly stopped in the gameplay input fixture; this is not a full campaign playthrough.",
+    "No release builds generated and no personal browser save modified."
+  ],
+  "finalReview": {
+    "passed": true,
+    "runtimeChange": "GamepadMenu includes summary controls so the new Startinfo Meer opties disclosure is reachable with a controller.",
+    "remainingBlockers": [],
+    "initialHarnessIssue": "An initial browser launch exceeded the Unix-domain socket path limit with an absolute TMPDIR. The harness now uses relative temp_work, as in earlier successful runs; no game source issue."
+  }
+}

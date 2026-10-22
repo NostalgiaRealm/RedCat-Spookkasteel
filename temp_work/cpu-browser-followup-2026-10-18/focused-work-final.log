@@ -1,0 +1,68 @@
+✔ actor broad phase skips distant state predicates but still checks nearby dormant and hidden actors (1.054203ms)
+✔ actor masks and ignored actor/support identities still bypass collision and state checks (0.228618ms)
+✔ scalar actor bounds preserve touching and the original tolerance on every axis (0.666816ms)
+✔ an exactly touching actor surface allows moving away and still blocks moving into it (0.518417ms)
+✔ actor surfaces block a swept player and projectiles but respect native LOS flags (2.383154ms)
+✔ actor collision allows sliding, moving away, and passing empty portions of a triangle bounding box (0.446547ms)
+✔ standing on an actor surface remains stable and is not mistaken for starting inside it (2.244615ms)
+✔ original rotated graveyard statue blocks its pedestal while a disabled blocker disappears (4.887567ms)
+✔ a dormant graveyard zombie reuses its triangle collision until its pose or placement changes (9.388907ms)
+✖ Dungeon machine retains original geometry and exposes every turret part to player shots (16.826357ms)
+✖ Dungeon turret, crate, lid and exposed body all forward pellet damage to Max (3.869614ms)
+✖ Dungeon ammunition exits its own shields but other enemies still collide, and defeated shields disappear (3.095169ms)
+✔ actor orientation applies native world-axis script and spin rotations before the brush rotation (0.994363ms)
+✔ original castle balls and cave rocks spin one revolution per second in opposite authored directions (0.890594ms)
+✔ attached actor and pickup anchors rotate about the model pivot without accumulating displacement (1.54531ms)
+✔ controller Disable pauses the support without hiding its actor, whereas Hide removes both (0.605865ms)
+✔ saving preserves local actor age, script rotation and its unmodified anchor while restoring the brush pose (2.587263ms)
+✔ an off-camera actor advances its authored animation clock and resumes the current pose when approached (1.971537ms)
+✔ moving a model-attached prop refreshes its existing collision surface and Hide disables it (2.065196ms)
+✔ the frame queries attached prop collision at the newly advanced support pose without advancing its animation twice (1.894417ms)
+✔ all original decorative actors resolve their assets, explicit motions and moving-model attachments (47.673779ms)
+✔ lazy actor triangles match eager sweeps through rotated, moving and newly animated props (25.542728ms)
+✔ effect batches upload only live vertices/instances through growth, shrinking and empty frames (1.612469ms)
+✔ cached transforms match native Three matrices after parent, child, manual-matrix and reparent changes (1.625479ms)
+✔ deferred skinning preserves live bone transforms, transitions, save state and exact later vertices (64.244408ms)
+✔ orientation cache follows authored/runtime turns, rotating pickups, moving supports and independent callers (1.067013ms)
+✔ beam scratch vectors preserve exact previous vertices, colours and ribbon UVs across consecutive rays (2.646952ms)
+✔ discs and custom coloured quads preserve earlier batch data, capacity and upload state (0.601936ms)
+✔ precomputed light distances retain stable ties, player priority, eligibility and eight-light limit (0.417817ms)
+✔ light order matches previous calculation after camera, light position and radius changes (1.46799ms)
+✔ actor lighting reads freshly updated scene matrices for mounted parts and debris without ancestor refreshes (2.91153ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 28
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 186.397256
+
+✖ failing tests:
+
+test at tests/actor-collision.test.mjs:91:1
+✖ Dungeon machine retains original geometry and exposes every turret part to player shots (16.826357ms)
+  TypeError: Cannot read properties of undefined (reading 'collision')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/src/world.js:374:56)
+      at async dungeonMachine (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:87:3)
+      at async TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:92:30)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/actor-collision.test.mjs:113:1
+✖ Dungeon turret, crate, lid and exposed body all forward pellet damage to Max (3.869614ms)
+  TypeError: Cannot read properties of undefined (reading 'collision')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/src/world.js:374:56)
+      at async dungeonMachine (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:87:3)
+      at async TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:114:27)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/actor-collision.test.mjs:142:1
+✖ Dungeon ammunition exits its own shields but other enemies still collide, and defeated shields disappear (3.095169ms)
+  TypeError: Cannot read properties of undefined (reading 'collision')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/src/world.js:374:56)
+      at async dungeonMachine (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:87:3)
+      at async TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:143:27)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)

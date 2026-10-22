@@ -1,0 +1,9 @@
+<!doctype html><meta name="viewport" content="width=device-width, initial-scale=1"><base href="/"><link rel="stylesheet" href="src/style.css"><link rel="stylesheet" href="src/loading-screen.css"><div id="loading" role="region" aria-labelledby="loading-title" hidden>
+  <img class="loading-logo" src="assets/loading/logo.png" alt="RedCat Spookkasteel">
+<div class="loading-layout">
+  <h2 id="loading-title">Even Wachten</h2><p id="loading-mode">Avontuur</p>
+  <img id="loading-picture" src="assets/loading/level1.png" alt="Het Bos">
+  <p id="loading-detail" role="status" aria-live="polite">Bezig met het laden van Het Bos</p>
+  <div class="loading-progress" role="progressbar" aria-label="Level laden" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
+</div></div>
+<script type="module">import {OriginalLoadingScreen} from '/src/loading-screen.js';window.loader=new OriginalLoadingScreen(document.getElementById('loading'));await loader.ready;loader.show(4);loader.setProgress(.42);window.ready=true;</script>

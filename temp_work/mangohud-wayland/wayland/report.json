@@ -1,0 +1,58 @@
+{
+  "variant": "wayland",
+  "logs": [],
+  "gpu": {
+    "info": {
+      "auxAttributes": {
+        "amdSwitchable": false,
+        "canSupportThreadedTextureMailbox": false,
+        "glImplementationParts": "(gl=none,angle=none)",
+        "glResetNotificationStrategy": 0,
+        "hardwareSupportsVulkan": false,
+        "inProcessGpu": true,
+        "initializationTime": 0,
+        "isAsan": false,
+        "isClangCoverage": false,
+        "jpegDecodeAcceleratorSupported": false,
+        "optimus": false,
+        "passthroughCmdDecoder": false,
+        "sandboxed": false,
+        "skiaBackendType": "None",
+        "subpixelFontRendering": true,
+        "targetCpuBits": 64,
+        "visibilityCallbackCallCount": 0
+      },
+      "gpuDevice": [
+        {
+          "active": true,
+          "deviceId": 29663,
+          "gpuPreference": 0,
+          "vendorId": 4098
+        }
+      ]
+    },
+    "processes": [
+      {
+        "cpu": {
+          "cumulativeCPUUsage": 0.32,
+          "percentCPUUsage": 0,
+          "idleWakeupsPerSecond": 0
+        },
+        "pid": 146943,
+        "type": "GPU",
+        "creationTime": 1791400340680,
+        "serviceName": "GPU",
+        "memory": {
+          "workingSetSize": 179308,
+          "peakWorkingSetSize": 182600
+        }
+      }
+    ]
+  },
+  "libs": [
+    "/usr/lib64/mangohud/libMangoHud_opengl.so",
+    "/usr/lib64/libEGL_mesa.so.0.0.0",
+    "/usr/lib64/libEGL.so.1.1.0",
+    "/usr/lib64/mangohud/libMangoHud_shim.so"
+  ]
+}

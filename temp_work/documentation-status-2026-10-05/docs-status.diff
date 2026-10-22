@@ -1,0 +1,533 @@
+--- current_work/documentation-status-2026-10-05/before/docs/gameplay-reconstruction.md
++++ docs/gameplay-reconstruction.md
+@@ -2,9 +2,11 @@
+ 
+ The application now executes the original compiled level scripts, using a portable
+ Davi-Script interpreter and game-command adapter. It does not execute the original
+-Windows DAT/EXE or compile script text into JavaScript. The full original native
+-game engine and enemy AI have not been reimplemented, and a complete campaign
+-playthrough has not yet been verified.
++Windows DAT/EXE or compile script text into JavaScript. Recovered enemy movement,
++attacks, boss phases, player actions and effects run in the portable engine.
++Some collision, camera and rendering details remain adaptations, and a complete
++campaign playthrough has not yet been verified. Status below reflects the source
++reviewed on 5 October 2026; earlier validation results are not new test runs.
+ 
+ ## Script pipeline
+ 
+@@ -59,8 +61,10 @@
+ teleports, music volume and subtitles. `tools/import_dialogue.py` imports 398 Dutch
+ text entries and 223 matching voice files/durations. Fixed camera targets take
+ precedence over the generic player-target flag. Moving cameras visit authored
+-waypoints at 150 world units per second; exact original final-approach acceleration
+-and smoothing remain approximate. Offset camera framing is reconstructed.
++intermediate waypoints at 150 world units per second and use the recovered
++150–470-unit distance lookup for the final approach. The route sampler integrates
++those bands independently of frame rate. Camera collision/compensation and
++offset framing retain portable adaptations; see [camera evidence](camera-native-status.md).
+ 
+ ## Regular enemy and action feedback
+ 
+@@ -70,7 +74,12 @@
+ use their original ranged-salvo and RcEnemyShot settings with visible, colliding
+ projectiles. Attack sounds occur at the strike/projectile release, with separate
+ alert, idle, hurt and death sounds. Player shots, impacts, jumps and health loss
+-have their original sounds. Details and fidelity limits are in `enemy-gameplay.md`.
++have their original sounds. Recovered random patrol selection, touching-enemy
++waypoint choices and shared reservations are documented in
++[waypoint movement](enemy-waypoint-movement.md); initially hidden grave zombies
++use their original XYZ entrance edge before ordinary collision resumes
++([grave ascent](zombie-activation-native.md)). Details and fidelity limits are in
++`enemy-gameplay.md` and these follow-up notes.
+ 
+ ## Remaining native engine work
+ 
+@@ -78,9 +87,10 @@
+ TODO lists. The [native follow-up](native-completion-followup.md) connects player
+ hurt/death/respawn, breadth-first pursuit, sampled salvos and enemy state rules,
+ projectile/actor lighting, directional sound and wall obstruction. The earlier
+-shove-action claim was not supported by the recovered executable. Route endpoint
+-selection, collision and some particle/audio envelopes retain documented
+-approximations; a normal complete campaign playthrough remains outstanding.
++shove-action claim was not supported by the recovered executable. Arbitrary-position
++pursuit endpoints, collision tolerances, camera compensation, fixed-step particle
++timing and local random streams retain documented differences; a normal complete
++campaign playthrough remains outstanding.
+ 
+ [SuperSkippie and BIG BENG](player-abilities-native.md), boss phase machines,
+ enemy death effects and the latest original projectile frames/timing are already
+@@ -90,7 +100,9 @@
+ 
+ ## Verification
+ 
+-Run `npm test`, `python3 -m unittest discover -s tests -p 'test_*.py'`,
++Run only the checks for changed behavior during development; follow
++[building.md](building.md) for deliberate release validation. Available broader
++commands include `npm test`, `python3 -m unittest discover -s tests -p 'test_*.py'`,
+ `npm run test:smoke`, `npm run test:scripts`, `npm run test:gameplay-audio`,
+ `npm run test:enemies`, `npm run test:bosses`, and `npm run test:desktop`.
+ The browser scene test renders the forest introduction, checks Dutch voice and
+@@ -118,7 +130,7 @@
+ Linux application. Other mirror routes and the tower's fifth placement are
+ covered by original-script tests.
+ 
+-## Liquids, mushroom ribbons and remaining boss cycles
++## Liquids, mushroom ribbons and boss cycles
+ 
+ Translucent water survives the renderer’s palette cutout threshold. Visible
+ water faces on trigger brushes render without making the water solid. Contact
+@@ -127,11 +139,14 @@
+ 3 HP/second. Damage is continuous while hurt feedback is throttled. See
+ `water-native.md` for executable evidence and exact wet/dry test positions.
+ 
+-Mushrooms leave the original camera-facing trail, width 6.4 and lifetime 1.5 s.
+-Trail contact uses the authored TrailDamage=5 with the existing hit cooldown;
+-that contact rule is reconstructed, since its native handler is not yet recovered.
+-Trail age and geometry persist through saves, freeze during cutscenes, and clear
+-on respawn. The trail is in the projectile’s flight path, not projected onto a floor.
++Mushrooms leave the original camera-facing `STrail` ribbon, width 6.4 and point
++fade time 1.5 s. Native contact recovery found no live consumer of `TrailDamage=5`;
++the earlier invented ribbon damage was removed. Direct mushroom-body hits still
++cause damage. The ribbon disappears with its projectile, rather than leaving an
++independent tail after impact. Its sampling clock and geometry survive saves,
++freeze during cutscenes, and clear on respawn. See
++[mushroom evidence](mushroom-trail-native.md) and
++[projectile contact](projectile-impacts-native.md).
+ 
+ Dungeon Max’s original turret parts and rise/look/lower cycle, Jester Max’s
+ teleport/invisibility cycle, and the Witch’s takeoff, waypoint flight and attack
+@@ -148,13 +163,17 @@
+ collision. Sweeps use the transformed mesh; this is a reconstruction of actor
+ collision, not the recovered original collision algorithm.
+ 
+-Green touch bats pursue into actual player contact, while ranged bats keep
+-their original timed shot release. Flight uses their rest-pose body bounds so
+-spread-wing animation no longer traps them in authored alcoves. See
+-`graveyard-door.md`, `actor-collision.md` and `bat-native.md`.
++Green touch bats select their recovered closer/clockwise/counterclockwise
++waypoints, damaging RedCat on actual contact; an off-route player does not force
++them off the authored network. Ranged bats keep their timed shot release.
++Flight uses rest-pose body bounds so spread-wing animation no longer traps them
++in authored alcoves. See `graveyard-door.md`, `actor-collision.md`, `bat-native.md`
++and the newer [waypoint recovery](enemy-waypoint-movement.md).
+ 
+ Original bitmap/alpha pairs drive flames, coronas, lightning beams and staged
+-checkpoint effects. Dynamic lights illuminate the lightmapped world and actor
++checkpoint effects. Smoke/flame spouts now use the recovered 15-slot pools,
++reused launch templates, timers and motion; see [spout recovery](spout-effects-native.md).
++Dynamic lights illuminate the lightmapped world and actor
+ materials. Save beacons build six converging spokes before the upward beam,
+ with their original sound stages, and restore their activation clock. Actual
+ checkpoints remain controlled by the original Davi-Script calls. Recovered
+@@ -167,8 +186,9 @@
+ dispatch mirror pickup scripts or complete a level. The real gateway stays
+ collectible. No-clip follows the camera, with Space up and Shift down. It skips
+ movement/camera collision, gravity, platform carry and out-of-world recovery;
+-script events and damage still operate. Disabling it validates the current
+-position and returns to safe terrain if needed. Saves retain the flight flag
++script events still operate, but RedCat is invulnerable while no-clip is active.
++Disabling it validates the current position and returns to safe terrain if
++needed. Saves retain the flight flag
+ and last safe position, including when saved outside the map.
+ 
+ The potion cap follows the executable's actual pickup routine, which uses a
+@@ -181,7 +201,11 @@
+ The desktop suite runs these same scenarios before checking actual Linux
+ window pixels, hardware compositing and resolution changes.
+ 
+-## Subsequent source fixes (not packaged)
++## Subsequent source fixes and later recovery
++
++The following changes were originally validated in source without rebuilding
++packages. This is a record of that work, not a statement about the contents of
++any subsequently produced `dist/` directory.
+ 
+ The original StandingEnemy factory maps Type 4 to castle Jester Max and Type 5
+ to cave Dungeon Max. This corrects their earlier reversal. The cave's compiled
+@@ -198,13 +222,16 @@
+ 
+ The cave's four boss-gate beams apply their authored damage and delay; the
+ original puzzle callbacks disable each one. TeleporterFX responds to the
+-original Show action, rendering imported sparks, energy strands and ground
+-effects while preserving its seven-second activation clock through saves.
+-The effect trajectories and some sound stages remain approximate; see
+-[world-effects-native.md](world-effects-native.md).
++original Show action. Its recovered particle pool, seek/orbit/burst trajectories,
++beam contraction, floor blast, terminal flash and sound arguments now replace
++the earlier analytic approximation. Current saves preserve the live pool;
++legacy saves use bounded reconstruction. Fixed simulation timing, local RNG and
++renderer/collision tolerances remain portable differences. See
++[portal recovery](portal-native-recovery.md), [portal audio](portal-audio-native.md)
++and [world effects](world-effects-native.md).
+ 
+ `test:doors`, `test:actor-placement` and `test:portals` add actual rendered-level
+ regressions to `test:desktop`. The asset audit resolves 710 placed actors, 29
+ model attachments and 56 explicitly named motions. These are source checks;
+-the prepared Linux/Windows directories remain unchanged. Follow
+-[building.md](building.md) to run source or package it yourself.
++they do not establish which changes a separately packaged directory contains.
++Follow [building.md](building.md) to run source or package it yourself.
+--- current_work/documentation-status-2026-10-05/before/docs/script-vm-investigation.md
++++ docs/script-vm-investigation.md
+@@ -1,14 +1,24 @@
+ # Davi-Script investigation
+ 
+-Historical research note, written before the interpreter was implemented. The
+-statements below about missing parsing/execution describe that earlier state.
++Historical research note, written before the interpreter was implemented.
++**Current status (5 October 2026):** the complete format-27 parser, portable
++interpreter, original event dispatch and brush motion playback are implemented.
++`tools/import_scripts.py` consumes all five DSO files into `data/davi/`;
++`src/davi-vm.js` and `src/script-host.js` execute them. The research below is
++retained as provenance, with the earlier plan explicitly labelled historical.
+ For current implementation coverage and remaining work, see
+ [gameplay status](gameplay-reconstruction.md) and the
+ [native parity audit](native-parity-audit.md).
+ 
+ Executable address references are version-specific; see [reference build notes](native-reference-builds.md) before relying on native addresses.
+ 
+-This bounded, read-only investigation examines the supplied `Levels/*.dso`, `Script/ScriptGameObject.ds` and `RcHcGame.dat`. **The original campaign code is present in serialized form with useful names and signatures. No DSO interpreter, complete parser or decompiler has been implemented.** The existing portable gameplay module still skips unsupported script behavior.
++This bounded, read-only investigation examined the supplied `Levels/*.dso`,
++`Script/ScriptGameObject.ds` and `RcHcGame.dat`. It established that the original
++campaign code was present in serialized form with useful names and signatures.
++At that stage no DSO interpreter or complete parser existed, and the early
++portable gameplay module skipped unsupported script behavior. That limitation
++was subsequently removed; unknown calls now fail explicitly rather than silently
++skipping script behavior. A source-format decompiler is not needed by the runtime.
+ 
+ ## Concrete identification
+ 
+@@ -31,7 +41,7 @@
+ | --- | --- | --- |
+ | `0x00` | `27` / `0x1b`: compiler/object format version | Confirmed by native loader comparison |
+ | `0x04` | Unix timestamp corresponding to October 1, 2000 | High; native loader prints it as compilation time |
+-| `0x08` | `1`, followed by class record tag `0x42` | Observed; likely first collection count, not fully traced |
++| `0x08` | `1`, followed by class record tag `0x42` | Initially inferred; later confirmed as the classes collection count in [the complete grammar](davi-format.md) |
+ 
+ Targeted disassembly confirms the version: the loader candidate starts at virtual address `0x005eb970`; at `0x005eb9f3` it executes `cmp eax,0x1b`. Its mismatch path references `runtimelib version (%d) differs from objectfile version(%d)` at file offset `0x2b1210`. This is stronger evidence than guessing from a shared numeric header.
+ 
+@@ -43,7 +53,12 @@
+ | lvl03a.dso | 51,879 | 2000-10-01 18:50:05 | 16 |
+ | lvl04a.dso | 23,608 | 2000-10-01 18:39:06 | 14 |
+ 
+-These are neither Windows PE executables nor text sources. Names, declarations, object bindings, constants and serialized executable structures are interleaved. It is not yet established whether the executable representation should best be described as linear bytecode or serialized instruction/expression objects. Do not apply a Torque/Tribes `.dso` decoder merely because the extension matches.
++These are neither Windows PE executables nor text sources. Names, declarations,
++object bindings, constants and serialized executable structures are interleaved.
++The initial investigation had not established their complete representation;
++the later [grammar](davi-format.md) and [VM opcode recovery](davi-vm-opcodes.md)
++decode the tagged instruction/expression objects. A Torque/Tribes `.dso` decoder
++is not applicable merely because the extension matches.
+ 
+ ## Recoverable names and types
+ 
+@@ -67,7 +82,15 @@
+ 
+ Method/function records immediately following the name expose a return-type descriptor, uint32 argument count, then formal-variable records. Primitive descriptors are `(type, 0xff)`: void `0`, double `1`, int `2`, string `3`. Observed object descriptors are `04 01 42 <uint16 class index>`. Formal-variable records append a signed int32 stack offset. `@self` is an implicit object parameter at offset `-4`; explicit string/int parameters occupy four-byte slots and doubles occupy eight-byte slots in the observed signatures.
+ 
+-The API header identifies 111 callable/event declarations in total, matching **53 methods + 26 events + 32 externs** in every DSO. Examples of native methods not yet fully represented in portable gameplay include `MoveTo`, `SetTo`, `SetMotionSpeed`, `SetFollowDaviName`, `Fire`, and music-state controls. Native externs include `RcShowAtSpawnPoint`, `RcSetSavePoint`, `CutSceneSay`, `RcHasAllPotions`, `RcEnableSkill`, `FreezeEnemies`, `KillPlayer`, `RespawnPlayer` and `PlayerHasKeyItem`.
++The API header identifies 111 callable/event declarations in total, matching
++**53 methods + 26 events + 32 externs** in every DSO. The initial gap list included
++`MoveTo`, `SetTo`, `SetMotionSpeed`, `SetFollowDaviName`, `Fire`, and music-state
++controls. Current `ScriptHost` implements the motion, follow and music operations
++used by the campaign; unused declarations such as `Fire` are not evidence of a
++missing campaign mechanic. Native externs include `RcShowAtSpawnPoint`,
++`RcSetSavePoint`, `CutSceneSay`, `RcHasAllPotions`, `RcEnableSkill`, `FreezeEnemies`,
++`KillPlayer`, `RespawnPlayer` and `PlayerHasKeyItem`. All functions and methods
++actually called by the five shipped programs have an adapter implementation.
+ 
+ ## Campaign functions preserved in the objects
+ 
+@@ -97,7 +120,13 @@
+ 
+ The tool bounds-checks candidate lengths and validates declaration type/parameter structure. It scans possible record starts rather than consuming the entire file through a proven grammar. It therefore labels its result an **inventory**, not a full parse. Raw immediate-address matches in the executable are also candidates; the version comparison was separately verified with disassembly.
+ 
+-## Concrete next steps toward original behavior
++## Historical implementation plan
++
++Items 1–6 below describe the original research plan and were subsequently
++implemented by `tools/import_scripts.py`, `src/davi-vm.js`, `src/script-host.js`,
++`tools/import_motions.py` and `src/motions.js`. They are retained to explain the
++research sequence, not as an outstanding-work checklist. Complete normal
++campaign playthrough validation in item 7 remains separate from focused tests.
+ 
+ 1. Map the native loader's five collection reads at `0x005ebb40`, `0x005ebb4f`, `0x005ebb5e`, `0x005ebb70` and `0x005ebb7f`; they call `0x005ed1f0`. Identify the tagged-record factory and record readers. Implement a complete parser that consumes every object exactly and rejects unresolved references.
+ 2. Use the shipped 53 methods, 26 events and 32 externs as known fixtures. Verify the full type system, constant tables, object IDs and per-instance event-handler linkage before evaluating any instructions.
+@@ -107,4 +136,7 @@
+ 6. Decode preserved Genesis3D brush `motions.bin` alongside the script VM. Campaign scripts act on motion-event labels; a VM alone will not restore moving platforms, teleports, camera choreography or boss interactions without the corresponding game-object behavior.
+ 7. Validate each level with deterministic recorded playthroughs: puzzle state, potion/skill gate, checkpoints, boss death, mirror pickup and exit. Until these succeed, retain the current explicit campaign-parity limitation.
+ 
+-No native game code was executed, no original file was changed, and no recovered source or VM emulation is claimed by this investigation.
++This initial investigation executed no native game code and changed no original
++file. It did not itself implement a VM; the subsequent portable implementation
++is documented in [the grammar](davi-format.md), [opcodes](davi-vm-opcodes.md) and
++[gameplay status](gameplay-reconstruction.md).
+--- current_work/documentation-status-2026-10-05/before/docs/source-fixes-2026-09-22.md
++++ docs/source-fixes-2026-09-22.md
+@@ -1,8 +1,9 @@
+ # Source fixes — 22 September 2026
+ 
+-This pass addresses the reported presentation, combat and environmental
+-regressions. It updates source and imported assets only. Existing Linux and
+-Windows packages were not rebuilt. Run the current source as described in
++This historical pass addressed the reported presentation, combat and environmental
++regressions. It updated source and imported assets only; Linux and Windows
++packages were not rebuilt in that pass. Later corrections are identified below.
++Run the current source as described in
+ [building.md](building.md); `Start-RedCat.sh` still prefers the existing package.
+ 
+ | Report | Source behavior and verification |
+@@ -12,7 +13,7 @@
+ | Reversed Brutus/knights | Correct native initial heading; combat updates facing during locked attack animation. Rendered actor fronts were checked against the player direction. |
+ | Reversed introductory UFO | Native world-axis rotation composition replaces the incorrect local-axis order. |
+ | Large-fall pose on ordinary jump descent | Normal jumps retain the original full jump clip through descent; long-drop selection uses the recovered floor-gap rule. |
+-| New dialogue skip | Hold E continuously for three seconds; “Overslaan” progress circle; original remaining callbacks complete and preserve outcomes. |
++| New dialogue skip | Initially a three-second E hold, later changed to **two seconds** in `src/cutscene-skip.js`; “Overslaan” progress circle; original remaining callbacks complete and preserve outcomes. Touch/controller skip use the same duration. |
+ | Enemy targeting and lock | Original front-cone/range selection, visibility, target artwork and animation; firing locks camera and aims from the hand toward the enemy. |
+ | Original HUD | Original icons/digits show health, lives, potions/level total, score and targeted-enemy health; widescreen and 4:3 positioning checked. |
+ | `GRintro3` subtitle | Original empty text stays empty while laughter audio remains. |
+@@ -39,9 +40,14 @@
+ moving-platform carry regression. No full historical test suite was rerun.
+ Rendered verification artifacts are in `artifacts/`.
+ 
+-This is not a claim of complete instruction-level parity. Remaining boundaries
+-include native bat steering/randomized route selection, spider return-to-ceiling
+-decisions, fairy trail steering, fragment/smoke physics and the full native camera
+-spring solver. Original art, scripts, settings and recovered constants are used
+-where documented; the remaining portable reconstructions are identified in the
+-linked notes.
++This pass did not establish complete instruction-level parity. Its original
++follow-up list has since changed: native touching-enemy waypoint selection and
++random patrols are now recovered in [enemy movement](enemy-waypoint-movement.md),
++spider return/ascent in [the native follow-up](native-completion-followup.md),
++Fleurifee movement/particles in [her effect-save note](fairy-save-restoration.md),
++and fragment/explosion smoke and general emitters in
++[debris recovery](debris-native-recovery.md) and [spout recovery](spout-effects-native.md).
++These are no longer blanket missing-feature claims. The complete native camera
++spring/collision solver, collision tolerances and process-wide RNG matching
++remain separate fidelity limits. The [current audit](native-parity-audit.md)
++records remaining work and intentional portable differences.
+--- current_work/documentation-status-2026-10-05/before/docs/camera-native-status.md
++++ docs/camera-native-status.md
+@@ -59,11 +59,11 @@
+ frame. All five authored mode-4 cameras have positive durations, so this edge
+ case does not affect the supplied campaign.
+ 
+-Catmull–Rom interpolation distributed over `CamTimeInMode` is a reconstruction
+-approximation, not verified native choreography. A closer implementation starts
+-at the first waypoint, visits the points in order at the recovered speed, looks
+-at the player, and treats the time as a separate lifetime. The final-approach
+-lookup is now recovered and implemented (see the current-build details below).
++The earlier Catmull–Rom interpolation distributed over `CamTimeInMode` has been
++replaced. `src/script-camera.js` starts at the first waypoint, visits the points
++in order at the recovered speed and returns a position for the player-facing
++view; `ScriptHost` tracks its separate lifetime. The final-approach lookup is
++recovered and implemented (see the current-build details below).
+ Camera collision adjustment still needs further work before exact camera parity
+ can be claimed.
+ 
+@@ -133,6 +133,12 @@
+ be altered by mouse input, and ignored motion cannot accumulate a hidden aiming
+ angle. Regional player-relative mode 1 remains mouse-adjustable.
+ 
++Mouse, touch and controller look share this ownership check. The camera-mode
++shortcut is also ignored while a fixed overview or cutscene owns the view, so
++it cannot silently select first person for the later return to RedCat. Dialogue
++cutscenes can still be skipped with the explicit two-second hold action; that
++does not make ordinary look input cancel an authored overview.
++
+ Save files already preserve host time and camera start/duration, so a partially
+ viewed overview resumes with its remaining duration rather than restarting or
+ becoming immediately cancellable. Fixed cameras with a zero duration still
+--- current_work/documentation-status-2026-10-05/before/docs/campaign-menu-native.md
++++ docs/campaign-menu-native.md
+@@ -74,8 +74,14 @@
+   `{version: 1, highestUnlocked: 0…4}` with optional `earnedSkills` and
+   ordered `playedLevels` history. A valid legacy save proves only its current
+   chapter was played, independently of chapter access.
+-- `completeCampaignLevel(progress, levelId)` returns new progress with the next
+-  earned chapter; unavailable or unknown completions cannot grant access.
++- `completeCampaignLevel(progress, levelId)` records the completed chapter as
++  played and returns progress with the next earned chapter; unavailable or
++  unknown completions cannot grant access or mark a successor played.
++- `isCampaignLevelReplay(progress, index, options)` selects the saved session's
++  replay flag for Continue/recovery, or checks played history for a fresh start.
++  A new adventure forces ordinary first-play behavior.
++- `recordPlayedCampaignLevel(progress, levelId, options)` records a successful
++  visit; its new-adventure option starts a fresh played list while keeping access.
+ - `canStartCampaignLevel(progress, index)` also rejects malformed indices.
+ - `chapterArtwork(index, {unlocked, hovered, selected, pressed})` resolves an
+   original card path; `CHAPTER_ART_SIZE` describes the outer card area.
+@@ -96,9 +102,10 @@
+ `tests/campaign-progress.test.mjs` checks fresh access, sequential completion,
+ invalid indices, immutable updates, legacy checkpoint migration, no progression
+ from cheat supplies, preserving unlocks after earlier replays, and every card
+-file's actual PNG dimensions. All four cases passed. After the dimension check
+-identified the smaller locked-hover resource, only that affected case was
+-rerun. No packages were built. `node tests/campaign-settings-scenes.mjs` verifies the real menu locks, original
++file's actual PNG dimensions. All four cases passed in that feature's original
++validation. After the dimension check identified the smaller locked-hover
++resource, only that affected case was rerun. No packages were built.
++`node tests/campaign-settings-scenes.mjs` verifies the real menu locks, original
+ hover/locked artwork, completion unlock, persistence after replay, existing-save
+ migration, difficulty controls and one-minute autosave. Screenshots are saved in
+ `artifacts/campaign-menu-{locked,unlocked}.png` and
+@@ -107,6 +114,10 @@
+ `node tests/cheat-unlock-levels-scenes.mjs` checks only the explicit unlock
+ cheat, including main-menu/paused use, persistence, level access and storage
+ failure.
++
++These are recorded feature checks, not a recommendation to rerun every suite
++after a menu change. Later replay-history checks and their retained results are
++listed in [replayed introductions](replayed-level-intros-native.md).
+ 
+ ## Saved-adventure menu
+ 
+--- current_work/documentation-status-2026-10-05/before/docs/replayed-level-intros-native.md
++++ docs/replayed-level-intros-native.md
+@@ -1,7 +1,7 @@
+ # Native quick-play tutorial branches
+ 
+ Research and implementation: 2026-10-05. Native branch recovery and focused
+-unit/browser validation are complete. No packaged build was created. Source files are the imported original
++unit/browser validation are complete. No packaged build was created. Evidence includes the imported original
+ DSO programs in `data/davi/lvl00a.json` through `lvl04a.json`, the original BSP
+ entities and motion events, and installed `RcHcGame.dat` (SHA-256
+ `e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5`).
+@@ -124,7 +124,12 @@
+ calls, not a skill grant, but its mode branch is still unwired in the shipped
+ level. Keeping normal behavior avoids inventing new original-mode semantics.
+ 
+-## Suggested focused fixtures
++## Validation scope
++
++The original fixture plan is retained below. The completed checks are listed
++under “Focused validation results”; those checks establish branch selection,
++retained trigger availability and save/menu behavior. They do not replace a full
++playthrough of every skill reward, boss and level exit under both policies.
+ 
+ 1. Boot each original program through its normal World.OnInitCommand with
+    mode zero and one. Assert exactly the eight Forest and two Graveyard
+@@ -139,10 +144,10 @@
+ 5. Restore a saved replay without replaying World initialization: retain
+    mode context, solved puzzle states, current cutscene and trigger history.
+ 
+-For an automatic revisit policy, deciding when a level counts as played,
+-resetting that history for a new adventure and preserving it across saves are
+-portable product rules. They should be documented separately from the
+-original GetGameType branches above.
++The implemented automatic revisit policy below defines when a level counts as
++played, when a new adventure resets that history and how saves preserve the
++session. These are portable product rules separate from the original GetGameType
++branches above.
+ 
+ 
+ ## Automatic replay policy in the port
+--- current_work/documentation-status-2026-10-05/before/docs/building.md
++++ docs/building.md
+@@ -14,16 +14,16 @@
+ | An installed Google Chrome or Chromium | Browser integration tests. |
+ | A graphical Linux session, X11/XWayland and ImageMagick's `import` command | The Linux native desktop integration test. |
+ 
+-The current development machine uses Node 24.13.1 and npm 11.8.0. Use `npm ci` to install the exact dependencies in the lockfile. The first install and the first build for another platform need internet access to download tools and Electron. A running game needs WebGL 2 support and working graphics drivers.
+-
+-Keep `index.html`, `package.json`, `package-lock.json`, `src/`, `electron/`, `tools/`, `tests/`, `docs/`, `assets/` and `data/` together in the project directory. Imported assets and data are excluded by `.gitignore`; a source-only checkout is insufficient until you import or copy those directories from your own prepared project. Do not copy `node_modules` between operating systems; run `npm ci` on each development machine.
++The development machine checked on 5 October 2026 uses Node 24.13.1 and npm 11.8.0. Use `npm ci` to install the exact dependencies in the lockfile. The first install and the first build for another platform need internet access to download tools and Electron. A running game needs WebGL 2 support and working graphics drivers.
++
++Keep `index.html`, `package.json`, `package-lock.json`, `src/`, `electron/`, `tools/`, `tests/`, `docs/`, `assets/` and `data/` together in the project directory. The current `.gitignore` does **not** exclude `assets/` or `data/`. Check that your checkout includes their complete contents; if they were omitted from the distribution, import or copy them from your own prepared project. Do not copy `node_modules` between operating systems; run `npm ci` on each development machine.
+ 
+ ## 2. Install dependencies and run the source
+ 
+ On Linux:
+ 
+ ```sh
+-cd /home/rick/RCSPOOK_NEW
++cd /mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW
+ node --version
+ npm --version
+ npm ci
+@@ -40,7 +40,7 @@
+ npm start
+ ```
+ 
+-These commands run the source without generating packages. On Linux, selecting X11/XWayland before Electron starts avoids the blank-window problem seen with mismatched display backends.
++These commands run the source without generating packages. Substitute your own checkout path when needed. On Linux, selecting X11/XWayland before Electron starts avoids the blank-window problem seen with mismatched display backends. An explicit `npm start -- --ozone-platform=wayland` is also supported when your desktop/driver combination works with Wayland.
+ 
+ **`Start-RedCat.sh` prefers the existing `dist/linux-unpacked` build.** If that directory exists, the launcher will not show your new source changes. Use the `npm start` command above while developing.
+ 
+@@ -66,7 +66,7 @@
+ Linux example with the paths used on this machine:
+ 
+ ```sh
+-cd /home/rick/RCSPOOK_NEW
++cd /mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW
+ python3 -m venv "$HOME/.venvs/redcat-import"
+ "$HOME/.venvs/redcat-import/bin/python" -m pip install Pillow
+ ffmpeg -version
+@@ -125,7 +125,14 @@
+ npm run test:scripts
+ ```
+ 
+-Other focused checks are listed under `scripts` in `package.json`, including audio, enemies, bosses, effects, doors and cheats. They use temporary game state rather than your normal desktop saves. Screenshots and diagnostic results are written under `artifacts/`.
++Other focused checks are listed under `scripts` in `package.json`, including audio, enemies, bosses, effects, doors and cheats. Newer focused checks also run directly from `tests/*.mjs`; use the relevant feature document to choose them. They use isolated game state rather than your normal desktop saves. Older scripts write results under `artifacts/`; newer investigations retain reports, screenshots and isolated profiles in named folders under `current_work/`.
++
++Keep new temporary research, disassembly, profiles and diagnostic work in a
++descriptively named `current_work/` subfolder and retain it for later comparison.
++Do not use `/tmp` for that work. Where a browser harness needs `TMPDIR`, use a
++short relative path under `current_work/` from the project root; long absolute
++paths can exceed Chromium's Unix socket path limit. Follow the particular
++test's output/profile setup rather than reusing your running game's profile.
+ 
+ The full smoke test explicitly plays the intro, so it requires converted media even if you chose `--skip-media` during import. It also checks HTTP errors: the menu currently requests `assets/menu/cover.jpg` even when optional cover art was omitted. For a clean full smoke pass, include that artwork with `--album-dir` during import. Running unit tests alone does not check either requirement.
+ 
+@@ -152,7 +159,7 @@
+ 
+ ## 5. Generate portable packages when ready
+ 
+-**Only run this section when you intend to create new builds.** Close the game first. These commands update the corresponding directories under `dist/`; copy an older build elsewhere first if you want to preserve it. The source and game menu have no release number. Electron-builder requires a numeric package version when creating desktop distributions, so supply `REDCAT_PACKAGE_VERSION` only for that packaging command. It is injected into the generated package metadata without modifying the source or lockfile. Use three dot-separated integers chosen for your distribution; no default version is maintained. Without this value, the packaging command stops before creating a build.
++**Only run this section when you intend to create new builds.** Close the game first. These commands update the corresponding directories under `dist/`; copy an older build elsewhere first if you want to preserve it. The **Over** dialog has a display version, but `package.json` intentionally has no package version. Electron-builder requires numeric package metadata, so supply `REDCAT_PACKAGE_VERSION` only for that packaging command. It is injected into the generated package metadata without modifying the source, lockfile or displayed version. Use three dot-separated integers chosen for your distribution; the helper has no default. Without this value, the packaging command stops before creating a build.
+ 
+ ### Linux x64
+ 
+@@ -210,4 +217,4 @@
+ 
+ ## Future platforms
+ 
+-Apple Silicon macOS and Android remain planned ports. There are no validated Mac or Android release targets in these instructions. The shared game code is portable; macOS needs an arm64 Electron build and platform testing, while Android needs a different application shell and mobile input/lifecycle work. See [portability.md](portability.md) for the remaining steps.
++Apple Silicon macOS and packaged Android remain planned ports. There are no validated Mac or Android release targets in these instructions. Browser touch overlays and Gamepad API controls are already implemented. macOS needs an arm64 Electron build and platform testing; Android needs a different application shell, native lifecycle/audio integration and physical-device validation of the existing controls. See [portability.md](portability.md) for the remaining steps.
+--- current_work/documentation-status-2026-10-05/before/docs/portability.md
++++ docs/portability.md
+@@ -2,19 +2,19 @@
+ 
+ The core is ES modules and typed arrays. `src/collision.js`, `src/gameplay.js` and `src/animation.js` are independent of Electron. Asset conversion happens before packaging, producing PNG, float32 geometry, JSON and modern audio/video formats. A new platform does not need to parse legacy PE executables or Direct3D resources.
+ 
+-`src/world.js` owns WebGL rendering and camera/player integration. `src/main.js` owns the menu, HTML media, persistent settings, keyboard/mouse/touch/gamepad translation, and the frame loop. Its optional `window.desktop` bridge only has display and quit actions. `electron/main.cjs` implements that bridge with a sandboxed renderer and an application-local secure URL scheme. The browser build works without the bridge.
++`src/world.js` owns WebGL rendering and camera/player integration. `src/main.js` owns the menu, HTML media, persistent settings, keyboard/mouse/touch/gamepad translation, and the frame loop. Its optional `window.desktop` bridge only has display and quit actions. `electron/main.cjs` implements that bridge with a sandboxed renderer and an application-local secure URL scheme. The browser build works without the bridge. Mobile browser input is implemented; that does not establish a validated Android application package or Apple Silicon release.
+ 
+ ## Linux and Windows
+ 
+ Current packaging targets x64 Linux and x64 Windows. Both include Electron and imported resources. The Linux launcher selects X11/XWayland before Electron starts, for consistent programmatic resolution/window sizing, and defaults to ANGLE OpenGL. Ozone must never be changed from the main script: Electron may already have selected Wayland, causing a native Wayland surface ID to be misused as an X11 window. The earlier forced Vulkan workaround masked the context failure but left native presentation blank. OpenGL works with the display backend selected at startup. Explicit `--ozone-platform` and `--use-angle` arguments and `REDCAT_GPU` remain available; direct executable launch uses Electron’s native window-system choice. Selected rendering dimensions remain exact when the desktop limits the physical window size. Fullscreen does not change the monitor's operating-system mode; it renders at the selected resolution and fits the image to the screen.
+ 
+-Save/settings are stored in Chromium localStorage for the `redcat://game` origin, inside Electron's normal userData directory. The application exposes no network services in desktop mode. `tools/serve.mjs` binds only to loopback for browser development.
++The latest save, settings and campaign progress use Chromium localStorage for the `redcat://game` origin, inside Electron's normal userData directory. The rolling 2/5/10-minute recovery history uses IndexedDB at that same origin. Browser hosting has its own origin and storage; it does not share desktop saves. The application exposes no network services in desktop mode. `tools/serve.mjs` binds only to loopback for browser development.
+ 
+ ## Apple Silicon macOS
+ 
+ 1. Use a macOS arm64 host and install Node.js 22.12+.
+ 2. Copy/import the same `assets` and `data` directories, then `npm ci`.
+-3. Extend `tools/package.mjs` with a macOS arm64 target and the temporary package metadata described in [building.md](building.md). The current helper supports only Linux/Windows x64, and a direct electron-builder invocation needs that metadata because the source package intentionally has no release number. Add an arm64 DMG target when distribution is ready.
++3. Extend `tools/package.mjs` with a macOS arm64 target and the temporary package metadata described in [building.md](building.md). The current helper supports only Linux/Windows x64, and a direct electron-builder invocation needs that metadata because `package.json` has no package version. The Over dialog's display version is separate. Add an arm64 DMG target when distribution is ready.
+ 4. Verify WebGL rendering, pointer lock, fullscreen, Retina resolution, media codecs and save restoration on actual Apple Silicon.
+ 5. Add an app icon, signing and notarization for a public distribution.
+ 
+@@ -28,9 +28,9 @@
+ 
+ - Browser touch input is implemented in `src/touch-controls.js` and combined with keyboard/mouse actions in `src/main.js`. Standard Gamepad API controls are implemented in `src/gamepad-input.js`; validate touch and controller support in the chosen Android shell. See [touch-controls.md](touch-controls.md).
+ - Use an app-local secure origin for packaged resources and replace desktop quit/window behavior with Android lifecycle handling.
+-- Pause and save on backgrounding, resume audio after a user gesture, and recover from WebGL context loss.
++- Integrate Android backgrounding, storage and audio focus with the existing browser pause/input-reset behavior. Verify saving on backgrounding, resuming audio after a user gesture and recovery from WebGL context loss in the chosen shell.
+ - Safe-area-aware portrait/landscape touch controls and scrollable menus are available. Verify device-specific browser bars, display cutouts and WebView viewport behavior on actual devices.
+-- Budget texture/animation memory, reuse actor resources, reduce distant animation updates and choose a suitable mobile rendering resolution.
++- Validate memory and sustained performance using the existing camera/PVS-based world and actor GPU streaming, shared resources and bounded AI work. Collision/scripts and cached CPU data remain resident; streaming is not whole-level RAM eviction. See [world streaming](world-streaming.md). Choose a suitable mobile rendering resolution and profile remaining device bottlenecks.
+ - Test WebGL 2, shader precision, video decoding, headphones/audio focus and sustained thermal performance on multiple physical devices.
+ - Create and sign an APK/AAB with an Android toolchain.
+ 

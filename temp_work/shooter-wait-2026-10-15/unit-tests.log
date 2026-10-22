@@ -1,0 +1,23 @@
+✔ ordinary closer selects before strict range completion and preserves its selected mid-edge target (1.015999ms)
+✔ a no-destination closer enters shoot outside attack range instead of inventing another endpoint (0.12766ms)
+✔ whole salvo remains committed and inter-shot wait begins only after complete shoot motion (0.284309ms)
+✔ after-salvo chance chooses another closer without an unconditional extra wait or memory gate (0.14107ms)
+✔ a completed parent wait shoots at inclusive attack range and otherwise re-enters closer (0.17035ms)
+✔ skeleton retreat range stops movement but its one-shot child completes only at the animation deadline (0.550299ms)
+✔ completed retreat holds its last motion while too close, refreshes memory, and never replays the same child (0.17108ms)
+✔ an active retreat without a destination still shortcuts to a new shot before its clip ends (0.125799ms)
+✔ skeleton retreat failure shoots immediately; expired memory ends its completed child first (0.14561ms)
+✔ safe waypoint reacquisition forwards its explicit destination and native edges bypass search (0.1792ms)
+✔ phase state remains plain save data and wait deadlines can be shifted across a freeze (0.20774ms)
+✔ bosses and non-ranged touch variants retain separate states, and missing paths retain the portable fallback (0.129639ms)
+✔ wait first-check arms once, uses strict integer milliseconds and survives a saved unarmed handoff (0.11829ms)
+✔ Bone Brutus charges after a full salvo, changes ammo once on entry and shoots without an after-salvo wait (0.18681ms)
+✔ Bone Brutus chooses closer only after charge completion and retains its authored cursor (0.13672ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 63.578118

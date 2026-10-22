@@ -1,0 +1,2645 @@
+[
+  {
+    "level": "lvl00a",
+    "check": [
+      {
+        "name": "GetGameType",
+        "args": []
+      },
+      {
+        "object": "csmc01_tr",
+        "name": "Disable",
+        "args": []
+      },
+      {
+        "object": "csmc02_tr",
+        "name": "Disable",
+        "args": []
+      },
+      {
+        "object": "csmc03_tr",
+        "name": "Disable",
+        "args": []
+      },
+      {
+        "object": "csmc04_tr",
+        "name": "Disable",
+        "args": []
+      },
+      {
+        "object": "csmc05_tr",
+        "name": "Disable",
+        "args": []
+      },
+      {
+        "object": "csmc07_tr",
+        "name": "Disable",
+        "args": []
+      },
+      {
+        "object": "csmc08_tr",
+        "name": "Disable",
+        "args": []
+      },
+      {
+        "object": "csmc09_tr",
+        "name": "Disable",
+        "args": []
+      }
+    ],
+    "cutscenes": [
+      {
+        "disabled": "csmc01_tr",
+        "controller": "csmc01",
+        "functionName": "CSL001_MotionCommand",
+        "events": [
+          {
+            "label": "rcshow",
+            "calls": [
+              {
+                "name": "RcShowAtSpawnPoint",
+                "args": [
+                  "rcpoint1",
+                  8
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startcutscene",
+            "calls": [
+              {
+                "name": "StartCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "stopcutscene",
+            "calls": [
+              {
+                "name": "StopCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startcamera",
+            "calls": [
+              {
+                "object": "camera17",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "startcamera1",
+            "calls": [
+              {
+                "object": "camera18",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "startcamera2",
+            "calls": [
+              {
+                "object": "camera19",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "rcgen46",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen46"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "rcgen47",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen47"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "rcgen48",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen48"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "rcgen49",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen49"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "rcgen50",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen50"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "rcgen51",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen51"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "rcgen52",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen52"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "rcgen53",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen53"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "rcgen54",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen54"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "rcgen55",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen55"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "rcgen56",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen56"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startfairy",
+            "calls": [
+              {
+                "object": "fairy11",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "flgen3",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen3"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen4",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen4"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen5",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen5"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen6",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen6"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen7",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen7"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen8",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen8"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen9",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen9"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumedown",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  0.5
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumeup",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  2
+                ]
+              }
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "id": "rcgen46",
+            "text": "Wat is dat daar!"
+          },
+          {
+            "id": "rcgen47",
+            "text": "Even kijken..."
+          },
+          {
+            "id": "rcgen48",
+            "text": "Was jij het, die mij zo liet schrikken?"
+          },
+          {
+            "id": "rcgen49",
+            "text": "Wie ben jij?"
+          },
+          {
+            "id": "rcgen50",
+            "text": "Waarom moet je zo huilen? Heb ik je pijn gedaan?"
+          },
+          {
+            "id": "rcgen51",
+            "text": "Waarom deed ze dat?"
+          },
+          {
+            "id": "rcgen52",
+            "text": "Oh, dus het is Grizella nog niet gelukt?"
+          },
+          {
+            "id": "rcgen53",
+            "text": "Wat??? Een mooie, roze kat! Dat moet WhizzKitty zijn. Ik moet haar zo snel mogelijk redden."
+          },
+          {
+            "id": "rcgen54",
+            "text": "Samenwerken! Mauw! Superidee!"
+          },
+          {
+            "id": "rcgen55",
+            "text": "En alle belangrijke informatie die je geeft, schrijf ik op in mijn CatMemo. Die kan ik altijd weer inkijken via de F2-knop."
+          },
+          {
+            "id": "rcgen56",
+            "text": "Dan ga ik nu op naar het kasteel! Tot straks, Fleuriefee!"
+          },
+          {
+            "id": "flgen3",
+            "text": "Snik, snik"
+          },
+          {
+            "id": "flgen4",
+            "text": "Ja, dat was ik."
+          },
+          {
+            "id": "flgen5",
+            "text": "Ik heet Fleuriefee."
+          },
+          {
+            "id": "flgen6",
+            "text": "Nee hoor, ik heb niets. Ik ben gewoon verdrietig. Weet je, vroeger was ik een heel mooi prinsesje. Ik leefde heel gelukkig in mijn kasteel. Totdat de lelijke heks Grizella mij betoverde."
+          },
+          {
+            "id": "flgen7",
+            "text": "De heks was jaloers. Ze wilde alles wat ik had. Door mij te betoveren kon ze zelf in mijn kasteel gaan wonen. Maar ze was nog steeds lelijk. Daarom moest ze een schoonheidsdrankje brouwen. Maar hoe ze ook probeerde, niets kon haar mooier maken!"
+          },
+          {
+            "id": "flgen8",
+            "text": "Nee! Maar ze denkt dat het vanavond WEL gaat lukken! Om klokslag 12 vannacht zal ze de schoonheid van een mooie, roze kat bij de schoonheidsdrank voegen!"
+          },
+          {
+            "id": "flgen9",
+            "text": "Wacht! Als je alleen gaat, verdwaal je zeker! Ik weet de weg hier. Jammer genoeg kan ik niet te ver weg van mijn toverlantaarn. Je krijgt mijn hulp, zodra je bij een toverlantaarn in de buurt komt. Zo kunnen we samenwerken om WhizzKitty te bevrijden en Grizella te verslaan."
+          }
+        ]
+      },
+      {
+        "disabled": "csmc02_tr",
+        "controller": "csmc02",
+        "functionName": "CSL002_MotionCommand",
+        "events": [
+          {
+            "label": "rcshow",
+            "calls": [
+              {
+                "name": "RcShowAtSpawnPoint",
+                "args": [
+                  "rcpoint2",
+                  12
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startcutscene",
+            "calls": [
+              {
+                "name": "StartCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "stopcutscene",
+            "calls": [
+              {
+                "name": "StopCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startcamera",
+            "calls": [
+              {
+                "object": "camera2",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "startfairy",
+            "calls": [
+              {
+                "object": "fairy2",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "flgen10",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen10"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumedown",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  0.5
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumeup",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  2
+                ]
+              }
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "id": "flgen10",
+            "text": "Let op, RedCat! Er ligt een boomstam in de weg. Je zal eroverheen moeten springen. Druk op de knop SPRINGEN terwijl je naar voren loopt."
+          }
+        ]
+      },
+      {
+        "disabled": "csmc03_tr",
+        "controller": "csmc03",
+        "functionName": "CSL003_MotionCommand",
+        "events": [
+          {
+            "label": "rcshow",
+            "calls": [
+              {
+                "name": "RcShowAtSpawnPoint",
+                "args": [
+                  "rcpoint3",
+                  3
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startcutscene",
+            "calls": [
+              {
+                "name": "StartCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "stopcutscene",
+            "calls": [
+              {
+                "name": "StopCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startcamera",
+            "calls": [
+              {
+                "object": "camera3",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "startfairy",
+            "calls": [
+              {
+                "object": "fairy3",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "flgen11",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen11"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumedown",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  0.5
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumeup",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  2
+                ]
+              }
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "id": "flgen11",
+            "text": "Zie je dat ding, RedCat? Dat is een magische Bewaarpilaar! Je kunt zo'n Bewaarpilaar aanzetten door er overheen te lopen. Als je daarna af bent, begin je weer bij dat punt. Je hoeft dan niet helemaal opnieuw te beginnen! Handig, he?"
+          }
+        ]
+      },
+      {
+        "disabled": "csmc04_tr",
+        "controller": "csmc04",
+        "functionName": "CSL004_MotionCommand",
+        "events": [
+          {
+            "label": "rcshow",
+            "calls": [
+              {
+                "name": "RcShowAtSpawnPoint",
+                "args": [
+                  "rcpoint4",
+                  3
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startcutscene",
+            "calls": [
+              {
+                "name": "StartCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "stopcutscene",
+            "calls": [
+              {
+                "name": "StopCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startcamera",
+            "calls": [
+              {
+                "object": "camera4",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "startcamera1",
+            "calls": [
+              {
+                "object": "camera5",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "rcgen57",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen57"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startfairy",
+            "calls": [
+              {
+                "object": "fairy4",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "flgen12",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen12"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen13",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen13"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen14",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen14"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumedown",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  0.5
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumeup",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  2
+                ]
+              }
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "id": "rcgen57",
+            "text": "En als ik er per ongeluk toch in val?"
+          },
+          {
+            "id": "flgen12",
+            "text": "Ho! Hier kun je niet zomaar langs. Je moet hier overheen springen. Druk op de knop SPRINGEN terwijl je naar voren loopt."
+          },
+          {
+            "id": "flgen13",
+            "text": "Maar pas goed op dat je er niet in valt. Want in ondiep water zal een kat als jij schade oplopen! Je herkent ondiep water aan de lichtblauwe kleur."
+          },
+          {
+            "id": "flgen14",
+            "text": "Dan kun je jouw gezondheid aanvullen met een hartje. Pak het hartje door eroverheen te lopen."
+          }
+        ]
+      },
+      {
+        "disabled": "csmc05_tr",
+        "controller": "csmc05",
+        "functionName": "CSL005_MotionCommand",
+        "events": [
+          {
+            "label": "rcshow",
+            "calls": [
+              {
+                "name": "RcShowAtSpawnPoint",
+                "args": [
+                  "rcpoint5",
+                  2
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startcutscene",
+            "calls": [
+              {
+                "name": "StartCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "stopcutscene",
+            "calls": [
+              {
+                "name": "StopCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startcamera",
+            "calls": [
+              {
+                "object": "camera6",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "startcamera1",
+            "calls": [
+              {
+                "object": "camera7",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "startcamera2",
+            "calls": [
+              {
+                "object": "camera8",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "rcgen58",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen58"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "rcgen59",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen59"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startfairy",
+            "calls": [
+              {
+                "object": "fairy5",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "flgen15",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen15"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen16",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen16"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen17",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen17"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumedown",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  0.5
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumeup",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  2
+                ]
+              }
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "id": "rcgen58",
+            "text": "Mauw! Dat is handig! En die munten?"
+          },
+          {
+            "id": "rcgen59",
+            "text": "Zohee, woh! Ik moet alles snel pakken! Maar hoe?"
+          },
+          {
+            "id": "flgen15",
+            "text": "Oh, zie je dat? Allemaal flesjes en munten! In die flesjes zit toverdrank. Als je er genoeg voor mij verzamelt, kan ik mijn toverkracht weer op peil brengen. En dan kan ik aan jou een speciale kracht geven, die jou verder kan helpen."
+          },
+          {
+            "id": "flgen16",
+            "text": "De munten zijn van echt goud! Hoe meer je er verzamelt, hoe meer punten je krijgt."
+          },
+          {
+            "id": "flgen17",
+            "text": "Je kunt de toverflesjes en de munten oppakken, door eroverheen te lopen."
+          }
+        ]
+      },
+      {
+        "disabled": "csmc07_tr",
+        "controller": "csmc07",
+        "functionName": "CSL008_MotionCommand",
+        "events": [
+          {
+            "label": "rcshow",
+            "calls": [
+              {
+                "name": "RcShowAtSpawnPoint",
+                "args": [
+                  "rcpoint9",
+                  12
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startcutscene",
+            "calls": [
+              {
+                "name": "StartCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "stopcutscene",
+            "calls": [
+              {
+                "name": "StopCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startcamera",
+            "calls": [
+              {
+                "object": "camera11",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "rcgen61",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen61"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startfairy",
+            "calls": [
+              {
+                "object": "fairy7",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "flgen21",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen21"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen22",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen22"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumedown",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  0.5
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumeup",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  2
+                ]
+              }
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "id": "rcgen61",
+            "text": "Werken alle deuren dan met een knop?"
+          },
+          {
+            "id": "flgen21",
+            "text": "Achter die doos zit een knop! Je kunt deze indrukken door ernaar toe te gaan en hem aan te raken! Er zal dan een deur opengaan."
+          },
+          {
+            "id": "flgen22",
+            "text": "Nee, de meeste deuren die je tegenkomt, gaan vanzelf open als je ertegenaan loopt."
+          }
+        ]
+      },
+      {
+        "disabled": "csmc08_tr",
+        "controller": "csmc08",
+        "functionName": "CSL009_MotionCommand",
+        "events": [
+          {
+            "label": "rcshow",
+            "calls": [
+              {
+                "name": "RcShowAtSpawnPoint",
+                "args": [
+                  "rcpoint7",
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startcutscene",
+            "calls": [
+              {
+                "name": "StartCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "stopcutscene",
+            "calls": [
+              {
+                "name": "StopCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startcamera",
+            "calls": [
+              {
+                "object": "camera13",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "startcamera1",
+            "calls": [
+              {
+                "object": "camera14",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "rcgen62",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen62"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startfairy",
+            "calls": [
+              {
+                "object": "fairy8",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "flgen23",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen23"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumedown",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  0.5
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumeup",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  2
+                ]
+              }
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "id": "rcgen62",
+            "text": "Ja, natuurlijk! De knop SCHIETEN indrukken."
+          },
+          {
+            "id": "flgen23",
+            "text": "Pas op RedCat, dat ziet er gevaarlijk uit! Je kunt de vijand ontwijken door een stapje opzij te doen. Je moet dan de knop ONTWIJKEN indrukken, terwijl je naar rechts of links beweegt. Maar je kunt hem natuurlijk ook aanvallen. Weet je nog, hoe je moet schieten?"
+          }
+        ]
+      },
+      {
+        "disabled": "csmc09_tr",
+        "controller": "csmc09",
+        "functionName": "CSL010_MotionCommand",
+        "events": [
+          {
+            "label": "rcshow",
+            "calls": [
+              {
+                "name": "RcShowAtSpawnPoint",
+                "args": [
+                  "rcpoint8",
+                  3
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startcutscene",
+            "calls": [
+              {
+                "name": "StartCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "stopcutscene",
+            "calls": [
+              {
+                "name": "StopCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startcamera",
+            "calls": [
+              {
+                "object": "camera15",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "startcamera1",
+            "calls": [
+              {
+                "object": "camera16",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "rcgen63",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen63"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "rcgen64",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen64"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startfairy",
+            "calls": [
+              {
+                "object": "fairy9",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "flgen24",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen24"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen25",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen25"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumedown",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  0.5
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumeup",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  2
+                ]
+              }
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "id": "rcgen63",
+            "text": "Dat is pas gevaarlijk!"
+          },
+          {
+            "id": "rcgen64",
+            "text": "Ok!"
+          },
+          {
+            "id": "flgen24",
+            "text": "Kijk uit! Dit meer is veel te diep voor een kat. Dat zie je aan de donkerblauwe kleur. Als je daarin valt, ben je af."
+          },
+          {
+            "id": "flgen25",
+            "text": "Aan de overkant zie je een knop. Daar kun je dus niet bij komen. Maar je kunt hem wel indrukken, door er op te schieten! Probeer maar!"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level": "lvl01a",
+    "check": [],
+    "cutscenes": []
+  },
+  {
+    "level": "lvl02a",
+    "check": [
+      {
+        "name": "GetGameType",
+        "args": []
+      },
+      {
+        "object": "csmc02_tr",
+        "name": "Disable",
+        "args": []
+      },
+      {
+        "object": "csmc03_tr",
+        "name": "Disable",
+        "args": []
+      }
+    ],
+    "cutscenes": [
+      {
+        "disabled": "csmc02_tr",
+        "controller": "csmc02",
+        "functionName": "CSL201_MotionCommand",
+        "events": [
+          {
+            "label": "startcutscene",
+            "calls": [
+              {
+                "name": "StartCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "stopcutscene",
+            "calls": [
+              {
+                "name": "StopCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startcamera",
+            "calls": [
+              {
+                "object": "camera4",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "startfairy",
+            "calls": [
+              {
+                "object": "fairy3",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "flgen44",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen44"
+                ]
+              }
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "id": "flgen44",
+            "text": "Kijk! Dit blauwe kistje kan ontploffen als je erop schiet. Zo kun je bijvoorbeeld gaten in muren maken en enge vijanden uitschakelen."
+          }
+        ]
+      },
+      {
+        "disabled": "csmc03_tr",
+        "controller": "csmc03",
+        "functionName": "CSL202_MotionCommand",
+        "events": [
+          {
+            "label": "startcutscene",
+            "calls": [
+              {
+                "name": "StartCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "stopcutscene",
+            "calls": [
+              {
+                "name": "StopCutScene",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "label": "startcamera",
+            "calls": [
+              {
+                "object": "camera5",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "startfairy",
+            "calls": [
+              {
+                "object": "fairy4",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "flgen45",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen45"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumedown",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  0.5
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumeup",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  2
+                ]
+              }
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "id": "flgen45",
+            "text": "Oh, dat lijkt wel een magische poort. Als je daarin gaat staan, word je naar een andere plek getoverd. Probeer maar!"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level": "lvl03a",
+    "check": [
+      {
+        "name": "GetGameType",
+        "args": []
+      },
+      {
+        "object": "cutscene01",
+        "name": "Disable",
+        "args": []
+      },
+      {
+        "object": "trigger_cuts02",
+        "name": "Disable",
+        "args": []
+      },
+      {
+        "object": "trigger_cuts05",
+        "name": "Disable",
+        "args": []
+      },
+      {
+        "object": "trigger_cuts06",
+        "name": "Disable",
+        "args": []
+      }
+    ],
+    "cutscenes": [
+      {
+        "disabled": "cutscene01",
+        "controller": "cutscene01",
+        "functionName": "CSL300_MotionCommand",
+        "events": [
+          {
+            "label": "startcutscene",
+            "calls": [
+              {
+                "name": "StartCutScene",
+                "args": [
+                  1
+                ]
+              },
+              {
+                "name": "FreezeEnemies",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "stopcutscene",
+            "calls": [
+              {
+                "name": "StopCutScene",
+                "args": [
+                  1
+                ]
+              },
+              {
+                "name": "UnFreezeEnemies",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "rcgen83",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen83"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "rcgen84",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen84"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "rcgen85",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen85"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "rcgen86",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen86"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen51",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen51"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen52",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen52"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen53",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen53"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen54",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen54"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen55",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen55"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "introFFbegin",
+            "calls": [
+              {
+                "object": "introFF1",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "introFFtussen",
+            "calls": [
+              {
+                "object": "introFF",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "volumedown",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  0.5
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumeup",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  2
+                ]
+              }
+            ]
+          },
+          {
+            "label": "intro_cam01",
+            "calls": [
+              {
+                "object": "intro_cam01",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "intro_cam02",
+            "calls": [
+              {
+                "object": "intro_cam02",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "intro_cam03",
+            "calls": [
+              {
+                "object": "intro_cam03",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "intro_cam04",
+            "calls": [
+              {
+                "object": "intro_cam04",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "id": "rcgen83",
+            "text": "Ik ben hier!"
+          },
+          {
+            "id": "rcgen84",
+            "text": "Ja, hoor! Waar zijn we?"
+          },
+          {
+            "id": "rcgen85",
+            "text": "Wat?"
+          },
+          {
+            "id": "rcgen86",
+            "text": "Oh, dus we komen dichter bij de heks."
+          },
+          {
+            "id": "flgen51",
+            "text": "RedCat! Waar ben je?"
+          },
+          {
+            "id": "flgen52",
+            "text": "Gaat het wel?"
+          },
+          {
+            "id": "flgen53",
+            "text": "Het lijkt wel een soort grot! Oh, natuurlijk!"
+          },
+          {
+            "id": "flgen54",
+            "text": "Dit is vast de geheime grot waar de heks vroeger in woonde! Ik geloofde dat verhaal nooit! Maar het is dus toch waar!"
+          },
+          {
+            "id": "flgen55",
+            "text": "Ja, je zit op de goede weg! En als je hier 30 toverflesjes vindt, kan ik je weer een speciale kracht geven."
+          }
+        ]
+      },
+      {
+        "disabled": "trigger_cuts02",
+        "controller": "cutscene02",
+        "functionName": "CSL301_MotionCommand",
+        "events": [
+          {
+            "label": "startcutscene",
+            "calls": [
+              {
+                "name": "StartCutScene",
+                "args": [
+                  1
+                ]
+              },
+              {
+                "name": "FreezeEnemies",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "stopcutscene",
+            "calls": [
+              {
+                "name": "StopCutScene",
+                "args": [
+                  1
+                ]
+              },
+              {
+                "name": "UnFreezeEnemies",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "rcgen87",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen87"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "rcgen88",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen88"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen56",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen56"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen57",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen57"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen58",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen58"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "altaarFF",
+            "calls": [
+              {
+                "object": "altaarFF",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "volumedown",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  0.5
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumeup",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  2
+                ]
+              }
+            ]
+          },
+          {
+            "label": "altaar_cam01",
+            "calls": [
+              {
+                "object": "altaar_cam01",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "altaar_cam02",
+            "calls": [
+              {
+                "object": "altaar_cam02",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "altaar_cam03",
+            "calls": [
+              {
+                "object": "altaar_cam03",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "altaar_cam04",
+            "calls": [
+              {
+                "object": "altaar_cam04",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "altaar_cam05",
+            "calls": [
+              {
+                "object": "altaar_cam05",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "id": "rcgen87",
+            "text": "Helemaal niemand?"
+          },
+          {
+            "id": "rcgen88",
+            "text": "Kijk, op alle hoeken van het figuur staan tekeningetjes."
+          },
+          {
+            "id": "flgen56",
+            "text": "O ja, ik weet wat dit is! Dit is een magisch heksenaltaar. Het maakt tovertralies, waar niemand doorheen kan."
+          },
+          {
+            "id": "flgen57",
+            "text": "Nou... Misschien is er een manier om ze uit te zetten. Maar ik weet niet hoe. Dat moet jij uitzoeken!"
+          },
+          {
+            "id": "flgen58",
+            "text": "Ja, en op de deuren staan ook tekeningen. Het zijn tekens voor water, vuur, lucht en aarde! Dat heeft vast een speciale betekenis! Succes met het oplossen RedCat!"
+          }
+        ]
+      },
+      {
+        "disabled": "trigger_cuts05",
+        "controller": "cutscene05",
+        "functionName": "CSL305_MotionCommand",
+        "events": [
+          {
+            "label": "startcutscene",
+            "calls": [
+              {
+                "name": "StartCutScene",
+                "args": [
+                  1
+                ]
+              },
+              {
+                "name": "FreezeEnemies",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "stopcutscene",
+            "calls": [
+              {
+                "name": "StopCutScene",
+                "args": [
+                  1
+                ]
+              },
+              {
+                "name": "UnFreezeEnemies",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "MXIVlv1",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "MXIVlv1"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "max_weg",
+            "calls": [
+              {
+                "object": "max_model",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "volumedown",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  0.5
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumeup",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  2
+                ]
+              }
+            ]
+          },
+          {
+            "label": "endboss_cam",
+            "calls": [
+              {
+                "object": "endboss_cam",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "endboss_cam2",
+            "calls": [
+              {
+                "object": "endboss_cam2",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "id": "mxivlv1",
+            "text": "Halt! Niemand komt voorbij de torenwachter! De heks wil jullie niet in de toren hebben! De heks kan haar eigen spiegelbeeld niet eens verdragen. Laat staan een stelletje mislukkelingen! Wegwezen!"
+          }
+        ]
+      },
+      {
+        "disabled": "trigger_cuts06",
+        "controller": "cutscene06",
+        "functionName": "CSL306_MotionCommand",
+        "events": [
+          {
+            "label": "startcutscene",
+            "calls": [
+              {
+                "name": "StartCutScene",
+                "args": [
+                  1
+                ]
+              },
+              {
+                "name": "FreezeEnemies",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "stopcutscene",
+            "calls": [
+              {
+                "name": "StopCutScene",
+                "args": [
+                  1
+                ]
+              },
+              {
+                "name": "UnFreezeEnemies",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "rcgen91",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen91"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen65",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen65"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "torenFF",
+            "calls": [
+              {
+                "object": "torenFF",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "enter",
+            "calls": [
+              {
+                "object": "enter",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "volumedown",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  0.5
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumeup",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  2
+                ]
+              }
+            ]
+          },
+          {
+            "label": "toren_cam1",
+            "calls": [
+              {
+                "object": "toren_cam1",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "toren_cam2",
+            "calls": [
+              {
+                "object": "toren_cam2",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "toren_cam3",
+            "calls": [
+              {
+                "object": "toren_cam3",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "fx_steen",
+            "calls": [
+              {
+                "object": "fx_steen",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "fx_steen_stop",
+            "calls": [
+              {
+                "object": "fx_steen",
+                "name": "Disable",
+                "args": []
+              }
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "id": "rcgen91",
+            "text": "Tuurlijk! Ik durf alles!"
+          },
+          {
+            "id": "flgen65",
+            "text": "Hoera, daar zijn we vanaf! Oei, daar ligt weer een spiegeltje. Pak hem snel! De weg ligt open naar de toren! Als je tenminste durft!"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level": "lvl04a",
+    "check": [
+      {
+        "name": "GetGameType",
+        "args": []
+      },
+      {
+        "object": "trigger_cuts01",
+        "name": "Disable",
+        "args": []
+      }
+    ],
+    "cutscenes": [
+      {
+        "disabled": "trigger_cuts01",
+        "controller": "cutscene01",
+        "functionName": "CSL400_MotionCommand",
+        "events": [
+          {
+            "label": "startcutscene",
+            "calls": [
+              {
+                "name": "StartCutScene",
+                "args": [
+                  1
+                ]
+              },
+              {
+                "name": "FreezeEnemies",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "stopcutscene",
+            "calls": [
+              {
+                "name": "StopCutScene",
+                "args": [
+                  1
+                ]
+              },
+              {
+                "name": "UnFreezeEnemies",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "RC_cuts01",
+            "calls": [
+              {
+                "name": "RcShowAtSpawnPoint",
+                "args": [
+                  "RC_cuts01",
+                  4
+                ]
+              }
+            ]
+          },
+          {
+            "label": "cuts01_cam01",
+            "calls": [
+              {
+                "object": "cuts01_cam01",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "cuts01_cam02",
+            "calls": [
+              {
+                "object": "cuts01_cam02",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "cuts01_cam03",
+            "calls": [
+              {
+                "object": "cuts01_cam03",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "cuts01_cam04",
+            "calls": [
+              {
+                "object": "cuts01_cam04",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "cuts01_cam05",
+            "calls": [
+              {
+                "object": "cuts01_cam05",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "rcgen92",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen92"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "rcgen93",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen93"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "rcgen94",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen94"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "rcgen95",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "rcgen95"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen66",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen66"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen67",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen67"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen68",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen68"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen69",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen69"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "flgen70",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "flgen70"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "FF01_start",
+            "calls": [
+              {
+                "object": "FF01",
+                "name": "Enable",
+                "args": []
+              }
+            ]
+          },
+          {
+            "label": "wkgen10",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "wkgen10"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "Grizel1",
+            "calls": [
+              {
+                "name": "CutSceneSay",
+                "args": [
+                  "Grizel1"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumedown",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  0.5
+                ]
+              }
+            ]
+          },
+          {
+            "label": "volumeup",
+            "calls": [
+              {
+                "object": "muziek",
+                "name": "MultiplyVolume",
+                "args": [
+                  2
+                ]
+              }
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "id": "rcgen92",
+            "text": "Waarom?"
+          },
+          {
+            "id": "rcgen93",
+            "text": "Nou, wat jammer!"
+          },
+          {
+            "id": "rcgen94",
+            "text": "Ja? Dus?"
+          },
+          {
+            "id": "rcgen95",
+            "text": "Nou, OK. Daaag Fleuriefee!"
+          },
+          {
+            "id": "flgen66",
+            "text": "Ssst, ..."
+          },
+          {
+            "id": "flgen67",
+            "text": "Hoorde je dat? WhizzKitty en Grizella zitten hier boven in de toren! We moeten hier afscheid nemen. Ik kan je vanaf hier niet meer helpen."
+          },
+          {
+            "id": "flgen68",
+            "text": "De kwade invloed van de heks is hier veel te groot. Je moet het nu alleen doen, RedCat!"
+          },
+          {
+            "id": "flgen69",
+            "text": "Weet je nog wat Max zei? Grizella kan haar eigen spiegelbeeld niet verdragen."
+          },
+          {
+            "id": "flgen70",
+            "text": "Jij hebt toch al die spiegeltjes verzameld? Daar moet je straks vast iets mee doen! Veel succes RedCat! En pas goed op!"
+          },
+          {
+            "id": "wkgen10",
+            "text": "RedCat! Hellup! Haal me hieruit!"
+          },
+          {
+            "id": "grizel1",
+            "text": "Hou nou eens je mond, jij mispoes!"
+          }
+        ]
+      }
+    ]
+  }
+]

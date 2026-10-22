@@ -1,0 +1,237 @@
+--- before/src/world-streaming.js
++++ after/src/world-streaming.js
+@@ -1,5 +1,6 @@
+ import * as THREE from 'three';
+ import { BspVisibility } from './bsp-visibility.js';
++import { RoomVisibility } from './room-visibility.js';
+ 
+ export const WORLD_STREAMING={cellSize:768,preloadRadius:576,retainRadius:1152,viewRadius:2048,retainSeconds:12,textureConcurrency:4};
+ 
+@@ -16,7 +17,7 @@
+ 
+ // Keep whole authored faces together: a long wall or courtyard must not be
+ // clipped at an arbitrary viewing distance or at a spatial cell boundary.
+-export function partitionWorld(groups,spans,vertices,cellSize=WORLD_STREAMING.cellSize) {
++export function partitionWorld(groups,spans,vertices,cellSize=WORLD_STREAMING.cellSize,faceAreas=null) {
+   const chunks=[];let cursor=0;
+   for(const group of groups) {
+     const buckets=new Map(),end=group.start+group.count;
+@@ -30,9 +31,10 @@
+       }
+       // Moving brushes stay whole; visibility uses their transformed model
+       // bounds, never the static PVS of the faces at their original position.
+-      const key=group.model?'model':min.map((v,a)=>Math.floor((v+max[a])*.5/cellSize)).join(',');
++      const areas=faceAreas?.[face]||[];
++      const key=group.model?'model':areas.join(',')+':'+min.map((v,a)=>Math.floor((v+max[a])*.5/cellSize)).join(',');
+       let chunk=buckets.get(key);
+-      if(!chunk){chunk={group,spans:[],count:0,min:[...min],max:[...max]};buckets.set(key,chunk);}
++      if(!chunk){chunk={group,areas,spans:[],count:0,min:[...min],max:[...max]};buckets.set(key,chunk);}
+       chunk.spans.push([face,start,count]);chunk.count+=count;
+       for(let a=0;a<3;a++){chunk.min[a]=Math.min(chunk.min[a],min[a]);chunk.max[a]=Math.max(chunk.max[a],max[a]);}
+     }
+@@ -108,11 +110,12 @@
+     this.world=world;this.source={vertices,uv,frames};this.disposed=false;this.error=null;
+     this.viewRadius=Math.max(WORLD_STREAMING.preloadRadius,viewRadius);
+     this.visibility=new BspVisibility(world.level.collision,visibility,pvs);
++    this.rooms=new RoomVisibility(world,visibility,vertices);
+     this.referencedFaces=new Uint8Array(visibility.faceCount);
+     for(const face of visibility.leafFaces)this.referencedFaces[face]=1;
+     this.frustum=new THREE.Frustum();this.preloadFrustum=new THREE.Frustum();this.projection=new THREE.Matrix4();this.boundVisibility=new WeakMap();
+     this.textures=new StreamTextures(textureFor,texture=>{texture.dispose();world.resources.delete(texture);});
+-    this.chunks=partitionWorld(groups,visibility.faceSpans,vertices);
++    this.chunks=partitionWorld(groups,visibility.faceSpans,vertices,WORLD_STREAMING.cellSize,this.rooms.faceAreas);
+     this.materials=new Map();this.movingModels=new Map();this.pending=new Set();this.ready=[];this.readyForView=false;
+     this.parking=new ParkedWorldChunks();world.scene.add(this.parking);
+     this.sceneMatrix=new THREE.Matrix4();this.sceneMatrixInitialized=false;this.matrixFrame=0;this.meshMatrixFrames=new WeakMap();
+@@ -226,9 +229,11 @@
+     this.projection.copy(camera.projectionMatrix);
+     this.projection.elements[0]*=.5;this.projection.elements[5]*=.5;
+     this.preloadFrustum.setFromProjectionMatrix(this.projection.multiply(camera.matrixWorldInverse));
+-    const eye=camera.position.toArray(),leaf=this.visibility.findLeaf(eye);
+-    // Never borrow the player's old room for a remote cutscene/teleport or
+-    // no-clip camera. Without a valid camera leaf use conservative frustum only.
++    this.rooms.update(camera);
++    const eye=this.rooms.visibilityPosition||camera.position.toArray(),leaf=this.visibility.findLeaf(eye);
++    // Authored cameras keep their own PVS. Ordinary exterior inspections may
++    // use the selector's current/last valid player room. Without a valid PVS
++    // origin preserve conservative frustum drawing inside the room mask.
+     if(this.visibility.usable(leaf))this.visibility.update(eye,eye,()=>true);
+     else this.visibility.active=false;
+     // Native ModelVisible tests the whole root-node box against visible BSP
+@@ -253,6 +258,7 @@
+         chunk.boundsMatrix.copy(chunk.mesh.matrixWorld);
+       }
+       const distance=chunk.bounds.distanceToPoint(camera.position);
++      const roomAllowed=chunk.group.model===0?this.rooms.areasAllowed(chunk.areas):this.roomBoundsAllowed(chunk.bounds);
+       if(chunk.visibilityRevision!==this.visibility.revision) {
+         chunk.pvsVisible=chunk.spans.some(([face])=>!this.referencedFaces[face]||this.visibility.faces[face]);
+         chunk.visibilityRevision=this.visibility.revision;
+@@ -263,9 +269,10 @@
+       // away. Keep a camera-local neighborhood instead, measuring the nearest
+       // face bounds so a long wall or nearby open courtyard stays whole.
+       const inRange=distance<=this.viewRadius;
+-      chunk.inView=inRange&&chunk.mesh.visible&&potentiallyVisible&&this.frustum.intersectsBox(chunk.bounds);
+-      const near=distance<=WORLD_STREAMING.preloadRadius;
++      chunk.inView=roomAllowed&&inRange&&chunk.mesh.visible&&potentiallyVisible&&this.frustum.intersectsBox(chunk.bounds);
++      const near=roomAllowed&&distance<=WORLD_STREAMING.preloadRadius;
+       const ahead=inRange&&chunk.mesh.visible&&potentiallyVisible&&this.preloadFrustum.intersectsBox(chunk.bounds);
++      if(!roomAllowed){if(chunk.request)this.unload(chunk);continue;}
+       if(near||ahead){chunk.lastNeeded=now;if(!chunk.request)wanted.push({chunk,distance});}
+       else if(chunk.request&&distance>WORLD_STREAMING.retainRadius&&now-chunk.lastNeeded>WORLD_STREAMING.retainSeconds)this.unload(chunk);
+     }
+@@ -311,11 +318,19 @@
+     if(this.error)throw this.error;
+   }
+   boundsVisible(box) {
++    if(!this.roomBoundsAllowed(box))return false;
+     if(!this.visibility.active)return true;
+     const {min,max}=box,old=this.boundVisibility.get(box),revision=this.visibility.revision;
+     if(old&&old.revision===revision&&old.minX===min.x&&old.minY===min.y&&old.minZ===min.z&&old.maxX===max.x&&old.maxY===max.y&&old.maxZ===max.z)return old.visible;
+     const visible=this.visibility.boundsVisible(min.toArray(),max.toArray());
+     this.boundVisibility.set(box,{revision,minX:min.x,minY:min.y,minZ:min.z,maxX:max.x,maxY:max.y,maxZ:max.z,visible});return visible;
++  }
++  roomBoundsAllowed(box) {
++    if(!this.rooms.active)return true;
++    const {min,max}=box,old=this.roomBoundVisibility?.get(box),revision=this.rooms.revision;
++    if(old&&old.revision===revision&&old.minX===min.x&&old.minY===min.y&&old.minZ===min.z&&old.maxX===max.x&&old.maxY===max.y&&old.maxZ===max.z)return old.allowed;
++    const allowed=this.rooms.boundsAllowed(min.toArray(),max.toArray());
++    (this.roomBoundVisibility??=new WeakMap()).set(box,{revision,minX:min.x,minY:min.y,minZ:min.z,maxX:max.x,maxY:max.y,maxZ:max.z,allowed});return allowed;
+   }
+   traceSurface(start,end) {
+     this.refreshSceneMatrices();
+--- before/src/actor-render-residency.js
++++ after/src/actor-render-residency.js
+@@ -26,10 +26,11 @@
+ // Render residency never owns gameplay visibility, animation clocks, collision,
+ // or CPU asset data. A turned camera can immediately upload the retained data.
+ export class ActorRenderResidency {
+-  constructor({nearDistance=1024,retainDistance=1536,viewDistance=Infinity,releaseDelay=2,scene=null,protectedRoots=[],boundsVisible=()=>true,textures=null}={}) {
++  constructor({nearDistance=1024,retainDistance=1536,viewDistance=Infinity,releaseDelay=2,scene=null,protectedRoots=[],boundsVisible=()=>true,boundsAllowed=()=>true,textures=null}={}) {
+     this.nearDistance=nearDistance;this.retainDistance=Math.max(nearDistance,retainDistance);
+     this.viewDistance=Math.max(nearDistance,viewDistance);
+     this.releaseDelay=releaseDelay;this.scene=scene;this.protectedRoots=protectedRoots;this.boundsVisible=boundsVisible;
++    this.boundsAllowed=boundsAllowed;
+     this.textures=textures;this.readyForView=true;
+     this.records=new Map();this.meshRecords=new Map();this.resources=new Map();
+     this.parking=scene?new ParkedActors():null;if(this.parking)scene.add(this.parking);
+@@ -39,7 +40,7 @@
+   }
+ 
+   register(root) {
+-    const record={root,meshes:[],resources:new Set(),bounds:new THREE.Box3(),resident:false,rendered:false,lastWanted:-Infinity,parkable:true};
++    const record={root,meshes:[],resources:new Set(),bounds:new THREE.Box3(),roomBounds:new THREE.Box3(),resident:false,rendered:false,lastWanted:-Infinity,parkable:true};
+     root.traverse(mesh=>{
+       // Unmanaged child lights/effects retain their original traversal. Their
+       // influence can extend beyond the bounds of the managed actor artwork.
+@@ -53,7 +54,7 @@
+       // Expand all axes for arms, wings and death poses before world transforms.
+       const bounds=rest.clone(),size=bounds.getSize(new THREE.Vector3());
+       bounds.expandByScalar(Math.max(16,size.length()*.35));
+-      const entry={mesh,bounds,worldBounds:new THREE.Box3(),matrix:null,layerMask:mesh.layers.mask};
++      const entry={mesh,bounds,roomBounds:rest.clone(),worldRoomBounds:new THREE.Box3(),worldBounds:new THREE.Box3(),matrix:null,layerMask:mesh.layers.mask};
+       record.meshes.push(entry);this.meshRecords.set(mesh,record);
+       record.resources.add(mesh.geometry);
+       for(const texture of texturesOf(mesh))record.resources.add(texture);
+@@ -118,20 +119,25 @@
+       let changed=record.bounds.isEmpty();
+       for(const entry of record.meshes)if(!entry.matrix||!entry.matrix.equals(entry.mesh.matrixWorld)) {
+         entry.worldBounds.copy(entry.bounds).applyMatrix4(entry.mesh.matrixWorld);
++        entry.worldRoomBounds.copy(entry.roomBounds).applyMatrix4(entry.mesh.matrixWorld);
+         (entry.matrix??=new THREE.Matrix4()).copy(entry.mesh.matrixWorld);changed=true;
+       }
+-      if(changed){record.bounds.makeEmpty();for(const entry of record.meshes)record.bounds.union(entry.worldBounds);}
++      if(changed){record.bounds.makeEmpty();record.roomBounds.makeEmpty();for(const entry of record.meshes){record.bounds.union(entry.worldBounds);record.roomBounds.union(entry.worldRoomBounds);}}
+       const visible=visibleInHierarchy(root,this.parking)&&record.meshes.some(({mesh})=>visibleInHierarchy(mesh,this.parking));
+       const distance=record.bounds.isEmpty()?Infinity:record.bounds.distanceToPoint(this.cameraPosition);
++      // Animation/frustum padding can extend through a ceiling into another
++      // floor. Room ownership uses the complete authored artwork bounds;
++      // the wider animation-safe box still controls view/PVS rejection.
++      const allowed=this.boundsAllowed(record.roomBounds);
+       // PVS rejects actors in closed-off rooms even if their bounds lie in the
+       // camera frustum. Nearby hidden actors can remain preloaded without draws.
+-      const inView=visible&&distance<=this.viewDistance&&this.frustum.intersectsBox(record.bounds)&&this.boundsVisible(record.bounds);
+-      const wanted=visible&&(distance<=this.nearDistance||inView);
++      const inView=allowed&&visible&&distance<=this.viewDistance&&this.frustum.intersectsBox(record.bounds)&&this.boundsVisible(record.bounds);
++      const wanted=allowed&&visible&&(distance<=this.nearDistance||inView);
+       if(wanted)this.textures?.request(record.resources);
+       const textureReady=!this.textures||this.textures.ready(record.resources),rendered=inView&&textureReady;
+       if(inView&&!textureReady)this.readyForView=false;
+       if(wanted)record.lastWanted=time;
+-      const resident=wanted||(record.resident&&visible&&(distance<=this.retainDistance||time-record.lastWanted<this.releaseDelay));
++      const resident=wanted||(allowed&&record.resident&&visible&&(distance<=this.retainDistance||time-record.lastWanted<this.releaseDelay));
+       const residencyChanged=record.resident!==resident;
+       record.resident=resident;record.rendered=rendered;
+       // Only direct scene-owned roots can move to the owned identity branch.
+--- before/src/actor-texture-stream.js
++++ after/src/actor-texture-stream.js
+@@ -86,7 +86,7 @@
+     const record=this.watchers.get(root);if(!record)return;
+     for(const {mesh,layerMask}of record.meshes)mesh.layers.mask=layerMask;this.watchers.delete(root);
+   }
+-  update(camera,{nearDistance=576,viewDistance=2048}={}) {
++  update(camera,{nearDistance=576,viewDistance=2048,boundsAllowed=null}={}) {
+     const time=this.clock();this.request(this.pinned,time);this.readyForView=true;
+     if(!camera||!this.watchers.size){this.trim(time);return;}
+     camera.updateWorldMatrix(true,false);this.cameraPosition.setFromMatrixPosition(camera.matrixWorld);
+@@ -95,12 +95,13 @@
+       const {root}=record;root.updateWorldMatrix(true,false);
+       this.sphere.center.setFromMatrixPosition(root.matrixWorld);this.sphere.radius=record.radius*root.matrixWorld.getMaxScaleOnAxis();
+       const distance=Math.max(0,this.sphere.center.distanceTo(this.cameraPosition)-this.sphere.radius),near=distance<=nearDistance;
+-      const inView=root.visible&&distance<=viewDistance&&this.frustum.intersectsSphere(this.sphere);
+-      if(root.visible&&(near||inView))this.request(record.resources,time);
++      const allowed=!boundsAllowed||boundsAllowed(this.sphere.center.toArray(),this.sphere.radius);
++      const inView=allowed&&root.visible&&distance<=viewDistance&&this.frustum.intersectsSphere(this.sphere);
++      if(allowed&&root.visible&&(near||inView))this.request(record.resources,time);
+       const ready=this.ready(record.resources);if(inView&&!ready)this.readyForView=false;
+       for(const entry of record.meshes) {
+         if(entry.mesh.layers.mask!==0)entry.layerMask=entry.mesh.layers.mask;
+-        entry.mesh.layers.mask=ready&&distance<=viewDistance?entry.layerMask:0;
++        entry.mesh.layers.mask=allowed&&ready&&distance<=viewDistance?entry.layerMask:0;
+       }
+     }
+     this.trim(time);
+--- before/src/world.js
++++ after/src/world.js
+@@ -415,6 +415,10 @@
+     this.actorRoots=[...this.actorInstances.values(),...Array.from(this.bossMachines.values(),machine=>machine.root)];
+     this.knightTextureSources=this.actorObjectPairs.filter(([object])=>object.enemyType==='knight').map(([,actor])=>actor);
+     this.syncModels();
++    // Saved player coordinates are restored before effects are constructed,
++    // while the final camera is restored afterward. Warm fragment cohorts in
++    // that restored room instead of using the level's old spawn neighborhood.
++    this.geometryStream?.rooms?.update(this.camera,{playerOnly:true});
+     if(this.level)this.effects=await WorldEffects.create(this,gameplay);
+     // Build exact lighting query indices during loading. A burst of new
+     // fragments must not pay that one-time cost on its first visible frame.
+@@ -422,7 +426,7 @@
+     this.collider.traceModelIndices?.(this.physicalModels,[0,0,0],[0,0,0]);
+     this.actorResidency=new ActorRenderResidency({scene:this.scene,protectedRoots:[this.redcat],
+       nearDistance:WORLD_STREAMING.preloadRadius,retainDistance:WORLD_STREAMING.retainRadius,viewDistance:WORLD_STREAMING.viewRadius,
+-      boundsVisible:box=>this.geometryStream.boundsVisible(box),textures:this.actorTextures});
++      boundsVisible:box=>this.geometryStream.boundsVisible(box),boundsAllowed:box=>this.geometryStream.roomBoundsAllowed(box),textures:this.actorTextures});
+     this.updateRenderResidency();
+   }
+   configureDestructible(object,actor) {
+@@ -1155,15 +1159,19 @@
+     if(this.actorResidency)for(const actor of this.actorInstances.values())if(this.actorResidency.isRendered(actor))actor.userData.animator?.flushGeometry?.();
+   }
+   async settleActorTextures(){
+-    this.updateRenderResidency();this.actorTextures?.update(this.camera,{nearDistance:WORLD_STREAMING.preloadRadius,viewDistance:WORLD_STREAMING.viewRadius});
++    this.updateRenderResidency();this.updateActorTextureResidency();
+     await this.actorResidency?.settle();await this.actorTextures?.settle();
+-    this.updateRenderResidency();this.actorTextures?.update(this.camera,{nearDistance:WORLD_STREAMING.preloadRadius,viewDistance:WORLD_STREAMING.viewRadius});
++    this.updateRenderResidency();this.updateActorTextureResidency();
++  }
++  updateActorTextureResidency(){
++    this.actorTextures?.update(this.camera,{nearDistance:WORLD_STREAMING.preloadRadius,viewDistance:WORLD_STREAMING.viewRadius,
++      boundsAllowed:(position,radius)=>this.geometryStream?.rooms?.sphereAllowed(position,radius)??true});
+   }
+   render(){
+     if(!this.residencyPrepared)this.updateRenderResidency();this.residencyPrepared=false;
+     // Retain the completed frame during an unexpected camera cut until the
+     // new view is ready, instead of displaying holes or untextured walls.
+-    this.actorTextures?.update(this.camera,{nearDistance:WORLD_STREAMING.preloadRadius,viewDistance:WORLD_STREAMING.viewRadius});
++    this.updateActorTextureResidency();
+     if(this.geometryStream&&!this.geometryStream.readyForView||this.actorResidency?.readyForView===false||this.actorTextures?.readyForView===false)return;
+     this.playerShadow?.update();
+     this.renderer.render(this.scene,this.camera);

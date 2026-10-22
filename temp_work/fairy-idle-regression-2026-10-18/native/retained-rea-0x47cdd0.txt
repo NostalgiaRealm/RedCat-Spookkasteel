@@ -1,0 +1,63 @@
+    esp = esp - 0x4;
+    decomp_var_4 = esi;
+    esi = ecx;
+    if (esi[0x4be8] == 0x0) {
+            decomp_var_8 = edi;
+            esi[0x4be8] = 0x1;
+            sub_47e710();
+            ecx = esi[0x3e];
+            esi[0xe4] = *ecx;
+            *(esi + 0x394) = ecx[0x1];
+            *(esi + 0x398) = ecx[0x2];
+            sub_4041b0(esi[0x12c5], decomp_var_8);
+            esp = esp - 0xc;
+            sub_4041b0(esi[0x12c6], decomp_var_8);
+            asm { fld        dword [esi+0x4b3c] };
+            esp = esp - 0x4;
+            sub_4041b0(sub_60ab20(), decomp_var_8);
+            esi[0x12d0] = 0x0;
+            esi[0x12d2] = 0x3f333333;
+            edi = *dword_6b915c;
+            if (*dword_6b915c == 0x0) {
+                    edi = sub_4bc480();
+            }
+            eax = edi[0x13a];
+            if (eax == 0x80000000) {
+                    eax = edi[0x127];
+                    if (eax == 0x0) {
+                            eax = 0x64a3b4;
+                    }
+                    eax = sub_60af10(eax);
+                    esp = (esp - 0x4) + 0x4;
+                    edi[0x13a] = eax;
+            }
+            if (eax == 0x0) {
+                    decomp_var_c = ebx;
+                    esp = esp - 0x8;
+                    decomp_var_10 = ebp;
+                    ebx = esi + 0x4b20;
+                    edi = esi + 0x4490;
+                    do {
+                            esp = esp - 0x8;
+                            sub_47ea70(ebx, 0x1);
+                            sub_47e710();
+                            edi = edi + 0x144;
+                    } while (&decomp_var_1 != 0x0);
+                    esp = esp + 0x8;
+                    if (esi[0xdd] != 0x0) {
+                            sub_502350(0x1);
+                            esp = esp - 0x8;
+                            sub_4e2d60(0x0);
+                            asm { fld        dword [edx+0x18] };
+                            asm { fmul       dword [dword_value_1058642330+104] };
+                            sub_4e3160(sub_60ab20());
+                            esp = esp - 0x8;
+                            (*(*esi[0xdd] + 0x4c))(esi[0x3e]);
+                    }
+                    esi[0x4b54] = 0x1;
+            }
+            sub_47d2f0(0x0);
+            sub_47d570(0x2);
+            esp = (esp - 0x8) + 0x4;
+    }
+    return;

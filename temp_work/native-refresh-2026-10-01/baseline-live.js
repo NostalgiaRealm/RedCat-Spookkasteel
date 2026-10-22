@@ -1,0 +1,5 @@
+(async()=>{
+ const wc=process.mainModule.require('electron').BrowserWindow.getAllWindows()[0].webContents;
+ const result=await wc.executeJavaScript(`new Promise(resolve=>{const a=window.__redcat,w=a.world,frames=[],costs=[],original=w.update;w.update=function(...args){const t=performance.now();try{return original.apply(this,args);}finally{costs.push(performance.now()-t);}};let begin,last;const tick=now=>{if(begin===undefined){begin=last=now;}else {frames.push(now-last);last=now;}if(now-begin<5000)requestAnimationFrame(tick);else {w.update=original;const q=(v,f)=>[...v].sort((a,b)=>a-b)[Math.floor((v.length-1)*f)];resolve({frames:frames.length,seconds:(now-begin)/1000,fps:frames.length*1000/(now-begin),frameMedian:q(frames,.5),frameP95:q(frames,.95),updateMedian:q(costs,.5),updateP95:q(costs,.95),mode:a.mode,level:w.id,position:w.player.position});}};requestAnimationFrame(tick);})`);
+ process.mainModule.require('node:fs').writeFileSync('/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/current_work/native-refresh-2026-10-01/baseline-live.json',JSON.stringify(result,null,2));return result;
+})()

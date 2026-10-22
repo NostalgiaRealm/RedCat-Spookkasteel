@@ -1,0 +1,88 @@
+TAP version 13
+# Subtest: enter trigger fires once, leaving runs its own command, max trigger count persists
+ok 1 - enter trigger fires once, leaving runs its own command, max trigger count persists
+  ---
+  duration_ms: 3.008418
+  type: 'test'
+  ...
+# Subtest: pickups score exactly once, health caps and blocked line of sight prevents pickup
+ok 2 - pickups score exactly once, health caps and blocked line of sight prevents pickup
+  ---
+  duration_ms: 0.700335
+  type: 'test'
+  ...
+# Subtest: snapshot restores mutable state and prevents item farming after load
+ok 3 - snapshot restores mutable state and prevents item farming after load
+  ---
+  duration_ms: 2.287384
+  type: 'test'
+  ...
+# Subtest: all crossed original event labels dispatch once before completion even on a long frame
+ok 4 - all crossed original event labels dispatch once before completion even on a long frame
+  ---
+  duration_ms: 2.100435
+  type: 'test'
+  ...
+# Subtest: callbacks can stop or replace a motion without stale later events or completion
+ok 5 - callbacks can stop or replace a motion without stale later events or completion
+  ---
+  duration_ms: 0.253008
+  type: 'test'
+  ...
+# Subtest: ping-pong repeat reflects leftover frame time, keeps endpoint events single and resumes direction
+ok 6 - ping-pong repeat reflects leftover frame time, keeps endpoint events single and resumes direction
+  ---
+  duration_ms: 0.252498
+  type: 'test'
+  ...
+# Subtest: rejected motion segments wait before emitting their event or completion and resume without repeats
+ok 7 - rejected motion segments wait before emitting their event or completion and resume without repeats
+  ---
+  duration_ms: 1.39843
+  type: 'test'
+  ...
+# Subtest: a motion event teleport supersedes the displacement already accepted before that event
+ok 8 - a motion event teleport supersedes the displacement already accepted before that event
+  ---
+  duration_ms: 4.335548
+  type: 'test'
+  ...
+# Subtest: graveyard looping motion wraps to the correct first marker within its geometric path endpoint
+ok 9 - graveyard looping motion wraps to the correct first marker within its geometric path endpoint
+  ---
+  duration_ms: 21.792032
+  type: 'test'
+  ...
+# Subtest: save/load retains pickup, script globals and partially completed puzzle state
+ok 10 - save/load retains pickup, script globals and partially completed puzzle state
+  ---
+  duration_ms: 12.573579
+  type: 'test'
+  ...
+# Subtest: restoring paused motions stops current playback and does not replay an emitted event marker
+ok 11 - restoring paused motions stops current playback and does not replay an emitted event marker
+  ---
+  duration_ms: 13.941659
+  type: 'test'
+  ...
+# Subtest: an inactive controller sharing a brush cannot overwrite an opening crypt door
+ok 12 - an inactive controller sharing a brush cannot overwrite an opening crypt door
+  ---
+  duration_ms: 27.78766
+  type: 'test'
+  ...
+# Subtest: touching an initially paused cave platform starts its original motion handler
+ok 13 - touching an initially paused cave platform starts its original motion handler
+  ---
+  duration_ms: 50.231467
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 265.375131

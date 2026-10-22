@@ -1,0 +1,46 @@
+✔ restores music layers, native fade phase and remembered tracks without changing scheduling (2.651383ms)
+✔ restores overlapping pickup tails, keyed effects and delayed replay countdown without rerandomizing (1.072843ms)
+✔ restored dialogue keeps active offset and FIFO; reconstruction and stale callbacks never duplicate lines (0.651056ms)
+✔ metadata-delayed seeks never play an introduction and respect pause/reset while pending (0.434207ms)
+✔ legacy/cross-level states leave reconstructed playback untouched; malformed entries are bounded (1.066063ms)
+✔ decoded WAV voices restore offsets across decode, pause and cancellation without stale playback (3.770875ms)
+✔ matching reconstructed moving emitter binding survives playback restoration (0.253039ms)
+✔ dialogue FIFO preserves every WAV through delayed loading, pause, expiry and final completion (1.63855ms)
+✔ pause covers every playing channel and pending sound, preserving delayed-loop countdowns (0.379318ms)
+✔ explicit dialogue skip and reset remove queued tails; playback errors cannot stall a sequence (0.413947ms)
+✔ all 31 authored fairy locations activate exactly their own Davi binding and stop their idle on deactivation (113.698156ms)
+✔ native cutscene finish waits for the actual voice end and keeps its fairy present; skip stays immediate (27.182275ms)
+✔ a second fairy encounter replaces the first and legacy saves keep only the fairy at the saved player (12.930497ms)
+✔ pickup router selects complete native S/M/L recordings and overlapping pickups keep separate tails (0.487537ms)
+✔ BIG BENG charge sound follows its native hold, pause and release lifetime (0.404698ms)
+✔ level-transition pickup guard waits for every ending, freezes with pause, and clears on failure or reset (0.263589ms)
+✔ native fade ramps control volume at constant rate and clamps overshoot (1.101793ms)
+✔ reversing a partly faded track uses the same native rate (0.136089ms)
+✔ saved fade progress produces the same remaining envelope (0.146979ms)
+✔ music fade is converted with native control gain, not final amplitude (0.359258ms)
+✔ each level selects its complete original background WAV as an indefinite loop (84.088188ms)
+✔ returning after combat has faded out restores the background playhead before playback begins (0.504427ms)
+✔ returning during a crossfade reverses the existing layer without duplicate music or a position reset (0.422297ms)
+✔ pause freezes both music layers, positions and crossfade clocks then resumes from the same positions (0.674195ms)
+✔ explicit music stop and level reset discard remembered positions and all fading layers (0.380088ms)
+✔ fallback EOF events repeat complete tracks indefinitely without a replay delay or early restart (0.202129ms)
+✔ an EOF delivered while paused remains silent until resume and restarts at the beginning (0.131489ms)
+✔ selecting the same filename preserves playback while updating authored volume and owner (0.148259ms)
+✔ a track stopped exactly at EOF resumes at zero instead of trying to seek past its duration (0.175329ms)
+✔ Web Audio loops the full decoded sample range repeatedly without media seeking or a new source (4.475481ms)
+✔ buffered music preserves its sample offset across combat and pause with no introduction replay (0.676366ms)
+✔ reset during a pending music decode cannot resurrect the released source or refill its cache (0.510456ms)
+✔ music decoded while paused remains silent and starts exactly once when resumed (0.429118ms)
+✔ music retains at most two decoded tracks independently of the eight short-effect buffers (0.945844ms)
+✔ large money bags share decoded PCM but retain independent complete pickup voices (3.744336ms)
+✔ buffered pickup pause/resume preserves sample position and reset cancels outstanding loads (1.262372ms)
+✔ pickup decode failure releases the transition guard and allows retry (0.790785ms)
+✔ without Web Audio pickups retain media fallback; ordinary effects and dialogue keep their existing path (0.398637ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 243.332229

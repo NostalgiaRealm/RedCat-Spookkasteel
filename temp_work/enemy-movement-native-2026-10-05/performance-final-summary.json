@@ -1,0 +1,216 @@
+{
+  "status": "All original focused-performance assertions and both supplemental authored-contact assertions passed; no browser page errors.",
+  "timingUnit": "milliseconds of CPU-side synchronous world.update plus audio.update; render submission measured separately",
+  "timingCaveat": "Parent reported a 2.5-second unit test concurrent with part of the final capture. Exact affected frames cannot be identified because absolute per-frame timestamps were not instrumented. Every sample and tail is retained; no outlier was removed.",
+  "scenes": [
+    {
+      "scene": "approach",
+      "baseline": {
+        "frames": 18,
+        "median": 6.599999999627471,
+        "p95": 22.5,
+        "p99": 22.5,
+        "max": 22.5,
+        "maxFrameTraces": 52
+      },
+      "final": {
+        "frames": 18,
+        "median": 7.099999999627471,
+        "p95": 25.09999999962747,
+        "p99": 25.09999999962747,
+        "max": 25.09999999962747,
+        "maxFrameTraces": 44
+      },
+      "baselinePursuitTraces": 0,
+      "finalPursuitTraces": 0,
+      "baselineSearchTraces": 0,
+      "finalSearchTraces": 0,
+      "zombiePositionsIdentical": true
+    },
+    {
+      "scene": "activation",
+      "baseline": {
+        "frames": 300,
+        "median": 6.200000001117587,
+        "p95": 7.700000001117587,
+        "p99": 10.5,
+        "max": 12.800000000745058,
+        "maxFrameTraces": 86
+      },
+      "final": {
+        "frames": 300,
+        "median": 6.400000000372529,
+        "p95": 8.099999999627471,
+        "p99": 9.099999999627471,
+        "max": 13.200000001117587,
+        "maxFrameTraces": 81
+      },
+      "baselinePursuitTraces": 0,
+      "finalPursuitTraces": 0,
+      "baselineSearchTraces": 0,
+      "finalSearchTraces": 0,
+      "zombiePositionsIdentical": false
+    },
+    {
+      "scene": "chase0",
+      "baseline": {
+        "frames": 360,
+        "median": 6.099999999627471,
+        "p95": 7.5,
+        "p99": 9.599999999627471,
+        "max": 11,
+        "maxFrameTraces": 71
+      },
+      "final": {
+        "frames": 360,
+        "median": 6,
+        "p95": 7.200000001117587,
+        "p99": 8.199999999254942,
+        "max": 10.100000001490116,
+        "maxFrameTraces": 58
+      },
+      "baselinePursuitTraces": 0,
+      "finalPursuitTraces": 0,
+      "baselineSearchTraces": 0,
+      "finalSearchTraces": 0,
+      "zombiePositionsIdentical": false
+    },
+    {
+      "scene": "blocked-chase",
+      "baseline": {
+        "frames": 360,
+        "median": 6.400000000372529,
+        "p95": 8,
+        "p99": 10,
+        "max": 11.799999998882413,
+        "maxFrameTraces": 86
+      },
+      "final": {
+        "frames": 360,
+        "median": 6.300000000745058,
+        "p95": 8.400000000372529,
+        "p99": 9.199999999254942,
+        "max": 9.5,
+        "maxFrameTraces": 71
+      },
+      "baselinePursuitTraces": 17,
+      "finalPursuitTraces": 17,
+      "baselineSearchTraces": 16,
+      "finalSearchTraces": 16,
+      "zombiePositionsIdentical": false
+    },
+    {
+      "scene": "original-castle-blocked-green-bat",
+      "baseline": {
+        "frames": 600,
+        "median": 4.400000000372529,
+        "p95": 5.200000001117587,
+        "p99": 6.400000000372529,
+        "max": 7.5,
+        "maxFrameTraces": 23,
+        "maxEnemyTraces": 13,
+        "min3dTargetDistance": 20.812629158481656,
+        "final3dTargetDistance": 37.11929753012729,
+        "final": [
+          1033.473346549981,
+          313.6600842239572,
+          -844.5602908083848
+        ]
+      },
+      "final": {
+        "frames": 600,
+        "median": 4.599999999627471,
+        "p95": 5.599999999627471,
+        "p99": 6.800000000745058,
+        "max": 9.300000000745058,
+        "maxFrameTraces": 15,
+        "maxEnemyTraces": 3,
+        "min3dTargetDistance": 135.52357242206094,
+        "final3dTargetDistance": 144.382141650103,
+        "final": [
+          1098,
+          324,
+          -713
+        ]
+      }
+    }
+  ],
+  "authoredGroundedContact": {
+    "frames": 600,
+    "median": 4.099999999627471,
+    "p95": 5,
+    "p99": 6,
+    "max": 13.599999999627471,
+    "maxFrameTraces": 19,
+    "maxEnemyTraces": 6,
+    "maxFrameSearchTraces": 0,
+    "minDistance": 35.06371865804403,
+    "overlapFrames": [],
+    "worldSolidFrames": [],
+    "resourceBefore": {
+      "sounds": 11,
+      "resources": 1040,
+      "actors": 291,
+      "projectiles": 0,
+      "sceneChildren": 966,
+      "programs": 0,
+      "particles": 77,
+      "destructibleParticles": 0,
+      "pursuitJobs": 0
+    },
+    "resourceAfter": {
+      "sounds": 13,
+      "resources": 1048,
+      "actors": 291,
+      "projectiles": 0,
+      "sceneChildren": 966,
+      "programs": 9,
+      "particles": 1386,
+      "destructibleParticles": 0,
+      "pursuitJobs": 0
+    },
+    "resourcePeak": {
+      "sounds": 13,
+      "resources": 1048,
+      "actors": 291,
+      "projectiles": 0,
+      "sceneChildren": 966,
+      "programs": 9,
+      "particles": 1404,
+      "destructibleParticles": 0,
+      "pursuitJobs": 0
+    },
+    "errors": [],
+    "contactAttacks": 5,
+    "firstAttackTime": 5.483333333333319,
+    "damageEvents": 5,
+    "firstDamage": {
+      "type": "damage",
+      "amount": 1,
+      "source": "MovingEnemy16",
+      "health": 99,
+      "time": 5.483333333333319,
+      "batPosition": [
+        1162.2745420122196,
+        340.6282862552225,
+        -708.8762061202208
+      ],
+      "player": [
+        1144,
+        312.05,
+        -700
+      ]
+    },
+    "lastPlayer": [
+      1144,
+      312.05,
+      -700
+    ],
+    "maxPlayerDisplacement": 0.0
+  },
+  "offRouteGeometry": {
+    "nearestAuthoredSegmentDistance": 135.52120129081857,
+    "finalObservedDistance": 135.52357242206094,
+    "interpretation": "Original blocked target lies outside authored bat edge network. Final waypoint-constrained flight no longer directly homes to this off-route player; this is a behavioral fidelity change, not an equivalent-behavior speedup."
+  }
+}

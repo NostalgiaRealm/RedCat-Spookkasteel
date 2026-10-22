@@ -1,0 +1,1584 @@
+{
+  "passed": true,
+  "state": [
+    {
+      "id": "knight2",
+      "actor": "knight2",
+      "role": "unused",
+      "pairIndex": 0,
+      "position": [
+        -775,
+        1.0932017326355015,
+        -100
+      ],
+      "min": [
+        -782.0026540756226,
+        0.10000000000000009,
+        -111.83616733551025
+      ],
+      "max": [
+        -765.2924966812134,
+        58.44304761886597,
+        -84.96779060363768
+      ],
+      "clip": null,
+      "parts": [
+        {
+          "name": "knight2",
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1,
+          "clips": [],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "knight3",
+      "actor": "knight3",
+      "role": "unused",
+      "pairIndex": 1,
+      "position": [
+        -325,
+        1.235651111602788,
+        -100
+      ],
+      "min": [
+        -332.48061656951904,
+        0.10000000000000009,
+        -108.43335056304932
+      ],
+      "max": [
+        -316.4523506164551,
+        58.20614061355591,
+        -79.3417625427246
+      ],
+      "clip": null,
+      "parts": [
+        {
+          "name": "knight3",
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1,
+          "clips": [],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "k_active",
+      "actor": "k_active",
+      "role": "unused",
+      "pairIndex": 2,
+      "position": [
+        125,
+        -0.09594955444334527,
+        -100
+      ],
+      "min": [
+        110.25109577178955,
+        0.1,
+        -115.59870052337646
+      ],
+      "max": [
+        134.96826076507568,
+        41.06577072143556,
+        -36.54368591308593
+      ],
+      "clip": null,
+      "parts": [
+        {
+          "name": "k_active",
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1,
+          "clips": [],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "spider",
+      "actor": "spider",
+      "role": "unused",
+      "pairIndex": 3,
+      "position": [
+        575,
+        -0.5520394682884192,
+        -100
+      ],
+      "min": [
+        558.7466487884521,
+        0.09999999999999998,
+        -118.80170631408691
+      ],
+      "max": [
+        591.2532730102539,
+        13.880904829502112,
+        -88.81881809234619
+      ],
+      "clip": "Shoot",
+      "parts": [
+        {
+          "name": "spider",
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1,
+          "clips": [
+            "Death",
+            "Shoot"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bat",
+      "actor": "bat",
+      "role": "unused",
+      "pairIndex": 4,
+      "position": [
+        -775,
+        64.90484676361085,
+        -600
+      ],
+      "min": [
+        -809.7033185958862,
+        65.10000000000001,
+        -608.5780019760132
+      ],
+      "max": [
+        -740.2966785430908,
+        125.27148113250733,
+        -588.7884478569031
+      ],
+      "clip": null,
+      "parts": [
+        {
+          "name": "bat",
+          "scale": [
+            3,
+            3,
+            3
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 3,
+          "clips": [],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "batfly",
+      "actor": "batfly",
+      "role": "unused",
+      "pairIndex": 5,
+      "position": [
+        -325,
+        65.09728083756055,
+        -600
+      ],
+      "min": [
+        -338.7959015369415,
+        65.10000000000001,
+        -613.4156465530396
+      ],
+      "max": [
+        -308.44508171081543,
+        109.80500350143994,
+        -579.1478800773621
+      ],
+      "clip": "fly",
+      "parts": [
+        {
+          "name": "batfly",
+          "scale": [
+            2.5,
+            2.5,
+            2.5
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 2.5,
+          "clips": [
+            "fly"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "maxtest1",
+      "actor": "maxtest1",
+      "role": "unused",
+      "pairIndex": 6,
+      "position": [
+        125,
+        0.3289513796567973,
+        -600
+      ],
+      "min": [
+        115.33642196655273,
+        0.10000000000000003,
+        -603.3617653846741
+      ],
+      "max": [
+        133.31397438049316,
+        29.77691127955914,
+        -574.7492866516113
+      ],
+      "clip": "test",
+      "parts": [
+        {
+          "name": "maxtest1",
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1,
+          "clips": [
+            "test"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fep_test5",
+      "actor": "fep_test5",
+      "role": "unused",
+      "pairIndex": 7,
+      "position": [
+        575,
+        4.126840114593511,
+        -600
+      ],
+      "min": [
+        539.6045852661133,
+        0.09999999999999964,
+        -634.0175987243653
+      ],
+      "max": [
+        619.0324768066406,
+        121.66490011215211,
+        -573.7232429504394
+      ],
+      "clip": "test",
+      "parts": [
+        {
+          "name": "fep_test5",
+          "scale": [
+            1.9,
+            1.9,
+            1.9
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1.9,
+          "clips": [
+            "test"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "brutus",
+      "actor": "brutus",
+      "role": "unused",
+      "pairIndex": 8,
+      "position": [
+        -775,
+        0.19475482255220805,
+        -1100
+      ],
+      "min": [
+        -792.7231349945068,
+        0.1,
+        -1118.0044250488281
+      ],
+      "max": [
+        -755.7337474822998,
+        55.701239807903775,
+        -1082.387107849121
+      ],
+      "clip": "shoot1",
+      "parts": [
+        {
+          "name": "brutus",
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1,
+          "clips": [
+            "shoot1"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "redcat2",
+      "actor": "redcat2",
+      "role": "unused",
+      "pairIndex": 9,
+      "position": [
+        -325,
+        0.16150801852345725,
+        -1100
+      ],
+      "min": [
+        -336.0220556259155,
+        0.1,
+        -1111.6222953796387
+      ],
+      "max": [
+        -313.9277992248535,
+        39.08850615695119,
+        -1088.3382053375244
+      ],
+      "clip": "idle",
+      "parts": [
+        {
+          "name": "redcat2",
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1,
+          "clips": [
+            "fall2",
+            "fall1",
+            "strafer",
+            "strafel",
+            "jump2",
+            "jump1",
+            "re-spawn",
+            "shoot3",
+            "shoot2",
+            "shoot1",
+            "charge",
+            "death",
+            "hit",
+            "walkbw",
+            "walkfw",
+            "idle"
+          ],
+          "textures": [
+            {
+              "width": 256,
+              "height": 256
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "whizztest8",
+      "actor": "whizztest8",
+      "role": "unused",
+      "pairIndex": 10,
+      "position": [
+        125,
+        0.05471740514040253,
+        -1100
+      ],
+      "min": [
+        112.43021202087402,
+        0.1,
+        -1111.5507564544678
+      ],
+      "max": [
+        137.64161682128906,
+        38.6991380289197,
+        -1088.3382244110107
+      ],
+      "clip": "idle",
+      "parts": [
+        {
+          "name": "whizztest8",
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1,
+          "clips": [
+            "idle"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tstwitch",
+      "actor": "tstwitch",
+      "role": "unused",
+      "pairIndex": 11,
+      "position": [
+        575,
+        0.06480442211032181,
+        -1100
+      ],
+      "min": [
+        551.0391864776611,
+        0.1,
+        -1130.9855213165283
+      ],
+      "max": [
+        598.8749942779541,
+        50.48106800243259,
+        -1087.959979057312
+      ],
+      "clip": null,
+      "parts": [
+        {
+          "name": "tstwitch",
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            0,
+            0,
+            0
+          ],
+          "nativeScale": 1,
+          "clips": [],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mxmach",
+      "actor": "mxmach",
+      "role": "unused",
+      "pairIndex": 12,
+      "position": [
+        -775,
+        -0.2462466597556975,
+        -1600
+      ],
+      "min": [
+        -822.1086616516113,
+        0.1,
+        -1639.3721618652344
+      ],
+      "max": [
+        -730.7999038696289,
+        78.902602827549,
+        -1558.1839714050293
+      ],
+      "clip": "shoot",
+      "parts": [
+        {
+          "name": "mxmach",
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1,
+          "clips": [
+            "shoot"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "knight2--used",
+      "actor": "knight",
+      "role": "used",
+      "pairIndex": 0,
+      "position": [
+        -575,
+        2.5497050523758022,
+        -100
+      ],
+      "min": [
+        -588.4650360107422,
+        0.10000000000000009,
+        -115.18000183105468
+      ],
+      "max": [
+        -559.0136548995972,
+        104.69103271961212,
+        -62.81528244018553
+      ],
+      "clip": "idle",
+      "parts": [
+        {
+          "name": "knight",
+          "scale": [
+            1.8,
+            1.8,
+            1.8
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1.8,
+          "clips": [
+            "hit",
+            "shoot1",
+            "idle",
+            "start"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "knight3--used",
+      "actor": "knight",
+      "role": "used",
+      "pairIndex": 1,
+      "position": [
+        -125,
+        2.5497050523758022,
+        -100
+      ],
+      "min": [
+        -138.46503601074218,
+        0.10000000000000009,
+        -115.18000183105468
+      ],
+      "max": [
+        -109.01365489959717,
+        104.69103271961212,
+        -62.81528244018553
+      ],
+      "clip": "idle",
+      "parts": [
+        {
+          "name": "knight",
+          "scale": [
+            1.8,
+            1.8,
+            1.8
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1.8,
+          "clips": [
+            "hit",
+            "shoot1",
+            "idle",
+            "start"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "k_active--used",
+      "actor": "knight",
+      "role": "used",
+      "pairIndex": 2,
+      "position": [
+        325,
+        2.5497050523758022,
+        -100
+      ],
+      "min": [
+        311.5349639892578,
+        0.10000000000000009,
+        -115.18000183105468
+      ],
+      "max": [
+        340.98634510040284,
+        104.69103271961212,
+        -62.81528244018553
+      ],
+      "clip": "idle",
+      "parts": [
+        {
+          "name": "knight",
+          "scale": [
+            1.8,
+            1.8,
+            1.8
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1.8,
+          "clips": [
+            "hit",
+            "shoot1",
+            "idle",
+            "start"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "spider--used",
+      "actor": "spiderg",
+      "role": "used",
+      "pairIndex": 3,
+      "position": [
+        775,
+        0.7483743786811861,
+        -100
+      ],
+      "min": [
+        758.3943138122559,
+        0.09999999999999998,
+        -118.80172348022461
+      ],
+      "max": [
+        791.2532844543457,
+        14.894583141803748,
+        -85.54093647003174
+      ],
+      "clip": "idle",
+      "parts": [
+        {
+          "name": "spiderg",
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1,
+          "clips": [
+            "walkfw",
+            "shoot1",
+            "idle",
+            "hit",
+            "death"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bat--used",
+      "actor": "batg",
+      "role": "used",
+      "pairIndex": 4,
+      "position": [
+        -575,
+        52.89108667373658,
+        -600
+      ],
+      "min": [
+        -590.9658212661743,
+        65.10000000000001,
+        -613.7464070320129
+      ],
+      "max": [
+        -559.1760070800781,
+        80.974134349823,
+        -575.4626077651977
+      ],
+      "clip": "idle2",
+      "parts": [
+        {
+          "name": "batg",
+          "scale": [
+            1.8,
+            1.8,
+            1.8
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1.8,
+          "clips": [
+            "walkfw",
+            "start",
+            "shoot1",
+            "idle2",
+            "idle1",
+            "hit",
+            "death"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "batfly--used",
+      "actor": "batg",
+      "role": "used",
+      "pairIndex": 5,
+      "position": [
+        -125,
+        52.89108667373658,
+        -600
+      ],
+      "min": [
+        -140.96582126617432,
+        65.10000000000001,
+        -613.7464070320129
+      ],
+      "max": [
+        -109.17600708007812,
+        80.974134349823,
+        -575.4626077651977
+      ],
+      "clip": "idle2",
+      "parts": [
+        {
+          "name": "batg",
+          "scale": [
+            1.8,
+            1.8,
+            1.8
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1.8,
+          "clips": [
+            "walkfw",
+            "start",
+            "shoot1",
+            "idle2",
+            "idle1",
+            "hit",
+            "death"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "maxtest1--used",
+      "actor": "maxj",
+      "role": "used",
+      "pairIndex": 6,
+      "position": [
+        325,
+        0.342750820517543,
+        -600
+      ],
+      "min": [
+        312.1130949020386,
+        0.1,
+        -613.8764778137207
+      ],
+      "max": [
+        336.94362182617186,
+        51.761262783408164,
+        -586.1927320480347
+      ],
+      "clip": "idle",
+      "parts": [
+        {
+          "name": "maxj",
+          "scale": [
+            1.4,
+            1.4,
+            1.4
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1.4,
+          "clips": [
+            "walkfw",
+            "teleport",
+            "shoot1",
+            "idle",
+            "hit",
+            "death"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fep_test5--used",
+      "actor": "plant",
+      "role": "used",
+      "pairIndex": 7,
+      "position": [
+        775,
+        0.5582496777176975,
+        -600
+      ],
+      "min": [
+        704.1314002990723,
+        0.10000000000000003,
+        -617.9559636116028
+      ],
+      "max": [
+        848.0938430786133,
+        115.2248558178544,
+        -546.7385375976562
+      ],
+      "clip": "idle3",
+      "parts": [
+        {
+          "name": "plant",
+          "scale": [
+            1.9,
+            1.9,
+            1.9
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1.9,
+          "clips": [
+            "idle3",
+            "idle2",
+            "idle1",
+            "idle0",
+            "hit",
+            "death",
+            "shoot1"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "brutus--used",
+      "actor": "brutusm",
+      "role": "used",
+      "pairIndex": 8,
+      "position": [
+        -575,
+        0.551572887599473,
+        -1100
+      ],
+      "min": [
+        -612.1171510696411,
+        0.10000000000000003,
+        -1129.2523686408997
+      ],
+      "max": [
+        -537.7885830879211,
+        91.03259438723326,
+        -1078.8378832817077
+      ],
+      "clip": "idle",
+      "parts": [
+        {
+          "name": "brutusm",
+          "scale": [
+            1.65,
+            1.65,
+            1.65
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1.65,
+          "clips": [
+            "walkfw",
+            "shoot1",
+            "idle",
+            "hit",
+            "death"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "redcat2--used",
+      "actor": "redcat",
+      "role": "used",
+      "pairIndex": 9,
+      "position": [
+        -125,
+        0.22385352849960666,
+        -1100
+      ],
+      "min": [
+        -139.32867975234984,
+        0.1,
+        -1115.1222496032715
+      ],
+      "max": [
+        -110.60615386962891,
+        50.828946149349214,
+        -1084.8396508216858
+      ],
+      "clip": "idle",
+      "parts": [
+        {
+          "name": "redcat",
+          "scale": [
+            1.3,
+            1.3,
+            1.3
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1.3,
+          "clips": [
+            "walkbwl",
+            "walkbwr",
+            "fall2",
+            "fall1",
+            "strafer",
+            "strafel",
+            "jump2",
+            "jump1",
+            "re-spawn",
+            "shoot1",
+            "charge",
+            "death",
+            "hit",
+            "walkbw",
+            "walkfw",
+            "idle"
+          ],
+          "textures": [
+            {
+              "width": 256,
+              "height": 256
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "whizztest8--used",
+      "actor": "wkkooi",
+      "role": "used",
+      "pairIndex": 10,
+      "position": [
+        325,
+        7.551052021980295,
+        -1100
+      ],
+      "min": [
+        280.8602372169495,
+        0.09999999999999964,
+        -1142.1558385848998
+      ],
+      "max": [
+        368.50862369537356,
+        122.63282845020296,
+        -1055.6898308753966
+      ],
+      "clip": "idle",
+      "parts": [
+        {
+          "name": "wkkooi",
+          "scale": [
+            1.55,
+            1.55,
+            1.55
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1.55,
+          "clips": [
+            "idle"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            },
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tstwitch--used",
+      "actor": "witch",
+      "role": "used",
+      "pairIndex": 11,
+      "position": [
+        775,
+        8.133344364166275,
+        -1100
+      ],
+      "min": [
+        746.204386138916,
+        0.09999999999999964,
+        -1157.3833282470703
+      ],
+      "max": [
+        802.8668720245362,
+        102.0078793525696,
+        -1024.5046585083007
+      ],
+      "clip": "idle",
+      "parts": [
+        {
+          "name": "witch",
+          "scale": [
+            1.9,
+            1.9,
+            1.9
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1.9,
+          "clips": [
+            "death",
+            "start",
+            "shoot1",
+            "hit",
+            "walkfw",
+            "idle"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            },
+            {
+              "width": 32,
+              "height": 32
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mxmach--used",
+      "actor": "max-turret",
+      "role": "used",
+      "pairIndex": 12,
+      "position": [
+        -575,
+        0.13374140560628142,
+        -1600
+      ],
+      "min": [
+        -640.9521263122558,
+        0.1,
+        -1655.121026611328
+      ],
+      "max": [
+        -513.1198654174805,
+        110.25284388363363,
+        -1531.764852142334
+      ],
+      "clip": "turtop / litopen",
+      "parts": [
+        {
+          "name": "turbot",
+          "scale": [
+            1.4,
+            1.4,
+            1.4
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            0,
+            0,
+            0
+          ],
+          "nativeScale": 1,
+          "clips": [],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        },
+        {
+          "name": "turtop",
+          "scale": [
+            1.4,
+            1.4,
+            1.4
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            0,
+            0,
+            0
+          ],
+          "nativeScale": 1,
+          "clips": [
+            "still",
+            "shoot1",
+            "litopen",
+            "litclose"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        },
+        {
+          "name": "brcrate",
+          "scale": [
+            0.84,
+            0.84,
+            2.38
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1,
+          "clips": [],
+          "textures": [
+            {
+              "width": 64,
+              "height": 64
+            }
+          ]
+        },
+        {
+          "name": "maxd",
+          "scale": [
+            1.4,
+            1.4,
+            1.4
+          ],
+          "rotation": [
+            -1.5707963267948966,
+            0,
+            0
+          ],
+          "initialRotation": [
+            -90,
+            0,
+            0
+          ],
+          "nativeScale": 1.4,
+          "clips": [
+            "death",
+            "hit",
+            "idle"
+          ],
+          "textures": [
+            {
+              "width": 128,
+              "height": 128
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "animationChecks": [
+    {
+      "name": "knight",
+      "changes": 4
+    },
+    {
+      "name": "knight",
+      "changes": 4
+    },
+    {
+      "name": "knight",
+      "changes": 4
+    },
+    {
+      "name": "spiderg",
+      "changes": 5
+    },
+    {
+      "name": "batg",
+      "changes": 7
+    },
+    {
+      "name": "batg",
+      "changes": 7
+    },
+    {
+      "name": "maxj",
+      "changes": 6
+    },
+    {
+      "name": "plant",
+      "changes": 7
+    },
+    {
+      "name": "brutusm",
+      "changes": 5
+    },
+    {
+      "name": "redcat",
+      "changes": 16
+    },
+    {
+      "name": "wkkooi",
+      "changes": 1
+    },
+    {
+      "name": "witch",
+      "changes": 6
+    },
+    {
+      "name": "turtop",
+      "changes": 3
+    },
+    {
+      "name": "maxd",
+      "changes": 3
+    }
+  ],
+  "checks": [
+    "13 unused/used adjacent pairs",
+    "original counterpart sizes and textures",
+    "whole turret grounded and upright",
+    "native animations deform correctly",
+    "used model and clip selection",
+    "reset with 26 exhibits",
+    "V camera toggle",
+    "13 pair screenshots"
+  ]
+}

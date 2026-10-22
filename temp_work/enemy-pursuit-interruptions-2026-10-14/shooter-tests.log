@@ -1,0 +1,18 @@
+✔ ordinary closer selects before strict range completion and preserves its selected mid-edge target (1.013604ms)
+✔ a no-destination closer enters shoot outside attack range instead of inventing another endpoint (0.133859ms)
+✔ whole salvo remains committed and inter-shot wait begins only after complete shoot motion (0.273288ms)
+✔ after-salvo chance chooses another closer without an unconditional extra wait or memory gate (0.145629ms)
+✔ a completed parent wait shoots at inclusive attack range and otherwise re-enters closer (0.168149ms)
+✔ skeleton shoots first, retreats after the completed salvo, and stops only beyond attack range (0.178719ms)
+✔ skeleton retreat failure shoots immediately; expired memory ends its completed child first (0.169479ms)
+✔ safe waypoint reacquisition forwards its explicit destination and native edges bypass search (0.490487ms)
+✔ phase state remains plain save data and wait deadlines can be shifted across a freeze (0.225179ms)
+✔ bosses and non-ranged touch variants retain separate states, and missing paths retain the portable fallback (0.238289ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 68.694252

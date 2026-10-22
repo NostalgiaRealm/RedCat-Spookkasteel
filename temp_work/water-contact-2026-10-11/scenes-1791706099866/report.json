@@ -1,0 +1,59 @@
+{
+  "cases": [
+    {
+      "name": "water-jump-and-landing",
+      "events": [
+        {
+          "type": "jump",
+          "position": [
+            -1810,
+            -164.95,
+            1250
+          ],
+          "kind": "normal"
+        },
+        {
+          "type": "land",
+          "position": [
+            -1810,
+            -164.95,
+            1250
+          ],
+          "impactSpeed": 262.0077520544466
+        }
+      ],
+      "sounds": [
+        {
+          "name": "rcwalk1.wav",
+          "key": "player:jump",
+          "group": null,
+          "gain": 1
+        },
+        {
+          "name": "rcwalk1.wav",
+          "key": null,
+          "group": "player:land",
+          "gain": 0.5077822185373191
+        }
+      ],
+      "position": [
+        -1810,
+        -164.95,
+        1250
+      ],
+      "grounded": true,
+      "decoded": [
+        {
+          "duration": 0.079456,
+          "volume": 0.6
+        },
+        {
+          "duration": 0.079456,
+          "volume": 0.19466691248555004
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "badResponses": []
+}

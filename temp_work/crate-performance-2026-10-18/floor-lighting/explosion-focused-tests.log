@@ -1,0 +1,35 @@
+✔ destruction centre and bounds reuse a single posed box for an unchanged simple actor (2.574245ms)
+✔ destruction bounds retain live geometry after moved root (0.461597ms)
+✔ destruction bounds retain live geometry after changed child pose (0.377538ms)
+✔ destruction bounds retain live geometry after changed geometry bound (0.280659ms)
+✔ destruction bounds retain live geometry after added compound child (0.305999ms)
+✔ destroying a rotated and scaled prop passes its rendered world bounds to fragment spawning (4.011006ms)
+✔ damage and rendering share one exact seeded cohort without adding save fields (2.712773ms)
+✔ mutable diagnostic callers invalidate every blast spawn input without changing public factory behavior (1.889898ms)
+✔ authored crate damage rates/radii use the native percentages and the visual blast births (15.797413ms)
+✔ nearby RedCat receives whole frame doses through the inclusive first-activation deadline (3.457099ms)
+✔ RedCat range and LOS use his native eye-height movement origin (0.419428ms)
+✔ moving out of range stops damage while moving into an expired blast never damages (0.320058ms)
+✔ enemy falloff uses the nearest posed box edge and tries native centre-relative corner rays (0.316838ms)
+✔ exploding crates kill nearby enemies, preserve distant enemies, and award defeat once (1.555651ms)
+✔ hurt cells damage smoke-only crates and chain destructible actors without projectile OnHit hooks (1.005873ms)
+✔ hidden and inactive targets stay protected, and brush OnHit callbacks do not receive splash (0.392898ms)
+✔ player death fires once; noclip immunity and cutscene protection remain intact (0.824445ms)
+✔ saving mid-blast resumes only remaining damage and respawn clears pending damage (3.386079ms)
+✔ a synchronous respawn during blast damage discards the old cell iteration immediately (0.327818ms)
+✔ delayed blasts arm on the first eligible frame and do not clip that frame or the inclusive end (0.309488ms)
+✔ the first frame beyond expiry does not receive a clipped remainder (0.275798ms)
+✔ pending saves preserve first activation, old saves retain their original expiry, and bad clocks are rejected (0.284418ms)
+✔ world explosion targets expose rendered bounds for rotated, scaled moving actors (1.733889ms)
+✔ blasts follow the native longest-axis layout and are staggered rather than simultaneous (1.869318ms)
+✔ each blast emits a finite native smoke cohort with authored sizes, upward velocity and lifetimes (0.232068ms)
+✔ smoke motion, opacity and size use each puff lifetime without per-frame emission or allocation (0.238109ms)
+✔ renderer retains original flash clocks, supports smoke-only/green clouds and releases cohorts (1.591411ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 135.275702

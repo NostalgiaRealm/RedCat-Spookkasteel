@@ -1,0 +1,32 @@
+✔ small initial effect storage grows without changing live Float32 data or geometry ownership (3.041282ms)
+✔ effect batches keep their original maximums, custom limits, material states and culling (2.580645ms)
+✔ idle effect buffers release once after ten seconds, shrink, then resume in the same flush (0.662426ms)
+✔ empty or frustum-rejected billboard submissions never grow storage (1.036024ms)
+✔ beam bounds reject only complete quads outside each frustum plane and retain crossing vertices (0.644007ms)
+✔ accepted broad beam, ribbon and Gargoyle quads retain every coordinate, UV and vertex color (0.810946ms)
+✔ smoke/flame saves retain every live slot, fractional tick, timers, colour and future births (21.556625ms)
+✔ every shipped spout supports bounded save state including expired flash tails (89.739769ms)
+✔ invalid save pools, nonfinite numbers and duplicate emitter ids are rejected (0.508257ms)
+✔ world renderer hooks preserve saved smoke immediately without warm-up or catch-up (6.126484ms)
+✔ knight fragments restore actual positions, spin, contact history and fade without retracing history (6.717851ms)
+✔ legacy knight saves still replay once and malformed snapshots never create unbounded fragments (2.638454ms)
+✔ empty inactive or completed spouts preserve every native timer, slot and save field (1712.62234ms)
+✔ whole-cloud culling leaves moving, paused, disabled and returning spout draws identical (87.97745ms)
+✔ cloud bounds keep large tails and native-spout half-unit quads at every frustum plane (3.022773ms)
+✔ fully enclosed clouds skip repeated sphere checks; unusual diagnostic sizes retain original data (0.697766ms)
+✔ native deferred birth timers, triple launch speed and semi-implicit gravity (2.014109ms)
+✔ alpha has its own delayed integer fade and size uses lifetime, independent of image resolution (0.608187ms)
+✔ 15 reusable templates cap long-lived smoke, and first free slot reuses its launch and offset (3.960196ms)
+✔ cone tangents retain native narrowing and spread stays a world-XZ square for sideways emitters (0.207669ms)
+✔ pause is inert, disabled particles drain, and re-enable retains survivors without catch-up bursts (0.327868ms)
+✔ fixed simulation gives the same bounded cloud at 30, 60 and 120 Hz (3.246481ms)
+✔ finite Tower flash stops new births, drains its tail, and a restored expired flash cannot restart (5.322489ms)
+✔ colour cycling belongs to the emitter with the native half-second rate and channel mapping (0.356528ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1883.704129

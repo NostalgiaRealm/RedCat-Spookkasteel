@@ -1,0 +1,309 @@
+{
+  "date": "2026-10-18",
+  "source_only": true,
+  "builds_produced": false,
+  "source_changes_by_this_agent": [],
+  "scope": "Isolated normal-input encounters. Not a continuous no-cheat campaign: previous Caves fixture seeded incoming skill11, 30 potions, mirror3 and position; Tower fixtures place carried game state at upper arena. No enemy/health/inventory/puzzle writes after each fixture boundary.",
+  "caves": {
+    "fixture": {
+      "description": "Resume existing isolated fixture via normal 2-minute recovery menu; initial fixture was 30 potions, incoming skill 11, mirror 3 at final fairy approach; no additional state changes.",
+      "at": 1792311920834,
+      "state": {
+        "health": 10,
+        "maxHealth": 10,
+        "score": 0,
+        "potions": 30,
+        "mirror": 3,
+        "lives": 3,
+        "coins": 0,
+        "kills": 0,
+        "secrets": 0,
+        "skill": 15
+      },
+      "p": [
+        -538,
+        -15.95,
+        -550.7796479996733
+      ],
+      "yaw": 0,
+      "noClip": false
+    },
+    "retry": "Ordinary two-minute recovery menu after walking into lava trench. Successful retry jumped entrance and exit trenches.",
+    "defeat": [
+      {
+        "t": 84.85600000000485,
+        "event": {
+          "type": "enemyDefeated",
+          "id": "StandingEnemy1",
+          "position": [
+            1,
+            31.332000000000118,
+            -2183
+          ]
+        },
+        "attempt": 2
+      }
+    ],
+    "completion": [
+      {
+        "t": 101.67040000000843,
+        "event": {
+          "type": "levelComplete",
+          "target": "lvl04a",
+          "requestedTarget": "lvl04a.bsp",
+          "score": 300
+        },
+        "attempt": 2
+      }
+    ],
+    "successful_attempt_damage": [
+      {
+        "t": 74.13510000000228,
+        "event": {
+          "type": "damage",
+          "amount": 1,
+          "source": "StandingEnemy1",
+          "health": 9
+        },
+        "attempt": 2
+      },
+      {
+        "t": 75.0518000000025,
+        "event": {
+          "type": "damage",
+          "amount": 1,
+          "source": "StandingEnemy1",
+          "health": 8
+        },
+        "attempt": 2
+      },
+      {
+        "t": 81.77730000000409,
+        "event": {
+          "type": "damage",
+          "amount": 1,
+          "source": "StandingEnemy1",
+          "health": 7
+        },
+        "attempt": 2
+      }
+    ],
+    "final_mirror": [
+      {
+        "t": 98.15730000000771,
+        "event": {
+          "type": "pickup",
+          "id": "ItemMirror1",
+          "kind": "mirror",
+          "subtype": "mirror",
+          "score": 75,
+          "message": "Een stuk van de spiegel gevonden!",
+          "sound": "IMirror.wav",
+          "state": {
+            "health": 10,
+            "maxHealth": 10,
+            "score": 300,
+            "potions": 30,
+            "mirror": 4,
+            "lives": 3,
+            "coins": 20,
+            "kills": 1,
+            "secrets": 0,
+            "skill": 15
+          }
+        },
+        "attempt": 2
+      }
+    ],
+    "health_recovery": "Ordinary ItemHealth12 pickup during battle and ItemHealth11 after battle; no health edit.",
+    "input": "W/A/D, normal Space jumps, Ctrl charged-shot holds/releases, E cutscene skip, Escape/menu save/recovery."
+  },
+  "tower": {
+    "fixture": {
+      "at": 1792312732509,
+      "attempt": 2,
+      "description": "Fresh isolated upper-Tower fixture restored from exact native carried Tower entry save retained before attempt1. Only upper-arena position/view/grounding fixture applied, as in attempt1. No later combat, inventory, health, or puzzle changes.",
+      "before": {
+        "p": [
+          -227,
+          -3919.95,
+          -454
+        ],
+        "state": {
+          "health": 10,
+          "maxHealth": 10,
+          "score": 360,
+          "potions": 0,
+          "mirror": 4,
+          "lives": 3,
+          "coins": 20,
+          "kills": 1,
+          "secrets": 0,
+          "skill": 15
+        }
+      },
+      "after": {
+        "p": [
+          0,
+          2368.05,
+          590
+        ],
+        "state": {
+          "health": 10,
+          "maxHealth": 10,
+          "score": 360,
+          "potions": 0,
+          "mirror": 4,
+          "lives": 3,
+          "coins": 20,
+          "kills": 1,
+          "secrets": 0,
+          "skill": 15
+        },
+        "noClip": false
+      },
+      "witch": [
+        {
+          "health": 8,
+          "enabled": false
+        }
+      ]
+    },
+    "initial_failed_attempt": "Retained in tower-attempt1-input-evidence.json; slow turning and long strafing led to damage and missed shots. No game blocker inferred.",
+    "successful_attempt_damage": [],
+    "defeat": [
+      {
+        "t": 37.08689999999974,
+        "event": {
+          "type": "enemyDefeated",
+          "id": "MovingEnemy11",
+          "position": [
+            162.37556633187256,
+            2464,
+            -173.66151804828647
+          ]
+        }
+      }
+    ],
+    "mirror_pickup": [
+      {
+        "t": 16.9785,
+        "event": {
+          "type": "pickup",
+          "id": "ItemMirror1",
+          "kind": "mirror",
+          "subtype": "mirror",
+          "score": 75,
+          "message": "Een stuk van de spiegel gevonden!",
+          "sound": "IMirror.wav",
+          "state": {
+            "health": 10,
+            "maxHealth": 10,
+            "score": 435,
+            "potions": 0,
+            "mirror": 5,
+            "lives": 3,
+            "coins": 20,
+            "kills": 1,
+            "secrets": 0,
+            "skill": 15
+          }
+        }
+      }
+    ],
+    "successful_strategy": "Native mouse turns plus W follow upper-room mirror route; then approach [140,-40] beside cauldron. Hold Ctrl until fully charged and Witch enters shoot phase; release then sidestep. Two full shots defeated her without damage.",
+    "health_before_fight": 10,
+    "health_after_fight": 10,
+    "witch_initial_health": 8,
+    "witch_after_first_shot": 4,
+    "witch_after_second_shot": 0,
+    "ending": {
+      "unskipped": true,
+      "completion_events": [
+        {
+          "t": 102.03020000000679,
+          "event": {
+            "type": "levelComplete",
+            "target": null,
+            "requestedTarget": "nextsave",
+            "score": 435
+          }
+        }
+      ],
+      "seconds_after_defeat": 64.94330000000704,
+      "final_result": {
+        "mode": "debriefing",
+        "difficulty": "Normal",
+        "noClip": false,
+        "completed": true,
+        "state": {
+          "health": 10,
+          "maxHealth": 10,
+          "score": 450,
+          "potions": 0,
+          "mirror": 5,
+          "lives": 3,
+          "coins": 20,
+          "kills": 2,
+          "secrets": 0,
+          "skill": 15
+        },
+        "scriptErrors": [],
+        "vmError": null,
+        "unsupported": []
+      },
+      "ordinary_Enter_after_debriefing": "Started original outro movie; complete 55.047-second playback observed without seeking/skipping, then native ended handler returned to main menu.",
+      "outro_start": {
+        "mode": "intro",
+        "src": "http://127.0.0.1:4560/assets/media/outronl.webm",
+        "time": 1.134164,
+        "duration": 55.047,
+        "paused": false
+      },
+      "outro_result": {
+        "mode": "menu",
+        "menuVisible": true,
+        "completed": true,
+        "events": [
+          {
+            "type": "ended",
+            "t": 0,
+            "duration": null,
+            "mode": "menu"
+          }
+        ],
+        "fatal": false
+      },
+      "final_menu_screenshot": "ending-return-menu.png"
+    },
+    "successful_mirror_order": [
+      3,
+      2,
+      1,
+      4,
+      5
+    ]
+  },
+  "instrumentation_errors": {
+    "count": 2,
+    "details": "Two observation-only callbacks accessed null gameplay during fresh attempt2 startLevel transition. errors.log stack traces point to eval instrumentation. Not source runtime exceptions."
+  },
+  "evidence_sha256": {
+    "caves-complete-evidence.json": "0fdc3da76812ce50cbc3bf794a6070d15666c378d32af03c5a52facd6f330f06",
+    "caves-earned-save.json": "b8903b66874559dea6854aa9fdb8f19df109b04e487d2e679f36c54f05ee7add",
+    "tower-entry-carried-save.json": "7c7a5957e3dd371764c009ed88a061ec3aaacaaf1a1097336612562fbe05b0fd",
+    "tower-attempt1-input-evidence.json": "0a24fe6dceb3be53ef969e7eaaecc4d2a03dd24a9edd66f92edd92a68baad87b",
+    "tower-witch-defeat-evidence.json": "a87141d0d588cf79d92d9b4c5d8b98a76fd539852b4ad66681b528d441a7bfa0",
+    "commands.jsonl": "d14b1091dd6ac5ce6dcb3f60a7eb8cd3a16da7102e02e22ff331e0ce52c9f77c",
+    "responses-resumed.jsonl": "5c498ed92ecf69cd01d6c38f2662afb3d8f497109cf882628d64f3fd6f24a9a1",
+    "tower-ending-complete-evidence.json": "3923110be6eb93cfefa3156484a38395dbe65b0c2249eae122b730f702757063",
+    "final-result.json": "3aa906cfd0338653304c617d1d7fc102753750ca7d1e2a11e52ba2d650f4ce01",
+    "tower-completed-save.json": "e7a8118979270141c70043b867328a9dfffc49458bd6dcf2ff56edafa0b9a9df",
+    "errors.log": "e706d67a561cac5308ef48c21e389dd4ef6cae7da3d542ed1080b7bad03972f1",
+    "outro-start.json": "93ccef9ec4f9902241637e852daa8d83d525624d2245afe62796c337646bf522",
+    "outro-complete.json": "10d5ad0c46fca2a9bdb4530d6f54593bba9a4fed5fc113c8b025b0f0255b1507",
+    "ending-return-menu.png": "38b9e072071d8115dd41264fa5dbe2178dbbae629ef568c49369b8b08400bad5"
+  },
+  "verification": "Actual headless Chromium source runtime, ordinary Playwright keyboard/mouse input. No game-source changes or builds performed by this agent.",
+  "processes": "Driver, local server and isolated Chromium context closed gracefully after final movie returned to menu; all evidence/profile retained."
+}

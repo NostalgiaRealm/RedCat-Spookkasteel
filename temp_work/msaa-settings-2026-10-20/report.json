@@ -1,0 +1,56 @@
+{
+  "checks": [
+    "WebGL actual samples, smoothed edges, black/color preservation, resize and repeated disposal verified",
+    "Dropdown exposes Off/2x/4x/8x, disables unsupported counts; OK persists across reload, Annuleren leaves settings unchanged",
+    "Level 1 loads and renders with MSAA; switching Off/on while paused restores framebuffer and redraws without WebGL errors"
+  ],
+  "errors": [],
+  "badResponses": [],
+  "render": {
+    "supported": [
+      0,
+      4
+    ],
+    "offEdges": 0,
+    "samples": [
+      {
+        "requested": 4,
+        "actual": 4,
+        "edges": 110,
+        "black": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "error": 0,
+        "opaqueOff": [
+          18,
+          60,
+          134,
+          255
+        ],
+        "opaqueMsaa": [
+          18,
+          60,
+          134,
+          255
+        ],
+        "resize": [
+          120,
+          60
+        ]
+      }
+    ],
+    "offReleased": true,
+    "texturesAfterOff": 0,
+    "error": 0
+  },
+  "game": {
+    "error": 0,
+    "triangles": 3435,
+    "msaa": 4,
+    "targetReturned": true
+  },
+  "passed": true
+}

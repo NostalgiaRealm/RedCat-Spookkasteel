@@ -1,0 +1,17 @@
+✔ each level selects its complete original background WAV as an indefinite loop (62.199003ms)
+✔ returning after combat has faded out restores the background playhead before playback begins (0.414857ms)
+✔ returning during a crossfade reverses the existing layer without duplicate music or a position reset (0.377248ms)
+✔ pause freezes both music layers, positions and crossfade clocks then resumes from the same positions (0.653765ms)
+✔ explicit music stop and level reset discard remembered positions and all fading layers (0.362188ms)
+✔ fallback EOF events repeat complete tracks indefinitely without a replay delay or early restart (0.209819ms)
+✔ an EOF delivered while paused remains silent until resume and restarts at the beginning (0.117979ms)
+✔ selecting the same filename preserves playback while updating authored volume and owner (0.145789ms)
+✔ a track stopped exactly at EOF resumes at zero instead of trying to seek past its duration (0.168618ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 112.045219

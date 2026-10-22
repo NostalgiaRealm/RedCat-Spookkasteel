@@ -1,0 +1,21 @@
+✔ nearby stacked and nonadjacent rooms never allocate artwork; spatial cells are split by room ownership (6.680779ms)
+✔ the room beyond a closed doorway is prepared, and aligned open doorways preserve a farther visible room (1.911118ms)
+✔ crossing a doorway preloads the next room and promptly releases unrelated rooms even inside the distance grace radius (1.159343ms)
+✔ remote authored cameras select their own room and return safely; flying into solid exterior space retains the last valid room (1.250973ms)
+✔ actors and pooled fragment textures in unrelated rooms do not request maps or enter residency (3.509218ms)
+✔ flames and ribbons from excluded floors are omitted while large effects touching the selected room remain visible (1.63398ms)
+✔ missing room metadata falls back conservatively, without inventing a closed room (0.330768ms)
+✔ animation padding cannot assign an upstairs actor to the basement and shared admitted textures remain protected (0.946084ms)
+✔ a room change during an outstanding texture load cannot activate an obsolete room (0.740266ms)
+✔ fragment preparation excludes destructibles across a floor without limiting a real explosion (2.717344ms)
+✔ excluded flame emitters retain simulation clocks without submitting particles through a ceiling (0.663376ms)
+✔ all five chapters have exact static room ownership, including the complete Tower witch room (73.189289ms)
+✔ a long camera transition retains its visible room while loading priming still uses restored player coordinates (0.685976ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 169.093077

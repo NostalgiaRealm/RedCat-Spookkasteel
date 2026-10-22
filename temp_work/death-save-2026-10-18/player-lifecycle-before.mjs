@@ -1,0 +1,64 @@
+import {chromium} from 'playwright';
+import {spawn} from 'node:child_process';
+import {mkdir,writeFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+
+const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4287'},stdio:['ignore','pipe','inherit']});
+await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
+let browser;
+try {
+  browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl']});
+  const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+  page.on('pageerror',e=>errors.push(e.stack));
+  await page.goto('http://127.0.0.1:4287/?skipIntro');await page.waitForFunction(()=>window.__redcat);
+  const result=await page.evaluate(async()=>{
+    const app=window.__redcat;await app.startLevel(0);app.pause();
+    const world=app.world,game=app.gameplay,host=game.scripts;
+    for(const player of host.players.values())player.stop();
+    host.cutscene=false;host.camera=null;host.enemiesFrozen=false;
+    for(const object of game.objects)if(['enemy','trigger','fairy'].includes(object.kind))object.enabled=false;
+    const origin=[...world.player.position];game.checkpoint={position:origin.map((v,i)=>v+(i===0?20:0)),orientation:0};
+    const animator=world.redcat.userData.animator;
+    const capture=()=>({phase:game.playerReaction?.phase,clip:animator.name,time:animator.time,position:[...world.player.position],health:game.state.health,lives:game.state.lives});
+    const advance=seconds=>{while(seconds>1e-8){const dt=Math.min(.02,seconds);world.update(dt,{forward:0,right:0,turn:0,jump:false,attack:false,use:false});seconds-=dt;}};
+    const {PLAYER_REACTIONS}=await import('./src/player-lifecycle.js');
+    world.player.position[1]+=50;world.player.grounded=false;
+    game.damage(1);advance(.2);const hurt=capture();
+    const hurtFell=world.player.position[1]<origin[1]+50;
+    advance(PLAYER_REACTIONS.hit.duration);game.hitCooldown=0;game.damage(100);
+    advance(.6);const dying=capture();app.saveGame(true);
+    await app.loadSave();app.pause();const restored=app.gameplay;
+    const restore={phase:restored.playerReaction?.phase,age:restored.playerReaction?.age,health:restored.state.health,lives:restored.state.lives};
+    // The restored live host is used for all checkpoint events and rendering.
+    for(const player of restored.scripts.players.values())player.stop();restored.scripts.cutscene=false;restored.scripts.camera=null;
+    for(const object of restored.objects)if(['enemy','trigger','fairy'].includes(object.kind))object.enabled=false;
+    const tick=seconds=>{while(seconds>1e-8){const dt=Math.min(.02,seconds);app.world.update(dt,{forward:1,right:0,turn:0,attack:true,jump:true,use:false});seconds-=dt;}};
+    tick(.2);const beforeCheckpoint={position:[...app.world.player.position],health:restored.state.health};
+    tick(PLAYER_REACTIONS.death.duration-.8+.02);
+    const respawn={phase:restored.playerReaction?.phase,clip:app.world.redcat.userData.animator.name,position:[...app.world.player.position],health:restored.state.health,lives:restored.state.lives};
+    tick(1);const protectedPosition=[...app.world.player.position];restored.damage(999,null,{continuous:true});
+    const protectedHealth=restored.state.health;const pausedAge=restored.playerReaction.age;
+    await new Promise(resolve=>setTimeout(resolve,120));const pausedEnd=restored.playerReaction.age;
+    tick(PLAYER_REACTIONS.respawn.duration);const recovered=!restored.playerReaction;
+    restored.hitCooldown=0;restored.state.lives=1;restored.damage(100);tick(PLAYER_REACTIONS.death.duration+.04);
+    const lastLife={clip:app.world.redcat.userData.animator.name,finished:app.world.redcat.userData.animator.finished,phase:restored.playerReaction?.phase,health:restored.state.health,lives:restored.state.lives,mode:app.mode};
+    document.getElementById('pause').hidden=true;app.world.render();
+    await app.resume();app.pause();const restarted={health:app.gameplay.state.health,lives:app.gameplay.state.lives};
+    return {origin,hurt,hurtFell,dying,restore,beforeCheckpoint,respawn,protectedPosition,protectedHealth,pausedAge,pausedEnd,recovered,lastLife,restarted};
+  });
+  for(const state of [result.hurt,result.dying,result.beforeCheckpoint,result.respawn])assert.ok(state.position.every(Number.isFinite),'real controller positions must remain finite');
+  assert.equal(result.hurt.clip,'hit');assert.equal(result.hurtFell,true,'damage must not freeze gravity');
+  assert.ok(Math.abs(result.hurt.time-.3)<1e-6);assert.equal(result.dying.clip,'death');
+  assert.equal(result.restore.phase,'death');assert.equal(result.restore.health,0);assert.equal(result.restore.lives,2);
+  assert.deepEqual(result.beforeCheckpoint.position,result.dying.position);assert.equal(result.beforeCheckpoint.health,0);
+  assert.equal(result.respawn.phase,'respawn');assert.equal(result.respawn.clip,'re-spawn');
+  assert.deepEqual(result.respawn.position,result.origin.map((v,i)=>v+(i===0?20:i===1?1:0)));
+  assert.deepEqual(result.protectedPosition,result.respawn.position);assert.equal(result.protectedHealth,10);
+  assert.equal(result.pausedAge,result.pausedEnd);assert.equal(result.recovered,true);
+  assert.deepEqual(result.lastLife,{clip:'death',finished:true,phase:'death',health:0,lives:0,mode:'paused'});
+  assert.deepEqual(result.restarted,{health:10,lives:3},'game-over resume restarts instead of locking the completed death state');
+  assert.deepEqual(errors,[]);await mkdir('artifacts',{recursive:true});
+  await writeFile('artifacts/player-lifecycle-scenes.json',JSON.stringify(result,null,2)+'\n');
+  await page.screenshot({path:'artifacts/player-lifecycle-restart.png'});
+  console.log('PASS real player hurt/fall, delayed checkpoint, death-save reload, protected respawn, pause and final death pose.');
+} finally {await browser?.close();server.kill();}

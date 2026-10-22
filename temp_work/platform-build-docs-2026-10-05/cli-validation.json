@@ -1,0 +1,137 @@
+{
+  "buildsRun": false,
+  "reports": [
+    {
+      "args": [
+        "--linux",
+        "dir",
+        "--arm64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=0.9.4"
+      ],
+      "targets": [
+        {
+          "platform": "linux",
+          "arches": [
+            {
+              "arch": "arm64",
+              "targets": [
+                "dir"
+              ]
+            }
+          ]
+        }
+      ],
+      "config": {
+        "extraMetadata": {
+          "version": "0.9.4"
+        }
+      },
+      "electronArchive": "electron-v44.3.0-linux-arm64.zip",
+      "archiveListed": true
+    },
+    {
+      "args": [
+        "--win",
+        "dir",
+        "--arm64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=0.9.4"
+      ],
+      "targets": [
+        {
+          "platform": "win",
+          "arches": [
+            {
+              "arch": "arm64",
+              "targets": [
+                "dir"
+              ]
+            }
+          ]
+        }
+      ],
+      "config": {
+        "extraMetadata": {
+          "version": "0.9.4"
+        }
+      },
+      "electronArchive": "electron-v44.3.0-win32-arm64.zip",
+      "archiveListed": true
+    },
+    {
+      "args": [
+        "--mac",
+        "dir",
+        "--x64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=0.9.4",
+        "-c.mac.identity=-",
+        "-c.mac.notarize=false"
+      ],
+      "targets": [
+        {
+          "platform": "mac",
+          "arches": [
+            {
+              "arch": "x64",
+              "targets": [
+                "dir"
+              ]
+            }
+          ]
+        }
+      ],
+      "config": {
+        "extraMetadata": {
+          "version": "0.9.4"
+        },
+        "mac": {
+          "identity": "-",
+          "notarize": false
+        }
+      },
+      "electronArchive": "electron-v44.3.0-darwin-x64.zip",
+      "archiveListed": true
+    },
+    {
+      "args": [
+        "--mac",
+        "dir",
+        "--arm64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=0.9.4",
+        "-c.mac.identity=-",
+        "-c.mac.notarize=false"
+      ],
+      "targets": [
+        {
+          "platform": "mac",
+          "arches": [
+            {
+              "arch": "arm64",
+              "targets": [
+                "dir"
+              ]
+            }
+          ]
+        }
+      ],
+      "config": {
+        "extraMetadata": {
+          "version": "0.9.4"
+        },
+        "mac": {
+          "identity": "-",
+          "notarize": false
+        }
+      },
+      "electronArchive": "electron-v44.3.0-darwin-arm64.zip",
+      "archiveListed": true
+    }
+  ]
+}

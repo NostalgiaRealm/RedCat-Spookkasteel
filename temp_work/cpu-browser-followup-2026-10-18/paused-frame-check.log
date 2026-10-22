@@ -1,0 +1,22 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ 'AdamAnyActor89'
+- 'StandingEnemy1'
+
+    at file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/cpu-browser-followup-2026-10-18/paused-frame-check.mjs:32:37
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at process.processImmediate (node:internal/timers:472:9) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'AdamAnyActor89',
+  expected: 'StandingEnemy1',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

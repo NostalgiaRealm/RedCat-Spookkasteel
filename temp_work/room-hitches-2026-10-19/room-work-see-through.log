@@ -1,0 +1,15 @@
+✔ visible room geometry and textures no longer activate in an unbounded burst (27.519195ms)
+✔ explicit load settling drains bounded preparation without needing the game frame loop (64.162887ms)
+✔ leaving a room cancels its queued geometry and image preparation (6.71282ms)
+✔ returning during a cancelled upload microtask reacquires real maps instead of activating null artwork (64.633523ms)
+✔ actors wait for warmed buffers, share preparation across owners and remain independent of gameplay visibility (6.60056ms)
+✔ actors just outside the camera view prepare ahead of turns without drawing or admitting unrelated rooms (1.330012ms)
+✔ closed-door preloads do not hold the complete current room; opening the doorway makes its artwork required (22.542285ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 255.587872

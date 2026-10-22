@@ -1,0 +1,35 @@
+✔ broad phase preserves crossing, start-solid, zero-length and exact hull-boundary contacts (2.084087ms)
+✔ translated and rotated brush bounds follow replacement and in-place pose changes (1.53765ms)
+✔ collision leaf bounds extend undersized render metadata and missing bounds fall back (0.230448ms)
+✔ world exterior, disabled brushes and nearest-model ordering remain unchanged (0.298298ms)
+✔ distant model rejection avoids narrow-phase leaf visits (0.360398ms)
+✔ bounded randomized rotated hull sweeps match unpruned traversal (13.697406ms)
+✔ lvl02a authored collision matches unpruned traversal around static and moved models (25.239066ms)
+✔ lvl03a authored collision matches unpruned traversal around static and moved models (20.832643ms)
+✔ stationary trace and contents queries reuse transformed planes and model/leaf bounds (3.101351ms)
+✔ in-place translation, rotation and pivot mutations immediately invalidate the pose (3.870527ms)
+✔ temporary old and destination poses restore exact collision without retaining historical poses (42.987237ms)
+✔ deleting a pose restores stationary bounds and reinserting it moves collision again (0.860515ms)
+✔ invalid mutations still fail validation after a valid pose has been cached (0.965454ms)
+✔ world model remains stationary and transform defaults and normalized quaternions stay valid (0.571676ms)
+✔ player rides a translated floor while collision remains solid at its new position (4.446123ms)
+✔ script teleport supersedes floor carry during the same frame (1.463541ms)
+✔ a translating brush sweeps a stationary player instead of trapping or passing through the hull (5.083839ms)
+✔ a hinged door sweeps its arc and leaves RedCat free to move beside it (4.563202ms)
+✔ a wall-blocked door rejects its movement and cannot crush the player or teleport through a wall (1.192743ms)
+✔ the same brush transaction carries moving floors and refuses a ceiling crush (0.814085ms)
+✔ only committed support carrying contributes to takeoff momentum, never rejected moves or side pushes (2.033258ms)
+✔ world motion handoff adds actual platform carry to a jump and resets support velocity on the next frame (3.26982ms)
+✔ carrying ignores the floor own mounted prop at its previous pose while unrelated props still block (1.578461ms)
+✔ no-clip and disabled trigger brushes never push or stall the player (0.138509ms)
+✔ rejected motion segments wait before emitting their event or completion and resume without repeats (0.450447ms)
+✔ a motion event teleport supersedes the displacement already accepted before that event (1.395731ms)
+✔ the original tower witch door does not strand the player inside its opening leaf (7.659343ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 109.051245

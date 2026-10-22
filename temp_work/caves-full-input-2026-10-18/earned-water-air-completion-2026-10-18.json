@@ -1,0 +1,87 @@
+{
+  "scope": "Earned campaign API4511, actual Forest/Castle/Graveyard carry. No chapter fixture imports, no state edits. Ordinary Recovery and F9 retries occurred; this is not a deathless/no-load claim. Root owns source fixes; this subagent only wrote temp evidence/helpers.",
+  "handoff": {
+    "owner": "castle_route_resume",
+    "level": "lvl03a",
+    "position": [
+      71.05,
+      0.00528874967526531,
+      1279.9808908155096
+    ],
+    "health": 10,
+    "maxHealth": 12,
+    "lives": 1,
+    "skill": 11,
+    "mirror": 3,
+    "potions": 26,
+    "secrets": 5,
+    "score": 7755,
+    "kills": 71,
+    "coins": 102,
+    "unlock_max": 2,
+    "held_inputs": [],
+    "living_near_hub": []
+  },
+  "files": {
+    "out": "temp_work/campaign-validation-2026-10-15/playthrough-1792088801065",
+    "save": "earned-caves-water-air-hub-save-2026-10-18.json",
+    "trace": "earned-caves-water-air-hub-trace-2026-10-18.json",
+    "control_log": "earned-caves-water-air-control-log-2026-10-18.json",
+    "handoff": "earned-caves-water-air-handoff-2026-10-18.json",
+    "full_commands": "live-commands.jsonl",
+    "responses": "../resume-responses-2026-10-18.jsonl",
+    "helpers": "temp_work/caves-full-input-2026-10-18/earned-input-helpers.js",
+    "observer": "temp_work/caves-full-input-2026-10-18/earned-observer.js",
+    "replay_stages": "temp_work/caves-full-input-2026-10-18/earned-replay-stages.js"
+  },
+  "water_complete": [
+    "Hub entrance, Water doors and spider02. Hub ghosts01\u201304 and entrance spider01 also killed by ordinary shots.",
+    "Lower first-basin crate secret: targetable water_crate04 shot from safe distance; seven chained crates removed by native callback, six secret potions and four health items reached physically. Secret count incremented.",
+    "First water_button01 touched, native water/crates raised; immediately escaped on west ramp without damage. Three raised-crate jumps in both directions.",
+    "All seven timed waterfall gaps crossed forward at full health, and all seven reverse without further damage. Read native enabled state only to schedule normal jumps.",
+    "Six frogs05\u201310 killed. Both timed drain controls, outbound/inbound drain crossings and exit-stair jumps physically passed. Collected all eight regular Water potion objects plus six secret potions=14.",
+    "Water guards10\u201312 killed, three altar buttons touched, native altar beam/counter incremented. Returned through doors to hub."
+  ],
+  "waterfall_disable_location": {
+    "hub_doors": [
+      -615,
+      3,
+      1280
+    ],
+    "names": [
+      "door_left_to_water",
+      "door_right_to_water"
+    ],
+    "native_before_open": "waterfalls.disable; water_coronas enable/disable depending door",
+    "water_lab_doors": [
+      -1335,
+      0,
+      1644
+    ],
+    "reenable_name": "door_right_to_waterlab",
+    "native_before_open_reenable": "waterfalls.enable; water_coronas.enable",
+    "note": "The verified waterfall-off action is opening the hub Water doors. water_button01 is the basin/crate-raising switch, not a waterfall-disable button."
+  },
+  "air_complete": [
+    "Air hall spider05 killed before entry. First room spring crate01 crossed; return spring crate02 crossed from close contact.",
+    "Six fan switches and upper zigzag walkway reached physically. Accidental lower-pit falls caused no damage; native spring crate04 and crate06 recovery routes used. Return used sixth/fifth switches, then a pit fall and native06\u219204 recovery before first-room exit.",
+    "All four bats01\u201304 killed by normal shooting. Lower three hearts, crate pickup and potions collected.",
+    "Moving rocks01\u219202\u219203\u219204\u219205\u219206\u219207 and high secret ledge physically crossed; three secret potions plus health-capacity pickup increased maxHP10\u219212, secret count incremented.",
+    "Safe fall from secret missed bridge after premature input; revisited cleared rocks1\u20135. Additional ordinary rock05\u2192static bridge crossing verified at its far endpoint.",
+    "Far-room lower three potions and large health pickup collected; large pickup fully healed to12. Lower switch08, updraft to bridge, ferries08/09, upper potion08 and switch07 physically passed. Both switches toggled normally; wind disabled for final crossing.",
+    "Final ferry sequence to Air altar, guards07\u201309 killed, all three altar buttons touched, native altar beam and unlock_max incremented to2.",
+    "Returned altar\u2192ferry08\u2192western bridge\u2192sluice\u2192left room\u2192fan maze\u2192spring crate02\u2192hall\u2192hub. No surviving Air enemies on return; health10/12."
+  ],
+  "retry_and_harness_limits": [
+    "First low-health Caves attempt died to hub ghost while waiting. Old F5 dead-save issue was reported; late agent fixed source and focused regression, then source loaded via normal living save/browser reload/Continue. Normal Recovery restored a genuine Graveyard checkpoint; Brutus and four optional health pillars were replayed normally, yielding fresh Caves entry HP9.",
+    "Close-range secret crate shot caused ordinary death from chained explosions. Normal F9 restored first-basin living save. Distant shot from x=-1520 was safe.",
+    "Stationary frog/camera waits and unsafe rim shortcuts caused deaths; ordinary F9 retries used, never health/life/enemy edits.",
+    "Old combat helper used point-ray floor tests. On stepped altar floors that incorrectly prohibited dodging. Full player hull trace repaired temp helper; north/east Water guards then died with player HP1.8667 unchanged.",
+    "Target-height-only A* may descend stairs through flooded basin; minimum floor Y=-18 plus Shift-walking every12-unit path node passed. Compressed corners fell; per-node re-planning oscillated with shifting grid. Do not classify these as game blockers.",
+    "Initial Air hall approach went too close and died; F9 hub save restored. Spider safely triggered at x=975 then shot while strafing near x=790.",
+    "Air entrance bat attempt died at low HP. F9 restored fan-exit save, then lower hearts were collected first and bat fights completed.",
+    "Jump/landing timing matters: movement before a high fall settles preserves momentum and can miss bridge. Native moving-platform velocity is inherited by jumps. All retries and timing failures retained."
+  ],
+  "next_scope": "Earth agent holds exclusive API4511. Root will take Fire afterward. Actual earned 30-potion fairy and final Caves/Tower chain remain; prior isolated boss tests are separate evidence.",
+  "replay_validation": "Both helper files passed node --check. Each staged segment was derived from observed ordinary-input commands; the assembled staged file has not been replayed end to end. The retained live command log and trace are the authoritative successful-run evidence."
+}

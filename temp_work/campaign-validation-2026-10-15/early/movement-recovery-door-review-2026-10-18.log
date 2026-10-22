@@ -1,0 +1,35 @@
+✔ a shallow embedded player hull is nudged to nearby supported body clearance (2.863004ms)
+✔ corner recovery clears both obstacles without crossing either solid (0.681356ms)
+✔ ordinary pushing against a wall, idle actors and flowing movement do not trigger recovery (1.761331ms)
+✔ a visited clear position is used when local candidates are unsafe and is revalidated (2.187208ms)
+✔ a newly closed gate prevents recovering through it to previously clear history (3.63439ms)
+✔ history under a moved obstacle is rejected in its current brush pose (0.607857ms)
+✔ ground recovery rejects cliffs, unsupported hull corners and hazardous candidate predicates (0.189429ms)
+✔ shallow recovery never tunnels through a thin obstacle when starting overlapped (0.177229ms)
+✔ history is capped, paused updates do no work, teleports clear old history, and searches are bounded (1.422302ms)
+✔ PlayerController recovers an overlap and clears stale airborne velocity without blocking normal noclip (1.373542ms)
+✔ ground frogs and flying enemies recover from body overlaps while preserving authored patrol targets (0.637256ms)
+✔ authored takeoff, dormant/descending spiders, turret phases and dead actors are excluded (3.72044ms)
+✔ PlayerController records dry support only and does not promote water to a safe return point (0.955015ms)
+✔ live player physics holding into a wall stays put until the user changes direction (2.768305ms)
+✔ resumed natural travel cancels an unfinished recovery search; loading resets stale history (0.326248ms)
+✔ a shallow well-side wedge leaves the raised base horizontally before settling on lower ground (0.518667ms)
+✔ a non-overlapping player pinched under a sloped well roof escapes diagonally down and resumes walking (2.193288ms)
+✔ extended airborne settling remains bounded and cannot bypass an intervening gate (0.453738ms)
+✔ normal free fall beside a wall does not trigger the suspended-body recovery (2.961373ms)
+✔ a low sealed fall pocket recovers only to a revalidated higher visited position (4.691185ms)
+✔ fall-pocket recovery cannot replace an ordinary walk around a low corridor corner (40.658568ms)
+✔ a nearby authored gate vetoes returning from a fall pocket to higher history (21.667622ms)
+✔ higher fall-pocket history cannot bypass a door beyond the local probe (8.501564ms)
+✔ a jumpable lip below a previously visited higher shelf does not trigger fall-pocket recovery (16.592009ms)
+✔ a descending passage beneath a lower ceiling is an ordinary fall-pocket exit (9.836766ms)
+✔ a jump becomes available after walking beneath the edge of a low ceiling (14.207892ms)
+✔ the original Castle warehouse pocket recovers to the verified upper shelf with bounded work (38.48241ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 234.720097

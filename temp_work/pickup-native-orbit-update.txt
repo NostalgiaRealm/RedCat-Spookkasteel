@@ -1,0 +1,150 @@
+  47ea90: sub    esp,0xf8
+  47ea96: push   esi
+  47ea97: mov    esi,ecx
+  47ea99: mov    al,BYTE PTR [esi+0x6c]
+  47ea9c: test   al,al
+  47ea9e: je     0x47ecd0
+  47eaa4: mov    ecx,DWORD PTR [esi+0xec]
+  47eaaa: push   edi
+  47eaab: cmp    ecx,0xffffffff // None
+  47eaae: mov    dl,0x1
+  47eab0: mov    DWORD PTR [esp+0xc],ecx
+  47eab4: je     0x47eb19
+  47eab6: mov    eax,DWORD PTR [esi+0xf0]
+  47eabc: cmp    eax,0xffffffff // None
+  47eabf: jne    0x47eadc
+  47eac1: mov    eax,DWORD PTR [esp+0x104]
+  47eac8: mov    DWORD PTR [esi+0xf4],0x3f800000
+  47eacf: 
+  47ead2: add    ecx,eax
+  47ead4: mov    DWORD PTR [esi+0xf0],ecx
+  47eada: jmp    0x47eb19
+  47eadc: mov    edi,DWORD PTR [esp+0x104]
+  47eae3: cmp    edi,eax
+  47eae5: jle    0x47eaf5
+  47eae7: mov    DWORD PTR [esi+0xf4],0x0
+  47eaee: 
+  47eaf1: xor    dl,dl
+  47eaf3: jmp    0x47eb19
+  47eaf5: test   ecx,ecx
+  47eaf7: jle    0x47eb0f
+  47eaf9: sub    eax,edi
+  47eafb: mov    DWORD PTR [esp+0x8],eax
+  47eaff: fild   DWORD PTR [esp+0x8]
+  47eb03: fidiv  DWORD PTR [esp+0xc]
+  47eb07: fstp   DWORD PTR [esi+0xf4]
+  47eb0d: jmp    0x47eb19
+  47eb0f: mov    DWORD PTR [esi+0xf4],0x0
+  47eb16: 
+  47eb19: test   dl,dl
+  47eb1b: mov    BYTE PTR [esi+0xf8],dl
+  47eb21: pop    edi
+  47eb22: jne    0x47eb33
+  47eb24: mov    ecx,DWORD PTR [esi+0x108]
+  47eb2a: mov    BYTE PTR [esi+0x7a],dl
+  47eb2d: mov    DWORD PTR [esp+0x4],ecx
+  47eb31: jmp    0x47eb57
+  47eb33: fld    DWORD PTR ds:0x64a354 // 1.0
+  47eb39: fsub   DWORD PTR [esi+0xf4]
+  47eb3f: fmul   DWORD PTR [esi+0x108]
+  47eb45: fld    DWORD PTR [esi+0x104]
+  47eb4b: fmul   DWORD PTR [esi+0xf4]
+  47eb51: faddp  st(1),st
+  47eb53: fstp   DWORD PTR [esp+0x4]
+  47eb57: mov    edx,DWORD PTR [esp+0x104]
+  47eb5e: push   edx
+  47eb5f: call   0x409e30
+  47eb64: fmul   DWORD PTR [esi+0x110]
+  47eb6a: add    esp,0x4
+  47eb6d: lea    ecx,[esp+0x3c]
+  47eb71: fadd   DWORD PTR [esi+0x10c]
+  47eb77: fstp   DWORD PTR [esi+0x10c]
+  47eb7d: call   0x5b30c0
+  47eb82: lea    ecx,[esp+0xc]
+  47eb86: call   0x5b30c0
+  47eb8b: lea    ecx,[esp+0xcc]
+  47eb92: call   0x5b30c0
+  47eb97: lea    ecx,[esp+0x9c]
+  47eb9e: call   0x5b30c0
+  47eba3: lea    ecx,[esp+0x6c]
+  47eba7: call   0x5b30c0
+  47ebac: mov    eax,DWORD PTR [esi+0x114]
+  47ebb2: mov    DWORD PTR [esp+0x30],0x0
+  47ebb9: 
+  47ebba: sub    eax,0x0
+  47ebbd: mov    DWORD PTR [esp+0x34],0x0
+  47ebc4: 
+  47ebc5: mov    DWORD PTR [esp+0x38],0x0
+  47ebcc: 
+  47ebcd: je     0x47ec23
+  47ebcf: dec    eax
+  47ebd0: je     0x47ec09
+  47ebd2: dec    eax
+  47ebd3: je     0x47ebef
+  47ebd5: mov    eax,DWORD PTR [esi+0x10c]
+  47ebdb: lea    ecx,[esp+0x3c]
+  47ebdf: push   eax
+  47ebe0: call   0x5b3130
+  47ebe5: mov    ecx,DWORD PTR [esp+0x4]
+  47ebe9: mov    DWORD PTR [esp+0x30],ecx
+  47ebed: jmp    0x47ec3b
+  47ebef: mov    edx,DWORD PTR [esi+0x10c]
+  47ebf5: lea    ecx,[esp+0x3c]
+  47ebf9: push   edx
+  47ebfa: call   0x5b3170
+  47ebff: mov    eax,DWORD PTR [esp+0x4]
+  47ec03: mov    DWORD PTR [esp+0x30],eax
+  47ec07: jmp    0x47ec3b
+  47ec09: mov    ecx,DWORD PTR [esi+0x10c]
+  47ec0f: push   ecx
+  47ec10: lea    ecx,[esp+0x40]
+  47ec14: call   0x5b3130
+  47ec19: mov    edx,DWORD PTR [esp+0x4]
+  47ec1d: mov    DWORD PTR [esp+0x30],edx
+  47ec21: jmp    0x47ec3b
+  47ec23: mov    eax,DWORD PTR [esi+0x10c]
+  47ec29: lea    ecx,[esp+0x3c]
+  47ec2d: push   eax
+  47ec2e: call   0x5b30f0
+  47ec33: mov    ecx,DWORD PTR [esp+0x4]
+  47ec37: mov    DWORD PTR [esp+0x34],ecx
+  47ec3b: lea    edx,[esp+0xc]
+  47ec3f: lea    ecx,[esp+0x3c]
+  47ec43: push   edx
+  47ec44: lea    edx,[esp+0x10]
+  47ec48: call   0x5b32c0
+  47ec4d: mov    eax,DWORD PTR [esi+0x124]
+  47ec53: lea    ecx,[esp+0x6c]
+  47ec57: push   eax
+  47ec58: call   0x5b30f0
+  47ec5d: mov    ecx,DWORD PTR [esi+0x128]
+  47ec63: push   ecx
+  47ec64: lea    ecx,[esp+0xa0]
+  47ec6b: call   0x5b30f0
+  47ec70: lea    edx,[esp+0xcc]
+  47ec77: lea    ecx,[esp+0x6c]
+  47ec7b: push   edx
+  47ec7c: lea    edx,[esp+0xa0]
+  47ec83: call   0x5b32c0
+  47ec88: lea    eax,[esp+0xc]
+  47ec8c: lea    edx,[esp+0xc]
+  47ec90: push   eax
+  47ec91: lea    ecx,[esp+0xd0]
+  47ec98: call   0x5b32c0
+  47ec9d: mov    ecx,DWORD PTR [esi+0x120]
+  47eca3: mov    edx,DWORD PTR [esi+0x11c]
+  47eca9: mov    eax,DWORD PTR [esi+0x118]
+  47ecaf: push   ecx
+  47ecb0: push   edx
+  47ecb1: push   eax
+  47ecb2: lea    ecx,[esp+0x18]
+  47ecb6: call   0x5b3280
+  47ecbb: mov    ecx,DWORD PTR [esp+0x30]
+  47ecbf: mov    edx,DWORD PTR [esp+0x34]
+  47ecc3: mov    eax,DWORD PTR [esp+0x38]
+  47ecc7: mov    DWORD PTR [esi+0x4],ecx
+  47ecca: mov    DWORD PTR [esi+0x8],edx
+  47eccd: mov    DWORD PTR [esi+0xc],eax
+  47ecd0: pop    esi
+  47ecd1: add    esp,0xf8
+  47ecd7: ret    0x8

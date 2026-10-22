@@ -1,0 +1,121 @@
+{
+  "checks": [],
+  "errors": [],
+  "badResponses": [],
+  "render": {
+    "supported": [
+      0,
+      2,
+      4,
+      8
+    ],
+    "offEdges": 0,
+    "samples": [
+      {
+        "requested": 2,
+        "actual": 2,
+        "edges": 83,
+        "black": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "error": 0,
+        "opaqueOff": [
+          18,
+          60,
+          134,
+          255
+        ],
+        "opaqueMsaa": [
+          18,
+          60,
+          134,
+          255
+        ],
+        "resize": [
+          120,
+          60
+        ]
+      },
+      {
+        "requested": 4,
+        "actual": 4,
+        "edges": 110,
+        "black": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "error": 0,
+        "opaqueOff": [
+          18,
+          60,
+          134,
+          255
+        ],
+        "opaqueMsaa": [
+          18,
+          60,
+          134,
+          255
+        ],
+        "resize": [
+          120,
+          60
+        ]
+      },
+      {
+        "requested": 8,
+        "actual": 8,
+        "edges": 137,
+        "black": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "error": 0,
+        "opaqueOff": [
+          18,
+          60,
+          134,
+          255
+        ],
+        "opaqueMsaa": [
+          18,
+          60,
+          134,
+          255
+        ],
+        "resize": [
+          120,
+          60
+        ]
+      }
+    ],
+    "transparentOff": [
+      127,
+      0,
+      0,
+      255
+    ],
+    "transparentMsaa": [
+      188,
+      0,
+      0,
+      255
+    ],
+    "contextRestored": {
+      "samples": 8,
+      "error": 1282,
+      "target": true
+    },
+    "offReleased": true,
+    "texturesAfterOff": 0,
+    "error": 0
+  },
+  "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1282 !== 0\n\n    at file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/msaa-settings-2026-10-20/check-hardware.mjs:64:10"
+}

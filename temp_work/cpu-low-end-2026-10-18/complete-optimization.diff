@@ -1,0 +1,247 @@
+--- before/src/animation.js
++++ src/animation.js
+@@ -1,5 +1,7 @@
+ // Rigid skeletal animation for Genesis3D actors. Each instance owns its geometry.
+ // Original vertex coordinates are local to one bone; pose = parent * attachment * key.
++import { Box3, Sphere } from 'three';
++
+ const identity = new Float64Array([1,0,0,0,1,0,0,0,1,0,0,0]);
+ 
+ function multiply(out, a, b) {
+@@ -189,22 +191,49 @@
+     }
+     const position=this.geometry.getAttribute('position'),normal=this.geometry.getAttribute('normal');
+     const {localPositions,localNormals,joints,normalJoints}=this.data;
++    // Imported rigid actors have packed, unnormalized XYZ positions and no
++    // morph targets. Gather their exact bounds while skinning instead of
++    // scanning every vertex twice more for the box and sphere's center.
++    const packedBounds=position.itemSize===3&&!position.normalized&&!position.isInterleavedBufferAttribute&&
++      position.count===joints.length&&!this.geometry.morphAttributes.position;
++    let minX=Infinity,minY=Infinity,minZ=Infinity,maxX=-Infinity,maxY=-Infinity,maxZ=-Infinity;
+     for(let i=0;i<joints.length;i++) {
+       const offset=i*3,m=joints[i]>=0?this.transforms[joints[i]]:identity;
+       const x=localPositions[offset],y=localPositions[offset+1],z=localPositions[offset+2];
+       position.array[offset]=m[0]*x+m[1]*y+m[2]*z+m[9];
+       position.array[offset+1]=m[3]*x+m[4]*y+m[5]*z+m[10];
+       position.array[offset+2]=m[6]*x+m[7]*y+m[8]*z+m[11];
++      if(packedBounds) {
++        // Read back Float32 values so collision/culling bounds agree exactly
++        // with Three.js, including rounding at animation extremes.
++        const px=position.array[offset],py=position.array[offset+1],pz=position.array[offset+2];
++        minX=Math.min(minX,px);minY=Math.min(minY,py);minZ=Math.min(minZ,pz);
++        maxX=Math.max(maxX,px);maxY=Math.max(maxY,py);maxZ=Math.max(maxZ,pz);
++      }
+       if(normal && localNormals) {
+         const n=normalJoints[i]>=0?this.transforms[normalJoints[i]]:identity;
+         const nx=localNormals[offset],ny=localNormals[offset+1],nz=localNormals[offset+2];
+         const a=n[0]*nx+n[1]*ny+n[2]*nz,b=n[3]*nx+n[4]*ny+n[5]*nz,c=n[6]*nx+n[7]*ny+n[8]*nz;
+-        const length=Math.hypot(a,b,c)||1;
++        // Actor normals and rigid bone rotations are bounded; the direct
++        // length avoids the general-purpose hypot scaling on every vertex.
++        const length=Math.sqrt(a*a+b*b+c*c)||1;
+         normal.array[offset]=a/length;normal.array[offset+1]=b/length;normal.array[offset+2]=c/length;
+       }
+     }
+     position.needsUpdate=true;if(normal)normal.needsUpdate=true;
+-    this.geometry.computeBoundingBox();this.geometry.computeBoundingSphere();
++    if(packedBounds) {
++      const box=this.geometry.boundingBox||=new Box3(),sphere=this.geometry.boundingSphere||=new Sphere();
++      box.min.set(minX,minY,minZ);box.max.set(maxX,maxY,maxZ);box.getCenter(sphere.center);
++      const {x:cx,y:cy,z:cz}=sphere.center,vertices=position.array;
++      let radiusSquared=0;
++      for(let i=0;i<vertices.length;i+=3) {
++        const dx=cx-vertices[i],dy=cy-vertices[i+1],dz=cz-vertices[i+2];
++        radiusSquared=Math.max(radiusSquared,dx*dx+dy*dy+dz*dz);
++      }
++      sphere.radius=Math.sqrt(radiusSquared);
++    } else {
++      this.geometry.computeBoundingBox();this.geometry.computeBoundingSphere();
++    }
+     this.sampledClip=this.clip;this.sampledTime=this.time;this.sampledTransition=transition;this.sampledWeight=weight;
+   }
+ }
+--- before/src/world.js
++++ src/world.js
+@@ -483,7 +483,9 @@
+     const position=new THREE.Vector3(),bounds=new THREE.Box3();
+     this.scene.traverseVisible(mesh=>{
+       const state=mesh.userData.actorLighting;if(!state||this.actorResidency&&!this.actorResidency.isRendered(mesh))return;
+-      mesh.getWorldPosition(position);
++      // The scene update above already includes every mounted part and debris
++      // transform; getWorldPosition would walk/update its ancestors again.
++      position.setFromMatrixPosition(mesh.matrixWorld);
+       const root=position.toArray(),lighting=state.settings.lighting||{};
+       if(!mesh.geometry.boundingBox)mesh.geometry.computeBoundingBox();
+       state.bounds??=mesh.geometry.boundingBox.clone();
+--- before/src/world-effects.js
++++ src/world-effects.js
+@@ -117,9 +117,14 @@
+   flush(){this.mesh.geometry.instanceCount=this.count;this.mesh.visible=this.count>0;for(const a of [this.positions,this.sizes,this.colors,this.rotations,this.diagonalScales,this.nativeSpouts])a.needsUpdate=true;}
+ }
+ 
+-class BeamBatch {
++const BEAM_U=[0,1,0,1,1,0],BEAM_V_END=[false,false,true,false,true,true];
++
++export class BeamBatch {
+   constructor(world,map,capacity=512) {
+     this.world=world;this.count=0;this.capacity=capacity;
++    this.start=new THREE.Vector3();this.end=new THREE.Vector3();this.side=new THREE.Vector3();
++    this.direction=new THREE.Vector3();this.toward=new THREE.Vector3();
++    this.points=Array.from({length:6},()=>new THREE.Vector3());
+     const geometry=world.track(new THREE.BufferGeometry());
+     this.positions=new THREE.BufferAttribute(new Float32Array(capacity*18),3).setUsage(THREE.DynamicDrawUsage);
+     this.colors=new THREE.BufferAttribute(new Float32Array(capacity*24),4).setUsage(THREE.DynamicDrawUsage);
+@@ -131,21 +136,44 @@
+   }
+   add(ray,camera,cameraDirection=null,uvs=null) {
+     if(this.count>=this.capacity)return;
+-    const start=new THREE.Vector3(...ray.start),end=new THREE.Vector3(...ray.end),side=new THREE.Vector3().crossVectors(end.clone().sub(start),cameraDirection||camera.clone().sub(start));
++    const start=this.start.fromArray(ray.start),end=this.end.fromArray(ray.end),side=this.side;
++    this.direction.subVectors(end,start);
++    if(cameraDirection)this.toward.copy(cameraDirection);else this.toward.subVectors(camera,start);
++    side.crossVectors(this.direction,this.toward);
+     if(side.lengthSq()<1e-10)side.set(1,0,0);side.normalize().multiplyScalar(ray.width/2);
+-    const points=[start.clone().sub(side),start.clone().add(side),end.clone().sub(side),start.clone().add(side),end.clone().add(side),end.clone().sub(side)];
++    const points=this.points;
++    points[0].copy(start).sub(side);points[1].copy(start).add(side);points[2].copy(end).sub(side);
++    points[3].copy(start).add(side);points[4].copy(end).add(side);points[5].copy(end).sub(side);
+     this.addPoints(points,ray.color,ray.opacity,ray.uvStart,ray.uvEnd,uvs);
+   }
+   addDisc(position,radius,color,opacity) {
+-    const [x,y,z]=position,points=[[-1,-1],[1,-1],[-1,1],[1,-1],[1,1],[-1,1]].map(([a,b])=>new THREE.Vector3(x+a*radius,y,z+b*radius));
++    if(this.count>=this.capacity)return;
++    const [x,y,z]=position,points=this.points;
++    for(let i=0;i<6;i++)points[i].set(x+(BEAM_U[i]?radius:-radius),y,z+(BEAM_V_END[i]?radius:-radius));
+     this.addPoints(points,color,opacity);
+   }
+   addPoints(points,color,opacity,uvStart=0,uvEnd=1,uvs=null,colors=null) {
+     if(this.count>=this.capacity)return;
+-    for(let i=0;i<6;i++){const index=this.count*6+i;this.positions.setXYZ(index,...points[i].toArray());this.colors.setXYZW(index,...(colors?.[i]||color),opacity);this.uvs.setXY(index,uvs?.[i][0]??[0,1,0,1,1,0][i],uvs?.[i][1]??[uvStart,uvStart,uvEnd,uvStart,uvEnd,uvEnd][i]);}
++    for(let i=0;i<6;i++) {
++      const point=points[i],tint=colors?.[i]||color,p=(this.count*6+i)*3,c=(this.count*6+i)*4,u=(this.count*6+i)*2;
++      this.positions.array[p]=point.x;this.positions.array[p+1]=point.y;this.positions.array[p+2]=point.z;
++      this.colors.array[c]=tint[0];this.colors.array[c+1]=tint[1];this.colors.array[c+2]=tint[2];this.colors.array[c+3]=opacity;
++      this.uvs.array[u]=uvs?.[i][0]??BEAM_U[i];this.uvs.array[u+1]=uvs?.[i][1]??(BEAM_V_END[i]?uvEnd:uvStart);
++    }
+     this.count++;
+   }
+   flush(){this.mesh.geometry.setDrawRange(0,this.count*6);this.mesh.visible=this.count>0;this.positions.needsUpdate=this.colors.needsUpdate=this.uvs.needsUpdate=true;}
++}
++
++export function nearestWorldLights(lights,camera,playerLight=null,maximum=8) {
++  const candidates=[];
++  for(const light of lights)if(light.radius>0) {
++    const dx=camera.x-light.position[0],dy=camera.y-light.position[1],dz=camera.z-light.position[2];
++    candidates.push({light,distance:dx*dx+dy*dy+dz*dz});
++  }
++  // Stable ties retain the original light order; player light keeps priority.
++  candidates.sort((a,b)=>Number(b.light===playerLight)-Number(a.light===playerLight)||a.distance-b.distance);
++  return candidates.slice(0,maximum).map(candidate=>candidate.light);
+ }
+ 
+ export class WorldEffects {
+@@ -325,8 +353,7 @@
+     this.coronaBatch?.flush();
+     // Keep the player's small pool of light stable in busy rooms, using one
+     // of the existing eight slots rather than increasing shader/light cost.
+-    const camera=this.world.camera.position,nearest=this.lights.filter(lamp=>lamp.radius>0).sort((a,b)=>
+-      Number(b===playerLight)-Number(a===playerLight)||camera.distanceToSquared(new THREE.Vector3(...a.position))-camera.distanceToSquared(new THREE.Vector3(...b.position))).slice(0,8);
++    const nearest=nearestWorldLights(this.lights,this.world.camera.position,playerLight);
+     if(this.lightCount)this.lightCount.value=nearest.length;
+     if(this.worldShadows) {
+       if(this.worldShadows.update(nearest))this.shadowTexture.needsUpdate=true;
+--- before/src/gameplay.js
++++ src/gameplay.js
+@@ -805,8 +805,11 @@
+     for(const object of this.objects) {
+       if(this.state.lives!==lives||this.state.health<=0)return;
+       if(!object.enabled||object.collected||object.health<=0)continue;
+-      const e=object.entity,position=this.objectPosition(object),d=distance(position,playerPosition);
+-      if(object.kind==='pickup'&&d<38&&lineOfSight([playerPosition[0],playerPosition[1]+22,playerPosition[2]],[position[0],position[1]+18,position[2]]))this.pickup(object);
++      const e=object.entity;
++      if(object.kind==='pickup') {
++        const position=this.objectPosition(object);
++        if(distance(position,playerPosition)<38&&lineOfSight([playerPosition[0],playerPosition[1]+22,playerPosition[2]],[position[0],position[1]+18,position[2]]))this.pickup(object);
++      }
+       if(object.kind==='trigger') {
+         const inside=this.contains(object,playerPosition);
+         if(inside&&!object.inside)this.trigger(object);
+--- before/src/script-host.js
++++ src/script-host.js
+@@ -291,15 +291,15 @@
+     if(object.kind==='door')this.game.doorMotionComplete(object);
+     if(object.kind==='button')this.game.runEvent(object,object.switchedOn?'AfterSwitchOnCommand':'AfterSwitchOffCommand');
+   }
+-  applyMotion(object,player) {
+-    this.modelTransforms.set(object.modelIndex,{...player.sample(),origin:player.motion.origin});
++  applyMotion(object,player,pose=player.sample()) {
++    this.modelTransforms.set(object.modelIndex,{...pose,origin:player.motion.origin});
+   }
+   update(dt) {
+     this.time+=dt;
+     this.updateBossMusic();
+     for(const [id,player] of this.players) {
+       const object=player.object;
+-      if(player.playing){player.update(dt);this.applyMotion(object,player);}
++      if(player.playing)this.applyMotion(object,player,player.update(dt));
+     }
+     if(this.camera?.duration>0&&this.time-this.camera.start>=this.camera.duration)this.camera=null;
+     if(this.pendingCutsceneStop&&!this.isDialoguePlaying())this.finishCutscene(this.pendingCutsceneStop.fade);
+--- before/src/hud.js
++++ src/hud.js
+@@ -38,20 +38,38 @@
+   return {scale,x:(width-drawWidth)/2,y:(height-drawHeight)/2,logicalWidth:drawWidth/scale,logicalHeight:(drawHeight-inset)/scale};
+ }
+ export class OriginalHud {
+-  constructor(canvas){this.canvas=canvas;this.context=canvas.getContext('2d');this.ready=this.load();}
++  constructor(canvas){
++    this.canvas=canvas;this.context=canvas.getContext('2d');this.lastDraw=null;
++    canvas.addEventListener('contextlost',()=>this.invalidate());
++    canvas.addEventListener('contextrestored',()=>this.invalidate());
++    this.ready=this.load();
++  }
++  invalidate(){this.lastDraw=null;}
+   async load(){
+     const response=await fetch('assets/hud/manifest.json');if(!response.ok)throw new Error('Originele HUD ontbreekt. Voer tools/import_hud.py uit.');
+     this.manifest=await response.json();this.atlas=new Image();this.atlas.src='assets/hud/'+this.manifest.atlas;await this.atlas.decode();
+   }
+   render(state,totalPotions,enemy,viewWidth,viewHeight,{bottomInset=0}={}){
+-    if(!this.atlas?.complete||!this.manifest)return;
++    if(!this.atlas?.complete||!this.manifest){this.invalidate();return;}
+     const canvas=this.canvas,rect=canvas.getBoundingClientRect(),pixelRatio=window.devicePixelRatio||1;
+     const width=Math.max(1,Math.round(rect.width*pixelRatio)),height=Math.max(1,Math.round(rect.height*pixelRatio));
+-    if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}
++    if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;this.invalidate();}
++    const target=enemy&&(enemy.kind===undefined||enemy.kind==='enemy')&&enemy.health>0?enemy:null;
++    // Gameplay/targets mutate in place. Cache their drawn values, together
++    // with the loaded artwork and layout, rather than object identities.
++    const draw=[this.atlas,this.atlas.currentSrc||this.atlas.src,this.manifest,this.manifest.width,this.manifest.height,
++      canvas.width,canvas.height,viewWidth,viewHeight,pixelRatio,bottomInset,
++      state.health,state.maxHealth||10,state.lives,state.potions,totalPotions,state.score,
++      target?enemyPortrait(target):null,target?.health,target?(target.maxHealth||target.health):null];
++    if(this.lastDraw&&draw.every((value,index)=>Object.is(value,this.lastDraw[index])))return;
++    // Resizing/restoring a canvas clears it. A failed draw must also leave
++    // the next frame dirty instead of retaining a partially cleared image.
++    this.invalidate();
+     const ctx=this.context;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,width,height);
+     // The game canvas is fitted without stretching, including fixed 4:3 modes.
+     const {scale,x,y,logicalWidth,logicalHeight}=hudViewport(this.manifest,width,height,viewWidth,viewHeight,{bottomInset,pixelRatio});
+     ctx.setTransform(scale,0,0,scale,x,y);ctx.imageSmoothingEnabled=true;
+     for(const c of hudCommands(this.manifest,state,totalPotions,enemy,logicalWidth,logicalHeight))ctx.drawImage(this.atlas,c.sx,c.sy,c.w,c.h,c.x,c.y,c.w,c.h);
++    this.lastDraw=draw;
+   }
+ }
+--- before/src/main.js
++++ src/main.js
+@@ -434,7 +434,10 @@
+ function renderHud(){
+   if(!gameplay||!world)return;
+   const state=gameplay.state;
+-  for(const key of ['health','lives','score','potions','mirror'])$(key).textContent=state[key]||0;
++  for(const key of ['health','lives','score','potions','mirror']) {
++    const element=$(key),value=String(state[key]||0);
++    if(element.textContent!==value)element.textContent=value;
++  }
+   originalHud.render(state,gameplay.totalPotions,world.targeting?.locked?world.targeting.target:null,$('game').width,$('game').height,{bottomInset:touchEnabled&&!controllerActive?200:0});
+ }
+ function updateSkipIndicator(){

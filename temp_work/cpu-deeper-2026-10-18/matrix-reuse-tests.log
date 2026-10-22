@@ -1,0 +1,16 @@
+✔ beam scratch vectors preserve exact previous vertices, colours and ribbon UVs across consecutive rays (2.481534ms)
+✔ discs and custom coloured quads preserve earlier batch data, capacity and upload state (0.568237ms)
+✔ precomputed light distances retain stable ties, player priority, eligibility and eight-light limit (0.406778ms)
+✔ light order matches previous calculation after camera, light position and radius changes (1.47396ms)
+✔ actor lighting reads freshly updated scene matrices for mounted parts and debris without ancestor refreshes (2.836192ms)
+✔ prepared lighting reuses fresh managed matrices and updates new player/debris ancestor chains (4.730489ms)
+✔ a direct lighting call after moving a managed actor refreshes its current pose (0.551696ms)
+✔ effect exceptions cannot leave matrix reuse enabled for a later frame or direct caller (0.501707ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 92.605946

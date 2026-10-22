@@ -1,0 +1,40 @@
+✖ higher fall-pocket history cannot bypass a door beyond the local probe (4.954992ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 46.440636
+
+✖ failing tests:
+
+test at tests/movement-recovery.test.mjs:353:1
+✖ higher fall-pocket history cannot bypass a door beyond the local probe (4.954992ms)
+  AssertionError [ERR_ASSERTION]: the return segment must not cross an authored door
+  + actual - expected
+  
+  + {
+  +   grounded: true,
+  +   position: [
+  +     46,
+  +     100.05,
+  +     150
+  +   ],
+  +   reason: 'fall-pocket'
+  + }
+  - null
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/movement-recovery.test.mjs:362:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { position: [ 46, 100.05, 150 ], grounded: true, reason: 'fall-pocket' },
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

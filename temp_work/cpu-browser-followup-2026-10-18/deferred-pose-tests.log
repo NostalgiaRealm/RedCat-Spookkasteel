@@ -1,0 +1,43 @@
+✔ actor orientation applies native world-axis script and spin rotations before the brush rotation (1.045763ms)
+✔ original castle balls and cave rocks spin one revolution per second in opposite authored directions (1.014753ms)
+✔ attached actor and pickup anchors rotate about the model pivot without accumulating displacement (1.981557ms)
+✔ controller Disable pauses the support without hiding its actor, whereas Hide removes both (0.748895ms)
+✔ saving preserves local actor age, script rotation and its unmodified anchor while restoring the brush pose (2.872901ms)
+✔ an off-camera actor advances its authored animation clock and resumes the current pose when approached (2.068586ms)
+✔ moving a model-attached prop refreshes its existing collision surface and Hide disables it (2.525663ms)
+✔ the frame queries attached prop collision at the newly advanced support pose without advancing its animation twice (2.157085ms)
+✔ all original decorative actors resolve their assets, explicit motions and moving-model attachments (54.499164ms)
+✔ off-camera actors release only GPU resources after hysteresis and return immediately on camera turn (3.816865ms)
+✔ shared actor geometry and textures are retained until the last resident owner leaves (0.761555ms)
+✔ distant visible actors and large transformed assemblies stay complete (0.786655ms)
+✔ near-camera preload and distance hysteresis avoid repeated uploads at the boundary (0.416638ms)
+✔ nearby actors behind PVS stay preloaded without drawing while distant visible bounds stay intact (0.497777ms)
+✔ player and nonmanaged scene consumers protect shared textures and geometry (0.582216ms)
+✔ removal and controller disposal restore original layers without changing gameplay visibility (0.544586ms)
+✔ every imported actor clip keeps exact Three.js bounds at start, interior and final poses (97.093477ms)
+✔ morph positions retain Three.js bounds and empty actors retain an empty box and zero-radius sphere (4.691149ms)
+✔ all 16 original RedCat clips produce finite, bounded animated geometry (21.909273ms)
+✔ animation advances vertices, loops and keeps instance poses separate (1.997866ms)
+✔ one-shot animation finishes without producing invalid samples (0.411727ms)
+✔ held poses do not invalidate their GPU geometry, while seeks and resumed movement do (2.218675ms)
+✔ completed poses stay cached and explicit restarts, clip changes and wraparound sample correctly (1.362552ms)
+✔ lazy actor triangles match eager sweeps through rotated, moving and newly animated props (22.524578ms)
+✔ effect batches upload only live vertices/instances through growth, shrinking and empty frames (1.613369ms)
+✔ deferred skinning preserves live bone transforms, transitions, save state and exact later vertices (64.400207ms)
+✔ orientation cache follows authored/runtime turns, rotating pickups, moving supports and independent callers (1.168792ms)
+✔ enemy transitions freeze the outgoing pose and use a 250 ms Hermite bone blend at any playback rate (18.518025ms)
+✔ rapid enemy state changes retain an outgoing pose above half weight and replace it below half (2.859061ms)
+✔ initial gameplay poses and dormant skeletons skip preview blends and retain geometry caches (4.51135ms)
+✔ paused transitions and completed one-shots leave position and normal uploads unchanged (5.353074ms)
+✔ gameplay snapshots restore the exact in-progress enemy blend and its next frame (8.513683ms)
+✔ same-frame projectile queries and actor synchronization advance an enemy transition only once (6.488956ms)
+✔ cutscenes freeze living enemy poses while visible corpses continue their death motion (4.43803ms)
+✔ Dungeon Max machine snapshots restore both barrel poses and deduplicate release-frame blending (4.111472ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 187.27481

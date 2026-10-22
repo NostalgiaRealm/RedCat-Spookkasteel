@@ -1,0 +1,40 @@
+✔ original heart ambient interpolates red to white and wraps over two seconds (1.616509ms)
+✔ stained glass uses original fullbright ambient and ordinary actors retain world lighting (0.959184ms)
+✔ actors choose their own closest two in-range lights, never the camera selection (0.397298ms)
+✔ material clones used for ghosts and death fade retain isolated lighting state when repatched (0.705526ms)
+✔ default Sun and animated ambient use native fallback settings independently of actual Sun intensity (0.235029ms)
+✔ native projectile light colours and radius are independent of sprite size and disappear with owner (2.405013ms)
+✔ authored dynamic shadow flags reach actor floor lighting without changing actor direct-light eligibility (5.194315ms)
+✔ lazy actor triangles match eager sweeps through rotated, moving and newly animated props (23.343943ms)
+✔ effect batches upload only live vertices/instances through growth, shrinking and empty frames (1.5858ms)
+✔ sprite culling rejects distant artwork while retaining large, rotated, expanded and native spout edges (0.720855ms)
+✔ deferred skinning preserves live bone transforms, transitions, save state and exact later vertices (68.712008ms)
+✔ orientation cache follows authored/runtime turns, rotating pickups, moving supports and independent callers (1.026183ms)
+✔ smoke/flame saves retain every live slot, fractional tick, timers, colour and future births (25.607557ms)
+✔ every shipped spout supports bounded save state including expired flash tails (88.276606ms)
+✔ invalid save pools, nonfinite numbers and duplicate emitter ids are rejected (0.468037ms)
+✔ world renderer hooks preserve saved smoke immediately without warm-up or catch-up (7.272411ms)
+✔ knight fragments restore actual positions, spin, contact history and fade without retracing history (6.023599ms)
+✔ legacy knight saves still replay once and malformed snapshots never create unbounded fragments (2.179485ms)
+✔ fairy save preserves current seek/hover, random stream, fractional tick and pulse history (31.797696ms)
+✔ departure saves restore living particles without resurrecting the fairy or replaying the burst (10.755768ms)
+✔ reused and dormant slots retain oscillator state across saves and later activations (27.718553ms)
+✔ snapshot copies never share live state and malformed unbounded pools or paths are rejected (1.997547ms)
+✔ real gameplay saves restore fairy draw buffers before ticking and resume only one idle loop (49.673266ms)
+✔ skip after restore clears the saved tail and does not resume an idle sound on the next tick (20.354763ms)
+✔ legacy age-only fairy saves remain supported without replaying their appearance cue (13.461519ms)
+✔ native clock-face heading agrees between player camera and +Z-front character assets (0.661905ms)
+✔ actual first Fleurifee rcshow script makes RedCat face her instead of empty space (34.795485ms)
+✔ UFO authored XYZ turns multiply about world axes in native order (8.228275ms)
+✔ normal jump keeps the descending half of jump1 at native speed through the apex (0.258689ms)
+✔ a slight ledge does not trigger the long-drop motion; native >80 floor-gap transition does (0.176399ms)
+✔ Fleurifee has original masked layers, orbit trails plus secondary stars, finite lifetime and radius110 light (32.238913ms)
+✔ a completed fairy lifetime can be enabled again by a later dialogue script (1.951137ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 264.944408

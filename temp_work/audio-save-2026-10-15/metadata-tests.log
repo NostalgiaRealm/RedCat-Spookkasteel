@@ -1,0 +1,16 @@
+✔ restores music layers, native fade phase and remembered tracks without changing scheduling (2.354524ms)
+✔ restores overlapping pickup tails, keyed effects and delayed replay countdown without rerandomizing (0.942084ms)
+✔ restored dialogue keeps active offset and FIFO; reconstruction and stale callbacks never duplicate lines (0.570356ms)
+✔ metadata-delayed seeks never play an introduction and respect pause/reset while pending (0.401667ms)
+✔ immediate saves retain a pending seek even when HAVE_NOTHING accepts it but reports zero (0.479457ms)
+✔ legacy/cross-level states leave reconstructed playback untouched; malformed entries are bounded (0.953474ms)
+✔ decoded WAV voices restore offsets across decode, pause and cancellation without stale playback (4.001554ms)
+✔ matching reconstructed moving emitter binding survives playback restoration (0.239639ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 43.47444

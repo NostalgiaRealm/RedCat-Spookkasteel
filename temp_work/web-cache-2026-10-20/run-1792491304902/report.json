@@ -1,0 +1,88 @@
+{
+  "out": "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/web-cache-2026-10-20/run-1792491304902",
+  "scope": "Isolated loopback HTTP-cache fixture; no live browser, deployment, or campaign-completion test.",
+  "checks": [
+    "A fresh document and current world reproduce the original TypeError using the cached v0.9.9 actor.",
+    "Actual regenerated entry page loads the current actor graph and Continue restores the saved adventure; pause follows immediately.",
+    "Desktop Continue and a narrow-viewport reload request only revisioned JavaScript under /redcatspookkasteel/."
+  ],
+  "revision": "d9dab5e182c57958e1008ae8",
+  "actorSources": {
+    "oldTag": "v0.9.9",
+    "oldSha256": "5f31a6bb3738388f854704a5188e37f6daf66813e5a42933c23a648b8d3a99a0",
+    "currentSha256": "9b65f6e0574577f1986f41837ad81ed2c62dd08d62173c8c06a720c5d40d5b34"
+  },
+  "saveSource": {
+    "path": "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/graveyard-sky-gap-2026-10-09/live-autosave.json",
+    "sha256": "f879117bb0ad921d5f9e8cac01c10ffaf808a7a90b2c75d7935044923ee25bdb",
+    "level": "lvl02a",
+    "unchanged": true
+  },
+  "base": "http://127.0.0.1:40049/redcatspookkasteel/",
+  "warm": {
+    "settleType": "undefined"
+  },
+  "mixed": {
+    "settleType": "undefined",
+    "error": {
+      "name": "TypeError",
+      "message": "this.actorResidency?.settle is not a function",
+      "stack": "TypeError: this.actorResidency?.settle is not a function\n    at Object.settleActorTextures (http://127.0.0.1:40049/redcatspookkasteel/src/world.js:1187:32)\n    at http://127.0.0.1:40049/redcatspookkasteel/__cache-mixed.html:8:55"
+    },
+    "worldMethod": "async settleActorTextures(){\n    this.updateRenderResidency();this.updateActorTextureResidency();\n    await this.actorResidency?.settle();await this.actorTextures?.settle();\n    this.updateRenderResidency();this.updateActorTextureResidency();\n  }",
+    "resource": [
+      {
+        "transferSize": 0,
+        "encodedBodySize": 7387
+      }
+    ],
+    "unversionedActorRequests": 1
+  },
+  "fixedMenu": {
+    "mode": "menu",
+    "continueVisible": true,
+    "fatalVisible": false,
+    "entry": "http://127.0.0.1:40049/redcatspookkasteel/src/main.js?v=d9dab5e182c57958e1008ae8",
+    "styles": [
+      "http://127.0.0.1:40049/redcatspookkasteel/src/style.css?v=d9dab5e182c57958e1008ae8",
+      "http://127.0.0.1:40049/redcatspookkasteel/src/touch-controls.css?v=d9dab5e182c57958e1008ae8",
+      "http://127.0.0.1:40049/redcatspookkasteel/src/loading-screen.css?v=d9dab5e182c57958e1008ae8"
+    ]
+  },
+  "continue": {
+    "loaded": true,
+    "modeBeforePause": "playing",
+    "settleType": "function",
+    "settleCalls": 1,
+    "sameActorClass": true,
+    "level": "lvl02a",
+    "position": [
+      2148.676986280765,
+      86.26221856514852,
+      422.62053270049125
+    ],
+    "health": 10,
+    "scriptError": null,
+    "fatalVisible": false,
+    "modeAfterPause": "paused",
+    "savedBytesUnchangedBeforePause": true,
+    "savedSha256BeforePause": "f879117bb0ad921d5f9e8cac01c10ffaf808a7a90b2c75d7935044923ee25bdb",
+    "normalPauseAutosaveChangedBytes": true
+  },
+  "mobile": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "mode": "menu",
+    "continueVisible": true,
+    "fatalVisible": false
+  },
+  "network": {
+    "versionedJavaScriptRequests": 238,
+    "uniqueVersionedJavaScriptURLs": 119,
+    "unversionedActorRequests": 1
+  },
+  "passed": true,
+  "errors": []
+}

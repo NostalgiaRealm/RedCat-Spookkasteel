@@ -1,0 +1,16 @@
+✔ open-space chase position and normal smoothing remain unchanged (1.185631ms)
+✔ backing into a rear wall lifts the camera above the visible actor instead of inside it (0.900094ms)
+✔ every frame of a backwards approach and retreat stays outside model and geometry (7.694723ms)
+✔ corner walls still allow an overhead pose (0.248399ms)
+✔ low ceilings choose a clear external side view instead of entering the ceiling or actor (0.197889ms)
+✔ smoothing is collision-checked and cannot cut through the body between safe endpoints (0.110079ms)
+✔ a camera with no external clearance hides only the obstructing model until room returns (0.223498ms)
+✔ camera solution does not mutate actor position, intended boom or remembered view (0.138499ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 56.912694

@@ -1,0 +1,123 @@
+✔ floor broad phase keeps authored order and every nonphysical brush, rather than nearest floor (3.436869ms)
+✔ floor broad phase follows translated/rotated, disabled and restored brushes with tracked poses (1.55131ms)
+✔ floor broad phase follows translated/rotated, disabled and restored brushes with ordinary poses (0.540146ms)
+✖ level 1 moving-fragment floor samples match the full brush scan through pose changes (54.221537ms)
+✖ level 2 moving-fragment floor samples match the full brush scan through pose changes (43.395423ms)
+✖ level 3 moving-fragment floor samples match the full brush scan through pose changes (49.813344ms)
+✖ level 4 moving-fragment floor samples match the full brush scan through pose changes (66.76972ms)
+✖ level 5 moving-fragment floor samples match the full brush scan through pose changes (15.912392ms)
+✔ exact downward point trace retains the native floor node and no hull epsilon (1.191053ms)
+✔ floor uses one truncated native texel with authored shifts, not bilinear atlas samples (0.929954ms)
+✔ ordered native face bounding boxes allow twenty units around a face (0.332488ms)
+✔ ambient RGB caps each channel at native .3 after raw dynamic lightmap addition (0.379227ms)
+✔ stationary actor cache retains surfaces and invalid results without retaining light state (0.409287ms)
+✔ native model fallback samples transformed brush space and invalidates only on actual changes (0.440478ms)
+✔ first authored world hit wins over a closer brush floor, matching Exact3 order (0.830665ms)
+✔ rotated brush fallback samples the local BSP plane while the ray remains world vertical (0.210649ms)
+✔ shadow endpoints use native texture-to-world vectors and oriented plane offset (0.178678ms)
+✔ shadowed floor lights test the sampled luxel against world BSP and cache stable visibility (0.376938ms)
+✔ imported level 1 has bounded native floor samples at authored actor positions (32.945687ms)
+✔ imported level 2 has bounded native floor samples at authored actor positions (20.294995ms)
+✔ imported level 3 has bounded native floor samples at authored actor positions (24.297571ms)
+✔ imported level 4 has bounded native floor samples at authored actor positions (26.369718ms)
+✔ imported level 5 has bounded native floor samples at authored actor positions (7.553474ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 18
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 287.874892
+
+✖ failing tests:
+
+test at tests/actor-floor-lighting-broadphase.test.mjs:67:33
+✖ level 1 moving-fragment floor samples match the full brush scan through pose changes (54.221537ms)
+  AssertionError [ERR_ASSERTION]: exercise brush fallback queries
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-floor-lighting-broadphase.test.mjs:97:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/actor-floor-lighting-broadphase.test.mjs:67:33
+✖ level 2 moving-fragment floor samples match the full brush scan through pose changes (43.395423ms)
+  AssertionError [ERR_ASSERTION]: exercise brush fallback queries
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-floor-lighting-broadphase.test.mjs:97:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/actor-floor-lighting-broadphase.test.mjs:67:33
+✖ level 3 moving-fragment floor samples match the full brush scan through pose changes (49.813344ms)
+  AssertionError [ERR_ASSERTION]: exercise brush fallback queries
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-floor-lighting-broadphase.test.mjs:97:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/actor-floor-lighting-broadphase.test.mjs:67:33
+✖ level 4 moving-fragment floor samples match the full brush scan through pose changes (66.76972ms)
+  AssertionError [ERR_ASSERTION]: exercise brush fallback queries
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-floor-lighting-broadphase.test.mjs:97:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/actor-floor-lighting-broadphase.test.mjs:67:33
+✖ level 5 moving-fragment floor samples match the full brush scan through pose changes (15.912392ms)
+  AssertionError [ERR_ASSERTION]: exercise brush fallback queries
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-floor-lighting-broadphase.test.mjs:97:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

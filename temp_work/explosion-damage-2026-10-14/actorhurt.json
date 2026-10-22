@@ -1,0 +1,56 @@
+{
+  "evidence_id": "ev_cf396cdbe8f51d2f30fb20ca5ec0e0d9c7151186e964a8ae6f03ae2e5a02bcea",
+  "subject": {
+    "name": "RcHcGame.dat",
+    "digest": {
+      "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+    },
+    "format": "pe",
+    "architecture": "x86",
+    "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+  },
+  "provider": {
+    "id": "hopper",
+    "name": "Hopper Disassembler",
+    "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+  },
+  "analysis_profile": {
+    "provider": {
+      "id": "hopper",
+      "name": "Hopper Disassembler",
+      "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+    },
+    "parameters": {
+      "target_kind": "executable",
+      "target_format": "pe",
+      "architecture": "x86",
+      "available_architectures": [
+        "x86"
+      ],
+      "loader": {
+        "source": "derived",
+        "arguments": [
+          "-l",
+          "WinPE",
+          "--intel-32"
+        ]
+      }
+    },
+    "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+  },
+  "predicate_type": "rea.analysis",
+  "operation": "procedure_pseudo_code",
+  "parameters": {
+    "procedure": "0x420620"
+  },
+  "raw_result": null,
+  "normalized_result": "    eax = *dword_6b915c;\n    decomp_var_4 = esi;\n    esp = esp - 0x8;\n    decomp_var_8 = edi;\n    esi = ecx;\n    if (*dword_6b915c == 0x0) {\n            eax = sub_4bc480();\n    }\n    sub_40cf10();\n    eax = sub_565870();\n    edi = esi[0x5e];\n    esi[0x5a] = eax;\n    if (edi > 0x2) {\n            asm { fld        dword [esp+0x8+arg_0] };\n            ecx = edi - sub_60ab20();\n            if (ecx <= 0x2) {\n                    ecx = 0x2;\n            }\n            esi[0x5e] = ecx;\n            if (ecx == 0x2) {\n                    sub_505400(byte_6b9760);\n                    eax = *esi;\n                    eax = (eax[0x18])();\n            }\n            else {\n                    eax = sub_60a4a0();\n                    eax = eax & 0x80000001;\n                    bool_4 = eax != 0x0;\n                    if (!bool_4) {\n                            eax = sub_424e90();\n                            eax = (*(*eax + 0x20))();\n                    }\n                    else {\n                            eax = *esi;\n                            esp = esp - 0x4;\n                            eax = (eax[0x2f])(0x3);\n                    }\n            }\n    }\n    return eax;\n",
+  "confidence": "observed",
+  "authority": "shipped-artifact",
+  "environment": null,
+  "limitations": [
+    "Results depend on Hopper's completed static analysis."
+  ],
+  "locations": [],
+  "evidence_links": []
+}

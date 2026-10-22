@@ -1,0 +1,103 @@
+{
+  "toolchain": {
+    "gradle": "8.13",
+    "agp": "8.13.2",
+    "kotlin": "2.0.21",
+    "jdk": "Temurin 21.0.12.1+1",
+    "compileSdk": 36,
+    "targetSdk": 36,
+    "minSdk": 29,
+    "buildTools": "36.0.0",
+    "webkit": "1.14.0",
+    "activity": "1.10.1",
+    "core": "1.16.0"
+  },
+  "tasks": [
+    ":app:compileDebugKotlin",
+    ":app:testDebugUnitTest",
+    ":app:mergeDebugAssets",
+    ":app:lintDebug"
+  ],
+  "finalLog": "native-final-validation-02.log",
+  "tests": [
+    {
+      "name": "com.nostalgiarealm.redcatspookkasteel.HttpByteRangeTest",
+      "tests": "6",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-10-05T22:56:36.975Z",
+      "hostname": "fedora",
+      "time": "0.005"
+    },
+    {
+      "name": "com.nostalgiarealm.redcatspookkasteel.GameUrlsTest",
+      "tests": "4",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-10-05T22:56:36.955Z",
+      "hostname": "fedora",
+      "time": "0.018"
+    }
+  ],
+  "lintIssues": [
+    {
+      "id": "UnusedAttribute",
+      "severity": "Warning",
+      "message": "Attribute `enableOnBackInvokedCallback` is only used in API level 33 and higher (current min is 29)"
+    },
+    {
+      "id": "AndroidGradlePluginVersion",
+      "severity": "Warning",
+      "message": "A newer version of Gradle than 8.13 is available: 8.14.5"
+    },
+    {
+      "id": "GradleDependency",
+      "severity": "Warning",
+      "message": "A newer version of androidx.activity:activity than 1.10.1 is available: 1.13.0"
+    },
+    {
+      "id": "GradleDependency",
+      "severity": "Warning",
+      "message": "A newer version of androidx.core:core than 1.16.0 is available: 1.19.1"
+    },
+    {
+      "id": "GradleDependency",
+      "severity": "Warning",
+      "message": "A newer version of androidx.webkit:webkit than 1.14.0 is available: 1.17.1"
+    },
+    {
+      "id": "ObsoleteSdkInt",
+      "severity": "Warning",
+      "message": "This folder configuration (`v26`) is unnecessary; `minSdkVersion` is 29. Merge all the resources in this folder into `mipmap-anydpi`."
+    },
+    {
+      "id": "KtxExtensionAvailable",
+      "severity": "Hint",
+      "message": "Add suffix `-ktx` to enable the Kotlin extensions for this library"
+    },
+    {
+      "id": "KtxExtensionAvailable",
+      "severity": "Hint",
+      "message": "Add suffix `-ktx` to enable the Kotlin extensions for this library"
+    }
+  ],
+  "mergedAssetEntryExists": true,
+  "mergedAssetOwnershipMarkerExists": false,
+  "mergedAssetRootEntries": [
+    "asset-manifest.json",
+    "www"
+  ],
+  "applicationId": "com.nostalgiarealm.redcatspookkasteel.debug",
+  "sdk": {
+    "minSdkVersion": "29",
+    "targetSdkVersion": "36"
+  },
+  "permissions": [
+    "com.nostalgiarealm.redcatspookkasteel.debug.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "apkOrAabArtifacts": [],
+  "wrapperJarSha256": "81a82aaea5abcc8ff68b3dfcb58b3c3c429378efd98e7433460610fecd7ae45f",
+  "physicalDeviceValidation": false
+}

@@ -1,0 +1,50 @@
+✔ transparent debris has stable back/front passes in the original material-group order (3.285992ms)
+✔ reused fragment roots reset transforms, scale and opacity while lighting stays independent (0.838576ms)
+✔ cached fragment child matrices exactly match automatic TRS for moving roots, nonuniform scale and reuse (8.853684ms)
+✖ production actor lighting samples moving frozen-local fragments before any renderer matrix traversal (2.417697ms)
+✔ recycling a fragment begins a fresh native Sun lookup without clearing unrelated actors (0.358258ms)
+✔ load-time prewarming has a global budget and initializes the exact target-scene shaders and maps (0.950385ms)
+✔ idle burst capacity is released after ten seconds with one warm shader owner per artwork (0.658036ms)
+✔ opaque character fragments retain their original single pass and switch to stable transparent fade passes only when needed (0.538727ms)
+✔ nearby reservations count airborne fragments and cap preparation work and total owned entries (0.873786ms)
+✔ nearby reservations retain their needed free cohort while unrelated burst overflow expires (0.520868ms)
+✔ load-only warm draws prepare pooled lighting and restore scene state even if sampling or rendering fails (5.575281ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 10
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 106.120458
+
+✖ failing tests:
+
+test at tests/debris-render-pool.test.mjs:74:1
+✖ production actor lighting samples moving frozen-local fragments before any renderer matrix traversal (2.417697ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   1,
+  +   2,
+  +   3
+  -   101,
+  -   202,
+  -   303
+    ]
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/debris-render-pool.test.mjs:81:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 1, 2, 3 ],
+    expected: [ 101, 202, 303 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

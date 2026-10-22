@@ -1,0 +1,17 @@
+✔ ended releases the HTML player after handlers and spatial nodes (1.433991ms)
+✔ error releases the HTML player after handlers and spatial nodes (0.169929ms)
+✔ replacement, stop and reset unload released elements without unloading a remaining sound (0.282088ms)
+✔ pause/resume and a delayed loop keep their loaded resource and playback position (0.288158ms)
+✔ HTML fallback music captures its cursor before unload and resumes that cursor on return (0.405537ms)
+✔ custom disposable voices retain their own cleanup path (0.210269ms)
+✔ a released buffered music source stops and disconnects without HTML media methods (3.906996ms)
+✔ the configured pickup group completes through buffered disposal without HTML tail cleanup (0.420967ms)
+✔ unloading a pending HTML play cannot notify completion or resurrect a released record (0.453617ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 41.453647

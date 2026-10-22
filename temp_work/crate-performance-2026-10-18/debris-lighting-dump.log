@@ -1,0 +1,918 @@
+[
+  {
+    "index": 0,
+    "actor": "brcrate_s1",
+    "key": "uniforms",
+    "before": {
+      "actorAmbient": [
+        0.16862745098039217,
+        0.15294117647058825,
+        0.11764705882352941
+      ],
+      "actorAmbientMode": 0,
+      "actorSunFactor": 1,
+      "actorFillColor": [
+        2.2102969810270032,
+        1.4908669832809591,
+        0
+      ],
+      "actorFillNormal": [
+        0.18730734415767897,
+        0.7449949850672868,
+        -0.640233106805006
+      ],
+      "actorLightCount": 2,
+      "actorLightDirections": [
+        [
+          -0.27002788346589296,
+          0.5265356914605175,
+          -0.8061297090227633
+        ],
+        [
+          0.5510100479392135,
+          0.08805758892622882,
+          -0.8298396158912423
+        ]
+      ],
+      "actorLightColors": [
+        [
+          0.5544285701880085,
+          0.5544285701880085,
+          0.5544285701880085
+        ],
+        [
+          0.15497373981931095,
+          0.47460707819663983,
+          0.4261777845031052
+        ]
+      ]
+    },
+    "after": {
+      "actorAmbient": [
+        0.1803921568627451,
+        0.1607843137254902,
+        0.11764705882352941
+      ],
+      "actorAmbientMode": 0,
+      "actorSunFactor": 1,
+      "actorFillColor": [
+        2.3529411764705883,
+        1.5870818915801614,
+        0
+      ],
+      "actorFillNormal": [
+        -0.2976080586469239,
+        0.9274763884262849,
+        -0.2263117149865299
+      ],
+      "actorLightCount": 2,
+      "actorLightDirections": [
+        [
+          -0.8578535340896818,
+          0.4659449759472243,
+          0.21675468493064673
+        ],
+        [
+          -0.881020763269493,
+          0.45134397812978755,
+          0.14174282378313857
+        ]
+      ],
+      "actorLightColors": [
+        [
+          0.23323938860963586,
+          0.7142956276170099,
+          0.6414083186764987
+        ],
+        [
+          0.4340461819457347,
+          0.4340461819457347,
+          0.4340461819457347
+        ]
+      ]
+    }
+  },
+  {
+    "index": 0,
+    "actor": "brcrate_s1",
+    "key": "sun",
+    "before": {
+      "x": -1306.4674607866284,
+      "y": -238.89769096625835,
+      "z": 2341.8691521325045,
+      "height": 24.503353721927084,
+      "value": {
+        "entity": {
+          "classname": "Sun",
+          "Color": "255 172 0",
+          "DaviName": "",
+          "EntityIndex": "0",
+          "FallOffRadiusInTexels": "200",
+          "FallOffRadiusTopIntensity": "75",
+          "FallOffSecretNumber": "1",
+          "FallOffType": "2",
+          "Light": "300",
+          "Origin": "-1291 -159 2289",
+          "%name%": "Sun101"
+        },
+        "reference": [
+          -1306.4674607866284,
+          -220.52017567481303,
+          2341.8691521325045
+        ],
+        "position": [
+          -1291,
+          -159,
+          2289
+        ],
+        "normal": [
+          0.18730734415767897,
+          0.7449949850672868,
+          -0.640233106805006
+        ],
+        "color": [
+          563.6257301618858,
+          380.17108073664457,
+          0
+        ],
+        "falloff": 0.9393762169364764,
+        "score": 120334.09338956264
+      }
+    },
+    "after": {
+      "x": -1268.7502715613825,
+      "y": -244.56609728462104,
+      "z": 2305.9194820322455,
+      "height": 21.63499803560748,
+      "value": {
+        "entity": {
+          "classname": "Sun",
+          "Color": "255 172 0",
+          "DaviName": "",
+          "EntityIndex": "0",
+          "FallOffRadiusInTexels": "200",
+          "FallOffRadiusTopIntensity": "75",
+          "FallOffSecretNumber": "1",
+          "FallOffType": "2",
+          "Light": "300",
+          "Origin": "-1291 -159 2289",
+          "%name%": "Sun101"
+        },
+        "reference": [
+          -1268.7502715613825,
+          -228.33984875791543,
+          2305.9194820322455
+        ],
+        "position": [
+          -1291,
+          -159,
+          2289
+        ],
+        "normal": [
+          -0.2976080586469239,
+          0.9274763884262849,
+          -0.2263117149865299
+        ],
+        "color": [
+          600,
+          404.70588235294116,
+          0
+        ],
+        "falloff": 1,
+        "score": 128100
+      }
+    }
+  },
+  {
+    "index": 0,
+    "actor": "brcrate_s1",
+    "key": "materials",
+    "before": [
+      {
+        "side": 2,
+        "transparent": true,
+        "opacity": 1,
+        "depthWrite": true,
+        "alphaTest": 0.3,
+        "color": [
+          1,
+          1,
+          1
+        ]
+      }
+    ],
+    "after": [
+      {
+        "side": 1,
+        "transparent": true,
+        "opacity": 1,
+        "depthWrite": true,
+        "alphaTest": 0.3,
+        "color": [
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "side": 0,
+        "transparent": true,
+        "opacity": 1,
+        "depthWrite": true,
+        "alphaTest": 0.3,
+        "color": [
+          1,
+          1,
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "index": 1,
+    "actor": "brcrate_s1",
+    "key": "uniforms",
+    "before": {
+      "actorAmbient": [
+        0.3,
+        0.3,
+        0.11764705882352941
+      ],
+      "actorAmbientMode": 0,
+      "actorSunFactor": 1,
+      "actorFillColor": [
+        2.3529411764705883,
+        1.5870818915801614,
+        0
+      ],
+      "actorFillNormal": [
+        -0.43793863875336064,
+        0.8803873912841853,
+        -0.18201041166559842
+      ],
+      "actorLightCount": 2,
+      "actorLightDirections": [
+        [
+          -0.5820645572625865,
+          -0.6584561803945794,
+          0.47711247068054097
+        ],
+        [
+          -0.9440629430949424,
+          -0.042421823846739065,
+          0.3270253022878076
+        ]
+      ],
+      "actorLightColors": [
+        [
+          0.20527247046275765,
+          0.6286469407921953,
+          0.5644992937725836
+        ],
+        [
+          0.46731034981112884,
+          0.46731034981112884,
+          0.46731034981112884
+        ]
+      ]
+    },
+    "after": {
+      "actorAmbient": [
+        0.3,
+        0.3,
+        0.11764705882352941
+      ],
+      "actorAmbientMode": 0,
+      "actorSunFactor": 1,
+      "actorFillColor": [
+        2.10208611522964,
+        1.4178776934097965,
+        0
+      ],
+      "actorFillNormal": [
+        -0.492143518162067,
+        0.8703962235430718,
+        0.014323811399982444
+      ],
+      "actorLightCount": 2,
+      "actorLightDirections": [
+        [
+          -0.8001096449609055,
+          0.3686876111226881,
+          0.4731743879852114
+        ],
+        [
+          -0.8547363369355847,
+          0.4071151456306417,
+          0.3219985287545269
+        ]
+      ],
+      "actorLightColors": [
+        [
+          0.11737383430046033,
+          0.3594573675451598,
+          0.32277804432626594
+        ],
+        [
+          0.2610135833867727,
+          0.2610135833867727,
+          0.2610135833867727
+        ]
+      ]
+    }
+  },
+  {
+    "index": 1,
+    "actor": "brcrate_s1",
+    "key": "sun",
+    "before": {
+      "x": -1270.176512889744,
+      "y": -218.32062907974836,
+      "z": 2297.654389281658,
+      "height": 23.278938731401922,
+      "value": {
+        "entity": {
+          "classname": "Sun",
+          "Color": "255 172 0",
+          "DaviName": "",
+          "EntityIndex": "0",
+          "FallOffRadiusInTexels": "200",
+          "FallOffRadiusTopIntensity": "75",
+          "FallOffSecretNumber": "1",
+          "FallOffType": "2",
+          "Light": "300",
+          "Origin": "-1291 -159 2289",
+          "%name%": "Sun101"
+        },
+        "reference": [
+          -1270.176512889744,
+          -200.86142503119692,
+          2297.654389281658
+        ],
+        "position": [
+          -1291,
+          -159,
+          2289
+        ],
+        "normal": [
+          -0.43793863875336064,
+          0.8803873912841853,
+          -0.18201041166559842
+        ],
+        "color": [
+          600,
+          404.70588235294116,
+          0
+        ],
+        "falloff": 1,
+        "score": 128100
+      }
+    },
+    "after": {
+      "x": -1247.5305993547388,
+      "y": -252.97379414294437,
+      "z": 2287.734825363873,
+      "height": 22.792786230729547,
+      "value": {
+        "entity": {
+          "classname": "Sun",
+          "Color": "255 172 0",
+          "DaviName": "",
+          "EntityIndex": "0",
+          "FallOffRadiusInTexels": "200",
+          "FallOffRadiusTopIntensity": "75",
+          "FallOffSecretNumber": "1",
+          "FallOffType": "2",
+          "Light": "300",
+          "Origin": "-1291 -159 2289",
+          "%name%": "Sun101"
+        },
+        "reference": [
+          -1247.5305993547388,
+          -235.87920446989722,
+          2287.734825363873
+        ],
+        "position": [
+          -1291,
+          -159,
+          2289
+        ],
+        "normal": [
+          -0.492143518162067,
+          0.8703962235430718,
+          0.014323811399982444
+        ],
+        "color": [
+          536.0319593835582,
+          361.5588118194981,
+          0
+        ],
+        "falloff": 0.893386598972597,
+        "score": 114442.82332838967
+      }
+    }
+  },
+  {
+    "index": 1,
+    "actor": "brcrate_s1",
+    "key": "materials",
+    "before": [
+      {
+        "side": 2,
+        "transparent": true,
+        "opacity": 1,
+        "depthWrite": true,
+        "alphaTest": 0.3,
+        "color": [
+          1,
+          1,
+          1
+        ]
+      }
+    ],
+    "after": [
+      {
+        "side": 1,
+        "transparent": true,
+        "opacity": 1,
+        "depthWrite": true,
+        "alphaTest": 0.3,
+        "color": [
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "side": 0,
+        "transparent": true,
+        "opacity": 1,
+        "depthWrite": true,
+        "alphaTest": 0.3,
+        "color": [
+          1,
+          1,
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "index": 2,
+    "actor": "brcrate_s1",
+    "key": "uniforms",
+    "before": {
+      "actorAmbient": [
+        0.3,
+        0.3,
+        0.11764705882352941
+      ],
+      "actorAmbientMode": 0,
+      "actorSunFactor": 1,
+      "actorFillColor": [
+        2.3529411764705883,
+        1.5870818915801614,
+        0
+      ],
+      "actorFillNormal": [
+        -0.5324989587023596,
+        0.7729024283286485,
+        0.3450604226285321
+      ],
+      "actorLightCount": 2,
+      "actorLightDirections": [
+        [
+          -0.524778496980369,
+          -0.26343722557306315,
+          0.8094494161400031
+        ],
+        [
+          -0.7841392795569598,
+          0.016891191197120903,
+          0.6203549612244864
+        ]
+      ],
+      "actorLightColors": [
+        [
+          0.09482896833576386,
+          0.29041371552827683,
+          0.26077966292335064
+        ],
+        [
+          0.2987235278875839,
+          0.2987235278875839,
+          0.2987235278875839
+        ]
+      ]
+    },
+    "after": {
+      "actorAmbient": [
+        0.1803921568627451,
+        0.1607843137254902,
+        0.11764705882352941
+      ],
+      "actorAmbientMode": 0,
+      "actorSunFactor": 1,
+      "actorFillColor": [
+        2.0877392331378117,
+        1.4082005807831515,
+        0
+      ],
+      "actorFillNormal": [
+        -0.3983752875332884,
+        0.8810843137374376,
+        -0.25492658231066967
+      ],
+      "actorLightCount": 2,
+      "actorLightDirections": [
+        [
+          -0.919830317893545,
+          0.38926001885538253,
+          -0.04887559722977383
+        ],
+        [
+          -0.9082380006587292,
+          0.41757493053897676,
+          0.02710925201481657
+        ]
+      ],
+      "actorLightColors": [
+        [
+          0.1789254301756301,
+          0.5479591299128672,
+          0.4920449329829828
+        ],
+        [
+          0.3492560495476781,
+          0.3492560495476781,
+          0.3492560495476781
+        ]
+      ]
+    }
+  },
+  {
+    "index": 2,
+    "actor": "brcrate_s1",
+    "key": "sun",
+    "before": {
+      "x": -1257.7071340820503,
+      "y": -221.63308798940233,
+      "z": 2267.4261542742584,
+      "height": 19.07964224439789,
+      "value": {
+        "entity": {
+          "classname": "Sun",
+          "Color": "255 172 0",
+          "DaviName": "",
+          "EntityIndex": "0",
+          "FallOffRadiusInTexels": "200",
+          "FallOffRadiusTopIntensity": "75",
+          "FallOffSecretNumber": "1",
+          "FallOffType": "2",
+          "Light": "300",
+          "Origin": "-1291 -159 2289",
+          "%name%": "Sun101"
+        },
+        "reference": [
+          -1257.7071340820503,
+          -207.3233563061039,
+          2267.4261542742584
+        ],
+        "position": [
+          -1291,
+          -159,
+          2289
+        ],
+        "normal": [
+          -0.5324989587023596,
+          0.7729024283286485,
+          0.3450604226285321
+        ],
+        "color": [
+          600,
+          404.70588235294116,
+          0
+        ],
+        "falloff": 1,
+        "score": 128100
+      }
+    },
+    "after": {
+      "x": -1255.5092024746818,
+      "y": -248.17353622637413,
+      "z": 2311.7111168783363,
+      "height": 14.238326810862134,
+      "value": {
+        "entity": {
+          "classname": "Sun",
+          "Color": "255 172 0",
+          "DaviName": "",
+          "EntityIndex": "0",
+          "FallOffRadiusInTexels": "200",
+          "FallOffRadiusTopIntensity": "75",
+          "FallOffSecretNumber": "1",
+          "FallOffType": "2",
+          "Light": "300",
+          "Origin": "-1291 -159 2289",
+          "%name%": "Sun101"
+        },
+        "reference": [
+          -1255.5092024746818,
+          -237.4947911182275,
+          2311.7111168783363
+        ],
+        "position": [
+          -1291,
+          -159,
+          2289
+        ],
+        "normal": [
+          -0.3983752875332884,
+          0.8810843137374376,
+          -0.25492658231066967
+        ],
+        "color": [
+          532.373504450142,
+          359.0911480997036,
+          0
+        ],
+        "falloff": 0.88728917408357,
+        "score": 113661.74320010532
+      }
+    }
+  },
+  {
+    "index": 2,
+    "actor": "brcrate_s1",
+    "key": "materials",
+    "before": [
+      {
+        "side": 2,
+        "transparent": true,
+        "opacity": 1,
+        "depthWrite": true,
+        "alphaTest": 0.3,
+        "color": [
+          1,
+          1,
+          1
+        ]
+      }
+    ],
+    "after": [
+      {
+        "side": 1,
+        "transparent": true,
+        "opacity": 1,
+        "depthWrite": true,
+        "alphaTest": 0.3,
+        "color": [
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "side": 0,
+        "transparent": true,
+        "opacity": 1,
+        "depthWrite": true,
+        "alphaTest": 0.3,
+        "color": [
+          1,
+          1,
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "index": 3,
+    "actor": "brcrate_s1",
+    "key": "uniforms",
+    "before": {
+      "actorAmbient": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "actorAmbientMode": 0,
+      "actorSunFactor": 1,
+      "actorFillColor": [
+        2.3529411764705883,
+        1.5870818915801614,
+        0
+      ],
+      "actorFillNormal": [
+        0.36081866521332956,
+        0.8546868223576485,
+        0.37325638175636927
+      ],
+      "actorLightCount": 2,
+      "actorLightDirections": [
+        [
+          -0.00020854520705598128,
+          0.17173850068918747,
+          0.9851425500352355
+        ],
+        [
+          0.5421908320401866,
+          -0.11311610329234939,
+          0.8326066591299427
+        ]
+      ],
+      "actorLightColors": [
+        [
+          0.4503973376905101,
+          0.4503973376905101,
+          0.4503973376905101
+        ],
+        [
+          0.07978101540929454,
+          0.24432935969096453,
+          0.21939779237555998
+        ]
+      ]
+    },
+    "after": {
+      "actorAmbient": [
+        0.3,
+        0.3,
+        0.11764705882352941
+      ],
+      "actorAmbientMode": 0,
+      "actorSunFactor": 1,
+      "actorFillColor": [
+        2.3529411764705883,
+        1.5870818915801614,
+        0
+      ],
+      "actorFillNormal": [
+        -0.22622345632967106,
+        0.9728666850809682,
+        -0.0485114508732303
+      ],
+      "actorLightCount": 2,
+      "actorLightDirections": [
+        [
+          -0.44227749227648133,
+          0.4571052380058268,
+          0.7716511007011285
+        ],
+        [
+          -0.7748435841343206,
+          0.4879723257929323,
+          0.40187116018211133
+        ]
+      ],
+      "actorLightColors": [
+        [
+          0.21832404694459406,
+          0.6686173937678194,
+          0.6003911290976337
+        ],
+        [
+          0.4406287967784018,
+          0.4406287967784018,
+          0.4406287967784018
+        ]
+      ]
+    }
+  },
+  {
+    "index": 3,
+    "actor": "brcrate_s1",
+    "key": "sun",
+    "before": {
+      "x": -1315.9543428720579,
+      "y": -229.15213573694476,
+      "z": 2263.1854603779293,
+      "height": 14.722268549201715,
+      "value": {
+        "entity": {
+          "classname": "Sun",
+          "Color": "255 172 0",
+          "DaviName": "",
+          "EntityIndex": "0",
+          "FallOffRadiusInTexels": "200",
+          "FallOffRadiusTopIntensity": "75",
+          "FallOffSecretNumber": "1",
+          "FallOffType": "2",
+          "Light": "300",
+          "Origin": "-1291 -159 2289",
+          "%name%": "Sun101"
+        },
+        "reference": [
+          -1315.9543428720579,
+          -218.11043432504346,
+          2263.1854603779293
+        ],
+        "position": [
+          -1291,
+          -159,
+          2289
+        ],
+        "normal": [
+          0.36081866521332956,
+          0.8546868223576485,
+          0.37325638175636927
+        ],
+        "color": [
+          600,
+          404.70588235294116,
+          0
+        ],
+        "falloff": 1,
+        "score": 128100
+      }
+    },
+    "after": {
+      "x": -1275.2207817990522,
+      "y": -246.03758817064713,
+      "z": 2292.3837020306937,
+      "height": 25.572758266729096,
+      "value": {
+        "entity": {
+          "classname": "Sun",
+          "Color": "255 172 0",
+          "DaviName": "",
+          "EntityIndex": "0",
+          "FallOffRadiusInTexels": "200",
+          "FallOffRadiusTopIntensity": "75",
+          "FallOffSecretNumber": "1",
+          "FallOffType": "2",
+          "Light": "300",
+          "Origin": "-1291 -159 2289",
+          "%name%": "Sun101"
+        },
+        "reference": [
+          -1275.2207817990522,
+          -226.8580194706003,
+          2292.3837020306937
+        ],
+        "position": [
+          -1291,
+          -159,
+          2289
+        ],
+        "normal": [
+          -0.22622345632967106,
+          0.9728666850809682,
+          -0.0485114508732303
+        ],
+        "color": [
+          600,
+          404.70588235294116,
+          0
+        ],
+        "falloff": 1,
+        "score": 128100
+      }
+    }
+  },
+  {
+    "index": 3,
+    "actor": "brcrate_s1",
+    "key": "materials",
+    "before": [
+      {
+        "side": 2,
+        "transparent": true,
+        "opacity": 1,
+        "depthWrite": true,
+        "alphaTest": 0.3,
+        "color": [
+          1,
+          1,
+          1
+        ]
+      }
+    ],
+    "after": [
+      {
+        "side": 1,
+        "transparent": true,
+        "opacity": 1,
+        "depthWrite": true,
+        "alphaTest": 0.3,
+        "color": [
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "side": 0,
+        "transparent": true,
+        "opacity": 1,
+        "depthWrite": true,
+        "alphaTest": 0.3,
+        "color": [
+          1,
+          1,
+          1
+        ]
+      }
+    ]
+  }
+]

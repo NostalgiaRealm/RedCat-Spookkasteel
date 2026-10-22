@@ -1,0 +1,22 @@
+✔ transparent debris has stable back/front passes in the original material-group order (3.380853ms)
+✔ reused fragment roots reset transforms, scale and opacity while lighting stays independent (0.828885ms)
+✔ cached fragment child matrices exactly match automatic TRS for moving roots, nonuniform scale and reuse (8.640865ms)
+✔ production actor lighting samples moving frozen-local fragments before any renderer matrix traversal (1.93493ms)
+✔ recycling a fragment begins a fresh native Sun lookup without clearing unrelated actors (0.352308ms)
+✔ load-time prewarming has a global budget and initializes the exact target-scene shaders and maps (1.025734ms)
+✔ idle burst capacity is released after ten seconds with one warm shader owner per artwork (0.710216ms)
+✔ opaque character fragments retain their original single pass and switch to stable transparent fade passes only when needed (0.598677ms)
+✔ nearby reservations count airborne fragments and cap preparation work and total owned entries (0.889685ms)
+✔ nearby reservations retain their needed free cohort while unrelated burst overflow expires (0.532267ms)
+✔ load-only warm draws prepare pooled lighting and restore scene state even if sampling or rendering fails (2.289478ms)
+✔ prepared lighting reuses fresh managed matrices and updates new player/debris ancestor chains (4.696886ms)
+✔ a direct lighting call after moving a managed actor refreshes its current pose (0.541987ms)
+✔ effect exceptions cannot leave matrix reuse enabled for a later frame or direct caller (0.493527ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 106.236767

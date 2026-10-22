@@ -1,0 +1,23 @@
+✔ every imported actor clip keeps exact Three.js bounds at start, interior and final poses (91.21343ms)
+✔ morph positions retain Three.js bounds and empty actors retain an empty box and zero-radius sphere (4.338199ms)
+✔ all 16 original RedCat clips produce finite, bounded animated geometry (26.370739ms)
+✔ animation advances vertices, loops and keeps instance poses separate (1.44585ms)
+✔ one-shot animation finishes without producing invalid samples (1.045292ms)
+✔ held poses do not invalidate their GPU geometry, while seeks and resumed movement do (2.958479ms)
+✔ completed poses stay cached and explicit restarts, clip changes and wraparound sample correctly (1.188172ms)
+✔ enemy transitions freeze the outgoing pose and use a 250 ms Hermite bone blend at any playback rate (18.477446ms)
+✔ rapid enemy state changes retain an outgoing pose above half weight and replace it below half (2.681921ms)
+✔ initial gameplay poses and dormant skeletons skip preview blends and retain geometry caches (4.083391ms)
+✔ paused transitions and completed one-shots leave position and normal uploads unchanged (5.089393ms)
+✔ gameplay snapshots restore the exact in-progress enemy blend and its next frame (6.985999ms)
+✔ same-frame projectile queries and actor synchronization advance an enemy transition only once (3.083257ms)
+✔ cutscenes freeze living enemy poses while visible corpses continue their death motion (3.042008ms)
+✔ Dungeon Max machine snapshots restore both barrel poses and deduplicate release-frame blending (3.709463ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 153.38951

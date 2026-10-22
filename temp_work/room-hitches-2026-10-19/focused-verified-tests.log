@@ -1,0 +1,32 @@
+✔ visible room geometry and textures no longer activate in an unbounded burst (27.276357ms)
+✔ explicit load settling drains bounded preparation without needing the game frame loop (62.089717ms)
+✔ leaving a room cancels its queued geometry and image preparation (5.413828ms)
+✔ returning during a cancelled upload microtask reacquires real maps instead of activating null artwork (63.171451ms)
+✔ actors wait for warmed buffers, share preparation across owners and remain independent of gameplay visibility (6.387972ms)
+✔ actors just outside the camera view prepare ahead of turns without drawing or admitting unrelated rooms (1.219613ms)
+✔ closed-door preloads do not hold the complete current room; opening the doorway makes its artwork required (22.507465ms)
+✔ actual transparency metadata covers every original level texture and distinguishes Castle wood from Graveyard grilles (38.963076ms)
+✔ camera travel prefetch is capped and teleports never project remote loading neighborhoods (1.454111ms)
+✔ decoded actor maps upload through the frame queue before becoming render-ready (4.767901ms)
+✔ explicit actor load settling pumps bounded work and yields rather than deadlocking before the first frame (0.871925ms)
+✔ visible and pinned maps outrank background requests without retaining old priority forever (0.620397ms)
+✔ an expired decoded map skips graphics preparation and can be requested again (0.485388ms)
+✔ a fresh owner of the same map keeps an already decoded request alive (0.490297ms)
+✔ level disposal resolves staged actor work without a future frame or a disposed-handle upload (0.403098ms)
+✔ preparation failures propagate through settle and never expose a ready placeholder (0.636986ms)
+✔ without a shared work queue the standalone actor loader remains immediately usable (0.205639ms)
+✔ GPU eviction invalidates readiness and re-entry budgets a retained decoded-image upload without fetching again (0.579326ms)
+✔ GPU-evicted retained images still expire and a later owner fetches fresh artwork (1.085164ms)
+✔ streaming preparation shares one frame budget, prioritizes visible work and cancels obsolete rooms (10.09891ms)
+✔ a burst of tiny jobs is capped even on a fast CPU and explicit loading yields between budgets (0.426348ms)
+✔ preparation errors propagate, while disposing cancels all queued work without running it (0.889954ms)
+✔ GPU preparation is deduplicated, draws zero triangles privately, restores state and rewarms after eviction (11.370402ms)
+✔ obsolete actor buffer uploads are cancelled and GPU exceptions leave the displayed target unchanged (9.328084ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 289.505103

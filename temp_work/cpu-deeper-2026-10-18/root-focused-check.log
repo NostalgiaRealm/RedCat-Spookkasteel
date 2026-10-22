@@ -1,0 +1,36 @@
+✔ managed candidate grid preserves exact ordered contacts for seeded actor sweeps and filters (47.53786ms)
+✔ same-cell motion and state changes reuse candidates while contacts remain current (1.066203ms)
+✔ cell boundaries retain the existing contact epsilon on every axis and sign (0.834345ms)
+✔ oversized actors and long rays fall back conservatively with the authored tie order (0.275238ms)
+✔ managed append, removal and conservative pose bounds stay synchronized (0.267588ms)
+✔ lazy actor triangles match eager sweeps through rotated, moving and newly animated props (20.964943ms)
+✔ effect batches upload only live vertices/instances through growth, shrinking and empty frames (1.714048ms)
+✔ sprite culling rejects distant artwork while retaining large, rotated, expanded and native spout edges (0.704946ms)
+✔ deferred skinning preserves live bone transforms, transitions, save state and exact later vertices (63.308269ms)
+✔ camera re-entry and hidden collision queries resolve the current pose without advancing its clock (1.944538ms)
+✔ a disabled animator retains its last evaluated pose even if a new clip is selected before skinning (1.158483ms)
+✔ orientation cache follows authored/runtime turns, rotating pickups, moving supports and independent callers (1.033833ms)
+✔ a translating brush sweeps a stationary player instead of trapping or passing through the hull (5.446934ms)
+✔ a hinged door sweeps its arc and leaves RedCat free to move beside it (4.56902ms)
+✔ a wall-blocked door rejects its movement and cannot crush the player or teleport through a wall (1.740398ms)
+✔ the same brush transaction carries moving floors and refuses a ceiling crush (0.876104ms)
+✔ only committed support carrying contributes to takeoff momentum, never rejected moves or side pushes (5.811593ms)
+✔ world motion handoff adds actual platform carry to a jump and resets support velocity on the next frame (5.214646ms)
+✔ carrying ignores the floor own mounted prop at its previous pose while unrelated props still block (2.162916ms)
+✔ no-clip and disabled trigger brushes never push or stall the player (0.193409ms)
+✔ rejected motion segments wait before emitting their event or completion and resume without repeats (0.648635ms)
+✔ a motion event teleport supersedes the displacement already accepted before that event (2.639513ms)
+✔ the original tower witch door does not strand the player inside its opening leaf (21.714839ms)
+✔ beam scratch vectors preserve exact previous vertices, colours and ribbon UVs across consecutive rays (2.616133ms)
+✔ discs and custom coloured quads preserve earlier batch data, capacity and upload state (0.603826ms)
+✔ precomputed light distances retain stable ties, player priority, eligibility and eight-light limit (0.418937ms)
+✔ light order matches previous calculation after camera, light position and radius changes (1.57056ms)
+✔ actor lighting reads freshly updated scene matrices for mounted parts and debris without ancestor refreshes (2.955681ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 179.185304

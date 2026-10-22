@@ -1,0 +1,173 @@
+✖ selected spider hit interrupts dormant movement and survives reload (5.072332ms)
+✖ selected spider hit interrupts descending movement and survives reload (1.087864ms)
+✖ selected spider hit interrupts returning movement and survives reload (0.824916ms)
+✖ selected spider hit interrupts ascending movement and survives reload (0.465268ms)
+✔ sound-only spider hits leave each active ambush movement intact (1.029065ms)
+✔ dormant skeleton hurt survives fresh Gameplay restore until its original deadline (0.461118ms)
+✔ lethal damage to dormant skeleton preserves its death state on reload (0.691606ms)
+✖ a script freeze preserves a selected spider hit instead of resuming its old ascent (1.082084ms)
+✔ ordinary hits choose reaction or sound-only continuation without changing damage or awareness (3.735649ms)
+✔ selected hits during hurt keep its original pose deadline and entry sound (0.246929ms)
+✔ stone inactive immunity alerts on the first hit, and fresh alert wake follows its hit reaction (1.590032ms)
+✔ a sound-only hit wakes stone enemies through ordinary alert without cancelling another state (0.188709ms)
+✔ reaction choice and pending stone alert survive save/load and script freezes (2.483986ms)
+✔ lethal ordinary damage cancels all pending attacks and awards only one defeat (0.511497ms)
+✔ Bone Brutus only accepts damage on its native one-in-three hit branch (0.238779ms)
+✔ spider contact cooldown survives hurt and expires while still hurt (4.551955ms)
+✔ bat contact cooldown survives hurt and expires while still hurt (0.534898ms)
+✔ ghost contact cooldown survives hurt and expires while still hurt (0.289319ms)
+✔ zombie contact cooldown survives hurt and expires while still hurt (0.341218ms)
+✔ guardian contact cooldown survives hurt and expires while still hurt (0.314959ms)
+✖ reloading a hurt touching enemy preserves the remaining independent contact cooldown (2.188367ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 15
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 90.679619
+
+✖ failing tests:
+
+test at tests/enemy-ambush-hit.test.mjs:26:27
+✖ selected spider hit interrupts dormant movement and survives reload (5.072332ms)
+  AssertionError [ERR_ASSERTION]: dormant cannot replace the selected hit animation
+  
+  'idle' !== 'hurt'
+  
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/enemy-ambush-hit.test.mjs:35:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'idle',
+    expected: 'hurt',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/enemy-ambush-hit.test.mjs:26:27
+✖ selected spider hit interrupts descending movement and survives reload (1.087864ms)
+  AssertionError [ERR_ASSERTION]: descending cannot keep moving its destroyed child
+  + actual - expected
+  
+    [
+      0,
+  +   37,
+  -   50,
+      0
+    ]
+  
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/enemy-ambush-hit.test.mjs:37:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 0, 37, 0 ],
+    expected: [ 0, 50, 0 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/enemy-ambush-hit.test.mjs:26:27
+✖ selected spider hit interrupts returning movement and survives reload (0.824916ms)
+  AssertionError [ERR_ASSERTION]: returning cannot replace the selected hit animation
+  
+  'walk' !== 'hurt'
+  
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/enemy-ambush-hit.test.mjs:35:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'walk',
+    expected: 'hurt',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/enemy-ambush-hit.test.mjs:26:27
+✖ selected spider hit interrupts ascending movement and survives reload (0.465268ms)
+  AssertionError [ERR_ASSERTION]: ascending cannot keep moving its destroyed child
+  + actual - expected
+  
+    [
+      0,
+  +   63,
+  -   50,
+      0
+    ]
+  
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/enemy-ambush-hit.test.mjs:37:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 0, 63, 0 ],
+    expected: [ 0, 50, 0 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/enemy-ambush-hit.test.mjs:76:1
+✖ a script freeze preserves a selected spider hit instead of resuming its old ascent (1.082084ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      0,
+  +   66,
+  -   50,
+      0
+    ]
+  
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/enemy-ambush-hit.test.mjs:83:54)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 0, 66, 0 ],
+    expected: [ 0, 50, 0 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/enemy-touch-hit.test.mjs:39:1
+✖ reloading a hurt touching enemy preserves the remaining independent contact cooldown (2.188367ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  10 !== 19
+  
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/enemy-touch-hit.test.mjs:43:29)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 10,
+    expected: 19,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

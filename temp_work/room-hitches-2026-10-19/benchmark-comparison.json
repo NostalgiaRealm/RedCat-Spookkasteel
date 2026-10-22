@@ -1,0 +1,172 @@
+{
+  "beforeReport": "before-walk-solid-camera-1792416041054/report.json",
+  "afterReport": "after-walk-solid-camera-1792415832681/report.json",
+  "baselineRoomSelectorSHA256": "4668eee4b9e5fc511fc8c360dd3e6db23e14e9fa15f26fadb8599b7bd76d1e5f",
+  "frames": 1306,
+  "allLegsReady": true,
+  "browserErrors": [],
+  "before": {
+    "summary": {
+      "frames": 1306,
+      "cpuMs": {
+        "p95": 1.5,
+        "max": 5.399999998509884,
+        "total": 1314.6999999657273
+      },
+      "queueJobs": {
+        "p95": 0,
+        "max": 0,
+        "total": 0
+      },
+      "activations": {
+        "p95": 0,
+        "max": 47,
+        "total": 136
+      },
+      "activationMs": {
+        "p95": 0,
+        "max": 0.7999999988824129,
+        "total": 2.800000002607703
+      },
+      "bufferData": {
+        "p95": 0,
+        "max": 66,
+        "total": 273
+      },
+      "bufferSubData": {
+        "p95": 7,
+        "max": 15,
+        "total": 9103
+      },
+      "texImage2D": {
+        "p95": 0,
+        "max": 0,
+        "total": 0
+      },
+      "texSubImage2D": {
+        "p95": 0,
+        "max": 4,
+        "total": 12
+      },
+      "gpuSubmitMs": {
+        "p95": 0.09999999962747097,
+        "max": 0.6999999992549419,
+        "total": 15.300000002607703
+      },
+      "incompleteFrames": 4,
+      "incompletePresentedFrames": 0,
+      "finalReady": true
+    },
+    "holds": {
+      "total": 4,
+      "knownCamera": 2,
+      "unknownCamera": 2,
+      "maxConsecutive": 1
+    },
+    "world": {
+      "totalVertices": 67560,
+      "residentVertices": 3429,
+      "residentChunks": 58,
+      "totalChunks": 748,
+      "loadedTextures": 10
+    },
+    "actors": {
+      "actors": 291,
+      "residentActors": 38,
+      "renderedActors": 20,
+      "meshes": 291,
+      "residentMeshes": 38,
+      "renderedMeshes": 20,
+      "geometries": 83,
+      "residentGeometries": 15,
+      "textures": 47,
+      "residentTextures": 12
+    }
+  },
+  "after": {
+    "summary": {
+      "frames": 1306,
+      "cpuMs": {
+        "p95": 1.699999999254942,
+        "max": 4.300000000745058,
+        "total": 1444.900000007823
+      },
+      "queueJobs": {
+        "p95": 1,
+        "max": 3,
+        "total": 188
+      },
+      "activations": {
+        "p95": 0,
+        "max": 3,
+        "total": 139
+      },
+      "activationMs": {
+        "p95": 0,
+        "max": 0.40000000037252903,
+        "total": 10.899999989196658
+      },
+      "bufferData": {
+        "p95": 3,
+        "max": 12,
+        "total": 616
+      },
+      "bufferSubData": {
+        "p95": 7,
+        "max": 16,
+        "total": 9099
+      },
+      "texImage2D": {
+        "p95": 0,
+        "max": 0,
+        "total": 0
+      },
+      "texSubImage2D": {
+        "p95": 0,
+        "max": 3,
+        "total": 32
+      },
+      "gpuSubmitMs": {
+        "p95": 0.09999999962747097,
+        "max": 1.099999999627471,
+        "total": 19.40000000409782
+      },
+      "incompleteFrames": 6,
+      "incompletePresentedFrames": 0,
+      "finalReady": true
+    },
+    "holds": {
+      "total": 6,
+      "knownCamera": 0,
+      "unknownCamera": 6,
+      "maxConsecutive": 4
+    },
+    "world": {
+      "totalVertices": 67560,
+      "residentVertices": 3429,
+      "residentChunks": 58,
+      "totalChunks": 748,
+      "loadedTextures": 10
+    },
+    "actors": {
+      "actors": 291,
+      "residentActors": 40,
+      "renderedActors": 20,
+      "meshes": 291,
+      "residentMeshes": 40,
+      "renderedMeshes": 20,
+      "geometries": 83,
+      "residentGeometries": 16,
+      "textures": 47,
+      "residentTextures": 12
+    }
+  },
+  "limitations": [
+    "Manual streamed position probes with normal camera collision, not a physical campaign walkthrough.",
+    "Native auto-opening door/script clocks frozen to isolate preparation work.",
+    "CPU measurements cover the manual streaming/render submission slice only, not complete game FPS; p95 rose 1.5 to 1.7ms while maximum fell 5.4 to 4.3ms.",
+    "Headless fast host, not measured on the 2019 i3.",
+    "Conservative unknown-camera fallback intentionally remains; total heldframes rose4to6, but valid-camera holds fell2to0.",
+    "Older five-overlay baseline reports used a live modified room selector and are retained only as intermediate diagnostics."
+  ]
+}

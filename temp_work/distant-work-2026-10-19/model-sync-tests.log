@@ -1,0 +1,95 @@
+✖ stationary managed brush poses stop mesh writes while live brush states remain checked (3.403672ms)
+✖ pose map replacement, clears and new model collections do not leave stale subscriptions or transforms (0.534807ms)
+✖ ordinary mutable pose maps retain immediate numeric in-place updates (0.504418ms)
+✔ one-pass brush state preserves triggers, liquids, pickups, doors and live controller changes (22.913961ms)
+✔ pose maps publish immutable snapshots and retain ordinary Map serialization and chaining (1.204434ms)
+✔ pose notifications reflect exact numeric changes, deletes and clear including immediate away-and-back writes (0.286488ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 3
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 129.494187
+
+✖ failing tests:
+
+test at tests/distant-model-sync.test.mjs:24:1
+✖ stationary managed brush poses stop mesh writes while live brush states remain checked (3.403672ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    Vector3 {
+  +   copy: [Function (anonymous)],
+      x: 62.991907795089226,
+      y: 6.3924400887239266,
+      z: 4.802544363976061
+    }
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/distant-model-sync.test.mjs:31:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [Vector3],
+    expected: [Vector3],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/distant-model-sync.test.mjs:39:1
+✖ pose map replacement, clears and new model collections do not leave stale subscriptions or transforms (0.534807ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    Vector3 {
+  +   copy: [Function (anonymous)],
+      x: 78.99190779508922,
+      y: 6.3924400887239266,
+      z: 4.802544363976061
+    }
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/distant-model-sync.test.mjs:44:55)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [Vector3],
+    expected: [Vector3],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/distant-model-sync.test.mjs:52:1
+✖ ordinary mutable pose maps retain immediate numeric in-place updates (0.504418ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    Vector3 {
+  +   copy: [Function (anonymous)],
+      x: 190.99190779508922,
+      y: 6.3924400887239266,
+      z: 4.802544363976061
+    }
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/distant-model-sync.test.mjs:56:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [Vector3],
+    expected: [Vector3],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

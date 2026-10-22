@@ -1,0 +1,29 @@
+✔ original castle and cave StandingEnemy enums create their respective bosses (12.968423ms)
+✔ legacy swapped Max saves retain progress while discarding incompatible phases and ammunition (7.5129ms)
+✔ Dungeon Max completes native turret salvo, rise, look, lower and second salvo (2.358497ms)
+✔ Dungeon Max uses sampled difficulty salvo counts and original rise time (5.125833ms)
+✔ Boss freeze and save/load preserve a partially raised turret (2.601767ms)
+✔ Jester follows disappearance, InvisibleTime, reappearance, salvo, protected teleport (1.225848ms)
+✔ Jester teleport chooses authored locations, respects player spacing, and preserves in-place native fallback (1.603928ms)
+✔ Invisible Jester rejects damage without restarting animation or consuming RNG (0.853659ms)
+✔ Witch plays takeoff, then follows original tower waypoints in 3D and fires magic salvos (19.548165ms)
+✔ Witch enters the scripted defeat at native health threshold two (0.861719ms)
+✔ A boss hit interrupts its pending shot only when native reaction chooses a new state (1.114289ms)
+✔ Gameplay routes bosses through specialized phases and restores a moving turret without a phase reset (16.326859ms)
+✔ Gameplay freeze pauses every specialized boss phase and disabled bosses retain their initial pose (4.194294ms)
+✔ Jester actually plays and restarts the original teleport clip for disappearing and reappearing (10.287047ms)
+✔ Hidden Jester does not absorb a player pellet at its previous location (1.222128ms)
+✔ Witch threshold defeat dispatches the existing end-scene hook exactly once (0.873599ms)
+✔ Interrupting Dungeon Max during a rise preserves height then starts a fresh native salvo (1.370688ms)
+✔ Dungeon Max accepts every exposed-body hit but reacts on the native half of hits (1.326418ms)
+✔ boss hit reactions use CRT modulo and preserve a playing hurt child through repeated hits (7.99126ms)
+✔ standing bosses release committed salvos with no extra pause between shoot animations (2.731416ms)
+✔ a recovering boss never releases its canceled shot and pauses its actual hurt duration (3.580726ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 212.330755

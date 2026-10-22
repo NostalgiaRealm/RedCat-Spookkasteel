@@ -1,0 +1,55 @@
+--- before/src/world-streaming.js
++++ after/src/world-streaming.js
+@@ -171,11 +171,44 @@
+     chunk.material.users++;
+     if(!chunk.sky&&chunk.material.material.map!==map){chunk.material.material.map=map;chunk.material.material.needsUpdate=true;}
+     this.stats.residentVertices+=chunk.count;this.stats.residentChunks++;
++    this.syncFaceVisibility(chunk);
++  }
++  syncFaceVisibility(chunk) {
++    // Native Vis_VisWorld marks each surface (0x5d5719); the static BSP
++    // renderer rejects unstamped faces at 0x5b8f0b–0x5b8f14. A spatial chunk
++    // can contain faces from several rooms: one visible face must not draw
++    // every other face in that chunk. Keep all vertices resident and select
++    // whole faces through a reusable index buffer only when the PVS changes.
++    // Moving brushes use their current whole-model visibility, and depth-only
++    // sky boundaries keep the port's deliberate conservative coverage.
++    if(!chunk.resident||chunk.sky||chunk.group.model!==0)return;
++    const geometry=chunk.mesh.geometry,active=this.visibility.active,revision=this.visibility.revision;
++    if(chunk.drawGeometry===geometry&&chunk.drawVisibilityRevision===revision&&chunk.drawVisibilityActive===active)return;
++    let index=geometry.index;
++    if(!index) {
++      const ArrayType=chunk.count>65535?Uint32Array:Uint16Array;
++      index=new THREE.BufferAttribute(new ArrayType(chunk.count),1).setUsage(THREE.DynamicDrawUsage);
++      geometry.setIndex(index);
++    }
++    let count=0,offset=0,changed=false;
++    for(const [face,,size]of chunk.spans) {
++      if(!active||!this.referencedFaces[face]||this.visibility.faces[face])for(let i=offset;i<offset+size;i++) {
++        if(index.array[count]!==i){index.array[count]=i;changed=true;}count++;
++      }
++      offset+=size;
++    }
++    // Several camera/visibility updates can precede a render during loading.
++    // Keep pending dirty ranges until WebGL uploads them, including a prefix
++    // that a temporary shorter draw would otherwise leave stale on the GPU.
++    if(changed){if(count)index.addUpdateRange(0,count);index.needsUpdate=true;}
++    geometry.setDrawRange(0,count);
++    chunk.drawGeometry=geometry;chunk.drawVisibilityRevision=revision;chunk.drawVisibilityActive=active;
+   }
+   unload(chunk) {
+     if(!chunk.request)return;
+     if(chunk.resident) {
+       chunk.mesh.geometry.dispose();chunk.mesh.geometry=chunk.empty;chunk.resident=false;
++      chunk.drawGeometry=null;chunk.drawVisibilityRevision=-1;chunk.drawVisibilityActive=null;
+       this.stats.residentVertices-=chunk.count;this.stats.residentChunks--;
+       if(--chunk.material.users===0)chunk.material.material.map=null;
+     }
+@@ -249,6 +282,7 @@
+     this.readyForView=true;
+     for(const chunk of this.chunks) {
+       const drawable=chunk.resident&&chunk.inView;
++      if(drawable)this.syncFaceVisibility(chunk);
+       chunk.mesh.layers.set(drawable?0:1);this.attachChunk(chunk,drawable);
+       if(chunk.inView&&!chunk.resident)this.readyForView=false;
+     }

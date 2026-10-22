@@ -1,0 +1,303 @@
+Retained REA evidence: ev_fb006b8892a940ee73b5c599341f93e3eb025474f5156658d45f8d225e5521cd
+Subject SHA-256: e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5
+Operation: procedure_pseudo_code {'procedure': '0x49da40'}
+
+    &saved_fp = &saved_fp & 0xfffffff8;
+    var_C = *0x0;
+    *0x0 = &var_C;
+    decomp_var_30 = esi;
+    esi = ecx;
+    esp = esp - 0x34;
+    var_38 = edi;
+    eax = esi[0x200];
+    if (eax != 0x0) {
+            asm { fld        dword [esi+0x1fc] };
+            asm { fcomp      dword [esi+0x1f8] };
+            asm { fnstsw     ax };
+            if ((HIBYTE(eax) & 0x41) != 0x0) {
+                    asm { fld        dword [ebp+arg_0] };
+                    asm { fadd       dword [esi+0x1fc] };
+                    asm { fst        dword [esi+0x1fc] };
+                    asm { fcomp      dword [esi+0x1f8] };
+                    asm { fnstsw     ax };
+                    if ((HIBYTE(eax) & 0x41) == 0x0) {
+                            sub_5171f0();
+                            if (sub_4337e0() != 0x0) {
+                                    ecx = arg_4;
+                                    if (ecx == 0x0) {
+                                            edi = "NULL";
+                                            edx = "NULL";
+                                    }
+                                    else {
+                                            eax = ecx[0x1c];
+                                            if (eax == 0x0) {
+                                                    edi = 0x64a3b4;
+                                            }
+                                            else {
+                                                    edi = eax;
+                                            }
+                                            eax = ecx[0x18];
+                                            edx = 0x64a3b4;
+                                            if (eax != 0x0) {
+                                                    edx = eax;
+                                            }
+                                    }
+                                    eax = esi[0x1c];
+                                    ecx = 0x64a3b4;
+                                    if (eax != 0x0) {
+                                            ecx = eax;
+                                    }
+                                    eax = esi[0x18];
+                                    if (eax == 0x0) {
+                                            eax = 0x64a3b4;
+                                    }
+                                    asm { fld        dword [ebp+arg_0] };
+                                    esp = esp - 0x10;
+                                    asm { fstp       qword [esp+0x38+var_38] };
+                                    asm { fld        dword [esi+0x1fc] };
+                                    esp = esp - 0x8;
+                                    asm { fstp       qword [esp+0x40+var_40] };
+                                    asm { fld        dword [esi+0x1f8] };
+                                    esp = esp - 0x8;
+                                    asm { fstp       qword [esp+0x48+var_48] };
+                                    eax = sub_5ae390(&var_20, "Actor %s (%s) (DamageMax %f, DamageTaken %f) was destroyed by damage %f from %s (%s)", eax);
+                                    sub_5aff00(eax);
+                                    esp = (esp - 0x14) + 0x34 - 0x4;
+                                    sub_4040a0(0x1);
+                            }
+                            eax = sub_49d9d0();
+                            *0x0 = saved_fp;
+                            &var_20 = ebp;
+                    }
+                    else {
+                            sub_5171f0();
+                            eax = sub_4337e0();
+                            if (eax != 0x0) {
+                                    ecx = arg_4;
+                                    if (ecx == 0x0) {
+                                            edi = "NULL";
+                                            edx = "NULL";
+                                    }
+                                    else {
+                                            eax = ecx[0x1c];
+                                            if (eax == 0x0) {
+                                                    edi = 0x64a3b4;
+                                            }
+                                            else {
+                                                    edi = eax;
+                                            }
+                                            eax = ecx[0x18];
+                                            edx = 0x64a3b4;
+                                            if (eax != 0x0) {
+                                                    edx = eax;
+                                            }
+                                    }
+                                    eax = esi[0x1c];
+                                    ecx = 0x64a3b4;
+                                    if (eax != 0x0) {
+                                            ecx = eax;
+                                    }
+                                    eax = esi[0x18];
+                                    if (eax == 0x0) {
+                                            eax = 0x64a3b4;
+                                    }
+                                    asm { fld        dword [ebp+arg_0] };
+                                    esp = esp - 0x10;
+                                    asm { fstp       qword [esp+0x38+var_38] };
+                                    asm { fld        dword [esi+0x1fc] };
+                                    esp = esp - 0x8;
+                                    asm { fstp       qword [esp+0x40+var_40] };
+                                    asm { fld        dword [esi+0x1f8] };
+                                    asm { fstp       qword [esp+0x48+var_48] };
+                                    eax = sub_5ae390(&var_20, "Actor %s (%s) (DamageMax %f, DamageTaken %f) receives damage %f from %s (%s)", eax);
+                                    sub_5aff00(eax);
+                                    eax = sub_4040a0(0x1);
+                                    *0x0 = saved_fp;
+                                    &var_20 = ebp;
+                            }
+                            else {
+                                    *0x0 = var_C;
+                                    &decomp_var_2c = ebp;
+                            }
+                    }
+            }
+            else {
+                    edi = sub_5171f0();
+                    eax = edi[0x19];
+                    if (eax == 0x80000000) {
+                            eax = edi[0x6];
+                            if (eax == 0x0) {
+                                    eax = 0x64a3b4;
+                            }
+                            var_38 = eax;
+                            eax = sub_60af10(var_38);
+                            esp = (esp - 0x4) + 0x4;
+                            edi[0x19] = eax;
+                    }
+                    if (eax != 0x0) {
+                            ecx = arg_4;
+                            if (ecx == 0x0) {
+                                    edi = "NULL";
+                                    edx = "NULL";
+                            }
+                            else {
+                                    eax = ecx[0x1c];
+                                    if (eax == 0x0) {
+                                            edi = 0x64a3b4;
+                                    }
+                                    else {
+                                            edi = eax;
+                                    }
+                                    eax = ecx[0x18];
+                                    edx = 0x64a3b4;
+                                    if (eax != 0x0) {
+                                            edx = eax;
+                                    }
+                            }
+                            ecx = esi[0x1c];
+                            if (ecx == 0x0) {
+                                    ecx = 0x64a3b4;
+                            }
+                            eax = esi[0x18];
+                            if (eax == 0x0) {
+                                    eax = 0x64a3b4;
+                            }
+                            asm { fld        dword [ebp+arg_0] };
+                            decomp_var_30 = edx;
+                            esp = esp - 0x10;
+                            edx = &var_10;
+                            asm { fstp       qword [esp+0x38+var_38] };
+                            asm { fld        dword [esi+0x1fc] };
+                            esp = esp - 0x8;
+                            asm { fstp       qword [esp+0x40+var_40] };
+                            asm { fld        dword [esi+0x1f8] };
+                            esp = esp - 0x8;
+                            asm { fstp       qword [esp+0x48+var_48] };
+                            sub_5aff00(sub_5ae390(edx, "Actor %s (%s)  (DamageMax %f, DamageTaken %f) ignores damage %f from %s (%s)", eax));
+                            eax = var_C;
+                            esp = (esp - 0x14) + 0x34;
+                            if (eax != 0x0) {
+                                    ecx = eax - 0x1;
+                                    eax = *(int8_t *)(eax - 0x1);
+                                    switch (eax) {
+                                        case 0:
+                                            eax = sub_5fe5f0(ecx);
+                                            esp = (esp - 0x4) + 0x4;
+                                            *0x0 = var_C;
+                                            &decomp_var_2c = ebp;
+                                            break;
+                                        case 255:
+                                            eax = sub_5fe5f0(ecx);
+                                            esp = (esp - 0x4) + 0x4;
+                                            *0x0 = var_C;
+                                            &decomp_var_2c = ebp;
+                                            break;
+                                        default:
+                                            eax = eax - 0x1;
+                                            *(int8_t *)ecx = eax;
+                                            *0x0 = saved_fp;
+                                            &var_20 = ebp;
+                                            break;
+                                    }
+                            }
+                            else {
+                                    *0x0 = var_C;
+                                    &decomp_var_2c = ebp;
+                            }
+                    }
+                    else {
+                            *0x0 = var_C;
+                            &decomp_var_2c = ebp;
+                    }
+            }
+    }
+    else {
+            edi = sub_5171f0();
+            eax = edi[0x19];
+            if (eax == 0x80000000) {
+                    eax = edi[0x6];
+                    if (eax == 0x0) {
+                            eax = 0x64a3b4;
+                    }
+                    var_38 = eax;
+                    eax = sub_60af10(var_38);
+                    esp = (esp - 0x4) + 0x4;
+                    edi[0x19] = eax;
+            }
+            if (eax != 0x0) {
+                    ecx = arg_4;
+                    if (ecx == 0x0) {
+                            edi = "NULL";
+                            edx = "NULL";
+                    }
+                    else {
+                            eax = ecx[0x1c];
+                            if (eax == 0x0) {
+                                    edi = 0x64a3b4;
+                            }
+                            else {
+                                    edi = eax;
+                            }
+                            eax = ecx[0x18];
+                            edx = 0x64a3b4;
+                            if (eax != 0x0) {
+                                    edx = eax;
+                            }
+                    }
+                    ecx = esi[0x1c];
+                    if (ecx == 0x0) {
+                            ecx = 0x64a3b4;
+                    }
+                    eax = esi[0x18];
+                    if (eax == 0x0) {
+                            eax = 0x64a3b4;
+                    }
+                    asm { fld        dword [ebp+arg_0] };
+                    decomp_var_30 = edx;
+                    esp = esp - 0x10;
+                    edx = &var_10;
+                    asm { fstp       qword [esp+0x38+var_38] };
+                    asm { fld        dword [esi+0x1fc] };
+                    esp = esp - 0x8;
+                    asm { fstp       qword [esp+0x40+var_40] };
+                    asm { fld        dword [esi+0x1f8] };
+                    esp = esp - 0x8;
+                    asm { fstp       qword [esp+0x48+var_48] };
+                    sub_5aff00(sub_5ae390(edx, "Actor %s (%s)  (DamageMax %f, DamageTaken %f) ignores damage %f from %s (%s)", eax));
+                    eax = var_C;
+                    esp = (esp - 0x14) + 0x34;
+                    if (eax != 0x0) {
+                            ecx = eax - 0x1;
+                            eax = *(int8_t *)(eax - 0x1);
+                            switch (eax) {
+                                case 0:
+                                    eax = sub_5fe5f0(ecx);
+                                    esp = (esp - 0x4) + 0x4;
+                                    *0x0 = var_C;
+                                    &decomp_var_2c = ebp;
+                                    break;
+                                case 255:
+                                    eax = sub_5fe5f0(ecx);
+                                    esp = (esp - 0x4) + 0x4;
+                                    *0x0 = var_C;
+                                    &decomp_var_2c = ebp;
+                                    break;
+                                default:
+                                    eax = eax - 0x1;
+                                    *(int8_t *)ecx = eax;
+                                    *0x0 = saved_fp;
+                                    &var_20 = ebp;
+                                    break;
+                            }
+                    }
+                    else {
+                            *0x0 = var_C;
+                            &decomp_var_2c = ebp;
+                    }
+            }
+            else {
+                    *0x0 = var_C;
+                    &decomp_var_2c = ebp;
+            }
+    }
+    return eax;

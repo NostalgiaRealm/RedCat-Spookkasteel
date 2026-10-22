@@ -1,0 +1,17 @@
+✔ frozen physical lists visit only overlapping static brushes and preserve sweep results (3.612569ms)
+✔ moved, disabled, replaced and in-place mutated brush poses remain live in an indexed list (1.74331ms)
+✔ candidate ordering retains duplicate IDs, start-solid penetrations and the unbounded world (1.518371ms)
+✔ mutable lists retain immediate edits and non-finite hull queries use the original scan (0.316739ms)
+✔ tracked pose snapshots refit translated brushes immediately, including temporary and restored poses (2.679444ms)
+✔ tracked refits preserve disabled invalid transforms and overlapping duplicate model ordering (0.662626ms)
+✔ indexed contents retain liquid cells without collision sides through pose changes and disabling (1.010044ms)
+✔ pose maps publish immutable snapshots and retain ordinary Map serialization and chaining (1.210713ms)
+✔ pose notifications reflect exact numeric changes, deletes and clear including immediate away-and-back writes (0.295648ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 54.081849

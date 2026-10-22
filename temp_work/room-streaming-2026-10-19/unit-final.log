@@ -1,0 +1,32 @@
+✔ nearby stacked and nonadjacent rooms never allocate artwork; spatial cells are split by room ownership (7.556199ms)
+✔ the room beyond a closed doorway is prepared, and aligned open doorways preserve a farther visible room (1.672431ms)
+✔ crossing a doorway preloads the next room and promptly releases unrelated rooms even inside the distance grace radius (1.138804ms)
+✔ remote authored cameras select their own room and return safely; flying into solid exterior space retains the last valid room (1.161623ms)
+✔ actors and pooled fragment textures in unrelated rooms do not request maps or enter residency (3.465922ms)
+✔ flames and ribbons from excluded floors are omitted while large effects touching the selected room remain visible (1.7237ms)
+✔ missing room metadata falls back conservatively, without inventing a closed room (0.355268ms)
+✔ animation padding cannot assign an upstairs actor to the basement and shared admitted textures remain protected (0.912245ms)
+✔ a room change during an outstanding texture load cannot activate an obsolete room (0.734696ms)
+✖ fragment preparation excludes destructibles across a floor without limiting a real explosion (1.961779ms)
+✔ excluded flame emitters retain simulation clocks without submitting particles through a ceiling (0.837565ms)
+✔ all five chapters have exact static room ownership, including the complete Tower witch room (76.523469ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 11
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 179.667305
+
+✖ failing tests:
+
+test at tests/room-streaming.test.mjs:136:1
+✖ fragment preparation excludes destructibles across a floor without limiting a real explosion (1.961779ms)
+  TypeError: this.world.actorTextures?.prepareRoot is not a function
+      at DebrisRenderPool.create (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/src/debris-render-pool.js:47:31)
+      at DebrisRenderPool.reserve (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/src/debris-render-pool.js:89:24)
+      at DestructibleEffects.prepareNearby (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/src/destructible-effects.js:51:58)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/room-streaming.test.mjs:144:34)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)

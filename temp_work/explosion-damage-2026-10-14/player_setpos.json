@@ -1,0 +1,56 @@
+{
+  "evidence_id": "ev_1f39776dbc1fb56e3b5e22998948258929125363cde0e3efc164754cb253e507",
+  "subject": {
+    "name": "RcHcGame.dat",
+    "digest": {
+      "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+    },
+    "format": "pe",
+    "architecture": "x86",
+    "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+  },
+  "provider": {
+    "id": "hopper",
+    "name": "Hopper Disassembler",
+    "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+  },
+  "analysis_profile": {
+    "provider": {
+      "id": "hopper",
+      "name": "Hopper Disassembler",
+      "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+    },
+    "parameters": {
+      "target_kind": "executable",
+      "target_format": "pe",
+      "architecture": "x86",
+      "available_architectures": [
+        "x86"
+      ],
+      "loader": {
+        "source": "derived",
+        "arguments": [
+          "-l",
+          "WinPE",
+          "--intel-32"
+        ]
+      }
+    },
+    "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+  },
+  "predicate_type": "rea.analysis",
+  "operation": "procedure_assembly",
+  "parameters": {
+    "procedure": "0x4dbe20"
+  },
+  "raw_result": null,
+  "normalized_result": "0x4dbe20: push esi\n0x4dbe21: mov esi, dword [esp+0x4+arg_0]\n0x4dbe25: mov edx, esi\n0x4dbe27: push edi\n0x4dbe28: lea eax, dword [ecx+0x198]\n0x4dbe2e: add ecx, 0x10c\n0x4dbe34: mov edi, dword [edx]\n0x4dbe36: mov dword [eax], edi\n0x4dbe38: mov edi, dword [edx+4]\n0x4dbe3b: mov dword [eax+4], edi\n0x4dbe3e: mov edx, dword [edx+8]\n0x4dbe41: mov dword [eax+8], edx\n0x4dbe44: mov eax, dword [ecx]\n0x4dbe46: test eax, eax\n0x4dbe48: je loc_4dbe57\n0x4dbe4a: call sub_4ca920\n0x4dbe4f: mov edx, dword [eax]\n0x4dbe51: push esi\n0x4dbe52: mov ecx, eax\n0x4dbe54: call dword [edx+4]\n0x4dbe57: pop edi\n0x4dbe58: pop esi\n0x4dbe59: ret 0x4",
+  "confidence": "observed",
+  "authority": "shipped-artifact",
+  "environment": null,
+  "limitations": [
+    "Results depend on Hopper's completed static analysis."
+  ],
+  "locations": [],
+  "evidence_links": []
+}

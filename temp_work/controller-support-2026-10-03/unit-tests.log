@@ -1,0 +1,28 @@
+✔ radial deadzone removes drift and scales analog movement and look to a circular limit (2.550244ms)
+✔ standard gameplay mapping preserves independent held actions and button edges (0.364228ms)
+✔ first meaningful press is delivered while neutral connection only updates status (0.283128ms)
+✔ menu confirm and cancel fire once, with no gameplay movement or camera output (0.659476ms)
+✔ D-pad and left stick navigate with delayed repeat, immediate direction changes, and neutral release (0.859895ms)
+✔ navigation caps stalled frames without queuing repeat bursts (0.156619ms)
+✔ menu transitions suppress held confirm, cancel, and sticks until independently released (0.226518ms)
+✔ reset and disable suppress held Start and actions until release without blocking other buttons (0.192739ms)
+✔ sparse multiple controllers select by meaningful input and only selected loss signals disconnect (0.235259ms)
+✔ an idle selected controller can yield to another controller without repeating its held action edges (0.292578ms)
+✔ disconnect, replacement, and reconnect clear suppression without creating permanent lockout (0.195219ms)
+✔ nonstandard mappings, explicitly disconnected pads, and unbound buttons are ignored (0.142709ms)
+✔ unavailable or blocked API is safe, zeroes active input, and recovers on a later poll (0.305448ms)
+✔ missing values, nonfinite axes, and caller mutation do not contaminate later frames (0.175999ms)
+✔ right stick scrolls menus without changing the gameplay camera or movement (0.152229ms)
+✔ first forest hint waits for both the authored camera and cutscene, then requests ten seconds once (1.052353ms)
+✔ other levels, restored saves, keyboard starts and remembered hints do not teach touch again (0.146929ms)
+✔ leaving the forest during its opening cancels the pending hint (0.107409ms)
+✔ the original forest opening script delays the hint until its real camera sequence finishes (40.182304ms)
+✔ desktop hint follows the same opening-only timing, lifetime and persisted opt-out (0.353518ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 138.110872

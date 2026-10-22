@@ -1,0 +1,335 @@
+{
+  "hartcontainer": {
+    "source": "hartcontainer.act",
+    "sourceSha256": "3198335797d83e79f269c38eb5a49b8a8c8694be193e5e98c0cedbcd2331fc3a",
+    "importedSha256": "3198335797d83e79f269c38eb5a49b8a8c8694be193e5e98c0cedbcd2331fc3a",
+    "materials": [
+      {
+        "name": "hartcontainer",
+        "color": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "texture": "textures/hartcontainer-0.png",
+        "transparent": false
+      }
+    ],
+    "bounds": {
+      "min": [
+        -3.9961621090769768,
+        -1.6967029571533203,
+        0.07396999606862664
+      ],
+      "max": [
+        3.9961670115590096,
+        1.696702003479004,
+        6.295303619001061
+      ]
+    },
+    "settings": {
+      "scale": 3.0,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "rotationDegreesPerSecond": [
+        0.0,
+        100.0,
+        0.0
+      ],
+      "blocksPlayer": true,
+      "blocksLOS": false,
+      "canBeShot": true,
+      "destroyable": true,
+      "damageThreshold": [
+        100.0,
+        100.0
+      ],
+      "explosion": {
+        "DamagePercentage": 25.0,
+        "SizePercentage": 25.0,
+        "NrExplosions": 1.0,
+        "Electric": 0.0,
+        "SmokeOnly": 0.0,
+        "Green": 0.0
+      },
+      "debris": {
+        "Gravity": 9.8,
+        "MustFade": 1.0,
+        "TestCollision": 1.0,
+        "MustRotate": 1.0,
+        "RotationSpeed": 100.0,
+        "FloorOffset": 5.0,
+        "MinLifeTimeSeconds": 3.0,
+        "MaxLifeTimeSeconds": 4.0,
+        "Elasticity": 1.6,
+        "Friction": 0.8,
+        "AirFriction": 1.0,
+        "types": []
+      },
+      "lighting": {
+        "useSun": false,
+        "useAmbient": false,
+        "overrideAmbient": true,
+        "useDefaultSun": false,
+        "useDefaultSunOnly": false,
+        "ambientColor": [
+          255.0,
+          255.0,
+          255.0
+        ],
+        "sunColor": [
+          155.0,
+          155.0,
+          155.0
+        ],
+        "sunNormal": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "sunIntensityFactor": 1.0,
+        "maxDynamicLights": 2
+      },
+      "lightAnimation": {
+        "enabled": false,
+        "start": [
+          9.0,
+          9.0,
+          9.0
+        ],
+        "end": [
+          255.0,
+          255.0,
+          255.0
+        ],
+        "pattern": "azazazazazaz",
+        "duration": 2.0
+      }
+    }
+  },
+  "IHart": {
+    "source": "IHart.act",
+    "sourceSha256": "3ed31789cb9a695ae3503b0f4a6c559d39c1e0662385ca7d93080e8e5796b3f0",
+    "importedSha256": "3ed31789cb9a695ae3503b0f4a6c559d39c1e0662385ca7d93080e8e5796b3f0",
+    "materials": [
+      {
+        "name": "heart",
+        "color": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "texture": "textures/ihart-0.png",
+        "transparent": false
+      }
+    ],
+    "bounds": {
+      "min": [
+        -3.9961621090769768,
+        -1.6967029571533203,
+        0.07396999606862664
+      ],
+      "max": [
+        3.9961670115590096,
+        1.696702003479004,
+        6.295303619001061
+      ]
+    },
+    "settings": {
+      "scale": 1.0,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "rotationDegreesPerSecond": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "blocksPlayer": true,
+      "blocksLOS": false,
+      "canBeShot": true,
+      "destroyable": true,
+      "damageThreshold": [
+        100.0,
+        100.0
+      ],
+      "explosion": {
+        "DamagePercentage": 25.0,
+        "SizePercentage": 25.0,
+        "NrExplosions": 1.0,
+        "Electric": 0.0,
+        "SmokeOnly": 0.0,
+        "Green": 0.0
+      },
+      "debris": {
+        "Gravity": 9.8,
+        "MustFade": 1.0,
+        "TestCollision": 1.0,
+        "MustRotate": 1.0,
+        "RotationSpeed": 100.0,
+        "FloorOffset": 5.0,
+        "MinLifeTimeSeconds": 3.0,
+        "MaxLifeTimeSeconds": 4.0,
+        "Elasticity": 1.6,
+        "Friction": 0.8,
+        "AirFriction": 1.0,
+        "types": []
+      },
+      "lighting": {
+        "useSun": true,
+        "useAmbient": true,
+        "overrideAmbient": false,
+        "useDefaultSun": false,
+        "useDefaultSunOnly": false,
+        "ambientColor": [
+          155.0,
+          155.0,
+          155.0
+        ],
+        "sunColor": [
+          155.0,
+          155.0,
+          155.0
+        ],
+        "sunNormal": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "sunIntensityFactor": 1.0,
+        "maxDynamicLights": 2
+      },
+      "lightAnimation": {
+        "enabled": false,
+        "start": [
+          90.0,
+          90.0,
+          255.0
+        ],
+        "end": [
+          255.0,
+          90.0,
+          90.0
+        ],
+        "pattern": "adhkruxurkhd",
+        "duration": 2.0
+      }
+    }
+  },
+  "IHealthS": {
+    "source": "IHealthS.act",
+    "sourceSha256": "3ed31789cb9a695ae3503b0f4a6c559d39c1e0662385ca7d93080e8e5796b3f0",
+    "importedSha256": "3ed31789cb9a695ae3503b0f4a6c559d39c1e0662385ca7d93080e8e5796b3f0",
+    "materials": [
+      {
+        "name": "heart",
+        "color": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "texture": "textures/ihealths-0.png",
+        "transparent": false
+      }
+    ],
+    "bounds": {
+      "min": [
+        -3.9961621090769768,
+        -1.6967029571533203,
+        0.07396999606862664
+      ],
+      "max": [
+        3.9961670115590096,
+        1.696702003479004,
+        6.295303619001061
+      ]
+    },
+    "settings": {
+      "scale": 2.0,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "rotationDegreesPerSecond": [
+        0.0,
+        100.0,
+        0.0
+      ],
+      "blocksPlayer": true,
+      "blocksLOS": false,
+      "canBeShot": true,
+      "destroyable": true,
+      "damageThreshold": [
+        100.0,
+        100.0
+      ],
+      "explosion": {
+        "DamagePercentage": 25.0,
+        "SizePercentage": 25.0,
+        "NrExplosions": 1.0,
+        "Electric": 0.0,
+        "SmokeOnly": 0.0,
+        "Green": 0.0
+      },
+      "debris": {
+        "Gravity": 9.8,
+        "MustFade": 1.0,
+        "TestCollision": 1.0,
+        "MustRotate": 1.0,
+        "RotationSpeed": 100.0,
+        "FloorOffset": 5.0,
+        "MinLifeTimeSeconds": 3.0,
+        "MaxLifeTimeSeconds": 4.0,
+        "Elasticity": 1.6,
+        "Friction": 0.8,
+        "AirFriction": 1.0,
+        "types": []
+      },
+      "lighting": {
+        "useSun": false,
+        "useAmbient": false,
+        "overrideAmbient": true,
+        "useDefaultSun": false,
+        "useDefaultSunOnly": false,
+        "ambientColor": [
+          255.0,
+          155.0,
+          155.0
+        ],
+        "sunColor": [
+          155.0,
+          155.0,
+          155.0
+        ],
+        "sunNormal": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "sunIntensityFactor": 1.0,
+        "maxDynamicLights": 2
+      },
+      "lightAnimation": {
+        "enabled": false,
+        "start": [
+          90.0,
+          90.0,
+          255.0
+        ],
+        "end": [
+          255.0,
+          90.0,
+          90.0
+        ],
+        "pattern": "adhkruxurkhd",
+        "duration": 2.0
+      }
+    }
+  }
+}

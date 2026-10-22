@@ -1,0 +1,474 @@
+[
+  {
+    "address": "0x401160",
+    "result": {
+      "evidence_id": "ev_df9f383fada8580e2b38801796e0e63b1df5a9e4936b5532f4e5ecf52a06265a",
+      "subject": {
+        "name": "RcHcGame.dat",
+        "digest": {
+          "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+        },
+        "format": "pe",
+        "architecture": "x86",
+        "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+      },
+      "provider": {
+        "id": "hopper",
+        "name": "Hopper Disassembler",
+        "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+      },
+      "analysis_profile": {
+        "provider": {
+          "id": "hopper",
+          "name": "Hopper Disassembler",
+          "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+        },
+        "parameters": {
+          "target_kind": "executable",
+          "target_format": "pe",
+          "architecture": "x86",
+          "available_architectures": [
+            "x86"
+          ],
+          "loader": {
+            "source": "derived",
+            "arguments": [
+              "-l",
+              "WinPE",
+              "--intel-32"
+            ]
+          }
+        },
+        "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+      },
+      "predicate_type": "rea.analysis",
+      "operation": "procedure_assembly",
+      "parameters": {
+        "procedure": "0x401160"
+      },
+      "raw_result": null,
+      "normalized_result": "0x401158: nop\n0x401159: nop\n0x40115a: nop\n0x40115b: nop\n0x40115c: nop\n0x40115d: nop\n0x40115e: nop\n0x40115f: nop\n0x401160: mov eax, dword [fs:0x0]\n0x401166: push 0xffffffff\n0x401168: push 0x61f818\n0x40116d: push eax\n0x40116e: mov dword [fs:0x0], esp\n0x401175: sub esp, 0x10\n0x401178: push ebx\n0x401179: push esi\n0x40117a: push edi\n0x40117b: mov esi, ecx\n0x40117d: call sub_402cf0\n0x401182: cmp eax, 0x3\n0x401185: ja loc_4012f3\n0x40118b: jmp dword [switch_table_4013c0+eax*4]\n0x40129d: mov edi, dword [esp+48]\n0x4012a1: mov edx, dword [esp+44]\n0x4012a5: push edi\n0x4012a6: push edx\n0x4012a7: mov ecx, esi\n0x4012a9: call sub_402a80\n0x4012ae: mov ecx, eax\n0x4012b0: call sub_402d20\n0x4012b5: mov ecx, esi\n0x4012b7: call sub_402a80\n0x4012bc: mov ecx, eax\n0x4012be: call sub_402d10\n0x4012c3: test al, al\n0x4012c5: je loc_4013a9\n0x4012cb: push edi\n0x4012da: call sub_4013d0\n0x4012df: pop edi\n0x4012e0: pop esi\n0x4012e1: pop ebx\n0x4012e2: mov ecx, dword [esp+16]\n0x4012e6: mov dword [fs:0x0], ecx\n0x4012ed: add esp, 0x1c\n0x4012f0: ret 0x8\n0x401284: call sub_4014b0\n0x401289: pop edi\n0x40128a: pop esi\n0x40128b: pop ebx\n0x40128c: mov ecx, dword [esp+16]\n0x401290: mov dword [fs:0x0], ecx\n0x401297: add esp, 0x1c\n0x40129a: ret 0x8\n0x4013a9: mov ecx, dword [esp+28]\n0x4013ad: pop edi\n0x4013ae: pop esi\n0x4013af: pop ebx\n0x4013b0: mov dword [fs:0x0], ecx\n0x4013b7: add esp, 0x1c\n0x4013ba: ret 0x8\n0x401236: mov ecx, dword [esi+0x28]\n0x401239: call sub_423700\n0x40123e: mov ecx, eax\n0x401240: call sub_4a0d00\n0x401245: test al, al\n0x401247: je loc_4013a9\n0x40124d: call sub_60a4a0\n0x401252: cdq\n0x401253: mov ecx, 0x2710\n0x401258: idiv ecx\n0x40125a: mov ecx, dword [esi+0x28]\n0x40125d: mov dword [esp+48], edx\n0x401261: fild dword [esp+48]\n0x401265: fmul dword [dword_value_953267991]\n0x40126b: fstp dword [esp+48]\n0x40126f: call sub_429fd0\n0x401274: fld dword [esp+48]\n0x401278: fcomp dword [eax+0x34]\n0x40127b: mov ecx, esi\n0x40127d: fnstsw ax\n0x40127f: test ah, 0x41\n0x401282: je loc_4012da\n0x4011e1: mov edi, dword [esp+48]\n0x4011e5: mov ecx, dword [esp+44]\n0x4011e9: push edi\n0x4011ea: push ecx\n0x4011eb: mov ecx, esi\n0x4011ed: call sub_402a80\n0x4011f2: mov ecx, eax\n0x4011f4: call sub_402d20\n0x4011f9: mov ecx, esi\n0x4011fb: call sub_402a80\n0x401200: mov ecx, eax\n0x401202: call sub_402d10\n0x401207: test al, al\n0x401209: je loc_4013a9\n0x40120f: push edi\n0x401210: mov ecx, esi\n0x401212: call sub_401440\n0x401217: mov ecx, dword [esi+0x28]\n0x40121a: mov edx, dword [ecx]\n0x40121c: call dword [edx+0xc8]\n0x401222: pop edi\n0x401223: pop esi\n0x401224: pop ebx\n0x401225: mov ecx, dword [esp+16]\n0x401229: mov dword [fs:0x0], ecx\n0x401230: add esp, 0x1c\n0x401233: ret 0x8\n0x401192: mov ecx, dword [esi+0x28]\n0x401195: call sub_4288c0\n0x40119a: mov ecx, eax\n0x40119c: call sub_596c40\n0x4011a1: test al, al\n0x4011a3: je loc_4011af\n0x4011a5: mov eax, dword [esp+48]\n0x4011a9: push eax\n0x4011aa: jmp loc_4012cc\n0x4012cc: mov ecx, dword [esi+0x28]\n0x4012cf: call sub_422f70\n0x4012d4: test al, al\n0x4012d6: mov ecx, esi\n0x4012d8: je loc_401284\n0x4011af: mov ecx, dword [esi+0x28]\n0x4011b2: call sub_4288c0\n0x4011b7: mov ecx, eax\n0x4011b9: call sub_596d40\n0x4011be: test al, al\n0x4011c0: je loc_4013a9\n0x4011c6: mov ecx, esi\n0x4011c8: call sub_4013d0\n0x4011cd: pop edi\n0x4011ce: pop esi\n0x4011cf: pop ebx\n0x4011d0: mov ecx, dword [esp+16]\n0x4011d4: mov dword [fs:0x0], ecx\n0x4011db: add esp, 0x1c\n0x4011de: ret 0x8\n0x4012f3: mov al, byte [esp+48]\n0x4012f7: mov edi, aUnreachableCod_68d308\n0x4012fc: mov byte [esp+12], al\n0x401300: or ecx, 0xffffffff\n0x401303: xor eax, eax\n0x401305: xor ebx, ebx\n0x401307: repne scasb al, byte [edi]\n0x401309: not ecx\n0x40130b: dec ecx\n0x40130c: push ebp\n0x40130d: mov ebp, ecx\n0x40130f: push 0x1\n0x401311: push ebp\n0x401312: lea ecx, dword [esp+24]\n0x401316: mov dword [esp+28], ebx\n0x40131a: mov dword [esp+32], ebx\n0x40131e: mov dword [esp+36], ebx\n0x401322: call sub_401940\n0x401327: test al, al\n0x401329: je loc_40134f\n0x40132b: mov edi, dword [esp+20]\n0x40132f: mov ecx, ebp\n0x401331: mov edx, ecx\n0x401333: mov esi, aUnreachableCod_68d308\n0x401338: shr ecx, 0x2\n0x40133b: rep movsd dword [edi], dword [esi]\n0x40133d: mov ecx, edx\n0x40133f: and ecx, 0x3\n0x401342: rep movsb byte [edi], byte [esi]\n0x401344: mov eax, dword [esp+20]\n0x401348: mov dword [esp+24], ebp\n0x40134c: mov byte [eax+ebp], bl\n0x40137a: lea ecx, dword [eax-1]\n0x40137d: mov al, byte [eax-1]\n0x401380: cmp al, bl\n0x401382: je loc_4013a0\n0x401384: cmp al, 0xff\n0x401386: je loc_4013a0\n0x401388: dec al\n0x40138a: pop edi\n0x40138b: pop esi\n0x40138c: mov byte [ecx], al\n0x40138e: pop ebx\n0x40138f: mov ecx, dword [esp+16]\n0x401393: mov dword [fs:0x0], ecx\n0x40139a: add esp, 0x1c\n0x40139d: ret 0x8\n0x4013a0: push ecx\n0x4013a1: call sub_5fe5f0\n0x4013a6: add esp, 0x4\n0x40134f: lea ecx, dword [esp+16]\n0x401353: mov dword [esp+40], ebx\n0x401357: push ecx\n0x401358: push 0x84\n0x40135d: push aDworkrchorrorr_68d2d8\n0x401362: push aFalse\n0x401367: call sub_5a07f0\n0x40136c: call eax\n0x40136e: mov eax, dword [esp+36]\n0x401372: add esp, 0x10\n0x401375: cmp eax, ebx\n0x401377: pop ebp\n0x401378: je loc_4013a9",
+      "confidence": "observed",
+      "authority": "shipped-artifact",
+      "environment": null,
+      "limitations": [
+        "Results depend on Hopper's completed static analysis."
+      ],
+      "locations": [],
+      "evidence_links": []
+    }
+  },
+  {
+    "address": "0x401440",
+    "result": {
+      "evidence_id": "ev_60524dc6ac1be3abd638455192520a23b78fa534e57d8f189822106ded727962",
+      "subject": {
+        "name": "RcHcGame.dat",
+        "digest": {
+          "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+        },
+        "format": "pe",
+        "architecture": "x86",
+        "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+      },
+      "provider": {
+        "id": "hopper",
+        "name": "Hopper Disassembler",
+        "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+      },
+      "analysis_profile": {
+        "provider": {
+          "id": "hopper",
+          "name": "Hopper Disassembler",
+          "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+        },
+        "parameters": {
+          "target_kind": "executable",
+          "target_format": "pe",
+          "architecture": "x86",
+          "available_architectures": [
+            "x86"
+          ],
+          "loader": {
+            "source": "derived",
+            "arguments": [
+              "-l",
+              "WinPE",
+              "--intel-32"
+            ]
+          }
+        },
+        "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+      },
+      "predicate_type": "rea.analysis",
+      "operation": "procedure_assembly",
+      "parameters": {
+        "procedure": "0x401440"
+      },
+      "raw_result": null,
+      "normalized_result": "0x401440: push ecx\n0x401441: push esi\n0x401442: mov esi, ecx\n0x401444: push ecx\n0x401445: mov ecx, dword [esi+0x28]\n0x401448: mov eax, esp\n0x40144a: mov dword [esp+0xc+var_4], esp\n0x40144e: push eax\n0x40144f: call sub_4237d0\n0x401454: mov ecx, dword [esi+0x28]\n0x401457: call sub_428250\n0x40145c: push 0x0\n0x40145e: push 0x2\n0x401460: mov ecx, esi\n0x401462: call sub_402a10\n0x401467: call sub_60a4a0\n0x40146c: cdq\n0x40146d: mov ecx, 0x2710\n0x401472: idiv ecx\n0x401474: mov ecx, dword [esi+0x28]\n0x401477: mov dword [esp+0x8+var_4], edx\n0x40147b: fild dword [esp+0x8+var_4]\n0x40147f: fmul dword [dword_value_933741999]\n0x401485: fadd dword [dword_value_1063675494]\n0x40148b: fstp dword [esp+0x8+var_4]\n0x40148f: mov edx, dword [esp+0x8+var_4]\n0x401493: push edx\n0x401494: push 0x0\n0x401496: push 0x0\n0x401498: call sub_419b70\n0x40149d: pop esi\n0x40149e: pop ecx\n0x40149f: ret 0x4",
+      "confidence": "observed",
+      "authority": "shipped-artifact",
+      "environment": null,
+      "limitations": [
+        "Results depend on Hopper's completed static analysis."
+      ],
+      "locations": [],
+      "evidence_links": []
+    }
+  },
+  {
+    "address": "0x4014b0",
+    "result": {
+      "evidence_id": "ev_d40c7022742e200fd1887df4e5cbc8d96ff9a9fa46146c0a0ae20e837f71b6f1",
+      "subject": {
+        "name": "RcHcGame.dat",
+        "digest": {
+          "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+        },
+        "format": "pe",
+        "architecture": "x86",
+        "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+      },
+      "provider": {
+        "id": "hopper",
+        "name": "Hopper Disassembler",
+        "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+      },
+      "analysis_profile": {
+        "provider": {
+          "id": "hopper",
+          "name": "Hopper Disassembler",
+          "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+        },
+        "parameters": {
+          "target_kind": "executable",
+          "target_format": "pe",
+          "architecture": "x86",
+          "available_architectures": [
+            "x86"
+          ],
+          "loader": {
+            "source": "derived",
+            "arguments": [
+              "-l",
+              "WinPE",
+              "--intel-32"
+            ]
+          }
+        },
+        "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+      },
+      "predicate_type": "rea.analysis",
+      "operation": "procedure_assembly",
+      "parameters": {
+        "procedure": "0x4014b0"
+      },
+      "raw_result": null,
+      "normalized_result": "0x4014b0: push ecx\n0x4014b1: push esi\n0x4014b2: mov esi, ecx\n0x4014b4: mov ecx, dword [esi+0x28]\n0x4014b7: call sub_422d90\n0x4014bc: mov eax, dword [eax+0x30]\n0x4014bf: mov ecx, dword [esi+0x28]\n0x4014c2: push eax\n0x4014c3: call sub_4288c0\n0x4014c8: mov ecx, eax\n0x4014ca: call sub_5967f0\n0x4014cf: mov ecx, dword [esi+0x28]\n0x4014d2: call sub_4288c0\n0x4014d7: mov ecx, eax\n0x4014d9: call sub_596d40\n0x4014de: test al, al\n0x4014e0: je loc_4014ec\n0x4014e2: mov ecx, esi\n0x4014e4: call sub_4013d0\n0x4014e9: pop esi\n0x4014ea: pop ecx\n0x4014eb: ret\n0x4014ec: mov ecx, dword [esi+0x28]\n0x4014ef: call sub_428b40\n0x4014f4: push ecx\n0x4014f5: mov eax, esp\n0x4014f7: mov dword [esp+0xc+var_4], esp\n0x4014fb: mov dword [eax], 0x0\n0x401501: mov ecx, dword [esi+0x28]\n0x401504: call sub_428250\n0x401509: mov ecx, dword [esi+0x28]\n0x40150c: push 0x7f7fffff\n0x401511: push 0x1\n0x401513: push 0x2\n0x401515: mov edx, dword [ecx]\n0x401517: call dword [edx+0x8c]\n0x40151d: push 0x0\n0x40151f: push 0x0\n0x401521: mov ecx, esi\n0x401523: call sub_402a10\n0x401528: pop esi\n0x401529: pop ecx\n0x40152a: ret",
+      "confidence": "observed",
+      "authority": "shipped-artifact",
+      "environment": null,
+      "limitations": [
+        "Results depend on Hopper's completed static analysis."
+      ],
+      "locations": [],
+      "evidence_links": []
+    }
+  },
+  {
+    "address": "0x4018d0",
+    "result": {
+      "evidence_id": "ev_4f32ec49d17fbff503ee4c1a382655432d3858755f28b3ddf7b96a6c9fab5274",
+      "subject": {
+        "name": "RcHcGame.dat",
+        "digest": {
+          "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+        },
+        "format": "pe",
+        "architecture": "x86",
+        "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+      },
+      "provider": {
+        "id": "hopper",
+        "name": "Hopper Disassembler",
+        "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+      },
+      "analysis_profile": {
+        "provider": {
+          "id": "hopper",
+          "name": "Hopper Disassembler",
+          "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+        },
+        "parameters": {
+          "target_kind": "executable",
+          "target_format": "pe",
+          "architecture": "x86",
+          "available_architectures": [
+            "x86"
+          ],
+          "loader": {
+            "source": "derived",
+            "arguments": [
+              "-l",
+              "WinPE",
+              "--intel-32"
+            ]
+          }
+        },
+        "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+      },
+      "predicate_type": "rea.analysis",
+      "operation": "procedure_assembly",
+      "parameters": {
+        "procedure": "0x4018d0"
+      },
+      "raw_result": null,
+      "normalized_result": "0x4018d0: push 0xffffffff\n0x4018d2: push 0x61f8bb\n0x4018d7: mov eax, dword [fs:0x0]\n0x4018dd: push eax\n0x4018de: mov dword [fs:0x0], esp\n0x4018e5: push ecx\n0x4018e6: push esi\n0x4018e7: mov esi, ecx\n0x4018e9: push 0x3c\n0x4018eb: call sub_60a0b5\n0x4018f0: add esp, 0x4\n0x4018f3: mov dword [esp+0x14+var_10], eax\n0x4018f7: test eax, eax\n0x4018f9: mov dword [esp+0x14+var_4], 0x0\n0x401901: je loc_401915\n0x401903: mov ecx, dword [esp+0x14+arg_0]\n0x401907: mov edx, dword [esi+0x30]\n0x40190a: push ecx\n0x40190b: push edx\n0x40190c: mov ecx, eax\n0x40190e: call sub_405c20\n0x401913: jmp loc_401917\n0x401917: push eax\n0x401918: push 0x2\n0x40191a: mov ecx, esi\n0x40191c: mov dword [esp+0x18+ret_addr], 0xffffffff\n0x401924: call sub_402a10\n0x401929: mov ecx, dword [esp+0x10+var_8]\n0x40192d: pop esi\n0x40192e: mov dword [fs:0x0], ecx\n0x401935: add esp, 0x10\n0x401938: ret 0x4\n0x401915: xor eax, eax",
+      "confidence": "observed",
+      "authority": "shipped-artifact",
+      "environment": null,
+      "limitations": [
+        "Results depend on Hopper's completed static analysis."
+      ],
+      "locations": [],
+      "evidence_links": []
+    }
+  },
+  {
+    "address": "0x4015d5",
+    "result": {
+      "evidence_id": "ev_7911bc003a75804bcc95ac6bee5acf72a48e0202288563a841b0211e45082c85",
+      "subject": {
+        "name": "RcHcGame.dat",
+        "digest": {
+          "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+        },
+        "format": "pe",
+        "architecture": "x86",
+        "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+      },
+      "provider": {
+        "id": "hopper",
+        "name": "Hopper Disassembler",
+        "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+      },
+      "analysis_profile": {
+        "provider": {
+          "id": "hopper",
+          "name": "Hopper Disassembler",
+          "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+        },
+        "parameters": {
+          "target_kind": "executable",
+          "target_format": "pe",
+          "architecture": "x86",
+          "available_architectures": [
+            "x86"
+          ],
+          "loader": {
+            "source": "derived",
+            "arguments": [
+              "-l",
+              "WinPE",
+              "--intel-32"
+            ]
+          }
+        },
+        "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+      },
+      "predicate_type": "rea.analysis",
+      "operation": "procedure_assembly",
+      "parameters": {
+        "procedure": "0x4015d5"
+      },
+      "raw_result": null,
+      "normalized_result": "0x4015d5: sub esp, 0x10\n0x4015d8: push ebx\n0x4015d9: push esi\n0x4015da: mov esi, ecx\n0x4015dc: call sub_402cf0\n0x4015e1: xor ebx, ebx\n0x4015e3: sub eax, ebx\n0x4015e5: je loc_40176e\n0x4015eb: dec eax\n0x4015ec: je loc_40170d\n0x4015f2: dec eax\n0x4015f3: je loc_4016c5\n0x4015f9: mov al, byte [esp+0x18+arg_10]\n0x4015fd: push ebp\n0x4015fe: push edi\n0x4015ff: mov byte [esp+0x20+var_10], al\n0x401603: mov edi, aUnreachableCod_68d350\n0x401608: or ecx, 0xffffffff\n0x40160b: xor eax, eax\n0x40160d: push 0x1\n0x40160f: repne scasb al, byte [edi]\n0x401611: not ecx\n0x401613: dec ecx\n0x401614: mov dword [esp+0x24+var_C], ebx\n0x401618: mov ebp, ecx\n0x40161a: lea ecx, dword [esp+0x24+var_10]\n0x40161e: push ebp\n0x40161f: mov dword [esp+0x28+var_8], ebx\n0x401623: mov dword [esp+0x28+var_4], ebx\n0x401627: call sub_401940\n0x40162c: test al, al\n0x40162e: je loc_401654\n0x401630: mov edi, dword [esp+0x20+var_C]\n0x401634: mov ecx, ebp\n0x401636: mov edx, ecx\n0x401638: mov esi, aUnreachableCod_68d350\n0x40163d: shr ecx, 0x2\n0x401640: rep movsd dword [edi], dword [esi]\n0x401642: mov ecx, edx\n0x401644: and ecx, 0x3\n0x401647: rep movsb byte [edi], byte [esi]\n0x401649: mov eax, dword [esp+0x20+var_C]\n0x40164d: mov dword [esp+0x20+var_8], ebp\n0x401651: mov byte [eax+ebp], bl\n0x401684: lea ecx, dword [eax-1]\n0x401687: mov al, byte [eax-1]\n0x40168a: cmp al, bl\n0x40168c: je loc_4016a9\n0x40168e: cmp al, 0xff\n0x401690: je loc_4016a9\n0x401692: dec al\n0x401694: pop esi\n0x401695: mov byte [ecx], al\n0x401697: pop ebx\n0x401698: mov ecx, dword [esp+0x10+ret_addr]\n0x40169c: mov dword [fs:0x0], ecx\n0x4016a3: add esp, 0x1c\n0x4016a6: ret 0x8\n0x4016a9: push ecx\n0x4016aa: call sub_5fe5f0\n0x4016af: add esp, 0x4\n0x4016b2: pop esi\n0x4016b3: pop ebx\n0x4016b4: mov ecx, dword [esp+0x10+ret_addr]\n0x4016b8: mov dword [fs:0x0], ecx\n0x4016bf: add esp, 0x1c\n0x4016c2: ret 0x8\n0x4017ac: mov ecx, dword [esp+0x18+ret_addr]\n0x4017b0: pop esi\n0x4017b1: pop ebx\n0x4017b2: mov dword [fs:0x0], ecx\n0x4017b9: add esp, 0x1c\n0x4017bc: ret 0x8\n0x401654: lea ecx, dword [esp+0x20+var_10]\n0x401658: mov dword [esp+0x20+arg_4], ebx\n0x40165c: push ecx\n0x40165d: push 0x106\n0x401662: push aDworkrchorrorr_68d2d8\n0x401667: push aFalse\n0x40166c: call sub_5a07f0\n0x401671: call eax\n0x401673: mov eax, dword [esp+0x30+var_C]\n0x401677: add esp, 0x10\n0x40167a: cmp eax, ebx\n0x40167c: pop edi\n0x40167d: pop ebp\n0x40167e: je loc_4017ac\n0x4016c5: mov edx, dword [esp+0x18+arg_10]\n0x4016c9: mov eax, dword [esp+0x18+arg_C]\n0x4016cd: push edx\n0x4016ce: push eax\n0x4016cf: mov ecx, esi\n0x4016d1: call sub_402a80\n0x4016d6: mov ecx, eax\n0x4016d8: call sub_402d20\n0x4016dd: mov ecx, esi\n0x4016df: call sub_402a80\n0x4016e4: mov ecx, eax\n0x4016e6: call sub_402d10\n0x4016eb: test al, al\n0x4016ed: je loc_4017ac\n0x4016f3: mov ecx, esi\n0x4016f5: call sub_4085c0\n0x4016fa: pop esi\n0x4016fb: pop ebx\n0x4016fc: mov ecx, dword [esp+0x10+ret_addr]\n0x401700: mov dword [fs:0x0], ecx\n0x401707: add esp, 0x1c\n0x40170a: ret 0x8\n0x40170d: mov ecx, dword [esi+0x30]\n0x401710: call sub_423700\n0x401715: mov ecx, eax\n0x401717: call sub_4a0d00\n0x40171c: test al, al\n0x40171e: je loc_4017ac\n0x401724: mov ecx, dword [esi+0x38]\n0x401727: mov eax, dword [esi+0x34]\n0x40172a: cmp ecx, eax\n0x40172c: jge loc_401754\n0x40172e: mov ecx, dword [esi+0x30]\n0x401731: call sub_429fd0\n0x401736: mov edx, dword [eax+0x30]\n0x401739: mov ecx, esi\n0x40173b: push edx\n0x40173c: call sub_4018d0\n0x401741: pop esi\n0x401742: pop ebx\n0x401743: mov ecx, dword [esp+0x10+ret_addr]\n0x401747: mov dword [fs:0x0], ecx\n0x40174e: add esp, 0x1c\n0x401751: ret 0x8\n0x401754: mov ecx, esi\n0x401756: call sub_402d00\n0x40175b: pop esi\n0x40175c: pop ebx\n0x40175d: mov ecx, dword [esp+0x10+ret_addr]\n0x401761: mov dword [fs:0x0], ecx\n0x401768: add esp, 0x1c\n0x40176b: ret 0x8\n0x40176e: mov ecx, dword [esi+0x30]\n0x401771: call sub_423700\n0x401776: mov ecx, eax\n0x401778: call sub_4a1060\n0x40177d: mov ecx, dword [esi+0x30]\n0x401780: fstp dword [esp+0x18+arg_10]\n0x401784: call sub_429fd0\n0x401789: fld dword [esp+0x18+arg_10]\n0x40178d: fcomp dword [eax+0x24]\n0x401790: fnstsw ax\n0x401792: test ah, 0x1\n0x401795: jne loc_4017ac\n0x401797: mov ecx, esi\n0x401799: call sub_4017c0\n0x40179e: mov eax, dword [esi+0x38]\n0x4017a1: mov ecx, esi\n0x4017a3: inc eax\n0x4017a4: mov dword [esi+0x38], eax\n0x4017a7: call sub_40a6e0",
+      "confidence": "observed",
+      "authority": "shipped-artifact",
+      "environment": null,
+      "limitations": [
+        "Results depend on Hopper's completed static analysis."
+      ],
+      "locations": [],
+      "evidence_links": []
+    }
+  },
+  {
+    "address": "0x4017c0",
+    "result": {
+      "evidence_id": "ev_d384f061c217011ad32580040f26452b907a8d017ca8f2e77fc1c6c8e634f06a",
+      "subject": {
+        "name": "RcHcGame.dat",
+        "digest": {
+          "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+        },
+        "format": "pe",
+        "architecture": "x86",
+        "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+      },
+      "provider": {
+        "id": "hopper",
+        "name": "Hopper Disassembler",
+        "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+      },
+      "analysis_profile": {
+        "provider": {
+          "id": "hopper",
+          "name": "Hopper Disassembler",
+          "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+        },
+        "parameters": {
+          "target_kind": "executable",
+          "target_format": "pe",
+          "architecture": "x86",
+          "available_architectures": [
+            "x86"
+          ],
+          "loader": {
+            "source": "derived",
+            "arguments": [
+              "-l",
+              "WinPE",
+              "--intel-32"
+            ]
+          }
+        },
+        "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+      },
+      "predicate_type": "rea.analysis",
+      "operation": "procedure_assembly",
+      "parameters": {
+        "procedure": "0x4017c0"
+      },
+      "raw_result": null,
+      "normalized_result": "0x4017c0: push 0xffffffff\n0x4017c2: push 0x61f898\n0x4017c7: mov eax, dword [fs:0x0]\n0x4017cd: push eax\n0x4017ce: mov dword [fs:0x0], esp\n0x4017d5: sub esp, 0x18\n0x4017d8: push esi\n0x4017d9: mov esi, ecx\n0x4017db: mov dword [esp+0x28+var_20], esi\n0x4017df: mov eax, dword [esi+0x38]\n0x4017e2: mov ecx, dword [esi+0x34]\n0x4017e5: cmp eax, ecx\n0x4017e7: jle loc_4018ad\n0x4017ed: mov cl, byte [esp+0x28+var_21]\n0x4017f1: push ebx\n0x4017f2: push ebp\n0x4017f3: push edi\n0x4017f4: mov byte [esp+0x34+var_1C], cl\n0x4017f8: mov edi, byte_6b3f70\n0x4017fd: or ecx, 0xffffffff\n0x401800: xor eax, eax\n0x401802: xor ebx, ebx\n0x401804: push 0x1\n0x401806: repne scasb al, byte [edi]\n0x401808: not ecx\n0x40180a: dec ecx\n0x40180b: mov dword [esp+0x38+var_18], ebx\n0x40180f: mov ebp, ecx\n0x401811: lea ecx, dword [esp+0x38+var_1C]\n0x401815: push ebp\n0x401816: mov dword [esp+0x3c+var_14], ebx\n0x40181a: mov dword [esp+0x3c+var_10], ebx\n0x40181e: call sub_401940\n0x401823: test al, al\n0x401825: je loc_40184f\n0x401827: mov edi, dword [esp+0x34+var_18]\n0x40182b: mov ecx, ebp\n0x40182d: mov edx, ecx\n0x40182f: mov esi, byte_6b3f70\n0x401834: shr ecx, 0x2\n0x401837: rep movsd dword [edi], dword [esi]\n0x401839: mov ecx, edx\n0x40183b: and ecx, 0x3\n0x40183e: rep movsb byte [edi], byte [esi]\n0x401840: mov eax, dword [esp+0x34+var_18]\n0x401844: mov esi, dword [esp+0x34+var_20]\n0x401848: mov dword [esp+0x34+var_14], ebp\n0x40184c: mov byte [eax+ebp], bl\n0x401881: lea ecx, dword [eax-1]\n0x401884: mov al, byte [eax-1]\n0x401887: cmp al, bl\n0x401889: je loc_401895\n0x40188b: cmp al, 0xff\n0x40188d: je loc_401895\n0x40188f: dec al\n0x401891: mov byte [ecx], al\n0x401893: jmp loc_40189e\n0x40189e: pop edi\n0x40189f: mov dword [esp+0x30+var_18], ebx\n0x4018a3: mov dword [esp+0x30+var_14], ebx\n0x4018a7: mov dword [esp+0x30+var_10], ebx\n0x4018ab: pop ebp\n0x4018ac: pop ebx\n0x401895: push ecx\n0x401896: call sub_5fe5f0\n0x40189b: add esp, 0x4\n0x40184f: lea ecx, dword [esp+0x34+var_1C]\n0x401853: mov dword [esp+0x34+var_4], ebx\n0x401857: push ecx\n0x401858: push 0x11c\n0x40185d: push aDworkrchorrorr_68d2d8\n0x401862: push aMcurrenttimesM\n0x401867: call sub_5a07f0\n0x40186c: call eax\n0x40186e: mov eax, dword [esp+0x44+var_18]\n0x401872: add esp, 0x10\n0x401875: cmp eax, ebx\n0x401877: mov dword [esp+0x34+var_4], 0xffffffff\n0x40187f: je loc_40189e\n0x4018ad: mov ecx, dword [esi+0x2c]\n0x4018b0: call sub_42a220\n0x4018b5: mov ecx, dword [esp+0x28+var_C]\n0x4018b9: pop esi\n0x4018ba: mov dword [fs:0x0], ecx\n0x4018c1: add esp, 0x24\n0x4018c4: ret",
+      "confidence": "observed",
+      "authority": "shipped-artifact",
+      "environment": null,
+      "limitations": [
+        "Results depend on Hopper's completed static analysis."
+      ],
+      "locations": [],
+      "evidence_links": []
+    }
+  },
+  {
+    "address": "0x402d20",
+    "result": {
+      "evidence_id": "ev_428a01a76ac07ec248758b695942fa64a66ee1c884ae8d17a29ac57885100348",
+      "subject": {
+        "name": "RcHcGame.dat",
+        "digest": {
+          "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+        },
+        "format": "pe",
+        "architecture": "x86",
+        "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+      },
+      "provider": {
+        "id": "hopper",
+        "name": "Hopper Disassembler",
+        "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+      },
+      "analysis_profile": {
+        "provider": {
+          "id": "hopper",
+          "name": "Hopper Disassembler",
+          "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+        },
+        "parameters": {
+          "target_kind": "executable",
+          "target_format": "pe",
+          "architecture": "x86",
+          "available_architectures": [
+            "x86"
+          ],
+          "loader": {
+            "source": "derived",
+            "arguments": [
+              "-l",
+              "WinPE",
+              "--intel-32"
+            ]
+          }
+        },
+        "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+      },
+      "predicate_type": "rea.analysis",
+      "operation": "procedure_assembly",
+      "parameters": {
+        "procedure": "0x402d20"
+      },
+      "raw_result": null,
+      "normalized_result": "0x402d20: push esi\n0x402d21: mov esi, ecx\n0x402d23: mov ecx, dword [esi+0x24]\n0x402d26: mov eax, dword [ecx]\n0x402d28: call dword [eax+0xa8]\n0x402d2e: test al, al\n0x402d30: je loc_402d6c\n0x402d32: mov ecx, dword [esi+0x24]\n0x402d35: mov edx, dword [ecx]\n0x402d37: call dword [edx+0x9c]\n0x402d3d: mov ecx, dword [eax+0x18]\n0x402d40: test ecx, ecx\n0x402d42: je loc_402d6c\n0x402d44: mov al, byte [esi+0x15]\n0x402d47: test al, al\n0x402d49: jne loc_402d5b\n0x402d4b: mov eax, dword [esp+arg_8]\n0x402d4f: mov ecx, esi\n0x402d51: push eax\n0x402d52: call sub_402a60\n0x402d57: pop esi\n0x402d58: ret 0x8\n0x402d5b: mov eax, dword [esp+arg_8]\n0x402d5f: mov ecx, dword [esp+arg_4]\n0x402d63: mov edx, dword [esi]\n0x402d65: push eax\n0x402d66: push ecx\n0x402d67: mov ecx, esi\n0x402d69: call dword [edx+4]\n0x402d6c: pop esi\n0x402d6d: ret 0x8",
+      "confidence": "observed",
+      "authority": "shipped-artifact",
+      "environment": null,
+      "limitations": [
+        "Results depend on Hopper's completed static analysis."
+      ],
+      "locations": [],
+      "evidence_links": []
+    }
+  },
+  {
+    "address": "0x597900",
+    "result": {
+      "evidence_id": "ev_4e82ed23a28ef172469f05373b310d847ca971668053b51ac9da4f20166ad4b5",
+      "subject": {
+        "name": "RcHcGame.dat",
+        "digest": {
+          "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+        },
+        "format": "pe",
+        "architecture": "x86",
+        "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+      },
+      "provider": {
+        "id": "hopper",
+        "name": "Hopper Disassembler",
+        "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+      },
+      "analysis_profile": {
+        "provider": {
+          "id": "hopper",
+          "name": "Hopper Disassembler",
+          "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+        },
+        "parameters": {
+          "target_kind": "executable",
+          "target_format": "pe",
+          "architecture": "x86",
+          "available_architectures": [
+            "x86"
+          ],
+          "loader": {
+            "source": "derived",
+            "arguments": [
+              "-l",
+              "WinPE",
+              "--intel-32"
+            ]
+          }
+        },
+        "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+      },
+      "predicate_type": "rea.analysis",
+      "operation": "procedure_assembly",
+      "parameters": {
+        "procedure": "0x597900"
+      },
+      "raw_result": null,
+      "normalized_result": "0x597900: push ecx\n0x597901: mov edx, dword [ecx+0x18]\n0x597904: push ebx\n0x597905: cmp edx, 0xffffffff\n0x597908: push esi\n0x597909: mov bl, 0x1\n0x59790b: mov dword [esp+0xc+var_4], edx\n0x59790f: je loc_597986\n0x597911: mov eax, dword [ecx+0x1c]\n0x597914: cmp eax, 0xffffffff\n0x597917: jne loc_597939\n0x597919: mov eax, dword [esp+0xc+arg_0]\n0x59791d: mov byte [ecx+0x24], bl\n0x597920: add edx, eax\n0x597922: xor eax, eax\n0x597924: test bl, bl\n0x597926: pop esi\n0x597927: mov dword [ecx+0x1c], edx\n0x59792a: mov dword [ecx+0x20], 0x3f800000\n0x597931: pop ebx\n0x597932: sete al\n0x597935: pop ecx\n0x597936: ret 0x4\n0x597939: mov esi, dword [esp+0xc+arg_0]\n0x59793d: cmp esi, eax\n0x59793f: jle loc_59795a\n0x597941: xor bl, bl\n0x597943: xor eax, eax\n0x597945: test bl, bl\n0x597947: mov byte [ecx+0x24], bl\n0x59794a: pop esi\n0x59794b: mov dword [ecx+0x20], 0x0\n0x597952: pop ebx\n0x597953: sete al\n0x597956: pop ecx\n0x597957: ret 0x4\n0x59795a: test edx, edx\n0x59795c: jle loc_59797f\n0x59795e: sub eax, esi\n0x597960: mov byte [ecx+0x24], bl\n0x597963: mov dword [esp+0xc+arg_0], eax\n0x597967: xor eax, eax\n0x597969: fild dword [esp+0xc+arg_0]\n0x59796d: test bl, bl\n0x59796f: pop esi\n0x597970: pop ebx\n0x597971: fidiv dword [esp+0x4+var_4]\n0x597975: sete al\n0x597978: fstp dword [ecx+0x20]\n0x59797b: pop ecx\n0x59797c: ret 0x4\n0x59797f: mov dword [ecx+0x20], 0x0\n0x597986: xor eax, eax\n0x597988: mov byte [ecx+0x24], bl\n0x59798b: test bl, bl\n0x59798d: pop esi\n0x59798e: pop ebx\n0x59798f: sete al\n0x597992: pop ecx\n0x597993: ret 0x4",
+      "confidence": "observed",
+      "authority": "shipped-artifact",
+      "environment": null,
+      "limitations": [
+        "Results depend on Hopper's completed static analysis."
+      ],
+      "locations": [],
+      "evidence_links": []
+    }
+  }
+]

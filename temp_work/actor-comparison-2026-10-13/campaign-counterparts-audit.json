@@ -1,0 +1,1468 @@
+{
+  "scope": "Read-only settings, imported owned original ACT geometry and campaign entity/code audit; no native runtime observation or binary disassembly. Counterpart choices are display recommendations, not claims that original filenames formally mark development chronology.",
+  "recommendedPairs": {
+    "knight2": "knight",
+    "knight3": "knight",
+    "k_active": "knight",
+    "spider": "spiderg",
+    "bat": "batg",
+    "batfly": "batg",
+    "maxtest1": "maxj",
+    "fep_test5": "plant",
+    "brutus": "brutusm",
+    "redcat2": "redcat",
+    "whizztest8": "wkkooi",
+    "tstwitch": "witch",
+    "mxmach": [
+      "turbot",
+      "turtop",
+      "brcrate",
+      "maxd"
+    ]
+  },
+  "actors": {
+    "bat": {
+      "source": "bat.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/bat.json",
+      "scale": 3.0,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 211,
+      "triangles": 214,
+      "bones": 2,
+      "materials": [
+        "bat"
+      ],
+      "clips": []
+    },
+    "batfly": {
+      "source": "batfly.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/batfly.json",
+      "scale": 2.5,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 211,
+      "triangles": 214,
+      "bones": 26,
+      "materials": [
+        "bat"
+      ],
+      "clips": [
+        {
+          "name": "fly",
+          "duration": 2.0000100135803223
+        }
+      ]
+    },
+    "batg": {
+      "source": "batG.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/batg.json",
+      "scale": 1.8,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 211,
+      "triangles": 214,
+      "bones": 26,
+      "materials": [
+        "batg"
+      ],
+      "clips": [
+        {
+          "name": "walkfw",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "start",
+          "duration": 3.2666831016540527
+        },
+        {
+          "name": "shoot1",
+          "duration": 1.6000080108642578
+        },
+        {
+          "name": "idle2",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "idle1",
+          "duration": 1.6000080108642578
+        },
+        {
+          "name": "hit",
+          "duration": 1.8666759729385376
+        },
+        {
+          "name": "death",
+          "duration": 2.0000100135803223
+        }
+      ]
+    },
+    "batr": {
+      "source": "batR.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/batr.json",
+      "scale": 2.7,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 211,
+      "triangles": 214,
+      "bones": 26,
+      "materials": [
+        "batr"
+      ],
+      "clips": [
+        {
+          "name": "walkfw",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "start",
+          "duration": 3.2666831016540527
+        },
+        {
+          "name": "shoot1",
+          "duration": 1.6000080108642578
+        },
+        {
+          "name": "idle2",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "idle1",
+          "duration": 1.6000080108642578
+        },
+        {
+          "name": "hit",
+          "duration": 1.8666759729385376
+        },
+        {
+          "name": "death",
+          "duration": 2.0000100135803223
+        }
+      ]
+    },
+    "baty": {
+      "source": "batY.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/baty.json",
+      "scale": 2.2,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 211,
+      "triangles": 214,
+      "bones": 26,
+      "materials": [
+        "baty"
+      ],
+      "clips": [
+        {
+          "name": "walkfw",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "start",
+          "duration": 3.2666831016540527
+        },
+        {
+          "name": "shoot1",
+          "duration": 1.6000080108642578
+        },
+        {
+          "name": "idle2",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "idle1",
+          "duration": 1.6000080108642578
+        },
+        {
+          "name": "hit",
+          "duration": 1.8666759729385376
+        },
+        {
+          "name": "death",
+          "duration": 2.0000100135803223
+        }
+      ]
+    },
+    "brcrate": {
+      "source": "brcrate.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/brcrate.json",
+      "scale": 1.0,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 24,
+      "triangles": 12,
+      "bones": 2,
+      "materials": [
+        "Material #1"
+      ],
+      "clips": []
+    },
+    "brutus": {
+      "source": "Brutus.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/brutus.json",
+      "scale": 1.0,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 491,
+      "triangles": 560,
+      "bones": 41,
+      "materials": [
+        "brutusmap"
+      ],
+      "clips": [
+        {
+          "name": "shoot1",
+          "duration": 1.4666739702224731
+        }
+      ]
+    },
+    "brutusb": {
+      "source": "brutusb.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/brutusb.json",
+      "scale": 1.65,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 525,
+      "triangles": 608,
+      "bones": 43,
+      "materials": [
+        "brutusmap"
+      ],
+      "clips": [
+        {
+          "name": "walkfw",
+          "duration": 1.9333430528640747
+        },
+        {
+          "name": "death",
+          "duration": 2.2666780948638916
+        },
+        {
+          "name": "hit",
+          "duration": 1.0666719675064087
+        },
+        {
+          "name": "shoot1",
+          "duration": 1.9333430528640747
+        },
+        {
+          "name": "idle",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "charge",
+          "duration": 1.9333430528640747
+        }
+      ]
+    },
+    "brutusm": {
+      "source": "brutusm.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/brutusm.json",
+      "scale": 1.65,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 491,
+      "triangles": 560,
+      "bones": 41,
+      "materials": [
+        "brutusmap"
+      ],
+      "clips": [
+        {
+          "name": "walkfw",
+          "duration": 1.9333430528640747
+        },
+        {
+          "name": "shoot1",
+          "duration": 1.9333430528640747
+        },
+        {
+          "name": "idle",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "hit",
+          "duration": 1.0666719675064087
+        },
+        {
+          "name": "death",
+          "duration": 2.2666780948638916
+        }
+      ]
+    },
+    "fep_test5": {
+      "source": "fep_test5.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/fep_test5.json",
+      "scale": 1.9,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 192,
+      "triangles": 186,
+      "bones": 29,
+      "materials": [
+        "fep"
+      ],
+      "clips": [
+        {
+          "name": "test",
+          "duration": 1.333340048789978
+        }
+      ]
+    },
+    "k_active": {
+      "source": "k_active.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/k_active.json",
+      "scale": 1.0,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 307,
+      "triangles": 362,
+      "bones": 2,
+      "materials": [
+        "knight"
+      ],
+      "clips": []
+    },
+    "knight": {
+      "source": "knight.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/knight.json",
+      "scale": 1.8,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 307,
+      "triangles": 362,
+      "bones": 30,
+      "materials": [
+        "knight"
+      ],
+      "clips": [
+        {
+          "name": "hit",
+          "duration": 1.0666559934616089
+        },
+        {
+          "name": "shoot1",
+          "duration": 2.5999739170074463
+        },
+        {
+          "name": "idle",
+          "duration": 1.9333139657974243
+        },
+        {
+          "name": "start",
+          "duration": 1.533318042755127
+        }
+      ]
+    },
+    "knight2": {
+      "source": "knight2.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/knight2.json",
+      "scale": 1.0,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 307,
+      "triangles": 362,
+      "bones": 28,
+      "materials": [
+        "knight"
+      ],
+      "clips": []
+    },
+    "knight3": {
+      "source": "knight3.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/knight3.json",
+      "scale": 1.0,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 307,
+      "triangles": 362,
+      "bones": 28,
+      "materials": [
+        "knight"
+      ],
+      "clips": []
+    },
+    "maxd": {
+      "source": "maxd.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/maxd.json",
+      "scale": 1.4,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 499,
+      "triangles": 556,
+      "bones": 39,
+      "materials": [
+        "Max"
+      ],
+      "clips": [
+        {
+          "name": "death",
+          "duration": 1.9333430528640747
+        },
+        {
+          "name": "hit",
+          "duration": 1.0666719675064087
+        },
+        {
+          "name": "idle",
+          "duration": 3.2666831016540527
+        }
+      ]
+    },
+    "maxj": {
+      "source": "maxj.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/maxj.json",
+      "scale": 1.4,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 482,
+      "triangles": 561,
+      "bones": 49,
+      "materials": [
+        "Max"
+      ],
+      "clips": [
+        {
+          "name": "walkfw",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "teleport",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "shoot1",
+          "duration": 1.9333430528640747
+        },
+        {
+          "name": "idle",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "hit",
+          "duration": 1.0666719675064087
+        },
+        {
+          "name": "death",
+          "duration": 2.2666780948638916
+        }
+      ]
+    },
+    "maxtest1": {
+      "source": "maxtest1.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/maxtest1.json",
+      "scale": 1.0,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 482,
+      "triangles": 561,
+      "bones": 49,
+      "materials": [
+        "Max"
+      ],
+      "clips": [
+        {
+          "name": "test",
+          "duration": 1.0000050067901611
+        }
+      ]
+    },
+    "mxmach": {
+      "source": "mxmach.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/mxmach.json",
+      "scale": 1.0,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 144,
+      "triangles": 126,
+      "bones": 13,
+      "materials": [
+        "machine"
+      ],
+      "clips": [
+        {
+          "name": "shoot",
+          "duration": 2.0000100135803223
+        }
+      ]
+    },
+    "plant": {
+      "source": "plant.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/plant.json",
+      "scale": 1.9,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 192,
+      "triangles": 186,
+      "bones": 29,
+      "materials": [
+        "fep"
+      ],
+      "clips": [
+        {
+          "name": "idle3",
+          "duration": 3.2666831016540527
+        },
+        {
+          "name": "idle2",
+          "duration": 3.2666831016540527
+        },
+        {
+          "name": "idle1",
+          "duration": 3.2666831016540527
+        },
+        {
+          "name": "idle0",
+          "duration": 3.2666831016540527
+        },
+        {
+          "name": "hit",
+          "duration": 1.9333430528640747
+        },
+        {
+          "name": "death",
+          "duration": 2.2666780948638916
+        },
+        {
+          "name": "shoot1",
+          "duration": 1.333340048789978
+        }
+      ]
+    },
+    "redcat": {
+      "source": "RedCat.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/redcat.json",
+      "scale": 1.3,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 482,
+      "triangles": 556,
+      "bones": 61,
+      "materials": [
+        "Material #202"
+      ],
+      "clips": [
+        {
+          "name": "walkbwl",
+          "duration": 2.666680097579956
+        },
+        {
+          "name": "walkbwr",
+          "duration": 2.600013017654419
+        },
+        {
+          "name": "fall2",
+          "duration": 1.266672968864441
+        },
+        {
+          "name": "fall1",
+          "duration": 1.8666759729385376
+        },
+        {
+          "name": "strafer",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "strafel",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "jump2",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "jump1",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "re-spawn",
+          "duration": 3.2666831016540527
+        },
+        {
+          "name": "shoot1",
+          "duration": 1.9333430528640747
+        },
+        {
+          "name": "charge",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "death",
+          "duration": 2.2666780948638916
+        },
+        {
+          "name": "hit",
+          "duration": 1.0666719675064087
+        },
+        {
+          "name": "walkbw",
+          "duration": 2.600013017654419
+        },
+        {
+          "name": "walkfw",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "idle",
+          "duration": 0.9333379864692688
+        }
+      ]
+    },
+    "redcat2": {
+      "source": "Redcat2.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/redcat2.json",
+      "scale": 1.0,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 490,
+      "triangles": 560,
+      "bones": 61,
+      "materials": [
+        "Material #202"
+      ],
+      "clips": [
+        {
+          "name": "fall2",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "fall1",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "strafer",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "strafel",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "jump2",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "jump1",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "re-spawn",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "shoot3",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "shoot2",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "shoot1",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "charge",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "death",
+          "duration": 2.600013017654419
+        },
+        {
+          "name": "hit",
+          "duration": 1.0666719675064087
+        },
+        {
+          "name": "walkbw",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "walkfw",
+          "duration": 0.9333379864692688
+        },
+        {
+          "name": "idle",
+          "duration": 0.9333379864692688
+        }
+      ]
+    },
+    "spider": {
+      "source": "Spider.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/spider.json",
+      "scale": 1.0,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 184,
+      "triangles": 198,
+      "bones": 29,
+      "materials": [
+        "spider1"
+      ],
+      "clips": [
+        {
+          "name": "Death",
+          "duration": 2.0000100135803223
+        },
+        {
+          "name": "Shoot",
+          "duration": 2.0000100135803223
+        }
+      ]
+    },
+    "spiderg": {
+      "source": "SpiderG.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/spiderg.json",
+      "scale": 1.0,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 184,
+      "triangles": 198,
+      "bones": 29,
+      "materials": [
+        "Material #2"
+      ],
+      "clips": [
+        {
+          "name": "walkfw",
+          "duration": 1.9333430528640747
+        },
+        {
+          "name": "shoot1",
+          "duration": 1.6666749715805054
+        },
+        {
+          "name": "idle",
+          "duration": 1.266672968864441
+        },
+        {
+          "name": "hit",
+          "duration": 0.799992024898529
+        },
+        {
+          "name": "death",
+          "duration": 1.6666749715805054
+        }
+      ]
+    },
+    "spiderr": {
+      "source": "SpiderR.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/spiderr.json",
+      "scale": 2.0,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 184,
+      "triangles": 198,
+      "bones": 29,
+      "materials": [
+        "Material #3"
+      ],
+      "clips": [
+        {
+          "name": "walkfw",
+          "duration": 1.9333430528640747
+        },
+        {
+          "name": "shoot1",
+          "duration": 1.6666749715805054
+        },
+        {
+          "name": "idle",
+          "duration": 1.266672968864441
+        },
+        {
+          "name": "hit",
+          "duration": 0.799992024898529
+        },
+        {
+          "name": "death",
+          "duration": 1.6666749715805054
+        }
+      ]
+    },
+    "spidery": {
+      "source": "SpiderY.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/spidery.json",
+      "scale": 1.6,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 184,
+      "triangles": 198,
+      "bones": 29,
+      "materials": [
+        "Material #4"
+      ],
+      "clips": [
+        {
+          "name": "walkfw",
+          "duration": 1.9333430528640747
+        },
+        {
+          "name": "shoot1",
+          "duration": 1.6666749715805054
+        },
+        {
+          "name": "idle",
+          "duration": 1.266672968864441
+        },
+        {
+          "name": "hit",
+          "duration": 0.799992024898529
+        },
+        {
+          "name": "death",
+          "duration": 1.6666749715805054
+        }
+      ]
+    },
+    "tstwitch": {
+      "source": "tstwitch.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/tstwitch.json",
+      "scale": 1.0,
+      "initialRotationDegrees": [
+        0,
+        0,
+        0
+      ],
+      "vertices": 390,
+      "triangles": 422,
+      "bones": 50,
+      "materials": [
+        "witch"
+      ],
+      "clips": []
+    },
+    "turbot": {
+      "source": "turbot.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/turbot.json",
+      "scale": 1.0,
+      "initialRotationDegrees": [
+        0,
+        0,
+        0
+      ],
+      "vertices": 76,
+      "triangles": 72,
+      "bones": 2,
+      "materials": [
+        "machine"
+      ],
+      "clips": []
+    },
+    "turtop": {
+      "source": "turtop.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/turtop.json",
+      "scale": 1.0,
+      "initialRotationDegrees": [
+        0,
+        0,
+        0
+      ],
+      "vertices": 68,
+      "triangles": 54,
+      "bones": 12,
+      "materials": [
+        "machine"
+      ],
+      "clips": [
+        {
+          "name": "still",
+          "duration": 2.0000100135803223
+        },
+        {
+          "name": "shoot1",
+          "duration": 1.0000050067901611
+        },
+        {
+          "name": "litopen",
+          "duration": 1.6666749715805054
+        },
+        {
+          "name": "litclose",
+          "duration": 1.6666749715805054
+        }
+      ]
+    },
+    "whizztest8": {
+      "source": "whizztest8.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/whizztest8.json",
+      "scale": 1.0,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 441,
+      "triangles": 542,
+      "bones": 47,
+      "materials": [
+        "whizz texture"
+      ],
+      "clips": [
+        {
+          "name": "idle",
+          "duration": 1.0000050067901611
+        }
+      ]
+    },
+    "witch": {
+      "source": "witch.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/witch.json",
+      "scale": 1.9,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 450,
+      "triangles": 454,
+      "bones": 58,
+      "materials": [
+        "witch",
+        "Material #202"
+      ],
+      "clips": [
+        {
+          "name": "death",
+          "duration": 3.2666831016540527
+        },
+        {
+          "name": "start",
+          "duration": 3.2666831016540527
+        },
+        {
+          "name": "shoot1",
+          "duration": 2.0000100135803223
+        },
+        {
+          "name": "hit",
+          "duration": 2.0000100135803223
+        },
+        {
+          "name": "walkfw",
+          "duration": 2.0000100135803223
+        },
+        {
+          "name": "idle",
+          "duration": 2.0000100135803223
+        }
+      ]
+    },
+    "wkkooi": {
+      "source": "wkkooi.act",
+      "json": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/assets/actors/wkkooi.json",
+      "scale": 1.55,
+      "initialRotationDegrees": [
+        -90.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 628,
+      "triangles": 644,
+      "bones": 49,
+      "materials": [
+        "whizz texture",
+        "Material #1"
+      ],
+      "clips": [
+        {
+          "name": "idle",
+          "duration": 0.9333379864692688
+        }
+      ]
+    }
+  },
+  "comparisons": [
+    {
+      "pair": [
+        "knight3",
+        "knight"
+      ],
+      "identicalFields": {
+        "indices": true,
+        "uvs": true,
+        "groups": true,
+        "joints": false
+      },
+      "sameFirstTexturePixels": true,
+      "sharedBoneNames": 28
+    },
+    {
+      "pair": [
+        "fep_test5",
+        "plant"
+      ],
+      "identicalFields": {
+        "indices": true,
+        "uvs": true,
+        "groups": true,
+        "joints": true
+      },
+      "sameFirstTexturePixels": true,
+      "sharedBoneNames": 29
+    },
+    {
+      "pair": [
+        "maxtest1",
+        "maxj"
+      ],
+      "identicalFields": {
+        "indices": true,
+        "uvs": true,
+        "groups": true,
+        "joints": true
+      },
+      "sameFirstTexturePixels": false,
+      "sharedBoneNames": 49
+    },
+    {
+      "pair": [
+        "brutus",
+        "brutusm"
+      ],
+      "identicalFields": {
+        "indices": true,
+        "uvs": true,
+        "groups": true,
+        "joints": false
+      },
+      "sameFirstTexturePixels": false,
+      "sharedBoneNames": 41
+    },
+    {
+      "pair": [
+        "whizztest8",
+        "wkkooi"
+      ],
+      "identicalFields": {
+        "indices": false,
+        "uvs": false,
+        "groups": false,
+        "joints": false
+      },
+      "sameFirstTexturePixels": false,
+      "sharedBoneNames": 47
+    },
+    {
+      "pair": [
+        "spider",
+        "spiderg"
+      ],
+      "identicalFields": {
+        "indices": true,
+        "uvs": true,
+        "groups": true,
+        "joints": false
+      },
+      "sameFirstTexturePixels": false,
+      "sharedBoneNames": 29
+    },
+    {
+      "pair": [
+        "batfly",
+        "batg"
+      ],
+      "identicalFields": {
+        "indices": true,
+        "uvs": true,
+        "groups": true,
+        "joints": true
+      },
+      "sameFirstTexturePixels": false,
+      "sharedBoneNames": 26
+    },
+    {
+      "pair": [
+        "mxmach",
+        "turbot"
+      ],
+      "identicalFields": {
+        "indices": false,
+        "uvs": false,
+        "groups": false,
+        "joints": false
+      },
+      "sameFirstTexturePixels": true,
+      "sharedBoneNames": 2
+    },
+    {
+      "pair": [
+        "mxmach",
+        "turtop"
+      ],
+      "identicalFields": {
+        "indices": false,
+        "uvs": false,
+        "groups": false,
+        "joints": false
+      },
+      "sameFirstTexturePixels": true,
+      "sharedBoneNames": 12
+    }
+  ],
+  "campaignEnemyCounts": {
+    "lvl00a": [
+      {
+        "classname": "MovingEnemy",
+        "Type": "5",
+        "SubType": "1",
+        "count": 2
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "7",
+        "SubType": "1",
+        "count": 1
+      },
+      {
+        "classname": "StandingEnemy",
+        "Type": "1",
+        "SubType": "1",
+        "count": 1
+      }
+    ],
+    "lvl01a": [
+      {
+        "classname": "MovingEnemy",
+        "Type": "1",
+        "SubType": "1",
+        "count": 10
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "1",
+        "SubType": "2",
+        "count": 3
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "2",
+        "SubType": "1",
+        "count": 3
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "2",
+        "SubType": "2",
+        "count": 1
+      },
+      {
+        "classname": "StandingEnemy",
+        "Type": "2",
+        "SubType": "1",
+        "count": 22
+      },
+      {
+        "classname": "StandingEnemy",
+        "Type": "4",
+        "SubType": "1",
+        "count": 1
+      }
+    ],
+    "lvl02a": [
+      {
+        "classname": "MovingEnemy",
+        "Type": "1",
+        "SubType": "1",
+        "count": 13
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "1",
+        "SubType": "2",
+        "count": 9
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "2",
+        "SubType": "1",
+        "count": 1
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "2",
+        "SubType": "2",
+        "count": 9
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "3",
+        "SubType": "1",
+        "count": 5
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "3",
+        "SubType": "2",
+        "count": 1
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "4",
+        "SubType": "1",
+        "count": 5
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "4",
+        "SubType": "2",
+        "count": 7
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "5",
+        "SubType": "1",
+        "count": 3
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "6",
+        "SubType": "1",
+        "count": 4
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "8",
+        "SubType": "1",
+        "count": 1
+      },
+      {
+        "classname": "StandingEnemy",
+        "Type": "1",
+        "SubType": "1",
+        "count": 1
+      }
+    ],
+    "lvl03a": [
+      {
+        "classname": "MovingEnemy",
+        "Type": "1",
+        "SubType": "1",
+        "count": 2
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "1",
+        "SubType": "3",
+        "count": 9
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "2",
+        "SubType": "3",
+        "count": 4
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "3",
+        "SubType": "3",
+        "count": 4
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "5",
+        "SubType": "1",
+        "count": 10
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "6",
+        "SubType": "1",
+        "count": 13
+      },
+      {
+        "classname": "StandingEnemy",
+        "Type": "5",
+        "SubType": "1",
+        "count": 1
+      }
+    ],
+    "lvl04a": [
+      {
+        "classname": "MovingEnemy",
+        "Type": "10",
+        "SubType": "1",
+        "count": 5
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "2",
+        "SubType": "3",
+        "count": 5
+      },
+      {
+        "classname": "MovingEnemy",
+        "Type": "9",
+        "SubType": "1",
+        "count": 1
+      },
+      {
+        "classname": "StandingEnemy",
+        "Type": "3",
+        "SubType": "1",
+        "count": 5
+      }
+    ]
+  },
+  "whizzKittyEntity": {
+    "ActorFileName": "wkkooi.act",
+    "AfterDestroyCommand": "",
+    "AltBitmapAlphaFileName": "smoke_green_a.bmp",
+    "AltBitmapFileName": "smoke_green.bmp",
+    "AlternativeBitmap": "0",
+    "AlternativeColour": "0.0 0.0 0.0",
+    "classname": "AdamAnyActor",
+    "ContainsAmmoType": "0",
+    "ContainsHealthType": "0",
+    "ContainsSecret": "1",
+    "DaviName": "WhizzKitty",
+    "DaviNameGroup": "",
+    "DiscardOnLowEndPC": "0",
+    "MotionName": "idle",
+    "MotionSpeed": "1",
+    "Origin": "176 2477 80",
+    "PlaceMethod": "0",
+    "RotateCommands": "",
+    "RotateX": "0.0",
+    "RotateY": "-45",
+    "RotateZ": "0.0",
+    "Scale": "-1",
+    "Targetable": "0",
+    "%name%": "AdamAnyActor59"
+  },
+  "mappingSource": "src/gameplay.js:44-54 maps enemy Type to actor and SubType 1/2/3 to g/y/r.",
+  "machine": {
+    "source": "src/world.js:342-358,517-540; src/boss-ai.js:14-18,103-122; original Settings/DungeonMax.ini",
+    "machineScale": 1.4,
+    "partMeshScale": {
+      "turbot": [
+        1.4,
+        1.4,
+        1.4
+      ],
+      "turtop": [
+        1.4,
+        1.4,
+        1.4
+      ],
+      "brcrate": [
+        0.84,
+        0.84,
+        2.38
+      ],
+      "maxd": [
+        1.4,
+        1.4,
+        1.4
+      ]
+    },
+    "meshRotationDegrees": [
+      -90,
+      0,
+      0
+    ],
+    "partOffsets": "turbot, turtop, brcrate share origin; no additional offsets. maxd shares x/z, y rises 0..40 above same home. Keep parts together when grounding exhibit.",
+    "topClips": [
+      "still",
+      "shoot1",
+      "litopen",
+      "litclose"
+    ],
+    "maxClips": [
+      "idle",
+      "hit",
+      "death"
+    ],
+    "noMaxm": "No assets/actors/maxm.json; enemy is maxd."
+  },
+  "recommendedDefaultClips": {
+    "knight": "idle",
+    "spiderg": "idle",
+    "batg": "walkfw",
+    "maxj": "idle",
+    "plant": "idle0",
+    "brutusm": "idle",
+    "redcat": "idle",
+    "wkkooi": "idle",
+    "witch": "idle",
+    "turtop": "still",
+    "maxd": "idle"
+  },
+  "colorChoice": "Green pairs are representative first variants, not uniquely final versions. All green/yellow/red spiders and bats occur in campaign. Green keeps first subtype consistent. Closest decoded texture MAE among variants is yellow for prototype spider and red for prototype bat/batfly; do not describe green as the closest texture match.",
+  "plantEvidence": "Same indices, UVs, groups, vertex joint assignments, 192 vertices, 186 triangles, 29 bones and identical decoded fep texture. Final plant adds idle0..idle3, hit, death, shoot1. Native actor scale remains 1.9. Native plant idle rate .9..1.0; chosen randomly among idle0..3 by enemy-animation-rules.js."
+}

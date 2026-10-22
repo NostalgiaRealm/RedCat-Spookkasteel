@@ -1,0 +1,54 @@
+✔ Gameplay uses native adjacent approach, reserves before strict range completion, and stops mid-edge (4.800585ms)
+✔ all ordinary shooter families release the whole committed salvo after LOS, range and memory are lost (14.605066ms)
+✔ an unarmed inter-shot wait survives save and freeze without consuming its duration before first update (4.380018ms)
+✖ imported Forest Mushroom Brutus uses native closer and retains its committed mushroom salvo (32.476784ms)
+✔ Bone Brutus save/freeze keeps charge, ammo and committed shots without a duplicate charge entry (4.088979ms)
+✔ legacy Bone Brutus charge restores once and pending charge waits for the final shot pose (4.872585ms)
+✔ a native no-destination result starts and releases a shot outside attack range (0.370668ms)
+✔ snapshot and fresh Gameplay restore preserve an active release and remaining native salvo (1.990169ms)
+✔ snapshot restores an inter-shot wait without replaying the already released shot (1.844991ms)
+✔ legacy saves adopt the outstanding shot or inter-shot wait without starting a second full salvo (2.200518ms)
+✔ script freeze and cutscene shift native wait deadlines without consuming the committed child (2.132189ms)
+✔ actual selected hit cancels the native child and pending release, while sound-only hit preserves both (1.547012ms)
+✔ ordinary closer selects before strict range completion and preserves its selected mid-edge target (1.063545ms)
+✔ a no-destination closer enters shoot outside attack range instead of inventing another endpoint (0.129619ms)
+✔ whole salvo remains committed and inter-shot wait begins only after complete shoot motion (0.292148ms)
+✔ after-salvo chance chooses another closer without an unconditional extra wait or memory gate (0.14236ms)
+✔ a completed parent wait shoots at inclusive attack range and otherwise re-enters closer (0.185569ms)
+✔ skeleton retreat range stops movement but its one-shot child completes only at the animation deadline (0.589127ms)
+✔ completed retreat holds its last motion while too close, refreshes memory, and never replays the same child (0.172609ms)
+✔ an active retreat without a destination still shortcuts to a new shot before its clip ends (0.141569ms)
+✔ skeleton retreat failure shoots immediately; expired memory ends its completed child first (0.156909ms)
+✔ safe waypoint reacquisition forwards its explicit destination and native edges bypass search (0.186449ms)
+✔ phase state remains plain save data and wait deadlines can be shifted across a freeze (0.220059ms)
+✔ bosses and non-ranged touch variants retain separate states, and missing paths retain the portable fallback (0.134599ms)
+✔ wait first-check arms once, uses strict integer milliseconds and survives a saved unarmed handoff (0.126959ms)
+✔ Bone Brutus charges after a full salvo, changes ammo once on entry and shoots without an after-salvo wait (3.385823ms)
+✔ Bone Brutus chooses closer only after charge completion and retains its authored cursor (0.161169ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 26
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 153.889994
+
+✖ failing tests:
+
+test at tests/enemy-shooter-integration.test.mjs:81:1
+✖ imported Forest Mushroom Brutus uses native closer and retains its committed mushroom salvo (32.476784ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(enemy.patrol?.current)
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/enemy-shooter-integration.test.mjs:93:47)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

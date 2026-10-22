@@ -1,0 +1,56 @@
+{
+  "evidence_id": "ev_1bb37c61a42aed2ee97047f4f892ffa40b41e8aea043f57575c0db17ebe38153",
+  "subject": {
+    "name": "RcHcGame.dat",
+    "digest": {
+      "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+    },
+    "format": "pe",
+    "architecture": "x86",
+    "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+  },
+  "provider": {
+    "id": "hopper",
+    "name": "Hopper Disassembler",
+    "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+  },
+  "analysis_profile": {
+    "provider": {
+      "id": "hopper",
+      "name": "Hopper Disassembler",
+      "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+    },
+    "parameters": {
+      "target_kind": "executable",
+      "target_format": "pe",
+      "architecture": "x86",
+      "available_architectures": [
+        "x86"
+      ],
+      "loader": {
+        "source": "derived",
+        "arguments": [
+          "-l",
+          "WinPE",
+          "--intel-32"
+        ]
+      }
+    },
+    "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+  },
+  "predicate_type": "rea.analysis",
+  "operation": "procedure_pseudo_code",
+  "parameters": {
+    "procedure": "0x554dd0"
+  },
+  "raw_result": null,
+  "normalized_result": "    var_C = *0x0;\n    *0x0 = &var_C;\n    decomp_var_54 = ebx;\n    decomp_var_58 = ebp;\n    ebp = ebp | 0xffffffff;\n    decomp_var_5c = esi;\n    esp = esp - 0x60;\n    decomp_var_60 = edi;\n    if (arg_8 == 0x0) {\n            var_4C = arg_8;\n            sub_4040a0(0x0);\n            ecx = ebp;\n            esp = esp - 0x8;\n            decomp_var_64 = 0x1;\n            asm { repne scasb al, byte [edi] };\n            ebx = !ecx - 0x1;\n            esp = esp - 0x4;\n            eax = sub_401940(ebx, decomp_var_64, decomp_var_60);\n            bool_3 = true;\n            bool_2 = true;\n            if (eax != 0x0) {\n                    *var_48 = *byte_6b3f70;\n                    esp = esp - 0x4;\n                    decomp_var_64 = ebx;\n                    asm { rep movsb  byte [edi], byte [esi] };\n                    sub_404190(decomp_var_64);\n            }\n            (sub_5a07f0())();\n            esp = (esp - 0x10) + 0x10 - 0x4;\n            sub_4040a0(0x1);\n    }\n    esi = arg_4;\n    if (esi == 0x0) {\n            esp = esp - 0x4;\n            var_4C = arg_8;\n            sub_4040a0(esi);\n            ecx = ebp;\n            asm { repne scasb al, byte [edi] };\n            sub_4040f0(byte_6b3f70, !ecx - 0x1);\n            (sub_5a07f0())();\n            esp = (esp - 0x18) + 0x10 - 0x4;\n            sub_4040a0(0x1);\n    }\n    esi = sub_5525c0();\n    if (esi == 0x0) {\n            sub_409810(byte_6b3f70, &var_4D);\n            (sub_5a07f0())();\n            esp = (esp - 0x18) + 0x10 - 0x4;\n            sub_4040a0(0x1);\n    }\n    if ((esi[0x53] >> 0x3 & 0x1) == 0x0) {\n            var_4C = arg_8;\n            sub_4040a0(0x0);\n            ecx = ebp;\n            esp = esp - 0x8;\n            decomp_var_64 = 0x1;\n            asm { repne scasb al, byte [edi] };\n            ebx = !ecx - 0x1;\n            esp = esp - 0x4;\n            eax = sub_401940(ebx, decomp_var_64, decomp_var_60);\n            bool_9 = true;\n            bool_8 = true;\n            if (eax != 0x0) {\n                    *var_48 = *\"collision detected when not allowed\";\n                    asm { rep movsb  byte [edi], byte [esi] };\n                    *(int8_t *)(var_48 + ebx) = 0x0;\n            }\n            (sub_5a07f0())();\n            esp = (esp - 0x10) + 0x10 - 0x4;\n            sub_4040a0(0x1);\n            eax = 0x0;\n            *0x0 = var_C;\n    }\n    else {\n            ebx = 0x0;\n            while (true) {\n                    esi = arg_8;\n                    ecx = esi[0x1];\n                    if (ecx == 0x0) {\n                            eax = 0x0;\n                    }\n                    else {\n                            eax = esi[0x2];\n                            eax = SAR(eax - ecx, 0x2);\n                    }\n                    if (ebx >= eax) {\n                            eax = 0x1;\n                            *0x0 = var_C;\n                            esp = esp + 0x60;\n                            temp_0 = 0x0;\n                            break;\n                    }\n                    if (ebx >= 0x0) {\n                            if (ecx == 0x0) {\n                                    eax = 0x0;\n                            }\n                            else {\n                                    eax = esi[0x2];\n                                    eax = SAR(eax - ecx, 0x2);\n                            }\n                            if (ebx >= eax) {\n                                    esp = esp - 0x4;\n                                    var_3C = arg_8;\n                                    sub_4040a0(0x0);\n                                    ecx = ebp;\n                                    asm { repne scasb al, byte [edi] };\n                                    sub_4040f0(byte_6b3f70, !ecx - 0x1);\n                                    (sub_5a07f0())();\n                                    esp = (esp - 0x18) + 0x10 - 0x4;\n                                    sub_4040a0(0x1);\n                            }\n                    }\n                    else {\n                            esp = esp - 0x4;\n                            var_3C = arg_8;\n                            sub_4040a0(0x0);\n                            ecx = ebp;\n                            asm { repne scasb al, byte [edi] };\n                            sub_4040f0(byte_6b3f70, !ecx - 0x1);\n                            (sub_5a07f0())();\n                            esp = (esp - 0x18) + 0x10 - 0x4;\n                            sub_4040a0(0x1);\n                    }\n                    esi = *(esi[0x1] + ebx * 0x4);\n                    if (esi[0x45] == 0x0) {\n                            esp = esp - 0x4;\n                            sub_4040a0(0x0);\n                            ecx = ebp;\n                            asm { repne scasb al, byte [edi] };\n                            sub_4040f0(byte_6b3f70, !ecx - 0x1);\n                            (sub_5a07f0())();\n                            esp = (esp - 0x18) + 0x10 - 0x4;\n                            sub_4040a0(0x1);\n                    }\n                    eax = arg_4;\n                    if (eax != esi[0x45]) {\n                            ebx = ebx + 0x1;\n                            continue;\n                    }\n                    temp_0 = 0x1;\n                    break;\n            }\n            if (temp_0 != 0x0) {\n                    eax = 0x0;\n                    *0x0 = var_C;\n            }\n    }\n    return eax;\n",
+  "confidence": "observed",
+  "authority": "shipped-artifact",
+  "environment": null,
+  "limitations": [
+    "Results depend on Hopper's completed static analysis."
+  ],
+  "locations": [],
+  "evidence_links": []
+}

@@ -1,0 +1,43 @@
+✖ repeated real potions share one mesh resource and map but keep lighting, visibility and collision records independent (3.451238ms)
+✔ animated real knights share immutable backing and prepared clips while keeping poses, collision and transitions private (14.423259ms)
+✔ a saved animated transition restores exactly without changing a sibling or shared source data (5.513855ms)
+✔ actual Three geometry disposal never removes sibling GPU handles that share immutable CPU arrays (1.998887ms)
+✔ room residency eviction and re-entry preserve sibling buffers, shared maps and separate gameplay visibility (4.146514ms)
+✔ pose cloning preserves groups and bounds, while unfamiliar or morph geometry keeps independent fallback arrays (1.61001ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 132.964341
+
+✖ failing tests:
+
+test at tests/actor-resource-sharing.test.mjs:27:1
+✖ repeated real potions share one mesh resource and map but keep lighting, visibility and collision records independent (3.451238ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   1,
+  +   1,
+  +   1
+  -   0.1,
+  -   0.2,
+  -   0.3
+    ]
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-resource-sharing.test.mjs:36:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 1, 1, 1 ],
+    expected: [ 0.1, 0.2, 0.3 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

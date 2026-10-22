@@ -1,0 +1,38 @@
+{
+  "scope": "Actual earned campaign on API4511, following Forest/Castle/Graveyard. Ordinary F9 and Recovery retries occurred; no fixture imports or state edits. Source was reloaded normally after the parent dead-save guard fix.",
+  "earned_water_secret": {
+    "shot_from": [
+      -1520,
+      2298
+    ],
+    "note": "Do not shoot crate04 from 58 units away: the chained explosions were lethal. A distant shot safely opened the secret; six potions and four hearts were physically collected before raising the basin."
+  },
+  "first_basin": {
+    "button_route": [
+      -1807,
+      2330
+    ],
+    "targetY": -136,
+    "actual_button": [
+      -1807,
+      -108,
+      2363
+    ],
+    "escape": "Immediately follow the west ramp toward [-1642,1838], with grid step12 and targetY=-16. This passed at full health without damage. Wait for raised-crate motion before jumping."
+  },
+  "waterfall_result": "All seven forward crossings passed at HP10; all seven reverse crossings also passed without damage. Retained live commands include exact starts/ends and waits for a fresh enabled-to-disabled transition. The hub doors disable waterfalls and the lab door enables them; no separate off button was found.",
+  "drain": {
+    "safe_cycle": "Wait until the previous water_rising02 cycle is disabled. Fire a single Ctrl shot at wat_but01 from [-2580,2775], wait210 frames, move to [-2940,2560], follow the step24 route to [-3430,2300], then jump toward [-3500,2360]. This lost0.133HP in the earned replay. Holding Ctrl can accidentally toggle the button again.",
+    "combat": "Avoid stationary waiting after entering the frog room. Four near frogs and two far frogs were defeated with ordinary shots, after retained retries. The control helper needs Arrow-key fallback during native fixed cameras.",
+    "hearts": "Far-rim hearts require a minimum floor Y=-18, not merely targetY=-16. A* can otherwise descend stairs and cross the flooded floor before returning to the requested goal height."
+  },
+  "failures_retained": "Close crate explosion death, doorway waiting and crowded frog failures, and route-finder shortcuts into the flooded basin. Recovery used ordinary F9 with no manual stat changes. These steering failures are not classified as game defects.",
+  "result": "Complete earned roundtrip:14 potions, HP1.8667/max10, lives1, secrets4, unlock_max1, skill11, mirror3. All three guards dead and altar buttons on. Returned to the hub through the drain, seven gaps, raised crates and doors normally; living F5 exported in the campaign evidence directory.",
+  "helper_lessons": [
+    "Strict minY=-18 prevents the planner from choosing flooded lower floor. Shift-walking every12-unit node with tolerance2.5 worked. Compressing direction changes could cut a curved rim; replanning every single node could oscillate as the grid origin shifted.",
+    "Combat floor safety must trace the full player hull. Point traces saw lower stair centers and incorrectly suppressed strafing, causing standing damage. The temp helper was corrected; north/east guards each lost8HP while player HP1.8667 remained unchanged using strafe period18.",
+    "After touching an altar button, move back along its straight arm before planning around the circle. Button collision can obstruct the first diagonal waypoint."
+  ],
+  "remaining": "Water and Air are now complete. The combined living hub save has26 potions, HP10/max12, lives1, secrets5 and unlock_max2. Exclusive API4511 control was handed to castle_route_resume for Earth.",
+  "altar_result": "All three guards were killed and all three buttons were touched. West-guard stationary fire cost4HP. After correcting the helper floor trace to use the full player hull, the north and east guards were defeated with player HP1.8667 unchanged. The native beam incremented unlock_max to1."
+}

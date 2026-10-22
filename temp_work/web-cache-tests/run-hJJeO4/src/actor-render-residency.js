@@ -1,0 +1,1 @@
+export class ActorRenderResidency { async settle() { return true; } }

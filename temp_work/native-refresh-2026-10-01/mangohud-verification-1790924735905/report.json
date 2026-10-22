@@ -1,0 +1,138 @@
+{
+  "results": [
+    {
+      "variant": "graveyard-save",
+      "fps": 118.9781873323224,
+      "frames": 714,
+      "frameMedian": 8.300000000000182,
+      "frameP95": 8.5,
+      "frameMax": 26.699999999999818,
+      "timings": {
+        "gameplay": {
+          "mean": 1.6584615384261092,
+          "median": 1.6000000014901161,
+          "p95": 2.1999999955296516
+        },
+        "syncActors": {
+          "mean": 2.0083916083707676,
+          "median": 2,
+          "p95": 2.3000000044703484
+        },
+        "updateRenderResidency": {
+          "mean": 0.5836363636947178,
+          "median": 0.5999999940395355,
+          "p95": 0.7999999970197678
+        },
+        "syncActorLighting": {
+          "mean": 0.6514685316831915,
+          "median": 0.6000000014901161,
+          "p95": 0.8000000044703484
+        },
+        "effects": {
+          "mean": 1.228111888030609,
+          "median": 1.0999999940395355,
+          "p95": 2
+        },
+        "update": {
+          "mean": 6.117622377676564,
+          "median": 5.899999998509884,
+          "p95": 7.5999999940395355
+        },
+        "render": {
+          "mean": 1.0393006993653058,
+          "median": 1,
+          "p95": 1.2999999970197678
+        }
+      },
+      "level": "lvl02a",
+      "position": [
+        2559.982750515327,
+        -63.95,
+        223.89495510853985
+      ],
+      "resolution": [
+        2560,
+        1080
+      ],
+      "render": {
+        "frame": 1118,
+        "calls": 192,
+        "triangles": 7416,
+        "points": 0,
+        "lines": 0
+      },
+      "stream": {
+        "totalVertices": 75843,
+        "residentVertices": 29745,
+        "residentChunks": 523,
+        "totalChunks": 1039,
+        "loadedTextures": 47
+      },
+      "actors": {
+        "actors": 383,
+        "residentActors": 50,
+        "renderedActors": 28,
+        "meshes": 383,
+        "residentMeshes": 50,
+        "renderedMeshes": 28,
+        "geometries": 126,
+        "residentGeometries": 19,
+        "textures": 55,
+        "residentTextures": 20
+      },
+      "mode": "playing"
+    }
+  ],
+  "errors": [],
+  "mangohud": {
+    "enabled": true,
+    "config": "read_cfg,fps_limit=0",
+    "gpuLibraries": [
+      "/usr/lib64/mangohud/libMangoHud_opengl.so",
+      "/usr/lib64/mangohud/libMangoHud_shim.so"
+    ]
+  },
+  "display": {
+    "accelerometerSupport": "unknown",
+    "bounds": {
+      "x": 0,
+      "y": 0,
+      "width": 2560,
+      "height": 1440
+    },
+    "colorDepth": 24,
+    "colorSpace": "{primaries:BT709, transfer:SRGB, matrix:RGB, range:FULL}",
+    "depthPerComponent": 8,
+    "detected": true,
+    "displayFrequency": 119.95333862304688,
+    "id": 33,
+    "internal": false,
+    "label": "",
+    "maximumCursorSize": {
+      "width": 0,
+      "height": 0
+    },
+    "monochrome": false,
+    "nativeOrigin": {
+      "x": 0,
+      "y": 0
+    },
+    "rotation": 0,
+    "scaleFactor": 1,
+    "size": {
+      "width": 2560,
+      "height": 1440
+    },
+    "workArea": {
+      "x": 0,
+      "y": 0,
+      "width": 2560,
+      "height": 1440
+    },
+    "workAreaSize": {
+      "width": 2560,
+      "height": 1440
+    },
+    "touchSupport": "unknown"
+  }
+}

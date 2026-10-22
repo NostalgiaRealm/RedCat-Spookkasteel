@@ -1,0 +1,329 @@
+[
+  {
+    "offset": 6247,
+    "tag": 62,
+    "index": 27,
+    "kind": "handler",
+    "name": "CommandOnEnter",
+    "type": {
+      "code": 0,
+      "name": "void",
+      "classRef": null
+    },
+    "parameters": [
+      {
+        "offset": 6270,
+        "tag": 53,
+        "index": 0,
+        "kind": "parameter",
+        "name": "@self",
+        "type": {
+          "code": 4,
+          "name": "object",
+          "classRef": {
+            "path": [
+              {
+                "tag": 66,
+                "index": 0
+              }
+            ],
+            "id": "42:0",
+            "name": "CAdamScriptGameObject",
+            "kind": "class"
+          }
+        },
+        "stackOffset": -4,
+        "endOffset": 6287,
+        "id": "42:0/3d:57/3e:27/35:0"
+      }
+    ],
+    "locals": [
+      {
+        "offset": 6291,
+        "tag": 55,
+        "index": 0,
+        "kind": "local",
+        "name": "enough",
+        "type": {
+          "code": 2,
+          "name": "int",
+          "classRef": null
+        },
+        "stackOffset": 0,
+        "endOffset": 6306,
+        "id": "42:0/3d:57/3e:27/37:0"
+      }
+    ],
+    "instructions": [
+      {
+        "offset": 6308,
+        "opcode": 3,
+        "destination": {
+          "tag": 1,
+          "offset": 6309,
+          "type": 2
+        },
+        "source": {
+          "tag": 0,
+          "offset": 6311,
+          "type": 2,
+          "value": 2
+        }
+      },
+      {
+        "offset": 6317,
+        "opcode": 3,
+        "destination": {
+          "tag": 2,
+          "offset": 6318,
+          "ref": {
+            "path": [
+              {
+                "tag": 55,
+                "index": 0
+              },
+              {
+                "tag": 62,
+                "index": 27
+              },
+              {
+                "tag": 61,
+                "index": 57
+              },
+              {
+                "tag": 66,
+                "index": 0
+              }
+            ],
+            "id": "42:0/3d:57/3e:27/37:0",
+            "name": "enough",
+            "kind": "local"
+          }
+        },
+        "source": {
+          "tag": 4,
+          "offset": 6332,
+          "ref": {
+            "path": [
+              {
+                "tag": 65,
+                "index": 23
+              }
+            ],
+            "id": "41:23",
+            "name": "RcHasAllPotions",
+            "kind": "external"
+          },
+          "callFlag": 1
+        }
+      },
+      {
+        "offset": 6338,
+        "opcode": 2,
+        "target": 8,
+        "whenTruthy": 0,
+        "a": {
+          "tag": 0,
+          "offset": 6344,
+          "type": 2,
+          "value": 1
+        },
+        "b": {
+          "tag": 2,
+          "offset": 6350,
+          "ref": {
+            "path": [
+              {
+                "tag": 55,
+                "index": 0
+              },
+              {
+                "tag": 62,
+                "index": 27
+              },
+              {
+                "tag": 61,
+                "index": 57
+              },
+              {
+                "tag": 66,
+                "index": 0
+              }
+            ],
+            "id": "42:0/3d:57/3e:27/37:0",
+            "name": "enough",
+            "kind": "local"
+          }
+        },
+        "operator": 9
+      },
+      {
+        "offset": 6365,
+        "opcode": 3,
+        "destination": {
+          "tag": 1,
+          "offset": 6366,
+          "type": 4
+        },
+        "source": {
+          "tag": 2,
+          "offset": 6368,
+          "ref": {
+            "path": [
+              {
+                "tag": 54,
+                "index": 637
+              }
+            ],
+            "id": "36:637",
+            "name": "cutscene04a",
+            "kind": "object"
+          }
+        }
+      },
+      {
+        "offset": 6373,
+        "opcode": 3,
+        "destination": {
+          "tag": 3,
+          "offset": 6374
+        },
+        "source": {
+          "tag": 4,
+          "offset": 6375,
+          "ref": {
+            "path": [
+              {
+                "tag": 60,
+                "index": 9
+              },
+              {
+                "tag": 66,
+                "index": 0
+              }
+            ],
+            "id": "42:0/3c:9",
+            "name": "Enable",
+            "kind": "method"
+          },
+          "callFlag": 1
+        }
+      },
+      {
+        "offset": 6384,
+        "opcode": 3,
+        "destination": {
+          "tag": 1,
+          "offset": 6385,
+          "type": 2
+        },
+        "source": {
+          "tag": 0,
+          "offset": 6387,
+          "type": 2,
+          "value": 4
+        }
+      },
+      {
+        "offset": 6393,
+        "opcode": 3,
+        "destination": {
+          "tag": 3,
+          "offset": 6394
+        },
+        "source": {
+          "tag": 4,
+          "offset": 6395,
+          "ref": {
+            "path": [
+              {
+                "tag": 65,
+                "index": 24
+              }
+            ],
+            "id": "41:24",
+            "name": "RcEnableSkill",
+            "kind": "external"
+          },
+          "callFlag": 1
+        }
+      },
+      {
+        "offset": 6401,
+        "opcode": 0,
+        "target": -2
+      },
+      {
+        "offset": 6406,
+        "opcode": 3,
+        "destination": {
+          "tag": 1,
+          "offset": 6407,
+          "type": 4
+        },
+        "source": {
+          "tag": 2,
+          "offset": 6409,
+          "ref": {
+            "path": [
+              {
+                "tag": 54,
+                "index": 636
+              }
+            ],
+            "id": "36:636",
+            "name": "cutscene04b",
+            "kind": "object"
+          }
+        }
+      },
+      {
+        "offset": 6414,
+        "opcode": 3,
+        "destination": {
+          "tag": 3,
+          "offset": 6415
+        },
+        "source": {
+          "tag": 4,
+          "offset": 6416,
+          "ref": {
+            "path": [
+              {
+                "tag": 60,
+                "index": 9
+              },
+              {
+                "tag": 66,
+                "index": 0
+              }
+            ],
+            "id": "42:0/3c:9",
+            "name": "Enable",
+            "kind": "method"
+          },
+          "callFlag": 1
+        }
+      },
+      {
+        "offset": 6425,
+        "opcode": 0,
+        "target": -2
+      }
+    ],
+    "handlers": [],
+    "owner": {
+      "path": [
+        {
+          "tag": 54,
+          "index": 634
+        }
+      ],
+      "id": "36:634",
+      "name": "trigger_cuts04",
+      "kind": "object"
+    },
+    "endOffset": 6438,
+    "id": "42:0/3d:57/3e:27"
+  }
+]

@@ -1,0 +1,1033 @@
+{
+  "method": "Exact retained float32 Genesis C Hermite/SLERP and quaternion-pose functions vs current JS matrices; 129 samples per motion. Every nonplayer animated asset included, including unused/test assets. Inputs cast to float32. Errors before GPU Float32 storage and actor scale. Original executable not run. Existing native_reference.so reused without build.",
+  "actorCount": 40,
+  "motionCount": 156,
+  "sampleCount": 20124,
+  "actors": {
+    "batfly": {
+      "fly": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0002196406954070636,
+        "maxVertexDelta": 0.00021490576053326168,
+        "maxRotationElementDelta": 1.759234967024792e-05
+      }
+    },
+    "batg": {
+      "walkfw": {
+        "samples": 129,
+        "maxBonePositionDelta": 2.6508168191705393e-05,
+        "maxVertexDelta": 2.7022132430266148e-05,
+        "maxRotationElementDelta": 3.2944220119679457e-06
+      },
+      "start": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0001745072978384523,
+        "maxVertexDelta": 0.00016691858548079303,
+        "maxRotationElementDelta": 4.3047790527328544e-05
+      },
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 6.512911428409021e-05,
+        "maxVertexDelta": 6.980846375135827e-05,
+        "maxRotationElementDelta": 5.128098523821123e-06
+      },
+      "idle2": {
+        "samples": 129,
+        "maxBonePositionDelta": 2.7136682944009866e-05,
+        "maxVertexDelta": 2.7022132430266148e-05,
+        "maxRotationElementDelta": 3.985796307226508e-06
+      },
+      "idle1": {
+        "samples": 129,
+        "maxBonePositionDelta": 3.547271082510675e-05,
+        "maxVertexDelta": 3.9581052346220883e-05,
+        "maxRotationElementDelta": 3.959980506396121e-06
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 4.962641410848452e-05,
+        "maxVertexDelta": 6.472957846060216e-05,
+        "maxRotationElementDelta": 1.3734540288246055e-05
+      },
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 5.09931962207281e-05,
+        "maxVertexDelta": 4.817028647636557e-05,
+        "maxRotationElementDelta": 5.720423263605445e-06
+      }
+    },
+    "batr": {
+      "walkfw": {
+        "samples": 129,
+        "maxBonePositionDelta": 2.6508168191705393e-05,
+        "maxVertexDelta": 2.7022132430266148e-05,
+        "maxRotationElementDelta": 3.2944220119679457e-06
+      },
+      "start": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0001745072978384523,
+        "maxVertexDelta": 0.00016691858548079303,
+        "maxRotationElementDelta": 4.3047790527328544e-05
+      },
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 6.512911428409021e-05,
+        "maxVertexDelta": 6.980846375135827e-05,
+        "maxRotationElementDelta": 5.128098523821123e-06
+      },
+      "idle2": {
+        "samples": 129,
+        "maxBonePositionDelta": 2.7136682944009866e-05,
+        "maxVertexDelta": 2.7022132430266148e-05,
+        "maxRotationElementDelta": 3.985796307226508e-06
+      },
+      "idle1": {
+        "samples": 129,
+        "maxBonePositionDelta": 3.547271082510675e-05,
+        "maxVertexDelta": 3.9581052346220883e-05,
+        "maxRotationElementDelta": 3.959980506396121e-06
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 4.962641410848452e-05,
+        "maxVertexDelta": 6.472957846060216e-05,
+        "maxRotationElementDelta": 1.3734540288246055e-05
+      },
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 5.09931962207281e-05,
+        "maxVertexDelta": 4.817028647636557e-05,
+        "maxRotationElementDelta": 5.720423263605445e-06
+      }
+    },
+    "baty": {
+      "walkfw": {
+        "samples": 129,
+        "maxBonePositionDelta": 2.6508168191705393e-05,
+        "maxVertexDelta": 2.7022132430266148e-05,
+        "maxRotationElementDelta": 3.2944220119679457e-06
+      },
+      "start": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0001745072978384523,
+        "maxVertexDelta": 0.00016691858548079303,
+        "maxRotationElementDelta": 4.3047790527328544e-05
+      },
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 6.512911428409021e-05,
+        "maxVertexDelta": 6.980846375135827e-05,
+        "maxRotationElementDelta": 5.128098523821123e-06
+      },
+      "idle2": {
+        "samples": 129,
+        "maxBonePositionDelta": 2.7136682944009866e-05,
+        "maxVertexDelta": 2.7022132430266148e-05,
+        "maxRotationElementDelta": 3.985796307226508e-06
+      },
+      "idle1": {
+        "samples": 129,
+        "maxBonePositionDelta": 3.547271082510675e-05,
+        "maxVertexDelta": 3.9581052346220883e-05,
+        "maxRotationElementDelta": 3.959980506396121e-06
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 4.962641410848452e-05,
+        "maxVertexDelta": 6.472957846060216e-05,
+        "maxRotationElementDelta": 1.3734540288246055e-05
+      },
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 5.09931962207281e-05,
+        "maxVertexDelta": 4.817028647636557e-05,
+        "maxRotationElementDelta": 5.720423263605445e-06
+      }
+    },
+    "brutus": {
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0004422628153648326,
+        "maxVertexDelta": 0.00045329854235904427,
+        "maxRotationElementDelta": 1.3357911706979309e-05
+      }
+    },
+    "brutusb": {
+      "walkfw": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00022515033104670648,
+        "maxVertexDelta": 0.0002847396699573703,
+        "maxRotationElementDelta": 1.645629141555638e-05
+      },
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00022044524901584364,
+        "maxVertexDelta": 0.00023082927408377127,
+        "maxRotationElementDelta": 7.772374081893574e-06
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00010167663861673779,
+        "maxVertexDelta": 0.00010638226114872264,
+        "maxRotationElementDelta": 4.444178709595015e-06
+      },
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0003849742061895687,
+        "maxVertexDelta": 0.00042655628808377496,
+        "maxRotationElementDelta": 1.8958659178003323e-05
+      },
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00036043745222576754,
+        "maxVertexDelta": 0.000391155440410879,
+        "maxRotationElementDelta": 2.0580278608850477e-05
+      },
+      "charge": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00024619990999814374,
+        "maxVertexDelta": 0.00026655249764011665,
+        "maxRotationElementDelta": 1.0200724841702424e-05
+      }
+    },
+    "brutusm": {
+      "walkfw": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0002625112586585227,
+        "maxVertexDelta": 0.00029948425254775575,
+        "maxRotationElementDelta": 1.7974580504898086e-05
+      },
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0003919572203043477,
+        "maxVertexDelta": 0.0004217256931640372,
+        "maxRotationElementDelta": 1.8701623275552137e-05
+      },
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0003451203111600536,
+        "maxVertexDelta": 0.0003607091345105457,
+        "maxRotationElementDelta": 1.0689139238961864e-05
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00010438640457210574,
+        "maxVertexDelta": 0.00010842196334410746,
+        "maxRotationElementDelta": 4.752580521683036e-06
+      },
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00021801892020281754,
+        "maxVertexDelta": 0.0002278457644974022,
+        "maxRotationElementDelta": 7.482879734510561e-06
+      }
+    },
+    "fep_test5": {
+      "test": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00042744640574958833,
+        "maxVertexDelta": 0.00044006840925654874,
+        "maxRotationElementDelta": 1.3323411302446075e-05
+      }
+    },
+    "fleuribloem": {
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0001542540181101316,
+        "maxVertexDelta": 0.0002136446436311751,
+        "maxRotationElementDelta": 1.038233385125542e-06
+      }
+    },
+    "frog": {
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 3.239940393736337e-05,
+        "maxVertexDelta": 3.342518962578263e-05,
+        "maxRotationElementDelta": 2.9835310777492907e-06
+      },
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 7.255525454531141e-05,
+        "maxVertexDelta": 7.183805936151675e-05,
+        "maxRotationElementDelta": 3.7770155651983828e-06
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00014585083849153312,
+        "maxVertexDelta": 0.00015076126335504487,
+        "maxRotationElementDelta": 9.41915212870903e-06
+      },
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0002444176209068108,
+        "maxVertexDelta": 0.00024022752108265907,
+        "maxRotationElementDelta": 1.776849976509176e-05
+      },
+      "walkfw": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00021523596117061956,
+        "maxVertexDelta": 0.000213733680161619,
+        "maxRotationElementDelta": 9.327534083669597e-06
+      },
+      "start": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00014418860308033763,
+        "maxVertexDelta": 0.00016124481926968614,
+        "maxRotationElementDelta": 8.47758167232815e-06
+      }
+    },
+    "gargoyle": {
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 7.912298975865027e-05,
+        "maxVertexDelta": 8.311338172725464e-05,
+        "maxRotationElementDelta": 1.1068150657878029e-05
+      },
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 6.674146210102253e-05,
+        "maxVertexDelta": 6.662398500732843e-05,
+        "maxRotationElementDelta": 1.9620138412168586e-05
+      },
+      "idle1": {
+        "samples": 129,
+        "maxBonePositionDelta": 3.8370839051478714e-05,
+        "maxVertexDelta": 4.751304875049814e-05,
+        "maxRotationElementDelta": 9.968043288677286e-06
+      },
+      "idle0": {
+        "samples": 129,
+        "maxBonePositionDelta": 3.5186961916900935e-05,
+        "maxVertexDelta": 4.6301370331950574e-05,
+        "maxRotationElementDelta": 1.4567018648659058e-05
+      },
+      "static": {
+        "samples": 129,
+        "maxBonePositionDelta": 3.6867347974083454e-06,
+        "maxVertexDelta": 4.766218902147444e-06,
+        "maxRotationElementDelta": 3.5414781462961287e-07
+      }
+    },
+    "ghostg": {
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00022522525739623186,
+        "maxVertexDelta": 0.00042026013724640125,
+        "maxRotationElementDelta": 2.478096256569584e-05
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00011290087869740933,
+        "maxVertexDelta": 0.00014167083082819044,
+        "maxRotationElementDelta": 1.4347260899105763e-05
+      },
+      "walkfw": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0002771488507030936,
+        "maxVertexDelta": 0.0003131289272584446,
+        "maxRotationElementDelta": 1.3160209016094271e-05
+      },
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00023675084553647933,
+        "maxVertexDelta": 0.00030129055604828913,
+        "maxRotationElementDelta": 2.348556324327511e-05
+      },
+      "start": {
+        "samples": 129,
+        "maxBonePositionDelta": 8.198250352399442e-05,
+        "maxVertexDelta": 0.00015339742202523455,
+        "maxRotationElementDelta": 1.9749770966304148e-05
+      }
+    },
+    "ghostr": {
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00036697797846343614,
+        "maxVertexDelta": 0.000333749865019564,
+        "maxRotationElementDelta": 2.1071801170391424e-05
+      },
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00022522525739623186,
+        "maxVertexDelta": 0.00042026013724640125,
+        "maxRotationElementDelta": 2.478096256569584e-05
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00011290087869740933,
+        "maxVertexDelta": 0.00014167083082819044,
+        "maxRotationElementDelta": 1.4347260899105763e-05
+      },
+      "walkfw": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0002771488507030936,
+        "maxVertexDelta": 0.0003131289272584446,
+        "maxRotationElementDelta": 1.3160209016094271e-05
+      },
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00023675084553647933,
+        "maxVertexDelta": 0.00030129055604828913,
+        "maxRotationElementDelta": 2.348556324327511e-05
+      },
+      "start": {
+        "samples": 129,
+        "maxBonePositionDelta": 8.198250352399442e-05,
+        "maxVertexDelta": 0.00015339742202523455,
+        "maxRotationElementDelta": 1.9749770966304148e-05
+      }
+    },
+    "ghosty": {
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00036697797846343614,
+        "maxVertexDelta": 0.000333749865019564,
+        "maxRotationElementDelta": 2.1071801170391424e-05
+      },
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00022522525739623186,
+        "maxVertexDelta": 0.00042026013724640125,
+        "maxRotationElementDelta": 2.478096256569584e-05
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00011290087869740933,
+        "maxVertexDelta": 0.00014167083082819044,
+        "maxRotationElementDelta": 1.4347260899105763e-05
+      },
+      "walkfw": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0002771488507030936,
+        "maxVertexDelta": 0.0003131289272584446,
+        "maxRotationElementDelta": 1.3160209016094271e-05
+      },
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00023675084553647933,
+        "maxVertexDelta": 0.00030129055604828913,
+        "maxRotationElementDelta": 2.348556324327511e-05
+      },
+      "start": {
+        "samples": 129,
+        "maxBonePositionDelta": 8.198250352399442e-05,
+        "maxVertexDelta": 0.00015339742202523455,
+        "maxRotationElementDelta": 1.9749770966304148e-05
+      }
+    },
+    "graveskl": {
+      "jaw": {
+        "samples": 129,
+        "maxBonePositionDelta": 2.690916300604789e-06,
+        "maxVertexDelta": 3.8356935744381966e-06,
+        "maxRotationElementDelta": 9.38355897950674e-07
+      }
+    },
+    "guardian": {
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 8.063659348801617e-05,
+        "maxVertexDelta": 8.246654104155365e-05,
+        "maxRotationElementDelta": 5.590200928495825e-06
+      },
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00018919322702492419,
+        "maxVertexDelta": 0.00019021643051898244,
+        "maxRotationElementDelta": 8.471934515918988e-06
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 9.817658544149139e-05,
+        "maxVertexDelta": 0.0001121139117000041,
+        "maxRotationElementDelta": 7.981351406116666e-06
+      },
+      "walkfw": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0005981824724855495,
+        "maxVertexDelta": 0.000606419629410501,
+        "maxRotationElementDelta": 1.7152036510981183e-05
+      },
+      "start": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0001692838349740285,
+        "maxVertexDelta": 0.00022606790807204688,
+        "maxRotationElementDelta": 1.8497730964517345e-05
+      }
+    },
+    "hangweb": {
+      "wind": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00015275338095634082,
+        "maxVertexDelta": 0.00012604082794052772,
+        "maxRotationElementDelta": 2.5959334347680496e-06
+      }
+    },
+    "htorch": {
+      "anim": {
+        "samples": 129,
+        "maxBonePositionDelta": 5.81191074226364e-06,
+        "maxVertexDelta": 5.934075460023282e-06,
+        "maxRotationElementDelta": 6.721343329685325e-07
+      }
+    },
+    "ilife": {
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 1.0819127894858814e-05,
+        "maxVertexDelta": 1.1140650355676432e-05,
+        "maxRotationElementDelta": 1.2091440898809314e-06
+      }
+    },
+    "kanon": {
+      "move": {
+        "samples": 129,
+        "maxBonePositionDelta": 3.427462945816566e-07,
+        "maxVertexDelta": 3.304504217587936e-05,
+        "maxRotationElementDelta": 6.37471794351363e-07
+      },
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 3.427267074584961e-07,
+        "maxVertexDelta": 0.0,
+        "maxRotationElementDelta": 4.501958583702503e-09
+      }
+    },
+    "knight": {
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 9.050745415674976e-05,
+        "maxVertexDelta": 0.0001910671076593741,
+        "maxRotationElementDelta": 6.205846922680003e-06
+      },
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0004296423375281167,
+        "maxVertexDelta": 0.0004424183507312381,
+        "maxRotationElementDelta": 1.498717659975668e-05
+      },
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 6.655213757704438e-05,
+        "maxVertexDelta": 0.00012282666692376204,
+        "maxRotationElementDelta": 8.560186661177305e-06
+      },
+      "start": {
+        "samples": 129,
+        "maxBonePositionDelta": 8.511063745225026e-05,
+        "maxVertexDelta": 0.00012983287347352411,
+        "maxRotationElementDelta": 1.0775515290495363e-05
+      }
+    },
+    "maxd": {
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00019596707877537662,
+        "maxVertexDelta": 0.0002112764255549384,
+        "maxRotationElementDelta": 2.7403231675493522e-05
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 4.702127607692513e-05,
+        "maxVertexDelta": 4.7413332768175044e-05,
+        "maxRotationElementDelta": 4.92436428312093e-06
+      },
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 1.0626072914479336e-05,
+        "maxVertexDelta": 1.5768950618917516e-05,
+        "maxRotationElementDelta": 1.521678265392623e-06
+      }
+    },
+    "maxj": {
+      "walkfw": {
+        "samples": 129,
+        "maxBonePositionDelta": 4.994487438834807e-05,
+        "maxVertexDelta": 6.68758893260817e-05,
+        "maxRotationElementDelta": 1.1051203700040979e-05
+      },
+      "teleport": {
+        "samples": 129,
+        "maxBonePositionDelta": 4.0531900030797804e-05,
+        "maxVertexDelta": 4.470266790097093e-05,
+        "maxRotationElementDelta": 4.560032732969788e-06
+      },
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00016542182717720072,
+        "maxVertexDelta": 0.00021951714136339922,
+        "maxRotationElementDelta": 2.145732997804739e-05
+      },
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0001475565943813386,
+        "maxVertexDelta": 0.00019274714584860883,
+        "maxRotationElementDelta": 1.8684653562028863e-05
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 8.481915549796389e-05,
+        "maxVertexDelta": 8.453174737275514e-05,
+        "maxRotationElementDelta": 6.107154976953133e-06
+      },
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 9.298198503794452e-05,
+        "maxVertexDelta": 9.31812139630442e-05,
+        "maxRotationElementDelta": 7.633676850415938e-06
+      }
+    },
+    "maxtest1": {
+      "test": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00018133871572488668,
+        "maxVertexDelta": 0.000204886049538792,
+        "maxRotationElementDelta": 2.7860585610661737e-05
+      }
+    },
+    "mxmach": {
+      "shoot": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0001402369389394792,
+        "maxVertexDelta": 0.00014053529752553585,
+        "maxRotationElementDelta": 2.9534528745989164e-06
+      }
+    },
+    "plant": {
+      "idle3": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00030379387657303335,
+        "maxVertexDelta": 0.00031497990960477383,
+        "maxRotationElementDelta": 1.1355792323253233e-05
+      },
+      "idle2": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0004509436867653409,
+        "maxVertexDelta": 0.0004773955136396144,
+        "maxRotationElementDelta": 1.8821838282390146e-05
+      },
+      "idle1": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0007677687868870405,
+        "maxVertexDelta": 0.0008082979796555979,
+        "maxRotationElementDelta": 2.0032580533319022e-05
+      },
+      "idle0": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00022897772726504002,
+        "maxVertexDelta": 0.00021844321535368405,
+        "maxRotationElementDelta": 1.2065855681697712e-05
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0001553442190844464,
+        "maxVertexDelta": 0.0001567101431383303,
+        "maxRotationElementDelta": 7.738521630828998e-06
+      },
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0003859904663718937,
+        "maxVertexDelta": 0.00040450967864097013,
+        "maxRotationElementDelta": 1.734056951641083e-05
+      },
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00038335074844944334,
+        "maxVertexDelta": 0.0004095944922430185,
+        "maxRotationElementDelta": 1.193028595547485e-05
+      }
+    },
+    "rballoon": {
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 1.0819127894858814e-05,
+        "maxVertexDelta": 1.1140650355676432e-05,
+        "maxRotationElementDelta": 1.2091440898809314e-06
+      }
+    },
+    "redcat2": {
+      "fall2": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00020991868090049107,
+        "maxVertexDelta": 0.0002542664077502944,
+        "maxRotationElementDelta": 1.6264711843572144e-05
+      },
+      "fall1": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00020991868090049107,
+        "maxVertexDelta": 0.0002542664077502944,
+        "maxRotationElementDelta": 1.6264711843572144e-05
+      },
+      "strafer": {
+        "samples": 129,
+        "maxBonePositionDelta": 7.637783586974616e-05,
+        "maxVertexDelta": 9.963472126070142e-05,
+        "maxRotationElementDelta": 1.0670927698130939e-05
+      },
+      "strafel": {
+        "samples": 129,
+        "maxBonePositionDelta": 8.310796053573026e-05,
+        "maxVertexDelta": 0.0001349833492566957,
+        "maxRotationElementDelta": 1.3218578555851401e-05
+      },
+      "jump2": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00012067754591310649,
+        "maxVertexDelta": 0.0001234051524240421,
+        "maxRotationElementDelta": 1.0527593413051095e-05
+      },
+      "jump1": {
+        "samples": 129,
+        "maxBonePositionDelta": 9.867208282000263e-05,
+        "maxVertexDelta": 9.905510979297708e-05,
+        "maxRotationElementDelta": 1.4129053937050884e-05
+      },
+      "re-spawn": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00020991868090049107,
+        "maxVertexDelta": 0.0002542664077502944,
+        "maxRotationElementDelta": 1.6264711843572144e-05
+      },
+      "shoot3": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00020991868090049107,
+        "maxVertexDelta": 0.0002542664077502944,
+        "maxRotationElementDelta": 1.6264711843572144e-05
+      },
+      "shoot2": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00020991868090049107,
+        "maxVertexDelta": 0.0002542664077502944,
+        "maxRotationElementDelta": 1.6264711843572144e-05
+      },
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00020991868090049107,
+        "maxVertexDelta": 0.0002542664077502944,
+        "maxRotationElementDelta": 1.6264711843572144e-05
+      },
+      "charge": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00020991868090049107,
+        "maxVertexDelta": 0.0002542664077502944,
+        "maxRotationElementDelta": 1.6264711843572144e-05
+      },
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00012811911764175452,
+        "maxVertexDelta": 0.00012688965084350603,
+        "maxRotationElementDelta": 7.799312115142065e-06
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 5.487573536387717e-05,
+        "maxVertexDelta": 6.528168763600424e-05,
+        "maxRotationElementDelta": 6.7072794930345125e-06
+      },
+      "walkbw": {
+        "samples": 129,
+        "maxBonePositionDelta": 7.038940164744929e-05,
+        "maxVertexDelta": 9.610217005108526e-05,
+        "maxRotationElementDelta": 6.589494687903041e-06
+      },
+      "walkfw": {
+        "samples": 129,
+        "maxBonePositionDelta": 8.908514703918193e-05,
+        "maxVertexDelta": 8.894374512057434e-05,
+        "maxRotationElementDelta": 1.0249210637969242e-05
+      },
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00020991868090049107,
+        "maxVertexDelta": 0.0002542664077502944,
+        "maxRotationElementDelta": 1.6264711843572144e-05
+      }
+    },
+    "skeleton": {
+      "walkbw": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0002990884434638071,
+        "maxVertexDelta": 0.0003468778682934465,
+        "maxRotationElementDelta": 1.4202486495140665e-05
+      },
+      "start": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0001344155941199159,
+        "maxVertexDelta": 0.00016368733407916936,
+        "maxRotationElementDelta": 1.1197975891774625e-05
+      },
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00023314476916554746,
+        "maxVertexDelta": 0.0002828886804121479,
+        "maxRotationElementDelta": 1.2236858448311239e-05
+      },
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00018051662834488183,
+        "maxVertexDelta": 0.00020439883564468765,
+        "maxRotationElementDelta": 1.6654921528580502e-05
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 8.228226272775526e-05,
+        "maxVertexDelta": 9.694988832354265e-05,
+        "maxRotationElementDelta": 5.286278796146071e-06
+      },
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0001462261391282143,
+        "maxVertexDelta": 0.00016247525088742607,
+        "maxRotationElementDelta": 9.330475061242183e-06
+      }
+    },
+    "spider": {
+      "Death": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0003527003816680621,
+        "maxVertexDelta": 0.00044211077208801517,
+        "maxRotationElementDelta": 2.2823216583534034e-05
+      },
+      "Shoot": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00026190789105590026,
+        "maxVertexDelta": 0.000309294749639729,
+        "maxRotationElementDelta": 1.7412536470584605e-05
+      }
+    },
+    "spiderg": {
+      "walkfw": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00021111568751648615,
+        "maxVertexDelta": 0.000248531201340961,
+        "maxRotationElementDelta": 8.787850684366383e-06
+      },
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0002818816241002006,
+        "maxVertexDelta": 0.0003334762868017261,
+        "maxRotationElementDelta": 1.838756400007746e-05
+      },
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00012443118858213446,
+        "maxVertexDelta": 0.00013567988916881053,
+        "maxRotationElementDelta": 1.227550618987383e-05
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00017600469708715198,
+        "maxVertexDelta": 0.00020354343195520266,
+        "maxRotationElementDelta": 7.564010883198691e-06
+      },
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00035394151703331035,
+        "maxVertexDelta": 0.00044135891591949095,
+        "maxRotationElementDelta": 2.2305249961940277e-05
+      }
+    },
+    "spiderr": {
+      "walkfw": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00021111568751648615,
+        "maxVertexDelta": 0.000248531201340961,
+        "maxRotationElementDelta": 8.787850684366383e-06
+      },
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0002818816241002006,
+        "maxVertexDelta": 0.0003334762868017261,
+        "maxRotationElementDelta": 1.838756400007746e-05
+      },
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00012443118858213446,
+        "maxVertexDelta": 0.00013567988916881053,
+        "maxRotationElementDelta": 1.227550618987383e-05
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00017600469708715198,
+        "maxVertexDelta": 0.00020354343195520266,
+        "maxRotationElementDelta": 7.564010883198691e-06
+      },
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00035394151703331035,
+        "maxVertexDelta": 0.00044135891591949095,
+        "maxRotationElementDelta": 2.2305249961940277e-05
+      }
+    },
+    "spiderweb": {
+      "swing": {
+        "samples": 129,
+        "maxBonePositionDelta": 5.6692598589933465e-05,
+        "maxVertexDelta": 5.710265380722571e-05,
+        "maxRotationElementDelta": 1.473046247701948e-06
+      }
+    },
+    "spidery": {
+      "walkfw": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00021111568751648615,
+        "maxVertexDelta": 0.000248531201340961,
+        "maxRotationElementDelta": 8.787850684366383e-06
+      },
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0002818816241002006,
+        "maxVertexDelta": 0.0003334762868017261,
+        "maxRotationElementDelta": 1.838756400007746e-05
+      },
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00012443118858213446,
+        "maxVertexDelta": 0.00013567988916881053,
+        "maxRotationElementDelta": 1.227550618987383e-05
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00017600469708715198,
+        "maxVertexDelta": 0.00020354343195520266,
+        "maxRotationElementDelta": 7.564010883198691e-06
+      },
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00035394151703331035,
+        "maxVertexDelta": 0.00044135891591949095,
+        "maxRotationElementDelta": 2.2305249961940277e-05
+      }
+    },
+    "stnwitch": {
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00012102638001551968,
+        "maxVertexDelta": 0.0001727622997378922,
+        "maxRotationElementDelta": 1.0249555923769194e-05
+      }
+    },
+    "turtop": {
+      "still": {
+        "samples": 129,
+        "maxBonePositionDelta": 3.0488530987773434e-06,
+        "maxVertexDelta": 2.3040985144296685e-06,
+        "maxRotationElementDelta": 8.677222568254095e-08
+      },
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 8.97410021258146e-06,
+        "maxVertexDelta": 9.000574072324236e-06,
+        "maxRotationElementDelta": 3.3205507565803316e-07
+      },
+      "litopen": {
+        "samples": 129,
+        "maxBonePositionDelta": 9.740089501496316e-06,
+        "maxVertexDelta": 1.0013880119907774e-05,
+        "maxRotationElementDelta": 3.4892723277391013e-07
+      },
+      "litclose": {
+        "samples": 129,
+        "maxBonePositionDelta": 2.8089871413147595e-05,
+        "maxVertexDelta": 2.8093404613743433e-05,
+        "maxRotationElementDelta": 9.813709032080453e-07
+      }
+    },
+    "whizztest8": {
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0003373188398417143,
+        "maxVertexDelta": 0.0003328284257562673,
+        "maxRotationElementDelta": 2.4049883781351866e-05
+      }
+    },
+    "witch": {
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00011816368678504039,
+        "maxVertexDelta": 0.00013227524918142628,
+        "maxRotationElementDelta": 8.01886972234822e-06
+      },
+      "start": {
+        "samples": 129,
+        "maxBonePositionDelta": 7.770049098507331e-05,
+        "maxVertexDelta": 7.5446610007025e-05,
+        "maxRotationElementDelta": 4.222515493812473e-06
+      },
+      "shoot1": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00021014026001466214,
+        "maxVertexDelta": 0.00020728131076836376,
+        "maxRotationElementDelta": 1.987555989180212e-05
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 7.877116287055779e-05,
+        "maxVertexDelta": 0.00010751127461014492,
+        "maxRotationElementDelta": 6.944523574081707e-06
+      },
+      "walkfw": {
+        "samples": 129,
+        "maxBonePositionDelta": 2.9805676044407057e-05,
+        "maxVertexDelta": 3.3665363570800734e-05,
+        "maxRotationElementDelta": 4.318731065655612e-06
+      },
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 3.592222489882822e-05,
+        "maxVertexDelta": 3.5716681347504785e-05,
+        "maxRotationElementDelta": 6.4520660670863705e-06
+      }
+    },
+    "wkkooi": {
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00012332929169143854,
+        "maxVertexDelta": 0.00019415140612935553,
+        "maxRotationElementDelta": 1.8885617313446623e-05
+      }
+    },
+    "zombie": {
+      "idle": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00017482612707901736,
+        "maxVertexDelta": 0.00028223207675852997,
+        "maxRotationElementDelta": 3.807123213128705e-05
+      },
+      "walkfw": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00026749304111338407,
+        "maxVertexDelta": 0.0003198302549314029,
+        "maxRotationElementDelta": 1.9571437981258377e-05
+      },
+      "start": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00029074724019303213,
+        "maxVertexDelta": 0.0003430618655356,
+        "maxRotationElementDelta": 1.4859304818370944e-05
+      },
+      "death": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.0004880264346807054,
+        "maxVertexDelta": 0.00058461478220673,
+        "maxRotationElementDelta": 2.1617390449035767e-05
+      },
+      "hit": {
+        "samples": 129,
+        "maxBonePositionDelta": 0.00010924637900346842,
+        "maxVertexDelta": 0.0001262664373628948,
+        "maxRotationElementDelta": 7.205774351981553e-06
+      }
+    }
+  },
+  "worst": {
+    "delta": 0.0008082979796555979,
+    "worldUnits": 0.001535766161345636,
+    "actor": "plant",
+    "motion": "idle1",
+    "time": 2.6286590583622456,
+    "vertex": 164,
+    "bone": "FEP BIP01 PONYTAIL22"
+  }
+}

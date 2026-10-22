@@ -1,0 +1,9 @@
+window.__frames = async(n,codes=[])=>{__press(codes);for(let i=0;i<n;i++){__stepFrame(1/60);if(i%10===0)await new Promise(r=>setTimeout(r,0));}__press([]);};
+
+window.__batch = async(points,opts={})=>{let out=[];for(let p of points){let r=await __moveTo(p,opts);out.push(r);if(r.scene||r.mode!=='playing'||Math.hypot(r.p[0]-p[0],r.p[2]-p[1])>28)break;}return out;};
+
+window.__stoneJump = async(model,target,{superJump=false,walk=false}={})=>{let w=__redcat.world,g=__redcat.gameplay,wait=0;while(model!=null&&(g.scripts.modelTransforms.get(model)?.translation?.[1]??0)<-5&&wait++<600)await __frames(1);let p=w.player.position,d=Math.atan2(p[0]-target[0],p[2]-target[1]),delta=Math.atan2(Math.sin(d-w.yaw),Math.cos(d-w.yaw));w.look(-delta/.002/w.settings.sensitivity,0);let start=[...p],log=[];for(let i=0;i<100&&g.state.health>0;i++){const keys=[walk?'ShiftLeft':'KeyW'];if(walk)keys.push('KeyW');if(i<2||(superJump&&i>=20&&i<22))keys.push('Space');const dist=Math.hypot(w.player.position[0]-start[0],w.player.position[2]-start[2]),goal=Math.hypot(target[0]-start[0],target[1]-start[2]);if(dist>goal-20){keys.splice(keys.indexOf('KeyW'),1);keys.push('KeyS');}__press(keys);__stepFrame(1/60);if(i%10===0)log.push({i,p:[...w.player.position],h:g.state.health,grounded:w.player.grounded});if(i>5&&w.player.grounded)break;if(i%10===0)await new Promise(r=>setTimeout(r,0));}__press([]);return {model,target,start,wait,log,s:__status()};};
+
+window.__armWait = async(a)=>{let i=0;for(;i<1200;i++){let q=__redcat.gameplay.scripts.modelTransforms.get(85).rotation,v=2*Math.atan2(q[1],q[3]);v=Math.atan2(Math.sin(v),Math.cos(v));if(Math.abs(v-a)<.012)break;await __frames(1)}return i};
+
+window.__stonePhase = mi=>[...__redcat.gameplay.scripts.players.values()].find(v=>v.object?.modelIndex===mi)?.time;

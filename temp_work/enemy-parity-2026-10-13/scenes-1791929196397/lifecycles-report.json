@@ -1,0 +1,375 @@
+{
+  "lifecycles": [
+    {
+      "type": "knight",
+      "dormant": {
+        "phase": "dormant",
+        "elapsed": 0,
+        "rate": 1,
+        "pose": {
+          "key": "dormant:1:start",
+          "pose": {
+            "name": "start",
+            "time": 0,
+            "rate": 1,
+            "loop": true,
+            "transition": null
+          }
+        }
+      },
+      "waking": {
+        "phase": "waking",
+        "elapsed": 0,
+        "rate": 1.7,
+        "pose": {
+          "key": "start:2:start",
+          "pose": {
+            "name": "start",
+            "time": 0,
+            "rate": 1.7,
+            "loop": false,
+            "transition": null
+          }
+        }
+      },
+      "awake": {
+        "phase": "awake",
+        "elapsed": 0.9166666666666679,
+        "rate": 1.1989200000000002,
+        "pose": {
+          "key": "idle:3:idle",
+          "pose": {
+            "name": "idle",
+            "time": 0.05994599999999983,
+            "rate": 1.1989200000000002,
+            "loop": true,
+            "transition": {
+              "name": "start",
+              "time": 1.5299999999999996,
+              "weight": 0.8000000000000114,
+              "sampleWeight": 0.8666666666666742
+            }
+          }
+        }
+      },
+      "retiring": {
+        "phase": "retracting",
+        "elapsed": 0.03333333333333333,
+        "rate": -1.7,
+        "pose": {
+          "key": "retract:4:start",
+          "pose": {
+            "name": "start",
+            "time": 1.448318042755127,
+            "rate": -1.7,
+            "loop": false,
+            "transition": {
+              "name": "idle",
+              "time": 1.7233920342025675,
+              "weight": 0.8000000000000114,
+              "sampleWeight": 0.8666666666666742
+            }
+          }
+        }
+      },
+      "mid": {
+        "phase": "retracting",
+        "elapsed": 0.2333333333333333,
+        "rate": -1.7,
+        "pose": {
+          "key": "retract:4:start",
+          "pose": {
+            "name": "start",
+            "time": 1.1083180427551271,
+            "rate": -1.7,
+            "loop": false,
+            "transition": {
+              "name": "idle",
+              "time": 1.7233920342025675,
+              "weight": 5.684341886080802e-14,
+              "sampleWeight": 0.06666666666671972
+            }
+          }
+        }
+      },
+      "restored": {
+        "phase": "retracting",
+        "elapsed": 0.2333333333333333,
+        "rate": -1.7,
+        "pose": {
+          "key": "retract:4:start",
+          "pose": {
+            "name": "start",
+            "time": 1.1083180427551271,
+            "rate": -1.7,
+            "loop": false,
+            "transition": {
+              "name": "idle",
+              "time": 1.7233920342025675,
+              "weight": 5.684341886080802e-14,
+              "sampleWeight": 0.06666666666671972
+            }
+          }
+        }
+      },
+      "final": {
+        "phase": "dormant",
+        "elapsed": 0.9166666666666679,
+        "rate": 1,
+        "pose": {
+          "key": "dormant:5:start",
+          "pose": {
+            "name": "start",
+            "time": 0,
+            "rate": 1,
+            "loop": false,
+            "transition": null
+          }
+        }
+      },
+      "savedVerticesEqual": true,
+      "finite": true
+    },
+    {
+      "type": "gargoyle",
+      "dormant": {
+        "phase": "dormant",
+        "elapsed": 0,
+        "rate": 1,
+        "pose": {
+          "key": "dormant:1:static",
+          "pose": {
+            "name": "static",
+            "time": 0,
+            "rate": 1,
+            "loop": true,
+            "transition": null
+          }
+        }
+      },
+      "waking": {
+        "phase": "awake",
+        "elapsed": 0,
+        "rate": 1.06444,
+        "pose": {
+          "key": "idle:2:static",
+          "pose": {
+            "name": "static",
+            "time": 0,
+            "rate": 1.06444,
+            "loop": true,
+            "transition": null
+          }
+        }
+      },
+      "awake": {
+        "phase": "awake",
+        "elapsed": 0,
+        "rate": 1.06444,
+        "pose": {
+          "key": "idle:2:static",
+          "pose": {
+            "name": "static",
+            "time": 0.035481333333333254,
+            "rate": 1.06444,
+            "loop": true,
+            "transition": null
+          }
+        }
+      },
+      "retiring": {
+        "phase": "dormant",
+        "elapsed": 0,
+        "rate": 1.06444,
+        "pose": {
+          "key": "idle:2:static",
+          "pose": {
+            "name": "static",
+            "time": 0.21757331975300626,
+            "rate": 1.06444,
+            "loop": false,
+            "transition": null
+          }
+        }
+      },
+      "mid": {
+        "phase": "dormant",
+        "elapsed": 0,
+        "rate": 1.06444,
+        "pose": {
+          "key": "idle:2:static",
+          "pose": {
+            "name": "static",
+            "time": 0.21757331975300626,
+            "rate": 1.06444,
+            "loop": false,
+            "transition": null
+          }
+        }
+      },
+      "restored": {
+        "phase": "dormant",
+        "elapsed": 0,
+        "rate": 1.06444,
+        "pose": {
+          "key": "idle:2:static",
+          "pose": {
+            "name": "static",
+            "time": 0.21757331975300626,
+            "rate": 1.06444,
+            "loop": false,
+            "transition": null
+          }
+        }
+      },
+      "final": {
+        "phase": "dormant",
+        "elapsed": 0,
+        "rate": 1.06444,
+        "pose": {
+          "key": "idle:2:static",
+          "pose": {
+            "name": "static",
+            "time": 2.0000100135803223,
+            "rate": 1.06444,
+            "loop": false,
+            "transition": null
+          }
+        }
+      },
+      "savedVerticesEqual": true,
+      "finite": true
+    },
+    {
+      "type": "skeleton",
+      "dormant": {
+        "phase": "dormant",
+        "elapsed": 0,
+        "rate": 1,
+        "pose": {
+          "key": "dormant:1:start",
+          "pose": {
+            "name": "start",
+            "time": 0,
+            "rate": 1,
+            "loop": true,
+            "transition": null
+          }
+        }
+      },
+      "waking": {
+        "phase": "waking",
+        "elapsed": 0,
+        "rate": 0.8606400000000001,
+        "pose": {
+          "key": "start:2:start",
+          "pose": {
+            "name": "start",
+            "time": 0,
+            "rate": 0.8606400000000001,
+            "loop": false,
+            "transition": null
+          }
+        }
+      },
+      "awake": {
+        "phase": "awake",
+        "elapsed": 2.4833333333333294,
+        "rate": 0.9451200000000001,
+        "pose": {
+          "key": "idle:3:idle",
+          "pose": {
+            "name": "idle",
+            "time": 0.047256000000000006,
+            "rate": 0.9451200000000001,
+            "loop": false,
+            "transition": {
+              "name": "start",
+              "time": 2.1229119999999946,
+              "weight": 0.8000000000000114,
+              "sampleWeight": 0.8666666666666742
+            }
+          }
+        }
+      },
+      "retiring": {
+        "phase": "retracting",
+        "elapsed": 0.03333333333333333,
+        "rate": -1,
+        "pose": {
+          "key": "retract:6:start",
+          "pose": {
+            "name": "start",
+            "time": 2.100010601679484,
+            "rate": -1,
+            "loop": false,
+            "transition": {
+              "name": "idle",
+              "time": 0.7436480000000001,
+              "weight": 0.8666666666666742,
+              "sampleWeight": 0.9333333333333371
+            }
+          }
+        }
+      },
+      "mid": {
+        "phase": "retracting",
+        "elapsed": 0.2333333333333333,
+        "rate": -1,
+        "pose": {
+          "key": "retract:6:start",
+          "pose": {
+            "name": "start",
+            "time": 1.9000106016794849,
+            "rate": -1,
+            "loop": false,
+            "transition": {
+              "name": "idle",
+              "time": 0.7436480000000001,
+              "weight": 0.06666666666671972,
+              "sampleWeight": 0.1333333333333826
+            }
+          }
+        }
+      },
+      "restored": {
+        "phase": "retracting",
+        "elapsed": 0.2333333333333333,
+        "rate": -1,
+        "pose": {
+          "key": "retract:6:start",
+          "pose": {
+            "name": "start",
+            "time": 1.9000106016794849,
+            "rate": -1,
+            "loop": false,
+            "transition": {
+              "name": "idle",
+              "time": 0.7436480000000001,
+              "weight": 0.06666666666671972,
+              "sampleWeight": 0.1333333333333826
+            }
+          }
+        }
+      },
+      "final": {
+        "phase": "dormant",
+        "elapsed": 2.1499999999999972,
+        "rate": 1,
+        "pose": {
+          "key": "dormant:7:start",
+          "pose": {
+            "name": "start",
+            "time": 0,
+            "rate": 1,
+            "loop": false,
+            "transition": null
+          }
+        }
+      },
+      "savedVerticesEqual": true,
+      "finite": true
+    }
+  ],
+  "errors": []
+}

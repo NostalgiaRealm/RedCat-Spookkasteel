@@ -1,0 +1,184 @@
+{
+  "checks": [
+    "Original Help exposes all 38 topics, searches their text, and navigates back to the contextual topic.",
+    "Home → Snelspel → difficulty → Startinfo; selection only announces; replay confirmation preserves the existing save when cancelled.",
+    "Continuing an adventure previews its saved chapter and saved difficulty.",
+    "Opnieuw retains explicit overwrite confirmation and cancellation leaves the old save intact.",
+    "Exporteren downloads the selected inactive player’s complete JSON without switching players or replacing the active save.",
+    "Spelerlijst create/select/delete keeps the original profile and its saved adventure separate.",
+    "Highscores displays rows and Stoppen → Nee returns without changing saves.",
+    "Original home and unlocked level cards remain reachable at 800×600, portrait and landscape mobile sizes."
+  ],
+  "pageErrors": [],
+  "badResponses": [],
+  "screenshots": [
+    "temp_work/native-menu-restoration-2026-10-20/compatibility/run-2026-10-20T16-48-06-633Z/home-desktop.png",
+    "temp_work/native-menu-restoration-2026-10-20/compatibility/run-2026-10-20T16-48-06-633Z/quickplay-desktop.png",
+    "temp_work/native-menu-restoration-2026-10-20/compatibility/run-2026-10-20T16-48-06-633Z/startinfo-replay.png",
+    "temp_work/native-menu-restoration-2026-10-20/compatibility/run-2026-10-20T16-48-06-633Z/highscores-desktop.png",
+    "temp_work/native-menu-restoration-2026-10-20/compatibility/run-2026-10-20T16-48-06-633Z/home-800x600.png",
+    "temp_work/native-menu-restoration-2026-10-20/compatibility/run-2026-10-20T16-48-06-633Z/quickplay-800x600.png",
+    "temp_work/native-menu-restoration-2026-10-20/compatibility/run-2026-10-20T16-48-06-633Z/home-390x844.png",
+    "temp_work/native-menu-restoration-2026-10-20/compatibility/run-2026-10-20T16-48-06-633Z/quickplay-390x844.png",
+    "temp_work/native-menu-restoration-2026-10-20/compatibility/run-2026-10-20T16-48-06-633Z/home-844x390.png",
+    "temp_work/native-menu-restoration-2026-10-20/compatibility/run-2026-10-20T16-48-06-633Z/quickplay-844x390.png",
+    "temp_work/native-menu-restoration-2026-10-20/compatibility/run-2026-10-20T16-48-06-633Z/failure.png"
+  ],
+  "voices": [
+    {
+      "label": "saved-adventure",
+      "calls": [
+        [
+          "mn_red21.wav"
+        ],
+        [
+          "rcmn2.wav"
+        ],
+        [
+          "rcmn11.wav"
+        ],
+        [
+          "rcmn5.wav"
+        ],
+        [
+          "rcmn33.wav",
+          "rcmn38.wav"
+        ],
+        [
+          "rcmn34.wav",
+          "rcmn39.wav"
+        ],
+        [
+          "rcmn35.wav",
+          "rcmn40.wav"
+        ],
+        [
+          "rcmn5.wav",
+          "rcmn30.wav"
+        ],
+        [
+          "mn_red02.wav"
+        ],
+        [
+          "rcmn5.wav"
+        ],
+        [
+          "rcmn6.wav"
+        ],
+        [
+          "rcmn6.wav"
+        ],
+        [
+          "rcmn6.wav"
+        ],
+        [
+          "rcmn10.wav"
+        ],
+        [
+          "rcmn5.wav"
+        ],
+        [
+          "rcmn29.wav"
+        ],
+        [
+          "rcmn6.wav"
+        ],
+        [
+          "rcmn13.wav"
+        ],
+        [
+          "mn_red26.wav"
+        ],
+        [
+          "rcmn7.wav"
+        ],
+        [
+          "rcmn1.wav"
+        ],
+        [
+          "rcmn1.wav"
+        ],
+        [
+          "rcmn10.wav"
+        ],
+        [
+          "rcmn5.wav",
+          "rcmn30.wav"
+        ],
+        [
+          "rcmn6.wav"
+        ],
+        [
+          "rcmn13.wav"
+        ],
+        [
+          "rcmn1.wav"
+        ],
+        [
+          "rcmn13.wav"
+        ],
+        [
+          "mn_red27.wav"
+        ],
+        [
+          "rcmn8.wav"
+        ],
+        [
+          "rcmn3.wav"
+        ],
+        [
+          "rcmn2.wav"
+        ],
+        [
+          "rcmn12.wav"
+        ],
+        [
+          "rcmn5.wav"
+        ],
+        [
+          "rcmn6.wav"
+        ],
+        [
+          "mn_red23.wav"
+        ],
+        [
+          "rcmn4.wav"
+        ],
+        [
+          "rcmn11.wav"
+        ],
+        [
+          "rcmn5.wav"
+        ],
+        [
+          "rcmn6.wav"
+        ],
+        [
+          "rcmn11.wav"
+        ],
+        [
+          "rcmn5.wav"
+        ],
+        [
+          "rcmn6.wav"
+        ],
+        [
+          "rcmn11.wav"
+        ],
+        [
+          "rcmn5.wav"
+        ],
+        [
+          "rcmn6.wav"
+        ]
+      ]
+    }
+  ],
+  "failure": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#native-settings-advanced').locator('summary')\u001b[22m\n\u001b[2m    - locator resolved to <summary>Geavanceerd</summary>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    56 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at expandExtraSettings (/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/native-menu-restoration-2026-10-20/compatibility/menu-check.mjs:99:115)\n    at async file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/native-menu-restoration-2026-10-20/compatibility/menu-check.mjs:255:3",
+  "finalState": {
+    "mode": "menu",
+    "page": "home",
+    "openDialogs": [],
+    "fatal": ""
+  }
+}

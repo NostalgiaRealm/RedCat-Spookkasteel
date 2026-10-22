@@ -1,0 +1,27 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+browserType.launchPersistentContext: Target page, context or browser has been closed
+Browser logs:
+
+<launching> /usr/bin/google-chrome --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument,OptimizationHints --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --use-angle=gl --autoplay-policy=no-user-gesture-required --crash-dumps-dir=/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/temp_work/redcat-animation-native-2026-10-12/scenes-1791814207183 --user-data-dir=/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/temp_work/redcat-animation-native-2026-10-12/scenes-1791814207183/profile --remote-debugging-pipe about:blank
+<launched> pid=152733
+[pid=152733][err] [152733:152733:1012/161007.313669:FATAL:chrome/browser/process_singleton_posix.cc:313] Socket path too long: /mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/temp_work/com.google.Chrome.A2PJLV/SingletonSocket.
+[pid=152733] <process did exit: exitCode=null, signal=SIGABRT>
+[pid=152733] starting temporary directories cleanup
+Call log:
+[2m  - <launching> /usr/bin/google-chrome --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument,OptimizationHints --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --use-angle=gl --autoplay-policy=no-user-gesture-required --crash-dumps-dir=/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/temp_work/redcat-animation-native-2026-10-12/scenes-1791814207183 --user-data-dir=/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/temp_work/redcat-animation-native-2026-10-12/scenes-1791814207183/profile --remote-debugging-pipe about:blank[22m
+[2m  - <launched> pid=152733[22m
+[2m  - [pid=152733][err] [152733:152733:1012/161007.313669:FATAL:chrome/browser/process_singleton_posix.cc:313] Socket path too long: /mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/temp_work/com.google.Chrome.A2PJLV/SingletonSocket.[22m
+[2m  - [pid=152733] <process did exit: exitCode=null, signal=SIGABRT>[22m
+[2m  - [pid=152733] starting temporary directories cleanup[22m
+[2m  - [pid=152733] <gracefully close start>[22m
+[2m  - [pid=152733] <kill>[22m
+[2m  - [pid=152733] <skipped force kill spawnedProcess.killed=false processClosed=true>[22m
+[2m  - [pid=152733] finished temporary directories cleanup[22m
+[2m  - [pid=152733] <gracefully close end>[22m
+
+    at async file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/player-animation-scenes.mjs:14:11
+
+Node.js v24.13.1

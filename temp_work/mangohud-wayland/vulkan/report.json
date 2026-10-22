@@ -1,0 +1,60 @@
+{
+  "variant": "vulkan",
+  "logs": [],
+  "gpu": {
+    "info": {
+      "auxAttributes": {
+        "amdSwitchable": false,
+        "canSupportThreadedTextureMailbox": false,
+        "glImplementationParts": "(gl=none,angle=none)",
+        "glResetNotificationStrategy": 0,
+        "hardwareSupportsVulkan": false,
+        "inProcessGpu": true,
+        "initializationTime": 0,
+        "isAsan": false,
+        "isClangCoverage": false,
+        "jpegDecodeAcceleratorSupported": false,
+        "optimus": false,
+        "passthroughCmdDecoder": false,
+        "sandboxed": false,
+        "skiaBackendType": "None",
+        "subpixelFontRendering": true,
+        "targetCpuBits": 64,
+        "visibilityCallbackCallCount": 0
+      },
+      "gpuDevice": [
+        {
+          "active": true,
+          "deviceId": 29663,
+          "gpuPreference": 0,
+          "vendorId": 4098
+        }
+      ]
+    },
+    "processes": [
+      {
+        "cpu": {
+          "cumulativeCPUUsage": 0.42,
+          "percentCPUUsage": 0,
+          "idleWakeupsPerSecond": 0
+        },
+        "pid": 148295,
+        "type": "GPU",
+        "creationTime": 1791400383040,
+        "serviceName": "GPU",
+        "memory": {
+          "workingSetSize": 176820,
+          "peakWorkingSetSize": 176820
+        }
+      }
+    ]
+  },
+  "libs": [
+    "/usr/lib64/libvulkan_radeon.so",
+    "/usr/lib64/libvulkan_lvp.so",
+    "/usr/lib64/libvulkan_dzn.so",
+    "/usr/lib64/mangohud/libMangoHud.so",
+    "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/node_modules/electron/dist/libvulkan.so.1",
+    "/usr/lib64/mangohud/libMangoHud_shim.so"
+  ]
+}

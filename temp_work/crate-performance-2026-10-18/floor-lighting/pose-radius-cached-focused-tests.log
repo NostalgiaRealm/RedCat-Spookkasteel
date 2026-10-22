@@ -1,0 +1,30 @@
+✔ every imported actor clip keeps exact Three.js bounds at start, interior and final poses (91.263044ms)
+✔ morph positions retain Three.js bounds and empty actors retain an empty box and zero-radius sphere (4.365395ms)
+✔ authored crate damage rates/radii use the native percentages and the visual blast births (2.014048ms)
+✔ nearby RedCat receives whole frame doses through the inclusive first-activation deadline (3.297702ms)
+✔ RedCat range and LOS use his native eye-height movement origin (0.414758ms)
+✔ moving out of range stops damage while moving into an expired blast never damages (0.330288ms)
+✔ enemy falloff uses the nearest posed box edge and tries native centre-relative corner rays (0.333888ms)
+✔ exploding crates kill nearby enemies, preserve distant enemies, and award defeat once (1.586771ms)
+✔ hurt cells damage smoke-only crates and chain destructible actors without projectile OnHit hooks (0.809776ms)
+✔ hidden and inactive targets stay protected, and brush OnHit callbacks do not receive splash (0.383978ms)
+✔ player death fires once; noclip immunity and cutscene protection remain intact (0.835706ms)
+✔ saving mid-blast resumes only remaining damage and respawn clears pending damage (4.074646ms)
+✔ a synchronous respawn during blast damage discards the old cell iteration immediately (0.338458ms)
+✔ delayed blasts arm on the first eligible frame and do not clip that frame or the inclusive end (0.270099ms)
+✔ the first frame beyond expiry does not receive a clipped remainder (0.227448ms)
+✔ pending saves preserve first activation, old saves retain their original expiry, and bad clocks are rejected (0.365878ms)
+✔ world explosion targets expose rendered bounds for rotated, scaled moving actors (1.73831ms)
+✔ current-pose radii enclose all original actor clips and transition poses without skinning vertices (89.473735ms)
+✔ unbound vertices, scaled/sheared bones and unsupported geometry retain conservative behavior (0.298288ms)
+✔ distant pending actors are rejected without skinning, while nearby targets retain exact geometry (2.202048ms)
+✔ several blast cells reuse one current-pose radius until bones are actually resampled (1.013644ms)
+✔ moving explosion targets keep identical reach decisions and exact damage through all current poses (14.878676ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 205.893848

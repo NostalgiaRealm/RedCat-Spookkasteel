@@ -1,0 +1,59 @@
+{
+  "scope": "Source-only physical Water and Air puzzle validation. Explicit independent encounter/chapter/retry boundaries are retained; this is not a continuous earned full campaign claim.",
+  "no_source_changes": true,
+  "builds_run": false,
+  "fixtures": {
+    "water_attempt4": "Exact retained ordinary water-two-buttons save from attempt3; no fields adjusted. HP1/life1. Earlier failures retained.",
+    "air_attempt6": "Fresh native Normal Caves entry HP10/max10/lives3/potions0; only chapter unlock3, incoming skill11 and mirrors3 declared. No state edits after setup. One ordinary browser reload/Continue at moving rock02."
+  },
+  "water_passed": [
+    "Native entry and hub approach in original attempt. Water switch and raised-crate route forward and reverse.",
+    "All seven timed waterfall gaps forward and reverse.",
+    "Frogs05\u201310 and three altar skeletons killed by ordinary power shots.",
+    "Shootable drain switch01 forward crossing; touch return switch02 and return crossing before fill.",
+    "All three altar buttons and completed motion: unlock_max=1.",
+    "Normal checkpoint save/load restored traversal; returned across ring/crates."
+  ],
+  "water_notes": [
+    "No standalone waterfall-disable button: hub door_left_to_water and door_right_to_water at x=-615,z=1280 disable waterfalls in BeforeOpenCommand. Lab doors re-enable them.",
+    "Wait for a fresh enabled\u2192disabled edge on each w_power01\u202607. The helper waits until it sees ON then OFF; standing waits need player-hull clearance.",
+    "Reverse gap05 safe wait x=-1805,z=3080. Earlier x=-1775 overlapped damage trigger by player half-width15 and caused damage despite no fall. This is a steering mistake.",
+    "Forward raised crates: [-1650,1885] normaljump[-1650,2010], normaljump[-1590,2110], doublejump[-1420,2250]. Reverse double,normal,normal.",
+    "Forward drain: shoot wat_but01 at[-2942,32,2560] from[-2580,2775], wait3.5s, cross basin toward[-3430,2300], normaljump[-3500,2360] onto upperledge.",
+    "Return drain: approach wat_but02[-3092,2327] from[-3120,2327], facebutton andW250ms, wait3.5s, route[-2880,2560] step24;move[-2500,2560];route[-2290,2476] step12;normaljump[-2320,2375]. Passed without damage.",
+    "Water altar buttons west[-3766,1544],north[-3342,1122],east[-2912,1544]. Stay on upper perimeter when firing; lower center pit can block shots. A normal/double jump restores line of sight.",
+    "The final low-health return was killed by spider02 while waiting near exit. No game blocker established. Genuine replay should clear it from range on entering and preserve health."
+  ],
+  "air_passed": [
+    "Spring crate01 launch and first gap.",
+    "Six fan switches and entire zigzag walkway; lower-pit spring crate04 recovery also passed.",
+    "All four bats killed by normal Ctrl power shots.",
+    "Moving rocks01\u219202\u219203\u219204\u219205, optional06\u219207 lift and secret, then main upper door.",
+    "All11 Air potions, secret1, heartcontainer +2maxHealth.",
+    "Lower paired button08, fan updraft recovery, circular08\u219209\u2192upperbutton07 and finalpotion, return09\u219208\u2192north exit.",
+    "Three altar guards killed and three switchesON; native completion motion yields unlock_max=1.",
+    "Ordinary save/browser reload/Continue on moving rock02 restored exactposition,time,stats and continued riding with contact71."
+  ],
+  "air_notes": [
+    "Use controls-latest.cjs, planner.js, and replay-stages.cjs. Stages reproduce individually passed input sequences; combined integration remains a separate replay validation.",
+    "face() must normalize pitch even if yaw already aligned; resume() must track the actual resume-button mouse coordinate. Fixed cameras may require ArrowLeft/Right fallback.",
+    "Read-only A* sees collision, not fan triggers. Do not let it cut zigzag walkway corners. Safe lower-pit falls cost no health, but add time.",
+    "Fan forward:1at[1425,2528];2at[1425,2724];3at[1136,2803];4at[1143,2528] approachfromwest[1100,2540];5at[760,2450];6at[824,3070]. Transition via[1370,2690],[1136,2740],[1136,2554],[850,2520],[850,3040],[1370,3050].",
+    "Bottom fan recovery: move[1312,2450], normaljump[1312,2250] uses crate04 spring; thenface[1370,2345],W550ms to upperentryledge. Crate03 can be countered by activewind02.",
+    "Moving platforms impart velocity to jumps. Failed04\u219205 launched while04 was travelling south and overshot safely. Wait04 translationZ>-1 and05translationX<10, thenShift-doublejump[945,3770].",
+    "Rock01 boarding: lowerfloor[1030,3240], wait01top<-100, run-doublejump[1230,3240], wait400ms, move[1228,3280]. Subsequent measured transfers are executable in replay-stages.cjs.",
+    "Bats: four2damagehits each. Atentryledge[1395,-16,3235] clearbat01+03. Onrock03upper, Ctrl with shortA/D strafes clearsbat04 then02. Long stationary firing caused avoidable damage; no enemy/state edits used.",
+    "Lower loot: potion03[772,3330],heart22[744,3251],potion04[768,3810],heart23[744,3901],heart24[1193,3904],shootcrate05at[817,3479] tocollectheart25.",
+    "Right lowerloot: potion05[1533,3516],heart26[1587,3506],potion07[2039,3480],potion06[1699,3991]. Heart26 restoredfullhealth.",
+    "Lowerbutton08[1504,4024] andupper07[2096,4025] togglebothwind03updraftandwind04crosswind. Retouch lowerbutton to re-enable, backaway, move[1544,3900], run-doublejump[1544,3784], wait600ms,move[1550,3635] ridesupdraft back onto bridge.",
+    "Altar eastguard approach[2290,2734],Ctrl+S400ms thenA/D200ms alternation4s; westapproach[1775,2737] same, mayneedjumpbackoutofcenterpit tofinish; northapproachroute[2032,2460] step12 thenCtrl+100msA/D alternation4.4s. Buttons[2466,2732],[1608,2732],[2035,2307]. Moveaway frombutton before read-onlyplanning. Wait26s finalmotion.",
+    "Pause auto-saves. Export only localStorage redcat.save.v1 from this isolatedprofile. No fixture bootstrapping must run in earned campaign."
+  ],
+  "authoritative_evidence": {
+    "water": "runtime-attempt4/water-altar-complete-save.json; water-round-trip-save.json; water-return-drain-crossed.json; water-ring-return.json; water-crates-return.json",
+    "air": "runtime-attempt6/air-fan-sequence-complete.json; air-platform02-restart-validation.json; air-secret-three-potions-earned.json; air-lower-fan-recovery-passed.json; air-final-ferries-and-exit-passed.json; air-altar-proof.json; air-altar-complete-save.json"
+  },
+  "misnamed_early_evidence": "runtime-attempt6/air-fan-room-passed.* actually records an early lowerpit attempt. air-fan-sequence-complete.* is authoritative successful traversal.",
+  "logs": "Each runtime directory retains commands.jsonl, responses.jsonl, screenshots, input/event/sample traces and isolated profile. No evidence deleted.",
+  "unproven": "Continuous earned 30-potion progression and allfouraltars in one save remain for genuinecampaign replay. Isolated boss/outro evidence is separate and not repeated here."
+}

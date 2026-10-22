@@ -1,0 +1,23 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: {"name":"second-forest-pool","position":[-1100,-183.95,1253.95],"grounded":true,"contents":[65548],"sounds":[]}
++ actual - expected
+
++ []
+- [
+-   'rclwater.wav',
+-   'rcrwater.wav'
+- ]
+
+    at file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/water-audio-scenes.mjs:49:27 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [],
+  expected: [ 'rclwater.wav', 'rcrwater.wav' ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

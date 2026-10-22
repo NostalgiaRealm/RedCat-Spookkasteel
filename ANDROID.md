@@ -66,7 +66,7 @@ tar -xzf OpenJDK21U-jdk_x64_linux_hotspot_21.0.12.1_1.tar.gz
 cd ../../..
 ```
 
-The archive and original release/checksum metadata are retained in `temp_work/android-initial-2026-10-06/`. Other host architectures need the matching JDK archive. Use the [official Temurin release](https://github.com/adoptium/temurin21-binaries/releases/tag/jdk-21.0.12.1%2B1), not this x86_64 archive on ARM or macOS.
+The downloaded archive and installed JDK are retained locally under `temp_work/android-initial-2026-10-06/toolchain/` and excluded from Git. Original release/checksum metadata is included in `temp_work/android-initial-2026-10-06/`; use the commands above to recreate the toolchain after cloning. Other host architectures need the matching JDK archive. Use the [official Temurin release](https://github.com/adoptium/temurin21-binaries/releases/tag/jdk-21.0.12.1%2B1), not this x86_64 archive on ARM or macOS.
 
 ## 3. Prepare the checkout and shell environment
 

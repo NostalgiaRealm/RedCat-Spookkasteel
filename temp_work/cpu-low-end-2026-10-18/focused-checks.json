@@ -1,0 +1,26 @@
+[
+  {
+    "file": "new-tests-after.tap",
+    "command": [
+      "node",
+      "--test",
+      "--test-reporter=tap",
+      "tests/gameplay-update-work.test.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "file": "existing-gameplay-motion-targeted.tap",
+    "command": [
+      "node",
+      "--test",
+      "--test-reporter=tap",
+      "--test-name-pattern=enter trigger fires|pickups score exactly|snapshot restores mutable|all crossed original event|callbacks can stop|ping-pong repeat|graveyard looping motion|save/load retains pickup|restoring paused motions|inactive controller sharing|touching an initially paused cave platform|rejected motion segments|motion event teleport",
+      "tests/gameplay.test.mjs",
+      "tests/motions.test.mjs",
+      "tests/script-host.test.mjs",
+      "tests/moving-solids.test.mjs"
+    ],
+    "exit_code": 0
+  }
+]

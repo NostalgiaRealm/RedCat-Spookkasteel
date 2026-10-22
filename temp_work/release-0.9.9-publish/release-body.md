@@ -1,0 +1,153 @@
+This release improves RedCat's animations, enemy movement and combat, explosions, skyboxes, Fleurifee's effects, save continuity, and CPU performance on slower devices. Version 0.9.9 builds on the original-game code and asset investigations completed after 0.9.8, while preserving the port's intentional gameplay improvements and performance safeguards. Three separate test rooms also let players explore original assets and the power-move investigation.
+
+## RedCat's Animations & Save Continuity
+
+- **Restored original animation transitions:** Switching between RedCat's motions now blends his skeleton over the original **250 milliseconds**, using the recovered easing and outgoing-pose rules instead of abruptly changing clips.
+- **Corrected animation selection and timing:**
+  - Sideways movement now uses the original **2.4×** strafe animation speed.
+  - Normal jumps and SuperSkippie repeat their original animations during prolonged flight instead of holding the final frame.
+  - Fans lifting RedCat no longer incorrectly start a jump animation without an actual jump or boost.
+  - Large-drop detection now uses the original floor-probe distance and remembered-height rules, retaining the distinction between small steps, ordinary jumps, and long falls.
+  - Shooting hands animation control back to movement or idle at **80%** of the firing clip, as in the original. Projectile release, damage, and recharge timing are unchanged.
+  - Checkpoint respawn now enters the original faster post-respawn idle before the next action.
+- **Preserved animation state in saves:** New saves retain RedCat's current motion, playback position, and transition blend, preventing a loaded jump or reaction from restarting in the wrong pose. Existing saves remain supported.
+- **Verified all 16 original RedCat motions** against the original actor data and retained Genesis3D interpolation routines. The existing camera-relative controls, reliable SuperSkippie boost, and protected dialogue behavior remain in place.
+
+## Enemy & Scenery Animations
+
+- **Added original transitions for enemies and Max's turret top:** Different clips now blend over 250 milliseconds, including the original handling of rapidly interrupted transitions. Repeated rendering, pause frames, and projectile-origin queries do not advance animations twice.
+- **Restored native playback variation and attack timing:**
+  - Common enemy idle, walking, shooting, hurt, and death animations use the original randomized playback-rate rules.
+  - Idle variants for plants and gargoyles follow the original selection behavior. Flying bats use their airborne idle timing.
+  - Knight strikes retain their fixed **1.8×** playback speed, with damage windows aligned to that animation.
+  - Shot release, salvo timing, hurt reactions, and the start of death fading follow the selected clip's actual duration.
+- **Improved enemy save restoration:** Saves retain selected clips, rates, idle variants, and transition poses, including Max's turret animation. Older saves still load, including zombies already rising from their graves.
+- **Fixed scenery animating without an authored motion:** Four decorative actors in the Graveyard and Tower now remain in their original bind pose when no motion is assigned. This prevents the stone witch from repeatedly playing its death animation. Explicitly animated scenery and the intentional moving hand-torch enhancement remain intact.
+- **Audited the original actor assets:** Checked all **165** imported actor files against their recorded source hashes and compared all **156 non-RedCat animation clips** with the retained native interpolation reference.
+
+## Enemy Movement & Combat
+
+- **Fixed recovery from the Castle warehouse crate trap:** If a failed jump leaves RedCat trapped beneath the shifted crates, he can return to a safe higher position he already reached. Bounded collision checks distinguish the trap from narrow corridors and ordinary jump routes; inventory, health and puzzle progress are preserved.
+- **Refined pursuit along original waypoint routes:**
+  - Ordinary moving shooters now choose among valid adjacent waypoints that lead closer to RedCat, rather than using a reconstructed arbitrary start/goal search during normal pursuit.
+  - Enemies preserve unfinished route edges when changing actions and keep their waypoint reservations while shooting, waiting, or hurt.
+  - Save loading restores those reservations immediately, reducing overlapping route choices after a reload.
+- **Restored touch-pursuit behavior** for green bats, green ghosts, touching spiders, zombies, and guardians. These enemies use the original approach/circling choices and body-contact damage instead of an invented remote melee strike. Their independent contact cooldown survives hit reactions and action changes.
+- **Corrected ordinary shooter phases:** Frogs, ranged spiders, bats, ghosts, and skeletons now more closely follow the original approach, shoot, salvo, wait, and movement decisions. An already committed shot or salvo can finish after losing sight of RedCat; a selected hurt reaction cancels the interrupted attack instead of resuming it later.
+- **Corrected shooter wait timing:** Inter-shot and post-salvo waits now begin timing on their first controller check, following the original initialization order. Exact deadline handling, script freezes and loaded waits preserve their progress instead of completing early or restarting.
+- **Restored skeleton wake, retreat, and settling behavior:**
+  - During ordinary awakening, skeletons finish their wake animation before attacking and reverse their start motion when returning to a pile of bones.
+  - A selected hurt reaction replaces dormancy, waking or retraction. Once hurt finishes, the skeleton enters active combat without replaying an extra wake animation. Older saves retaining the interrupted state are corrected on load.
+  - Retreat uses the original backward-walking clip while facing RedCat, with movement and animation completion handled separately.
+  - Retreat no longer repeatedly restarts while the same completed action remains selected.
+  - Freshly loaded dormant skeletons remain settled piles, and active hurt/death poses survive saving and loading.
+- **Corrected knight and gargoyle activation:**
+  - Knights play their original wake motion and reverse it when returning to dormancy.
+  - Gargoyles use their original idle fallback, since their model has no separate wake clip, and finish committed salvos before settling.
+  - Dormant stone enemies retain their original health protection; waking, active, retracting, and hurt states remain vulnerable.
+- **Recovered original hit-response rules:** Ordinary enemies can either react visibly or play a hurt sound without interrupting their current action. Repeated selected hits no longer restart an already playing hurt animation. Bone Brutus uses his separate damage-acceptance rule, while Mushroom Brutus uses the common receiver.
+- **Fixed spider reactions during ceiling movement:** A selected hit takes control of the spider's animation and movement. Afterward, it chooses a fresh descent or active combat state from its current height, rather than resuming an interrupted vertical action incorrectly.
+- **Refined boss reactions and attack sequences:**
+  - Jester Max now finishes his hurt animation before teleporting. Repeated hits do not restart that reaction, and an interrupted attack discards its remaining shots.
+  - Turret Max keeps his current height while hurt and starts a fresh salvo afterward, instead of entering an invented lowering phase. The deliberate ability to damage him through any turret part remains.
+  - The Witch returns from hurt to closer pursuit without randomly relocating or repeating takeoff. Her committed shots, scripted finale and protected combat-health floor remain intact.
+  - Jester and turret Max fire consecutive shots after each shooting animation, without an added between-shot wait or a new visibility check at release. Their attack/hurt timing follows the actual playback rate.
+  - Mushroom Brutus now uses the recovered pursuit/salvo/wait controller. Bone Brutus switches bone/skull ammunition once when charging, finishes that animation, then moves or fires another salvo without an extra post-charge wait. Saves retain the current phase and do not repeat ammunition changes.
+
+## Explosions & Enemy Defeat Effects
+
+- **Restored damage from exploding crates and other destructible actors:**
+  - Explosions now damage nearby RedCat, enemies, and eligible destructible objects using the original size, damage, and distance-falloff settings, with a nominal **400-millisecond** damage lifetime.
+  - Restored the original frame ordering: the first eligible update starts the damage clock, the exact endpoint remains active, and eligible updates apply their full frame's damage. This replaces clipping every blast to exactly 400 milliseconds regardless of frame boundaries.
+  - Static and moving world geometry can shield a target. Actor bounds and RedCat's original contact height determine the damage range.
+  - Nearby destructible objects can cause chain explosions. Original destruction commands, including the Graveyard crate that removes a gate, continue to work.
+  - Authored smoke-only explosions can also cause damage when their settings request it.
+  - No-clip and protected cutscenes still keep RedCat safe. Respawning clears old damage cells.
+  - Saving during an explosion preserves its activation clock and remaining damage. Fire/smoke tails are saved independently, so they can finish after damage expires without restarting damage, destruction commands or sound on load.
+  - Restored breakable-prop fragments continue from their saved age rather than launching again; expired fragments stay absent.
+- **Corrected destructible-object damage thresholds:** Crates and other destructible props break only when accumulated damage **exceeds** their original limit. Reaching the exact limit leaves them visible, solid and targetable until another hit. Projectile and explosion damage share the same saved accumulator.
+- **Restored native knight-armour breakup:**
+  - Uses the original nine fragment models with their individual settings, random launch positions, upward launch speeds, gravity, spin, bounce, and friction.
+  - Replaced the fixed 3.5-second expiry with the original per-fragment lifetimes.
+  - Only the axe uses the original settling fade; other pieces retain their own expiry behavior instead of receiving an added universal fade.
+  - Expired fragments are cleaned up, remain nonblocking, and do not reappear when an old corpse is restored.
+
+## Graphics & Effects
+
+- **Corrected skybox placement and orientation across the campaign:**
+  - Converted the original face order correctly for Three.js and corrected the orientation of the top and bottom faces.
+  - Removed the fallback that copied other artwork into unassigned faces. These now use a deterministic black fallback.
+  - Verified all ten assigned sky images against the original level artwork. The Caves retain their existing background because they have no assigned sky images.
+  - Preserved the earlier mixed-resolution texture-upload fix.
+- **Restored authored sky boundaries in the Forest and Castle:** Extended the Graveyard's boundary handling to the original SKY polygons in those levels, hiding distant scenery behind the sky while preserving visible foreground objects and collision.
+- **Corrected Fleurifee's ribbon effects using the original executable:**
+  - Replaced the energy-beam substitute with the original **PTrail** artwork and transparency mask.
+  - Restored approximately **39% starting opacity**, the linear **800-millisecond** attenuation, and the original low-alpha cutoff.
+  - Corrected ribbon width, distance-based trail sampling, endpoint timestamps, camera-facing geometry, and texture orientation for continuous, soft-edged ribbons.
+  - Ribbons now stop with their orbiting stars; the separate disappearance burst continues to fade afterward.
+  - New saves preserve the additional ribbon timing data, and older ribbon snapshots migrate without losing the rest of Fleurifee's state. Cutscene-skip cleanup and audio behavior remain unchanged.
+
+## Save Reliability & Effect Continuity
+
+- **Preserved the last living save after death:** Manual saving, automatic saving, leaving for the menu, closing the game and changing players no longer replace a usable save with a dead RedCat. Manual requests explain that saving will be available after respawning. Existing death-animation saves remain loadable, and saving resumes normally after respawn.
+- **Preserved smoke and flame particles across saves:** Authored emitters and the added hand-torch flames now retain their individual particles, motion, fade stages, timers and random state. Loading continues existing clouds and dying trails without replaying the level's entire emission history.
+- **Preserved live knight fragments across saves:** Armour pieces retain their actual position, velocity, spin, bounce and fade state. Loading no longer reconstructs earlier bounces against doors or platforms that may have moved since the knight died. Older saves keep their bounded fallback restoration.
+
+## Sound & Menu Fixes
+
+- **Preserved audio playback across saves:** Music, effects, overlapping pickup sounds and dialogue resume from their saved playback positions. Saves also retain queued dialogue lines, both sides of a music crossfade, remembered track positions and delayed-loop countdowns. Loading waits for the restored level and does not replay pickup or dialogue-trigger events. Current volume and ambience-range preferences remain in effect.
+- **Matched the original music fade envelope:** Restored constant-rate volume ramps and the original gain conversion, including reversals partway through a fade. Pause and save/load preserve fade progress. The port's intentional track selection, full-track looping and combat-music scheduling remain unchanged.
+- **Corrected Fleurifee's idle playback:** Restored the original quieter base volume and removed small gaps between repetitions of `IdleFee1.wav`. The correction also applies when resuming existing saves, while preserving the longer hearing range, appearance/disappearance cues, and pause/resume behavior.
+- **Freed completed browser audio resources promptly:** Completed or stopped HTML sounds now unload their media player instead of leaving it to garbage collection. Active sounds, pause/resume, buffered pickup tails and music scheduling keep their existing behavior. Focused browser checks confirmed matching player creation/destruction and successful outro startup; the original long-session outro failure remains documented rather than claimed conclusively solved.
+- **Fixed the clipped end of pickup sounds:** The 50-point money-bag sound, `ICoinL.wav`, was intact, but media-element cleanup could suppress its final queued audio samples. Pickup sounds now use decoded Web Audio playback so the complete waveform renders before cleanup. Original recordings, volume, pitch, overlapping pickups, and pause/resume behavior are preserved; music, dialogue, and ambience scheduling are unchanged.
+- **Updated the About screen to version 0.9.9 and fixed its GitHub link** in the desktop application and Android wrapper. The project URL is now included in their permitted external-link lists. Desktop package metadata is still supplied separately when building releases.
+
+## Separate Original-Asset Test Rooms
+
+These rooms are optional standalone projects in the source tree. They are not new campaign levels and do not use or modify the main game's adventures.
+
+- **Added `RC_COIN_TEST`:**
+  - A small walkable room with the original HUD, regular RedCat movement, jumping, shooting, and pickup effects.
+  - Displays the unused wooden, silver, and gold coin models beside the original small, medium, and large money bags.
+  - Each coin/bag pair uses the original corresponding **1/5/10 money**, **5/25/50 score**, and `ICoinS/M/L.wav` pickup sound.
+  - Collecting items shows the original pickup effect and floating score. Resetting restores all six items and clears the test score.
+- **Added `RC_ACTOR_TEST`:**
+  - A walkable gallery of **13 unused character, enemy, and machine models**, paired with their campaign counterparts for **26 selectable exhibits**.
+  - Includes alternate knights, spider and bat models, Max, the carnivorous plant, Brutus, RedCat, WhizzKitty, the witch, and an unused machine beside the final turret assembly.
+  - Supports selecting embedded animation clips, playing them once or repeatedly, pausing, and resetting the room.
+  - The `tstwitch` display is rotated upright so RedCat can approach her face without changing the original model.
+- **Added V camera switching to `RC_COIN_TEST` and `RC_ACTOR_TEST`:** Toggle between first- and third-person views, with the choice retained when resetting the room.
+- **Included `RC_SHOVE_TEST` in the project folder:**
+  - The previously separate power-move investigation room is now included alongside the other test projects, using the original animated RedCat, three Castle crate groups, their touch button, and original collision geometry.
+  - Its **original button-puzzle mode** moves all three crate groups along their authored paths after RedCat touches the button.
+  - Its clearly labelled **experimental power-move mode** lets RedCat push `crates03` by holding **Q** while walking into it. Ordinary walking does not push the group. This is a test-room experiment, not a recovered original action or a new campaign mechanic.
+  - Includes reset controls and `POWER-MOVE-ORIGINAL.md`, explaining the unused skill flag, the recovered button-driven puzzle, and why the investigation did not establish a working native shove action.
+  - Corrected its relocated launch paths and retained-work directory so it starts from inside `RCSPOOK_NEW/RC_SHOVE_TEST` and stores runtime evidence under `temp_work/`.
+- All three rooms include launch instructions, independently copied assets and runtime code, provenance records, and isolated profiles. They can be started from their respective folders with `npm start -- --ozone-platform=wayland` on Linux.
+
+## Performance, Documentation & Development
+
+- **Reduced CPU work for slower devices:** Removed repeated actor-bounds scans, per-mesh matrix updates, effect allocations, pickup distance checks and motion sampling. Unchanged HUD frames now reuse their drawing. Targeted Castle, Graveyard and Caves comparisons used **8–17% less CPU update time**, and **13–16% less with 4× browser CPU throttling**. Animation timing, gameplay, lighting, collision and streaming behavior are preserved; compared poses, scene snapshots and screenshots match. These are development-machine measurements, not a guarantee for a particular i3. See the [CPU performance report](docs/low-end-cpu-performance.md).
+- **Completed a fresh Normal campaign source check:** All five levels, required puzzles, earned upgrades, bosses, mirrors and the ending were completed without cheats, using ordinary saves and recovery. All 13 authored secret routes and both Tower bonus rooms were also checked across the campaign and separate continuations. The [retained report](docs/campaign-validation-2026-10-18.md) distinguishes those checks from a single 100% save and records the Castle recovery fix, dead-save protection, failed attempts and an outro startup failure that recovered after a normal browser reload. The subsequent audio cleanup received its own focused checks.
+- **Preserved bounded enemy navigation:** Normal authored pursuit checks at most eight neighboring waypoints. Off-route recovery retains its capped searches, cached failures, and shared work budget, rather than adding unrestricted searches to every frame.
+- **Kept animation and effect work bounded:** Reuses frozen transition poses and unchanged-pose GPU uploads, limits ribbon history, and bounds fragment restoration. The earlier Graveyard hitching safeguards and smooth grave-emergence behavior remain in place.
+- **Expanded native research and implementation notes** for skyboxes, player/enemy animations, skeleton and stone-enemy lifecycles, pursuit, shooter waits, boss interruptions, explosion damage, knight debris, effect/audio save continuity, music fades, pickup playback, and Fleurifee ribbons.
+- **Updated the implementation audit and related documentation** to distinguish completed work from remaining fidelity limits. Build instructions now use the relocated project path, explain 0.9.9 package-version injection and distinguish source checks from release-package validation. Portability notes acknowledge the already configured Mac icon. Original-code evidence, focused verification reports, and screenshots are retained under `temp_work/`.
+
+### Technical Notes
+
+- This document covers changes after `RELEASE_NOTES_0.9.8`, plus inclusion of the previously separate `RC_SHOVE_TEST` project; earlier menu, player-profile, resolution-scaling, loading-screen, and water-audio work is not repeated as new functionality.
+- The test rooms are newly constructed inspection rooms, not recovered hidden levels. The coin experiment does not establish behavior in an earlier development build, and the actor gallery does not invent unverified combat AI for unused models. The shove room keeps its recovered original button puzzle separate from its explicitly experimental Q-based pushing mode; neither mode adds a shove ability to the main campaign.
+- Existing saves remain supported. New optional snapshot fields improve animation, ribbon, enemy-state, particle, fragment, explosion and audio continuity; older saves cannot recover every detail that was never recorded.
+- Intentional improvements remain, including reliable SuperSkippie, safe movement recovery, smooth zombie emergence, lit moving torches, protected post-boss dialogue, and adjusted ambient sound ranges. Fractional enemy health also remains so small continuous damage ticks accumulate at modern frame rates.
+- These changes were checked through original asset/code research and focused numerical, gameplay, browser, and Electron checks as applicable. They do not establish universal frame-perfect Genesis3D parity. Whole-engine scheduling/random sequences, browser audio-buffer timing, portable collision precision and a frame-by-frame campaign comparison against the original remain fidelity boundaries.
+- Performance measurements came from targeted scenes on the development machine; they are not a guarantee for every low-end device. The completed source campaign used instrumented controls and iterative fixes; actual platform/release packages, target hardware and sustained media playback still need validation. Those campaign checks describe the earlier source-validation pass; package checks are listed below.
+
+## Release Packages
+
+- Built from commit `5f9a3f95e9a422950e0c3eaf267758cc2ac41e6c` using Electron 44.3.0 and electron-builder 26.15.3.
+- Portable ZIPs are available for Linux, Windows and macOS, each in x64 and ARM64 variants. Extract the complete archive before running the game.
+- All six packages were checked against the current game source/assets and report version 0.9.9. ZIP integrity and SHA-256 checksums were verified.
+- Linux x64 received a packaged menu/Forest startup smoke check on Fedora. Windows, macOS and ARM64 packages were cross-packaged; runtime validation on those platforms remains outstanding.
+- **The macOS bundles are unsigned and not notarized.** They were packaged on Linux and may be blocked by Gatekeeper or require signing on a Mac before use, especially on Apple Silicon. Windows packages are also unsigned.
+- `SHA256SUMS.txt` contains the checksums for all six downloads.

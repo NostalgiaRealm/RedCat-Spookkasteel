@@ -1,0 +1,329 @@
+[
+  {
+    "offset": 5784,
+    "tag": 62,
+    "index": 29,
+    "kind": "handler",
+    "name": "CommandOnEnter",
+    "type": {
+      "code": 0,
+      "name": "void",
+      "classRef": null
+    },
+    "parameters": [
+      {
+        "offset": 5807,
+        "tag": 53,
+        "index": 0,
+        "kind": "parameter",
+        "name": "@self",
+        "type": {
+          "code": 4,
+          "name": "object",
+          "classRef": {
+            "path": [
+              {
+                "tag": 66,
+                "index": 0
+              }
+            ],
+            "id": "42:0",
+            "name": "CAdamScriptGameObject",
+            "kind": "class"
+          }
+        },
+        "stackOffset": -4,
+        "endOffset": 5824,
+        "id": "42:0/3d:57/3e:29/35:0"
+      }
+    ],
+    "locals": [
+      {
+        "offset": 5828,
+        "tag": 55,
+        "index": 0,
+        "kind": "local",
+        "name": "enough",
+        "type": {
+          "code": 2,
+          "name": "int",
+          "classRef": null
+        },
+        "stackOffset": 0,
+        "endOffset": 5843,
+        "id": "42:0/3d:57/3e:29/37:0"
+      }
+    ],
+    "instructions": [
+      {
+        "offset": 5845,
+        "opcode": 3,
+        "destination": {
+          "tag": 1,
+          "offset": 5846,
+          "type": 2
+        },
+        "source": {
+          "tag": 0,
+          "offset": 5848,
+          "type": 2,
+          "value": 0
+        }
+      },
+      {
+        "offset": 5854,
+        "opcode": 3,
+        "destination": {
+          "tag": 2,
+          "offset": 5855,
+          "ref": {
+            "path": [
+              {
+                "tag": 55,
+                "index": 0
+              },
+              {
+                "tag": 62,
+                "index": 29
+              },
+              {
+                "tag": 61,
+                "index": 57
+              },
+              {
+                "tag": 66,
+                "index": 0
+              }
+            ],
+            "id": "42:0/3d:57/3e:29/37:0",
+            "name": "enough",
+            "kind": "local"
+          }
+        },
+        "source": {
+          "tag": 4,
+          "offset": 5869,
+          "ref": {
+            "path": [
+              {
+                "tag": 65,
+                "index": 23
+              }
+            ],
+            "id": "41:23",
+            "name": "RcHasAllPotions",
+            "kind": "external"
+          },
+          "callFlag": 1
+        }
+      },
+      {
+        "offset": 5875,
+        "opcode": 2,
+        "target": 8,
+        "whenTruthy": 0,
+        "a": {
+          "tag": 0,
+          "offset": 5881,
+          "type": 2,
+          "value": 1
+        },
+        "b": {
+          "tag": 2,
+          "offset": 5887,
+          "ref": {
+            "path": [
+              {
+                "tag": 55,
+                "index": 0
+              },
+              {
+                "tag": 62,
+                "index": 29
+              },
+              {
+                "tag": 61,
+                "index": 57
+              },
+              {
+                "tag": 66,
+                "index": 0
+              }
+            ],
+            "id": "42:0/3d:57/3e:29/37:0",
+            "name": "enough",
+            "kind": "local"
+          }
+        },
+        "operator": 9
+      },
+      {
+        "offset": 5902,
+        "opcode": 3,
+        "destination": {
+          "tag": 1,
+          "offset": 5903,
+          "type": 4
+        },
+        "source": {
+          "tag": 2,
+          "offset": 5905,
+          "ref": {
+            "path": [
+              {
+                "tag": 54,
+                "index": 64
+              }
+            ],
+            "id": "36:64",
+            "name": "csmc06",
+            "kind": "object"
+          }
+        }
+      },
+      {
+        "offset": 5910,
+        "opcode": 3,
+        "destination": {
+          "tag": 3,
+          "offset": 5911
+        },
+        "source": {
+          "tag": 4,
+          "offset": 5912,
+          "ref": {
+            "path": [
+              {
+                "tag": 60,
+                "index": 9
+              },
+              {
+                "tag": 66,
+                "index": 0
+              }
+            ],
+            "id": "42:0/3c:9",
+            "name": "Enable",
+            "kind": "method"
+          },
+          "callFlag": 1
+        }
+      },
+      {
+        "offset": 5921,
+        "opcode": 3,
+        "destination": {
+          "tag": 1,
+          "offset": 5922,
+          "type": 2
+        },
+        "source": {
+          "tag": 0,
+          "offset": 5924,
+          "type": 2,
+          "value": 0
+        }
+      },
+      {
+        "offset": 5930,
+        "opcode": 3,
+        "destination": {
+          "tag": 3,
+          "offset": 5931
+        },
+        "source": {
+          "tag": 4,
+          "offset": 5932,
+          "ref": {
+            "path": [
+              {
+                "tag": 65,
+                "index": 24
+              }
+            ],
+            "id": "41:24",
+            "name": "RcEnableSkill",
+            "kind": "external"
+          },
+          "callFlag": 1
+        }
+      },
+      {
+        "offset": 5938,
+        "opcode": 0,
+        "target": -2
+      },
+      {
+        "offset": 5943,
+        "opcode": 3,
+        "destination": {
+          "tag": 1,
+          "offset": 5944,
+          "type": 4
+        },
+        "source": {
+          "tag": 2,
+          "offset": 5946,
+          "ref": {
+            "path": [
+              {
+                "tag": 54,
+                "index": 105
+              }
+            ],
+            "id": "36:105",
+            "name": "csmc11",
+            "kind": "object"
+          }
+        }
+      },
+      {
+        "offset": 5951,
+        "opcode": 3,
+        "destination": {
+          "tag": 3,
+          "offset": 5952
+        },
+        "source": {
+          "tag": 4,
+          "offset": 5953,
+          "ref": {
+            "path": [
+              {
+                "tag": 60,
+                "index": 9
+              },
+              {
+                "tag": 66,
+                "index": 0
+              }
+            ],
+            "id": "42:0/3c:9",
+            "name": "Enable",
+            "kind": "method"
+          },
+          "callFlag": 1
+        }
+      },
+      {
+        "offset": 5962,
+        "opcode": 0,
+        "target": -2
+      }
+    ],
+    "handlers": [],
+    "owner": {
+      "path": [
+        {
+          "tag": 54,
+          "index": 63
+        }
+      ],
+      "id": "36:63",
+      "name": "csmc06_tr",
+      "kind": "object"
+    },
+    "endOffset": 5975,
+    "id": "42:0/3d:57/3e:29"
+  }
+]

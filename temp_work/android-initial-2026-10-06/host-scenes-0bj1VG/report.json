@@ -1,0 +1,444 @@
+{
+  "kind": "browser-simulated-android-host",
+  "checks": [
+    "native ready handshake gates startup; automatic touch and Android pixel budget remain active",
+    "native suspension preserves intro position; foreground waits for Verder kijken",
+    "fullscreen settings reach the native bridge without calling HTML fullscreen",
+    "Level 1 loads and native Back pauses the real game",
+    "native background freezes simulation, rendering, audio and save clocks, clears held input, and requires explicit resume",
+    "native quit waits for the latest real recovery write; keep-awake follows activity",
+    "desktop-browser: no bridge, real intro playback and gesture-based HTML fullscreen remain intact",
+    "desktop-browser: touch settings and uncapped native DPR resolution remain unchanged",
+    "desktop-browser: Level 1 pause/resume and localStorage plus IndexedDB persistence survive reload and Continue",
+    "mobile-browser: no bridge, real intro playback and gesture-based HTML fullscreen remain intact",
+    "mobile-browser: touch settings and uncapped native DPR resolution remain unchanged",
+    "mobile-browser: Level 1 pause/resume and localStorage plus IndexedDB persistence survive reload and Continue"
+  ],
+  "errors": [],
+  "samples": {
+    "handshake": {
+      "beforeReply": {
+        "mode": "menu",
+        "videoSource": null
+      },
+      "readyMessages": 1,
+      "fullscreen": [
+        {
+          "type": "fullscreen",
+          "enabled": true
+        }
+      ],
+      "canvas": {
+        "width": 1280,
+        "height": 720
+      },
+      "touch": true,
+      "preference": "auto",
+      "resolution": "native",
+      "desktop": false
+    },
+    "intro": {
+      "suspended": {
+        "mode": "intro",
+        "currentTime": 0.217085,
+        "paused": true,
+        "source": "assets/media/intronl.webm",
+        "button": "Verder kijken",
+        "buttonHidden": false
+      },
+      "foreground": {
+        "mode": "intro",
+        "currentTime": 0.217085,
+        "paused": true,
+        "source": "assets/media/intronl.webm",
+        "button": "Verder kijken",
+        "buttonHidden": false
+      },
+      "resumed": {
+        "mode": "intro",
+        "currentTime": 0.327805,
+        "paused": false,
+        "source": "assets/media/intronl.webm",
+        "button": "Verder kijken",
+        "buttonHidden": true
+      }
+    },
+    "suspension": {
+      "frozen": {
+        "mode": "paused",
+        "counters": {
+          "saveWrites": 2,
+          "updates": 3,
+          "renders": 7,
+          "audioUpdates": 3,
+          "captures": 2
+        },
+        "recoveryClock": 0.12390000000149007,
+        "scriptTime": 0.07380000000148994,
+        "position": [
+          -1332,
+          -159.97073600000857,
+          2280
+        ],
+        "save": {
+          "_cleanup": "Full saved-game payload removed on 2026-10-22; diagnostic summary retained. This is not a loadable save.",
+          "serializedBytes": 281649,
+          "sha256": "3d139449ae3cad847bad1e60c80ae211851dc7fe5cb49aec6b439f207092814a",
+          "level": "lvl00a",
+          "state": {
+            "health": 10,
+            "maxHealth": 10,
+            "score": 0,
+            "potions": 0,
+            "mirror": 0,
+            "lives": 3,
+            "coins": 0,
+            "kills": 0,
+            "secrets": 0,
+            "skill": 0
+          },
+          "objectCount": 700,
+          "position": [
+            -1332,
+            -159.97073600000857,
+            2280
+          ],
+          "savedAt": "2026-10-05T22:53:36.257Z"
+        },
+        "input": {
+          "forward": 0,
+          "right": 0,
+          "turn": 0,
+          "jump": false,
+          "descend": false,
+          "walk": false,
+          "attack": false,
+          "use": false
+        },
+        "audioPaused": true,
+        "audioContext": "suspended",
+        "playingSounds": 0
+      },
+      "foreground": {
+        "mode": "paused",
+        "counters": {
+          "saveWrites": 2,
+          "updates": 3,
+          "renders": 23,
+          "audioUpdates": 3,
+          "captures": 2
+        },
+        "recoveryClock": 0.12390000000149007,
+        "scriptTime": 0.07380000000148994,
+        "position": [
+          -1332,
+          -159.97073600000857,
+          2280
+        ],
+        "save": {
+          "_cleanup": "Full saved-game payload removed on 2026-10-22; diagnostic summary retained. This is not a loadable save.",
+          "serializedBytes": 281649,
+          "sha256": "3d139449ae3cad847bad1e60c80ae211851dc7fe5cb49aec6b439f207092814a",
+          "level": "lvl00a",
+          "state": {
+            "health": 10,
+            "maxHealth": 10,
+            "score": 0,
+            "potions": 0,
+            "mirror": 0,
+            "lives": 3,
+            "coins": 0,
+            "kills": 0,
+            "secrets": 0,
+            "skill": 0
+          },
+          "objectCount": 700,
+          "position": [
+            -1332,
+            -159.97073600000857,
+            2280
+          ],
+          "savedAt": "2026-10-05T22:53:36.257Z"
+        },
+        "input": {
+          "forward": 0,
+          "right": 0,
+          "turn": 0,
+          "jump": false,
+          "descend": false,
+          "walk": false,
+          "attack": false,
+          "use": false
+        },
+        "audioPaused": true,
+        "audioContext": "suspended",
+        "playingSounds": 0
+      },
+      "resumed": {
+        "mode": "playing",
+        "counters": {
+          "saveWrites": 2,
+          "updates": 4,
+          "renders": 26,
+          "audioUpdates": 4,
+          "captures": 2
+        },
+        "recoveryClock": 0.13680000000298037,
+        "scriptTime": 0.08670000000298024,
+        "position": [
+          -1332,
+          -159.97073600000857,
+          2280
+        ],
+        "save": {
+          "_cleanup": "Full saved-game payload removed on 2026-10-22; diagnostic summary retained. This is not a loadable save.",
+          "serializedBytes": 281649,
+          "sha256": "3d139449ae3cad847bad1e60c80ae211851dc7fe5cb49aec6b439f207092814a",
+          "level": "lvl00a",
+          "state": {
+            "health": 10,
+            "maxHealth": 10,
+            "score": 0,
+            "potions": 0,
+            "mirror": 0,
+            "lives": 3,
+            "coins": 0,
+            "kills": 0,
+            "secrets": 0,
+            "skill": 0
+          },
+          "objectCount": 700,
+          "position": [
+            -1332,
+            -159.97073600000857,
+            2280
+          ],
+          "savedAt": "2026-10-05T22:53:36.257Z"
+        },
+        "input": {
+          "forward": 0,
+          "right": 0,
+          "turn": 0,
+          "jump": false,
+          "descend": false,
+          "walk": false,
+          "attack": false,
+          "use": false
+        },
+        "audioPaused": false,
+        "audioContext": "running",
+        "playingSounds": 20
+      }
+    },
+    "bridge": {
+      "messages": [
+        {
+          "type": "ready"
+        },
+        {
+          "type": "fullscreen",
+          "enabled": true
+        },
+        {
+          "type": "keep-awake",
+          "enabled": true
+        },
+        {
+          "type": "keep-awake",
+          "enabled": false
+        },
+        {
+          "type": "keep-awake",
+          "enabled": true
+        },
+        {
+          "type": "keep-awake",
+          "enabled": false
+        },
+        {
+          "type": "fullscreen",
+          "enabled": false
+        },
+        {
+          "type": "fullscreen",
+          "enabled": true
+        },
+        {
+          "type": "keep-awake",
+          "enabled": true
+        },
+        {
+          "type": "keep-awake",
+          "enabled": false
+        },
+        {
+          "type": "keep-awake",
+          "enabled": true
+        },
+        {
+          "type": "keep-awake",
+          "enabled": false
+        },
+        {
+          "type": "quit"
+        }
+      ],
+      "events": [
+        {
+          "direction": "web-to-native",
+          "type": "ready"
+        },
+        {
+          "direction": "web-to-native",
+          "type": "fullscreen",
+          "enabled": true
+        },
+        {
+          "direction": "native-to-web",
+          "type": "lifecycle",
+          "active": true
+        },
+        {
+          "direction": "web-to-native",
+          "type": "keep-awake",
+          "enabled": true
+        },
+        {
+          "direction": "native-to-web",
+          "type": "lifecycle",
+          "active": false
+        },
+        {
+          "direction": "web-to-native",
+          "type": "keep-awake",
+          "enabled": false
+        },
+        {
+          "direction": "native-to-web",
+          "type": "lifecycle",
+          "active": true
+        },
+        {
+          "direction": "web-to-native",
+          "type": "keep-awake",
+          "enabled": true
+        },
+        {
+          "direction": "web-to-native",
+          "type": "keep-awake",
+          "enabled": false
+        },
+        {
+          "direction": "web-to-native",
+          "type": "fullscreen",
+          "enabled": false
+        },
+        {
+          "direction": "web-to-native",
+          "type": "fullscreen",
+          "enabled": true
+        },
+        {
+          "direction": "web-to-native",
+          "type": "keep-awake",
+          "enabled": true
+        },
+        {
+          "direction": "native-to-web",
+          "type": "back"
+        },
+        {
+          "direction": "web-to-native",
+          "type": "keep-awake",
+          "enabled": false
+        },
+        {
+          "direction": "native-to-web",
+          "type": "lifecycle",
+          "active": false
+        },
+        {
+          "direction": "native-to-web",
+          "type": "lifecycle",
+          "active": true
+        },
+        {
+          "direction": "web-to-native",
+          "type": "keep-awake",
+          "enabled": true
+        },
+        {
+          "direction": "native-to-web",
+          "type": "back"
+        },
+        {
+          "direction": "web-to-native",
+          "type": "keep-awake",
+          "enabled": false
+        },
+        {
+          "direction": "native-to-web",
+          "type": "back"
+        },
+        {
+          "type": "recovery-write-start"
+        },
+        {
+          "type": "recovery-write-complete"
+        },
+        {
+          "direction": "web-to-native",
+          "type": "quit"
+        }
+      ],
+      "fullscreenCalls": 0,
+      "counters": {
+        "saveWrites": 5,
+        "updates": 4,
+        "renders": 32,
+        "audioUpdates": 4,
+        "captures": 5
+      },
+      "beforeReadyReply": {
+        "mode": "menu",
+        "videoSource": null
+      }
+    },
+    "desktop-browser": {
+      "hasBridge": false,
+      "mode": "menu",
+      "touch": false,
+      "resolution": "native",
+      "width": 1920,
+      "height": 1080,
+      "innerWidth": 960,
+      "innerHeight": 540,
+      "pixelRatio": 2,
+      "persistence": {
+        "level": "lvl00a",
+        "marker": "desktop-browser",
+        "settingsRestored": true,
+        "localStorageRestored": true,
+        "indexedDBRestored": true
+      }
+    },
+    "mobile-browser": {
+      "hasBridge": false,
+      "mode": "menu",
+      "touch": true,
+      "resolution": "native",
+      "width": 780,
+      "height": 1688,
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "pixelRatio": 2,
+      "persistence": {
+        "level": "lvl00a",
+        "marker": "mobile-browser",
+        "settingsRestored": true,
+        "localStorageRestored": true,
+        "indexedDBRestored": true
+      }
+    }
+  }
+}

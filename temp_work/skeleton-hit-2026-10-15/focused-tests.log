@@ -1,0 +1,21 @@
+✔ selected spider hit interrupts dormant movement and survives reload (4.568484ms)
+✔ selected spider hit interrupts descending movement and survives reload (0.762529ms)
+✔ selected spider hit interrupts returning movement and survives reload (0.685109ms)
+✔ selected spider hit interrupts ascending movement and survives reload (0.515419ms)
+✔ sound-only spider hits leave each active ambush movement intact (1.024659ms)
+✔ dormant skeleton hit replaces the pile and restores without an extra wake after hurt (0.830799ms)
+✔ selected skeleton hits discard waking/retracting children without replaying them (0.379309ms)
+✔ old skeleton snapshots with a dormant/wake child during hurt recover to fresh alert (1.112819ms)
+✔ sound-only skeleton damage keeps ordinary wake and does not cancel an active transition (0.165779ms)
+✔ lethal damage to dormant skeleton preserves its death state on reload (0.665739ms)
+✔ a script freeze preserves a selected spider hit instead of resuming its old ascent (0.926729ms)
+✔ fresh spider alert chooses descent near the ceiling and combat at the midpoint or below (0.618269ms)
+✔ post-hit spider return-for-descent survives reload and never resumes the old ascent (0.801509ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 83.454152

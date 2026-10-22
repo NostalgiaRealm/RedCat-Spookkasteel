@@ -1,0 +1,43 @@
+{
+  runs: [
+    {
+      before: true,
+      paused: [Object],
+      resized: [Object],
+      resumed: [Object]
+    },
+    {
+      before: false,
+      paused: [Object],
+      resized: [Object],
+      resumed: [Object]
+    }
+  ],
+  errors: [],
+  turretHits: [
+    {
+      height: 30,
+      actor: 'StandingEnemy1',
+      expected: 'StandingEnemy1',
+      fraction: 0.4520475667317696
+    },
+    {
+      height: 48,
+      actor: 'StandingEnemy1',
+      expected: 'StandingEnemy1',
+      fraction: 0.6199041812150472
+    },
+    {
+      height: 60,
+      actor: 'StandingEnemy1',
+      expected: 'StandingEnemy1',
+      fraction: 0.6411349296315236
+    },
+    {
+      height: 78,
+      actor: 'StandingEnemy1',
+      expected: 'StandingEnemy1',
+      fraction: 0.6901424195125905
+    }
+  ]
+}

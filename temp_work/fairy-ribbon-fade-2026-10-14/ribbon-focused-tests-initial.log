@@ -1,0 +1,106 @@
+✔ native fairy seek integrates before speed cap and advances only one authored waypoint per tick (0.779645ms)
+✔ native fairy hover applies conditional14-unit offset and Z-then-X jitter; missing waypoints stop centre (1.421142ms)
+✔ native fairy timer priority emits one slow per250ms then a five-star burst on the following tick (4.652862ms)
+✔ native fairy shared pool retains living particles and slot oscillator phase across departure/re-enable (1.395221ms)
+✔ native fairy particle random generator, opposite slot Y biases, gravity and delayed fade use recovered constants (0.757616ms)
+✔ native fairy saved active age replays once; render-only refresh preserves state and emits no duplicate audio (27.109449ms)
+✔ native fairy fixed-step trajectory and cached trail geometry do not depend on rendering frame size (3.172882ms)
+✖ fairy ribbon uses native alpha100/255, linear800ms attenuation and alpha5 cutoff (1.102663ms)
+✔ fairy ribbon commits a history point only beyond1.6units and keeps a moving head (1.65293ms)
+✔ fairy ribbon first quad uses its newer timestamp and following quads use their older timestamp (0.440698ms)
+✔ fairy ribbon disappears with central particle while departure stars keep their own fade (8.4368ms)
+✔ fairy ribbon snapshot preserves point timestamps and fractional clock without mutating on draw (17.902663ms)
+✖ legacy segment-only fairy saves migrate without rejecting the rest of their effect state (0.977164ms)
+✔ malformed ribbon timing and ownership in new saves are rejected (1.075433ms)
+✔ fairy save preserves current seek/hover, random stream, fractional tick and pulse history (36.267984ms)
+✔ departure saves restore living particles without resurrecting the fairy or replaying the burst (9.344645ms)
+✔ reused and dormant slots retain oscillator state across saves and later activations (26.508002ms)
+✔ snapshot copies never share live state and malformed unbounded pools or paths are rejected (1.952158ms)
+✔ real gameplay saves restore fairy draw buffers before ticking and resume only one idle loop (41.853651ms)
+✔ skip after restore clears the saved tail and does not resume an idle sound on the next tick (19.121906ms)
+✔ legacy age-only fairy saves remain supported without replaying their appearance cue (11.212963ms)
+✔ fairy appearance plays Gri5FX11 once and loops original idlefee1, with silent periodic particles (16.059774ms)
+✔ ordinary fairy departure retains its separate visual burst and single departure cue (1.69971ms)
+✔ skipping during fairy departure clears its surviving tail and sound without touching future encounters (0.512057ms)
+✔ skipping before original fairy activation consumes that dialogue fairy and preserves future encounters (62.832315ms)
+✔ skipping an already visible skill fairy clears particles/audio and preserves the potion reward (19.590873ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 24
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 245.088718
+
+✖ failing tests:
+
+test at tests/fairy-ribbon-native.test.mjs:13:1
+✖ fairy ribbon uses native alpha100/255, linear800ms attenuation and alpha5 cutoff (1.102663ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 0.01960784313725492
+  - 0
+  
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/fairy-ribbon-native.test.mjs:19:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0.01960784313725492,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/fairy-ribbon-native.test.mjs:93:1
+✖ legacy segment-only fairy saves migrate without rejecting the rest of their effect state (0.977164ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      0,
+  -   1,
+  -   2,
+  -   3,
+  -   4,
+      0,
+  +   0,
+      1,
+  +   1,
+  +   1,
+      2,
+  +   2,
+  +   2,
+      3,
+  +   3,
+  +   3,
+      4,
+  +   4,
+  +   4
+    ]
+  
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/fairy-ribbon-native.test.mjs:101:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [
+      0, 0, 0, 1, 1, 1,
+      2, 2, 2, 3, 3, 3,
+      4, 4, 4
+    ],
+    expected: [
+      0, 1, 2, 3, 4,
+      0, 1, 2, 3, 4
+    ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

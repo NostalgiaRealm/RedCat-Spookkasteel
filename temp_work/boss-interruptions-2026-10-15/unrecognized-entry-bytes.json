@@ -1,0 +1,136 @@
+[
+  {
+    "address": "0x420840",
+    "result": {
+      "evidence_id": "ev_e392856170c5f05a8b5a48ca0c43e196ad655397cac2f1e02e95f603ddcbcabb",
+      "subject": {
+        "name": "RcHcGame.dat",
+        "digest": {
+          "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+        },
+        "format": "pe",
+        "architecture": "x86",
+        "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+      },
+      "provider": {
+        "id": "hopper",
+        "name": "Hopper Disassembler",
+        "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+      },
+      "analysis_profile": {
+        "provider": {
+          "id": "hopper",
+          "name": "Hopper Disassembler",
+          "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+        },
+        "parameters": {
+          "target_kind": "executable",
+          "target_format": "pe",
+          "architecture": "x86",
+          "available_architectures": [
+            "x86"
+          ],
+          "loader": {
+            "source": "derived",
+            "arguments": [
+              "-l",
+              "WinPE",
+              "--intel-32"
+            ]
+          }
+        },
+        "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+      },
+      "predicate_type": "rea.analysis",
+      "operation": "read_bytes",
+      "parameters": {
+        "address": "0x420840",
+        "length": 208
+      },
+      "raw_result": null,
+      "normalized_result": {
+        "address": "0x420840",
+        "requested_bytes": 208,
+        "returned_bytes": 208,
+        "bytes_hex": "8b44240483f80475148b44240c8b54240850526a04e8862b0000c20c008b54240c528b54240c5250e8732b0000c20c008b44240483f8027c0a83f8037f05b001c2040032c0c2040090909090909090908b4424045683e8028bf1741f487534e8fc9b1e00680000803f6a0068d0506b008bcee8293300005ec20400e8e09b1e00680000803f6a006828516b008bcee80d3300005ec20400909090909090909090b810000000c3909090909090909090908a0da0037100b00184c875080ac8880da0037100e90700000090909090909090",
+        "complete": true
+      },
+      "confidence": "observed",
+      "authority": "shipped-artifact",
+      "environment": null,
+      "limitations": [
+        "Results depend on Hopper's completed static analysis.",
+        "Hopper byte reads stop at the containing segment's exclusive end; a readable prefix is returned with complete=false when the requested range crosses it."
+      ],
+      "locations": [],
+      "evidence_links": []
+    }
+  },
+  {
+    "address": "0x401ef0",
+    "result": {
+      "evidence_id": "ev_8e7490bd3cd8aa62744507242b61e086ce8282c6511329af1ffba31340d39332",
+      "subject": {
+        "name": "RcHcGame.dat",
+        "digest": {
+          "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+        },
+        "format": "pe",
+        "architecture": "x86",
+        "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+      },
+      "provider": {
+        "id": "hopper",
+        "name": "Hopper Disassembler",
+        "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+      },
+      "analysis_profile": {
+        "provider": {
+          "id": "hopper",
+          "name": "Hopper Disassembler",
+          "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+        },
+        "parameters": {
+          "target_kind": "executable",
+          "target_format": "pe",
+          "architecture": "x86",
+          "available_architectures": [
+            "x86"
+          ],
+          "loader": {
+            "source": "derived",
+            "arguments": [
+              "-l",
+              "WinPE",
+              "--intel-32"
+            ]
+          }
+        },
+        "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+      },
+      "predicate_type": "rea.analysis",
+      "operation": "read_bytes",
+      "parameters": {
+        "address": "0x401ef0",
+        "length": 208
+      },
+      "raw_result": null,
+      "normalized_result": {
+        "address": "0x401ef0",
+        "requested_bytes": 208,
+        "returned_bytes": 208,
+        "bytes_hex": "6aff684bf9610064a100000000506489250000000051568bf16a34e8a581200083c4048944240485c0c744241000000000740d8b4e28518bc8e882010000eb0233c0506a008bcec7442418ffffffffe8cc0a00008b4c24085e64890d0000000083c410c39090909090909090909090906aff686bf9610064a10000000050648925000000005156578bf16a40e8348120008bf883c404897c240833c03bf88944241474148b4e28e854a80100508b4628508bcfe808030000506a018bcec744241cffffffffe8560a00008b4c240c5f5e",
+        "complete": true
+      },
+      "confidence": "observed",
+      "authority": "shipped-artifact",
+      "environment": null,
+      "limitations": [
+        "Results depend on Hopper's completed static analysis.",
+        "Hopper byte reads stop at the containing segment's exclusive end; a readable prefix is returned with complete=false when the requested range crosses it."
+      ],
+      "locations": [],
+      "evidence_links": []
+    }
+  }
+]

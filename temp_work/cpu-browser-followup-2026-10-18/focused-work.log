@@ -1,0 +1,46 @@
+✔ actor broad phase skips distant state predicates but still checks nearby dormant and hidden actors (1.066482ms)
+✔ actor masks and ignored actor/support identities still bypass collision and state checks (0.231418ms)
+✔ scalar actor bounds preserve touching and the original tolerance on every axis (0.728445ms)
+✔ an exactly touching actor surface allows moving away and still blocks moving into it (0.510807ms)
+✔ actor orientation applies native world-axis script and spin rotations before the brush rotation (1.016434ms)
+✔ original castle balls and cave rocks spin one revolution per second in opposite authored directions (0.897514ms)
+✔ attached actor and pickup anchors rotate about the model pivot without accumulating displacement (1.42601ms)
+✔ controller Disable pauses the support without hiding its actor, whereas Hide removes both (0.510806ms)
+✔ saving preserves local actor age, script rotation and its unmodified anchor while restoring the brush pose (2.521943ms)
+✔ an off-camera actor advances its authored animation clock and resumes the current pose when approached (1.878767ms)
+✔ moving a model-attached prop refreshes its existing collision surface and Hide disables it (2.097726ms)
+✖ the frame queries attached prop collision at the newly advanced support pose without advancing its animation twice (0.547636ms)
+✔ all original decorative actors resolve their assets, explicit motions and moving-model attachments (66.370083ms)
+✔ lazy actor triangles match eager sweeps through rotated, moving and newly animated props (23.316383ms)
+✔ effect batches upload only live vertices/instances through growth, shrinking and empty frames (1.737628ms)
+✔ cached transforms match native Three matrices after parent, child, manual-matrix and reparent changes (1.45102ms)
+✔ deferred skinning preserves live bone transforms, transitions, save state and exact later vertices (66.203334ms)
+✔ orientation cache follows authored/runtime turns, rotating pickups, moving supports and independent callers (1.207302ms)
+✔ beam scratch vectors preserve exact previous vertices, colours and ribbon UVs across consecutive rays (2.514293ms)
+✔ discs and custom coloured quads preserve earlier batch data, capacity and upload state (0.537627ms)
+✔ precomputed light distances retain stable ties, player priority, eligibility and eight-light limit (0.419878ms)
+✔ light order matches previous calculation after camera, light position and radius changes (1.442301ms)
+✔ actor lighting reads freshly updated scene matrices for mounted parts and debris without ancestor refreshes (2.758071ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 22
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 180.699894
+
+✖ failing tests:
+
+test at tests/actor-placement.test.mjs:120:1
+✖ the frame queries attached prop collision at the newly advanced support pose without advancing its animation twice (0.547636ms)
+  TypeError: actor.userData.animator?.flushGeometry is not a function
+      at CastleWorld.actorCollisionRecord (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/src/world.js:457:30)
+      at CastleWorld.registerActorCollision (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/src/world.js:450:23)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-placement.test.mjs:129:53)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)

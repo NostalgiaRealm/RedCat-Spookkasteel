@@ -1,0 +1,287 @@
+{
+  "scope": "Static original level-data inventory only; no gameplay initialization, benchmark, tests or browser process. Authored enabled counts precede compiled script initialization and are not live counts. Source hashes capture shared working tree at read time.",
+  "source_sha256": {
+    "src/gameplay.js": "0dfe52b7f40a75a34747e10b65afcd9e6804b350cfacebb855762a0e4053d89e",
+    "src/main.js": "694c4d2cfa079be6d4588c9043476052f2ade350dbd965e6b88edbef5e091990",
+    "src/script-host.js": "c0e98385c068cce93f69bc2ef00506744e1d1506d8103d1c9a9882bf3787aa50",
+    "src/audio.js": "b194a71be7fcecf91a95c14464cd9ebe3a1baa44070765c8919cfd551932ea74",
+    "src/motions.js": "40b7f098b08d862c4d896752a310a7cd84d58b77695b750570d48aca70106649",
+    "src/hud.js": "a1318bc0dfa120e8348e8ed0c4888c6e102c0475e213bc671ed1a3461a357b61",
+    "src/spatial-audio.js": "ab480ac16026e111b50708e5f944cb214d77beed87ea9d08548c49d4fcefc1c6",
+    "src/environment-interactions.js": "8d823e628be63857b8924eca6f5850920af2a4d8e7e489b3034a5c54fd18fdfc",
+    "src/enemy-navigation.js": "5fd2a2de9e1e3ff73e4847ac5ae4836cbf23e5a9f39eac9d8d470de6b9b23f8c"
+  },
+  "levels": [
+    {
+      "level": "lvl00a",
+      "objects": 700,
+      "kind_counts": {
+        "actor": 192,
+        "button": 2,
+        "controller": 18,
+        "door": 14,
+        "enemy": 4,
+        "fairy": 11,
+        "logic": 351,
+        "pickup": 40,
+        "savepoint": 2,
+        "trigger": 66
+      },
+      "authored_enabled_objects": 644,
+      "authored_enabled_pickups": 40,
+      "unused_distance_computations_at_authored_initial_state": 604,
+      "motion_players": 34,
+      "audio_area_portal_entries": 20,
+      "triggers_with_nonzero_add_speed": []
+    },
+    {
+      "level": "lvl01a",
+      "objects": 1010,
+      "kind_counts": {
+        "actor": 173,
+        "button": 15,
+        "controller": 17,
+        "door": 54,
+        "enemy": 40,
+        "fairy": 5,
+        "logic": 598,
+        "pickup": 78,
+        "savepoint": 3,
+        "trigger": 27
+      },
+      "authored_enabled_objects": 949,
+      "authored_enabled_pickups": 78,
+      "unused_distance_computations_at_authored_initial_state": 871,
+      "motion_players": 83,
+      "audio_area_portal_entries": 62,
+      "triggers_with_nonzero_add_speed": []
+    },
+    {
+      "level": "lvl02a",
+      "objects": 1724,
+      "kind_counts": {
+        "actor": 201,
+        "button": 24,
+        "controller": 57,
+        "door": 44,
+        "enemy": 59,
+        "fairy": 7,
+        "logic": 1133,
+        "pickup": 123,
+        "savepoint": 3,
+        "trigger": 73
+      },
+      "authored_enabled_objects": 1578,
+      "authored_enabled_pickups": 123,
+      "unused_distance_computations_at_authored_initial_state": 1455,
+      "motion_players": 107,
+      "audio_area_portal_entries": 38,
+      "triggers_with_nonzero_add_speed": [
+        {
+          "id": "Trigger9",
+          "speed": [
+            0.0,
+            0.0,
+            10.0
+          ]
+        }
+      ]
+    },
+    {
+      "level": "lvl03a",
+      "objects": 1466,
+      "kind_counts": {
+        "actor": 84,
+        "button": 31,
+        "controller": 116,
+        "door": 45,
+        "enemy": 43,
+        "fairy": 7,
+        "logic": 850,
+        "pickup": 154,
+        "savepoint": 6,
+        "trigger": 130
+      },
+      "authored_enabled_objects": 1127,
+      "authored_enabled_pickups": 154,
+      "unused_distance_computations_at_authored_initial_state": 973,
+      "motion_players": 191,
+      "audio_area_portal_entries": 102,
+      "triggers_with_nonzero_add_speed": [
+        {
+          "id": "Trigger1",
+          "speed": [
+            5.0,
+            12.0,
+            0.0
+          ]
+        },
+        {
+          "id": "Trigger2",
+          "speed": [
+            0.0,
+            12.0,
+            -5.0
+          ]
+        },
+        {
+          "id": "Trigger3",
+          "speed": [
+            0.0,
+            12.0,
+            -5.0
+          ]
+        },
+        {
+          "id": "Trigger4",
+          "speed": [
+            5.0,
+            12.0,
+            0.0
+          ]
+        },
+        {
+          "id": "Trigger5",
+          "speed": [
+            -10.0,
+            -5.0,
+            0.0
+          ]
+        },
+        {
+          "id": "Trigger6",
+          "speed": [
+            0.0,
+            -5.0,
+            -10.0
+          ]
+        },
+        {
+          "id": "Trigger12",
+          "speed": [
+            0.0,
+            -20.0,
+            0.0
+          ]
+        },
+        {
+          "id": "Trigger13",
+          "speed": [
+            0.0,
+            -20.0,
+            0.0
+          ]
+        },
+        {
+          "id": "Trigger14",
+          "speed": [
+            0.0,
+            -20.0,
+            0.0
+          ]
+        },
+        {
+          "id": "Trigger15",
+          "speed": [
+            0.0,
+            -20.0,
+            0.0
+          ]
+        },
+        {
+          "id": "Trigger16",
+          "speed": [
+            0.0,
+            -20.0,
+            0.0
+          ]
+        },
+        {
+          "id": "Trigger17",
+          "speed": [
+            0.0,
+            -20.0,
+            0.0
+          ]
+        },
+        {
+          "id": "Trigger18",
+          "speed": [
+            0.0,
+            -20.0,
+            0.0
+          ]
+        },
+        {
+          "id": "Trigger19",
+          "speed": [
+            0.0,
+            15.0,
+            0.0
+          ]
+        },
+        {
+          "id": "Trigger20",
+          "speed": [
+            0.0,
+            0.0,
+            12.0
+          ]
+        },
+        {
+          "id": "Trigger21",
+          "speed": [
+            0.0,
+            15.0,
+            0.0
+          ]
+        },
+        {
+          "id": "Trigger22",
+          "speed": [
+            0.0,
+            0.0,
+            -12.0
+          ]
+        },
+        {
+          "id": "Trigger24",
+          "speed": [
+            0.0,
+            5.0,
+            -1.0
+          ]
+        },
+        {
+          "id": "Trigger25",
+          "speed": [
+            -10.0,
+            -5.0,
+            0.0
+          ]
+        }
+      ]
+    },
+    {
+      "level": "lvl04a",
+      "objects": 611,
+      "kind_counts": {
+        "actor": 60,
+        "controller": 21,
+        "door": 2,
+        "enemy": 16,
+        "fairy": 1,
+        "logic": 420,
+        "pickup": 42,
+        "savepoint": 1,
+        "trigger": 48
+      },
+      "authored_enabled_objects": 490,
+      "authored_enabled_pickups": 42,
+      "unused_distance_computations_at_authored_initial_state": 448,
+      "motion_players": 23,
+      "audio_area_portal_entries": 4,
+      "triggers_with_nonzero_add_speed": []
+    }
+  ]
+}

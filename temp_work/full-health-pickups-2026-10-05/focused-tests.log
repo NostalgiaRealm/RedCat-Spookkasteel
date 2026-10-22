@@ -1,0 +1,52 @@
+✔ original forest imports correct entities and normal-difficulty frog attributes (27.18797ms)
+✔ safe commands honor escaped newlines, comments, named doors and unsupported branches (0.967857ms)
+✔ enter trigger fires once, leaving runs its own command, max trigger count persists (2.004143ms)
+✔ touch and shot switches respect maximum count and trigger original named commands (0.587228ms)
+✔ pickups score exactly once, health caps and blocked line of sight prevents pickup (0.920447ms)
+✔ repeatable touch switch changes on entry rather than oscillating every frame (0.377288ms)
+✔ attack requires aim and line of sight, defeats enemy, runs destruction command (1.956263ms)
+✔ snapshot restores mutable state and prevents item farming after load (2.404001ms)
+✔ damage cooldown, death and checkpoint respawn are deterministic (0.379698ms)
+✔ original level transition target is normalized and emitted once (0.399489ms)
+✔ timer and script closes wait until the player leaves the doorway (0.600068ms)
+✔ capacity pickups use the original golden heart actor in every authored level and restored saves (153.728673ms)
+✔ native container adds two max HP without healing; a lost half-heart can be refilled (1.119896ms)
+✖ full-health healing hearts collect once with score, effects, sound and pickup command (0.722837ms)
+✔ native small/medium/large heal 1/2/20 HP and fractional healing caps at maximum health (0.221129ms)
+✔ legacy half-capacity saves migrate once without removing wounds or reviving a dead player (2.274842ms)
+✔ cutscenes prevent enemy, continuous and lethal damage; normal damage resumes afterwards (0.18394ms)
+✔ pickup pinwheel uses five original textured triangles with native orbit and tapered width (2.479271ms)
+✔ pickup colours cycle one component at a time and re-sampling never advances a paused effect (0.433348ms)
+✔ every collectible emits the corresponding original score artwork exactly once (3.097058ms)
+✔ disabled pickups do not create reward effects (0.369849ms)
+✔ enemy kills award their authored score once; wounds, scenery and the zero-score witch do not (1.448784ms)
+✔ pickup effects capture the current model transform without following later movement (0.594518ms)
+✔ enemy score starts at the rendered bounds centre, with a collision-bounds fallback (0.320529ms)
+✔ save/load preserves active effect age and cannot replay collected items or dead enemies (3.048909ms)
+✔ cutscenes allow reward retirement while redraws at paused game time do not advance it (3.850766ms)
+✔ effect restoration rejects malformed, future and expired records while preserving legacy saves (3.868505ms)
+✔ burst pickup traffic stays bounded and keeps the newest 128 effects (5.35925ms)
+✔ native score quads expand, rise and fade for one second on pickups or 1.5 seconds on enemies (0.337489ms)
+✔ score artwork stays upright and finite under oblique or directly overhead cameras (0.245739ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 29
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 266.109719
+
+✖ failing tests:
+
+test at tests/heart-capacity.test.mjs:41:1
+✖ full-health healing hearts collect once with score, effects, sound and pickup command (0.722837ms)
+  TypeError: this.scripts?.snapshot is not a function
+      at Gameplay.snapshot (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/src/gameplay.js:795:29)
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/heart-capacity.test.mjs:56:49)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)

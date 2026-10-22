@@ -1,0 +1,628 @@
+{
+  "out": "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/temp_work/explosion-damage-2026-10-14/scenes-1791929884991",
+  "errors": [],
+  "setup": {
+    "crate": {
+      "id": "AdamAnyActor72",
+      "position": [
+        3568,
+        -63,
+        1489
+      ],
+      "settings": {
+        "scale": 1,
+        "initialRotationDegrees": [
+          -90,
+          0,
+          0
+        ],
+        "rotationDegreesPerSecond": [
+          0,
+          0,
+          0
+        ],
+        "blocksPlayer": true,
+        "blocksLOS": false,
+        "canBeShot": true,
+        "destroyable": true,
+        "damageThreshold": [
+          1,
+          1
+        ],
+        "explosion": {
+          "DamagePercentage": 25,
+          "SizePercentage": 25,
+          "NrExplosions": 1,
+          "Electric": 0,
+          "SmokeOnly": 0,
+          "Green": 0
+        },
+        "debris": {
+          "Gravity": 9.8,
+          "MustFade": 1,
+          "TestCollision": 1,
+          "MustRotate": 1,
+          "RotationSpeed": 100,
+          "FloorOffset": 5,
+          "MinLifeTimeSeconds": 3,
+          "MaxLifeTimeSeconds": 4,
+          "Elasticity": 1.6,
+          "Friction": 0.8,
+          "AirFriction": 1,
+          "types": [
+            {
+              "actor": "brcrate_s1.act",
+              "MinNr": 5,
+              "MaxNr": 8,
+              "MinVelocity": 125,
+              "MaxVelocity": 180
+            },
+            {
+              "actor": "brcrate_s2.act",
+              "MinNr": 5,
+              "MaxNr": 7,
+              "MinVelocity": 200,
+              "MaxVelocity": 250
+            }
+          ]
+        },
+        "lighting": {
+          "useSun": true,
+          "useAmbient": true,
+          "overrideAmbient": false,
+          "useDefaultSun": false,
+          "useDefaultSunOnly": false,
+          "ambientColor": [
+            155,
+            155,
+            155
+          ],
+          "sunColor": [
+            155,
+            155,
+            155
+          ],
+          "sunNormal": [
+            0,
+            1,
+            0
+          ],
+          "sunIntensityFactor": 1,
+          "maxDynamicLights": 2
+        },
+        "lightAnimation": {
+          "enabled": false,
+          "start": [
+            90,
+            90,
+            255
+          ],
+          "end": [
+            255,
+            90,
+            90
+          ],
+          "pattern": "adhkruxurkhd",
+          "duration": 2
+        }
+      }
+    },
+    "gate": {
+      "id": "AdamAnyActor71",
+      "health": 100
+    },
+    "near": {
+      "id": "MovingEnemy29",
+      "type": "skeleton"
+    },
+    "far": {
+      "id": "MovingEnemy30",
+      "type": "skeleton"
+    },
+    "initialHealth": {
+      "player": 20,
+      "near": 100,
+      "far": 100,
+      "crate": 1,
+      "gate": 100
+    }
+  },
+  "results": {
+    "near": {
+      "before": {
+        "player": 20,
+        "near": 100,
+        "far": 100,
+        "crate": 1,
+        "gate": 100
+      },
+      "at15": {
+        "player": 17.558613255765636,
+        "near": 89.7980583398635,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "midpoint": {
+        "player": 16.74481767435418,
+        "near": 86.397411119818,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "full": {
+        "player": 13.48963534870975,
+        "near": 72.79482223964179,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "afterExpiry": {
+        "player": 13.48963534870975,
+        "near": 72.79482223964179,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "positions": {
+        "point": [
+          3677.41216,
+          -8.380158853225709,
+          1487.9862398791504
+        ],
+        "feet": [
+          3677.41216,
+          -62.46015885322571,
+          1487.9862398791504
+        ],
+        "distance": 114.23659658795863,
+        "playerOffset": 54.08,
+        "candidates": [
+          {
+            "point": [
+              3677.41216,
+              -8.380158853225709,
+              1487.9862398791504
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3673.834371760352,
+              -8.380158853225709,
+              1515.162239614915
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3663.344827397366,
+              -8.380158853225709,
+              1540.4862398791504
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3646.658372024587,
+              -8.380158853225709,
+              1562.232451903738
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3624.91216,
+              -8.380158853225709,
+              1578.9189072765164
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3599.5881597357647,
+              -8.380158853225709,
+              1589.4084516395026
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3572.41216,
+              -8.380158853225709,
+              1592.9862398791504
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3545.236160264235,
+              -8.380158853225709,
+              1589.4084516395026
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3519.91216,
+              -8.380158853225709,
+              1578.9189072765164
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3498.1659479754126,
+              -8.380158853225709,
+              1562.232451903738
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3481.479492602634,
+              -8.380158853225709,
+              1540.4862398791504
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3470.9899482396477,
+              -8.380158853225709,
+              1515.162239614915
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3467.41216,
+              -8.380158853225709,
+              1487.9862398791504
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3470.9899482396477,
+              -8.380158853225709,
+              1460.8102401433857
+            ],
+            "visible": false
+          },
+          {
+            "point": [
+              3481.479492602634,
+              -8.380158853225709,
+              1435.4862398791504
+            ],
+            "visible": false
+          },
+          {
+            "point": [
+              3498.165947975412,
+              -8.380158853225709,
+              1413.7400278545629
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3519.91216,
+              -8.380158853225709,
+              1397.0535724817844
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3545.236160264235,
+              -8.380158853225709,
+              1386.5640281187982
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3572.41216,
+              -8.380158853225709,
+              1382.9862398791504
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3599.5881597357643,
+              -8.380158853225709,
+              1386.5640281187982
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3624.91216,
+              -8.380158853225709,
+              1397.0535724817844
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3646.658372024587,
+              -8.380158853225709,
+              1413.7400278545629
+            ],
+            "visible": true
+          },
+          {
+            "point": [
+              3663.344827397366,
+              -8.380158853225709,
+              1435.4862398791504
+            ],
+            "visible": false
+          },
+          {
+            "point": [
+              3673.834371760352,
+              -8.380158853225709,
+              1460.8102401433857
+            ],
+            "visible": false
+          }
+        ],
+        "nearBounds": {
+          "origin": [
+            3677.41216,
+            -43.38015885322571,
+            1487.9862398791504
+          ],
+          "min": [
+            3627.6829714624023,
+            -46.03873481719972,
+            1468.4419724154664
+          ],
+          "max": [
+            3729.5040957299802,
+            -22.195308160476674,
+            1507.530488460083
+          ]
+        },
+        "nearActive": true,
+        "farBounds": {
+          "origin": [
+            4277.41216,
+            -43.38015885322571,
+            1487.9862398791504
+          ],
+          "min": [
+            4257.867892536316,
+            -46.03873481719972,
+            1435.89430414917
+          ],
+          "max": [
+            4296.9564085809325,
+            -22.195308160476674,
+            1537.715428416748
+          ]
+        }
+      },
+      "activeAtStart": [
+        {
+          "sourceId": "AdamAnyActor72",
+          "birth": 100,
+          "position": [
+            3572.41216,
+            -53.38015885322571,
+            1487.9862398791504
+          ],
+          "radius": 175,
+          "rate": 46.875
+        },
+        {
+          "sourceId": "AdamAnyActor71",
+          "birth": 100,
+          "position": [
+            3588.298072218628,
+            -25.31811029860765,
+            1459.7679525230606
+          ],
+          "radius": 175,
+          "rate": 46.875
+        }
+      ],
+      "expiredCells": 0,
+      "expectedPlayerDamage": 6.510364651290146,
+      "changedUnrelated": [
+        [
+          "AdamAnyActor73",
+          100
+        ],
+        [
+          "AdamAnyActor74",
+          100
+        ]
+      ],
+      "gate": {
+        "health": 0,
+        "visible": false,
+        "blocks": false
+      },
+      "visual": {
+        "changedPixels": 1196,
+        "sprites": [
+          {
+            "key": "explosie01.bmp|explosie01_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "explosie02.bmp|explosie02_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "explosie03.bmp|explosie03_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "explosie04.bmp|explosie04_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "explosie05.bmp|explosie05_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "explosie06.bmp|explosie06_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "explosie07.bmp|explosie07_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "explosie08.bmp|explosie08_a.bmp",
+            "count": 1
+          },
+          {
+            "key": "smoke_05.bmp|smoke_green_a.bmp",
+            "count": 4
+          },
+          {
+            "key": "smoke_blue.bmp|smoke_green_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "smoke_brown.bmp|smoke_green_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "smoke_green.bmp|smoke_green_a.bmp",
+            "count": 0
+          },
+          {
+            "key": "smoke_red.bmp|smoke_green_a.bmp",
+            "count": 0
+          }
+        ]
+      },
+      "scriptError": null
+    },
+    "restore": {
+      "midpoint": {
+        "player": 16.74481767435418,
+        "near": 86.397411119818,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "restoredMid": {
+        "player": 16.74481767435418,
+        "near": 86.397411119818,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "restoredEnd": {
+        "player": 13.48963534870975,
+        "near": 72.79482223964179,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "afterExpiry": {
+        "player": 13.48963534870975,
+        "near": 72.79482223964179,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "restoredCells": [
+        {
+          "sourceId": "AdamAnyActor72",
+          "birth": 100,
+          "position": [
+            3572.41216,
+            -53.38015885322571,
+            1487.9862398791504
+          ],
+          "radius": 175,
+          "rate": 46.875
+        },
+        {
+          "sourceId": "AdamAnyActor71",
+          "birth": 100,
+          "position": [
+            3588.298072218628,
+            -25.31811029860765,
+            1459.7679525230606
+          ],
+          "radius": 175,
+          "rate": 46.875
+        }
+      ],
+      "expiredCells": 0
+    },
+    "noClip": {
+      "before": {
+        "player": 20,
+        "near": 100,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "after": {
+        "player": 20,
+        "near": 72.79482223964179,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      }
+    },
+    "outside": {
+      "before": {
+        "player": 20,
+        "near": 100,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "after": {
+        "player": 20,
+        "near": 72.79482223964179,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "point": [
+        4072.41216,
+        -8.380158853225709,
+        1487.9862398791504
+      ]
+    },
+    "blocked": {
+      "before": {
+        "player": 20,
+        "near": 100,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "after": {
+        "player": 20,
+        "near": 72.79482223964179,
+        "far": 100,
+        "crate": 0,
+        "gate": 0
+      },
+      "point": [
+        3443.5243280214045,
+        -53.38015885322571,
+        1471.0178348905436
+      ],
+      "distance": 130.00000000000006,
+      "candidateCount": 72
+    },
+    "scriptError": null
+  },
+  "failure": "AssertionError [ERR_ASSERTION]: unrelated objects remain untouched\n+ actual - expected\n\n+ [\n+   [\n+     'AdamAnyActor73',\n+     100\n+   ],\n+   [\n+     'AdamAnyActor74',\n+     100\n+   ]\n+ ]\n- []\n\n    at file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/temp_work/explosion-damage-2026-10-14/scenes.mjs:146:10"
+}

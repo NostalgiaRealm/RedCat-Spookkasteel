@@ -1,0 +1,28 @@
+✖ a room transition preserves one outstanding shared image decode for the newly needed room (8.160969ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 68.664343
+
+✖ failing tests:
+
+test at tests/room-approach-preload.test.mjs:42:1
+✖ a room transition preserves one outstanding shared image decode for the newly needed room (8.160969ms)
+  AssertionError [ERR_ASSERTION]: release of the old room must not cancel and restart the image required by its successor
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/room-approach-preload.test.mjs:49:34)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

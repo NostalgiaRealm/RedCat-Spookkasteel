@@ -1,0 +1,111 @@
+
+/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat:     file format pei-i386
+
+
+Disassembly of section .text:
+
+00479680 <.text+0x78680>:
+  479680:	00 00                	add    BYTE PTR [eax],al
+  479682:	80 75 1e 8b          	xor    BYTE PTR [ebp+0x1e],0x8b
+  479686:	86 9c 04 00 00 85 c0 	xchg   BYTE PTR [esp+eax*1-0x3f7b0000],bl
+  47968d:	75 05                	jne    0x479694
+  47968f:	b8 b4 a3 64 00       	mov    eax,0x64a3b4
+  479694:	50                   	push   eax
+  479695:	e8 76 18 19 00       	call   0x60af10
+  47969a:	83 c4 04             	add    esp,0x4
+  47969d:	89 86 e8 04 00 00    	mov    DWORD PTR [esi+0x4e8],eax
+  4796a3:	85 c0                	test   eax,eax
+  4796a5:	0f 85 28 01 00 00    	jne    0x4797d3
+  4796ab:	8d 9d 78 03 00 00    	lea    ebx,[ebp+0x378]
+  4796b1:	8d bd 90 44 00 00    	lea    edi,[ebp+0x4490]
+  4796b7:	c7 44 24 14 05 00 00 	mov    DWORD PTR [esp+0x14],0x5
+  4796be:	00 
+  4796bf:	8a 47 6c             	mov    al,BYTE PTR [edi+0x6c]
+  4796c2:	84 c0                	test   al,al
+  4796c4:	0f 84 89 00 00 00    	je     0x479753
+  4796ca:	8d 77 04             	lea    esi,[edi+0x4]
+  4796cd:	8b ce                	mov    ecx,esi
+  4796cf:	8b 11                	mov    edx,DWORD PTR [ecx]
+  4796d1:	89 54 24 24          	mov    DWORD PTR [esp+0x24],edx
+  4796d5:	8d 95 20 4b 00 00    	lea    edx,[ebp+0x4b20]
+  4796db:	8b 41 04             	mov    eax,DWORD PTR [ecx+0x4]
+  4796de:	89 44 24 28          	mov    DWORD PTR [esp+0x28],eax
+  4796e2:	8b 02                	mov    eax,DWORD PTR [edx]
+  4796e4:	8b 49 08             	mov    ecx,DWORD PTR [ecx+0x8]
+  4796e7:	89 87 18 01 00 00    	mov    DWORD PTR [edi+0x118],eax
+  4796ed:	89 4c 24 2c          	mov    DWORD PTR [esp+0x2c],ecx
+  4796f1:	8b 4a 04             	mov    ecx,DWORD PTR [edx+0x4]
+  4796f4:	89 8f 1c 01 00 00    	mov    DWORD PTR [edi+0x11c],ecx
+  4796fa:	8b 4c 24 3c          	mov    ecx,DWORD PTR [esp+0x3c]
+  4796fe:	8b 52 08             	mov    edx,DWORD PTR [edx+0x8]
+  479701:	51                   	push   ecx
+  479702:	89 97 20 01 00 00    	mov    DWORD PTR [edi+0x120],edx
+  479708:	8b 54 24 3c          	mov    edx,DWORD PTR [esp+0x3c]
+  47970c:	8b 07                	mov    eax,DWORD PTR [edi]
+  47970e:	52                   	push   edx
+  47970f:	8b cf                	mov    ecx,edi
+  479711:	ff 50 04             	call   DWORD PTR [eax+0x4]
+  479714:	8b 4e 04             	mov    ecx,DWORD PTR [esi+0x4]
+  479717:	8b 06                	mov    eax,DWORD PTR [esi]
+  479719:	8b 56 08             	mov    edx,DWORD PTR [esi+0x8]
+  47971c:	89 4c 24 1c          	mov    DWORD PTR [esp+0x1c],ecx
+  479720:	8b 0b                	mov    ecx,DWORD PTR [ebx]
+  479722:	89 44 24 18          	mov    DWORD PTR [esp+0x18],eax
+  479726:	85 c9                	test   ecx,ecx
+  479728:	89 54 24 20          	mov    DWORD PTR [esp+0x20],edx
+  47972c:	74 2c                	je     0x47975a
+  47972e:	8a 85 54 4b 00 00    	mov    al,BYTE PTR [ebp+0x4b54]
+  479734:	84 c0                	test   al,al
+  479736:	74 22                	je     0x47975a
+  479738:	8d 54 24 18          	lea    edx,[esp+0x18]
+  47973c:	8b 01                	mov    eax,DWORD PTR [ecx]
+  47973e:	52                   	push   edx
+  47973f:	8d 54 24 28          	lea    edx,[esp+0x28]
+  479743:	52                   	push   edx
+  479744:	8b 54 24 44          	mov    edx,DWORD PTR [esp+0x44]
+  479748:	52                   	push   edx
+  479749:	8b 54 24 44          	mov    edx,DWORD PTR [esp+0x44]
+  47974d:	52                   	push   edx
+  47974e:	ff 50 04             	call   DWORD PTR [eax+0x4]
+  479751:	eb 07                	jmp    0x47975a
+  479753:	c6 85 54 4b 00 00 00 	mov    BYTE PTR [ebp+0x4b54],0x0
+  47975a:	8b 44 24 14          	mov    eax,DWORD PTR [esp+0x14]
+  47975e:	83 c3 04             	add    ebx,0x4
+  479761:	81 c7 44 01 00 00    	add    edi,0x144
+  479767:	48                   	dec    eax
+  479768:	89 44 24 14          	mov    DWORD PTR [esp+0x14],eax
+  47976c:	0f 85 4d ff ff ff    	jne    0x4796bf
+  479772:	8b 8d 74 03 00 00    	mov    ecx,DWORD PTR [ebp+0x374]
+  479778:	85 c9                	test   ecx,ecx
+  47977a:	74 57                	je     0x4797d3
+  47977c:	8b 01                	mov    eax,DWORD PTR [ecx]
+  47977e:	8d 95 20 4b 00 00    	lea    edx,[ebp+0x4b20]
+  479784:	52                   	push   edx
+  479785:	ff 50 4c             	call   DWORD PTR [eax+0x4c]
+  479788:	d9 05 80 e2 64 00    	fld    DWORD PTR ds:0x64e280
+  47978e:	d8 8d 2c 4b 00 00    	fmul   DWORD PTR [ebp+0x4b2c]
+  479794:	51                   	push   ecx
+  479795:	8b 8d 74 03 00 00    	mov    ecx,DWORD PTR [ebp+0x374]
+  47979b:	d9 1c 24             	fstp   DWORD PTR [esp]
+  47979e:	e8 bd 95 06 00       	call   0x4e2d60
+  4797a3:	8b 8d 74 03 00 00    	mov    ecx,DWORD PTR [ebp+0x374]
+  4797a9:	8d 44 24 24          	lea    eax,[esp+0x24]
+  4797ad:	50                   	push   eax
+  4797ae:	c7 44 24 28 00 00 7f 	mov    DWORD PTR [esp+0x28],0x437f0000
+  4797b5:	43 
+  4797b6:	c7 44 24 2c 00 00 7f 	mov    DWORD PTR [esp+0x2c],0x437f0000
+  4797bd:	43 
+  4797be:	c7 44 24 30 00 00 c8 	mov    DWORD PTR [esp+0x30],0x41c80000
+  4797c5:	41 
+  4797c6:	c7 44 24 34 00 00 7f 	mov    DWORD PTR [esp+0x34],0x437f0000
+  4797cd:	43 
+  4797ce:	e8 bd 98 06 00       	call   0x4e3090
+  4797d3:	5f                   	pop    edi
+  4797d4:	5e                   	pop    esi
+  4797d5:	5d                   	pop    ebp
+  4797d6:	5b                   	pop    ebx
+  4797d7:	83 c4 24             	add    esp,0x24
+  4797da:	c2 08 00             	ret    0x8
+  4797dd:	90                   	nop
+  4797de:	90                   	nop
+  4797df:	90                   	nop

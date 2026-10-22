@@ -1,0 +1,31 @@
+✔ floor broad phase keeps authored order and every nonphysical brush, rather than nearest floor (3.25662ms)
+✔ floor broad phase follows translated/rotated, disabled and restored brushes with tracked poses (1.557901ms)
+✔ floor broad phase follows translated/rotated, disabled and restored brushes with ordinary poses (0.528836ms)
+✔ level 1 moving-fragment floor samples match the full brush scan through pose changes (51.750652ms)
+✔ level 2 moving-fragment floor samples match the full brush scan through pose changes (59.909582ms)
+✔ level 3 moving-fragment floor samples match the full brush scan through pose changes (92.252353ms)
+✔ level 4 moving-fragment floor samples match the full brush scan through pose changes (156.416999ms)
+✔ level 5 moving-fragment floor samples match the full brush scan through pose changes (19.813939ms)
+✔ exact downward point trace retains the native floor node and no hull epsilon (1.077503ms)
+✔ floor uses one truncated native texel with authored shifts, not bilinear atlas samples (0.841285ms)
+✔ ordered native face bounding boxes allow twenty units around a face (0.296589ms)
+✔ ambient RGB caps each channel at native .3 after raw dynamic lightmap addition (0.368708ms)
+✔ stationary actor cache retains surfaces and invalid results without retaining light state (0.368918ms)
+✔ native model fallback samples transformed brush space and invalidates only on actual changes (0.392748ms)
+✔ first authored world hit wins over a closer brush floor, matching Exact3 order (0.730605ms)
+✔ rotated brush fallback samples the local BSP plane while the ray remains world vertical (0.196019ms)
+✔ shadow endpoints use native texture-to-world vectors and oriented plane offset (0.138749ms)
+✔ shadowed floor lights test the sampled luxel against world BSP and cache stable visibility (0.489347ms)
+✔ imported level 1 has bounded native floor samples at authored actor positions (22.450203ms)
+✔ imported level 2 has bounded native floor samples at authored actor positions (18.791135ms)
+✔ imported level 3 has bounded native floor samples at authored actor positions (22.70832ms)
+✔ imported level 4 has bounded native floor samples at authored actor positions (25.058046ms)
+✔ imported level 5 has bounded native floor samples at authored actor positions (6.565119ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 434.930728

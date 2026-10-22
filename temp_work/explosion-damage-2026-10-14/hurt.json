@@ -1,0 +1,56 @@
+{
+  "evidence_id": "ev_a0bbfae35e12876bd14a1641a44ba383a1cf9e4a84245ded46512437295f399c",
+  "subject": {
+    "name": "RcHcGame.dat",
+    "digest": {
+      "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+    },
+    "format": "pe",
+    "architecture": "x86",
+    "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+  },
+  "provider": {
+    "id": "hopper",
+    "name": "Hopper Disassembler",
+    "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+  },
+  "analysis_profile": {
+    "provider": {
+      "id": "hopper",
+      "name": "Hopper Disassembler",
+      "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+    },
+    "parameters": {
+      "target_kind": "executable",
+      "target_format": "pe",
+      "architecture": "x86",
+      "available_architectures": [
+        "x86"
+      ],
+      "loader": {
+        "source": "derived",
+        "arguments": [
+          "-l",
+          "WinPE",
+          "--intel-32"
+        ]
+      }
+    },
+    "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+  },
+  "predicate_type": "rea.analysis",
+  "operation": "procedure_pseudo_code",
+  "parameters": {
+    "procedure": "0x503fc0"
+  },
+  "raw_result": null,
+  "normalized_result": "    var_C = *0x0;\n    *0x0 = &var_C;\n    var_50 = esi;\n    edi = ecx;\n    esp = esp - 0x5c;\n    var_14 = edi;\n    sub_5ae5f0(\"D:\\Work\\RCHorror\\AdamSource\\AdamGameObject.cpp\", 0x384);\n    sub_5171f0();\n    if (sub_4337e0() != 0x0) {\n            var_38 = arg_B;\n            sub_4040a0(0x0);\n            esp = esp - 0x8;\n            var_28 = arg_B;\n            ecx = &var_28;\n            sub_4040a0(0x0);\n            eax = arg_4;\n            if (eax == 0x0) {\n                    ecx = ecx | 0xffffffff;\n                    asm { repne scasb al, byte [edi] };\n                    var_58 = !ecx - 0x1;\n                    esp = esp - 0x8;\n                    ecx = &var_28;\n                    sub_4040f0(\"NULL\", var_58);\n                    edi = var_14;\n            }\n            else {\n                    var_58 = 0xffffffff;\n                    esp = esp - 0xc;\n                    var_60 = eax + 0x5c;\n                    ecx = &var_28;\n                    sub_40cc00(var_60, 0x0, 0xffffffff);\n            }\n            esi = arg_8;\n            if (esi == 0x0) {\n                    ecx = ecx | 0xffffffff;\n                    asm { repne scasb al, byte [edi] };\n                    var_4C = !ecx - 0x1;\n                    esp = esp - 0x8;\n                    sub_4040f0(\"NULL\", var_4C);\n                    edi = var_14;\n            }\n            else {\n                    asm { fld        dword [esi+8] };\n                    esp = esp - 0x8;\n                    eax = &var_48;\n                    asm { fstp       qword [esp+0x50+var_50] };\n                    asm { fld        dword [esi+4] };\n                    esp = esp - 0x8;\n                    asm { fstp       qword [esp+0x58+var_58] };\n                    asm { fld        dword [esi] };\n                    esp = esp - 0x8;\n                    asm { fstp       qword [esp+0x60+var_60] };\n                    sub_40cc00(sub_5ae390(eax, \"[ %f, %f, %f ]\", var_60), 0x0, 0xffffffff);\n                    esp = (esp - 0x8) + 0x20 - 0x10;\n                    var_4C = 0x1;\n                    sub_4040a0(0x1);\n            }\n            sub_5171f0();\n            if (sub_4337e0() != 0x0) {\n                    eax = var_34;\n                    edx = 0x64a3b4;\n                    if (eax != 0x0) {\n                            edx = eax;\n                    }\n                    eax = edi[0x18];\n                    ecx = 0x64a3b4;\n                    if (eax != 0x0) {\n                            ecx = eax;\n                    }\n                    eax = var_24;\n                    if (eax == 0x0) {\n                            eax = 0x64a3b4;\n                    }\n                    asm { fld        dword [ebp+arg_0] };\n                    esp = esp - 0x10;\n                    edx = &var_48;\n                    asm { fstp       qword [esp+0x4c+var_4C] };\n                    sub_5aff00(sub_5ae390(edx, \"GO %s does %f damage to GO %s at %s\", eax));\n                    esp = ((esp - 0xc) + 0x1c - 0x4) + 0x4 - 0x4;\n                    sub_4040a0(0x1);\n            }\n            esp = esp - 0x4;\n            sub_4040a0(0x1);\n            eax = var_34;\n            if (eax != 0x0) {\n                    ecx = eax - 0x1;\n                    eax = *(int8_t *)(eax - 0x1);\n                    if (eax != 0x0 && eax != 0xff) {\n                            *(int8_t *)ecx = eax - 0x1;\n                    }\n                    else {\n                            sub_5fe5f0(ecx);\n                            esp = (esp - 0x4) + 0x4;\n                    }\n            }\n    }\n    else {\n            esi = arg_8;\n    }\n    (*(*edi + 0x1c))(arg_0, arg_4, esi);\n    eax = sub_5ae770();\n    *0x0 = var_C;\n    &var_24 = ebp;\n    return eax;\n",
+  "confidence": "observed",
+  "authority": "shipped-artifact",
+  "environment": null,
+  "limitations": [
+    "Results depend on Hopper's completed static analysis."
+  ],
+  "locations": [],
+  "evidence_links": []
+}

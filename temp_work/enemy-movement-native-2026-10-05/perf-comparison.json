@@ -1,0 +1,345 @@
+{
+  "assertions": "same harness passed both runs",
+  "browserErrorsBefore": [],
+  "browserErrorsAfter": [],
+  "rows": [
+    {
+      "scene": "approach",
+      "baseline": {
+        "frames": 18,
+        "median": 6.599999999627471,
+        "p95": 22.5,
+        "p99": 22.5,
+        "max": 22.5,
+        "maxFrameTraces": 52
+      },
+      "after": {
+        "frames": 18,
+        "median": 7.799999998882413,
+        "p95": 23.100000001490116,
+        "p99": 23.100000001490116,
+        "max": 23.100000001490116,
+        "maxFrameTraces": 44
+      },
+      "resourcePeaksIdentical": true,
+      "resourceBeforeIdentical": true,
+      "resourceAfterIdentical": true,
+      "afterTailResourceBounds": {
+        "sounds": [
+          28,
+          29
+        ],
+        "resources": [
+          1407,
+          1410
+        ],
+        "actors": [
+          383,
+          383
+        ],
+        "projectiles": [
+          0,
+          0
+        ],
+        "sceneChildren": [
+          1500,
+          1500
+        ],
+        "programs": [
+          14,
+          14
+        ],
+        "particles": [
+          28,
+          61
+        ],
+        "destructibleParticles": [
+          0,
+          0
+        ],
+        "pursuitJobs": [
+          0,
+          0
+        ]
+      },
+      "baselinePursuitTraces": 0,
+      "afterPursuitTraces": 0,
+      "baselineSearchTraces": 0,
+      "afterSearchTraces": 0,
+      "zombiePositionsIdentical": true
+    },
+    {
+      "scene": "activation",
+      "baseline": {
+        "frames": 300,
+        "median": 6.200000001117587,
+        "p95": 7.700000001117587,
+        "p99": 10.5,
+        "max": 12.800000000745058,
+        "maxFrameTraces": 86
+      },
+      "after": {
+        "frames": 300,
+        "median": 6.300000000745058,
+        "p95": 7.800000000745058,
+        "p99": 9.599999999627471,
+        "max": 12.100000001490116,
+        "maxFrameTraces": 80
+      },
+      "resourcePeaksIdentical": true,
+      "resourceBeforeIdentical": true,
+      "resourceAfterIdentical": true,
+      "afterTailResourceBounds": {
+        "sounds": [
+          31,
+          31
+        ],
+        "resources": [
+          1410,
+          1410
+        ],
+        "actors": [
+          383,
+          383
+        ],
+        "projectiles": [
+          0,
+          0
+        ],
+        "sceneChildren": [
+          1514,
+          1514
+        ],
+        "programs": [
+          14,
+          14
+        ],
+        "particles": [
+          170,
+          184
+        ],
+        "destructibleParticles": [
+          14,
+          14
+        ],
+        "pursuitJobs": [
+          0,
+          0
+        ]
+      },
+      "baselinePursuitTraces": 0,
+      "afterPursuitTraces": 0,
+      "baselineSearchTraces": 0,
+      "afterSearchTraces": 0,
+      "zombiePositionsIdentical": true
+    },
+    {
+      "scene": "chase0",
+      "baseline": {
+        "frames": 360,
+        "median": 6.099999999627471,
+        "p95": 7.5,
+        "p99": 9.599999999627471,
+        "max": 11,
+        "maxFrameTraces": 71
+      },
+      "after": {
+        "frames": 360,
+        "median": 6.099999999627471,
+        "p95": 7.400000000372529,
+        "p99": 8.800000000745058,
+        "max": 11.5,
+        "maxFrameTraces": 65
+      },
+      "resourcePeaksIdentical": true,
+      "resourceBeforeIdentical": true,
+      "resourceAfterIdentical": true,
+      "afterTailResourceBounds": {
+        "sounds": [
+          31,
+          31
+        ],
+        "resources": [
+          1427,
+          1427
+        ],
+        "actors": [
+          383,
+          383
+        ],
+        "projectiles": [
+          0,
+          0
+        ],
+        "sceneChildren": [
+          1500,
+          1500
+        ],
+        "programs": [
+          14,
+          14
+        ],
+        "particles": [
+          173,
+          186
+        ],
+        "destructibleParticles": [
+          0,
+          0
+        ],
+        "pursuitJobs": [
+          0,
+          0
+        ]
+      },
+      "baselinePursuitTraces": 0,
+      "afterPursuitTraces": 0,
+      "baselineSearchTraces": 0,
+      "afterSearchTraces": 0,
+      "zombiePositionsIdentical": true
+    },
+    {
+      "scene": "blocked-chase",
+      "baseline": {
+        "frames": 360,
+        "median": 6.400000000372529,
+        "p95": 8,
+        "p99": 10,
+        "max": 11.799999998882413,
+        "maxFrameTraces": 86
+      },
+      "after": {
+        "frames": 360,
+        "median": 6.300000000745058,
+        "p95": 8,
+        "p99": 9.299999998882413,
+        "max": 11.099999999627471,
+        "maxFrameTraces": 80
+      },
+      "resourcePeaksIdentical": true,
+      "resourceBeforeIdentical": true,
+      "resourceAfterIdentical": true,
+      "afterTailResourceBounds": {
+        "sounds": [
+          33,
+          33
+        ],
+        "resources": [
+          1425,
+          1428
+        ],
+        "actors": [
+          383,
+          383
+        ],
+        "projectiles": [
+          0,
+          0
+        ],
+        "sceneChildren": [
+          1500,
+          1500
+        ],
+        "programs": [
+          17,
+          17
+        ],
+        "particles": [
+          177,
+          189
+        ],
+        "destructibleParticles": [
+          0,
+          0
+        ],
+        "pursuitJobs": [
+          0,
+          1
+        ]
+      },
+      "baselinePursuitTraces": 17,
+      "afterPursuitTraces": 17,
+      "baselineSearchTraces": 16,
+      "afterSearchTraces": 16,
+      "zombiePositionsIdentical": true
+    },
+    {
+      "scene": "original-castle-blocked-green-bat",
+      "baseline": {
+        "frames": 600,
+        "median": 4.400000000372529,
+        "p95": 5.200000001117587,
+        "p99": 6.400000000372529,
+        "max": 7.5,
+        "maxFrameTraces": 23,
+        "maxEnemyTraces": 13,
+        "min3dTargetDistance": 20.812629158481656,
+        "final3dTargetDistance": 37.11929753012729,
+        "final": [
+          1033.473346549981,
+          313.6600842239572,
+          -844.5602908083848
+        ],
+        "netFromSpawn": 212.4980294779266
+      },
+      "after": {
+        "frames": 600,
+        "median": 4.300000000745058,
+        "p95": 5.099999999627471,
+        "p99": 5.599999999627471,
+        "max": 7.799999998882413,
+        "maxFrameTraces": 14,
+        "maxEnemyTraces": 3,
+        "min3dTargetDistance": 135.52357242206094,
+        "final3dTargetDistance": 144.382141650103,
+        "final": [
+          1098,
+          324,
+          -713
+        ],
+        "netFromSpawn": 133.87307421584072
+      },
+      "resourcePeaksIdentical": true,
+      "resourceBeforeIdentical": true,
+      "resourceAfterIdentical": true,
+      "afterTailResourceBounds": {
+        "sounds": [
+          12,
+          12
+        ],
+        "resources": [
+          1048,
+          1048
+        ],
+        "actors": [
+          291,
+          291
+        ],
+        "projectiles": [
+          0,
+          0
+        ],
+        "sceneChildren": [
+          966,
+          966
+        ],
+        "programs": [
+          12,
+          12
+        ],
+        "particles": [
+          1311,
+          1404
+        ],
+        "destructibleParticles": [
+          0,
+          0
+        ],
+        "pursuitJobs": [
+          0,
+          0
+        ]
+      }
+    }
+  ]
+}

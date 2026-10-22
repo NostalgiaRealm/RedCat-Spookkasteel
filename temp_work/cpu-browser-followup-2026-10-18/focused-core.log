@@ -1,0 +1,33 @@
+✔ actor broad phase skips distant state predicates but still checks nearby dormant and hidden actors (1.073223ms)
+✔ actor masks and ignored actor/support identities still bypass collision and state checks (0.229749ms)
+✔ scalar actor bounds preserve touching and the original tolerance on every axis (3.857494ms)
+✔ an exactly touching actor surface allows moving away and still blocks moving into it (0.741405ms)
+✔ scalar actor SAT preserves degenerate, axis-aligned and near-parallel triangle contacts (16.161621ms)
+✔ original animated torch, skull, cobweb and turret surfaces keep identical player and pellet sweeps (20.471342ms)
+✔ actor orientation applies native world-axis script and spin rotations before the brush rotation (1.40879ms)
+✔ original castle balls and cave rocks spin one revolution per second in opposite authored directions (0.954094ms)
+✔ attached actor and pickup anchors rotate about the model pivot without accumulating displacement (1.4057ms)
+✔ controller Disable pauses the support without hiding its actor, whereas Hide removes both (0.511747ms)
+✔ saving preserves local actor age, script rotation and its unmodified anchor while restoring the brush pose (2.433184ms)
+✔ an off-camera actor advances its authored animation clock and resumes the current pose when approached (2.095866ms)
+✔ moving a model-attached prop refreshes its existing collision surface and Hide disables it (2.001886ms)
+✔ the frame queries attached prop collision at the newly advanced support pose without advancing its animation twice (1.853017ms)
+✔ all original decorative actors resolve their assets, explicit motions and moving-model attachments (47.57715ms)
+✔ lazy actor triangles match eager sweeps through rotated, moving and newly animated props (21.572965ms)
+✔ effect batches upload only live vertices/instances through growth, shrinking and empty frames (1.52006ms)
+✔ cached transforms match native Three matrices after parent, child, manual-matrix and reparent changes (1.47167ms)
+✔ deferred skinning preserves live bone transforms, transitions, save state and exact later vertices (60.022856ms)
+✔ orientation cache follows authored/runtime turns, rotating pickups, moving supports and independent callers (1.012083ms)
+✔ beam scratch vectors preserve exact previous vertices, colours and ribbon UVs across consecutive rays (2.545793ms)
+✔ discs and custom coloured quads preserve earlier batch data, capacity and upload state (0.583396ms)
+✔ precomputed light distances retain stable ties, player priority, eligibility and eight-light limit (0.417318ms)
+✔ light order matches previous calculation after camera, light position and radius changes (1.353761ms)
+✔ actor lighting reads freshly updated scene matrices for mounted parts and debris without ancestor refreshes (2.865041ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 171.203978

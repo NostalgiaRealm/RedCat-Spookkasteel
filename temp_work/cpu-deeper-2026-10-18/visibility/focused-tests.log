@@ -1,0 +1,28 @@
+✔ off-camera actors release only GPU resources after hysteresis and return immediately on camera turn (3.560837ms)
+✔ shared actor geometry and textures are retained until the last resident owner leaves (0.630236ms)
+✔ distant visible actors and large transformed assemblies stay complete (0.744345ms)
+✔ near-camera preload and distance hysteresis avoid repeated uploads at the boundary (0.838464ms)
+✔ nearby actors behind PVS stay preloaded without drawing while distant visible bounds stay intact (0.493127ms)
+✔ player and nonmanaged scene consumers protect shared textures and geometry (0.558656ms)
+✔ removal and controller disposal restore original layers without changing gameplay visibility (0.500887ms)
+✔ resource ownership survives actor removal, re-addition and live visibility changes without per-frame recounts (3.762885ms)
+✔ camera world position needs one ancestor update and honors a moved camera parent immediately (0.516257ms)
+✔ immutable world faces reuse their local matrix while moved brushes and changed scene ancestors propagate immediately (4.895618ms)
+✔ moving models use whole transformed native bounds, retain all materials, and cache unchanged queries (8.436935ms)
+✔ older imported data without model bounds keeps conservative visibility (0.772345ms)
+✔ original graveyard PVS hides both remote fences at the reported gap, but reveals them from their own room (23.840195ms)
+✔ chunk partition preserves every authored face and material in all five levels (153.864789ms)
+✔ distant chunks release independent buffers; shared textures stay until their last resident user leaves (4.414401ms)
+✔ visible distant surfaces and moved brushes stay complete; graphics never change authored visibility (0.825495ms)
+✔ distant decal rays use CPU source faces even when their render chunks are unloaded (1.309541ms)
+✔ leaving a level during an outstanding texture request releases its late result (0.523126ms)
+✔ camera turns preload distant surfaces outside the rendered view before they become visible (0.674356ms)
+✔ repeated five second camera circles reuse resident buffers and textures, then evict after leaving (2.779322ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 243.123248

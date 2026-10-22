@@ -1,0 +1,686 @@
+{
+  "recordedAt": "2026-10-18T11:56:00.368896+00:00",
+  "scope": "Retained evidence and file/link verification only; no game/test/build rerun. See campaign report for instrumentation, retries and separate fixture boundaries.",
+  "campaignEvidence": "temp_work/campaign-validation-2026-10-15/playthrough-1792088801065/earned-outro-complete-2026-10-18.json",
+  "difficulty": "Normal",
+  "completed": true,
+  "menuVisible": true,
+  "state": {
+    "health": 12,
+    "maxHealth": 14,
+    "score": 13150,
+    "potions": 0,
+    "mirror": 5,
+    "lives": 5,
+    "coins": 377,
+    "kills": 89,
+    "secrets": 7,
+    "skill": 15
+  },
+  "noClip": false,
+  "debriefing": {
+    "version": 1,
+    "level": "lvl04a",
+    "rows": [
+      {
+        "kind": "Potion",
+        "found": 0,
+        "total": 0,
+        "bonus": 0
+      },
+      {
+        "kind": "Money",
+        "found": 22,
+        "total": 27,
+        "bonus": 330
+      },
+      {
+        "kind": "Enemy",
+        "found": 3,
+        "total": 11,
+        "bonus": 45
+      },
+      {
+        "kind": "Secret",
+        "found": 0,
+        "total": 0,
+        "bonus": 0
+      }
+    ],
+    "bonus": 375,
+    "oldScore": 12775,
+    "newScore": 13150
+  },
+  "outroEvents": [
+    {
+      "type": "loadstart",
+      "wall": 1792323733836,
+      "time": 0,
+      "duration": null,
+      "mode": "intro",
+      "error": null
+    },
+    {
+      "type": "loadedmetadata",
+      "wall": 1792323733852,
+      "time": 0,
+      "duration": 55.047,
+      "mode": "intro",
+      "error": null
+    },
+    {
+      "type": "playing",
+      "wall": 1792323733856,
+      "time": 0,
+      "duration": 55.047,
+      "mode": "intro",
+      "error": null
+    },
+    {
+      "type": "pause",
+      "wall": 1792323788962,
+      "time": 55.047,
+      "duration": 55.047,
+      "mode": "intro",
+      "error": null
+    },
+    {
+      "type": "ended",
+      "wall": 1792323788975,
+      "time": 0,
+      "duration": null,
+      "mode": "menu",
+      "error": null
+    }
+  ],
+  "scriptErrors": [],
+  "unsupported": [],
+  "sourceBaselineCapturedAt": "2026-10-18T11:01:41.942985+00:00",
+  "postCampaignSourceChanges": [
+    {
+      "path": "src/audio.js",
+      "campaignSha256": "c0a8a14654e2e60d6cbe0a73a0fd688b1e33f911e7a0810c576049952cc0deb3",
+      "finalSha256": "2a02d1313c3b885ce7e9ccb95be908d8a1386261d3afb665cf9b19aec1361289"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "electron/main.cjs",
+      "bytes": 4818,
+      "sha256": "ccf20e27e42ce069b1e3d140d5839b456aaf6fbb683027cfc6cdee7457f7fc94"
+    },
+    {
+      "path": "electron/preload.cjs",
+      "bytes": 272,
+      "sha256": "9c1ada5d5fdece82c9fef3d955605dd7d7ae83c50f9c7aad8c28110711f3398b"
+    },
+    {
+      "path": "index.html",
+      "bytes": 19712,
+      "sha256": "889b8729a3f38e79548b49b64920a24b949de285cf47a9a538e438eeef22f0f9"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 129367,
+      "sha256": "82660f23dbbb393dac088312c8f7a657b17ec94157d81041030c678aa4789341"
+    },
+    {
+      "path": "package.json",
+      "bytes": 2304,
+      "sha256": "0f0111e630bef912ed6500df2b90f9e00bc0c7922294a0e4d84368fa96a6d9a3"
+    },
+    {
+      "path": "src/actor-collision.js",
+      "bytes": 4803,
+      "sha256": "b43c03eac7ca9f2e108fb3a8a8b9ab7661ff50a154a80a2d4ab68f166bf1033c"
+    },
+    {
+      "path": "src/actor-floor-lighting.js",
+      "bytes": 12908,
+      "sha256": "63dd98c2ec13d860924f28d5c4a32b51d5b2be3d883198f1bae6d405faadb9c8"
+    },
+    {
+      "path": "src/actor-light-sampling.js",
+      "bytes": 2628,
+      "sha256": "0b3faaf8e5aa75caae228704c67187bc0127b4537361436051ef775dc5fa506a"
+    },
+    {
+      "path": "src/actor-light-visibility.js",
+      "bytes": 6482,
+      "sha256": "de706bf1f78af6c731351ae966afba5ed8159a96dac22dde4c2474ebb0076b15"
+    },
+    {
+      "path": "src/actor-lighting.js",
+      "bytes": 6488,
+      "sha256": "d2d2655e6ca5ddb867a68188bbe9b02a3c70fccfd9253a258ae3e3e45f4583fb"
+    },
+    {
+      "path": "src/actor-materials.js",
+      "bytes": 511,
+      "sha256": "07476ca17b2d88894648ca1e4af0d69f9ead2062740caf7ac70fd55e4d527413"
+    },
+    {
+      "path": "src/actor-placement.js",
+      "bytes": 2369,
+      "sha256": "8a66d7fc4b8a5c067740eb4cb62aae7d7511a6738764c3c5447b088d4765e1e8"
+    },
+    {
+      "path": "src/actor-render-residency.js",
+      "bytes": 7387,
+      "sha256": "5f31a6bb3738388f854704a5188e37f6daf66813e5a42933c23a648b8d3a99a0"
+    },
+    {
+      "path": "src/actor-world-lighting.js",
+      "bytes": 3653,
+      "sha256": "cfd5fd1e8ff98630dd3f47b0b4c8b2d3b1f6ca23fd71d901db114cd482bcf1ff"
+    },
+    {
+      "path": "src/ambience-ranges.js",
+      "bytes": 2003,
+      "sha256": "71e67918e540dba7bc620a8084a43d7df082bfa17a74c62eb217e83093a0d9ee"
+    },
+    {
+      "path": "src/android-host.js",
+      "bytes": 2196,
+      "sha256": "95dde8208b7ec1c8bc51f55f35e1f066b52ab55f67a02a526efc272f68b41907"
+    },
+    {
+      "path": "src/animation.js",
+      "bytes": 15297,
+      "sha256": "914296aa2ab025a103c85990fc241c9dcd2ad16dfb8874f3a2d17ce45d97c7eb"
+    },
+    {
+      "path": "src/audio-settings.js",
+      "bytes": 8591,
+      "sha256": "9039a17205ff80c73f9519825ec37ea5200970345a8f6359aa31dfc746f08dc3"
+    },
+    {
+      "path": "src/audio.js",
+      "bytes": 25138,
+      "sha256": "2a02d1313c3b885ce7e9ccb95be908d8a1386261d3afb665cf9b19aec1361289"
+    },
+    {
+      "path": "src/autosave.js",
+      "bytes": 757,
+      "sha256": "f4d48f551d1b7efee62e51e80136c70a202290be2622445868f14d9b1735d490"
+    },
+    {
+      "path": "src/beam-contacts.js",
+      "bytes": 3272,
+      "sha256": "1035cb6966fd9d0a5d76bed5f553616361146788e2d425c5e6bec5e54a6b5cd6"
+    },
+    {
+      "path": "src/boss-ai.js",
+      "bytes": 15612,
+      "sha256": "d040bd44f0abe97ad6a5d24a0e8738b36805a399d8de2cb062f77005a52d1d70"
+    },
+    {
+      "path": "src/bsp-visibility.js",
+      "bytes": 3506,
+      "sha256": "93d6b7b83099a4dff6f934f960a43a4776ffd8cff902fb65443e2a1a23d9dd69"
+    },
+    {
+      "path": "src/camera-control.js",
+      "bytes": 2140,
+      "sha256": "4287ffa6678f7e401d2ed5a8bcfe5e0b95e5d9cb4c1cb53e7e4d088ee1c96e02"
+    },
+    {
+      "path": "src/campaign-progress.js",
+      "bytes": 4173,
+      "sha256": "e2558753fe381a0c4ae03ded6a968737e58b5b2b93407800dd15a455469c252a"
+    },
+    {
+      "path": "src/cheats.js",
+      "bytes": 2177,
+      "sha256": "757e817c94810620a8ed7f6525b9167da866820088b714ef5cbc95274df1d30f"
+    },
+    {
+      "path": "src/collision.js",
+      "bytes": 21076,
+      "sha256": "f8852a37ff519f9c425bdaf41027c7338c4a78c63900a466a2d23e214242242e"
+    },
+    {
+      "path": "src/cutscene-skip.js",
+      "bytes": 523,
+      "sha256": "fc6df8a0c34e8440702f36d9a16bc4d58714d12b838c76168d42d5d60efef220"
+    },
+    {
+      "path": "src/davi-vm.js",
+      "bytes": 16587,
+      "sha256": "028d18eabdcf9552c235fa2b337db36893471aef16338b471cb580cb4a449076"
+    },
+    {
+      "path": "src/debriefing.js",
+      "bytes": 6593,
+      "sha256": "218c2b4907d7dac66aad2517f10492f8082fdbb60abb1a905d067f692e86b3bf"
+    },
+    {
+      "path": "src/debris-native.js",
+      "bytes": 6776,
+      "sha256": "6dd492ea44ed4e5c69b081a9ff414b770d68e8e29a7a8739dff904bef30f439d"
+    },
+    {
+      "path": "src/decal-effects.js",
+      "bytes": 5012,
+      "sha256": "f980983b6693d10f84f7f5750ebecbc669fc646999652969dd258a711177470e"
+    },
+    {
+      "path": "src/destructible-damage.js",
+      "bytes": 1243,
+      "sha256": "9eea3126001a60f243d6233ed777e0d0d731decbaf95f7f63d296d4aca24d95b"
+    },
+    {
+      "path": "src/destructible-effects.js",
+      "bytes": 8025,
+      "sha256": "9ad1a0149594cf4ed05d0fbe1362f211f4328b04a29848b80478d21588a51d62"
+    },
+    {
+      "path": "src/difficulty.js",
+      "bytes": 660,
+      "sha256": "b6094b87f48a07f28972fec2bfca6770b52a59436ce9ef4fc19bec9f998b73b3"
+    },
+    {
+      "path": "src/door-audio.js",
+      "bytes": 1442,
+      "sha256": "e229e59e897e0786445a1a2422b815f764de0a2f9fbf21680c4756d4f6665c9c"
+    },
+    {
+      "path": "src/enemies.js",
+      "bytes": 5357,
+      "sha256": "fdbe36890a14dede993d66c220d8425d503207ada771c7e5689d986f8a28420a"
+    },
+    {
+      "path": "src/enemy-ambush.js",
+      "bytes": 14999,
+      "sha256": "f95bc58f271aba005e98626d6ae671b2b53ed12d68948a455f8c6390146b7b13"
+    },
+    {
+      "path": "src/enemy-animation-rules.js",
+      "bytes": 1706,
+      "sha256": "fe17ffe8c62a8daa3a81048e48914fe9c258d7d016c142faff8a3fc3dd1932bb"
+    },
+    {
+      "path": "src/enemy-combat-effects.js",
+      "bytes": 2163,
+      "sha256": "283c41d0010fbc0478dd16c62061d678385a3247640ba5bbc4624dfce81565dc"
+    },
+    {
+      "path": "src/enemy-combat-native.js",
+      "bytes": 1353,
+      "sha256": "d736d133ccc4fadf0bedf8de75c7cb82a6b5fe760b882e8b82baf8b46bf041e8"
+    },
+    {
+      "path": "src/enemy-death-effects.js",
+      "bytes": 4703,
+      "sha256": "15d64dd3f7f4ef8b29bbf21041c1a6c69f7a5af54a82040d331ea6991bd03c86"
+    },
+    {
+      "path": "src/enemy-flight.js",
+      "bytes": 5887,
+      "sha256": "eda5a40865064446cfd98a88ad47abb4dd5bdcbe0cddd76e3cf8a7b3c05b3b50"
+    },
+    {
+      "path": "src/enemy-hit-native.js",
+      "bytes": 2531,
+      "sha256": "ac58ce68cda819ae2f0bdf7c85aff7fbbfdd6963e17ead33528bdc1e213c41cc"
+    },
+    {
+      "path": "src/enemy-navigation.js",
+      "bytes": 20976,
+      "sha256": "5fd2a2de9e1e3ff73e4847ac5ae4836cbf23e5a9f39eac9d8d470de6b9b23f8c"
+    },
+    {
+      "path": "src/enemy-projectile-origins.js",
+      "bytes": 2598,
+      "sha256": "d182cea7388e4c88eb5fbbe5c850d528eb495bd75d1b3fb34341053455aaba67"
+    },
+    {
+      "path": "src/enemy-projectiles.js",
+      "bytes": 2635,
+      "sha256": "a047982ec211ca75049653bfe8a9cc4b0aaad6d341be8b1d7ded93f735e3fc21"
+    },
+    {
+      "path": "src/enemy-shooter-native.js",
+      "bytes": 8038,
+      "sha256": "2e98838b220a48294f22c7c2d7d2890ca4fa9d9b8155ea687bcbe660dbd8b133"
+    },
+    {
+      "path": "src/enemy-waypoint-steering.js",
+      "bytes": 4063,
+      "sha256": "a6e44e4e641d1b026dcd27eb28b669accfb710938edfc0dc9cafdb727accddbf"
+    },
+    {
+      "path": "src/environment-interactions.js",
+      "bytes": 2097,
+      "sha256": "8d823e628be63857b8924eca6f5850920af2a4d8e7e489b3034a5c54fd18fdfc"
+    },
+    {
+      "path": "src/explosion-damage.js",
+      "bytes": 6539,
+      "sha256": "96311e67bb50c984a1993939076b06069042d13e1b00996e4c5c107ebf5ab858"
+    },
+    {
+      "path": "src/explosion-native.js",
+      "bytes": 4722,
+      "sha256": "3e21422ce361327f6824553ac87f88ac2fc4a59373497f96a4d8841c18c1b44b"
+    },
+    {
+      "path": "src/fairy-effects.js",
+      "bytes": 16118,
+      "sha256": "55b7edd3108336ec087a743a61a07ae37006b57d3888d234eeb7b35303f3c094"
+    },
+    {
+      "path": "src/fullscreen-preference.js",
+      "bytes": 2981,
+      "sha256": "53e3edba45b9bac1e18b96a0da412314b01410931e39562548c4b478be2053c2"
+    },
+    {
+      "path": "src/gamepad-input.js",
+      "bytes": 8055,
+      "sha256": "ee63e5726734bbf5a3fc7b2ee3fb0c64503c02354c6a5ee5eeafa46e3ee54c00"
+    },
+    {
+      "path": "src/gamepad-menu.js",
+      "bytes": 4791,
+      "sha256": "4a5302392a99e9eedb5716b66dd430bb89c828b9c65bfe4c580aab597f76f4f1"
+    },
+    {
+      "path": "src/gameplay-audio.js",
+      "bytes": 7987,
+      "sha256": "6172d5524a303bf5b5da98df7367be0e52c9b986a741b63a9207c106bbfe7113"
+    },
+    {
+      "path": "src/gameplay-settings.js",
+      "bytes": 32874,
+      "sha256": "b2c1cbdd5b2dabf2b0161f60a667707aee86ac64c34560425b961813c4774a5e"
+    },
+    {
+      "path": "src/gameplay.js",
+      "bytes": 73784,
+      "sha256": "0dfe52b7f40a75a34747e10b65afcd9e6804b350cfacebb855762a0e4053d89e"
+    },
+    {
+      "path": "src/gargoyle-blast.js",
+      "bytes": 4393,
+      "sha256": "954df0eff277e37c3db76f262d65abae8843885c84997f74d98ae3bab26dedfe"
+    },
+    {
+      "path": "src/ghost-materials.js",
+      "bytes": 1058,
+      "sha256": "e2163dd9a18d8ef20976cc5993c15c6f6419463b47577332e120f626612de899"
+    },
+    {
+      "path": "src/graveyard-maze.js",
+      "bytes": 4315,
+      "sha256": "25d07f09e82fe174185c995aae69aad5a1579a62e98ea7cd8f97e053b8ad2a5c"
+    },
+    {
+      "path": "src/hud.js",
+      "bytes": 4267,
+      "sha256": "a1318bc0dfa120e8348e8ed0c4888c6e102c0475e213bc671ed1a3461a357b61"
+    },
+    {
+      "path": "src/intro-playback.js",
+      "bytes": 2307,
+      "sha256": "5bf986c92ddb9e902e85d54c47082d0795c47c8752d16e0b4f2dab2adb6161f6"
+    },
+    {
+      "path": "src/knight-debris.js",
+      "bytes": 3416,
+      "sha256": "2f00054ca954dfebd1ed82be81b44988b0d1b08c39907f757a4344c051b3390a"
+    },
+    {
+      "path": "src/liquids.js",
+      "bytes": 2496,
+      "sha256": "accf138caba1cfcf0be4bc778b6ae8a84cf709f47f76331086b0f3aa51799975"
+    },
+    {
+      "path": "src/loading-screen.js",
+      "bytes": 2104,
+      "sha256": "71ee63912cd643ee5dc43074ae340b4f60b003990378d4b112a6b7bbd9642727"
+    },
+    {
+      "path": "src/locomotion-audio.js",
+      "bytes": 2044,
+      "sha256": "e5c52b7f39fa29cada19396493ed49daf0136c5c17235dba83d99f49382dc5bd"
+    },
+    {
+      "path": "src/main.js",
+      "bytes": 56477,
+      "sha256": "694c4d2cfa079be6d4588c9043476052f2ade350dbd965e6b88edbef5e091990"
+    },
+    {
+      "path": "src/menu-audio.js",
+      "bytes": 2635,
+      "sha256": "b7b9b3916be9db51ccff854be879e1afe174fbf0bff0c745f1e83537572e53f2"
+    },
+    {
+      "path": "src/motions.js",
+      "bytes": 11683,
+      "sha256": "40b7f098b08d862c4d896752a310a7cd84d58b77695b750570d48aca70106649"
+    },
+    {
+      "path": "src/movement-recovery.js",
+      "bytes": 12216,
+      "sha256": "7676a521ea8547d32100b5cf1a7903e0bb1fc867a0a24ce9ebb14ab62ae3f11a"
+    },
+    {
+      "path": "src/moving-solids.js",
+      "bytes": 5161,
+      "sha256": "42b1616f4e2c32ddac240b7fcf31a1c191d3ae4bf1007d8a76c7f4582835d104"
+    },
+    {
+      "path": "src/music-fade.js",
+      "bytes": 945,
+      "sha256": "405f85ef5176aabd199abdb3eeac4a73b926515afa06b6bd208df4cc711683b3"
+    },
+    {
+      "path": "src/pickup-placement.js",
+      "bytes": 2087,
+      "sha256": "8dec242cbd1589004220a0d2e8d96e6d7bbc5be90d7ed5cf079c0d1e13b7a865"
+    },
+    {
+      "path": "src/player-animation.js",
+      "bytes": 3681,
+      "sha256": "2ca01ca83beb85742510be42a6b66a882b03fbd8d0145aadc87dbd14dfb96457"
+    },
+    {
+      "path": "src/player-inventory.js",
+      "bytes": 519,
+      "sha256": "352e460005c116af6033ba5b67c3ea759f4d82dca9c3ea84098e593b9a2a0831"
+    },
+    {
+      "path": "src/player-lifecycle.js",
+      "bytes": 1395,
+      "sha256": "704f5e61de2bc1be098443f08964c1cc8ad9da99748a7d693d20975b242ea7c6"
+    },
+    {
+      "path": "src/player-menu.js",
+      "bytes": 7583,
+      "sha256": "bf4e241738215ccd07ebc253e89681606e9bd3361e288e9bdee916a62ef33ebf"
+    },
+    {
+      "path": "src/player-movement.js",
+      "bytes": 1183,
+      "sha256": "8f713558bcc94f21892a3df3f71c3baab189c2fb86295f7959a0d08f1cb1ead2"
+    },
+    {
+      "path": "src/player-profiles.js",
+      "bytes": 8422,
+      "sha256": "8d5a893ee102f770b677496a8ef7a7b75227040a9880b7e560912ff8636bd193"
+    },
+    {
+      "path": "src/player-projectiles.js",
+      "bytes": 2486,
+      "sha256": "a3cb4155aded195faa79dc08dc443b2e0488965e65805aa0e8011e09027655d2"
+    },
+    {
+      "path": "src/player-shadow.js",
+      "bytes": 2827,
+      "sha256": "816f21a4d34f4b0363b29452c80affa73ab06632f6f7251c433e4abe6b2ce85e"
+    },
+    {
+      "path": "src/player-world-light.js",
+      "bytes": 1385,
+      "sha256": "a76045919f2373355c21c5f5f5053121b330f181d275041bd02152d5db243631"
+    },
+    {
+      "path": "src/presentation-native.js",
+      "bytes": 2489,
+      "sha256": "3dae7370a08d1d350fc9f3aa2b23b55391e7a4fa9afac066d70efd0e53146933"
+    },
+    {
+      "path": "src/projectile-animation.js",
+      "bytes": 2040,
+      "sha256": "72199f909c9bf6c72fe75e51f8c6e1ed00d9c3262351f40bf801e8842b188046"
+    },
+    {
+      "path": "src/projectile-collision.js",
+      "bytes": 517,
+      "sha256": "3cba2d447f7c1f6c4f41c536a2a2710268a92559741a10c32ea71d19184bd31f"
+    },
+    {
+      "path": "src/projectile-hazards.js",
+      "bytes": 7475,
+      "sha256": "a0e3bc33bfa3caf503de5c1ce8215c0786f1103207b4c31374bc0c42c7fbdc90"
+    },
+    {
+      "path": "src/projectile-impacts.js",
+      "bytes": 5119,
+      "sha256": "0751cb649ed61769461747e3f56ec55d015fe6743fcdfadedd5be0fd43efb376"
+    },
+    {
+      "path": "src/projectile-lighting.js",
+      "bytes": 918,
+      "sha256": "c70e912b5e3e180b2dc205681df54f6b0d8ca011727dcfe1daffc52c35a3e64c"
+    },
+    {
+      "path": "src/projectile-visibility.js",
+      "bytes": 776,
+      "sha256": "4f225f9fb4d58dbe664c5515574d4bb57bc51bee01e9aae53222a7f0355e8642"
+    },
+    {
+      "path": "src/quit-menu.js",
+      "bytes": 1705,
+      "sha256": "052dbc0d633d98879a8e1fc0056936aeef186f4578f3abf7d6bba3331ae2e471"
+    },
+    {
+      "path": "src/recovery-saves.js",
+      "bytes": 8681,
+      "sha256": "fb5d33e3fa288db8403dee8f4d7576b3cfcb4d98426818317c493376b846bcdb"
+    },
+    {
+      "path": "src/render-quality.js",
+      "bytes": 1279,
+      "sha256": "ed3c39bc5dc5d1332614f5c8276984a7032a5810547d29f730b4846a272239aa"
+    },
+    {
+      "path": "src/reward-effects.js",
+      "bytes": 3641,
+      "sha256": "b232b4787e250ecc1a5e98342785a135190724b75152a96037a8649fb362811e"
+    },
+    {
+      "path": "src/script-camera.js",
+      "bytes": 2235,
+      "sha256": "5f671fee886266b9b5a3d09f0e46f3aade4bc8de0225e76110532c1be047a3d8"
+    },
+    {
+      "path": "src/script-host.js",
+      "bytes": 27956,
+      "sha256": "c0e98385c068cce93f69bc2ef00506744e1d1506d8103d1c9a9882bf3787aa50"
+    },
+    {
+      "path": "src/skybox.js",
+      "bytes": 3237,
+      "sha256": "38eaab856957a55568d7cb52b571b3116a4a7601531640d1287f2031e5427dac"
+    },
+    {
+      "path": "src/slider-audio.js",
+      "bytes": 1450,
+      "sha256": "9095c40ed6b79aafbf434c6d2520828f2c98f5e9ec3448dc52e4918bbb0ae577"
+    },
+    {
+      "path": "src/spatial-audio.js",
+      "bytes": 4730,
+      "sha256": "ab480ac16026e111b50708e5f944cb214d77beed87ea9d08548c49d4fcefc1c6"
+    },
+    {
+      "path": "src/spout-effects.js",
+      "bytes": 10392,
+      "sha256": "093085952531086743d2751211559335b8fda1561844a0c65a7301108b0ed5fe"
+    },
+    {
+      "path": "src/targeting.js",
+      "bytes": 4814,
+      "sha256": "c7a367608325c7befea33ff0c33875433987fe88008bffb60ff977e7de273319"
+    },
+    {
+      "path": "src/teleporter-effects.js",
+      "bytes": 12126,
+      "sha256": "c1e2d7373c0423589d3dd3bebe26577578664511edbfebb80fa218e97b97edf8"
+    },
+    {
+      "path": "src/third-person-camera.js",
+      "bytes": 3736,
+      "sha256": "fdde5ae1a3e85d8a81ca2f06f161d2cc7e4c0fd9875a8fe0dbe03442b7d0044e"
+    },
+    {
+      "path": "src/torch-flames.js",
+      "bytes": 4631,
+      "sha256": "58dab90b545465098dfe814aabf64e3554d4a995732c314b68c1be29a4956334"
+    },
+    {
+      "path": "src/touch-controls.js",
+      "bytes": 11026,
+      "sha256": "6d5c57a153c84bcb62158808a15659f9b1ce61c17a3c5c22f55d27e44384eac7"
+    },
+    {
+      "path": "src/touch-intro-hint.js",
+      "bytes": 1649,
+      "sha256": "efeac0986f06bc58ab8e38329b91fdec1d3113c697c6d64c86e04af301260562"
+    },
+    {
+      "path": "src/world-effects.js",
+      "bytes": 37019,
+      "sha256": "83013a11b16b5a27ce7fac0b08c33a18051b2d2c2d18bfd7bc0edd0de95fdcd3"
+    },
+    {
+      "path": "src/world-light-shadows.js",
+      "bytes": 4825,
+      "sha256": "0f6ef22ca25c3a8553930bc36f0acf5f290a311a2750983212b637a9b35fecb5"
+    },
+    {
+      "path": "src/world-lighting-material.js",
+      "bytes": 5091,
+      "sha256": "08dae6c8d94a83ef37708990d2b57ef5c5594383ff698d71e37eb217f9414573"
+    },
+    {
+      "path": "src/world-lighting.js",
+      "bytes": 2716,
+      "sha256": "63285b8233bcdf4311bdde1fdb9d4535391da81b0f69c0650e6bf5f571041849"
+    },
+    {
+      "path": "src/world-streaming.js",
+      "bytes": 15338,
+      "sha256": "717cc2ce92ec20afacfda3a7aee58d7b6efc618ef6cd0288af8ecfd4726f3c38"
+    },
+    {
+      "path": "src/world.js",
+      "bytes": 66070,
+      "sha256": "0ac2344929152c6b316411804e455704436a9d7ef1b07bb6ebc87788e541fd82"
+    },
+    {
+      "path": "src/zombie-grave-rise.js",
+      "bytes": 3532,
+      "sha256": "b9e035c039f1164b0c9912c4e6934444fc686acca89baa72d9e47c89cbbef17a"
+    },
+    {
+      "path": "tools/package.mjs",
+      "bytes": 1431,
+      "sha256": "d8c866175e06987e6a567aa7ae10c0834892d3d637030d7cf72f9e7c00408ed8"
+    }
+  ],
+  "localDocumentationLinksChecked": 291,
+  "missingLinks": [],
+  "newBuilds": false
+}

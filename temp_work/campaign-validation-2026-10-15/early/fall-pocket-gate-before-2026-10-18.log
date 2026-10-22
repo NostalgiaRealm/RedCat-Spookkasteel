@@ -1,0 +1,40 @@
+✖ a nearby authored gate vetoes returning from a fall pocket to higher history (9.333009ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 48.466095
+
+✖ failing tests:
+
+test at tests/movement-recovery.test.mjs:331:1
+✖ a nearby authored gate vetoes returning from a fall pocket to higher history (9.333009ms)
+  AssertionError [ERR_ASSERTION]: a door closure must not become an escape to the upper shelf
+  + actual - expected
+  
+  + {
+  +   grounded: true,
+  +   position: [
+  +     0,
+  +     100.05,
+  +     0
+  +   ],
+  +   reason: 'fall-pocket'
+  + }
+  - null
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/movement-recovery.test.mjs:344:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { position: [ 0, 100.05, 0 ], grounded: true, reason: 'fall-pocket' },
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

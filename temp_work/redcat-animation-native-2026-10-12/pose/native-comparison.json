@@ -1,0 +1,109 @@
+{
+  "method": "Exact retained float32 C Hermite/SLERP and quaternion-pose functions vs current JS matrices, 129 samples per motion. Importer-decoded inputs cast to float32. Vertex error computed from bone transforms, before final Float32 GPU storage or 1.3 actor scale. This is not original executable runtime capture.",
+  "clips": {
+    "walkbwl": {
+      "samples": 129,
+      "maxBonePositionDelta": 0.0002482596873768436,
+      "maxVertexDelta": 0.00025101797137035294,
+      "maxRotationElementDelta": 2.355774154960688e-05
+    },
+    "walkbwr": {
+      "samples": 129,
+      "maxBonePositionDelta": 0.0003288648847843155,
+      "maxVertexDelta": 0.00033892927058828883,
+      "maxRotationElementDelta": 2.2393190055924883e-05
+    },
+    "fall2": {
+      "samples": 129,
+      "maxBonePositionDelta": 9.74713420432754e-05,
+      "maxVertexDelta": 9.685751712842153e-05,
+      "maxRotationElementDelta": 7.004260409115837e-06
+    },
+    "fall1": {
+      "samples": 129,
+      "maxBonePositionDelta": 8.638753979936856e-05,
+      "maxVertexDelta": 8.501798063937716e-05,
+      "maxRotationElementDelta": 6.137924295601671e-06
+    },
+    "strafer": {
+      "samples": 129,
+      "maxBonePositionDelta": 0.00010219221564185583,
+      "maxVertexDelta": 0.00012094479008093454,
+      "maxRotationElementDelta": 1.2958331093493314e-05
+    },
+    "strafel": {
+      "samples": 129,
+      "maxBonePositionDelta": 8.416524437525598e-05,
+      "maxVertexDelta": 0.00013782366011875363,
+      "maxRotationElementDelta": 1.3213660491895318e-05
+    },
+    "jump2": {
+      "samples": 129,
+      "maxBonePositionDelta": 9.845973021882254e-05,
+      "maxVertexDelta": 0.00010660060869889099,
+      "maxRotationElementDelta": 1.0443899243262056e-05
+    },
+    "jump1": {
+      "samples": 129,
+      "maxBonePositionDelta": 0.00010192971472827741,
+      "maxVertexDelta": 0.00010060284959341387,
+      "maxRotationElementDelta": 1.4947763466888198e-05
+    },
+    "re-spawn": {
+      "samples": 129,
+      "maxBonePositionDelta": 0.00020627331083433498,
+      "maxVertexDelta": 0.00020137765420869154,
+      "maxRotationElementDelta": 2.2574698290034334e-05
+    },
+    "shoot1": {
+      "samples": 129,
+      "maxBonePositionDelta": 0.0002069089775682751,
+      "maxVertexDelta": 0.00023534567235211146,
+      "maxRotationElementDelta": 2.191155740416395e-05
+    },
+    "charge": {
+      "samples": 129,
+      "maxBonePositionDelta": 0.00024259962592971786,
+      "maxVertexDelta": 0.00024150903764010611,
+      "maxRotationElementDelta": 2.0044640473670938e-05
+    },
+    "death": {
+      "samples": 129,
+      "maxBonePositionDelta": 0.00012561072422444922,
+      "maxVertexDelta": 0.0001654266444668212,
+      "maxRotationElementDelta": 1.5266513768930068e-05
+    },
+    "hit": {
+      "samples": 129,
+      "maxBonePositionDelta": 4.8950355004865915e-05,
+      "maxVertexDelta": 6.86812592998917e-05,
+      "maxRotationElementDelta": 7.313836115185879e-06
+    },
+    "walkbw": {
+      "samples": 129,
+      "maxBonePositionDelta": 0.0003265887520977233,
+      "maxVertexDelta": 0.00033657194017015,
+      "maxRotationElementDelta": 2.224919149496074e-05
+    },
+    "walkfw": {
+      "samples": 129,
+      "maxBonePositionDelta": 7.207627410600277e-05,
+      "maxVertexDelta": 7.66772048230086e-05,
+      "maxRotationElementDelta": 9.44536510671945e-06
+    },
+    "idle": {
+      "samples": 129,
+      "maxBonePositionDelta": 0.0002136034791418948,
+      "maxVertexDelta": 0.00024142261034199594,
+      "maxRotationElementDelta": 1.5756758674712046e-05
+    }
+  },
+  "worst": {
+    "delta": 0.00033892927058828883,
+    "name": "walkbwr",
+    "time": 1.096880491822958,
+    "vertex": 318,
+    "bone": "RCHC_BIP01 R FINGER1"
+  },
+  "worstWorldUnits": 0.0004406080517647755
+}

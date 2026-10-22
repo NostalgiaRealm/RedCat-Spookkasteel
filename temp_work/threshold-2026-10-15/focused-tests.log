@@ -1,0 +1,35 @@
+✔ a prop survives exact projectile equality, remains targetable/collidable, and breaks on the next positive hit (3.643665ms)
+✔ all projectile strengths and partial hits use the same strict accumulated limit (0.813708ms)
+✔ blast and projectile damage share one accumulator without suppressing later blast ticks at equality (0.53266ms)
+✔ saving at exact equality preserves an intact prop and its next-hit destruction across actor loading (2.182997ms)
+✔ legacy saves keep their remaining budget and same-world restoration clears newer accumulated damage (0.688969ms)
+✔ explicit script destruction still bypasses the threshold, including an equality-state prop (0.21132ms)
+✔ indestructible actors still run OnHit commands while ignoring damage, and enemy equality still defeats (0.606829ms)
+✔ invalid damage and accumulator state cannot revive destroyed props or poison future damage (0.242259ms)
+✔ the actual graveyard puzzle tile fires by solid contact, once until RedCat steps off (16.200019ms)
+✔ the original cave fan volumes supply their signed velocities and obey button group commands (6.530471ms)
+✔ a fan drives swept player motion without penetrating a wall and noclip ignores wind (0.700599ms)
+✔ original cave spring-box volumes launch a grounded player higher than the ordinary jump (3.362226ms)
+✔ the original cave hidden-button room plays SecretFound on entry once, including across save/reload (18.717035ms)
+✔ a crate collider takes both pellets, survives native threshold equality, and explodes only once (2.662737ms)
+✔ authored crate damage rates/radii use the native percentages and the visual blast births (2.385727ms)
+✔ nearby RedCat takes continuous distance falloff over exactly 400ms at any tick size (2.945916ms)
+✔ RedCat range and LOS use his native eye-height movement origin (0.384099ms)
+✔ moving out of range stops damage while moving into an expired blast never damages (0.30508ms)
+✔ enemy falloff uses the nearest posed box edge and tries native centre-relative corner rays (0.25599ms)
+✔ exploding crates kill nearby enemies, preserve distant enemies, and award defeat once (1.490077ms)
+✔ hurt cells damage smoke-only crates and chain destructible actors without projectile OnHit hooks (0.714319ms)
+✔ hidden and inactive targets stay protected, and brush OnHit callbacks do not receive splash (0.37775ms)
+✔ player death fires once; noclip immunity and cutscene protection remain intact (0.734949ms)
+✔ saving mid-blast resumes only remaining damage and respawn clears pending damage (3.079636ms)
+✔ a synchronous respawn during blast damage discards the old cell iteration immediately (0.29173ms)
+✔ delayed blasts clip damage to birth/death overlap without applying future damage early (0.247059ms)
+✔ world explosion targets expose rendered bounds for rotated, scaled moving actors (1.636868ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 159.709023

@@ -1,0 +1,30 @@
+✔ ordinary moving cursors retain current and destination claims through shoot, wait, and selected hurt (1.266413ms)
+✔ boss and unknown direct-pursuit policies keep their existing reservation gate (0.224819ms)
+✔ initial skeleton shoot reserves its authored cursor before an earlier enemy chooses a destination (3.838078ms)
+✔ actual selected hit clears the skeleton attack child without relinquishing its cursor claim (0.621837ms)
+✔ a fresh loaded cursor is reserved by the frame-wide rebuild before any enemy child updates (3.287711ms)
+✔ native shooter approach randomly selects strictly closer neighbors, never arbitrary endpoints (3.962418ms)
+✔ native closer comparison uses full 3D distance, strict inequality, and current player clearance (0.285178ms)
+✔ busy and unlinked-start nodes are not replaced with a forbidden or arbitrary destination (0.270218ms)
+✔ changing the target actor position retains an unfinished native cursor edge (0.208749ms)
+✔ off-node bodies safely reacquire their cursor before selecting another native edge (0.177409ms)
+✔ native graph approach retires old arbitrary jobs without refunding current search credits (0.274848ms)
+✔ native no-neighbor and absent-path results are distinct for the gameplay state caller (0.155309ms)
+✔ native MoveFurther chooses the strictly farthest valid adjacent slot without consuming RNG (0.185229ms)
+✔ native retreat retains committed edges then reevaluates current-player gates at the next node (0.186429ms)
+✔ native retreat rejects equal-distance neighbors and allows bounded off-node reacquisition (0.215198ms)
+✔ current and destination claims update immediately and ignore their owner or retired actors (1.202964ms)
+✔ direct pursuit releases stale patrol claims while active waypoint modes reserve them (0.241469ms)
+✔ reservation rebuild runs once per update and explicit invalidation supports loading at the same time (0.218468ms)
+✔ ordinary patrol observes touch reservations and claims its selected edge before later actors choose (0.370568ms)
+✔ minimum player distance applies to ordinary and relocation choices without forbidden fallback (0.225909ms)
+✔ generic random selection includes the previous neighbor and works without frame synchronization (2.373806ms)
+✔ arrival preserves the current-point claim after relocation and immediately reserves a subsequent patrol edge (0.250809ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 86.904249

@@ -1,0 +1,223 @@
+{
+  "phase": "final",
+  "errors": [],
+  "report": {
+    "name": "original-castle-authored-edge-contact",
+    "id": "MovingEnemy16",
+    "initial": [
+      1219,
+      364,
+      -754
+    ],
+    "target": [
+      1144,
+      312.05,
+      -700
+    ],
+    "edge": {
+      "left": "GrobberPathPoint60",
+      "leftPosition": [
+        1179,
+        338,
+        -717
+      ],
+      "right": "GrobberPathPoint63",
+      "rightPosition": [
+        1109,
+        349,
+        -683
+      ],
+      "t": 0.5,
+      "edgePoint": [
+        1144,
+        343.5,
+        -700
+      ]
+    },
+    "hulls": {
+      "bat": {
+        "mins": [
+          -7.185476567788967,
+          5.302835290810854,
+          -8.436841885848311
+        ],
+        "maxs": [
+          8.563791438115437,
+          36.2751266444358,
+          7.469816086976064
+        ]
+      },
+      "player": {
+        "mins": [
+          -11,
+          0,
+          -11
+        ],
+        "maxs": [
+          11,
+          56,
+          11
+        ]
+      }
+    },
+    "initialOverlap": false,
+    "initialSolid": false,
+    "frames": 600,
+    "median": 4.099999999627471,
+    "p95": 4.899999998509884,
+    "p99": 6.099999999627471,
+    "max": 18.200000001117587,
+    "maxFrameTraces": 17,
+    "maxEnemyTraces": 6,
+    "maxFrameSearchTraces": 0,
+    "minDistance": 35.06371865804403,
+    "overlapFrames": [],
+    "worldSolidFrames": [],
+    "resourceBefore": {
+      "sounds": 11,
+      "resources": 1040,
+      "actors": 291,
+      "projectiles": 0,
+      "sceneChildren": 966,
+      "programs": 11,
+      "particles": 77,
+      "destructibleParticles": 0,
+      "pursuitJobs": 0
+    },
+    "resourceAfter": {
+      "sounds": 12,
+      "resources": 1048,
+      "actors": 291,
+      "projectiles": 0,
+      "sceneChildren": 966,
+      "programs": 12,
+      "particles": 1386,
+      "destructibleParticles": 0,
+      "pursuitJobs": 0
+    },
+    "resourcePeak": {
+      "sounds": 12,
+      "resources": 1048,
+      "actors": 291,
+      "projectiles": 0,
+      "sceneChildren": 966,
+      "programs": 12,
+      "particles": 1404,
+      "destructibleParticles": 0,
+      "pursuitJobs": 0
+    },
+    "events": [
+      {
+        "type": "enemyAttack",
+        "id": "MovingEnemy16",
+        "position": [
+          1162.2745420122196,
+          340.6282862552225,
+          -708.8762061202208
+        ],
+        "ranged": false,
+        "contact": true,
+        "time": 5.483333333333319,
+        "batPosition": [
+          1162.2745420122196,
+          340.6282862552225,
+          -708.8762061202208
+        ],
+        "player": [
+          1144,
+          312.05,
+          -700
+        ]
+      },
+      {
+        "type": "enemyAttack",
+        "id": "MovingEnemy16",
+        "position": [
+          1162.2745420122196,
+          340.6282862552225,
+          -708.8762061202208
+        ],
+        "ranged": false,
+        "contact": true,
+        "time": 6.483333333333316,
+        "batPosition": [
+          1162.2745420122196,
+          340.6282862552225,
+          -708.8762061202208
+        ],
+        "player": [
+          1144,
+          312.05,
+          -700
+        ]
+      },
+      {
+        "type": "enemyAttack",
+        "id": "MovingEnemy16",
+        "position": [
+          1162.2751897743528,
+          341.693561885425,
+          -708.1955596590907
+        ],
+        "ranged": false,
+        "contact": true,
+        "time": 7.483333333333312,
+        "batPosition": [
+          1162.2751897743528,
+          341.693561885425,
+          -708.1955596590907
+        ],
+        "player": [
+          1144,
+          312.05,
+          -700
+        ]
+      },
+      {
+        "type": "enemyAttack",
+        "id": "MovingEnemy16",
+        "position": [
+          1162.2751897743528,
+          341.693561885425,
+          -708.1955596590907
+        ],
+        "ranged": false,
+        "contact": true,
+        "time": 8.483333333333334,
+        "batPosition": [
+          1162.2751897743528,
+          341.693561885425,
+          -708.1955596590907
+        ],
+        "player": [
+          1144,
+          312.05,
+          -700
+        ]
+      },
+      {
+        "type": "enemyAttack",
+        "id": "MovingEnemy16",
+        "position": [
+          1162.275587490419,
+          342.61439777243686,
+          -707.826880898216
+        ],
+        "ranged": false,
+        "contact": true,
+        "time": 9.483333333333384,
+        "batPosition": [
+          1162.275587490419,
+          342.61439777243686,
+          -707.826880898216
+        ],
+        "player": [
+          1144,
+          312.05,
+          -700
+        ]
+      }
+    ]
+  }
+}
+PASS authored bat edge contact, body separation, real BSP collision, and trace budget.

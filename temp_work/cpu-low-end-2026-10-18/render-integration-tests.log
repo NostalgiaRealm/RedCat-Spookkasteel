@@ -1,0 +1,20 @@
+✔ original heart ambient interpolates red to white and wraps over two seconds (1.620668ms)
+✔ stained glass uses original fullbright ambient and ordinary actors retain world lighting (0.931694ms)
+✔ actors choose their own closest two in-range lights, never the camera selection (0.394578ms)
+✔ material clones used for ghosts and death fade retain isolated lighting state when repatched (0.674165ms)
+✔ default Sun and animated ambient use native fallback settings independently of actual Sun intensity (0.231289ms)
+✔ native projectile light colours and radius are independent of sprite size and disappear with owner (2.301353ms)
+✔ authored dynamic shadow flags reach actor floor lighting without changing actor direct-light eligibility (5.150493ms)
+✔ buried-floor recovery opts in only confirmed decorative assets and standing knights (17.795421ms)
+✔ ten buried standing knights recover while twelve original samples and animated-pose caches remain intact (91.094561ms)
+✔ production actor lighting recovers the 27 buried decorations and preserves every valid sample across all five levels (161.174794ms)
+✔ production recovery keeps its setup bounds during geometry animation but invalidates on transformed placement (34.093533ms)
+✔ hidden or nonresident buried props skip lighting work and recover when rendered again (26.143841ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 425.176185

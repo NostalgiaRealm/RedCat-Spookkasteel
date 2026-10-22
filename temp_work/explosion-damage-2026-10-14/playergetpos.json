@@ -1,0 +1,56 @@
+{
+  "evidence_id": "ev_4dc015164975699e7edadd53b660bdf2db442cd804cff5d7127c064c977afe21",
+  "subject": {
+    "name": "RcHcGame.dat",
+    "digest": {
+      "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+    },
+    "format": "pe",
+    "architecture": "x86",
+    "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+  },
+  "provider": {
+    "id": "hopper",
+    "name": "Hopper Disassembler",
+    "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+  },
+  "analysis_profile": {
+    "provider": {
+      "id": "hopper",
+      "name": "Hopper Disassembler",
+      "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+    },
+    "parameters": {
+      "target_kind": "executable",
+      "target_format": "pe",
+      "architecture": "x86",
+      "available_architectures": [
+        "x86"
+      ],
+      "loader": {
+        "source": "derived",
+        "arguments": [
+          "-l",
+          "WinPE",
+          "--intel-32"
+        ]
+      }
+    },
+    "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+  },
+  "predicate_type": "rea.analysis",
+  "operation": "procedure_pseudo_code",
+  "parameters": {
+    "procedure": "0x4d6720"
+  },
+  "raw_result": null,
+  "normalized_result": "    decomp_var_48 = esi;\n    esi = ecx;\n    edx = *esi;\n    esi[0x8b] = 0x0;\n    esi[0x8c] = 0x447a0000;\n    eax = (edx[0x12])(&var_38, decomp_var_48);\n    var_40 = *eax;\n    esp = esp - 0x50;\n    decomp_var_48 = &var_28;\n    var_3C = eax[0x1];\n    edx = &var_40;\n    asm { fld        dword [esp+0x48+var_3C] };\n    eax = eax[0x2];\n    esp = esp - 0x4;\n    decomp_var_4c = 0x1;\n    asm { fsub       dword [dword_value_1078530011+4] };\n    var_38 = eax;\n    eax = *esi;\n    decomp_var_50 = edx;\n    esp = esp - 0x8;\n    decomp_var_54 = &var_34;\n    asm { fstp       dword [esp+0x54+var_3C] };\n    eax = (eax[0x12])(decomp_var_54, decomp_var_50, decomp_var_4c, decomp_var_48);\n    esp = esp - 0x4;\n    eax = sub_554ab0(eax, decomp_var_44, var_40, var_3C);\n    if (eax != 0x0) {\n            esp = esp - 0x4;\n            eax = (*(*esi + 0x48))(&var_28);\n            asm { fld        dword [eax+4] };\n            asm { fsub       dword [esp+0x38+var_C] };\n            eax = var_1C;\n            bool_1 = eax == 0x0;\n            asm { fstp       dword [esi+0x230] };\n            if (!bool_1) {\n                    eax = sub_4d0570(eax);\n                    esp = (esp - 0x4) + 0x4;\n                    esi[0x8b] = eax;\n            }\n    }\n    return eax;\n",
+  "confidence": "observed",
+  "authority": "shipped-artifact",
+  "environment": null,
+  "limitations": [
+    "Results depend on Hopper's completed static analysis."
+  ],
+  "locations": [],
+  "evidence_links": []
+}

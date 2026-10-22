@@ -1,0 +1,597 @@
+    decomp_var_c = *0x0;
+    *0x0 = &decomp_var_c;
+    decomp_var_4c = ebx;
+    decomp_var_50 = ebp;
+    decomp_var_58 = edi;
+    ebp = ecx;
+    var_40 = ebp;
+    var_48 = 0x0;
+    sub_501cb0(arg_0);
+    eax = sub_479510(&var_3C);
+    ebx = &arg_370;
+    arg_108 = *eax;
+    esp = esp - 0x68;
+    *(&arg_108 + 0x4) = eax[0x1];
+    eax = eax[0x2];
+    *ebx = 0x0;
+    *(&arg_108 + 0x8) = eax;
+    sub_47d950(arg_0, ebp);
+    edi = &arg_544;
+    esi = 0x32;
+    do {
+            sub_47d9b0();
+            edi = edi + 0x144;
+            esi = esi - 0x1;
+    } while (esi != 0x0);
+    edi = &arg_448c;
+    esi = 0x5;
+    do {
+            sub_47d9b0();
+            edi = edi + 0x144;
+            esi = esi - 0x1;
+    } while (esi != 0x0);
+    sub_4041b0(0xffffffff, decomp_var_58);
+    sub_4041b0(0xffffffff, decomp_var_58);
+    sub_4041b0(0xffffffff, decomp_var_58);
+    esp = esp - 0x20;
+    eax = sub_60b1db(&arg_4b54, 0x18, 0x6, sub_46ada0);
+    *ebp = 0x64e294;
+    eax = &arg_118;
+    ecx = 0x4;
+    do {
+            *(eax - 0x4) = 0x41a00000;
+            *eax = 0x437f0000;
+            eax[0x1] = 0x41a00000;
+            eax = eax + 0xc;
+            ecx = ecx - 0x1;
+    } while (ecx != 0x0);
+    sub_5b3070();
+    esi = *dword_6b915c;
+    if (*dword_6b915c == 0x0) {
+            esi = sub_4bc480();
+    }
+    eax = esi[0x13a];
+    if (eax == 0x80000000) {
+            eax = esi[0x127];
+            if (eax == 0x0) {
+                    eax = 0x64a3b4;
+            }
+            eax = sub_60af10(eax);
+            esp = (esp - 0x4) + 0x4;
+            esi[0x13a] = eax;
+    }
+    if (eax == 0x0) {
+            esi = arg_0;
+            edi = &arg_544;
+            arg_4 = 0x32;
+            do {
+                    esp = esp - 0x8;
+                    sub_47db50(esi, ebp);
+                    edi = edi + 0x144;
+                    eax = arg_4 - 0x1;
+                    arg_4 = eax;
+            } while (eax != 0x0);
+            edi = &arg_448c;
+            arg_0 = 0x5;
+            do {
+                    esp = esp - 0x8;
+                    sub_47db50(esi, ebp);
+                    edi = edi + 0x144;
+                    eax = arg_0 - 0x1;
+                    arg_0 = eax;
+            } while (eax != 0x0);
+            var_3C = 0x437f0000;
+            var_38 = 0x437f0000;
+            var_34 = 0x41c80000;
+            var_30 = 0x437f0000;
+            if (*ebx != 0x0) {
+                    var_2C = arg_0;
+                    sub_4040a0(0x0);
+                    ecx = ecx | 0xffffffff;
+                    esp = esp - 0x8;
+                    decomp_var_5c = 0x1;
+                    asm { repne scasb al, byte [edi] };
+                    arg_0 = !ecx - 0x1;
+                    esp = esp - 0x4;
+                    eax = sub_401940(!ecx - 0x1, decomp_var_5c, decomp_var_58);
+                    bool_5 = true;
+                    bool_4 = true;
+                    if (eax != 0x0) {
+                            esp = esp - 0x4;
+                            decomp_var_5c = arg_0;
+                            *var_28 = *byte_6b3f70;
+                            asm { rep movsb  byte [edi], byte [esi] };
+                            sub_404190(decomp_var_5c);
+                    }
+                    (sub_5a07f0())();
+                    esp = (esp - 0x10) + 0x10 - 0x4;
+                    sub_4040a0(0x1);
+            }
+            esi = sub_60a0b5(0x1f4);
+            esp = (esp - 0x4) + 0x4;
+            arg_4 = esi;
+            if (esi != 0x0) {
+                    var_2C = arg_0;
+                    sub_4040a0(0x0);
+                    ecx = ecx | 0xffffffff;
+                    esp = esp - 0x8;
+                    decomp_var_5c = 0x1;
+                    asm { repne scasb al, byte [edi] };
+                    arg_0 = !ecx - 0x1;
+                    esp = esp - 0x4;
+                    eax = sub_401940(!ecx - 0x1, decomp_var_5c, decomp_var_58);
+                    bool_8 = true;
+                    bool_7 = true;
+                    if (eax != 0x0) {
+                            esp = esp - 0x4;
+                            decomp_var_5c = arg_0;
+                            *var_28 = *"Fairylight";
+                            asm { rep movsb  byte [edi], byte [esi] };
+                            sub_404190(decomp_var_5c);
+                            esi = arg_4;
+                    }
+                    eax = sub_5033a0(&var_1C, &var_2C);
+                    var_48 = 0x3;
+                    esp = (esp - 0x8) + 0x8 - 0x4;
+                    eax = sub_4e22a0(eax);
+            }
+            else {
+                    eax = 0x0;
+            }
+            *ebx = eax;
+            if ((var_40 & 0x2) != 0x0) {
+                    esp = esp - 0x4;
+                    var_40 = var_40 & 0xfffffffd;
+                    sub_4040a0(0x1);
+            }
+            if ((var_40 & 0x1) != 0x0) {
+                    esp = esp - 0x4;
+                    var_40 = var_40 & 0xfffffffe;
+                    sub_4040a0(0x1);
+            }
+            sub_4e3140(0xffffffff);
+            sub_4e3160(0x0);
+            sub_4e2d60(0x0);
+            sub_4e3090(&var_34);
+            sub_4e30d0(0x0);
+            sub_4e3120(0x0);
+            sub_4e3100(0x0);
+            sub_502350(0x0);
+            esp = esp - 0x28;
+            ecx = ebp;
+            sub_509a90(*ebx, ebx, decomp_var_50, decomp_var_4c, var_48, decomp_var_44, var_40, var_3C, var_38);
+            ebx = &arg_374;
+            arg_8 = 0x5;
+            do {
+                    esi = sub_60a0b5(0x64);
+                    esp = (esp - 0x4) + 0x4;
+                    var_3C = esi;
+                    if (esi != 0x0) {
+                            var_24 = arg_8;
+                            sub_4040a0(0x0);
+                            ecx = ecx | 0xffffffff;
+                            esp = esp - 0x8;
+                            decomp_var_54 = 0x1;
+                            asm { repne scasb al, byte [edi] };
+                            arg_c = !ecx - 0x1;
+                            esp = esp - 0x4;
+                            eax = sub_401940(!ecx - 0x1, decomp_var_54, decomp_var_50);
+                            bool_102 = true;
+                            bool_101 = true;
+                            if (eax != 0x0) {
+                                    esp = esp - 0x4;
+                                    decomp_var_54 = arg_c;
+                                    *var_20 = *"FairyTrail";
+                                    asm { rep movsb  byte [edi], byte [esi] };
+                                    sub_404190(decomp_var_54);
+                                    esi = var_3C;
+                            }
+                            var_40 = var_40 | 0x4;
+                            ecx = esi;
+                            esp = esp - 0x4;
+                            eax = sub_586b40(&var_24);
+                    }
+                    else {
+                            eax = 0x0;
+                    }
+                    *ebx = eax;
+                    arg_8 = 0x5;
+                    if ((var_38 & 0x4) != 0x0) {
+                            esp = esp - 0x4;
+                            var_38 = var_38 & 0xfffffffb;
+                            ecx = &var_1C;
+                            sub_4040a0(0x1);
+                    }
+                    if (*ebx != 0x0) {
+                            decomp_var_50 = 0x6b87d8;
+                            esp = esp - 0xc;
+                            sub_454200();
+                            sub_47d800();
+                            sub_50d730(decomp_var_54, decomp_var_50, decomp_var_4c, var_48, decomp_var_44, var_40, var_3C, var_38);
+                            sub_587100(decomp_var_4c);
+                            eax = *ebx;
+                            eax[0x10] = var_2C;
+                            *(eax + 0x44) = var_28;
+                            *(eax + 0x48) = var_24;
+                            *(eax + 0x4c) = var_20;
+                            *(*ebx + 0x60) = 0x42c80000;
+                            *(*ebx + 0x50) = 0x3fcccccd;
+                            *(*ebx + 0x3c) = 0x3f75c28f;
+                            ecx = *ebx;
+                            ecx[0x16] = 0x320;
+                            *(int8_t *)(*ebx + 0x39) = 0x1;
+                    }
+                    ebx = ebx + 0x4;
+                    eax = arg_10 - 0x1;
+                    arg_10 = eax;
+            } while (eax != 0x0);
+    }
+    else {
+            *ebx = 0x0;
+    }
+    edi = 0x6;
+    do {
+            ecx = arg_4b54;
+            if (ecx != 0x0) {
+                    eax = ecx[0x5];
+                    ecx[0x5] = eax - 0x1;
+                    if (eax == 0x1) {
+                            esp = esp - 0x4;
+                            sub_5abfc0(0x0);
+                    }
+                    arg_4b54 = 0x0;
+            }
+            ecx = arg_4b58;
+            if (ecx != 0x0) {
+                    eax = ecx[0x5];
+                    ecx[0x5] = eax - 0x1;
+                    if (eax == 0x1) {
+                            esp = esp - 0x4;
+                            sub_5abfc0(0x0);
+                    }
+                    arg_4b58 = 0x0;
+            }
+            edi = edi - 0x1;
+    } while (edi != 0x0);
+    sub_40cc00(byte_6b87c8, 0x0, 0xffffffff);
+    esp = esp - 0x18;
+    sub_40cc00(byte_6b87b8, 0x0, 0xffffffff);
+    ebx = *dword_6b87b0;
+    edi = &arg_4b8c;
+    if (0xffffffff < *dword_6b87b0) {
+            ebx = 0xffffffff;
+    }
+    if (edi == byte_6b87a8) {
+            sub_40c9b0(ebx, 0xffffffff);
+            esp = esp - 0x10;
+            sub_40c9b0(0x0, 0x0);
+    }
+    else {
+            if (ebx > 0x0) {
+                    if (ebx == *dword_6b87b0) {
+                            eax = *dword_6b87ac;
+                            if (*dword_6b87ac == 0x0) {
+                                    eax = 0x64a3b4;
+                            }
+                            if (*(int8_t *)(eax - 0x1) < 0xfe) {
+                                    esp = esp - 0x4;
+                                    sub_4040a0(0x1);
+                                    eax = *dword_6b87ac;
+                                    if (*dword_6b87ac == 0x0) {
+                                            eax = 0x64a3b4;
+                                    }
+                                    edi[0x1] = eax;
+                                    edi[0x2] = *dword_6b87b0;
+                                    edi[0x3] = *dword_6b87b4;
+                                    *(int8_t *)(eax - 0x1) = *(int8_t *)(eax - 0x1) + 0x1;
+                            }
+                            else {
+                                    esp = esp - 0x8;
+                                    if (sub_401940(ebx, 0x1, var_40) != 0x0) {
+                                            esi = *dword_6b87ac;
+                                            bool_47 = true;
+                                            bool_46 = true;
+                                            if (esi == 0x0) {
+                                                    esi = 0x64a3b4;
+                                            }
+                                            edi = edi[0x1];
+                                            esp = esp - 0x4;
+                                            decomp_var_44 = ebx;
+                                            *edi = *esi;
+                                            asm { rep movsb  byte [edi], byte [esi] };
+                                            sub_404190(decomp_var_44);
+                                    }
+                            }
+                    }
+                    else {
+                            esp = esp - 0x8;
+                            if (sub_401940(ebx, 0x1, var_40) != 0x0) {
+                                    esi = *dword_6b87ac;
+                                    bool_69 = true;
+                                    bool_68 = true;
+                                    if (esi == 0x0) {
+                                            esi = 0x64a3b4;
+                                    }
+                                    edi = edi[0x1];
+                                    esp = esp - 0x4;
+                                    decomp_var_44 = ebx;
+                                    *edi = *esi;
+                                    asm { rep movsb  byte [edi], byte [esi] };
+                                    sub_404190(decomp_var_44);
+                            }
+                    }
+            }
+            else {
+                    esp = esp - 0x8;
+                    if (sub_401940(ebx, 0x1, var_40) != 0x0) {
+                            esi = *dword_6b87ac;
+                            bool_73 = true;
+                            bool_72 = true;
+                            if (esi == 0x0) {
+                                    esi = 0x64a3b4;
+                            }
+                            edi = edi[0x1];
+                            esp = esp - 0x4;
+                            decomp_var_44 = ebx;
+                            *edi = *esi;
+                            asm { rep movsb  byte [edi], byte [esi] };
+                            sub_404190(decomp_var_44);
+                    }
+            }
+    }
+    ebx = *dword_6b87a0;
+    edi = &arg_4ba4;
+    if (0xffffffff < *dword_6b87a0) {
+            ebx = 0xffffffff;
+    }
+    if (edi == byte_6b8798) {
+            sub_40c9b0(ebx, 0xffffffff);
+            esp = esp - 0x10;
+            sub_40c9b0(0x0, 0x0);
+    }
+    else {
+            if (ebx > 0x0) {
+                    if (ebx == *dword_6b87a0) {
+                            eax = *dword_6b879c;
+                            if (*dword_6b879c == 0x0) {
+                                    eax = 0x64a3b4;
+                            }
+                            if (*(int8_t *)(eax - 0x1) < 0xfe) {
+                                    esp = esp - 0x4;
+                                    sub_4040a0(0x1);
+                                    eax = *dword_6b879c;
+                                    if (*dword_6b879c == 0x0) {
+                                            eax = 0x64a3b4;
+                                    }
+                                    edi[0x1] = eax;
+                                    edi[0x2] = *dword_6b87a0;
+                                    edi[0x3] = *dword_6b87a4;
+                                    *(int8_t *)(eax - 0x1) = *(int8_t *)(eax - 0x1) + 0x1;
+                            }
+                            else {
+                                    esp = esp - 0x8;
+                                    if (sub_401940(ebx, 0x1, var_38) != 0x0) {
+                                            esi = *dword_6b879c;
+                                            bool_37 = true;
+                                            bool_36 = true;
+                                            if (esi == 0x0) {
+                                                    esi = 0x64a3b4;
+                                            }
+                                            edi = edi[0x1];
+                                            *edi = *esi;
+                                            asm { rep movsb  byte [edi], byte [esi] };
+                                            *(int8_t *)(ebx + arg_4ba8) = 0x0;
+                                    }
+                            }
+                    }
+                    else {
+                            esp = esp - 0x8;
+                            if (sub_401940(ebx, 0x1, var_38) != 0x0) {
+                                    esi = *dword_6b879c;
+                                    bool_77 = true;
+                                    bool_76 = true;
+                                    if (esi == 0x0) {
+                                            esi = 0x64a3b4;
+                                    }
+                                    edi = edi[0x1];
+                                    *edi = *esi;
+                                    asm { rep movsb  byte [edi], byte [esi] };
+                                    *(int8_t *)(ebx + arg_4ba8) = 0x0;
+                            }
+                    }
+            }
+            else {
+                    esp = esp - 0x8;
+                    if (sub_401940(ebx, 0x1, var_38) != 0x0) {
+                            esi = *dword_6b879c;
+                            bool_81 = true;
+                            bool_80 = true;
+                            if (esi == 0x0) {
+                                    esi = 0x64a3b4;
+                            }
+                            edi = edi[0x1];
+                            *edi = *esi;
+                            asm { rep movsb  byte [edi], byte [esi] };
+                            *(int8_t *)(ebx + arg_4ba8) = 0x0;
+                    }
+            }
+    }
+    ebx = *dword_6b8790;
+    edi = &arg_4bbc;
+    if (0xffffffff < *dword_6b8790) {
+            ebx = 0xffffffff;
+    }
+    if (edi == byte_6b8788) {
+            sub_40c9b0(ebx, 0xffffffff);
+            esp = esp - 0x10;
+            sub_40c9b0(0x0, 0x0);
+    }
+    else {
+            if (ebx > 0x0) {
+                    if (ebx == *dword_6b8790) {
+                            eax = *dword_6b878c;
+                            if (*dword_6b878c == 0x0) {
+                                    eax = 0x64a3b4;
+                            }
+                            if (*(int8_t *)(eax - 0x1) < 0xfe) {
+                                    esp = esp - 0x4;
+                                    sub_4040a0(0x1);
+                                    eax = *dword_6b878c;
+                                    if (*dword_6b878c == 0x0) {
+                                            eax = 0x64a3b4;
+                                    }
+                                    edi[0x1] = eax;
+                                    edi[0x2] = *dword_6b8790;
+                                    edi[0x3] = *dword_6b8794;
+                                    *(int8_t *)(eax - 0x1) = *(int8_t *)(eax - 0x1) + 0x1;
+                            }
+                            else {
+                                    esp = esp - 0x8;
+                                    if (sub_401940(ebx, 0x1, var_30) != 0x0) {
+                                            esi = *dword_6b878c;
+                                            bool_27 = true;
+                                            bool_26 = true;
+                                            if (esi == 0x0) {
+                                                    esi = 0x64a3b4;
+                                            }
+                                            edi = edi[0x1];
+                                            *edi = *esi;
+                                            asm { rep movsb  byte [edi], byte [esi] };
+                                            *(int8_t *)(ebx + arg_4bc0) = 0x0;
+                                    }
+                            }
+                    }
+                    else {
+                            esp = esp - 0x8;
+                            if (sub_401940(ebx, 0x1, var_30) != 0x0) {
+                                    esi = *dword_6b878c;
+                                    bool_85 = true;
+                                    bool_84 = true;
+                                    if (esi == 0x0) {
+                                            esi = 0x64a3b4;
+                                    }
+                                    edi = edi[0x1];
+                                    *edi = *esi;
+                                    asm { rep movsb  byte [edi], byte [esi] };
+                                    *(int8_t *)(ebx + arg_4bc0) = 0x0;
+                            }
+                    }
+            }
+            else {
+                    esp = esp - 0x8;
+                    if (sub_401940(ebx, 0x1, var_30) != 0x0) {
+                            esi = *dword_6b878c;
+                            bool_89 = true;
+                            bool_88 = true;
+                            if (esi == 0x0) {
+                                    esi = 0x64a3b4;
+                            }
+                            edi = edi[0x1];
+                            *edi = *esi;
+                            asm { rep movsb  byte [edi], byte [esi] };
+                            *(int8_t *)(ebx + arg_4bc0) = 0x0;
+                    }
+            }
+    }
+    edi = *dword_6b8780;
+    ebx = &arg_4bd4;
+    arg_30 = edi;
+    if (0xffffffff < edi) {
+            arg_30 = 0xffffffff;
+            edi = 0xffffffff;
+    }
+    if (ebx == byte_6b8778) {
+            sub_40c9b0(edi, 0xffffffff);
+            esp = esp - 0x10;
+            sub_40c9b0(0x0, 0x0);
+            eax = ebp;
+            *0x0 = arg_28;
+    }
+    else {
+            if (edi > 0x0) {
+                    if (edi == *dword_6b8780) {
+                            eax = *dword_6b877c;
+                            if (*dword_6b877c == 0x0) {
+                                    eax = 0x64a3b4;
+                            }
+                            if (*(int8_t *)(eax - 0x1) < 0xfe) {
+                                    esp = esp - 0x4;
+                                    sub_4040a0(0x1);
+                                    eax = *dword_6b877c;
+                                    if (*dword_6b877c == 0x0) {
+                                            eax = 0x64a3b4;
+                                    }
+                                    ebx[0x1] = eax;
+                                    ebx[0x2] = *dword_6b8780;
+                                    ebx[0x3] = *dword_6b8784;
+                                    *(int8_t *)(eax - 0x1) = *(int8_t *)(eax - 0x1) + 0x1;
+                                    eax = ebp;
+                                    *0x0 = arg_28;
+                            }
+                            else {
+                                    esp = esp - 0x8;
+                                    if (sub_401940(edi, 0x1, var_28) != 0x0) {
+                                            esi = *dword_6b877c;
+                                            bool_63 = true;
+                                            bool_62 = true;
+                                            if (esi == 0x0) {
+                                                    esi = 0x64a3b4;
+                                            }
+                                            ecx = edi;
+                                            edi = ebx[0x1];
+                                            *edi = *esi;
+                                            eax = arg_30;
+                                            asm { rep movsb  byte [edi], byte [esi] };
+                                            ecx = ebx[0x1];
+                                            ebx[0x2] = eax;
+                                            *(int8_t *)(eax + ecx) = 0x0;
+                                    }
+                                    eax = ebp;
+                                    *0x0 = arg_28;
+                            }
+                    }
+                    else {
+                            esp = esp - 0x8;
+                            if (sub_401940(edi, 0x1, var_28) != 0x0) {
+                                    esi = *dword_6b877c;
+                                    bool_58 = true;
+                                    bool_57 = true;
+                                    if (esi == 0x0) {
+                                            esi = 0x64a3b4;
+                                    }
+                                    ecx = edi;
+                                    edi = ebx[0x1];
+                                    *edi = *esi;
+                                    eax = arg_30;
+                                    asm { rep movsb  byte [edi], byte [esi] };
+                                    ecx = ebx[0x1];
+                                    ebx[0x2] = eax;
+                                    *(int8_t *)(eax + ecx) = 0x0;
+                            }
+                            eax = ebp;
+                            *0x0 = arg_28;
+                    }
+            }
+            else {
+                    esp = esp - 0x8;
+                    if (sub_401940(edi, 0x1, var_28) != 0x0) {
+                            esi = *dword_6b877c;
+                            bool_18 = true;
+                            bool_17 = true;
+                            if (esi == 0x0) {
+                                    esi = 0x64a3b4;
+                            }
+                            ecx = edi;
+                            edi = ebx[0x1];
+                            *edi = *esi;
+                            eax = arg_30;
+                            asm { rep movsb  byte [edi], byte [esi] };
+                            ecx = ebx[0x1];
+                            ebx[0x2] = eax;
+                            *(int8_t *)(eax + ecx) = 0x0;
+                    }
+                    eax = ebp;
+                    *0x0 = arg_28;
+            }
+    }
+    return eax;

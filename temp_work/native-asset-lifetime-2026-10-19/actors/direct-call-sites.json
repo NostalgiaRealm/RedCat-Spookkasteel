@@ -1,0 +1,40 @@
+{
+  "source": "temp_work/player-world-light-2026-10-04/native-full.asm",
+  "source_sha256": "f03efa7cd238d31058de4262df922e378a9ed886099b02a6ebb16fd258e045e0",
+  "caveat": "Direct call instruction text only; indirect calls/jumps are outside this search boundary.",
+  "calls": {
+    "0x49f690": [
+      "  4a00c9:\te8 c2 f5 ff ff       \tcall   0x49f690"
+    ],
+    "0x49ffa0": [
+      "  49fe6a:\te8 31 01 00 00       \tcall   0x49ffa0",
+      "  4a1a8d:\te8 0e e5 ff ff       \tcall   0x49ffa0",
+      "  4f6fa5:\te8 f6 8f fa ff       \tcall   0x49ffa0"
+    ],
+    "0x49f410": [
+      "  49f3f3:\te8 18 00 00 00       \tcall   0x49f410"
+    ],
+    "0x49c280": [
+      "  49b76f:\te8 0c 0b 00 00       \tcall   0x49c280"
+    ],
+    "0x5b3b90": [
+      "  49c46b:\te8 20 77 11 00       \tcall   0x5b3b90"
+    ],
+    "0x5b3e10": [
+      "  49c293:\te8 78 7b 11 00       \tcall   0x5b3e10",
+      "  5b84a4:\te8 67 b9 ff ff       \tcall   0x5b3e10",
+      "  5b9aa3:\te8 68 a3 ff ff       \tcall   0x5b3e10"
+    ],
+    "0x5b52b0": [
+      "  5b9a03:\te8 a8 b8 ff ff       \tcall   0x5b52b0"
+    ],
+    "0x5cd4d0": [
+      "  5b52da:\te8 f1 81 01 00       \tcall   0x5cd4d0"
+    ],
+    "0x5cd7b0": [
+      "  5b3e42:\te8 69 99 01 00       \tcall   0x5cd7b0",
+      "  5b52c6:\te8 e5 84 01 00       \tcall   0x5cd7b0",
+      "  5cd655:\te8 56 01 00 00       \tcall   0x5cd7b0"
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+make: Entering directory '/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/native-menu-restoration-2026-10-20/behavior/helpdeco/gcc'
+gcc -Wall   -c -o ../src/helpdeco.o ../src/helpdeco.c
+gcc -Wall   -c -o ../src/helpdec1.o ../src/helpdec1.c
+gcc -Wall   -c -o ../src/compat.o ../src/compat.c
+gcc -Wall   -c -o ../src/splitmrb.o ../src/splitmrb.c
+../src/helpdec1.c: In function ‘strlcpy’:
+../src/helpdec1.c:46:12: warning: ‘nonnull’ argument ‘dest’ compared to NULL [-Wnonnull-compare]
+   46 |         if (!dest) return 0;
+      |            ^
+../src/helpdec1.c:47:33: warning: ‘nonnull’ argument ‘src’ compared to NULL [-Wnonnull-compare]
+   47 |         for (i = 0; i < len - 1 && src && src[i]; i++) dest[i] = src[i];
+      |                     ~~~~~~~~~~~~^~~~~~
+gcc -Wall   -c -o ../src/zapres.o ../src/zapres.c
+gcc -Wall ../src/splitmrb.o ../src/compat.o -o splitmrb -s
+gcc -Wall ../src/zapres.o ../src/compat.o -o zapres -s
+gcc -Wall ../src/helpdeco.o ../src/helpdec1.o ../src/compat.o -o helpdeco -s
+make: Leaving directory '/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/native-menu-restoration-2026-10-20/behavior/helpdeco/gcc'

@@ -1,0 +1,6557 @@
+{
+  "scope": "Offline production actor setup, exact Sun visibility, floor sampler, and enemy update paths. No dynamic lights, renderer, or camera visibility. Active simulations call updateEnemy directly after script initialization to isolate normal locomotion from cutscene freezes.",
+  "records": [
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy1",
+      "enemyType": "knight",
+      "scenario": "far",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -416,
+        -40,
+        2648
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            5,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -4.168631553649911,
+            87,
+            -990.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.8107055569833079,
+              0.5344734646958482,
+              -0.23894479574244865
+            ]
+          },
+          "zeroLitNormalVertices": 159,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            5,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -4.168631553649911,
+            87,
+            -990.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.8107055569833079,
+              0.5344734646958482,
+              -0.23894479574244865
+            ]
+          },
+          "zeroLitNormalVertices": 159,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            5,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -4.168631553649911,
+            87,
+            -990.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.8107055569833079,
+              0.5344734646958482,
+              -0.23894479574244865
+            ]
+          },
+          "zeroLitNormalVertices": 159,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            5,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -4.168631553649911,
+            87,
+            -990.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.8107055569833079,
+              0.5344734646958482,
+              -0.23894479574244865
+            ]
+          },
+          "zeroLitNormalVertices": 160,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            5,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -4.168631553649911,
+            87,
+            -990.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.8107055569833079,
+              0.5344734646958482,
+              -0.23894479574244865
+            ]
+          },
+          "zeroLitNormalVertices": 161,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            5,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -4.168631553649911,
+            87,
+            -990.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.8107055569833079,
+              0.5344734646958482,
+              -0.23894479574244865
+            ]
+          },
+          "zeroLitNormalVertices": 161,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            5,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -4.168631553649911,
+            87,
+            -990.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.8107055569833079,
+              0.5344734646958482,
+              -0.23894479574244865
+            ]
+          },
+          "zeroLitNormalVertices": 160,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy1",
+      "enemyType": "knight",
+      "scenario": "near",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        5,
+        86,
+        -872
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            5,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -4.168631553649911,
+            87,
+            -990.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.8107055569833079,
+              0.5344734646958482,
+              -0.23894479574244865
+            ]
+          },
+          "zeroLitNormalVertices": 159,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            5,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -4.168631553649911,
+            87,
+            -990.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.8107055569833079,
+              0.5344734646958482,
+              -0.23894479574244865
+            ]
+          },
+          "zeroLitNormalVertices": 159,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            5,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -4.168631553649911,
+            87,
+            -990.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.8107055569833079,
+              0.5344734646958482,
+              -0.23894479574244865
+            ]
+          },
+          "zeroLitNormalVertices": 159,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            5,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -4.168631553649911,
+            87,
+            -990.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.8107055569833079,
+              0.5344734646958482,
+              -0.23894479574244865
+            ]
+          },
+          "zeroLitNormalVertices": 160,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            5,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -4.168631553649911,
+            87,
+            -990.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.8107055569833079,
+              0.5344734646958482,
+              -0.23894479574244865
+            ]
+          },
+          "zeroLitNormalVertices": 161,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            5,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -4.168631553649911,
+            87,
+            -990.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.8107055569833079,
+              0.5344734646958482,
+              -0.23894479574244865
+            ]
+          },
+          "zeroLitNormalVertices": 161,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            5,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -4.168631553649911,
+            87,
+            -990.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.8107055569833079,
+              0.5344734646958482,
+              -0.23894479574244865
+            ]
+          },
+          "zeroLitNormalVertices": 160,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy2",
+      "enemyType": "knight",
+      "scenario": "far",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -416,
+        -40,
+        2648
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            -8,
+            86,
+            -1202
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -17.16863155364991,
+            87,
+            -1200.9494545459747
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.6415391069725134,
+              0.5069031154530595,
+              -0.5757402242061017
+            ]
+          },
+          "zeroLitNormalVertices": 151,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            -8,
+            86,
+            -1202
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -17.16863155364991,
+            87,
+            -1200.9494545459747
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.6415391069725134,
+              0.5069031154530595,
+              -0.5757402242061017
+            ]
+          },
+          "zeroLitNormalVertices": 151,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            -8,
+            86,
+            -1202
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -17.16863155364991,
+            87,
+            -1200.9494545459747
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.6415391069725134,
+              0.5069031154530595,
+              -0.5757402242061017
+            ]
+          },
+          "zeroLitNormalVertices": 151,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            -8,
+            86,
+            -1202
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -17.16863155364991,
+            87,
+            -1200.9494545459747
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.6415391069725134,
+              0.5069031154530595,
+              -0.5757402242061017
+            ]
+          },
+          "zeroLitNormalVertices": 153,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            -8,
+            86,
+            -1202
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -17.16863155364991,
+            87,
+            -1200.9494545459747
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.6415391069725134,
+              0.5069031154530595,
+              -0.5757402242061017
+            ]
+          },
+          "zeroLitNormalVertices": 153,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            -8,
+            86,
+            -1202
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -17.16863155364991,
+            87,
+            -1200.9494545459747
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.6415391069725134,
+              0.5069031154530595,
+              -0.5757402242061017
+            ]
+          },
+          "zeroLitNormalVertices": 153,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            -8,
+            86,
+            -1202
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -17.16863155364991,
+            87,
+            -1200.9494545459747
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.6415391069725134,
+              0.5069031154530595,
+              -0.5757402242061017
+            ]
+          },
+          "zeroLitNormalVertices": 153,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy2",
+      "enemyType": "knight",
+      "scenario": "near",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -8,
+        86,
+        -1082
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            -8,
+            86,
+            -1202
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -17.16863155364991,
+            87,
+            -1200.9494545459747
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.6415391069725134,
+              0.5069031154530595,
+              -0.5757402242061017
+            ]
+          },
+          "zeroLitNormalVertices": 151,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            -8,
+            86,
+            -1202
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -17.16863155364991,
+            87,
+            -1200.9494545459747
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.6415391069725134,
+              0.5069031154530595,
+              -0.5757402242061017
+            ]
+          },
+          "zeroLitNormalVertices": 151,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            -8,
+            86,
+            -1202
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -17.16863155364991,
+            87,
+            -1200.9494545459747
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.6415391069725134,
+              0.5069031154530595,
+              -0.5757402242061017
+            ]
+          },
+          "zeroLitNormalVertices": 151,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            -8,
+            86,
+            -1202
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -17.16863155364991,
+            87,
+            -1200.9494545459747
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.6415391069725134,
+              0.5069031154530595,
+              -0.5757402242061017
+            ]
+          },
+          "zeroLitNormalVertices": 153,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            -8,
+            86,
+            -1202
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -17.16863155364991,
+            87,
+            -1200.9494545459747
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.6415391069725134,
+              0.5069031154530595,
+              -0.5757402242061017
+            ]
+          },
+          "zeroLitNormalVertices": 153,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            -8,
+            86,
+            -1202
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -17.16863155364991,
+            87,
+            -1200.9494545459747
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.6415391069725134,
+              0.5069031154530595,
+              -0.5757402242061017
+            ]
+          },
+          "zeroLitNormalVertices": 153,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            -8,
+            86,
+            -1202
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2823529411764706
+          ],
+          "surface": [
+            -17.16863155364991,
+            87,
+            -1200.9494545459747
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.6415391069725134,
+              0.5069031154530595,
+              -0.5757402242061017
+            ]
+          },
+          "zeroLitNormalVertices": 153,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy3",
+      "enemyType": "knight",
+      "scenario": "far",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -416,
+        -40,
+        2648
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            -4,
+            86,
+            -1323
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2196078431372549
+          ],
+          "surface": [
+            -11.414995116387772,
+            87,
+            -1317.5058851721587
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.7158001813002653,
+              0.5379902184232742,
+              0.4451927956867504
+            ]
+          },
+          "zeroLitNormalVertices": 162,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            -4,
+            86,
+            -1323
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2196078431372549
+          ],
+          "surface": [
+            -11.414995116387772,
+            87,
+            -1317.5058851721587
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.7158001813002653,
+              0.5379902184232742,
+              0.4451927956867504
+            ]
+          },
+          "zeroLitNormalVertices": 162,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            -4,
+            86,
+            -1323
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2196078431372549
+          ],
+          "surface": [
+            -11.414995116387772,
+            87,
+            -1317.5058851721587
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.7158001813002653,
+              0.5379902184232742,
+              0.4451927956867504
+            ]
+          },
+          "zeroLitNormalVertices": 162,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            -4,
+            86,
+            -1323
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2196078431372549
+          ],
+          "surface": [
+            -11.414995116387772,
+            87,
+            -1317.5058851721587
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.7158001813002653,
+              0.5379902184232742,
+              0.4451927956867504
+            ]
+          },
+          "zeroLitNormalVertices": 162,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            -4,
+            86,
+            -1323
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2196078431372549
+          ],
+          "surface": [
+            -11.414995116387772,
+            87,
+            -1317.5058851721587
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.7158001813002653,
+              0.5379902184232742,
+              0.4451927956867504
+            ]
+          },
+          "zeroLitNormalVertices": 164,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            -4,
+            86,
+            -1323
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2196078431372549
+          ],
+          "surface": [
+            -11.414995116387772,
+            87,
+            -1317.5058851721587
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.7158001813002653,
+              0.5379902184232742,
+              0.4451927956867504
+            ]
+          },
+          "zeroLitNormalVertices": 164,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            -4,
+            86,
+            -1323
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2196078431372549
+          ],
+          "surface": [
+            -11.414995116387772,
+            87,
+            -1317.5058851721587
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.7158001813002653,
+              0.5379902184232742,
+              0.4451927956867504
+            ]
+          },
+          "zeroLitNormalVertices": 164,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy3",
+      "enemyType": "knight",
+      "scenario": "near",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -4,
+        86,
+        -1203
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            -4,
+            86,
+            -1323
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2196078431372549
+          ],
+          "surface": [
+            -11.414995116387772,
+            87,
+            -1317.5058851721587
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.7158001813002653,
+              0.5379902184232742,
+              0.4451927956867504
+            ]
+          },
+          "zeroLitNormalVertices": 162,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            -4,
+            86,
+            -1323
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2196078431372549
+          ],
+          "surface": [
+            -11.414995116387772,
+            87,
+            -1317.5058851721587
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.7158001813002653,
+              0.5379902184232742,
+              0.4451927956867504
+            ]
+          },
+          "zeroLitNormalVertices": 162,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            -4,
+            86,
+            -1323
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2196078431372549
+          ],
+          "surface": [
+            -11.414995116387772,
+            87,
+            -1317.5058851721587
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.7158001813002653,
+              0.5379902184232742,
+              0.4451927956867504
+            ]
+          },
+          "zeroLitNormalVertices": 162,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            -4,
+            86,
+            -1323
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2196078431372549
+          ],
+          "surface": [
+            -11.414995116387772,
+            87,
+            -1317.5058851721587
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.7158001813002653,
+              0.5379902184232742,
+              0.4451927956867504
+            ]
+          },
+          "zeroLitNormalVertices": 162,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            -4,
+            86,
+            -1323
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2196078431372549
+          ],
+          "surface": [
+            -11.414995116387772,
+            87,
+            -1317.5058851721587
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.7158001813002653,
+              0.5379902184232742,
+              0.4451927956867504
+            ]
+          },
+          "zeroLitNormalVertices": 164,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            -4,
+            86,
+            -1323
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2196078431372549
+          ],
+          "surface": [
+            -11.414995116387772,
+            87,
+            -1317.5058851721587
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.7158001813002653,
+              0.5379902184232742,
+              0.4451927956867504
+            ]
+          },
+          "zeroLitNormalVertices": 164,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            -4,
+            86,
+            -1323
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.2196078431372549
+          ],
+          "surface": [
+            -11.414995116387772,
+            87,
+            -1317.5058851721587
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              -0.7158001813002653,
+              0.5379902184232742,
+              0.4451927956867504
+            ]
+          },
+          "zeroLitNormalVertices": 164,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy4",
+      "enemyType": "knight",
+      "scenario": "far",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -416,
+        -40,
+        2648
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            -177,
+            86,
+            -1102
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.23137254901960785,
+            0.21176470588235294,
+            0.15294117647058825
+          ],
+          "surface": [
+            -168.4156831618483,
+            87.08604431152344,
+            -1105.3877654493463
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              346.8525153176933,
+              306.0463370450235,
+              170.02574280279086
+            ],
+            "normal": [
+              0.6446108334080918,
+              0.4640501861607402,
+              0.6075642337869371
+            ]
+          },
+          "zeroLitNormalVertices": 151,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            -177,
+            86,
+            -1102
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.23137254901960785,
+            0.21176470588235294,
+            0.15294117647058825
+          ],
+          "surface": [
+            -168.4156831618483,
+            87.08604431152344,
+            -1105.3877654493463
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              346.8525153176933,
+              306.0463370450235,
+              170.02574280279086
+            ],
+            "normal": [
+              0.6446108334080918,
+              0.4640501861607402,
+              0.6075642337869371
+            ]
+          },
+          "zeroLitNormalVertices": 151,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            -177,
+            86,
+            -1102
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.23137254901960785,
+            0.21176470588235294,
+            0.15294117647058825
+          ],
+          "surface": [
+            -168.4156831618483,
+            87.08604431152344,
+            -1105.3877654493463
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              346.8525153176933,
+              306.0463370450235,
+              170.02574280279086
+            ],
+            "normal": [
+              0.6446108334080918,
+              0.4640501861607402,
+              0.6075642337869371
+            ]
+          },
+          "zeroLitNormalVertices": 151,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            -177,
+            86,
+            -1102
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.23137254901960785,
+            0.21176470588235294,
+            0.15294117647058825
+          ],
+          "surface": [
+            -168.4156831618483,
+            87.08604431152344,
+            -1105.3877654493463
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              346.8525153176933,
+              306.0463370450235,
+              170.02574280279086
+            ],
+            "normal": [
+              0.6446108334080918,
+              0.4640501861607402,
+              0.6075642337869371
+            ]
+          },
+          "zeroLitNormalVertices": 152,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            -177,
+            86,
+            -1102
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.23137254901960785,
+            0.21176470588235294,
+            0.15294117647058825
+          ],
+          "surface": [
+            -168.4156831618483,
+            87.08604431152344,
+            -1105.3877654493463
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              346.8525153176933,
+              306.0463370450235,
+              170.02574280279086
+            ],
+            "normal": [
+              0.6446108334080918,
+              0.4640501861607402,
+              0.6075642337869371
+            ]
+          },
+          "zeroLitNormalVertices": 151,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            -177,
+            86,
+            -1102
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.23137254901960785,
+            0.21176470588235294,
+            0.15294117647058825
+          ],
+          "surface": [
+            -168.4156831618483,
+            87.08604431152344,
+            -1105.3877654493463
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              346.8525153176933,
+              306.0463370450235,
+              170.02574280279086
+            ],
+            "normal": [
+              0.6446108334080918,
+              0.4640501861607402,
+              0.6075642337869371
+            ]
+          },
+          "zeroLitNormalVertices": 151,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            -177,
+            86,
+            -1102
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.23137254901960785,
+            0.21176470588235294,
+            0.15294117647058825
+          ],
+          "surface": [
+            -168.4156831618483,
+            87.08604431152344,
+            -1105.3877654493463
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              346.8525153176933,
+              306.0463370450235,
+              170.02574280279086
+            ],
+            "normal": [
+              0.6446108334080918,
+              0.4640501861607402,
+              0.6075642337869371
+            ]
+          },
+          "zeroLitNormalVertices": 151,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy4",
+      "enemyType": "knight",
+      "scenario": "near",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -177,
+        86,
+        -982
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            -177,
+            86,
+            -1102
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.23137254901960785,
+            0.21176470588235294,
+            0.15294117647058825
+          ],
+          "surface": [
+            -168.4156831618483,
+            87.08604431152344,
+            -1105.3877654493463
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              346.8525153176933,
+              306.0463370450235,
+              170.02574280279086
+            ],
+            "normal": [
+              0.6446108334080918,
+              0.4640501861607402,
+              0.6075642337869371
+            ]
+          },
+          "zeroLitNormalVertices": 151,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            -177,
+            86,
+            -1102
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.23137254901960785,
+            0.21176470588235294,
+            0.15294117647058825
+          ],
+          "surface": [
+            -168.4156831618483,
+            87.08604431152344,
+            -1105.3877654493463
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              346.8525153176933,
+              306.0463370450235,
+              170.02574280279086
+            ],
+            "normal": [
+              0.6446108334080918,
+              0.4640501861607402,
+              0.6075642337869371
+            ]
+          },
+          "zeroLitNormalVertices": 151,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            -177,
+            86,
+            -1102
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.23137254901960785,
+            0.21176470588235294,
+            0.15294117647058825
+          ],
+          "surface": [
+            -168.4156831618483,
+            87.08604431152344,
+            -1105.3877654493463
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              346.8525153176933,
+              306.0463370450235,
+              170.02574280279086
+            ],
+            "normal": [
+              0.6446108334080918,
+              0.4640501861607402,
+              0.6075642337869371
+            ]
+          },
+          "zeroLitNormalVertices": 151,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            -177,
+            86,
+            -1102
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.23137254901960785,
+            0.21176470588235294,
+            0.15294117647058825
+          ],
+          "surface": [
+            -168.4156831618483,
+            87.08604431152344,
+            -1105.3877654493463
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              346.8525153176933,
+              306.0463370450235,
+              170.02574280279086
+            ],
+            "normal": [
+              0.6446108334080918,
+              0.4640501861607402,
+              0.6075642337869371
+            ]
+          },
+          "zeroLitNormalVertices": 152,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            -177,
+            86,
+            -1102
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.23137254901960785,
+            0.21176470588235294,
+            0.15294117647058825
+          ],
+          "surface": [
+            -168.4156831618483,
+            87.08604431152344,
+            -1105.3877654493463
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              346.8525153176933,
+              306.0463370450235,
+              170.02574280279086
+            ],
+            "normal": [
+              0.6446108334080918,
+              0.4640501861607402,
+              0.6075642337869371
+            ]
+          },
+          "zeroLitNormalVertices": 151,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            -177,
+            86,
+            -1102
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.23137254901960785,
+            0.21176470588235294,
+            0.15294117647058825
+          ],
+          "surface": [
+            -168.4156831618483,
+            87.08604431152344,
+            -1105.3877654493463
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              346.8525153176933,
+              306.0463370450235,
+              170.02574280279086
+            ],
+            "normal": [
+              0.6446108334080918,
+              0.4640501861607402,
+              0.6075642337869371
+            ]
+          },
+          "zeroLitNormalVertices": 151,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            -177,
+            86,
+            -1102
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.23137254901960785,
+            0.21176470588235294,
+            0.15294117647058825
+          ],
+          "surface": [
+            -168.4156831618483,
+            87.08604431152344,
+            -1105.3877654493463
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              346.8525153176933,
+              306.0463370450235,
+              170.02574280279086
+            ],
+            "normal": [
+              0.6446108334080918,
+              0.4640501861607402,
+              0.6075642337869371
+            ]
+          },
+          "zeroLitNormalVertices": 151,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy5",
+      "enemyType": "knight",
+      "scenario": "far",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -416,
+        -40,
+        2648
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            -165,
+            86,
+            -1327
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -155.8313684463501,
+            87.08604431152344,
+            -1328.0505454540253
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.6911677994180376,
+              0.5392036623265108,
+              0.4811927717467351
+            ]
+          },
+          "zeroLitNormalVertices": 154,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            -165,
+            86,
+            -1327
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -155.8313684463501,
+            87.08604431152344,
+            -1328.0505454540253
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.6911677994180376,
+              0.5392036623265108,
+              0.4811927717467351
+            ]
+          },
+          "zeroLitNormalVertices": 154,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            -165,
+            86,
+            -1327
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -155.8313684463501,
+            87.08604431152344,
+            -1328.0505454540253
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.6911677994180376,
+              0.5392036623265108,
+              0.4811927717467351
+            ]
+          },
+          "zeroLitNormalVertices": 155,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            -165,
+            86,
+            -1327
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -155.8313684463501,
+            87.08604431152344,
+            -1328.0505454540253
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.6911677994180376,
+              0.5392036623265108,
+              0.4811927717467351
+            ]
+          },
+          "zeroLitNormalVertices": 153,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            -165,
+            86,
+            -1327
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -155.8313684463501,
+            87.08604431152344,
+            -1328.0505454540253
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.6911677994180376,
+              0.5392036623265108,
+              0.4811927717467351
+            ]
+          },
+          "zeroLitNormalVertices": 155,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            -165,
+            86,
+            -1327
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -155.8313684463501,
+            87.08604431152344,
+            -1328.0505454540253
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.6911677994180376,
+              0.5392036623265108,
+              0.4811927717467351
+            ]
+          },
+          "zeroLitNormalVertices": 153,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            -165,
+            86,
+            -1327
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -155.8313684463501,
+            87.08604431152344,
+            -1328.0505454540253
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.6911677994180376,
+              0.5392036623265108,
+              0.4811927717467351
+            ]
+          },
+          "zeroLitNormalVertices": 153,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy5",
+      "enemyType": "knight",
+      "scenario": "near",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -165,
+        86,
+        -1207
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            -165,
+            86,
+            -1327
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -155.8313684463501,
+            87.08604431152344,
+            -1328.0505454540253
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.6911677994180376,
+              0.5392036623265108,
+              0.4811927717467351
+            ]
+          },
+          "zeroLitNormalVertices": 154,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            -165,
+            86,
+            -1327
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -155.8313684463501,
+            87.08604431152344,
+            -1328.0505454540253
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.6911677994180376,
+              0.5392036623265108,
+              0.4811927717467351
+            ]
+          },
+          "zeroLitNormalVertices": 154,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            -165,
+            86,
+            -1327
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -155.8313684463501,
+            87.08604431152344,
+            -1328.0505454540253
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.6911677994180376,
+              0.5392036623265108,
+              0.4811927717467351
+            ]
+          },
+          "zeroLitNormalVertices": 155,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            -165,
+            86,
+            -1327
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -155.8313684463501,
+            87.08604431152344,
+            -1328.0505454540253
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.6911677994180376,
+              0.5392036623265108,
+              0.4811927717467351
+            ]
+          },
+          "zeroLitNormalVertices": 153,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            -165,
+            86,
+            -1327
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -155.8313684463501,
+            87.08604431152344,
+            -1328.0505454540253
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.6911677994180376,
+              0.5392036623265108,
+              0.4811927717467351
+            ]
+          },
+          "zeroLitNormalVertices": 155,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            -165,
+            86,
+            -1327
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -155.8313684463501,
+            87.08604431152344,
+            -1328.0505454540253
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.6911677994180376,
+              0.5392036623265108,
+              0.4811927717467351
+            ]
+          },
+          "zeroLitNormalVertices": 153,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            -165,
+            86,
+            -1327
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -155.8313684463501,
+            87.08604431152344,
+            -1328.0505454540253
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.6911677994180376,
+              0.5392036623265108,
+              0.4811927717467351
+            ]
+          },
+          "zeroLitNormalVertices": 153,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy13",
+      "enemyType": "knight",
+      "scenario": "far",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -416,
+        -40,
+        2648
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            -2,
+            86,
+            -1108
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -11.168631553649911,
+            87,
+            -1106.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              323.61651789247117,
+              285.54398637570984,
+              158.63554798650546
+            ],
+            "normal": [
+              -0.6316307642325207,
+              0.44953882518652744,
+              0.6316307642325207
+            ]
+          },
+          "zeroLitNormalVertices": 138,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            -2,
+            86,
+            -1108
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -11.168631553649911,
+            87,
+            -1106.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              323.61651789247117,
+              285.54398637570984,
+              158.63554798650546
+            ],
+            "normal": [
+              -0.6316307642325207,
+              0.44953882518652744,
+              0.6316307642325207
+            ]
+          },
+          "zeroLitNormalVertices": 138,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            -2,
+            86,
+            -1108
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -11.168631553649911,
+            87,
+            -1106.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              323.61651789247117,
+              285.54398637570984,
+              158.63554798650546
+            ],
+            "normal": [
+              -0.6316307642325207,
+              0.44953882518652744,
+              0.6316307642325207
+            ]
+          },
+          "zeroLitNormalVertices": 138,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            -2,
+            86,
+            -1108
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -11.168631553649911,
+            87,
+            -1106.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              323.61651789247117,
+              285.54398637570984,
+              158.63554798650546
+            ],
+            "normal": [
+              -0.6316307642325207,
+              0.44953882518652744,
+              0.6316307642325207
+            ]
+          },
+          "zeroLitNormalVertices": 138,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            -2,
+            86,
+            -1108
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -11.168631553649911,
+            87,
+            -1106.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              323.61651789247117,
+              285.54398637570984,
+              158.63554798650546
+            ],
+            "normal": [
+              -0.6316307642325207,
+              0.44953882518652744,
+              0.6316307642325207
+            ]
+          },
+          "zeroLitNormalVertices": 139,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            -2,
+            86,
+            -1108
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -11.168631553649911,
+            87,
+            -1106.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              323.61651789247117,
+              285.54398637570984,
+              158.63554798650546
+            ],
+            "normal": [
+              -0.6316307642325207,
+              0.44953882518652744,
+              0.6316307642325207
+            ]
+          },
+          "zeroLitNormalVertices": 139,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            -2,
+            86,
+            -1108
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -11.168631553649911,
+            87,
+            -1106.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              323.61651789247117,
+              285.54398637570984,
+              158.63554798650546
+            ],
+            "normal": [
+              -0.6316307642325207,
+              0.44953882518652744,
+              0.6316307642325207
+            ]
+          },
+          "zeroLitNormalVertices": 139,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy13",
+      "enemyType": "knight",
+      "scenario": "near",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -2,
+        86,
+        -988
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            -2,
+            86,
+            -1108
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -11.168631553649911,
+            87,
+            -1106.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              323.61651789247117,
+              285.54398637570984,
+              158.63554798650546
+            ],
+            "normal": [
+              -0.6316307642325207,
+              0.44953882518652744,
+              0.6316307642325207
+            ]
+          },
+          "zeroLitNormalVertices": 138,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            -2,
+            86,
+            -1108
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -11.168631553649911,
+            87,
+            -1106.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              323.61651789247117,
+              285.54398637570984,
+              158.63554798650546
+            ],
+            "normal": [
+              -0.6316307642325207,
+              0.44953882518652744,
+              0.6316307642325207
+            ]
+          },
+          "zeroLitNormalVertices": 138,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            -2,
+            86,
+            -1108
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -11.168631553649911,
+            87,
+            -1106.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              323.61651789247117,
+              285.54398637570984,
+              158.63554798650546
+            ],
+            "normal": [
+              -0.6316307642325207,
+              0.44953882518652744,
+              0.6316307642325207
+            ]
+          },
+          "zeroLitNormalVertices": 138,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            -2,
+            86,
+            -1108
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -11.168631553649911,
+            87,
+            -1106.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              323.61651789247117,
+              285.54398637570984,
+              158.63554798650546
+            ],
+            "normal": [
+              -0.6316307642325207,
+              0.44953882518652744,
+              0.6316307642325207
+            ]
+          },
+          "zeroLitNormalVertices": 138,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            -2,
+            86,
+            -1108
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -11.168631553649911,
+            87,
+            -1106.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              323.61651789247117,
+              285.54398637570984,
+              158.63554798650546
+            ],
+            "normal": [
+              -0.6316307642325207,
+              0.44953882518652744,
+              0.6316307642325207
+            ]
+          },
+          "zeroLitNormalVertices": 139,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            -2,
+            86,
+            -1108
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -11.168631553649911,
+            87,
+            -1106.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              323.61651789247117,
+              285.54398637570984,
+              158.63554798650546
+            ],
+            "normal": [
+              -0.6316307642325207,
+              0.44953882518652744,
+              0.6316307642325207
+            ]
+          },
+          "zeroLitNormalVertices": 139,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            -2,
+            86,
+            -1108
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24313725490196078
+          ],
+          "surface": [
+            -11.168631553649911,
+            87,
+            -1106.9494545459747
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              323.61651789247117,
+              285.54398637570984,
+              158.63554798650546
+            ],
+            "normal": [
+              -0.6316307642325207,
+              0.44953882518652744,
+              0.6316307642325207
+            ]
+          },
+          "zeroLitNormalVertices": 139,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy14",
+      "enemyType": "knight",
+      "scenario": "far",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -416,
+        -40,
+        2648
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            0,
+            86,
+            -880
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24705882352941178
+          ],
+          "surface": [
+            -9.168631553649911,
+            87,
+            -878.9494545459747
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              247.03990647359723,
+              217.97638806493873,
+              121.0979933694104
+            ],
+            "normal": [
+              -0.5335762014777508,
+              0.3815109178812498,
+              0.7548151142855987
+            ]
+          },
+          "zeroLitNormalVertices": 144,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            0,
+            86,
+            -880
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24705882352941178
+          ],
+          "surface": [
+            -9.168631553649911,
+            87,
+            -878.9494545459747
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              247.03990647359723,
+              217.97638806493873,
+              121.0979933694104
+            ],
+            "normal": [
+              -0.5335762014777508,
+              0.3815109178812498,
+              0.7548151142855987
+            ]
+          },
+          "zeroLitNormalVertices": 144,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            0,
+            86,
+            -880
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24705882352941178
+          ],
+          "surface": [
+            -9.168631553649911,
+            87,
+            -878.9494545459747
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              247.03990647359723,
+              217.97638806493873,
+              121.0979933694104
+            ],
+            "normal": [
+              -0.5335762014777508,
+              0.3815109178812498,
+              0.7548151142855987
+            ]
+          },
+          "zeroLitNormalVertices": 144,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            0,
+            86,
+            -880
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24705882352941178
+          ],
+          "surface": [
+            -9.168631553649911,
+            87,
+            -878.9494545459747
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              247.03990647359723,
+              217.97638806493873,
+              121.0979933694104
+            ],
+            "normal": [
+              -0.5335762014777508,
+              0.3815109178812498,
+              0.7548151142855987
+            ]
+          },
+          "zeroLitNormalVertices": 142,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            0,
+            86,
+            -880
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24705882352941178
+          ],
+          "surface": [
+            -9.168631553649911,
+            87,
+            -878.9494545459747
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              247.03990647359723,
+              217.97638806493873,
+              121.0979933694104
+            ],
+            "normal": [
+              -0.5335762014777508,
+              0.3815109178812498,
+              0.7548151142855987
+            ]
+          },
+          "zeroLitNormalVertices": 141,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            0,
+            86,
+            -880
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24705882352941178
+          ],
+          "surface": [
+            -9.168631553649911,
+            87,
+            -878.9494545459747
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              247.03990647359723,
+              217.97638806493873,
+              121.0979933694104
+            ],
+            "normal": [
+              -0.5335762014777508,
+              0.3815109178812498,
+              0.7548151142855987
+            ]
+          },
+          "zeroLitNormalVertices": 141,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            0,
+            86,
+            -880
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24705882352941178
+          ],
+          "surface": [
+            -9.168631553649911,
+            87,
+            -878.9494545459747
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              247.03990647359723,
+              217.97638806493873,
+              121.0979933694104
+            ],
+            "normal": [
+              -0.5335762014777508,
+              0.3815109178812498,
+              0.7548151142855987
+            ]
+          },
+          "zeroLitNormalVertices": 140,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy14",
+      "enemyType": "knight",
+      "scenario": "near",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        0,
+        86,
+        -760
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            0,
+            86,
+            -880
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24705882352941178
+          ],
+          "surface": [
+            -9.168631553649911,
+            87,
+            -878.9494545459747
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              247.03990647359723,
+              217.97638806493873,
+              121.0979933694104
+            ],
+            "normal": [
+              -0.5335762014777508,
+              0.3815109178812498,
+              0.7548151142855987
+            ]
+          },
+          "zeroLitNormalVertices": 144,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            0,
+            86,
+            -880
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24705882352941178
+          ],
+          "surface": [
+            -9.168631553649911,
+            87,
+            -878.9494545459747
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              247.03990647359723,
+              217.97638806493873,
+              121.0979933694104
+            ],
+            "normal": [
+              -0.5335762014777508,
+              0.3815109178812498,
+              0.7548151142855987
+            ]
+          },
+          "zeroLitNormalVertices": 144,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            0,
+            86,
+            -880
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24705882352941178
+          ],
+          "surface": [
+            -9.168631553649911,
+            87,
+            -878.9494545459747
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              247.03990647359723,
+              217.97638806493873,
+              121.0979933694104
+            ],
+            "normal": [
+              -0.5335762014777508,
+              0.3815109178812498,
+              0.7548151142855987
+            ]
+          },
+          "zeroLitNormalVertices": 144,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            0,
+            86,
+            -880
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24705882352941178
+          ],
+          "surface": [
+            -9.168631553649911,
+            87,
+            -878.9494545459747
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              247.03990647359723,
+              217.97638806493873,
+              121.0979933694104
+            ],
+            "normal": [
+              -0.5335762014777508,
+              0.3815109178812498,
+              0.7548151142855987
+            ]
+          },
+          "zeroLitNormalVertices": 142,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            0,
+            86,
+            -880
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24705882352941178
+          ],
+          "surface": [
+            -9.168631553649911,
+            87,
+            -878.9494545459747
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              247.03990647359723,
+              217.97638806493873,
+              121.0979933694104
+            ],
+            "normal": [
+              -0.5335762014777508,
+              0.3815109178812498,
+              0.7548151142855987
+            ]
+          },
+          "zeroLitNormalVertices": 141,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            0,
+            86,
+            -880
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24705882352941178
+          ],
+          "surface": [
+            -9.168631553649911,
+            87,
+            -878.9494545459747
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              247.03990647359723,
+              217.97638806493873,
+              121.0979933694104
+            ],
+            "normal": [
+              -0.5335762014777508,
+              0.3815109178812498,
+              0.7548151142855987
+            ]
+          },
+          "zeroLitNormalVertices": 141,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            0,
+            86,
+            -880
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.24705882352941178
+          ],
+          "surface": [
+            -9.168631553649911,
+            87,
+            -878.9494545459747
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              247.03990647359723,
+              217.97638806493873,
+              121.0979933694104
+            ],
+            "normal": [
+              -0.5335762014777508,
+              0.3815109178812498,
+              0.7548151142855987
+            ]
+          },
+          "zeroLitNormalVertices": 140,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy15",
+      "enemyType": "knight",
+      "scenario": "far",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -416,
+        -40,
+        2648
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            -172,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.2980392156862745,
+            0.27058823529411763,
+            0.1843137254901961
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -995.387765449346
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7669719459505245,
+              0.5858038615604537,
+              -0.261892859592862
+            ]
+          },
+          "zeroLitNormalVertices": 163,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            -172,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.2980392156862745,
+            0.27058823529411763,
+            0.1843137254901961
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -995.387765449346
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7669719459505245,
+              0.5858038615604537,
+              -0.261892859592862
+            ]
+          },
+          "zeroLitNormalVertices": 163,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            -172,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.2980392156862745,
+            0.27058823529411763,
+            0.1843137254901961
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -995.387765449346
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7669719459505245,
+              0.5858038615604537,
+              -0.261892859592862
+            ]
+          },
+          "zeroLitNormalVertices": 163,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            -172,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.2980392156862745,
+            0.27058823529411763,
+            0.1843137254901961
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -995.387765449346
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7669719459505245,
+              0.5858038615604537,
+              -0.261892859592862
+            ]
+          },
+          "zeroLitNormalVertices": 164,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            -172,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.2980392156862745,
+            0.27058823529411763,
+            0.1843137254901961
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -995.387765449346
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7669719459505245,
+              0.5858038615604537,
+              -0.261892859592862
+            ]
+          },
+          "zeroLitNormalVertices": 164,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            -172,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.2980392156862745,
+            0.27058823529411763,
+            0.1843137254901961
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -995.387765449346
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7669719459505245,
+              0.5858038615604537,
+              -0.261892859592862
+            ]
+          },
+          "zeroLitNormalVertices": 164,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            -172,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.2980392156862745,
+            0.27058823529411763,
+            0.1843137254901961
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -995.387765449346
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7669719459505245,
+              0.5858038615604537,
+              -0.261892859592862
+            ]
+          },
+          "zeroLitNormalVertices": 164,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy15",
+      "enemyType": "knight",
+      "scenario": "near",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -172,
+        86,
+        -872
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            -172,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.2980392156862745,
+            0.27058823529411763,
+            0.1843137254901961
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -995.387765449346
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7669719459505245,
+              0.5858038615604537,
+              -0.261892859592862
+            ]
+          },
+          "zeroLitNormalVertices": 163,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            -172,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.2980392156862745,
+            0.27058823529411763,
+            0.1843137254901961
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -995.387765449346
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7669719459505245,
+              0.5858038615604537,
+              -0.261892859592862
+            ]
+          },
+          "zeroLitNormalVertices": 163,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            -172,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.2980392156862745,
+            0.27058823529411763,
+            0.1843137254901961
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -995.387765449346
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7669719459505245,
+              0.5858038615604537,
+              -0.261892859592862
+            ]
+          },
+          "zeroLitNormalVertices": 163,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            -172,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.2980392156862745,
+            0.27058823529411763,
+            0.1843137254901961
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -995.387765449346
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7669719459505245,
+              0.5858038615604537,
+              -0.261892859592862
+            ]
+          },
+          "zeroLitNormalVertices": 164,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            -172,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.2980392156862745,
+            0.27058823529411763,
+            0.1843137254901961
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -995.387765449346
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7669719459505245,
+              0.5858038615604537,
+              -0.261892859592862
+            ]
+          },
+          "zeroLitNormalVertices": 164,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            -172,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.2980392156862745,
+            0.27058823529411763,
+            0.1843137254901961
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -995.387765449346
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7669719459505245,
+              0.5858038615604537,
+              -0.261892859592862
+            ]
+          },
+          "zeroLitNormalVertices": 164,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            -172,
+            86,
+            -992
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.2980392156862745,
+            0.27058823529411763,
+            0.1843137254901961
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -995.387765449346
+          ],
+          "sun": {
+            "name": "Sun70",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7669719459505245,
+              0.5858038615604537,
+              -0.261892859592862
+            ]
+          },
+          "zeroLitNormalVertices": 164,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy16",
+      "enemyType": "knight",
+      "scenario": "far",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -416,
+        -40,
+        2648
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            -172,
+            86,
+            -884
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.24313725490196078,
+            0.2235294117647059,
+            0.1607843137254902
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -887.387765449346
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              207.72596025224902,
+              183.28761198727855,
+              101.82645110404364
+            ],
+            "normal": [
+              0.5588278636877315,
+              0.3640490609725796,
+              0.7451038182503087
+            ]
+          },
+          "zeroLitNormalVertices": 154,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            -172,
+            86,
+            -884
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.24313725490196078,
+            0.2235294117647059,
+            0.1607843137254902
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -887.387765449346
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              207.72596025224902,
+              183.28761198727855,
+              101.82645110404364
+            ],
+            "normal": [
+              0.5588278636877315,
+              0.3640490609725796,
+              0.7451038182503087
+            ]
+          },
+          "zeroLitNormalVertices": 154,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            -172,
+            86,
+            -884
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.24313725490196078,
+            0.2235294117647059,
+            0.1607843137254902
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -887.387765449346
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              207.72596025224902,
+              183.28761198727855,
+              101.82645110404364
+            ],
+            "normal": [
+              0.5588278636877315,
+              0.3640490609725796,
+              0.7451038182503087
+            ]
+          },
+          "zeroLitNormalVertices": 154,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            -172,
+            86,
+            -884
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.24313725490196078,
+            0.2235294117647059,
+            0.1607843137254902
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -887.387765449346
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              207.72596025224902,
+              183.28761198727855,
+              101.82645110404364
+            ],
+            "normal": [
+              0.5588278636877315,
+              0.3640490609725796,
+              0.7451038182503087
+            ]
+          },
+          "zeroLitNormalVertices": 154,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            -172,
+            86,
+            -884
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.24313725490196078,
+            0.2235294117647059,
+            0.1607843137254902
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -887.387765449346
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              207.72596025224902,
+              183.28761198727855,
+              101.82645110404364
+            ],
+            "normal": [
+              0.5588278636877315,
+              0.3640490609725796,
+              0.7451038182503087
+            ]
+          },
+          "zeroLitNormalVertices": 154,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            -172,
+            86,
+            -884
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.24313725490196078,
+            0.2235294117647059,
+            0.1607843137254902
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -887.387765449346
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              207.72596025224902,
+              183.28761198727855,
+              101.82645110404364
+            ],
+            "normal": [
+              0.5588278636877315,
+              0.3640490609725796,
+              0.7451038182503087
+            ]
+          },
+          "zeroLitNormalVertices": 154,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            -172,
+            86,
+            -884
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.24313725490196078,
+            0.2235294117647059,
+            0.1607843137254902
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -887.387765449346
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              207.72596025224902,
+              183.28761198727855,
+              101.82645110404364
+            ],
+            "normal": [
+              0.5588278636877315,
+              0.3640490609725796,
+              0.7451038182503087
+            ]
+          },
+          "zeroLitNormalVertices": 154,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy16",
+      "enemyType": "knight",
+      "scenario": "near",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -172,
+        86,
+        -764
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            -172,
+            86,
+            -884
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.24313725490196078,
+            0.2235294117647059,
+            0.1607843137254902
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -887.387765449346
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              207.72596025224902,
+              183.28761198727855,
+              101.82645110404364
+            ],
+            "normal": [
+              0.5588278636877315,
+              0.3640490609725796,
+              0.7451038182503087
+            ]
+          },
+          "zeroLitNormalVertices": 154,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            -172,
+            86,
+            -884
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.24313725490196078,
+            0.2235294117647059,
+            0.1607843137254902
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -887.387765449346
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              207.72596025224902,
+              183.28761198727855,
+              101.82645110404364
+            ],
+            "normal": [
+              0.5588278636877315,
+              0.3640490609725796,
+              0.7451038182503087
+            ]
+          },
+          "zeroLitNormalVertices": 154,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            -172,
+            86,
+            -884
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.24313725490196078,
+            0.2235294117647059,
+            0.1607843137254902
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -887.387765449346
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              207.72596025224902,
+              183.28761198727855,
+              101.82645110404364
+            ],
+            "normal": [
+              0.5588278636877315,
+              0.3640490609725796,
+              0.7451038182503087
+            ]
+          },
+          "zeroLitNormalVertices": 154,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            -172,
+            86,
+            -884
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.24313725490196078,
+            0.2235294117647059,
+            0.1607843137254902
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -887.387765449346
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              207.72596025224902,
+              183.28761198727855,
+              101.82645110404364
+            ],
+            "normal": [
+              0.5588278636877315,
+              0.3640490609725796,
+              0.7451038182503087
+            ]
+          },
+          "zeroLitNormalVertices": 154,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            -172,
+            86,
+            -884
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.24313725490196078,
+            0.2235294117647059,
+            0.1607843137254902
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -887.387765449346
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              207.72596025224902,
+              183.28761198727855,
+              101.82645110404364
+            ],
+            "normal": [
+              0.5588278636877315,
+              0.3640490609725796,
+              0.7451038182503087
+            ]
+          },
+          "zeroLitNormalVertices": 154,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            -172,
+            86,
+            -884
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.24313725490196078,
+            0.2235294117647059,
+            0.1607843137254902
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -887.387765449346
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              207.72596025224902,
+              183.28761198727855,
+              101.82645110404364
+            ],
+            "normal": [
+              0.5588278636877315,
+              0.3640490609725796,
+              0.7451038182503087
+            ]
+          },
+          "zeroLitNormalVertices": 154,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            -172,
+            86,
+            -884
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.24313725490196078,
+            0.2235294117647059,
+            0.1607843137254902
+          ],
+          "surface": [
+            -163.4156831618483,
+            87.08604431152344,
+            -887.387765449346
+          ],
+          "sun": {
+            "name": "Sun69",
+            "color": [
+              207.72596025224902,
+              183.28761198727855,
+              101.82645110404364
+            ],
+            "normal": [
+              0.5588278636877315,
+              0.3640490609725796,
+              0.7451038182503087
+            ]
+          },
+          "zeroLitNormalVertices": 154,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy17",
+      "enemyType": "knight",
+      "scenario": "far",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -416,
+        -40,
+        2648
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            -174,
+            86,
+            -1216
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.22745098039215686
+          ],
+          "surface": [
+            -165.4156831618483,
+            87.08604431152344,
+            -1219.3877654493463
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7263473017059706,
+              0.5086957195179125,
+              -0.4622210101765268
+            ]
+          },
+          "zeroLitNormalVertices": 159,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            -174,
+            86,
+            -1216
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.22745098039215686
+          ],
+          "surface": [
+            -165.4156831618483,
+            87.08604431152344,
+            -1219.3877654493463
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7263473017059706,
+              0.5086957195179125,
+              -0.4622210101765268
+            ]
+          },
+          "zeroLitNormalVertices": 159,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            -174,
+            86,
+            -1216
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.22745098039215686
+          ],
+          "surface": [
+            -165.4156831618483,
+            87.08604431152344,
+            -1219.3877654493463
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7263473017059706,
+              0.5086957195179125,
+              -0.4622210101765268
+            ]
+          },
+          "zeroLitNormalVertices": 159,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            -174,
+            86,
+            -1216
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.22745098039215686
+          ],
+          "surface": [
+            -165.4156831618483,
+            87.08604431152344,
+            -1219.3877654493463
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7263473017059706,
+              0.5086957195179125,
+              -0.4622210101765268
+            ]
+          },
+          "zeroLitNormalVertices": 161,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            -174,
+            86,
+            -1216
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.22745098039215686
+          ],
+          "surface": [
+            -165.4156831618483,
+            87.08604431152344,
+            -1219.3877654493463
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7263473017059706,
+              0.5086957195179125,
+              -0.4622210101765268
+            ]
+          },
+          "zeroLitNormalVertices": 162,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            -174,
+            86,
+            -1216
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.22745098039215686
+          ],
+          "surface": [
+            -165.4156831618483,
+            87.08604431152344,
+            -1219.3877654493463
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7263473017059706,
+              0.5086957195179125,
+              -0.4622210101765268
+            ]
+          },
+          "zeroLitNormalVertices": 162,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            -174,
+            86,
+            -1216
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.22745098039215686
+          ],
+          "surface": [
+            -165.4156831618483,
+            87.08604431152344,
+            -1219.3877654493463
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7263473017059706,
+              0.5086957195179125,
+              -0.4622210101765268
+            ]
+          },
+          "zeroLitNormalVertices": 162,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl01a",
+      "id": "StandingEnemy17",
+      "enemyType": "knight",
+      "scenario": "near",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -174,
+        86,
+        -1096
+      ],
+      "firstClear": null,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            -174,
+            86,
+            -1216
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.22745098039215686
+          ],
+          "surface": [
+            -165.4156831618483,
+            87.08604431152344,
+            -1219.3877654493463
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7263473017059706,
+              0.5086957195179125,
+              -0.4622210101765268
+            ]
+          },
+          "zeroLitNormalVertices": 159,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            -174,
+            86,
+            -1216
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.22745098039215686
+          ],
+          "surface": [
+            -165.4156831618483,
+            87.08604431152344,
+            -1219.3877654493463
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7263473017059706,
+              0.5086957195179125,
+              -0.4622210101765268
+            ]
+          },
+          "zeroLitNormalVertices": 159,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.2,
+          "position": [
+            -174,
+            86,
+            -1216
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.22745098039215686
+          ],
+          "surface": [
+            -165.4156831618483,
+            87.08604431152344,
+            -1219.3877654493463
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7263473017059706,
+              0.5086957195179125,
+              -0.4622210101765268
+            ]
+          },
+          "zeroLitNormalVertices": 159,
+          "normalVertices": 307
+        },
+        {
+          "time": 0.5,
+          "position": [
+            -174,
+            86,
+            -1216
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.22745098039215686
+          ],
+          "surface": [
+            -165.4156831618483,
+            87.08604431152344,
+            -1219.3877654493463
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7263473017059706,
+              0.5086957195179125,
+              -0.4622210101765268
+            ]
+          },
+          "zeroLitNormalVertices": 161,
+          "normalVertices": 307
+        },
+        {
+          "time": 1,
+          "position": [
+            -174,
+            86,
+            -1216
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.22745098039215686
+          ],
+          "surface": [
+            -165.4156831618483,
+            87.08604431152344,
+            -1219.3877654493463
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7263473017059706,
+              0.5086957195179125,
+              -0.4622210101765268
+            ]
+          },
+          "zeroLitNormalVertices": 162,
+          "normalVertices": 307
+        },
+        {
+          "time": 3,
+          "position": [
+            -174,
+            86,
+            -1216
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.22745098039215686
+          ],
+          "surface": [
+            -165.4156831618483,
+            87.08604431152344,
+            -1219.3877654493463
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7263473017059706,
+              0.5086957195179125,
+              -0.4622210101765268
+            ]
+          },
+          "zeroLitNormalVertices": 162,
+          "normalVertices": 307
+        },
+        {
+          "time": 5,
+          "position": [
+            -174,
+            86,
+            -1216
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.22745098039215686
+          ],
+          "surface": [
+            -165.4156831618483,
+            87.08604431152344,
+            -1219.3877654493463
+          ],
+          "sun": {
+            "name": "Sun71",
+            "color": [
+              400,
+              352.94117647058823,
+              196.078431372549
+            ],
+            "normal": [
+              0.7263473017059706,
+              0.5086957195179125,
+              -0.4622210101765268
+            ]
+          },
+          "zeroLitNormalVertices": 162,
+          "normalVertices": 307
+        }
+      ]
+    },
+    {
+      "level": "lvl04a",
+      "id": "MovingEnemy5",
+      "enemyType": "guardian",
+      "scenario": "far",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -227,
+        -3900,
+        -454
+      ],
+      "firstClear": 0.03333333333333333,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            -377,
+            -3809,
+            577
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.16470588235294117
+          ],
+          "surface": [
+            -380.0612931251526,
+            -3808,
+            561.7996468544006
+          ],
+          "sun": {
+            "name": "Sun37",
+            "color": [
+              300,
+              210.58823529411765,
+              0
+            ],
+            "normal": [
+              -0.04708235419310296,
+              0.1421173819304258,
+              0.988729438055162
+            ]
+          },
+          "zeroLitNormalVertices": 182,
+          "normalVertices": 330
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            -377,
+            -3809,
+            577
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.16470588235294117
+          ],
+          "surface": [
+            -377.64574440397337,
+            -3808,
+            561.5078966723761
+          ],
+          "sun": {
+            "name": "Sun37",
+            "color": [
+              300,
+              210.58823529411765,
+              0
+            ],
+            "normal": [
+              -0.04708235419310296,
+              0.1421173819304258,
+              0.988729438055162
+            ]
+          },
+          "zeroLitNormalVertices": 181,
+          "normalVertices": 330
+        },
+        {
+          "time": 0.2,
+          "position": [
+            -373.3788655087751,
+            -3807.95,
+            564.6881427298351
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "walk",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": [
+            0.3,
+            0.3,
+            0.16470588235294117
+          ],
+          "recovered": [
+            0.3,
+            0.3,
+            0.16470588235294117
+          ],
+          "surface": [
+            -373.3788655087751,
+            -3808,
+            564.6881427298351
+          ],
+          "sun": {
+            "name": "Sun37",
+            "color": [
+              300,
+              210.58823529411765,
+              0
+            ],
+            "normal": [
+              -0.13717278728948654,
+              0.058432097275212425,
+              0.9888221864598576
+            ]
+          },
+          "zeroLitNormalVertices": 0,
+          "normalVertices": 330
+        },
+        {
+          "time": 0.5,
+          "position": [
+            -358.3150587929362,
+            -3807.95,
+            566.5383607989301
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "walk",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": [
+            0.3,
+            0.3,
+            0.16470588235294117
+          ],
+          "recovered": [
+            0.3,
+            0.3,
+            0.16470588235294117
+          ],
+          "surface": [
+            -358.3150587929362,
+            -3808,
+            566.5383607989301
+          ],
+          "sun": {
+            "name": "Sun37",
+            "color": [
+              300,
+              210.58823529411765,
+              0
+            ],
+            "normal": [
+              -0.5296693003356236,
+              0.05296668578199838,
+              0.8465488541597831
+            ]
+          },
+          "zeroLitNormalVertices": 0,
+          "normalVertices": 330
+        },
+        {
+          "time": 1,
+          "position": [
+            -326.7344252381736,
+            -3807.95,
+            581.6268857195379
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "walk",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": [
+            0.3,
+            0.3,
+            0.16470588235294117
+          ],
+          "recovered": [
+            0.3,
+            0.3,
+            0.16470588235294117
+          ],
+          "surface": [
+            -326.7344252381736,
+            -3808,
+            581.6268857195379
+          ],
+          "sun": {
+            "name": "Sun37",
+            "color": [
+              300,
+              210.58823529411765,
+              0
+            ],
+            "normal": [
+              -0.9519592841328702,
+              0.03655313768068976,
+              0.3040351780286782
+            ]
+          },
+          "zeroLitNormalVertices": 0,
+          "normalVertices": 330
+        },
+        {
+          "time": 3,
+          "position": [
+            -193.1780520483932,
+            -3827.95,
+            605.6719304390376
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "walk",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": [
+            0.3,
+            0.24705882352941178,
+            0.19607843137254902
+          ],
+          "recovered": [
+            0.3,
+            0.24705882352941178,
+            0.19607843137254902
+          ],
+          "surface": [
+            -193.1780520483932,
+            -3828,
+            605.6719304390376
+          ],
+          "sun": {
+            "name": "Sun37",
+            "color": [
+              300,
+              210.58823529411765,
+              0
+            ],
+            "normal": [
+              -0.99216726222834,
+              0.11793194424247054,
+              -0.04118470941394517
+            ]
+          },
+          "zeroLitNormalVertices": 0,
+          "normalVertices": 330
+        },
+        {
+          "time": 5,
+          "position": [
+            -54.166666666666565,
+            -3851.95,
+            607
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "walk",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": [
+            0.2,
+            0.17647058823529413,
+            0.2
+          ],
+          "recovered": [
+            0.2,
+            0.17647058823529413,
+            0.2
+          ],
+          "surface": [
+            -54.166666666666565,
+            -3864,
+            607
+          ],
+          "sun": {
+            "name": "Sun37",
+            "color": [
+              188.50527442314055,
+              132.32331028134178,
+              0
+            ],
+            "normal": [
+              -0.9897000945034734,
+              0.1404889778428232,
+              -0.027505818375289526
+            ]
+          },
+          "zeroLitNormalVertices": 0,
+          "normalVertices": 330
+        }
+      ]
+    },
+    {
+      "level": "lvl04a",
+      "id": "MovingEnemy5",
+      "enemyType": "guardian",
+      "scenario": "near",
+      "initialScriptFreeze": false,
+      "cutscene": false,
+      "player": [
+        -377,
+        -3809,
+        697
+      ],
+      "firstClear": 0.03333333333333333,
+      "snapshots": [
+        {
+          "time": 0,
+          "position": [
+            -377,
+            -3809,
+            577
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": false,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.16470588235294117
+          ],
+          "surface": [
+            -380.0612931251526,
+            -3808,
+            561.7996468544006
+          ],
+          "sun": {
+            "name": "Sun37",
+            "color": [
+              300,
+              210.58823529411765,
+              0
+            ],
+            "normal": [
+              -0.04708235419310296,
+              0.1421173819304258,
+              0.988729438055162
+            ]
+          },
+          "zeroLitNormalVertices": 182,
+          "normalVertices": 330
+        },
+        {
+          "time": 0.016666666666666666,
+          "position": [
+            -377,
+            -3809,
+            577
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "idle",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": null,
+          "recovered": [
+            0.3,
+            0.3,
+            0.16470588235294117
+          ],
+          "surface": [
+            -377.64574440397337,
+            -3808,
+            561.5078966723761
+          ],
+          "sun": {
+            "name": "Sun37",
+            "color": [
+              300,
+              210.58823529411765,
+              0
+            ],
+            "normal": [
+              -0.04708235419310296,
+              0.1421173819304258,
+              0.988729438055162
+            ]
+          },
+          "zeroLitNormalVertices": 181,
+          "normalVertices": 330
+        },
+        {
+          "time": 0.2,
+          "position": [
+            -373.3788655087751,
+            -3807.95,
+            564.6881427298351
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "walk",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": [
+            0.3,
+            0.3,
+            0.16470588235294117
+          ],
+          "recovered": [
+            0.3,
+            0.3,
+            0.16470588235294117
+          ],
+          "surface": [
+            -373.3788655087751,
+            -3808,
+            564.6881427298351
+          ],
+          "sun": {
+            "name": "Sun37",
+            "color": [
+              300,
+              210.58823529411765,
+              0
+            ],
+            "normal": [
+              -0.13717278728948654,
+              0.058432097275212425,
+              0.9888221864598576
+            ]
+          },
+          "zeroLitNormalVertices": 0,
+          "normalVertices": 330
+        },
+        {
+          "time": 0.5,
+          "position": [
+            -358.3150587929362,
+            -3807.95,
+            566.5383607989301
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "walk",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": [
+            0.3,
+            0.3,
+            0.16470588235294117
+          ],
+          "recovered": [
+            0.3,
+            0.3,
+            0.16470588235294117
+          ],
+          "surface": [
+            -358.3150587929362,
+            -3808,
+            566.5383607989301
+          ],
+          "sun": {
+            "name": "Sun37",
+            "color": [
+              300,
+              210.58823529411765,
+              0
+            ],
+            "normal": [
+              -0.5296693003356236,
+              0.05296668578199838,
+              0.8465488541597831
+            ]
+          },
+          "zeroLitNormalVertices": 0,
+          "normalVertices": 330
+        },
+        {
+          "time": 1,
+          "position": [
+            -326.7344252381736,
+            -3807.95,
+            581.6268857195379
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "walk",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": [
+            0.3,
+            0.3,
+            0.16470588235294117
+          ],
+          "recovered": [
+            0.3,
+            0.3,
+            0.16470588235294117
+          ],
+          "surface": [
+            -326.7344252381736,
+            -3808,
+            581.6268857195379
+          ],
+          "sun": {
+            "name": "Sun37",
+            "color": [
+              300,
+              210.58823529411765,
+              0
+            ],
+            "normal": [
+              -0.9519592841328702,
+              0.03655313768068976,
+              0.3040351780286782
+            ]
+          },
+          "zeroLitNormalVertices": 0,
+          "normalVertices": 330
+        },
+        {
+          "time": 3,
+          "position": [
+            -193.1780520483932,
+            -3827.95,
+            605.6719304390376
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "walk",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": [
+            0.3,
+            0.24705882352941178,
+            0.19607843137254902
+          ],
+          "recovered": [
+            0.3,
+            0.24705882352941178,
+            0.19607843137254902
+          ],
+          "surface": [
+            -193.1780520483932,
+            -3828,
+            605.6719304390376
+          ],
+          "sun": {
+            "name": "Sun37",
+            "color": [
+              300,
+              210.58823529411765,
+              0
+            ],
+            "normal": [
+              -0.99216726222834,
+              0.11793194424247054,
+              -0.04118470941394517
+            ]
+          },
+          "zeroLitNormalVertices": 0,
+          "normalVertices": 330
+        },
+        {
+          "time": 5,
+          "position": [
+            -54.166666666666565,
+            -3851.95,
+            607
+          ],
+          "visible": true,
+          "enabled": true,
+          "animation": "walk",
+          "grounded": true,
+          "velocityY": 0,
+          "recoveries": 0,
+          "baseline": [
+            0.2,
+            0.17647058823529413,
+            0.2
+          ],
+          "recovered": [
+            0.2,
+            0.17647058823529413,
+            0.2
+          ],
+          "surface": [
+            -54.166666666666565,
+            -3864,
+            607
+          ],
+          "sun": {
+            "name": "Sun37",
+            "color": [
+              188.50527442314055,
+              132.32331028134178,
+              0
+            ],
+            "normal": [
+              -0.9897000945034734,
+              0.1404889778428232,
+              -0.027505818375289526
+            ]
+          },
+          "zeroLitNormalVertices": 0,
+          "normalVertices": 330
+        }
+      ]
+    }
+  ]
+}

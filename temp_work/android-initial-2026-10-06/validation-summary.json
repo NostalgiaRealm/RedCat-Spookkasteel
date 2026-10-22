@@ -1,0 +1,50 @@
+{
+  "date": "2026-10-06",
+  "scope": "Initial Android wrapper and existing frontend compatibility",
+  "javascript": {
+    "assetUnitTests": 7,
+    "hostAndIntroUnitTests": 18,
+    "browserIntegrationChecks": 12,
+    "nativeVisibilityChecks": 9,
+    "pageErrors": [],
+    "electronLinux": {
+      "ok": true,
+      "platform": "linux",
+      "mode": "playing",
+      "errors": []
+    }
+  },
+  "native": {
+    "tasks": [
+      ":app:compileDebugKotlin",
+      ":app:testDebugUnitTest",
+      ":app:mergeDebugAssets",
+      ":app:lintDebug"
+    ],
+    "unitTests": 10,
+    "lintErrors": [],
+    "apkOrAabArtifacts": []
+  },
+  "staged": {
+    "currentFrontendMatchesStagedAssets": true,
+    "fileCount": 2993,
+    "totalBytes": 195051239,
+    "contentSha256": "54249e4013d9420a700654dbec83b661c451143dd080b91fab179c2450ceeb67"
+  },
+  "notValidated": [
+    "Actual Android device or emulator execution",
+    "Windows desktop execution",
+    "Signed releases",
+    "Android process-death and app-update save retention",
+    "Android media decoding and seek behavior"
+  ],
+  "evidence": [
+    "asset-tests/",
+    "host-unit-tests.log",
+    "host-scenes-0bj1VG/report.json",
+    "host-scenes-S5q2hV/report.json",
+    "desktop-scenes-kSnNqh/report.json",
+    "native-validation-summary.json",
+    "native-final-validation-02.log"
+  ]
+}

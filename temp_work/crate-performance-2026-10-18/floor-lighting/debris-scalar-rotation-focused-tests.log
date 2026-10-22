@@ -1,0 +1,19 @@
+✔ native fragments originate throughout the source bounds and launch in its steep upward cone (2.777356ms)
+✔ fragment INI owns lifetime, collision dimensions and physics, independent of the destroyed parent (0.554507ms)
+✔ semi-implicit gravity, linear air drag and velocity-scaled spin use recovered units (0.499187ms)
+✔ native normalized reflection applies friction and removes grazing components before restoring speed (0.168699ms)
+✔ spin composes world X/Y/Z rotations instead of accumulating Euler angles (0.446278ms)
+✔ fragments remain opaque while flying and begin a two-second fade only after settling (0.562497ms)
+✔ collision work is bounded and settled fragments stop tracing (0.387728ms)
+✔ embedded corner contacts reflect along the nearest separating plane (0.334528ms)
+✔ a new explosion creates one bounded fragment cohort and pools then disposes its cloned materials (5.097635ms)
+✔ 100,000 nonunit and extreme fragment rotations preserve every output component exactly (240.725358ms)
+✔ zero, nonfinite, typed and frozen inputs retain original values and fresh output arrays (1.684022ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 281.644417

@@ -1,0 +1,20 @@
+✔ off-camera actors release only GPU resources after hysteresis and return immediately on camera turn (4.223484ms)
+✔ shared actor geometry and textures are retained until the last resident owner leaves (0.653146ms)
+✔ distant visible actors and large transformed assemblies stay complete (1.304522ms)
+✔ near-camera preload and distance hysteresis avoid repeated uploads at the boundary (0.383968ms)
+✔ nearby actors behind PVS stay preloaded without drawing while distant visible bounds stay intact (0.522586ms)
+✔ player and nonmanaged scene consumers protect shared textures and geometry (0.586057ms)
+✔ removal and controller disposal restore original layers without changing gameplay visibility (0.518157ms)
+✔ chunk partition preserves every authored face and material in all five levels (149.644758ms)
+✔ distant chunks release independent buffers; shared textures stay until their last resident user leaves (5.672775ms)
+✔ visible distant surfaces and moved brushes stay complete; graphics never change authored visibility (1.195633ms)
+✔ distant decal rays use CPU source faces even when their render chunks are unloaded (1.778419ms)
+✔ leaving a level during an outstanding texture request releases its late result (0.615547ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 228.204564

@@ -1,0 +1,34 @@
+✔ a room transition preserves one outstanding shared image decode for the newly needed room (9.54631ms)
+✔ rapid forward and reverse room changes transfer a shared pending image without repeated garbage churn (7.149735ms)
+✔ steady forward movement prepares the next range-edge image and buffer before either becomes drawable (1.717699ms)
+✔ stationary, paused and teleporting cameras never project extra room-loading distance (1.779849ms)
+✖ an unknown authored-camera teleport uses its conservative fallback without projecting a remote loading strip (1.194263ms)
+✔ actors use the same forward preparation strip while drawing retains its unchanged current-camera limit (16.914334ms)
+✔ forward-range preparation obeys the shared frame job and elapsed-time budgets (5.448806ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 103.317553
+
+✖ failing tests:
+
+test at tests/room-approach-preload.test.mjs:117:1
+✖ an unknown authored-camera teleport uses its conservative fallback without projecting a remote loading strip (1.194263ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/room-approach-preload.test.mjs:126:12)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

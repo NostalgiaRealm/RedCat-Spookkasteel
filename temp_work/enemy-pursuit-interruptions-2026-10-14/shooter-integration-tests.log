@@ -1,0 +1,16 @@
+✔ Gameplay uses native adjacent approach, reserves before strict range completion, and stops mid-edge (5.193352ms)
+✔ all ordinary shooter families release the whole committed salvo after LOS, range and memory are lost (11.617417ms)
+✔ a native no-destination result starts and releases a shot outside attack range (0.494218ms)
+✔ snapshot and fresh Gameplay restore preserve an active release and remaining native salvo (4.230586ms)
+✔ snapshot restores an inter-shot wait without replaying the already released shot (3.210402ms)
+✔ legacy saves adopt the outstanding shot or inter-shot wait without starting a second full salvo (2.931294ms)
+✔ script freeze and cutscene shift native wait deadlines without consuming the committed child (2.400216ms)
+✔ actual selected hit cancels the native child and pending release, while sound-only hit preserves both (1.517162ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 108.456044

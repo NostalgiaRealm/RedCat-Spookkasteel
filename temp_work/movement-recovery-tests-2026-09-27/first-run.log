@@ -1,0 +1,20 @@
+✔ a shallow embedded player hull is nudged to nearby supported body clearance (3.360837ms)
+✔ corner recovery clears both obstacles without crossing either solid (0.636046ms)
+✔ ordinary pushing against a wall, idle actors and flowing movement do not trigger recovery (1.681598ms)
+✔ a visited clear position is used when local candidates are unsafe and is revalidated (2.174546ms)
+✔ a newly closed gate prevents recovering through it to previously clear history (5.282175ms)
+✔ history under a moved obstacle is rejected in its current brush pose (0.566327ms)
+✔ ground recovery rejects cliffs, unsupported hull corners and hazardous candidate predicates (0.205669ms)
+✔ shallow recovery never tunnels through a thin obstacle when starting overlapped (0.185839ms)
+✔ history is capped, paused updates do no work, teleports clear old history, and searches are bounded (1.49449ms)
+✔ PlayerController recovers an overlap and clears stale airborne velocity without blocking normal noclip (1.306161ms)
+✔ ground frogs and flying enemies recover from body overlaps while preserving authored patrol targets (0.669945ms)
+✔ authored takeoff, dormant/descending spiders, turret phases and dead actors are excluded (4.843498ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 70.057119

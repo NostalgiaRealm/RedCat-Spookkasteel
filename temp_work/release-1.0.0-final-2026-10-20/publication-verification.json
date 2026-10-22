@@ -1,0 +1,424 @@
+{
+  "version": "1.0.0",
+  "commit": "467646987511177aa75df83f82ac43f1ab1e89af",
+  "github": "https://github.com/NostalgiaRealm/RedCat-Spookkasteel/releases/tag/v1.0.0",
+  "gitlab": "https://gitlab.com/Nostalgia_Realm/RedCat-Spookkasteel/-/releases/v1.0.0",
+  "builds": [
+    {
+      "platform": "linux-x64",
+      "folder": "linux-unpacked",
+      "command": [
+        "npm",
+        "run",
+        "build:linux"
+      ],
+      "exitCode": 0,
+      "seconds": 3.86
+    },
+    {
+      "platform": "windows-x64",
+      "folder": "win-unpacked",
+      "command": [
+        "npm",
+        "run",
+        "build:windows"
+      ],
+      "exitCode": 0,
+      "seconds": 4.43
+    },
+    {
+      "platform": "linux-arm64",
+      "folder": "linux-arm64-unpacked",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--linux",
+        "dir",
+        "--arm64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.0"
+      ],
+      "exitCode": 0,
+      "seconds": 3.38
+    },
+    {
+      "platform": "windows-arm64",
+      "folder": "win-arm64-unpacked",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--win",
+        "dir",
+        "--arm64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.0"
+      ],
+      "exitCode": 0,
+      "seconds": 4.37
+    },
+    {
+      "platform": "mac-x64",
+      "folder": "mac",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--mac",
+        "dir",
+        "--x64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.0",
+        "-c.mac.notarize=false"
+      ],
+      "exitCode": 0,
+      "seconds": 3.62
+    },
+    {
+      "platform": "mac-arm64",
+      "folder": "mac-arm64",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--mac",
+        "dir",
+        "--arm64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.0",
+        "-c.mac.notarize=false"
+      ],
+      "exitCode": 0,
+      "seconds": 3.54
+    }
+  ],
+  "packages": [
+    {
+      "platform": "linux-x64",
+      "target": "linux-unpacked",
+      "version": "1.0.0",
+      "checkedFiles": 2681,
+      "revision": "d9dab5e182c57958e1008ae8",
+      "executable": "ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 3.2.0, BuildID[sha1]=ad64cfad6193d78f80800238299c6101c9772d7b, stripped",
+      "asarSha256": "cceb57cf8e6e583c7de40e7f9526efe0e5319b7da64095ea24224ba6087f4979"
+    },
+    {
+      "platform": "linux-arm64",
+      "target": "linux-arm64-unpacked",
+      "version": "1.0.0",
+      "checkedFiles": 2681,
+      "revision": "d9dab5e182c57958e1008ae8",
+      "executable": "ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, for GNU/Linux 3.7.0, BuildID[sha1]=d527044b898fe2ea5475fe71ffdbfcc48926d3ce, stripped",
+      "asarSha256": "cceb57cf8e6e583c7de40e7f9526efe0e5319b7da64095ea24224ba6087f4979"
+    },
+    {
+      "platform": "windows-x64",
+      "target": "win-unpacked",
+      "version": "1.0.0",
+      "checkedFiles": 2681,
+      "revision": "d9dab5e182c57958e1008ae8",
+      "executable": "PE32+ executable for MS Windows 10.00 (GUI), x86-64, 15 sections",
+      "asarSha256": "cceb57cf8e6e583c7de40e7f9526efe0e5319b7da64095ea24224ba6087f4979"
+    },
+    {
+      "platform": "windows-arm64",
+      "target": "win-arm64-unpacked",
+      "version": "1.0.0",
+      "checkedFiles": 2681,
+      "revision": "d9dab5e182c57958e1008ae8",
+      "executable": "PE32+ executable for MS Windows 10.00 (GUI), ARM64, 13 sections",
+      "asarSha256": "cceb57cf8e6e583c7de40e7f9526efe0e5319b7da64095ea24224ba6087f4979"
+    },
+    {
+      "platform": "mac-x64",
+      "target": "mac",
+      "version": "1.0.0",
+      "checkedFiles": 2681,
+      "revision": "d9dab5e182c57958e1008ae8",
+      "executable": "Mach-O 64-bit x86_64 executable, flags:<NOUNDEFS|DYLDLINK|TWOLEVEL|PIE>",
+      "asarSha256": "cceb57cf8e6e583c7de40e7f9526efe0e5319b7da64095ea24224ba6087f4979"
+    },
+    {
+      "platform": "mac-arm64",
+      "target": "mac-arm64",
+      "version": "1.0.0",
+      "checkedFiles": 2681,
+      "revision": "d9dab5e182c57958e1008ae8",
+      "executable": "Mach-O 64-bit arm64 executable, flags:<NOUNDEFS|DYLDLINK|TWOLEVEL|PIE>",
+      "asarSha256": "cceb57cf8e6e583c7de40e7f9526efe0e5319b7da64095ea24224ba6087f4979"
+    }
+  ],
+  "archives": [
+    {
+      "name": "RedCat-Spookkasteel-1.0.0-linux-x64.zip",
+      "bytes": 226869155,
+      "sha256": "023c6f126968d47f984aef7e7e6b36c392cf95c6e74ecb46efcdd046064e7f4a",
+      "entries": 75,
+      "symlinks": 0,
+      "zipIntegrity": "passed"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.0-linux-arm64.zip",
+      "bytes": 228038792,
+      "sha256": "a978d62b19ed576097596ab6b10e587f198af72e6e3402bad76ce611635fa739",
+      "entries": 75,
+      "symlinks": 0,
+      "zipIntegrity": "passed"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.0-windows-x64.zip",
+      "bytes": 262247751,
+      "sha256": "967176eb41fdc57ed9c0816f94df141d0d25bc59905d5b78f4bd171119a2d786",
+      "entries": 75,
+      "symlinks": 0,
+      "zipIntegrity": "passed"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.0-windows-arm64.zip",
+      "bytes": 260403777,
+      "sha256": "82570f53e95803dcb90fca51feaf5b01dc38bee7c0d2eef45c6ba1140998ec70",
+      "entries": 75,
+      "symlinks": 0,
+      "zipIntegrity": "passed"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.0-mac-x64.zip",
+      "bytes": 235760244,
+      "sha256": "53af7e6283ab5d6b0900d83cd62a641ac3090486d873667bd11805b3dfa401b5",
+      "entries": 581,
+      "symlinks": 14,
+      "zipIntegrity": "passed"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.0-mac-arm64.zip",
+      "bytes": 231428022,
+      "sha256": "3e0b77e35fc66b5cfc1ff69e71c21af285533f5c063760c4cfbf013c00f2e7e5",
+      "entries": 581,
+      "symlinks": 14,
+      "zipIntegrity": "passed"
+    }
+  ],
+  "publication": {
+    "github": {
+      "host": "github",
+      "tag": "v1.0.0",
+      "commit": "467646987511177aa75df83f82ac43f1ab1e89af",
+      "verifiedAt": "2026-10-20T10:52:07.462103+00:00",
+      "allSevenUploadedDigestsMatch": true,
+      "notesMatch": true,
+      "releaseId": 418288154,
+      "draft": false,
+      "url": "https://github.com/NostalgiaRealm/RedCat-Spookkasteel/releases/tag/v1.0.0",
+      "assets": [
+        {
+          "name": "RedCat-Spookkasteel-1.0.0-linux-arm64.zip",
+          "bytes": 228038792,
+          "sha256": "a978d62b19ed576097596ab6b10e587f198af72e6e3402bad76ce611635fa739",
+          "url": "https://github.com/NostalgiaRealm/RedCat-Spookkasteel/releases/download/v1.0.0/RedCat-Spookkasteel-1.0.0-linux-arm64.zip"
+        },
+        {
+          "name": "RedCat-Spookkasteel-1.0.0-linux-x64.zip",
+          "bytes": 226869155,
+          "sha256": "023c6f126968d47f984aef7e7e6b36c392cf95c6e74ecb46efcdd046064e7f4a",
+          "url": "https://github.com/NostalgiaRealm/RedCat-Spookkasteel/releases/download/v1.0.0/RedCat-Spookkasteel-1.0.0-linux-x64.zip"
+        },
+        {
+          "name": "RedCat-Spookkasteel-1.0.0-mac-arm64.zip",
+          "bytes": 231428022,
+          "sha256": "3e0b77e35fc66b5cfc1ff69e71c21af285533f5c063760c4cfbf013c00f2e7e5",
+          "url": "https://github.com/NostalgiaRealm/RedCat-Spookkasteel/releases/download/v1.0.0/RedCat-Spookkasteel-1.0.0-mac-arm64.zip"
+        },
+        {
+          "name": "RedCat-Spookkasteel-1.0.0-mac-x64.zip",
+          "bytes": 235760244,
+          "sha256": "53af7e6283ab5d6b0900d83cd62a641ac3090486d873667bd11805b3dfa401b5",
+          "url": "https://github.com/NostalgiaRealm/RedCat-Spookkasteel/releases/download/v1.0.0/RedCat-Spookkasteel-1.0.0-mac-x64.zip"
+        },
+        {
+          "name": "RedCat-Spookkasteel-1.0.0-windows-arm64.zip",
+          "bytes": 260403777,
+          "sha256": "82570f53e95803dcb90fca51feaf5b01dc38bee7c0d2eef45c6ba1140998ec70",
+          "url": "https://github.com/NostalgiaRealm/RedCat-Spookkasteel/releases/download/v1.0.0/RedCat-Spookkasteel-1.0.0-windows-arm64.zip"
+        },
+        {
+          "name": "RedCat-Spookkasteel-1.0.0-windows-x64.zip",
+          "bytes": 262247751,
+          "sha256": "967176eb41fdc57ed9c0816f94df141d0d25bc59905d5b78f4bd171119a2d786",
+          "url": "https://github.com/NostalgiaRealm/RedCat-Spookkasteel/releases/download/v1.0.0/RedCat-Spookkasteel-1.0.0-windows-x64.zip"
+        },
+        {
+          "name": "SHA256SUMS.txt",
+          "bytes": 642,
+          "sha256": "d5f3d79b686a2dd3c707cff93cd87aa7e209fbf01f9ff2773c7e5b39b0ee58e9",
+          "url": "https://github.com/NostalgiaRealm/RedCat-Spookkasteel/releases/download/v1.0.0/SHA256SUMS.txt"
+        }
+      ]
+    },
+    "gitlab": {
+      "host": "gitlab",
+      "tag": "v1.0.0",
+      "commit": "467646987511177aa75df83f82ac43f1ab1e89af",
+      "verifiedAt": "2026-10-20T10:51:26.039055+00:00",
+      "allSevenUploadedDigestsMatch": true,
+      "notesMatch": true,
+      "packageId": 73112286,
+      "url": "https://gitlab.com/Nostalgia_Realm/RedCat-Spookkasteel/-/releases/v1.0.0",
+      "assets": [
+        {
+          "name": "SHA256SUMS.txt",
+          "bytes": 642,
+          "sha256": "d5f3d79b686a2dd3c707cff93cd87aa7e209fbf01f9ff2773c7e5b39b0ee58e9",
+          "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/v1%2E0%2E0/SHA256SUMS%2Etxt"
+        },
+        {
+          "name": "RedCat-Spookkasteel-1.0.0-mac-arm64.zip",
+          "bytes": 231428022,
+          "sha256": "3e0b77e35fc66b5cfc1ff69e71c21af285533f5c063760c4cfbf013c00f2e7e5",
+          "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/v1%2E0%2E0/RedCat-Spookkasteel-1%2E0%2E0-mac-arm64%2Ezip"
+        },
+        {
+          "name": "RedCat-Spookkasteel-1.0.0-mac-x64.zip",
+          "bytes": 235760244,
+          "sha256": "53af7e6283ab5d6b0900d83cd62a641ac3090486d873667bd11805b3dfa401b5",
+          "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/v1%2E0%2E0/RedCat-Spookkasteel-1%2E0%2E0-mac-x64%2Ezip"
+        },
+        {
+          "name": "RedCat-Spookkasteel-1.0.0-windows-arm64.zip",
+          "bytes": 260403777,
+          "sha256": "82570f53e95803dcb90fca51feaf5b01dc38bee7c0d2eef45c6ba1140998ec70",
+          "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/v1%2E0%2E0/RedCat-Spookkasteel-1%2E0%2E0-windows-arm64%2Ezip"
+        },
+        {
+          "name": "RedCat-Spookkasteel-1.0.0-windows-x64.zip",
+          "bytes": 262247751,
+          "sha256": "967176eb41fdc57ed9c0816f94df141d0d25bc59905d5b78f4bd171119a2d786",
+          "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/v1%2E0%2E0/RedCat-Spookkasteel-1%2E0%2E0-windows-x64%2Ezip"
+        },
+        {
+          "name": "RedCat-Spookkasteel-1.0.0-linux-arm64.zip",
+          "bytes": 228038792,
+          "sha256": "a978d62b19ed576097596ab6b10e587f198af72e6e3402bad76ce611635fa739",
+          "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/v1%2E0%2E0/RedCat-Spookkasteel-1%2E0%2E0-linux-arm64%2Ezip"
+        },
+        {
+          "name": "RedCat-Spookkasteel-1.0.0-linux-x64.zip",
+          "bytes": 226869155,
+          "sha256": "023c6f126968d47f984aef7e7e6b36c392cf95c6e74ecb46efcdd046064e7f4a",
+          "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/v1%2E0%2E0/RedCat-Spookkasteel-1%2E0%2E0-linux-x64%2Ezip"
+        }
+      ]
+    }
+  },
+  "publicDownloads": [
+    {
+      "host": "github",
+      "name": "RedCat-Spookkasteel-1.0.0-linux-arm64.zip",
+      "httpStatus": 200,
+      "unauthenticated": true,
+      "contentLength": "228038792"
+    },
+    {
+      "host": "github",
+      "name": "RedCat-Spookkasteel-1.0.0-linux-x64.zip",
+      "httpStatus": 200,
+      "unauthenticated": true,
+      "contentLength": "226869155"
+    },
+    {
+      "host": "github",
+      "name": "RedCat-Spookkasteel-1.0.0-mac-arm64.zip",
+      "httpStatus": 200,
+      "unauthenticated": true,
+      "contentLength": "231428022"
+    },
+    {
+      "host": "github",
+      "name": "RedCat-Spookkasteel-1.0.0-mac-x64.zip",
+      "httpStatus": 200,
+      "unauthenticated": true,
+      "contentLength": "235760244"
+    },
+    {
+      "host": "github",
+      "name": "RedCat-Spookkasteel-1.0.0-windows-arm64.zip",
+      "httpStatus": 200,
+      "unauthenticated": true,
+      "contentLength": "260403777"
+    },
+    {
+      "host": "github",
+      "name": "RedCat-Spookkasteel-1.0.0-windows-x64.zip",
+      "httpStatus": 200,
+      "unauthenticated": true,
+      "contentLength": "262247751"
+    },
+    {
+      "host": "github",
+      "name": "SHA256SUMS.txt",
+      "httpStatus": 200,
+      "unauthenticated": true,
+      "contentLength": "642"
+    },
+    {
+      "host": "gitlab",
+      "name": "SHA256SUMS.txt",
+      "httpStatus": 200,
+      "unauthenticated": true,
+      "contentLength": "642"
+    },
+    {
+      "host": "gitlab",
+      "name": "RedCat-Spookkasteel-1.0.0-mac-arm64.zip",
+      "httpStatus": 200,
+      "unauthenticated": true,
+      "contentLength": "231428022"
+    },
+    {
+      "host": "gitlab",
+      "name": "RedCat-Spookkasteel-1.0.0-mac-x64.zip",
+      "httpStatus": 200,
+      "unauthenticated": true,
+      "contentLength": "235760244"
+    },
+    {
+      "host": "gitlab",
+      "name": "RedCat-Spookkasteel-1.0.0-windows-arm64.zip",
+      "httpStatus": 200,
+      "unauthenticated": true,
+      "contentLength": "260403777"
+    },
+    {
+      "host": "gitlab",
+      "name": "RedCat-Spookkasteel-1.0.0-windows-x64.zip",
+      "httpStatus": 200,
+      "unauthenticated": true,
+      "contentLength": "262247751"
+    },
+    {
+      "host": "gitlab",
+      "name": "RedCat-Spookkasteel-1.0.0-linux-arm64.zip",
+      "httpStatus": 200,
+      "unauthenticated": true,
+      "contentLength": "228038792"
+    },
+    {
+      "host": "gitlab",
+      "name": "RedCat-Spookkasteel-1.0.0-linux-x64.zip",
+      "httpStatus": 200,
+      "unauthenticated": true,
+      "contentLength": "226869155"
+    }
+  ],
+  "linuxPackagedSmokePassed": true,
+  "limits": [
+    "Linux x64 smoke used software ANGLE/SwiftShader, not a hardware-performance test.",
+    "Windows, macOS and ARM packages were checked structurally, not run on native hardware.",
+    "Windows packages are unsigned; macOS packages are unsigned and not notarized.",
+    "The live website was not deployed in this release task."
+  ]
+}

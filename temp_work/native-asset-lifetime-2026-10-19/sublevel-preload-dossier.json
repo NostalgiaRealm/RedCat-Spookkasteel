@@ -1,0 +1,5158 @@
+{
+  "evidence_id": "ev_0d065c43260f346712570882fba3f2eb8cb661fb454cd8d3c7e0164461b5c2e7",
+  "subject": {
+    "name": "RcHcGame.dat",
+    "digest": {
+      "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+    },
+    "format": "pe",
+    "architecture": "x86",
+    "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+  },
+  "provider": {
+    "id": "hopper",
+    "name": "Hopper Disassembler",
+    "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+  },
+  "analysis_profile": {
+    "provider": {
+      "id": "hopper",
+      "name": "Hopper Disassembler",
+      "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+    },
+    "parameters": {
+      "target_kind": "executable",
+      "target_format": "pe",
+      "architecture": "x86",
+      "available_architectures": [
+        "x86"
+      ],
+      "loader": {
+        "source": "derived",
+        "arguments": [
+          "-l",
+          "WinPE",
+          "--intel-32"
+        ]
+      }
+    },
+    "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+  },
+  "predicate_type": "rea.analysis",
+  "operation": "analyze_function",
+  "parameters": {
+    "procedure": "0x4f8141"
+  },
+  "raw_result": null,
+  "normalized_result": {
+    "procedure": {
+      "address": "0x4f80f0",
+      "name": "sub_4f80f0",
+      "classification": null,
+      "body": {
+        "available": false,
+        "reason": "Hopper's public Python API does not expose complete function body ranges"
+      },
+      "signature": "int sub_4f80f0(int arg0, int arg1, int arg2)",
+      "locals": [
+        {
+          "description": "Unnamed local (stack displacement 12)",
+          "provenance": "hopper-public-python-api",
+          "name": null,
+          "stack_displacement": "12"
+        },
+        {
+          "description": "Unnamed local (stack displacement 8)",
+          "provenance": "hopper-public-python-api",
+          "name": null,
+          "stack_displacement": "8"
+        },
+        {
+          "description": "Unnamed local (stack displacement 4)",
+          "provenance": "hopper-public-python-api",
+          "name": null,
+          "stack_displacement": "4"
+        },
+        {
+          "description": "ret_addr (stack displacement 0)",
+          "provenance": "hopper-public-python-api",
+          "name": "ret_addr",
+          "stack_displacement": "0"
+        },
+        {
+          "description": "var_4 (stack displacement -4)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_4",
+          "stack_displacement": "-4"
+        },
+        {
+          "description": "var_14 (stack displacement -20)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_14",
+          "stack_displacement": "-20"
+        },
+        {
+          "description": "var_24 (stack displacement -36)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_24",
+          "stack_displacement": "-36"
+        },
+        {
+          "description": "var_34 (stack displacement -52)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_34",
+          "stack_displacement": "-52"
+        },
+        {
+          "description": "var_44 (stack displacement -68)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_44",
+          "stack_displacement": "-68"
+        },
+        {
+          "description": "var_54 (stack displacement -84)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_54",
+          "stack_displacement": "-84"
+        },
+        {
+          "description": "var_64 (stack displacement -100)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_64",
+          "stack_displacement": "-100"
+        },
+        {
+          "description": "var_74 (stack displacement -116)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_74",
+          "stack_displacement": "-116"
+        },
+        {
+          "description": "var_84 (stack displacement -132)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_84",
+          "stack_displacement": "-132"
+        },
+        {
+          "description": "var_94 (stack displacement -148)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_94",
+          "stack_displacement": "-148"
+        },
+        {
+          "description": "var_98 (stack displacement -152)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_98",
+          "stack_displacement": "-152"
+        },
+        {
+          "description": "var_9C (stack displacement -156)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_9C",
+          "stack_displacement": "-156"
+        },
+        {
+          "description": "var_A0 (stack displacement -160)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_A0",
+          "stack_displacement": "-160"
+        },
+        {
+          "description": "var_A4 (stack displacement -164)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_A4",
+          "stack_displacement": "-164"
+        },
+        {
+          "description": "var_A8 (stack displacement -168)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_A8",
+          "stack_displacement": "-168"
+        },
+        {
+          "description": "var_AC (stack displacement -172)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_AC",
+          "stack_displacement": "-172"
+        },
+        {
+          "description": "var_B0 (stack displacement -176)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_B0",
+          "stack_displacement": "-176"
+        },
+        {
+          "description": "var_B1 (stack displacement -177)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_B1",
+          "stack_displacement": "-177"
+        },
+        {
+          "description": "var_B2 (stack displacement -178)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_B2",
+          "stack_displacement": "-178"
+        },
+        {
+          "description": "var_B3 (stack displacement -179)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_B3",
+          "stack_displacement": "-179"
+        },
+        {
+          "description": "var_B4 (stack displacement -180)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_B4",
+          "stack_displacement": "-180"
+        },
+        {
+          "description": "var_B5 (stack displacement -181)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_B5",
+          "stack_displacement": "-181"
+        },
+        {
+          "description": "var_BC (stack displacement -188)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_BC",
+          "stack_displacement": "-188"
+        },
+        {
+          "description": "var_C5 (stack displacement -197)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_C5",
+          "stack_displacement": "-197"
+        }
+      ]
+    },
+    "pseudocode": "    decomp_var_c = *0x0;\n    *0x0 = &decomp_var_c;\n    sub_5ae5f0(\"D:\\Work\\RCHorror\\AdamSource\\AdamSubLevel.cpp\", 0x4bd);\n    esp = esp - 0xe8;\n    var_74 = var_C5;\n    sub_4040a0(0x0);\n    ecx = ecx | 0xffffffff;\n    asm { repne scasb al, byte [edi] };\n    sub_4040f0(\"CAdamSubLevel::PreloadDataBeforeGameObjects(void): add bitmaps to world\", !ecx - 0x1);\n    sub_5ab4a0();\n    timeGetTime();\n    eax = *dword_6b9940;\n    var_14 = 0x64e854;\n    esp = esp - 0x10;\n    eax = sub_442bf0(eax, &var_64, decomp_var_cc, decomp_var_c8);\n    sub_51c180();\n    sub_515ff0();\n    if (sub_4337e0() != 0x0) {\n            eax = sub_49f950();\n            eax = eax[0x1];\n            if (eax == 0x0) {\n                    eax = 0x64a3b4;\n            }\n            eax = sub_5ae390(&var_74, \"CAdamLoadUpdater >> %s\", eax);\n            sub_5aff00(eax);\n            esp = (esp - 0x10) + 0x10 - 0x4;\n            sub_4040a0(0x1);\n    }\n    esp = esp - 0x4;\n    sub_4040a0(0x1);\n    sub_515ff0();\n    if (sub_4337e0() != 0x0) {\n            sub_5afe30(\"Add bitmaps to world...\", decomp_var_cc);\n            esp = (esp - 0x4) + 0x4;\n    }\n    esi = 0x0;\n    var_B0 = 0x0;\n    sub_5a2980();\n    if (sub_5a3b60() > 0x0) {\n            do {\n                    sub_5a2980();\n                    esi = sub_5a3b80(decomp_var_d0);\n                    ebp = sub_60a6f2(esi, 0x0, 0x68e540, 0x68fec0, 0x0);\n                    eax = sub_60a6f2(esi, 0x0, 0x68e540, 0x68fe98, 0x0);\n                    esp = (esp - 0x2c) + 0x28;\n                    bool_4 = eax == 0x0;\n                    eax = eax != 0x0 ? 0x1 : 0x0;\n                    if (!bool_4 && eax == 0x0) {\n                            var_BC = 0x0;\n                            esi = *dword_6c8de0;\n                            if (*dword_6c8de0 == 0x0) {\n                                    esi = loc_55b280();\n                            }\n                            if (esi[0x36] == 0x0) {\n                                    eax = sub_409810(byte_6b3f70, &var_B5);\n                                    (sub_5a07f0())();\n                                    esp = (esp - 0x18) + 0x10 - 0x4;\n                                    sub_4040a0(0x1);\n                            }\n                            esp = esp - 0x8;\n                            eax = sub_50d730(&var_A8, ebp, decomp_var_cc, decomp_var_c8, decomp_var_c4, decomp_var_c0, var_BC, decomp_var_b8);\n                            esi = eax;\n                            ecx = var_BC;\n                            if (ecx != *esi) {\n                                    if (ecx != 0x0) {\n                                            sub_4098d0();\n                                    }\n                                    var_BC = *esi;\n                                    sub_5844b0();\n                            }\n                            ecx = &var_A8;\n                            sub_57d310();\n                            if (var_BC == 0x0) {\n                                    esp = esp - 0x4;\n                                    var_94 = var_B5;\n                                    sub_4040a0(0x0);\n                                    ecx = ecx | 0xffffffff;\n                                    asm { repne scasb al, byte [edi] };\n                                    sub_4040f0(byte_6b3f70, !ecx - 0x1);\n                                    (sub_5a07f0())();\n                                    ecx = &var_94;\n                                    esp = (esp - 0x18) + 0x10 - 0x4;\n                                    sub_4040a0(0x1);\n                            }\n                            eax = arg_24;\n                            if (eax != 0x0) {\n                                    ecx = eax[0x4];\n                                    if (ecx == 0x0) {\n                                            eax = sub_409810(byte_6b3f70, &var_B2);\n                                            (sub_5a07f0())();\n                                            ecx = &var_54;\n                                            esp = (esp - 0x18) + 0x10 - 0x4;\n                                            sub_4040a0(0x1);\n                                    }\n                            }\n                            eax = arg_24;\n                            if (eax != 0x0) {\n                                    if (eax[0x4] == 0x0) {\n                                            eax = sub_409810(byte_6b3f70, &var_B1);\n                                            (sub_5a07f0())();\n                                            esp = (esp - 0x18) + 0x10 - 0x4;\n                                            sub_4040a0(0x1);\n                                    }\n                                    esi = arg_24;\n                                    if (var_BC == 0x0) {\n                                            eax = sub_409810(byte_6b3f70, &var_B3);\n                                            (sub_5a07f0())();\n                                            esp = (esp - 0x18) + 0x10 - 0x4;\n                                            sub_4040a0(0x1);\n                                    }\n                                    ecx = var_BC;\n                                    esp = esp - 0x4;\n                                    sub_50aca0(esi);\n                            }\n                            eax = arg_28;\n                            if (eax != 0x0) {\n                                    ebp = arg_2c;\n                                    var_9C = eax;\n                                    var_A4 = arg_30;\n                                    if (var_BC == 0x0) {\n                                            eax = sub_409810(byte_6b3f70, &var_B4);\n                                            (sub_5a07f0())();\n                                            esp = (esp - 0x18) + 0x10 - 0x4;\n                                            sub_4040a0(0x1);\n                                    }\n                                    ecx = var_BC;\n                                    esp = esp - 0xc;\n                                    sub_50b1e0(var_9C, ebp, var_A4);\n                            }\n                            esp = esp - 0x4;\n                            decomp_var_d0 = ecx;\n                            decomp_var_d0 = var_BC;\n                            eax = var_BC;\n                            if (eax != 0x0) {\n                                    eax[0x5] = eax[0x5] + 0x1;\n                            }\n                            esi = var_AC;\n                            ecx = esi;\n                            if (sub_4fbca0(decomp_var_d0, decomp_var_cc, decomp_var_c8, decomp_var_c4) == 0x0) {\n                                    esp = esp - 0x4;\n                                    decomp_var_d0 = ecx;\n                                    decomp_var_d0 = var_BC;\n                                    eax = var_BC;\n                                    if (eax != 0x0) {\n                                            eax[0x5] = eax[0x5] + 0x1;\n                                    }\n                                    if (sub_4fb310(decomp_var_d0) == 0x0) {\n                                            esp = esp - 0x4;\n                                            var_84 = var_B4;\n                                            sub_4040a0(0x0);\n                                            ecx = ecx | 0xffffffff;\n                                            asm { repne scasb al, byte [edi] };\n                                            sub_4040f0(byte_6b3f70, !ecx - 0x1);\n                                            (sub_5a07f0())();\n                                            esp = (esp - 0x18) + 0x10 - 0x4;\n                                            sub_4040a0(0x1);\n                                    }\n                            }\n                            if (var_BC != 0x0) {\n                                    sub_4098d0();\n                            }\n                    }\n                    esi = var_B0 + 0x1;\n                    var_B0 = esi;\n                    sub_5a2980();\n            } while (esi < sub_5a3b60());\n    }\n    sub_49fa20();\n    sub_5ae770();\n    *0x0 = arg_0;\n    return 0x1;\n",
+    "assembly": [
+      "0x4f80f0: push 0xffffffff",
+      "0x4f80f2: push sub_634f15",
+      "0x4f80f7: mov eax, dword [fs:0x0]",
+      "0x4f80fd: push eax",
+      "0x4f80fe: mov dword [fs:0x0], esp",
+      "0x4f8105: sub esp, 0xc0",
+      "0x4f810b: push ebx",
+      "0x4f810c: push ebp",
+      "0x4f810d: push esi",
+      "0x4f810e: push edi",
+      "0x4f810f: mov dword [esp+0xdc+var_BC], ecx",
+      "0x4f8113: push 0x4bd",
+      "0x4f8118: push aDworkrchorrora_69c628",
+      "0x4f811d: lea ecx, dword [esp+0xe4+var_B0]",
+      "0x4f8121: call sub_5ae5f0",
+      "0x4f8126: mov al, byte [esp+0xdc+var_C5]",
+      "0x4f812a: xor esi, esi",
+      "0x4f812c: push esi",
+      "0x4f812d: lea ecx, dword [esp+0xe0+var_74]",
+      "0x4f8131: mov dword [esp+0xe0+var_4], esi",
+      "0x4f8138: mov byte [esp+0xe0+var_74], al",
+      "0x4f813c: call sub_4040a0",
+      "0x4f8141: mov edi, aCadamsublevelp_69cd00",
+      "0x4f8146: or ecx, 0xffffffff",
+      "0x4f8149: xor eax, eax",
+      "0x4f814b: repne scasb al, byte [edi]",
+      "0x4f814d: not ecx",
+      "0x4f814f: dec ecx",
+      "0x4f8150: push ecx",
+      "0x4f8151: push aCadamsublevelp_69cd00",
+      "0x4f8156: lea ecx, dword [esp+0xe4+var_74]",
+      "0x4f815a: call sub_4040f0",
+      "0x4f815f: lea ecx, dword [esp+0xdc+var_24]",
+      "0x4f8166: mov byte [esp+0xdc+var_4], 0x1",
+      "0x4f816e: call sub_5ab4a0",
+      "0x4f8173: mov bl, 0x2",
+      "0x4f8175: mov byte [esp+0xdc+var_4], bl",
+      "0x4f817c: call dword [imp_timeGetTime]",
+      "0x4f8182: mov dword [esp+0xcc+ret_addr], eax",
+      "0x4f8189: mov eax, dword [dword_6b9940]",
+      "0x4f818e: lea ecx, dword [esp+0xcc+var_64]",
+      "0x4f8192: mov dword [esp+0xcc+var_14], 0x64e854",
+      "0x4f819d: push ecx",
+      "0x4f819e: push eax",
+      "0x4f819f: mov ecx, byte_6b9938",
+      "0x4f81a4: call sub_442bf0",
+      "0x4f81a9: call sub_51c180",
+      "0x4f81ae: call sub_515ff0",
+      "0x4f81b3: mov ecx, eax",
+      "0x4f81b5: call sub_4337e0",
+      "0x4f81ba: test eax, eax",
+      "0x4f81bc: je loc_4f8202",
+      "0x4f81be: call sub_49f950",
+      "0x4f81c3: mov eax, dword [eax+4]",
+      "0x4f81c6: cmp eax, esi",
+      "0x4f81c8: jne loc_4f81cf",
+      "0x4f81ca: mov eax, 0x64a3b4",
+      "0x4f8225: push aAddBitmapsToWo",
+      "0x4f822a: call sub_5afe30",
+      "0x4f822f: add esp, 0x4",
+      "0x4f824a: mov bl, 0x6",
+      "0x4f8295: test al, al",
+      "0x4f8297: jne loc_4f864b",
+      "0x4f829d: mov dword [esp+0xcc+var_BC], 0x0",
+      "0x4f82a5: mov esi, dword [dword_6c8de0]",
+      "0x4f82ab: mov byte [esp+0xcc+arg_8], bl",
+      "0x4f82b2: test esi, esi",
+      "0x4f82b4: jne loc_4f82bd",
+      "0x4f82b6: call sub_55afb0+720",
+      "0x4f82bb: mov esi, eax",
+      "0x4f82c7: lea eax, dword [esp+0xcc+var_B5]",
+      "0x4f82cb: lea ecx, dword [esp+0xcc+var_34]",
+      "0x4f82d2: push eax",
+      "0x4f82d3: push byte_6b3f70",
+      "0x4f82d8: call sub_409810",
+      "0x4f82dd: lea ecx, dword [esp+0xcc+var_34]",
+      "0x4f82e4: mov byte [esp+0xcc+arg_8], 0x7",
+      "0x4f82ec: push ecx",
+      "0x4f82ed: push 0x188",
+      "0x4f82f2: push aAdamsourceadam_68eb58",
+      "0x4f82f7: push aMbitmapmgr",
+      "0x4f82fc: call sub_5a07f0",
+      "0x4f8301: call eax",
+      "0x4f8303: add esp, 0x10",
+      "0x4f8306: lea ecx, dword [esp+0xcc+var_34]",
+      "0x4f830d: mov byte [esp+0xcc+arg_8], bl",
+      "0x4f8314: push 0x1",
+      "0x4f8316: call sub_4040a0",
+      "0x4f8340: test ecx, ecx",
+      "0x4f8342: je loc_4f8349",
+      "0x4f8344: call sub_4098d0",
+      "0x4f8370: mov cl, byte [esp+0xcc+var_B5]",
+      "0x4f8374: push 0x0",
+      "0x4f8376: mov byte [esp+0xd0+var_94], cl",
+      "0x4f837a: lea ecx, dword [esp+0xd0+var_94]",
+      "0x4f837e: call sub_4040a0",
+      "0x4f8383: mov edi, byte_6b3f70",
+      "0x4f8388: or ecx, 0xffffffff",
+      "0x4f838b: xor eax, eax",
+      "0x4f838d: repne scasb al, byte [edi]",
+      "0x4f838f: not ecx",
+      "0x4f8391: dec ecx",
+      "0x4f8392: push ecx",
+      "0x4f8393: push byte_6b3f70",
+      "0x4f8398: lea ecx, dword [esp+0xd4+var_94]",
+      "0x4f839c: call sub_4040f0",
+      "0x4f83a1: lea edx, dword [esp+0xcc+var_94]",
+      "0x4f83a5: mov byte [esp+0xcc+arg_8], 0x9",
+      "0x4f83ad: push edx",
+      "0x4f83ae: push 0x4d4",
+      "0x4f83b3: push aDworkrchorrora_69c628",
+      "0x4f83b8: push aBitmapisnotnul",
+      "0x4f83bd: call sub_5a07f0",
+      "0x4f83c2: call eax",
+      "0x4f83c4: add esp, 0x10",
+      "0x4f83c7: lea ecx, dword [esp+0xcc+var_94]",
+      "0x4f83cb: mov byte [esp+0xcc+arg_8], bl",
+      "0x4f83d2: push 0x1",
+      "0x4f83d4: call sub_4040a0",
+      "0x4f83e0: mov ecx, dword [eax+0x10]",
+      "0x4f83e3: test ecx, ecx",
+      "0x4f83e5: jne loc_4f842f",
+      "0x4f83e7: lea eax, dword [esp+0xcc+var_B2]",
+      "0x4f83eb: lea ecx, dword [esp+0xcc+var_54]",
+      "0x4f83ef: push eax",
+      "0x4f83f0: push byte_6b3f70",
+      "0x4f83f5: call sub_409810",
+      "0x4f83fa: lea ecx, dword [esp+0xcc+var_54]",
+      "0x4f83fe: mov byte [esp+0xcc+arg_8], 0xa",
+      "0x4f8406: push ecx",
+      "0x4f8407: push 0x4e",
+      "0x4f8409: push aAdamsourceadam_69ccb4",
+      "0x4f840e: push aMalphabitmapfi",
+      "0x4f8413: call sub_5a07f0",
+      "0x4f8418: call eax",
+      "0x4f841a: add esp, 0x10",
+      "0x4f841d: lea ecx, dword [esp+0xcc+var_54]",
+      "0x4f8421: mov byte [esp+0xcc+arg_8], bl",
+      "0x4f8428: push 0x1",
+      "0x4f842a: call sub_4040a0",
+      "0x4f843a: mov ecx, dword [eax+0x10]",
+      "0x4f843d: test ecx, ecx",
+      "0x4f843f: jne loc_4f8492",
+      "0x4f8441: lea edx, dword [esp+0xcc+var_B1]",
+      "0x4f8445: lea ecx, dword [esp+0xcc+var_24]",
+      "0x4f844c: push edx",
+      "0x4f844d: push byte_6b3f70",
+      "0x4f8452: call sub_409810",
+      "0x4f8457: lea eax, dword [esp+0xcc+var_24]",
+      "0x4f845e: mov byte [esp+0xcc+arg_8], 0xb",
+      "0x4f8466: push eax",
+      "0x4f8467: push 0x4e",
+      "0x4f8469: push aAdamsourceadam_69ccb4",
+      "0x4f846e: push aMalphabitmapfi",
+      "0x4f8473: call sub_5a07f0",
+      "0x4f8478: call eax",
+      "0x4f847a: add esp, 0x10",
+      "0x4f847d: lea ecx, dword [esp+0xcc+var_24]",
+      "0x4f8484: mov byte [esp+0xcc+arg_8], bl",
+      "0x4f848b: push 0x1",
+      "0x4f848d: call sub_4040a0",
+      "0x4f849d: lea ecx, dword [esp+0xcc+var_B3]",
+      "0x4f84a1: push ecx",
+      "0x4f84a2: push byte_6b3f70",
+      "0x4f84a7: lea ecx, dword [esp+0xd4+var_44]",
+      "0x4f84ae: call sub_409810",
+      "0x4f84b3: lea edx, dword [esp+0xcc+var_44]",
+      "0x4f84ba: mov byte [esp+0xcc+arg_8], 0xc",
+      "0x4f84c2: push edx",
+      "0x4f84c3: push 0xb6",
+      "0x4f84c8: push aAdamsourcedavi_68d638",
+      "0x4f84cd: push aMpointer",
+      "0x4f84d2: call sub_5a07f0",
+      "0x4f84d7: call eax",
+      "0x4f84d9: add esp, 0x10",
+      "0x4f84dc: lea ecx, dword [esp+0xcc+var_44]",
+      "0x4f84e3: mov byte [esp+0xcc+arg_8], bl",
+      "0x4f84ea: push 0x1",
+      "0x4f84ec: call sub_4040a0",
+      "0x4f8502: mov cl, byte [ebp+0x34]",
+      "0x4f8505: mov ebp, dword [ebp+0x30]",
+      "0x4f8508: mov byte [esp+0xcc+var_9C], al",
+      "0x4f850c: mov eax, dword [esp+0xcc+var_BC]",
+      "0x4f8510: test eax, eax",
+      "0x4f8512: mov byte [esp+0xcc+var_A4], cl",
+      "0x4f8516: jne loc_4f8563",
+      "0x4f8518: lea edx, dword [esp+0xcc+var_B4]",
+      "0x4f851c: lea ecx, dword [esp+0xcc+var_74]",
+      "0x4f8520: push edx",
+      "0x4f8521: push byte_6b3f70",
+      "0x4f8526: call sub_409810",
+      "0x4f852b: lea eax, dword [esp+0xcc+var_74]",
+      "0x4f852f: mov byte [esp+0xcc+arg_8], 0xd",
+      "0x4f8537: push eax",
+      "0x4f8538: push 0xb6",
+      "0x4f853d: push aAdamsourcedavi_68d638",
+      "0x4f8542: push aMpointer",
+      "0x4f8547: call sub_5a07f0",
+      "0x4f854c: call eax",
+      "0x4f854e: add esp, 0x10",
+      "0x4f8551: lea ecx, dword [esp+0xcc+var_74]",
+      "0x4f8555: mov byte [esp+0xcc+arg_8], bl",
+      "0x4f855c: push 0x1",
+      "0x4f855e: call sub_4040a0",
+      "0x4f858c: inc dword [eax+0x14]",
+      "0x4f85a2: mov edx, dword [esp+0xcc+var_BC]",
+      "0x4f85a6: push ecx",
+      "0x4f85a7: mov eax, esp",
+      "0x4f85a9: mov dword [esp+0xd0+var_98], esp",
+      "0x4f85ad: mov dword [eax], edx",
+      "0x4f85af: mov eax, dword [esp+0xd0+var_BC]",
+      "0x4f85b3: test eax, eax",
+      "0x4f85b5: je loc_4f85ba",
+      "0x4f85b7: inc dword [eax+0x14]",
+      "0x4f85c5: mov al, byte [esp+0xcc+var_B4]",
+      "0x4f85c9: push 0x0",
+      "0x4f85cb: lea ecx, dword [esp+0xd0+var_84]",
+      "0x4f85cf: mov byte [esp+0xd0+var_84], al",
+      "0x4f85d3: call sub_4040a0",
+      "0x4f85d8: mov edi, byte_6b3f70",
+      "0x4f85dd: or ecx, 0xffffffff",
+      "0x4f85e0: xor eax, eax",
+      "0x4f85e2: repne scasb al, byte [edi]",
+      "0x4f85e4: not ecx",
+      "0x4f85e6: dec ecx",
+      "0x4f85e7: push ecx",
+      "0x4f85e8: push byte_6b3f70",
+      "0x4f85ed: lea ecx, dword [esp+0xd4+var_84]",
+      "0x4f85f1: call sub_4040f0",
+      "0x4f85f6: lea ecx, dword [esp+0xcc+var_84]",
+      "0x4f85fa: mov byte [esp+0xcc+arg_8], 0xe",
+      "0x4f8602: push ecx",
+      "0x4f8603: push 0x4e9",
+      "0x4f8608: push aDworkrchorrora_69c628",
+      "0x4f860d: push aResult",
+      "0x4f8612: call sub_5a07f0",
+      "0x4f8617: call eax",
+      "0x4f8619: add esp, 0x10",
+      "0x4f861c: lea ecx, dword [esp+0xcc+var_84]",
+      "0x4f8620: mov byte [esp+0xcc+arg_8], bl",
+      "0x4f8627: push 0x1",
+      "0x4f8629: call sub_4040a0",
+      "0x4f863e: call sub_4098d0",
+      "0x4f8643: mov dword [esp+0xcc+var_BC], 0x0",
+      "0x4f824c: push esi",
+      "0x4f824d: call sub_5a2980",
+      "0x4f8252: mov ecx, eax",
+      "0x4f8254: call sub_5a3b80",
+      "0x4f8259: push 0x0",
+      "0x4f825b: push 0x68fec0",
+      "0x4f8260: mov esi, eax",
+      "0x4f8262: push 0x68e540",
+      "0x4f8267: push 0x0",
+      "0x4f8269: push esi",
+      "0x4f826a: call sub_60a6f2",
+      "0x4f826f: push 0x0",
+      "0x4f8271: push 0x68fe98",
+      "0x4f8276: push 0x68e540",
+      "0x4f827b: push 0x0",
+      "0x4f827d: push esi",
+      "0x4f827e: mov ebp, eax",
+      "0x4f8280: call sub_60a6f2",
+      "0x4f8285: add esp, 0x28",
+      "0x4f8288: test eax, eax",
+      "0x4f828a: setne al",
+      "0x4f828d: test ebp, ebp",
+      "0x4f828f: je loc_4f864b",
+      "0x4f8668: lea ecx, dword [esp+0xcc+var_14]",
+      "0x4f866f: mov byte [esp+0xcc+arg_8], 0x0",
+      "0x4f8677: call sub_49fa20",
+      "0x4f867c: lea ecx, dword [esp+0xcc+var_A0]",
+      "0x4f8680: mov dword [esp+0xcc+arg_8], 0xffffffff",
+      "0x4f868b: call sub_5ae770",
+      "0x4f8690: mov ecx, dword [esp+0xcc+arg_0]",
+      "0x4f8697: pop edi",
+      "0x4f8698: pop esi",
+      "0x4f8699: pop ebp",
+      "0x4f869a: mov al, 0x1",
+      "0x4f869c: mov dword [fs:0x0], ecx",
+      "0x4f86a3: pop ebx",
+      "0x4f86a4: add esp, 0xcc",
+      "0x4f86aa: ret",
+      "0x4f864b: mov esi, dword [esp+0xcc+var_B0]",
+      "0x4f864f: inc esi",
+      "0x4f8650: mov dword [esp+0xcc+var_B0], esi",
+      "0x4f8654: call sub_5a2980",
+      "0x4f8659: mov ecx, eax",
+      "0x4f865b: call sub_5a3b60",
+      "0x4f8660: cmp esi, eax",
+      "0x4f8662: jl loc_4f824c",
+      "0x4f862e: mov ecx, dword [esp+0xcc+var_BC]",
+      "0x4f8632: mov byte [esp+0xcc+arg_8], 0x5",
+      "0x4f863a: test ecx, ecx",
+      "0x4f863c: je loc_4f864b",
+      "0x4f85ba: mov ecx, esi",
+      "0x4f85bc: call sub_4fb310",
+      "0x4f85c1: test al, al",
+      "0x4f85c3: jne loc_4f862e",
+      "0x4f858f: mov esi, dword [esp+0xd0+var_AC]",
+      "0x4f8593: mov ecx, esi",
+      "0x4f8595: call sub_4fbca0",
+      "0x4f859a: test al, al",
+      "0x4f859c: jne loc_4f862e",
+      "0x4f8563: mov ecx, dword [esp+0xcc+var_A4]",
+      "0x4f8567: mov edx, dword [esp+0xcc+var_9C]",
+      "0x4f856b: push ecx",
+      "0x4f856c: mov ecx, dword [esp+0xd0+var_BC]",
+      "0x4f8570: push ebp",
+      "0x4f8571: push edx",
+      "0x4f8572: call sub_50b1e0",
+      "0x4f8577: push ecx",
+      "0x4f8578: mov ecx, dword [esp+0xd0+var_BC]",
+      "0x4f857c: mov eax, esp",
+      "0x4f857e: mov dword [esp+0xd0+var_98], esp",
+      "0x4f8582: mov dword [eax], ecx",
+      "0x4f8584: mov eax, dword [esp+0xd0+var_BC]",
+      "0x4f8588: test eax, eax",
+      "0x4f858a: je loc_4f858f",
+      "0x4f84f1: mov ecx, dword [esp+0xcc+var_BC]",
+      "0x4f84f5: push esi",
+      "0x4f84f6: call sub_50aca0",
+      "0x4f8492: mov eax, dword [esp+0xcc+var_BC]",
+      "0x4f8496: mov esi, dword [ebp+0x28]",
+      "0x4f8499: test eax, eax",
+      "0x4f849b: jne loc_4f84f1",
+      "0x4f84fb: mov al, byte [ebp+0x2c]",
+      "0x4f84fe: test al, al",
+      "0x4f8500: je loc_4f8577",
+      "0x4f842f: mov eax, dword [ebp+0x28]",
+      "0x4f8432: test eax, eax",
+      "0x4f8434: je loc_4f84fb",
+      "0x4f83d9: mov eax, dword [ebp+0x28]",
+      "0x4f83dc: test eax, eax",
+      "0x4f83de: je loc_4f842f",
+      "0x4f8349: mov eax, dword [esi]",
+      "0x4f834b: lea ecx, dword [esp+0xcc+var_BC]",
+      "0x4f834f: mov dword [esp+0xcc+var_BC], eax",
+      "0x4f8353: call sub_5844b0",
+      "0x4f8358: lea ecx, dword [esp+0xcc+var_A8]",
+      "0x4f835c: mov byte [esp+0xcc+arg_8], bl",
+      "0x4f8363: call sub_57d310",
+      "0x4f8368: mov eax, dword [esp+0xcc+var_BC]",
+      "0x4f836c: test eax, eax",
+      "0x4f836e: jne loc_4f83d9",
+      "0x4f831b: mov ecx, dword [esi+0xd8]",
+      "0x4f8321: lea edx, dword [esp+0xcc+var_A8]",
+      "0x4f8325: push ebp",
+      "0x4f8326: push edx",
+      "0x4f8327: call sub_50d730",
+      "0x4f832c: mov esi, eax",
+      "0x4f832e: mov ecx, dword [esp+0xcc+var_BC]",
+      "0x4f8332: mov eax, dword [esi]",
+      "0x4f8334: cmp ecx, eax",
+      "0x4f8336: mov byte [esp+0xcc+arg_8], 0x8",
+      "0x4f833e: je loc_4f8358",
+      "0x4f82bd: mov eax, dword [esi+0xd8]",
+      "0x4f82c3: test eax, eax",
+      "0x4f82c5: jne loc_4f831b",
+      "0x4f8232: mov dword [esp+0xcc+var_B0], esi",
+      "0x4f8236: call sub_5a2980",
+      "0x4f823b: mov ecx, eax",
+      "0x4f823d: call sub_5a3b60",
+      "0x4f8242: test eax, eax",
+      "0x4f8244: jle loc_4f8668",
+      "0x4f81cf: push eax",
+      "0x4f81d0: lea edx, dword [esp+0xd0+var_74]",
+      "0x4f81d4: push aCadamloadupdat",
+      "0x4f81d9: push edx",
+      "0x4f81da: call sub_5ae390",
+      "0x4f81df: push eax",
+      "0x4f81e0: mov byte [esp+0xdc+arg_8], 0x3",
+      "0x4f81e8: call sub_5aff00",
+      "0x4f81ed: add esp, 0x10",
+      "0x4f81f0: lea ecx, dword [esp+0xcc+var_74]",
+      "0x4f81f4: mov byte [esp+0xcc+arg_8], bl",
+      "0x4f81fb: push 0x1",
+      "0x4f81fd: call sub_4040a0",
+      "0x4f8202: push 0x1",
+      "0x4f8204: lea ecx, dword [esp+0xd0+var_64]",
+      "0x4f8208: mov byte [esp+0xd0+arg_8], 0x5",
+      "0x4f8210: call sub_4040a0",
+      "0x4f8215: call sub_515ff0",
+      "0x4f821a: mov ecx, eax",
+      "0x4f821c: call sub_4337e0",
+      "0x4f8221: test eax, eax",
+      "0x4f8223: je loc_4f8232"
+    ],
+    "comments": [],
+    "callers": [
+      {
+        "address": "0x4f9030",
+        "name": "sub_4f9030",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      }
+    ],
+    "callees": [
+      {
+        "address": "0x4040a0",
+        "name": "sub_4040a0",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x4040f0",
+        "name": "sub_4040f0",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x409810",
+        "name": "sub_409810",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x4098d0",
+        "name": "sub_4098d0",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x4337e0",
+        "name": "sub_4337e0",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x442bf0",
+        "name": "sub_442bf0",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x454200",
+        "name": "sub_454200",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x49f950",
+        "name": "sub_49f950",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x49fa20",
+        "name": "sub_49fa20",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x4fb310",
+        "name": "sub_4fb310",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x4fbca0",
+        "name": "sub_4fbca0",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x50aca0",
+        "name": "sub_50aca0",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x50b1e0",
+        "name": "sub_50b1e0",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x50d730",
+        "name": "sub_50d730",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x515ff0",
+        "name": "sub_515ff0",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x51c180",
+        "name": "sub_51c180",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x57d310",
+        "name": "sub_57d310",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5844b0",
+        "name": "sub_5844b0",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5a07f0",
+        "name": "sub_5a07f0",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5a2980",
+        "name": "sub_5a2980",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5a3b60",
+        "name": "sub_5a3b60",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5a3b80",
+        "name": "sub_5a3b80",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5ab4a0",
+        "name": "sub_5ab4a0",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5ae390",
+        "name": "sub_5ae390",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5ae5f0",
+        "name": "sub_5ae5f0",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5ae770",
+        "name": "sub_5ae770",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5afe30",
+        "name": "sub_5afe30",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5aff00",
+        "name": "sub_5aff00",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x60a6f2",
+        "name": "sub_60a6f2",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      }
+    ],
+    "incoming_references": [
+      {
+        "source_address": "0x4f9214",
+        "target_address": "0x4f80f0",
+        "source_procedure": {
+          "address": "0x4f9030",
+          "name": "sub_4f9030",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      }
+    ],
+    "outgoing_references": [
+      {
+        "source_address": "0x4f80f2",
+        "target_address": "0x634f15",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x634f15",
+          "name": "sub_634f15",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8118",
+        "target_address": "0x69c628",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8121",
+        "target_address": "0x5ae5f0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5ae5f0",
+          "name": "sub_5ae5f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f813c",
+        "target_address": "0x4040a0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4040a0",
+          "name": "sub_4040a0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8141",
+        "target_address": "0x69cd00",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8151",
+        "target_address": "0x69cd00",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f815a",
+        "target_address": "0x4040f0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4040f0",
+          "name": "sub_4040f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f816e",
+        "target_address": "0x5ab4a0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5ab4a0",
+          "name": "sub_5ab4a0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f817c",
+        "target_address": "0x64a258",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f817c",
+        "target_address": "0x74b2d8",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8189",
+        "target_address": "0x6b9940",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8192",
+        "target_address": "0x64e854",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f819f",
+        "target_address": "0x6b9938",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f81a4",
+        "target_address": "0x442bf0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x442bf0",
+          "name": "sub_442bf0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f81a9",
+        "target_address": "0x51c180",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x51c180",
+          "name": "sub_51c180",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f81ae",
+        "target_address": "0x515ff0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x515ff0",
+          "name": "sub_515ff0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f81b5",
+        "target_address": "0x4337e0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4337e0",
+          "name": "sub_4337e0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f81bc",
+        "target_address": "0x4f8202",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f81be",
+        "target_address": "0x49f950",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x49f950",
+          "name": "sub_49f950",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f81c8",
+        "target_address": "0x4f81cf",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f81ca",
+        "target_address": "0x64a3b4",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f81d4",
+        "target_address": "0x695190",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f81da",
+        "target_address": "0x5ae390",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5ae390",
+          "name": "sub_5ae390",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f81e8",
+        "target_address": "0x5aff00",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5aff00",
+          "name": "sub_5aff00",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f81fd",
+        "target_address": "0x4040a0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4040a0",
+          "name": "sub_4040a0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8210",
+        "target_address": "0x4040a0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4040a0",
+          "name": "sub_4040a0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8215",
+        "target_address": "0x515ff0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x515ff0",
+          "name": "sub_515ff0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f821c",
+        "target_address": "0x4337e0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4337e0",
+          "name": "sub_4337e0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8223",
+        "target_address": "0x4f8232",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8225",
+        "target_address": "0x69cce8",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f822a",
+        "target_address": "0x5afe30",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5afe30",
+          "name": "sub_5afe30",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8236",
+        "target_address": "0x5a2980",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5a2980",
+          "name": "sub_5a2980",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f823d",
+        "target_address": "0x5a3b60",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5a3b60",
+          "name": "sub_5a3b60",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8244",
+        "target_address": "0x4f8668",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f824d",
+        "target_address": "0x5a2980",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5a2980",
+          "name": "sub_5a2980",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8254",
+        "target_address": "0x5a3b80",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5a3b80",
+          "name": "sub_5a3b80",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f825b",
+        "target_address": "0x68fec0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8262",
+        "target_address": "0x68e540",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f826a",
+        "target_address": "0x60a6f2",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x60a6f2",
+          "name": "sub_60a6f2",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8271",
+        "target_address": "0x68fe98",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8276",
+        "target_address": "0x68e540",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8280",
+        "target_address": "0x60a6f2",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x60a6f2",
+          "name": "sub_60a6f2",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f828f",
+        "target_address": "0x4f864b",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8297",
+        "target_address": "0x4f864b",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f82a5",
+        "target_address": "0x6c8de0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f82b4",
+        "target_address": "0x4f82bd",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f82b6",
+        "target_address": "0x55b280",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x454200",
+          "name": "sub_454200",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f82c5",
+        "target_address": "0x4f831b",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f82d3",
+        "target_address": "0x6b3f70",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f82d8",
+        "target_address": "0x409810",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x409810",
+          "name": "sub_409810",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f82f2",
+        "target_address": "0x68eb58",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f82f7",
+        "target_address": "0x68eb4c",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f82fc",
+        "target_address": "0x5a07f0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5a07f0",
+          "name": "sub_5a07f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8316",
+        "target_address": "0x4040a0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4040a0",
+          "name": "sub_4040a0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8327",
+        "target_address": "0x50d730",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x50d730",
+          "name": "sub_50d730",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f833e",
+        "target_address": "0x4f8358",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8342",
+        "target_address": "0x4f8349",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8344",
+        "target_address": "0x4098d0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4098d0",
+          "name": "sub_4098d0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8353",
+        "target_address": "0x5844b0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5844b0",
+          "name": "sub_5844b0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8363",
+        "target_address": "0x57d310",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x57d310",
+          "name": "sub_57d310",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f836e",
+        "target_address": "0x4f83d9",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f837e",
+        "target_address": "0x4040a0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4040a0",
+          "name": "sub_4040a0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8383",
+        "target_address": "0x6b3f70",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8393",
+        "target_address": "0x6b3f70",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f839c",
+        "target_address": "0x4040f0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4040f0",
+          "name": "sub_4040f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f83b3",
+        "target_address": "0x69c628",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f83b8",
+        "target_address": "0x69ccd4",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f83bd",
+        "target_address": "0x5a07f0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5a07f0",
+          "name": "sub_5a07f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f83d4",
+        "target_address": "0x4040a0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4040a0",
+          "name": "sub_4040a0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f83de",
+        "target_address": "0x4f842f",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f83e5",
+        "target_address": "0x4f842f",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f83f0",
+        "target_address": "0x6b3f70",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f83f5",
+        "target_address": "0x409810",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x409810",
+          "name": "sub_409810",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8409",
+        "target_address": "0x69ccb4",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f840e",
+        "target_address": "0x69cc70",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8413",
+        "target_address": "0x5a07f0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5a07f0",
+          "name": "sub_5a07f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f842a",
+        "target_address": "0x4040a0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4040a0",
+          "name": "sub_4040a0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8434",
+        "target_address": "0x4f84fb",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f843f",
+        "target_address": "0x4f8492",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f844d",
+        "target_address": "0x6b3f70",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8452",
+        "target_address": "0x409810",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x409810",
+          "name": "sub_409810",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8469",
+        "target_address": "0x69ccb4",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f846e",
+        "target_address": "0x69cc70",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8473",
+        "target_address": "0x5a07f0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5a07f0",
+          "name": "sub_5a07f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f848d",
+        "target_address": "0x4040a0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4040a0",
+          "name": "sub_4040a0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f849b",
+        "target_address": "0x4f84f1",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f84a2",
+        "target_address": "0x6b3f70",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f84ae",
+        "target_address": "0x409810",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x409810",
+          "name": "sub_409810",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f84c8",
+        "target_address": "0x68d638",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f84cd",
+        "target_address": "0x68d62c",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f84d2",
+        "target_address": "0x5a07f0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5a07f0",
+          "name": "sub_5a07f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f84ec",
+        "target_address": "0x4040a0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4040a0",
+          "name": "sub_4040a0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f84f6",
+        "target_address": "0x50aca0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x50aca0",
+          "name": "sub_50aca0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8500",
+        "target_address": "0x4f8577",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8516",
+        "target_address": "0x4f8563",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8521",
+        "target_address": "0x6b3f70",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8526",
+        "target_address": "0x409810",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x409810",
+          "name": "sub_409810",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f853d",
+        "target_address": "0x68d638",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8542",
+        "target_address": "0x68d62c",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8547",
+        "target_address": "0x5a07f0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5a07f0",
+          "name": "sub_5a07f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f855e",
+        "target_address": "0x4040a0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4040a0",
+          "name": "sub_4040a0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8572",
+        "target_address": "0x50b1e0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x50b1e0",
+          "name": "sub_50b1e0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f858a",
+        "target_address": "0x4f858f",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8595",
+        "target_address": "0x4fbca0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4fbca0",
+          "name": "sub_4fbca0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f859c",
+        "target_address": "0x4f862e",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f85b5",
+        "target_address": "0x4f85ba",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f85bc",
+        "target_address": "0x4fb310",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4fb310",
+          "name": "sub_4fb310",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f85c3",
+        "target_address": "0x4f862e",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f85d3",
+        "target_address": "0x4040a0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4040a0",
+          "name": "sub_4040a0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f85d8",
+        "target_address": "0x6b3f70",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f85e8",
+        "target_address": "0x6b3f70",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f85f1",
+        "target_address": "0x4040f0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4040f0",
+          "name": "sub_4040f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8608",
+        "target_address": "0x69c628",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f860d",
+        "target_address": "0x691bc0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8612",
+        "target_address": "0x5a07f0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5a07f0",
+          "name": "sub_5a07f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8629",
+        "target_address": "0x4040a0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4040a0",
+          "name": "sub_4040a0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f863c",
+        "target_address": "0x4f864b",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f863e",
+        "target_address": "0x4098d0",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4098d0",
+          "name": "sub_4098d0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8654",
+        "target_address": "0x5a2980",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5a2980",
+          "name": "sub_5a2980",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f865b",
+        "target_address": "0x5a3b60",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5a3b60",
+          "name": "sub_5a3b60",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f8662",
+        "target_address": "0x4f824c",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x4f8677",
+        "target_address": "0x49fa20",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x49fa20",
+          "name": "sub_49fa20",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x4f868b",
+        "target_address": "0x5ae770",
+        "source_procedure": {
+          "address": "0x4f80f0",
+          "name": "sub_4f80f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5ae770",
+          "name": "sub_5ae770",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      }
+    ],
+    "unresolved_calls": [],
+    "referenced_strings": [
+      {
+        "address": "0x68d62c",
+        "value": "m_Pointer",
+        "provider_value": "m_Pointer",
+        "string": {
+          "encoding": "utf-8",
+          "encoding_status": "inferred",
+          "termination": "present_or_not_required",
+          "byte_length": 10
+        },
+        "source_address": "0x4f84cd"
+      },
+      {
+        "address": "0x68d62c",
+        "value": "m_Pointer",
+        "provider_value": "m_Pointer",
+        "string": {
+          "encoding": "utf-8",
+          "encoding_status": "inferred",
+          "termination": "present_or_not_required",
+          "byte_length": 10
+        },
+        "source_address": "0x4f8542"
+      },
+      {
+        "address": "0x68d638",
+        "value": "./AdamSource\\DaviRC.h",
+        "provider_value": "./AdamSource\\DaviRC.h",
+        "string": {
+          "encoding": "utf-8",
+          "encoding_status": "inferred",
+          "termination": "present_or_not_required",
+          "byte_length": 22
+        },
+        "source_address": "0x4f84c8"
+      },
+      {
+        "address": "0x68d638",
+        "value": "./AdamSource\\DaviRC.h",
+        "provider_value": "./AdamSource\\DaviRC.h",
+        "string": {
+          "encoding": "utf-8",
+          "encoding_status": "inferred",
+          "termination": "present_or_not_required",
+          "byte_length": 22
+        },
+        "source_address": "0x4f853d"
+      },
+      {
+        "address": "0x68eb4c",
+        "value": "m_BitmapMgr",
+        "provider_value": "m_BitmapMgr",
+        "string": {
+          "encoding": "utf-8",
+          "encoding_status": "inferred",
+          "termination": "present_or_not_required",
+          "byte_length": 12
+        },
+        "source_address": "0x4f82f7"
+      },
+      {
+        "address": "0x68eb58",
+        "value": "./AdamSource\\AdamEngine.h",
+        "provider_value": "./AdamSource\\AdamEngine.h",
+        "string": {
+          "encoding": "utf-8",
+          "encoding_status": "inferred",
+          "termination": "present_or_not_required",
+          "byte_length": 26
+        },
+        "source_address": "0x4f82f2"
+      },
+      {
+        "address": "0x691bc0",
+        "value": "result",
+        "provider_value": "result",
+        "string": {
+          "encoding": "utf-8",
+          "encoding_status": "inferred",
+          "termination": "present_or_not_required",
+          "byte_length": 7
+        },
+        "source_address": "0x4f860d"
+      },
+      {
+        "address": "0x695190",
+        "value": "CAdamLoadUpdater >> %s",
+        "provider_value": "CAdamLoadUpdater >> %s",
+        "string": {
+          "encoding": "utf-8",
+          "encoding_status": "inferred",
+          "termination": "present_or_not_required",
+          "byte_length": 23
+        },
+        "source_address": "0x4f81d4"
+      },
+      {
+        "address": "0x69c628",
+        "value": "D:\\Work\\RCHorror\\AdamSource\\AdamSubLevel.cpp",
+        "provider_value": "D:\\Work\\RCHorror\\AdamSource\\AdamSubLevel.cpp",
+        "string": {
+          "encoding": "utf-8",
+          "encoding_status": "inferred",
+          "termination": "present_or_not_required",
+          "byte_length": 45
+        },
+        "source_address": "0x4f8118"
+      },
+      {
+        "address": "0x69c628",
+        "value": "D:\\Work\\RCHorror\\AdamSource\\AdamSubLevel.cpp",
+        "provider_value": "D:\\Work\\RCHorror\\AdamSource\\AdamSubLevel.cpp",
+        "string": {
+          "encoding": "utf-8",
+          "encoding_status": "inferred",
+          "termination": "present_or_not_required",
+          "byte_length": 45
+        },
+        "source_address": "0x4f83b3"
+      },
+      {
+        "address": "0x69c628",
+        "value": "D:\\Work\\RCHorror\\AdamSource\\AdamSubLevel.cpp",
+        "provider_value": "D:\\Work\\RCHorror\\AdamSource\\AdamSubLevel.cpp",
+        "string": {
+          "encoding": "utf-8",
+          "encoding_status": "inferred",
+          "termination": "present_or_not_required",
+          "byte_length": 45
+        },
+        "source_address": "0x4f8608"
+      },
+      {
+        "address": "0x69cc70",
+        "value": "m_AlphaBitmapFileName==0 || m_AlphaBitmapFileName->IsConstructed()",
+        "provider_value": "m_AlphaBitmapFileName==0 || m_AlphaBitmapFileName->IsConstructed()",
+        "string": {
+          "encoding": "utf-8",
+          "encoding_status": "inferred",
+          "termination": "present_or_not_required",
+          "byte_length": 67
+        },
+        "source_address": "0x4f840e"
+      },
+      {
+        "address": "0x69cc70",
+        "value": "m_AlphaBitmapFileName==0 || m_AlphaBitmapFileName->IsConstructed()",
+        "provider_value": "m_AlphaBitmapFileName==0 || m_AlphaBitmapFileName->IsConstructed()",
+        "string": {
+          "encoding": "utf-8",
+          "encoding_status": "inferred",
+          "termination": "present_or_not_required",
+          "byte_length": 67
+        },
+        "source_address": "0x4f846e"
+      },
+      {
+        "address": "0x69ccb4",
+        "value": "./AdamSource\\AdamFileSystem.h",
+        "provider_value": "./AdamSource\\AdamFileSystem.h",
+        "string": {
+          "encoding": "utf-8",
+          "encoding_status": "inferred",
+          "termination": "present_or_not_required",
+          "byte_length": 30
+        },
+        "source_address": "0x4f8409"
+      },
+      {
+        "address": "0x69ccb4",
+        "value": "./AdamSource\\AdamFileSystem.h",
+        "provider_value": "./AdamSource\\AdamFileSystem.h",
+        "string": {
+          "encoding": "utf-8",
+          "encoding_status": "inferred",
+          "termination": "present_or_not_required",
+          "byte_length": 30
+        },
+        "source_address": "0x4f8469"
+      },
+      {
+        "address": "0x69ccd4",
+        "value": "bitmap.IsNotNull()",
+        "provider_value": "bitmap.IsNotNull()",
+        "string": {
+          "encoding": "utf-8",
+          "encoding_status": "inferred",
+          "termination": "present_or_not_required",
+          "byte_length": 19
+        },
+        "source_address": "0x4f83b8"
+      },
+      {
+        "address": "0x69cce8",
+        "value": "Add bitmaps to world...",
+        "provider_value": "Add bitmaps to world...",
+        "string": {
+          "encoding": "utf-8",
+          "encoding_status": "inferred",
+          "termination": "present_or_not_required",
+          "byte_length": 24
+        },
+        "source_address": "0x4f8225"
+      },
+      {
+        "address": "0x69cd00",
+        "value": "CAdamSubLevel::PreloadDataBeforeGameObjects(void): add bitmaps to world",
+        "provider_value": "CAdamSubLevel::PreloadDataBeforeGameObjects(void): add bitmaps to world",
+        "string": {
+          "encoding": "utf-8",
+          "encoding_status": "inferred",
+          "termination": "present_or_not_required",
+          "byte_length": 72
+        },
+        "source_address": "0x4f8141"
+      },
+      {
+        "address": "0x69cd00",
+        "value": "CAdamSubLevel::PreloadDataBeforeGameObjects(void): add bitmaps to world",
+        "provider_value": "CAdamSubLevel::PreloadDataBeforeGameObjects(void): add bitmaps to world",
+        "string": {
+          "encoding": "utf-8",
+          "encoding_status": "inferred",
+          "termination": "present_or_not_required",
+          "byte_length": 72
+        },
+        "source_address": "0x4f8151"
+      }
+    ],
+    "referenced_names": [
+      {
+        "address": "0x4040a0",
+        "value": "sub_4040a0",
+        "source_address": "0x4f813c"
+      },
+      {
+        "address": "0x4040a0",
+        "value": "sub_4040a0",
+        "source_address": "0x4f81fd"
+      },
+      {
+        "address": "0x4040a0",
+        "value": "sub_4040a0",
+        "source_address": "0x4f8210"
+      },
+      {
+        "address": "0x4040a0",
+        "value": "sub_4040a0",
+        "source_address": "0x4f8316"
+      },
+      {
+        "address": "0x4040a0",
+        "value": "sub_4040a0",
+        "source_address": "0x4f837e"
+      },
+      {
+        "address": "0x4040a0",
+        "value": "sub_4040a0",
+        "source_address": "0x4f83d4"
+      },
+      {
+        "address": "0x4040a0",
+        "value": "sub_4040a0",
+        "source_address": "0x4f842a"
+      },
+      {
+        "address": "0x4040a0",
+        "value": "sub_4040a0",
+        "source_address": "0x4f848d"
+      },
+      {
+        "address": "0x4040a0",
+        "value": "sub_4040a0",
+        "source_address": "0x4f84ec"
+      },
+      {
+        "address": "0x4040a0",
+        "value": "sub_4040a0",
+        "source_address": "0x4f855e"
+      },
+      {
+        "address": "0x4040a0",
+        "value": "sub_4040a0",
+        "source_address": "0x4f85d3"
+      },
+      {
+        "address": "0x4040a0",
+        "value": "sub_4040a0",
+        "source_address": "0x4f8629"
+      },
+      {
+        "address": "0x4040f0",
+        "value": "sub_4040f0",
+        "source_address": "0x4f815a"
+      },
+      {
+        "address": "0x4040f0",
+        "value": "sub_4040f0",
+        "source_address": "0x4f839c"
+      },
+      {
+        "address": "0x4040f0",
+        "value": "sub_4040f0",
+        "source_address": "0x4f85f1"
+      },
+      {
+        "address": "0x409810",
+        "value": "sub_409810",
+        "source_address": "0x4f82d8"
+      },
+      {
+        "address": "0x409810",
+        "value": "sub_409810",
+        "source_address": "0x4f83f5"
+      },
+      {
+        "address": "0x409810",
+        "value": "sub_409810",
+        "source_address": "0x4f8452"
+      },
+      {
+        "address": "0x409810",
+        "value": "sub_409810",
+        "source_address": "0x4f84ae"
+      },
+      {
+        "address": "0x409810",
+        "value": "sub_409810",
+        "source_address": "0x4f8526"
+      },
+      {
+        "address": "0x4098d0",
+        "value": "sub_4098d0",
+        "source_address": "0x4f8344"
+      },
+      {
+        "address": "0x4098d0",
+        "value": "sub_4098d0",
+        "source_address": "0x4f863e"
+      },
+      {
+        "address": "0x4337e0",
+        "value": "sub_4337e0",
+        "source_address": "0x4f81b5"
+      },
+      {
+        "address": "0x4337e0",
+        "value": "sub_4337e0",
+        "source_address": "0x4f821c"
+      },
+      {
+        "address": "0x442bf0",
+        "value": "sub_442bf0",
+        "source_address": "0x4f81a4"
+      },
+      {
+        "address": "0x49f950",
+        "value": "sub_49f950",
+        "source_address": "0x4f81be"
+      },
+      {
+        "address": "0x49fa20",
+        "value": "sub_49fa20",
+        "source_address": "0x4f8677"
+      },
+      {
+        "address": "0x4fb310",
+        "value": "sub_4fb310",
+        "source_address": "0x4f85bc"
+      },
+      {
+        "address": "0x4fbca0",
+        "value": "sub_4fbca0",
+        "source_address": "0x4f8595"
+      },
+      {
+        "address": "0x50aca0",
+        "value": "sub_50aca0",
+        "source_address": "0x4f84f6"
+      },
+      {
+        "address": "0x50b1e0",
+        "value": "sub_50b1e0",
+        "source_address": "0x4f8572"
+      },
+      {
+        "address": "0x50d730",
+        "value": "sub_50d730",
+        "source_address": "0x4f8327"
+      },
+      {
+        "address": "0x515ff0",
+        "value": "sub_515ff0",
+        "source_address": "0x4f81ae"
+      },
+      {
+        "address": "0x515ff0",
+        "value": "sub_515ff0",
+        "source_address": "0x4f8215"
+      },
+      {
+        "address": "0x51c180",
+        "value": "sub_51c180",
+        "source_address": "0x4f81a9"
+      },
+      {
+        "address": "0x57d310",
+        "value": "sub_57d310",
+        "source_address": "0x4f8363"
+      },
+      {
+        "address": "0x5844b0",
+        "value": "sub_5844b0",
+        "source_address": "0x4f8353"
+      },
+      {
+        "address": "0x5a07f0",
+        "value": "sub_5a07f0",
+        "source_address": "0x4f82fc"
+      },
+      {
+        "address": "0x5a07f0",
+        "value": "sub_5a07f0",
+        "source_address": "0x4f83bd"
+      },
+      {
+        "address": "0x5a07f0",
+        "value": "sub_5a07f0",
+        "source_address": "0x4f8413"
+      },
+      {
+        "address": "0x5a07f0",
+        "value": "sub_5a07f0",
+        "source_address": "0x4f8473"
+      },
+      {
+        "address": "0x5a07f0",
+        "value": "sub_5a07f0",
+        "source_address": "0x4f84d2"
+      },
+      {
+        "address": "0x5a07f0",
+        "value": "sub_5a07f0",
+        "source_address": "0x4f8547"
+      },
+      {
+        "address": "0x5a07f0",
+        "value": "sub_5a07f0",
+        "source_address": "0x4f8612"
+      },
+      {
+        "address": "0x5a2980",
+        "value": "sub_5a2980",
+        "source_address": "0x4f8236"
+      },
+      {
+        "address": "0x5a2980",
+        "value": "sub_5a2980",
+        "source_address": "0x4f824d"
+      },
+      {
+        "address": "0x5a2980",
+        "value": "sub_5a2980",
+        "source_address": "0x4f8654"
+      },
+      {
+        "address": "0x5a3b60",
+        "value": "sub_5a3b60",
+        "source_address": "0x4f823d"
+      },
+      {
+        "address": "0x5a3b60",
+        "value": "sub_5a3b60",
+        "source_address": "0x4f865b"
+      },
+      {
+        "address": "0x5a3b80",
+        "value": "sub_5a3b80",
+        "source_address": "0x4f8254"
+      },
+      {
+        "address": "0x5ab4a0",
+        "value": "sub_5ab4a0",
+        "source_address": "0x4f816e"
+      },
+      {
+        "address": "0x5ae390",
+        "value": "sub_5ae390",
+        "source_address": "0x4f81da"
+      },
+      {
+        "address": "0x5ae5f0",
+        "value": "sub_5ae5f0",
+        "source_address": "0x4f8121"
+      },
+      {
+        "address": "0x5ae770",
+        "value": "sub_5ae770",
+        "source_address": "0x4f868b"
+      },
+      {
+        "address": "0x5afe30",
+        "value": "sub_5afe30",
+        "source_address": "0x4f822a"
+      },
+      {
+        "address": "0x5aff00",
+        "value": "sub_5aff00",
+        "source_address": "0x4f81e8"
+      },
+      {
+        "address": "0x60a6f2",
+        "value": "sub_60a6f2",
+        "source_address": "0x4f826a"
+      },
+      {
+        "address": "0x60a6f2",
+        "value": "sub_60a6f2",
+        "source_address": "0x4f8280"
+      },
+      {
+        "address": "0x634f15",
+        "value": "sub_634f15",
+        "source_address": "0x4f80f2"
+      },
+      {
+        "address": "0x64a258",
+        "value": "imp_timeGetTime",
+        "source_address": "0x4f817c"
+      },
+      {
+        "address": "0x68d62c",
+        "value": "aMpointer",
+        "source_address": "0x4f84cd"
+      },
+      {
+        "address": "0x68d62c",
+        "value": "aMpointer",
+        "source_address": "0x4f8542"
+      },
+      {
+        "address": "0x68d638",
+        "value": "aAdamsourcedavi_68d638",
+        "source_address": "0x4f84c8"
+      },
+      {
+        "address": "0x68d638",
+        "value": "aAdamsourcedavi_68d638",
+        "source_address": "0x4f853d"
+      },
+      {
+        "address": "0x68eb4c",
+        "value": "aMbitmapmgr",
+        "source_address": "0x4f82f7"
+      },
+      {
+        "address": "0x68eb58",
+        "value": "aAdamsourceadam_68eb58",
+        "source_address": "0x4f82f2"
+      },
+      {
+        "address": "0x691bc0",
+        "value": "aResult",
+        "source_address": "0x4f860d"
+      },
+      {
+        "address": "0x695190",
+        "value": "aCadamloadupdat",
+        "source_address": "0x4f81d4"
+      },
+      {
+        "address": "0x69c628",
+        "value": "aDworkrchorrora_69c628",
+        "source_address": "0x4f8118"
+      },
+      {
+        "address": "0x69c628",
+        "value": "aDworkrchorrora_69c628",
+        "source_address": "0x4f83b3"
+      },
+      {
+        "address": "0x69c628",
+        "value": "aDworkrchorrora_69c628",
+        "source_address": "0x4f8608"
+      },
+      {
+        "address": "0x69cc70",
+        "value": "aMalphabitmapfi",
+        "source_address": "0x4f840e"
+      },
+      {
+        "address": "0x69cc70",
+        "value": "aMalphabitmapfi",
+        "source_address": "0x4f846e"
+      },
+      {
+        "address": "0x69ccb4",
+        "value": "aAdamsourceadam_69ccb4",
+        "source_address": "0x4f8409"
+      },
+      {
+        "address": "0x69ccb4",
+        "value": "aAdamsourceadam_69ccb4",
+        "source_address": "0x4f8469"
+      },
+      {
+        "address": "0x69ccd4",
+        "value": "aBitmapisnotnul",
+        "source_address": "0x4f83b8"
+      },
+      {
+        "address": "0x69cce8",
+        "value": "aAddBitmapsToWo",
+        "source_address": "0x4f8225"
+      },
+      {
+        "address": "0x69cd00",
+        "value": "aCadamsublevelp_69cd00",
+        "source_address": "0x4f8141"
+      },
+      {
+        "address": "0x69cd00",
+        "value": "aCadamsublevelp_69cd00",
+        "source_address": "0x4f8151"
+      },
+      {
+        "address": "0x6b3f70",
+        "value": "byte_6b3f70",
+        "source_address": "0x4f82d3"
+      },
+      {
+        "address": "0x6b3f70",
+        "value": "byte_6b3f70",
+        "source_address": "0x4f8383"
+      },
+      {
+        "address": "0x6b3f70",
+        "value": "byte_6b3f70",
+        "source_address": "0x4f8393"
+      },
+      {
+        "address": "0x6b3f70",
+        "value": "byte_6b3f70",
+        "source_address": "0x4f83f0"
+      },
+      {
+        "address": "0x6b3f70",
+        "value": "byte_6b3f70",
+        "source_address": "0x4f844d"
+      },
+      {
+        "address": "0x6b3f70",
+        "value": "byte_6b3f70",
+        "source_address": "0x4f84a2"
+      },
+      {
+        "address": "0x6b3f70",
+        "value": "byte_6b3f70",
+        "source_address": "0x4f8521"
+      },
+      {
+        "address": "0x6b3f70",
+        "value": "byte_6b3f70",
+        "source_address": "0x4f85d8"
+      },
+      {
+        "address": "0x6b3f70",
+        "value": "byte_6b3f70",
+        "source_address": "0x4f85e8"
+      },
+      {
+        "address": "0x6b9938",
+        "value": "byte_6b9938",
+        "source_address": "0x4f819f"
+      },
+      {
+        "address": "0x6b9940",
+        "value": "dword_6b9940",
+        "source_address": "0x4f8189"
+      },
+      {
+        "address": "0x6c8de0",
+        "value": "dword_6c8de0",
+        "source_address": "0x4f82a5"
+      },
+      {
+        "address": "0x74b2d8",
+        "value": "timeGetTime",
+        "source_address": "0x4f817c"
+      }
+    ],
+    "basic_blocks": [
+      {
+        "start": "0x4f80f0",
+        "end": "0x4f81be",
+        "successors": [
+          "0x4f81be",
+          "0x4f8202"
+        ]
+      },
+      {
+        "start": "0x4f81be",
+        "end": "0x4f81ca",
+        "successors": [
+          "0x4f81ca",
+          "0x4f81cf"
+        ]
+      },
+      {
+        "start": "0x4f81ca",
+        "end": "0x4f81cf",
+        "successors": [
+          "0x4f81cf"
+        ]
+      },
+      {
+        "start": "0x4f8225",
+        "end": "0x4f8232",
+        "successors": [
+          "0x4f8232"
+        ]
+      },
+      {
+        "start": "0x4f824a",
+        "end": "0x4f824c",
+        "successors": [
+          "0x4f824c"
+        ]
+      },
+      {
+        "start": "0x4f8295",
+        "end": "0x4f829d",
+        "successors": [
+          "0x4f829d",
+          "0x4f864b"
+        ]
+      },
+      {
+        "start": "0x4f829d",
+        "end": "0x4f82b6",
+        "successors": [
+          "0x4f82b6",
+          "0x4f82bd"
+        ]
+      },
+      {
+        "start": "0x4f82b6",
+        "end": "0x4f82bd",
+        "successors": [
+          "0x4f82bd"
+        ]
+      },
+      {
+        "start": "0x4f82c7",
+        "end": "0x4f831b",
+        "successors": [
+          "0x4f831b"
+        ]
+      },
+      {
+        "start": "0x4f8340",
+        "end": "0x4f8344",
+        "successors": [
+          "0x4f8344",
+          "0x4f8349"
+        ]
+      },
+      {
+        "start": "0x4f8344",
+        "end": "0x4f8349",
+        "successors": [
+          "0x4f8349"
+        ]
+      },
+      {
+        "start": "0x4f8370",
+        "end": "0x4f83d9",
+        "successors": [
+          "0x4f83d9"
+        ]
+      },
+      {
+        "start": "0x4f83e0",
+        "end": "0x4f83e7",
+        "successors": [
+          "0x4f83e7",
+          "0x4f842f"
+        ]
+      },
+      {
+        "start": "0x4f83e7",
+        "end": "0x4f842f",
+        "successors": [
+          "0x4f842f"
+        ]
+      },
+      {
+        "start": "0x4f843a",
+        "end": "0x4f8441",
+        "successors": [
+          "0x4f8441",
+          "0x4f8492"
+        ]
+      },
+      {
+        "start": "0x4f8441",
+        "end": "0x4f8492",
+        "successors": [
+          "0x4f8492"
+        ]
+      },
+      {
+        "start": "0x4f849d",
+        "end": "0x4f84f1",
+        "successors": [
+          "0x4f84f1"
+        ]
+      },
+      {
+        "start": "0x4f8502",
+        "end": "0x4f8518",
+        "successors": [
+          "0x4f8518",
+          "0x4f8563"
+        ]
+      },
+      {
+        "start": "0x4f8518",
+        "end": "0x4f8563",
+        "successors": [
+          "0x4f8563"
+        ]
+      },
+      {
+        "start": "0x4f858c",
+        "end": "0x4f858f",
+        "successors": [
+          "0x4f858f"
+        ]
+      },
+      {
+        "start": "0x4f85a2",
+        "end": "0x4f85b7",
+        "successors": [
+          "0x4f85b7",
+          "0x4f85ba"
+        ]
+      },
+      {
+        "start": "0x4f85b7",
+        "end": "0x4f85ba",
+        "successors": [
+          "0x4f85ba"
+        ]
+      },
+      {
+        "start": "0x4f85c5",
+        "end": "0x4f862e",
+        "successors": [
+          "0x4f862e"
+        ]
+      },
+      {
+        "start": "0x4f863e",
+        "end": "0x4f864b",
+        "successors": [
+          "0x4f864b"
+        ]
+      },
+      {
+        "start": "0x4f824c",
+        "end": "0x4f8295",
+        "successors": [
+          "0x4f8295",
+          "0x4f864b"
+        ]
+      },
+      {
+        "start": "0x4f8668",
+        "end": "0x4f86ab",
+        "successors": []
+      },
+      {
+        "start": "0x4f864b",
+        "end": "0x4f8668",
+        "successors": [
+          "0x4f824c",
+          "0x4f8668"
+        ]
+      },
+      {
+        "start": "0x4f862e",
+        "end": "0x4f863e",
+        "successors": [
+          "0x4f863e",
+          "0x4f864b"
+        ]
+      },
+      {
+        "start": "0x4f85ba",
+        "end": "0x4f85c5",
+        "successors": [
+          "0x4f85c5",
+          "0x4f862e"
+        ]
+      },
+      {
+        "start": "0x4f858f",
+        "end": "0x4f85a2",
+        "successors": [
+          "0x4f85a2",
+          "0x4f862e"
+        ]
+      },
+      {
+        "start": "0x4f8563",
+        "end": "0x4f8577",
+        "successors": [
+          "0x4f8577"
+        ]
+      },
+      {
+        "start": "0x4f8577",
+        "end": "0x4f858c",
+        "successors": [
+          "0x4f858c",
+          "0x4f858f"
+        ]
+      },
+      {
+        "start": "0x4f84f1",
+        "end": "0x4f84fb",
+        "successors": [
+          "0x4f84fb"
+        ]
+      },
+      {
+        "start": "0x4f8492",
+        "end": "0x4f849d",
+        "successors": [
+          "0x4f849d",
+          "0x4f84f1"
+        ]
+      },
+      {
+        "start": "0x4f84fb",
+        "end": "0x4f8502",
+        "successors": [
+          "0x4f8502",
+          "0x4f8577"
+        ]
+      },
+      {
+        "start": "0x4f842f",
+        "end": "0x4f843a",
+        "successors": [
+          "0x4f843a",
+          "0x4f84fb"
+        ]
+      },
+      {
+        "start": "0x4f83d9",
+        "end": "0x4f83e0",
+        "successors": [
+          "0x4f83e0",
+          "0x4f842f"
+        ]
+      },
+      {
+        "start": "0x4f8349",
+        "end": "0x4f8358",
+        "successors": [
+          "0x4f8358"
+        ]
+      },
+      {
+        "start": "0x4f8358",
+        "end": "0x4f8370",
+        "successors": [
+          "0x4f8370",
+          "0x4f83d9"
+        ]
+      },
+      {
+        "start": "0x4f831b",
+        "end": "0x4f8340",
+        "successors": [
+          "0x4f8340",
+          "0x4f8358"
+        ]
+      },
+      {
+        "start": "0x4f82bd",
+        "end": "0x4f82c7",
+        "successors": [
+          "0x4f82c7",
+          "0x4f831b"
+        ]
+      },
+      {
+        "start": "0x4f8232",
+        "end": "0x4f824a",
+        "successors": [
+          "0x4f824a",
+          "0x4f8668"
+        ]
+      },
+      {
+        "start": "0x4f81cf",
+        "end": "0x4f8202",
+        "successors": [
+          "0x4f8202"
+        ]
+      },
+      {
+        "start": "0x4f8202",
+        "end": "0x4f8225",
+        "successors": [
+          "0x4f8225",
+          "0x4f8232"
+        ]
+      }
+    ],
+    "native_api": null,
+    "native_value_flow": null,
+    "limitations": [
+      "Native CallReference classifications are observed where available; detailed reference flags remain unknown.",
+      "Hopper's public Python API does not expose equivalent external or thunk classification in this dossier.",
+      "Native calls without resolved target addresses are not represented as edges; enumeration beyond reported CallReference objects is unknown.",
+      "Pseudocode and assembly are provider-specific representations, not original source."
+    ]
+  },
+  "confidence": "observed",
+  "authority": "shipped-artifact",
+  "environment": null,
+  "limitations": [
+    "Results depend on Hopper's completed static analysis.",
+    "String values cover native typed objects. Hopper may split long literals into adjacent unterminated fragments; string searches match each object independently.",
+    "Undecodable typed objects retain native display text with an explicit decoding unknown; these values do not establish decoded source literals.",
+    "Reported string encodings are inferred from typed bytes and native display; the original source's intended encoding is unknown."
+  ],
+  "locations": [],
+  "evidence_links": []
+}

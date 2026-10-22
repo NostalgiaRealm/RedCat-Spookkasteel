@@ -1,0 +1,37 @@
+--- temp_work/cpu-low-end-2026-10-18/before/src/gameplay.js
++++ src/gameplay.js
+@@ -805,8 +805,11 @@
+     for(const object of this.objects) {
+       if(this.state.lives!==lives||this.state.health<=0)return;
+       if(!object.enabled||object.collected||object.health<=0)continue;
+-      const e=object.entity,position=this.objectPosition(object),d=distance(position,playerPosition);
+-      if(object.kind==='pickup'&&d<38&&lineOfSight([playerPosition[0],playerPosition[1]+22,playerPosition[2]],[position[0],position[1]+18,position[2]]))this.pickup(object);
++      const e=object.entity;
++      if(object.kind==='pickup') {
++        const position=this.objectPosition(object);
++        if(distance(position,playerPosition)<38&&lineOfSight([playerPosition[0],playerPosition[1]+22,playerPosition[2]],[position[0],position[1]+18,position[2]]))this.pickup(object);
++      }
+       if(object.kind==='trigger') {
+         const inside=this.contains(object,playerPosition);
+         if(inside&&!object.inside)this.trigger(object);
+--- temp_work/cpu-low-end-2026-10-18/before/src/script-host.js
++++ src/script-host.js
+@@ -291,15 +291,15 @@
+     if(object.kind==='door')this.game.doorMotionComplete(object);
+     if(object.kind==='button')this.game.runEvent(object,object.switchedOn?'AfterSwitchOnCommand':'AfterSwitchOffCommand');
+   }
+-  applyMotion(object,player) {
+-    this.modelTransforms.set(object.modelIndex,{...player.sample(),origin:player.motion.origin});
++  applyMotion(object,player,pose=player.sample()) {
++    this.modelTransforms.set(object.modelIndex,{...pose,origin:player.motion.origin});
+   }
+   update(dt) {
+     this.time+=dt;
+     this.updateBossMusic();
+     for(const [id,player] of this.players) {
+       const object=player.object;
+-      if(player.playing){player.update(dt);this.applyMotion(object,player);}
++      if(player.playing)this.applyMotion(object,player,player.update(dt));
+     }
+     if(this.camera?.duration>0&&this.time-this.camera.start>=this.camera.duration)this.camera=null;
+     if(this.pendingCutsceneStop&&!this.isDialoguePlaying())this.finishCutscene(this.pendingCutsceneStop.fade);

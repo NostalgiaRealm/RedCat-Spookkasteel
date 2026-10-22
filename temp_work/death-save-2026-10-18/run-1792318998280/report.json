@@ -1,0 +1,21 @@
+{
+  "out": "temp_work/death-save-2026-10-18/run-1792318998280",
+  "checks": [
+    {
+      "label": "F5 while dead",
+      "latestUnchanged": false,
+      "recoveryUnchanged": true,
+      "calls": {
+        "snapshot": 1,
+        "capture": 1,
+        "write": 1
+      },
+      "health": 0,
+      "lives": 0,
+      "toast": "Je avontuur is opgeslagen.",
+      "mode": "playing"
+    }
+  ],
+  "failure": "AssertionError [ERR_ASSERTION]: F5 while dead: last living save is preserved\n\nfalse !== true\n\n    at preserved (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/death-save-scenes.mjs:77:12)\n    at async file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/death-save-scenes.mjs:83:18",
+  "errors": []
+}

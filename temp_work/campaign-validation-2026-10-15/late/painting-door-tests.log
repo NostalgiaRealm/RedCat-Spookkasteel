@@ -1,0 +1,47 @@
+✔ native proximity is an origin-centered X/Z box with unexpanded height and full hull dimensions (0.701925ms)
+✔ castle entrance preserves its left-first route and raises throne stairs only from the right corridor (91.707706ms)
+✔ walking into original doorhallway05_01 opens the knight-room passage at its brush, without E (20.117202ms)
+✔ walking into original doorhallway05_02 opens the knight-room passage at its brush, without E (18.317703ms)
+✔ walking into original doorhallway05_03 opens the knight-room passage at its brush, without E (17.960775ms)
+✔ walking into original secretdoor04 opens the knight-room passage at its brush, without E (14.911955ms)
+✔ chapel floor descends and carries RedCat after the original floor button raises it (196.725698ms)
+✔ Brutus double doors open through their original remote approach radii (45.478631ms)
+✔ automatic interaction retains authored locks, disable flags and shoot-only buttons (0.999584ms)
+✔ original painting solution wraps at path end, enables all three spiders, and breaks the entryway (53.004203ms)
+✖ the three roof-origin spiders wait for approach, descend at native FallSpeed, then land (16.657794ms)
+✔ hanging spider perception uses its ceiling eye, horizontal range and two native sight rays (13.812421ms)
+✔ pre-fix solved saves recover skipped spider enables and roof placement without replaying the gate cutscene (66.666086ms)
+✔ saving retains descent progress and does not rewind a fought or roaming roof-origin spider (53.069422ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 13
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 495.881872
+
+✖ failing tests:
+
+test at tests/painting-spider.test.mjs:52:1
+✖ the three roof-origin spiders wait for approach, descend at native FallSpeed, then land (16.657794ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'descending'
+  - 'awake'
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/painting-spider.test.mjs:65:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'descending',
+    expected: 'awake',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

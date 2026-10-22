@@ -1,0 +1,257 @@
+{
+  "scope": "Source configuration, Linux Electron, browser controls and targeted performance; not package/campaign certification.",
+  "nativeChecks": [
+    "native intro video decodes and plays",
+    "native Linux XWayland presentation, isolated profile and window/fullscreen render dimensions",
+    "two players create and load independent real source saves through menu controls"
+  ],
+  "nativeErrors": [],
+  "nativePixels": {
+    "width": 2560,
+    "height": 1440,
+    "colors": 5304
+  },
+  "display": {
+    "accelerometerSupport": "unknown",
+    "bounds": {
+      "x": 0,
+      "y": 0,
+      "width": 2560,
+      "height": 1440
+    },
+    "colorDepth": 24,
+    "colorSpace": "{primaries:BT709, transfer:SRGB, matrix:RGB, range:FULL}",
+    "depthPerComponent": 8,
+    "detected": true,
+    "displayFrequency": 143.8685760498047,
+    "id": 33,
+    "internal": false,
+    "label": "",
+    "maximumCursorSize": {
+      "width": 0,
+      "height": 0
+    },
+    "monochrome": false,
+    "nativeOrigin": {
+      "x": 0,
+      "y": 0
+    },
+    "rotation": 0,
+    "scaleFactor": 1,
+    "size": {
+      "width": 2560,
+      "height": 1440
+    },
+    "workArea": {
+      "x": 0,
+      "y": 0,
+      "width": 2560,
+      "height": 1440
+    },
+    "workAreaSize": {
+      "width": 2560,
+      "height": 1440
+    },
+    "touchSupport": "unknown"
+  },
+  "profiles": {
+    "first": "legacy",
+    "second": "p_6dee2741-1b9c-4ce2-be8f-cad29209e89b",
+    "separateSaves": true
+  },
+  "controllerChecks": [
+    "menu focus, hidden/disabled controls, select/range/checkbox changes, scrolling and modal safety",
+    "controller navigates actual settings, help, About and recovery menus",
+    "forest opens through controller with safe confirm, fixed camera and held two-second cutscene skip",
+    "controller analog movement, look, jump, walk, held firing and camera toggle reach gameplay",
+    "source controller pause/resume, disconnect isolation, reconnect and keyboard takeover without cheats"
+  ],
+  "controllerErrors": [],
+  "touchChecks": [
+    "mobile detection, real CDP multi-touch movement/look/jump/fire, two-second skip and camera toggle",
+    "mobile Off override survives reload"
+  ],
+  "touchErrors": [],
+  "circling": [
+    {
+      "begin": 3316.699999999255,
+      "last": 48309.5,
+      "position": [
+        1616,
+        -63.95,
+        3753
+      ],
+      "rendered": true,
+      "level": "lvl02a",
+      "positionAfter": [
+        1594.3387370626735,
+        -63.95,
+        3710.5858638790605
+      ],
+      "steadyFrames": 2370,
+      "steadyMissingFrames": 0,
+      "steadyActivations": 0,
+      "cpuP95": 9.399999998509884,
+      "stream": {
+        "totalVertices": 75843,
+        "residentVertices": 12096,
+        "residentChunks": 223,
+        "totalChunks": 1039,
+        "loadedTextures": 18
+      },
+      "gpu": {
+        "geometries": 244,
+        "textures": 45
+      }
+    }
+  ],
+  "zombie": [
+    {
+      "fixture": "dknopa",
+      "activated": true,
+      "scriptError": null,
+      "stages": [
+        {
+          "name": "approach",
+          "frames": 18,
+          "median": 7.199999999254942,
+          "p95": 27.200000002980232,
+          "p99": 27.200000002980232,
+          "max": 27.200000002980232,
+          "over50": 0,
+          "maxRender": 16,
+          "maxPursuitTraces": 0
+        },
+        {
+          "name": "activation",
+          "frames": 300,
+          "median": 6,
+          "p95": 7.600000001490116,
+          "p99": 8.599999997764826,
+          "max": 9.800000000745058,
+          "over50": 0,
+          "maxRender": 1,
+          "maxPursuitTraces": 0
+        },
+        {
+          "name": "chase0",
+          "frames": 360,
+          "median": 6.599999997764826,
+          "p95": 7.900000002235174,
+          "p99": 8.800000000745058,
+          "max": 10.100000001490116,
+          "over50": 0,
+          "maxRender": 19.100000001490116,
+          "maxPursuitTraces": 0
+        },
+        {
+          "name": "chase1",
+          "frames": 360,
+          "median": 5.800000000745058,
+          "p95": 7.5,
+          "p99": 8.800000000745058,
+          "max": 10.5,
+          "over50": 0,
+          "maxRender": 3.899999998509884,
+          "maxPursuitTraces": 0
+        },
+        {
+          "name": "blocked-chase",
+          "frames": 360,
+          "median": 5.800000000745058,
+          "p95": 7.099999997764826,
+          "p99": 7.800000000745058,
+          "max": 11.299999997019768,
+          "over50": 0,
+          "maxRender": 9,
+          "maxPursuitTraces": 0
+        }
+      ]
+    },
+    {
+      "fixture": "graf1_trigger",
+      "activated": true,
+      "scriptError": null,
+      "stages": [
+        {
+          "name": "approach",
+          "frames": 16,
+          "median": 6.5,
+          "p95": 11.800000000745058,
+          "p99": 11.800000000745058,
+          "max": 11.800000000745058,
+          "over50": 0,
+          "maxRender": 2.800000000745058,
+          "maxPursuitTraces": 0
+        },
+        {
+          "name": "activation",
+          "frames": 300,
+          "median": 5.5,
+          "p95": 6.699999999254942,
+          "p99": 7.5,
+          "max": 8.5,
+          "over50": 0,
+          "maxRender": 1.1000000014901161,
+          "maxPursuitTraces": 0
+        },
+        {
+          "name": "chase0",
+          "frames": 360,
+          "median": 4.800000000745058,
+          "p95": 5.699999999254942,
+          "p99": 6.900000002235174,
+          "max": 9.200000002980232,
+          "over50": 0,
+          "maxRender": 1.4000000022351742,
+          "maxPursuitTraces": 0
+        },
+        {
+          "name": "chase1",
+          "frames": 360,
+          "median": 4.800000000745058,
+          "p95": 5.5,
+          "p99": 6.300000000745058,
+          "max": 11.699999999254942,
+          "over50": 0,
+          "maxRender": 1.300000000745058,
+          "maxPursuitTraces": 0
+        },
+        {
+          "name": "blocked-chase",
+          "frames": 360,
+          "median": 5.199999999254942,
+          "p95": 6.399999998509884,
+          "p99": 7.5,
+          "max": 8.200000002980232,
+          "over50": 0,
+          "maxRender": 4.900000002235174,
+          "maxPursuitTraces": 0
+        }
+      ]
+    }
+  ],
+  "zombieErrors": [],
+  "shove": {
+    "errors": [],
+    "runtimeRoot": "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/shove-investigation-2026-10-05/lab-runtime",
+    "method": "Standalone lab source on Wayland; checks relocated runtime paths and visible WebGL scene, without main-game profile access.",
+    "paths": {
+      "profile": "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/shove-investigation-2026-10-05/lab-runtime/profile",
+      "temp": "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/shove-investigation-2026-10-05/lab-runtime/tmp",
+      "cache": "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/shove-investigation-2026-10-05/lab-runtime/cache"
+    },
+    "scene": {
+      "url": "rc-shove://lab/index.html",
+      "drawCalls": 8
+    },
+    "passed": true
+  },
+  "fixtureCorrections": [
+    "Current menu begins focus at Stoppen/open-quit instead of the old Start-first assumption.",
+    "Profile switching refreshes audio snapshot fields; separate progress/position/inventory invariants were compared instead of requiring whole saved JSON byte identity.",
+    "Touch label is Schieten with CSS capitalization; case-insensitive assertion supersedes raw uppercase expectation."
+  ],
+  "noBuilds": true,
+  "packagesPresent": "dist only contained builder-debug.yml and builder-effective-config.yaml; no executable release package was available."
+}

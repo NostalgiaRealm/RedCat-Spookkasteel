@@ -1,0 +1,36 @@
+✔ restores music layers, native fade phase and remembered tracks without changing scheduling (2.569754ms)
+✔ restores overlapping pickup tails, keyed effects and delayed replay countdown without rerandomizing (0.982814ms)
+✔ restored dialogue keeps active offset and FIFO; reconstruction and stale callbacks never duplicate lines (0.595346ms)
+✔ metadata-delayed seeks never play an introduction and respect pause/reset while pending (0.472847ms)
+✔ immediate saves retain a pending seek even when HAVE_NOTHING accepts it but reports zero (0.500826ms)
+✔ a restored replay delay may expire before metadata without seeking errors or an early replay (0.770085ms)
+✔ legacy/cross-level states leave reconstructed playback untouched; malformed entries are bounded (0.435977ms)
+✔ decoded WAV voices restore offsets across decode, pause and cancellation without stale playback (4.197373ms)
+✔ one-shots saved at EOF complete once without replaying the file on either audio backend (0.555906ms)
+✔ matching reconstructed moving emitter binding survives playback restoration (0.316167ms)
+✔ each level selects its complete original background WAV as an indefinite loop (62.335968ms)
+✔ returning after combat has faded out restores the background playhead before playback begins (0.482647ms)
+✔ returning during a crossfade reverses the existing layer without duplicate music or a position reset (0.401888ms)
+✔ pause freezes both music layers, positions and crossfade clocks then resumes from the same positions (0.636705ms)
+✔ explicit music stop and level reset discard remembered positions and all fading layers (0.357988ms)
+✔ fallback EOF events repeat complete tracks indefinitely without a replay delay or early restart (0.205758ms)
+✔ an EOF delivered while paused remains silent until resume and restarts at the beginning (0.129819ms)
+✔ selecting the same filename preserves playback while updating authored volume and owner (0.145579ms)
+✔ a track stopped exactly at EOF resumes at zero instead of trying to seek past its duration (0.206989ms)
+✔ Web Audio loops the full decoded sample range repeatedly without media seeking or a new source (4.290113ms)
+✔ buffered music preserves its sample offset across combat and pause with no introduction replay (0.641395ms)
+✔ reset during a pending music decode cannot resurrect the released source or refill its cache (0.475967ms)
+✔ music decoded while paused remains silent and starts exactly once when resumed (0.470897ms)
+✔ music retains at most two decoded tracks independently of the eight short-effect buffers (0.939384ms)
+✔ large money bags share decoded PCM but retain independent complete pickup voices (3.732526ms)
+✔ buffered pickup pause/resume preserves sample position and reset cancels outstanding loads (0.932184ms)
+✔ pickup decode failure releases the transition guard and allows retry (3.795806ms)
+✔ without Web Audio pickups retain media fallback; ordinary effects and dialogue keep their existing path (0.426848ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 111.005093

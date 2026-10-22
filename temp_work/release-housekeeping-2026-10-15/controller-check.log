@@ -1,0 +1,22 @@
+PASS menu focus, hidden/disabled controls, select/range/checkbox changes, scrolling and modal safety
+/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/release-housekeeping-2026-10-15/controller-scenes-1792090050701
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ 'open-quit'
+- 'start'
+
+    at file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/release-housekeeping-2026-10-15/controller-check.mjs:54:23 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'open-quit',
+  expected: 'start',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

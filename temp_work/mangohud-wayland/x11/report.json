@@ -1,0 +1,61 @@
+{
+  "variant": "x11",
+  "logs": [
+    "[147964:1007/211237.096878:ERROR:components/viz/service/display/display.cc:271] Frame latency is negative: -0.014 ms\n",
+    "Error occurred in handler for 'display:apply': Error: Het bureaublad kon de schermmodus niet wijzigen.\n    at /mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/electron/main.cjs:56:56\n    at async Session.<anonymous> (node:electron/js2c/browser_init:2:123817)\n"
+  ],
+  "gpu": {
+    "info": {
+      "auxAttributes": {
+        "amdSwitchable": false,
+        "canSupportThreadedTextureMailbox": false,
+        "glImplementationParts": "(gl=none,angle=none)",
+        "glResetNotificationStrategy": 0,
+        "hardwareSupportsVulkan": false,
+        "inProcessGpu": true,
+        "initializationTime": 0,
+        "isAsan": false,
+        "isClangCoverage": false,
+        "jpegDecodeAcceleratorSupported": false,
+        "optimus": false,
+        "passthroughCmdDecoder": false,
+        "sandboxed": false,
+        "skiaBackendType": "None",
+        "subpixelFontRendering": true,
+        "targetCpuBits": 64,
+        "visibilityCallbackCallCount": 0
+      },
+      "gpuDevice": [
+        {
+          "active": true,
+          "deviceId": 29663,
+          "gpuPreference": 0,
+          "vendorId": 4098
+        }
+      ]
+    },
+    "processes": [
+      {
+        "cpu": {
+          "cumulativeCPUUsage": 0.38,
+          "percentCPUUsage": 0,
+          "idleWakeupsPerSecond": 0
+        },
+        "pid": 147964,
+        "type": "GPU",
+        "creationTime": 1791400355880,
+        "serviceName": "GPU",
+        "memory": {
+          "workingSetSize": 192096,
+          "peakWorkingSetSize": 192096
+        }
+      }
+    ]
+  },
+  "libs": [
+    "/usr/lib64/mangohud/libMangoHud_opengl.so",
+    "/usr/lib64/libGLX_mesa.so.0.0.0",
+    "/usr/lib64/libGLX.so.0.0.0",
+    "/usr/lib64/mangohud/libMangoHud_shim.so"
+  ]
+}

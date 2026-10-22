@@ -1,0 +1,136 @@
+--- source-before/world-streaming.js
++++ src/world-streaming.js
+@@ -239,8 +239,10 @@
+     if(this.disposed)return;
+     const {camera}=this.world;camera.updateMatrixWorld();
+     // Prepare a short way along smooth camera travel, before a doorway/turn
+-    // exposes that artwork. This does not admit another room or extend the
+-    // draw range. Teleports and long frame gaps never project a huge preload.
++    // exposes that artwork. The same lead covers the outer view boundary:
++    // preparing only when a chunk is already inside it costs a held frame
++    // even with decoded maps. Drawing and room admission remain unchanged.
++    // Teleports and long frame gaps never project a huge preload.
+     this.preloadPosition.copy(camera.position);
+     const elapsed=this.previousCameraAt===null?0:now-this.previousCameraAt;
+     this.cameraStep.subVectors(camera.position,this.previousCamera);const step=this.cameraStep.length();
+@@ -274,7 +276,7 @@
+       }
+       model.pvsVisible=this.boundsVisible(model.bounds);
+     }
+-    const wanted=[];
++    const wanted=[],departed=[];
+     for(const chunk of this.chunks) {
+       this.refreshChunkMatrix(chunk.mesh,parentChanged);
+       if(!chunk.boundsMatrix||!chunk.boundsMatrix.equals(chunk.mesh.matrixWorld)) {
+@@ -283,6 +285,7 @@
+         chunk.boundsMatrix.copy(chunk.mesh.matrixWorld);
+       }
+       const distance=chunk.bounds.distanceToPoint(camera.position);
++      const prepareDistance=Math.min(distance,chunk.bounds.distanceToPoint(this.preloadPosition));
+       const roomAllowed=chunk.group.model===0?this.rooms.areasAllowed(chunk.areas):this.roomBoundsAllowed(chunk.bounds);
+       if(chunk.visibilityRevision!==this.visibility.revision) {
+         chunk.pvsVisible=chunk.spans.some(([face])=>!this.referencedFaces[face]||this.visibility.faces[face]);
+@@ -294,26 +297,31 @@
+       // away. Keep a camera-local neighborhood instead, measuring the nearest
+       // face bounds so a long wall or nearby open courtyard stays whole.
+       const inRange=distance<=this.viewRadius;
++      const inPrepareRange=prepareDistance<=this.viewRadius;
+       chunk.inView=roomAllowed&&inRange&&chunk.mesh.visible&&potentiallyVisible&&this.frustum.intersectsBox(chunk.bounds);
+       chunk.requiredForView=chunk.inView&&(chunk.group.model===0?this.rooms.areasRequired(chunk.areas):this.roomBoundsRequired(chunk.bounds));
+-      const near=roomAllowed&&inRange&&(distance<=WORLD_STREAMING.preloadRadius||chunk.bounds.distanceToPoint(this.preloadPosition)<=WORLD_STREAMING.preloadRadius);
++      const near=roomAllowed&&inPrepareRange&&prepareDistance<=WORLD_STREAMING.preloadRadius;
+       // The present camera leaf's PVS is a drawing test, not a prediction of
+       // what a nearby leaf will reveal. Room admission still bounds prefetch.
+-      const ahead=roomAllowed&&inRange&&chunk.mesh.visible&&this.preloadFrustum.intersectsBox(chunk.bounds);
++      const ahead=roomAllowed&&inPrepareRange&&chunk.mesh.visible&&this.preloadFrustum.intersectsBox(chunk.bounds);
+       // Finish admitted open-connected rooms in the background, including
+       // surfaces behind the camera/current PVS. A briefly lost portal view
+       // keeps this preparation through a turn without adding any draws.
+       // Closed neighbors still use only the near/ahead preload margin.
+-      const preparedRoom=inRange&&chunk.mesh.visible&&
++      const preparedRoom=inPrepareRange&&chunk.mesh.visible&&
+         (chunk.group.model===0?this.rooms.areasPreload(chunk.areas):this.roomBoundsPreload(chunk.bounds));
+       chunk.preloadPriority=chunk.requiredForView?2:near||ahead?1:0;
+-      if(!roomAllowed&&!preparedRoom){if(chunk.request)this.unload(chunk);continue;}
++      if(!roomAllowed&&!preparedRoom){if(chunk.request)departed.push(chunk);continue;}
+       if(near||ahead||preparedRoom){chunk.lastNeeded=now;if(!chunk.request)wanted.push({chunk,distance});}
+-      else if(chunk.request&&distance>WORLD_STREAMING.retainRadius&&now-chunk.lastNeeded>WORLD_STREAMING.retainSeconds)this.unload(chunk);
++      else if(chunk.request&&distance>WORLD_STREAMING.retainRadius&&now-chunk.lastNeeded>WORLD_STREAMING.retainSeconds)departed.push(chunk);
+     }
+     // Visible surfaces take priority over the surrounding preload margin.
+     wanted.sort((a,b)=>b.chunk.preloadPriority-a.chunk.preloadPriority||a.distance-b.distance);
+     for(const {chunk}of wanted)this.request(chunk);
++    // A newly entered room may need the same pending/decoded map as the one
++    // being left. Transfer references before dropping old owners, avoiding
++    // an unnecessary last-user disposal and duplicate fetch/upload.
++    for(const chunk of departed)this.unload(chunk);
+     let budget=12000;
+     this.ready.sort((a,b)=>Number(b.chunk.requiredForView)-Number(a.chunk.requiredForView));
+     this.ready=this.ready.filter(entry=>{
+--- source-before/actor-render-residency.js
++++ src/actor-render-residency.js
+@@ -132,6 +132,8 @@
+       if(changed){record.bounds.makeEmpty();record.roomBounds.makeEmpty();for(const entry of record.meshes){record.bounds.union(entry.worldBounds);record.roomBounds.union(entry.worldRoomBounds);}}
+       const visible=visibleInHierarchy(root,this.parking)&&record.meshes.some(({mesh})=>visibleInHierarchy(mesh,this.parking));
+       const distance=record.bounds.isEmpty()?Infinity:record.bounds.distanceToPoint(this.cameraPosition);
++      const lead=this.preloadPosition(),prepareDistance=lead?Math.min(distance,record.bounds.distanceToPoint(lead)):distance;
++      const inPrepareRange=prepareDistance<=this.viewDistance;
+       // Animation/frustum padding can extend through a ceiling into another
+       // floor. Room ownership uses the complete authored artwork bounds;
+       // the wider animation-safe box still controls view/PVS rejection.
+@@ -140,12 +142,11 @@
+       // camera frustum. Nearby hidden actors can remain preloaded without draws.
+       const inView=allowed&&visible&&distance<=this.viewDistance&&this.frustum.intersectsBox(record.bounds)&&this.boundsVisible(record.bounds);
+       const requiredForView=inView&&this.boundsRequired(record.roomBounds);
+-      const ahead=allowed&&visible&&distance<=this.viewDistance&&this.preloadFrustum.intersectsBox(record.bounds);
+-      const lead=this.preloadPosition();
+-      const near=distance<=this.nearDistance||lead&&record.bounds.distanceToPoint(lead)<=this.nearDistance;
++      const ahead=allowed&&visible&&inPrepareRange&&this.preloadFrustum.intersectsBox(record.bounds);
++      const near=prepareDistance<=this.nearDistance;
+       const currentRoom=allowed&&this.boundsCurrent(record.roomBounds);
+       const preparedRoom=this.boundsPreload(record.roomBounds);
+-      const wanted=visible&&distance<=this.viewDistance&&(allowed&&(near||ahead||currentRoom)||preparedRoom);
++      const wanted=visible&&inPrepareRange&&(allowed&&(near||ahead||currentRoom)||preparedRoom);
+       const priority=requiredForView?2:near||ahead?1:0;
+       if(wanted)this.textures?.request(record.resources,undefined,priority);
+       const textureReady=!this.textures||this.textures.ready(record.resources);
+--- source-before/actor-texture-stream.js
++++ src/actor-texture-stream.js
+@@ -110,7 +110,7 @@
+     const record=this.watchers.get(root);if(!record)return;
+     for(const {mesh,layerMask}of record.meshes)mesh.layers.mask=layerMask;this.watchers.delete(root);
+   }
+-  update(camera,{nearDistance=576,viewDistance=2048,boundsAllowed=null,boundsRequired=null}={}) {
++  update(camera,{nearDistance=576,viewDistance=2048,boundsAllowed=null,boundsRequired=null,preloadPosition=null}={}) {
+     const time=this.clock();this.request(this.pinned,time,3);this.readyForView=true;
+     if(!camera||!this.watchers.size){this.trim(time);return;}
+     camera.updateWorldMatrix(true,false);this.cameraPosition.setFromMatrixPosition(camera.matrixWorld);
+@@ -118,11 +118,16 @@
+     for(const record of this.watchers.values()) {
+       const {root}=record;root.updateWorldMatrix(true,false);
+       this.sphere.center.setFromMatrixPosition(root.matrixWorld);this.sphere.radius=record.radius*root.matrixWorld.getMaxScaleOnAxis();
+-      const distance=Math.max(0,this.sphere.center.distanceTo(this.cameraPosition)-this.sphere.radius),near=distance<=nearDistance;
++      const distance=Math.max(0,this.sphere.center.distanceTo(this.cameraPosition)-this.sphere.radius);
++      const prepareDistance=preloadPosition?Math.min(distance,Math.max(0,this.sphere.center.distanceTo(preloadPosition)-this.sphere.radius)):distance;
++      const near=prepareDistance<=nearDistance;
+       const allowed=!boundsAllowed||boundsAllowed(this.sphere.center.toArray(),this.sphere.radius);
+       const inView=allowed&&root.visible&&distance<=viewDistance&&this.frustum.intersectsSphere(this.sphere);
+       const requiredForView=inView&&(!boundsRequired||boundsRequired(this.sphere.center.toArray(),this.sphere.radius));
+-      if(allowed&&root.visible&&(near||inView))this.request(record.resources,time,requiredForView?2:1);
++      // Pooled fragments use this watcher rather than actor residency. Give
++      // their maps the same travel lead without widening their draw range.
++      const ahead=prepareDistance<=viewDistance&&this.frustum.intersectsSphere(this.sphere);
++      if(allowed&&root.visible&&(near||ahead))this.request(record.resources,time,requiredForView?2:1);
+       const ready=this.ready(record.resources);if(requiredForView&&!ready)this.readyForView=false;
+       for(const entry of record.meshes) {
+         if(entry.mesh.layers.mask!==0)entry.layerMask=entry.mesh.layers.mask;
+--- source-before/world.js
++++ src/world.js
+@@ -1181,6 +1181,7 @@
+   }
+   updateActorTextureResidency(){
+     this.actorTextures?.update(this.camera,{nearDistance:WORLD_STREAMING.preloadRadius,viewDistance:WORLD_STREAMING.viewRadius,
++      preloadPosition:this.geometryStream?.preloadPosition,
+       boundsAllowed:(position,radius)=>this.geometryStream?.rooms?.sphereAllowed(position,radius)??true,
+       boundsRequired:(position,radius)=>this.geometryStream?.rooms?.sphereRequired(position,radius)??true});
+   }

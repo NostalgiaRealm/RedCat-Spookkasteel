@@ -1,0 +1,17 @@
+# Retained investigation logs are part of the research archive.
+!**/*.log
+
+# Reproducible local JDK installation; see ../ANDROID.md.
+/android-initial-2026-10-06/toolchain/
+
+# Publish the verified lossless archive; keep the unpacked working copy local.
+/enemy-actor-animations-2026-10-12/assets/rebuild-samples.jsonl
+
+# Host-specific generated symlink fixtures; provenance is in publication-2026-10-22/local-links.json.
+/android-initial-2026-10-06/asset-tests/run-P4PZuL/output-link
+/android-initial-2026-10-06/asset-tests/run-P4PZuL/assets/escape.txt
+/android-initial-2026-10-06/asset-tests/run-vIYjdT/output-link
+/android-initial-2026-10-06/asset-tests/run-vIYjdT/assets/escape.txt
+
+# Chromium temporary files have no research value.
+.com.google.Chrome.*

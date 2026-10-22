@@ -1,0 +1,48 @@
+✔ actor orientation applies native world-axis script and spin rotations before the brush rotation (1.040933ms)
+✔ original castle balls and cave rocks spin one revolution per second in opposite authored directions (1.003883ms)
+✔ attached actor and pickup anchors rotate about the model pivot without accumulating displacement (1.51954ms)
+✔ controller Disable pauses the support without hiding its actor, whereas Hide removes both (0.532146ms)
+✔ saving preserves local actor age, script rotation and its unmodified anchor while restoring the brush pose (2.595602ms)
+✔ an off-camera actor advances its authored animation clock and resumes the current pose when approached (1.973577ms)
+✔ moving a model-attached prop refreshes its existing collision surface and Hide disables it (2.068216ms)
+✔ the frame queries attached prop collision at the newly advanced support pose without advancing its animation twice (1.921027ms)
+✔ all original decorative actors resolve their assets, explicit motions and moving-model attachments (52.935174ms)
+✔ off-camera actors release only GPU resources after hysteresis and return immediately on camera turn (3.615706ms)
+✔ shared actor geometry and textures are retained until the last resident owner leaves (0.665245ms)
+✔ distant visible actors and large transformed assemblies stay complete (1.299041ms)
+✔ near-camera preload and distance hysteresis avoid repeated uploads at the boundary (0.411747ms)
+✔ nearby actors behind PVS stay preloaded without drawing while distant visible bounds stay intact (0.502707ms)
+✔ player and nonmanaged scene consumers protect shared textures and geometry (0.611705ms)
+✔ removal and controller disposal restore original layers without changing gameplay visibility (0.510047ms)
+✔ every imported actor clip keeps exact Three.js bounds at start, interior and final poses (95.783475ms)
+✔ morph positions retain Three.js bounds and empty actors retain an empty box and zero-radius sphere (4.828117ms)
+✔ all 16 original RedCat clips produce finite, bounded animated geometry (21.781643ms)
+✔ animation advances vertices, loops and keeps instance poses separate (1.586419ms)
+✔ one-shot animation finishes without producing invalid samples (0.408787ms)
+✔ held poses do not invalidate their GPU geometry, while seeks and resumed movement do (1.38822ms)
+✔ completed poses stay cached and explicit restarts, clip changes and wraparound sample correctly (1.077883ms)
+✔ lazy actor triangles match eager sweeps through rotated, moving and newly animated props (24.779283ms)
+✔ effect batches upload only live vertices/instances through growth, shrinking and empty frames (2.026166ms)
+✔ deferred skinning preserves live bone transforms, transitions, save state and exact later vertices (66.276474ms)
+✔ orientation cache follows authored/runtime turns, rotating pickups, moving supports and independent callers (1.064622ms)
+✔ enemy transitions freeze the outgoing pose and use a 250 ms Hermite bone blend at any playback rate (20.424083ms)
+✔ rapid enemy state changes retain an outgoing pose above half weight and replace it below half (3.00674ms)
+✔ initial gameplay poses and dormant skeletons skip preview blends and retain geometry caches (4.545919ms)
+✔ paused transitions and completed one-shots leave position and normal uploads unchanged (4.906757ms)
+✔ gameplay snapshots restore the exact in-progress enemy blend and its next frame (8.86625ms)
+✔ same-frame projectile queries and actor synchronization advance an enemy transition only once (6.277177ms)
+✔ cutscenes freeze living enemy poses while visible corpses continue their death motion (4.748108ms)
+✔ Dungeon Max machine snapshots restore both barrel poses and deduplicate release-frame blending (4.41441ms)
+✔ beam scratch vectors preserve exact previous vertices, colours and ribbon UVs across consecutive rays (2.622853ms)
+✔ discs and custom coloured quads preserve earlier batch data, capacity and upload state (0.594536ms)
+✔ precomputed light distances retain stable ties, player priority, eligibility and eight-light limit (0.435377ms)
+✔ light order matches previous calculation after camera, light position and radius changes (1.533019ms)
+✔ actor lighting reads freshly updated scene matrices for mounted parts and debris without ancestor refreshes (3.149359ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 192.872792

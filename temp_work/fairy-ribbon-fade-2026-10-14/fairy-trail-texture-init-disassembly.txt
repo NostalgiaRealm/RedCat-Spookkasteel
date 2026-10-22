@@ -1,0 +1,64 @@
+
+/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat:     file format pei-i386
+
+
+Disassembly of section .text:
+
+004781c0 <.text+0x771c0>:
+  4781c0:	83 ec 08             	sub    esp,0x8
+  4781c3:	6a 01                	push   0x1
+  4781c5:	6a 00                	push   0x0
+  4781c7:	6a 00                	push   0x0
+  4781c9:	68 10 88 6b 00       	push   0x6b8810
+  4781ce:	83 ec 10             	sub    esp,0x10
+  4781d1:	8d 44 24 23          	lea    eax,[esp+0x23]
+  4781d5:	8b cc                	mov    ecx,esp
+  4781d7:	89 64 24 24          	mov    DWORD PTR [esp+0x24],esp
+  4781db:	50                   	push   eax
+  4781dc:	68 c4 2f 69 00       	push   0x692fc4
+  4781e1:	e8 2a 16 f9 ff       	call   0x409810
+  4781e6:	68 48 8e 6b 00       	push   0x6b8e48
+  4781eb:	b9 d8 87 6b 00       	mov    ecx,0x6b87d8
+  4781f0:	e8 1b 1b fb ff       	call   0x429d10
+  4781f5:	83 c4 08             	add    esp,0x8
+  4781f8:	c3                   	ret
+  4781f9:	90                   	nop
+  4781fa:	90                   	nop
+  4781fb:	90                   	nop
+  4781fc:	90                   	nop
+  4781fd:	90                   	nop
+  4781fe:	90                   	nop
+  4781ff:	90                   	nop
+  478200:	68 10 82 47 00       	push   0x478210
+  478205:	e8 71 23 19 00       	call   0x60a57b
+  47820a:	59                   	pop    ecx
+  47820b:	c3                   	ret
+  47820c:	90                   	nop
+  47820d:	90                   	nop
+  47820e:	90                   	nop
+  47820f:	90                   	nop
+  478210:	b9 d8 87 6b 00       	mov    ecx,0x6b87d8
+  478215:	e9 a6 1a fb ff       	jmp    0x429cc0
+  47821a:	90                   	nop
+  47821b:	90                   	nop
+  47821c:	90                   	nop
+  47821d:	90                   	nop
+  47821e:	90                   	nop
+  47821f:	90                   	nop
+  478220:	e8 0b 00 00 00       	call   0x478230
+  478225:	e9 e6 00 00 00       	jmp    0x478310
+  47822a:	90                   	nop
+  47822b:	90                   	nop
+  47822c:	90                   	nop
+  47822d:	90                   	nop
+  47822e:	90                   	nop
+  47822f:	90                   	nop
+  478230:	51                   	push   ecx
+  478231:	8a 44 24 03          	mov    al,BYTE PTR [esp+0x3]
+  478235:	53                   	push   ebx
+  478236:	56                   	push   esi
+  478237:	57                   	push   edi
+  478238:	a2 c8 87 6b 00       	mov    ds:0x6b87c8,al
+  47823d:	bf                   	.byte 0xbf
+  47823e:	6c                   	ins    BYTE PTR es:[edi],dx
+  47823f:	2d                   	.byte 0x2d

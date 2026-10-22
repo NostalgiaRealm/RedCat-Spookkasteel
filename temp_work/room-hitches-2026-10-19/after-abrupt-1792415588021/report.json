@@ -1,0 +1,1041 @@
+{
+  "phase": "after",
+  "routeMode": "abrupt",
+  "solidCamera": false,
+  "throttle": 1,
+  "output": "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/room-hitches-2026-10-19/after-abrupt-1792415588021",
+  "errors": [],
+  "method": "Isolated headless Chrome; copied Castle basement save; fixed doorway probes and returns. Walk route advances 2.8 world units per frame (168 units/sec at 60Hz); abrupt route approaches in 16 frames. --solid-camera enables normal camera collision resolution while still applying scripted player position probes. Initial load excluded. Manual streaming/render frames yield 8 ms; incomplete views retain last completed frame. CPU throttle is a browser development-tool simulation, not an i3 hardware measurement.",
+  "sourceHashes": {
+    "src/main.js": "b66594b188c39a3e322eaba809e248790bd0bf294bcf7eba6265071bc9be56f9",
+    "src/world.js": "cf79470901119981e85c3acb6710d06be931357b2194f6564383c0b4cce87a3a",
+    "src/world-streaming.js": "bf661299d1d45f471318ebabc97133fdf32286214cc52c3d4123a5ab7ebf320a",
+    "src/actor-render-residency.js": "2cb1de09500a54ca9daf6aa368de8fc31e606eed53fa6e1a0cae205825822a10",
+    "src/actor-texture-stream.js": "5122cfef15edda502f86fd23b76f2faf5bb4287a76f22d7ca800e7d7cecaefa8",
+    "src/room-visibility.js": "79a3fa5914ceeb0eb0114e4683c5a19552b37b0c9a1f9345927bd6d74d41a9cf",
+    "src/streaming-work.js": "b7071df16af63d6898880212ee31b112f05352417a125c5263832f7af95d2758",
+    "src/streaming-gpu-preparation.js": "7569ecff58684d05b5be2bfa900e4852fbf73ecde6ce25cc5eee7e72cb714c42"
+  },
+  "route": {
+    "frames": [],
+    "legs": [],
+    "gates": [
+      {
+        "model": 40,
+        "door": {
+          "id": "DoorModel43",
+          "modelIndex": 40,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": false
+      },
+      {
+        "model": 41,
+        "door": {
+          "id": "DoorModel44",
+          "modelIndex": 41,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": false
+      },
+      {
+        "model": 16,
+        "door": {
+          "id": "DoorModel19",
+          "modelIndex": 16,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 20,
+        "door": {
+          "id": "DoorModel24",
+          "modelIndex": 20,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 43,
+        "door": {
+          "id": "DoorModel45",
+          "modelIndex": 43,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0
+          },
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 44,
+        "door": {
+          "id": "DoorModel46",
+          "modelIndex": 44,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0
+          },
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 4,
+        "door": {
+          "id": "DoorModel6",
+          "modelIndex": 4,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 22,
+        "door": {
+          "id": "DoorModel25",
+          "modelIndex": 22,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 24,
+        "door": {
+          "id": "DoorModel31",
+          "modelIndex": 24,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": false
+      },
+      {
+        "model": 25,
+        "door": {
+          "id": "DoorModel32",
+          "modelIndex": 25,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": false
+      },
+      {
+        "model": 65,
+        "door": {
+          "id": "DoorModel62",
+          "modelIndex": 65,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 17,
+        "door": {
+          "id": "DoorModel20",
+          "modelIndex": 17,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 18,
+        "door": {
+          "id": "DoorModel21",
+          "modelIndex": 18,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 19,
+        "door": {
+          "id": "DoorModel22",
+          "modelIndex": 19,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0
+          },
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": false
+      },
+      {
+        "model": 63,
+        "door": {
+          "id": "DoorModel61",
+          "modelIndex": 63,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 64,
+        "door": {
+          "id": "DoorModel60",
+          "modelIndex": 64,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 15,
+        "door": {
+          "id": "DoorModel18",
+          "modelIndex": 15,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 14,
+        "door": {
+          "id": "DoorModel17",
+          "modelIndex": 14,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 26,
+        "door": {
+          "id": "DoorModel29",
+          "modelIndex": 26,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 27,
+        "door": {
+          "id": "DoorModel30",
+          "modelIndex": 27,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 5,
+        "door": {
+          "id": "DoorModel7",
+          "modelIndex": 5,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 7,
+        "door": {
+          "id": "DoorModel10",
+          "modelIndex": 7,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0
+          },
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0
+          },
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": false
+      },
+      {
+        "model": 8,
+        "door": {
+          "id": "DoorModel11",
+          "modelIndex": 8,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 12,
+        "door": {
+          "id": "DoorModel15",
+          "modelIndex": 12,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 11,
+        "door": {
+          "id": "DoorModel14",
+          "modelIndex": 11,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 32,
+        "door": {
+          "id": "DoorModel37",
+          "modelIndex": 32,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": false,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": false
+      },
+      {
+        "model": 33,
+        "door": {
+          "id": "DoorModel38",
+          "modelIndex": 33,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": false,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": false
+      },
+      {
+        "model": 31,
+        "door": {
+          "id": "DoorModel36",
+          "modelIndex": 31,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 9,
+        "door": {
+          "id": "DoorModel12",
+          "modelIndex": 9,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 10,
+        "door": {
+          "id": "DoorModel13",
+          "modelIndex": 10,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0.5
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": true
+      },
+      {
+        "model": 13,
+        "door": {
+          "id": "DoorModel16",
+          "modelIndex": 13,
+          "open": false,
+          "openFraction": 0,
+          "visible": true,
+          "enabled": true,
+          "collected": false
+        },
+        "motion": {
+          "time": 0,
+          "startTime": 0,
+          "playing": false,
+          "finished": false
+        },
+        "meshes": [
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0
+          },
+          {
+            "name": "",
+            "visible": true,
+            "opacity": 1,
+            "colorWrite": true,
+            "alphaTest": 0
+          }
+        ],
+        "portalOpen": false,
+        "portalViewOpen": false
+      }
+    ],
+    "room": {
+      "area": 19,
+      "active": true,
+      "allowedAreas": [
+        16,
+        19,
+        20,
+        22
+      ],
+      "viewAreas": [
+        16,
+        19,
+        20
+      ]
+    },
+    "queue": {
+      "frames": 85,
+      "jobs": 245,
+      "cancelled": 0,
+      "maxJobs": 3,
+      "maxMs": 8.400000000372529,
+      "pending": 0
+    },
+    "finalWorld": {
+      "totalVertices": 67560,
+      "residentVertices": 3231,
+      "residentChunks": 54,
+      "totalChunks": 748,
+      "loadedTextures": 10
+    },
+    "finalActors": {
+      "actors": 291,
+      "residentActors": 36,
+      "renderedActors": 20,
+      "meshes": 291,
+      "residentMeshes": 36,
+      "renderedMeshes": 20,
+      "geometries": 83,
+      "residentGeometries": 15,
+      "textures": 47,
+      "residentTextures": 12
+    }
+  },
+  "summary": {
+    "frames": 0,
+    "cpuMs": {
+      "total": 0
+    },
+    "queueJobs": {
+      "total": 0
+    },
+    "activations": {
+      "total": 0
+    },
+    "activationMs": {
+      "total": 0
+    },
+    "bufferData": {
+      "total": 0
+    },
+    "bufferSubData": {
+      "total": 0
+    },
+    "texImage2D": {
+      "total": 0
+    },
+    "texSubImage2D": {
+      "total": 0
+    },
+    "gpuSubmitMs": {
+      "total": 0
+    },
+    "incompleteFrames": 0,
+    "incompletePresentedFrames": 0,
+    "finalReady": true
+  }
+}

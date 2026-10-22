@@ -1,0 +1,22 @@
+✔ small initial effect storage grows without changing live Float32 data or geometry ownership (3.087283ms)
+✔ effect batches keep their original maximums, custom limits, material states and culling (2.676825ms)
+✔ idle effect buffers release once after ten seconds, shrink, then resume in the same flush (0.660676ms)
+✔ empty or frustum-rejected billboard submissions never grow storage (1.009635ms)
+✔ beam bounds reject only complete quads outside each frustum plane and retain crossing vertices (0.628716ms)
+✔ accepted broad beam, ribbon and Gargoyle quads retain every coordinate, UV and vertex color (0.810856ms)
+✔ shared smoke, glow and beam batches never draw complete effects beyond the camera artwork range (2.966044ms)
+✔ large nearby particle tails, native half-unit quads and crossing beams retain their complete artwork (0.873135ms)
+✔ moving the main camera restores effects immediately, including cameras with a transformed parent (0.481257ms)
+✔ fixtures without a geometry stream retain their original unlimited batch distance (0.714206ms)
+✔ empty inactive or completed spouts preserve every native timer, slot and save field (1698.678028ms)
+✔ whole-cloud culling leaves moving, paused, disabled and returning spout draws identical (85.444915ms)
+✔ cloud bounds keep large tails and native-spout half-unit quads at every frustum plane (3.217363ms)
+✔ fully enclosed clouds skip repeated sphere checks; unusual diagnostic sizes retain original data (0.731836ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1864.636295

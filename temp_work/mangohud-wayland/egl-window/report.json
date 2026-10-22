@@ -1,0 +1,65 @@
+{
+  "variant": "egl-window",
+  "logs": [
+    "[153608:1007/212626.416933:WARNING:sandbox/policy/linux/sandbox_linux.cc:405] InitializeSandbox() called with multiple threads in process gpu-process.\n",
+    "[153563:1007/212626.688645:INFO:CONSOLE:72] \"[object DOMException]\", source: redcat://game/src/main.js (72)\n"
+  ],
+  "window": {
+    "visibility": "visible",
+    "gl": "WebKit WebGL"
+  },
+  "gpu": {
+    "info": {
+      "auxAttributes": {
+        "amdSwitchable": false,
+        "canSupportThreadedTextureMailbox": false,
+        "glImplementationParts": "(gl=none,angle=none)",
+        "glResetNotificationStrategy": 0,
+        "hardwareSupportsVulkan": false,
+        "inProcessGpu": true,
+        "initializationTime": 0,
+        "isAsan": false,
+        "isClangCoverage": false,
+        "jpegDecodeAcceleratorSupported": false,
+        "optimus": false,
+        "passthroughCmdDecoder": false,
+        "sandboxed": false,
+        "skiaBackendType": "None",
+        "subpixelFontRendering": true,
+        "targetCpuBits": 64,
+        "visibilityCallbackCallCount": 0
+      },
+      "gpuDevice": [
+        {
+          "active": true,
+          "deviceId": 29663,
+          "gpuPreference": 0,
+          "vendorId": 4098
+        }
+      ]
+    },
+    "processes": [
+      {
+        "cpu": {
+          "cumulativeCPUUsage": 0.33,
+          "percentCPUUsage": 0,
+          "idleWakeupsPerSecond": 0
+        },
+        "pid": 153608,
+        "type": "GPU",
+        "creationTime": 1791401186300,
+        "serviceName": "GPU",
+        "memory": {
+          "workingSetSize": 182304,
+          "peakWorkingSetSize": 182304
+        }
+      }
+    ]
+  },
+  "libs": [
+    "/usr/lib64/mangohud/libMangoHud_opengl.so",
+    "/usr/lib64/libEGL_mesa.so.0.0.0",
+    "/usr/lib64/libEGL.so.1.1.0",
+    "/usr/lib64/mangohud/libMangoHud_shim.so"
+  ]
+}

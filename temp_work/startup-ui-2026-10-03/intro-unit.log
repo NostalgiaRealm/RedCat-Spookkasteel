@@ -1,0 +1,20 @@
+✔ allowed autoplay starts with the selected volume and needs no action (1.171843ms)
+✔ blocked audible autoplay retries muted and offers sound without rewinding (3.673138ms)
+✔ blocking both attempts leaves a play action that starts unmuted from the click (0.263538ms)
+✔ a rejected click remains recoverable without another automatic muted attempt (0.259308ms)
+✔ stopping while initial autoplay is pending prevents a late retry (0.230609ms)
+✔ stopping during the muted retry ignores its late failure (0.164759ms)
+✔ a late success from an older intro cannot hide a newer blocked movie action (0.168549ms)
+✔ a late rejection from an older intro cannot mute or restart its replacement (0.142569ms)
+✔ a new movie resets mute state left by the automatic browser fallback (0.197699ms)
+✔ zero volume stays silent and does not offer a misleading sound action (0.357288ms)
+✔ desktop playback does not automatically fall back to muted audio (0.147629ms)
+✔ unsupported media reports its error without an automatic retry (0.144349ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 86.083023

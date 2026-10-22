@@ -1,0 +1,33 @@
+✔ all 16 original RedCat clips produce finite, bounded animated geometry (23.56998ms)
+✔ animation advances vertices, loops and keeps instance poses separate (1.679871ms)
+✔ one-shot animation finishes without producing invalid samples (0.385838ms)
+✔ held poses do not invalidate their GPU geometry, while seeks and resumed movement do (1.528531ms)
+✔ completed poses stay cached and explicit restarts, clip changes and wraparound sample correctly (0.786466ms)
+✔ deferred native prop collision matches eager current-pose triangles through motion and transitions (559.003535ms)
+✔ masked, ignored, hidden and carried props retain deferred geometry until an exact query needs it (0.602227ms)
+✔ off-screen generic props retain current animation clocks and exact collision at any distance (6.277125ms)
+✔ parked and GPU-released mounted props remain exact remote collision surfaces after scripted motion (6.116656ms)
+✔ current-pose radii enclose all original actor clips and transition poses without skinning vertices (118.394116ms)
+✔ unbound vertices, scaled/sheared bones and unsupported geometry retain conservative behavior (0.314168ms)
+✔ distant pending actors are rejected without skinning, while nearby targets retain exact geometry (2.488856ms)
+✔ several blast cells reuse one current-pose radius until bones are actually resampled (1.336973ms)
+✔ moving explosion targets keep identical reach decisions and exact damage through all current poses (17.120386ms)
+✔ a translating brush sweeps a stationary player instead of trapping or passing through the hull (5.125322ms)
+✔ a hinged door sweeps its arc and leaves RedCat free to move beside it (4.564954ms)
+✔ a wall-blocked door rejects its movement and cannot crush the player or teleport through a wall (1.199053ms)
+✔ the same brush transaction carries moving floors and refuses a ceiling crush (0.801126ms)
+✔ only committed support carrying contributes to takeoff momentum, never rejected moves or side pushes (2.015949ms)
+✔ world motion handoff adds actual platform carry to a jump and resets support velocity on the next frame (3.47928ms)
+✔ carrying ignores the floor own mounted prop at its previous pose while unrelated props still block (1.456302ms)
+✔ no-clip and disabled trigger brushes never push or stall the player (0.129889ms)
+✔ rejected motion segments wait before emitting their event or completion and resume without repeats (0.425658ms)
+✔ a motion event teleport supersedes the displacement already accepted before that event (1.456032ms)
+✔ the original tower witch door does not strand the player inside its opening leaf (7.34773ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 673.675491

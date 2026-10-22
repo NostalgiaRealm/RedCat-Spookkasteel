@@ -1,0 +1,24 @@
+PASS native intro video decodes and plays
+PASS native Linux XWayland presentation, isolated profile and window/fullscreen render dimensions
+PASS two players create and load independent real source saves through menu controls
+/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/release-housekeeping-2026-10-15/platform-1792090299506
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ 'Schieten'
+- 'SCHIETEN'
+
+    at file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/release-housekeeping-2026-10-15/desktop-touch-check.mjs:71:10 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'Schieten',
+  expected: 'SCHIETEN',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

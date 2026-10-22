@@ -1,0 +1,66 @@
+import {chromium} from 'playwright';
+import {spawn} from 'node:child_process';
+import {writeFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const work='current_work/enemy-movement-native-2026-10-05',phase=process.env.PERF_PHASE||'final-grounded',port=process.env.PERF_PORT||'4298';
+const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:port},stdio:['ignore','pipe','inherit']});
+await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject)});
+let browser;
+try{
+ browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required',`--crash-dumps-dir=${work}/perf-tmp`]});
+ const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+ page.on('pageerror',e=>errors.push(e.stack));
+ await page.addInitScript(()=>localStorage.setItem('redcat.progress.v1',JSON.stringify({version:1,highestUnlocked:4})));
+ await page.goto(`http://127.0.0.1:${port}/?skipIntro`);await page.waitForFunction(()=>window.__redcat);
+ await page.evaluate(async()=>{await window.__redcat.startLevel(1);window.__redcat.pause()});
+ const report=await page.evaluate(async()=>{
+  const app=window.__redcat,w=app.world,g=app.gameplay,h=g.scripts,a=app.audio;
+  for(const p of h.players.values())p.stop();h.update=()=>{};h.cutscene=false;h.camera=null;h.enemiesFrozen=false;
+  const bat=g.objects.find(o=>o.id==='MovingEnemy16');
+  for(const o of g.objects)if(['enemy','trigger','fairy'].includes(o.kind))o.enabled=false;
+  bat.enabled=true;g.state.health=100;g.state.maxHealth=100;g.hitCooldown=0;
+  const initial=[...bat.position],left=g.navigation.find('GrobberPathPoint60'),right=g.navigation.find('GrobberPathPoint63');
+  if(![1,2,3,4].some(i=>right.entity['WayPoint'+i]===left.id))throw new Error('Contact fixture is not on an original authored edge');
+  const edgePoint=left.position.map((v,i)=>(v+right.position[i])/2);
+  const floor=w.collider.trace([edgePoint[0],edgePoint[1]+40,edgePoint[2]],[edgePoint[0],edgePoint[1]-200,edgePoint[2]],w.player.mins,w.player.maxs,w.physicalModels);
+  if(floor.startSolid||floor.fraction===1)throw new Error('Original contact edge has no player floor');
+  const target=[...floor.end];
+  w.player.position=[...target];w.player.lastSafe=[...target];w.player.noClip=false;w.player.grounded=true;w.player.velocityY=0;
+  bat.yaw=Math.atan2(target[0]-initial[0],target[2]-initial[2]);
+  const overlaps=()=>bat.position.every((v,i)=>v+bat.collisionMaxs[i]>w.player.position[i]+w.player.mins[i]+1e-6&&v+bat.collisionMins[i]<w.player.position[i]+w.player.maxs[i]-1e-6);
+  const initialOverlap=overlaps(),events=[],previous=g.onEvent;
+  g.onEvent=event=>{if(event.type==='damage'||event.type==='enemyAttack')events.push({...event,time:g.time,batPosition:[...bat.position],player:[...w.player.position]});previous(event)};
+  w.syncModels();w.syncActors(0);w.syncPlayer(0,{});w.updateCamera(1);w.render();
+  let timings={},calls={},activeEnemy=null,enemyTraces={},enemyMs={};
+  const wrap=(obj,key,label=key)=>{const fn=obj?.[key];if(fn)obj[key]=function(...args){const t=performance.now();try{return fn.apply(this,args)}finally{timings[label]=(timings[label]||0)+performance.now()-t;calls[label]=(calls[label]||0)+1}}};
+  for(const key of ['syncModels','syncMountedActorCollisions','syncActors','syncPlayer','syncActorLighting','syncModelStates','syncProjectiles','updateCamera'])wrap(w,key);
+  wrap(w.effects,'update','effects');wrap(g,'update','gameplay');wrap(a,'update','audio');wrap(g.navigation,'pursuitTarget');wrap(g.navigation,'route');
+  const trace=w.collider.trace;
+  w.collider.trace=function(...args){if(activeEnemy)enemyTraces[activeEnemy]=(enemyTraces[activeEnemy]||0)+1;return trace.apply(this,args)};wrap(w.collider,'trace');
+  const update=g.updateEnemy;g.updateEnemy=function(o,...args){activeEnemy=o.id;const t=performance.now();try{return update.call(this,o,...args)}finally{enemyMs[o.id]=(enemyMs[o.id]||0)+performance.now()-t;activeEnemy=null}};
+  const resources=()=>({sounds:a.sounds.size,resources:w.resources.size,actors:w.actorInstances.size,projectiles:g.projectiles.length,sceneChildren:w.scene.children.length,programs:w.renderer.info.programs.length,particles:[...w.effects.entries.values()].reduce((sum,s)=>sum+s.particles.length,0),destructibleParticles:w.effects.destructibles.particles.length,pursuitJobs:g.navigation.pursuitJobs.size});
+  const samples=[],resourceBefore=resources();
+  const solidAt=()=>trace.call(w.collider,bat.position,bat.position,bat.collisionMins,bat.collisionMaxs,w.physicalModels,{mask:'blocksPlayer',ignoreId:bat.id}).startSolid;
+  const initialSolid=solidAt();
+  for(let frame=0;frame<600;frame++){
+   timings={};calls={};enemyTraces={};enemyMs={};
+   const t=performance.now();w.update(1/60,{forward:0,right:0,turn:0,jump:false,attack:false,use:false});a.update(1/60,w.camera.position.toArray());const updateMs=performance.now()-t;
+   const rt=performance.now();w.render();const renderMs=performance.now()-rt;
+   samples.push({frame,updateMs,renderMs,timings,calls,enemyTraces,enemyMs,position:[...bat.position],player:[...w.player.position],overlap:overlaps(),worldSolid:solidAt(),distance:Math.hypot(...bat.position.map((v,i)=>v-w.player.position[i])),mode:bat.batContact?{...bat.batContact}:null,patrol:bat.patrol?{...bat.patrol}:null,resources:resources(),searchTraces:g.navigation.searchFrame===g.time?g.navigation.searchTraces:0});
+   await new Promise(resolve=>setTimeout(resolve,0));
+  }
+  const sorted=samples.map(s=>s.updateMs).sort((a,b)=>a-b),p=q=>sorted[Math.min(sorted.length-1,Math.floor(sorted.length*q))];
+  return {name:'original-castle-authored-edge-contact-grounded',id:bat.id,initial,target,edge:{left:left.id,leftPosition:left.position,right:right.id,rightPosition:right.position,t:.5,edgePoint},hulls:{bat:{mins:bat.collisionMins,maxs:bat.collisionMaxs},player:{mins:w.player.mins,maxs:w.player.maxs}},initialOverlap,initialSolid,frames:samples.length,median:p(.5),p95:p(.95),p99:p(.99),max:sorted.at(-1),maxFrameTraces:Math.max(...samples.map(s=>s.calls.trace||0)),maxEnemyTraces:Math.max(...samples.map(s=>s.enemyTraces[bat.id]||0)),maxFrameSearchTraces:Math.max(...samples.map(s=>s.searchTraces)),minDistance:Math.min(...samples.map(s=>s.distance)),overlapFrames:samples.filter(s=>s.overlap).map(s=>s.frame),worldSolidFrames:samples.filter(s=>s.worldSolid).map(s=>s.frame),resourceBefore,resourceAfter:resources(),resourcePeak:Object.fromEntries(Object.keys(resourceBefore).map(k=>[k,Math.max(...samples.map(s=>s.resources[k]))])),events,samples};
+ });
+ await writeFile(`${work}/perf-authored-bat-contact-${phase}.json`,JSON.stringify({phase,report,errors},null,2)+'\n');
+ console.log(JSON.stringify({phase,errors,report:Object.fromEntries(Object.entries(report).filter(([k])=>k!=='samples'))},null,2));
+ assert.deepEqual(errors,[]);assert.equal(report.initialOverlap,false,'player begins clear of the original bat spawn');
+ assert.equal(report.overlapFrames.length,0,'bat movement must never penetrate the player body');
+ assert.equal(report.initialSolid,false,'original bat starts outside world solids');assert.equal(report.worldSolidFrames.length,0,'bat body remains outside original world solids');
+ assert.ok(report.events.some(e=>e.type==='enemyAttack'&&e.id===report.id&&e.contact),'authored bat flight must make real player contact on the authored edge');
+ assert.ok(report.events.some(e=>e.type==='damage'&&e.source===report.id),'grounded player receives real contact damage');
+ assert.ok(report.minDistance<45,'authored bat approaches the reachable player on its edge');
+ assert.ok(report.maxFrameSearchTraces<=48,'global search work remains bounded per frame');
+ assert.ok(report.maxEnemyTraces<=32,'one bat update remains within a fixed BSP trace work bound');
+ console.log('PASS authored bat edge contact, body separation, real BSP collision, and trace budget.');
+}finally{await browser?.close();server.kill()}

@@ -1,0 +1,9 @@
+{
+  "checks": [
+    "menu focus, hidden/disabled controls, select/range/checkbox changes, scrolling and modal safety"
+  ],
+  "errors": [
+    "TypeError: Cannot read properties of null (reading 'scroll')"
+  ],
+  "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert.ok(await page.locator('#help').evaluate(e=>e.scrollTop)>0)\n\n    at file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/controller-scenes.mjs:63:49"
+}

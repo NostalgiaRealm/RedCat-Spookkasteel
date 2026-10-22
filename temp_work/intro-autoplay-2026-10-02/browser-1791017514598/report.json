@@ -1,0 +1,62 @@
+{
+  "checks": [
+    "desktop: intro actually advances without interaction under blocked audible autoplay; controls fit",
+    "desktop: click/tap enables sound without rewinding or changing volume",
+    "desktop: skip cleans playback and manual replay starts with sound",
+    "desktop: natural end returns to the menu",
+    "saved intro opt-out and skipIntro query still bypass automatic playback",
+    "saved zero volume is respected without an unwanted sound prompt",
+    "browser without WebM support plays the imported MP4 intro",
+    "mobile: intro actually advances without interaction under blocked audible autoplay; controls fit",
+    "mobile: click/tap enables sound without rewinding or changing volume",
+    "mobile: skip cleans playback and manual replay starts with sound",
+    "mobile: natural end returns to the menu"
+  ],
+  "errors": [],
+  "samples": [
+    {
+      "label": "desktop",
+      "mode": "intro",
+      "time": 0.263188,
+      "duration": 74.038,
+      "paused": false,
+      "muted": true,
+      "volume": 0.6,
+      "src": "assets/media/intronl.webm",
+      "action": "Geluid inschakelen",
+      "actionHidden": false,
+      "attempts": [
+        {
+          "muted": false,
+          "result": "NotAllowedError"
+        },
+        {
+          "muted": true,
+          "result": "playing"
+        }
+      ]
+    },
+    {
+      "label": "mobile",
+      "mode": "intro",
+      "time": 0.25993,
+      "duration": 74.038,
+      "paused": false,
+      "muted": true,
+      "volume": 0.6,
+      "src": "assets/media/intronl.webm",
+      "action": "Geluid inschakelen",
+      "actionHidden": false,
+      "attempts": [
+        {
+          "muted": false,
+          "result": "NotAllowedError"
+        },
+        {
+          "muted": true,
+          "result": "playing"
+        }
+      ]
+    }
+  ]
+}

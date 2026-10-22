@@ -1,0 +1,45 @@
+✔ floor broad phase keeps authored order and every nonphysical brush, rather than nearest floor (3.15632ms)
+✔ floor broad phase follows translated/rotated, disabled and restored brushes with tracked poses (1.58292ms)
+✔ floor broad phase follows translated/rotated, disabled and restored brushes with ordinary poses (0.503907ms)
+✔ allocation-free inverse segment bounds exactly match the original converted endpoints (45.803078ms)
+✔ level 1 moving-fragment floor samples match the full brush scan through pose changes (56.632482ms)
+✔ level 2 moving-fragment floor samples match the full brush scan through pose changes (52.830885ms)
+✔ level 3 moving-fragment floor samples match the full brush scan through pose changes (87.93311ms)
+✔ level 4 moving-fragment floor samples match the full brush scan through pose changes (150.062558ms)
+✔ level 5 moving-fragment floor samples match the full brush scan through pose changes (19.336982ms)
+✔ exact downward point trace retains the native floor node and no hull epsilon (1.107913ms)
+✔ floor uses one truncated native texel with authored shifts, not bilinear atlas samples (0.875444ms)
+✔ ordered native face bounding boxes allow twenty units around a face (0.319138ms)
+✔ ambient RGB caps each channel at native .3 after raw dynamic lightmap addition (0.355028ms)
+✔ stationary actor cache retains surfaces and invalid results without retaining light state (0.362437ms)
+✔ native model fallback samples transformed brush space and invalidates only on actual changes (0.440488ms)
+✔ first authored world hit wins over a closer brush floor, matching Exact3 order (0.667086ms)
+✔ rotated brush fallback samples the local BSP plane while the ray remains world vertical (0.196179ms)
+✔ shadow endpoints use native texture-to-world vectors and oriented plane offset (0.132299ms)
+✔ shadowed floor lights test the sampled luxel against world BSP and cache stable visibility (0.328088ms)
+✔ imported level 1 has bounded native floor samples at authored actor positions (23.928743ms)
+✔ imported level 2 has bounded native floor samples at authored actor positions (18.156489ms)
+✔ imported level 3 has bounded native floor samples at authored actor positions (23.064249ms)
+✔ imported level 4 has bounded native floor samples at authored actor positions (25.938801ms)
+✔ imported level 5 has bounded native floor samples at authored actor positions (6.938687ms)
+✔ Sun ray candidates preserve rotated local bounds tolerance with tracked brush poses (10.007389ms)
+✔ Sun ray candidates preserve rotated local bounds tolerance with ordinary brush poses (4.565782ms)
+✔ level 1 Sun/debris obstruction matches all-brush rays through moving and disabled poses (51.737402ms)
+✔ level 2 Sun/debris obstruction matches all-brush rays through moving and disabled poses (51.238605ms)
+✔ level 3 Sun/debris obstruction matches all-brush rays through moving and disabled poses (67.551885ms)
+✔ level 4 Sun/debris obstruction matches all-brush rays through moving and disabled poses (103.221005ms)
+✔ level 5 Sun/debris obstruction matches all-brush rays through moving and disabled poses (30.631922ms)
+✔ Sun visibility checks directed native PVS before tracing world and brush models (1.56529ms)
+✔ solid clusters are rejected but a missing PVS row bypasses connected-area filtering (0.222848ms)
+✔ closed area portals reject Sun lighting and authored opening motion invalidates the cache (0.252588ms)
+✔ actor/source leaf caches preserve exact point sides including bounds exterior and moved lights (0.202219ms)
+✔ moving/disabled brush changes bump revision only when values change (0.280848ms)
+✔ native Sun point rays honor transformed brushes and exact wall edges without contact skin (0.356558ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 471.167636

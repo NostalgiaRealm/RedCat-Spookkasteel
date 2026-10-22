@@ -1,0 +1,1 @@
+export async function loader() { return import('three/addons/loaders/TestLoader.js'); }

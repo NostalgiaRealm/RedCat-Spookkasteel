@@ -1,0 +1,22 @@
+✔ native fragments originate throughout the source bounds and launch in its steep upward cone (2.732284ms)
+✔ fragment INI owns lifetime, collision dimensions and physics, independent of the destroyed parent (0.622076ms)
+✔ semi-implicit gravity, linear air drag and velocity-scaled spin use recovered units (0.499837ms)
+✔ native normalized reflection applies friction and removes grazing components before restoring speed (0.193219ms)
+✔ spin composes world X/Y/Z rotations instead of accumulating Euler angles (0.420007ms)
+✔ fragments remain opaque while flying and begin a two-second fade only after settling (0.479387ms)
+✔ collision work is bounded and settled fragments stop tracing (0.684505ms)
+✔ embedded corner contacts reflect along the nearest separating plane (0.295728ms)
+✔ a new explosion creates one bounded fragment cohort and pools then disposes its cloned materials (4.460483ms)
+✔ transparent debris has stable back/front passes in the original material-group order (3.081351ms)
+✔ reused fragment roots reset transforms, scale and opacity while lighting stays independent (0.888135ms)
+✔ load-time prewarming has a global budget and initializes the exact target-scene shaders and maps (1.230392ms)
+✔ idle burst capacity is released after ten seconds with one warm shader owner per artwork (1.404471ms)
+✔ opaque character fragments retain their original single pass and switch to stable transparent fade passes only when needed (0.539397ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 72.799483

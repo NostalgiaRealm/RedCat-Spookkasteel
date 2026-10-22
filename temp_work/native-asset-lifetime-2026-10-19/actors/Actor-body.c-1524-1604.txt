@@ -1,0 +1,81 @@
+1524: geBody *GENESISCC geBody_CreateFromFile(geVFile *pFile)
+1525: {
+1526: 	geBody  *B;
+1527: 	int i;
+1528: 
+1529: 	geVFile *VFile;
+1530: 	geVFile *SubFile=NULL;
+1531: 	geVFile *BitmapDirectory=NULL;	
+1532: 	
+1533: 	assert( pFile != NULL );
+1534: 
+1535: 	VFile = geVFile_OpenNewSystem(pFile,GE_VFILE_TYPE_VIRTUAL, NULL, 
+1536: 									NULL, GE_VFILE_OPEN_DIRECTORY | GE_VFILE_OPEN_READONLY);
+1537: 	if (VFile == NULL)
+1538: 		{	geErrorLog_Add( ERR_BODY_FILE_READ , NULL);	goto CreateError;}
+1539: 	
+1540: 	SubFile = geVFile_Open(VFile,GE_BODY_GEOMETRY_NAME,GE_VFILE_OPEN_READONLY);
+1541: 	if (SubFile == NULL)
+1542: 		{	geErrorLog_Add( ERR_BODY_FILE_READ , NULL);	goto CreateError;}
+1543: 
+1544: 	B = geBody_CreateNull();
+1545: 	if (B==NULL)
+1546: 		{	geErrorLog_Add( ERR_BODY_ENOMEM , NULL);  goto CreateError;  }
+1547: 
+1548: 	if (geBody_ReadGeometry(B,SubFile)==GE_FALSE)
+1549: 		{	geErrorLog_Add( ERR_BODY_FILE_READ , NULL);	goto CreateError;}
+1550: 	geVFile_Close(SubFile);
+1551: 
+1552: 	BitmapDirectory = geVFile_Open(VFile,GE_BODY_BITMAP_DIRECTORY_NAME, 
+1553: 									GE_VFILE_OPEN_DIRECTORY | GE_VFILE_OPEN_READONLY);
+1554: 	if (BitmapDirectory == NULL)
+1555: 		{	geErrorLog_Add( ERR_BODY_FILE_READ , NULL);	goto CreateError;}
+1556: 	
+1557: 	for (i=0; i<B->MaterialCount; i++)
+1558: 		{
+1559: 			geBody_Material *M;
+1560: 			M = &(B->MaterialArray[i]);
+1561: 
+1562: 			if (M->Bitmap != NULL)
+1563: 				{
+1564: 					char FName[1000];
+1565: 					sprintf(FName,"%d",i);
+1566: 					
+1567: 					SubFile = geVFile_Open(BitmapDirectory,FName,GE_VFILE_OPEN_READONLY);
+1568: 					if (SubFile == NULL)
+1569: 						{	geErrorLog_Add( ERR_BODY_FILE_READ , NULL);	goto CreateError;}
+1570: 
+1571: 					M->Bitmap = geBitmap_CreateFromFile(SubFile);
+1572: 
+1573: 					if (M->Bitmap == NULL)
+1574: 						{	geErrorLog_Add( ERR_BODY_FILE_READ , NULL);	goto CreateError;}
+1575: 
+1576: 				#if 1
+1577: 					// Set the number of mips to 4
+1578: 					if (!geBitmap_SetMipCount(M->Bitmap, 4))
+1579: 					{	
+1580: 						geErrorLog_Add( ERR_BODY_FILE_READ , NULL);	
+1581: 						goto CreateError;
+1582: 					}
+1583: 				#endif
+1584: 
+1585: 					geVFile_Close(SubFile);
+1586: 				}
+1587: 		}
+1588: 	geVFile_Close(BitmapDirectory);
+1589: 	geVFile_Close(VFile);
+1590: 	return B;
+1591: 
+1592: 	CreateError:
+1593: 		geBody_DestroyPossiblyIncompleteBody(&B);
+1594: 		if (SubFile != NULL)
+1595: 			geVFile_Close(SubFile);
+1596: 		if (BitmapDirectory != NULL)
+1597: 			geVFile_Close(BitmapDirectory);
+1598: 		if (VFile != NULL)
+1599: 			geVFile_Close(VFile);
+1600: 		return NULL;
+1601: }
+1602: 
+1603: 
+1604: 

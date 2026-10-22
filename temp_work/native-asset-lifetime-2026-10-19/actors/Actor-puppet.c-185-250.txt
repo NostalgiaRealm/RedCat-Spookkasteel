@@ -1,0 +1,66 @@
+185: 
+186: static geBoolean GENESISCC gePuppet_FetchTextures(gePuppet *P, const geBody *B)
+187: {
+188: 	int i;
+189: 
+190: /* 08/27/2003 Wendell Buckner
+191:     BUMPMAPPING 
+192: 	Remove artificial limit of only 255 bitmaps.
+193: /* 04/08/2003 Wendell Buckner 	
+194:     BUMPMAPPING               *
+195: 	int BumpBmpNameCount = 0;
+196: 	char *BumpBmpNames[255];  */
+197: 
+198: 	assert( P );
+199: 
+200: /* 08/27/2003 Wendell Buckner
+201:     BUMPMAPPING 
+202: 	Remove artificial limit of only 255 bitmaps...
+203: 	memset(&BumpBmpNames,0,sizeof(const char *) * 255 );*/
+204: 
+205: 	P->MaterialCount = geBody_GetMaterialCount(B);
+206: 	if (P->MaterialCount <= 0)
+207: 	{
+208: 		return GE_TRUE;
+209: 	}
+210: 	
+211: 	P->MaterialArray = GE_RAM_ALLOCATE_ARRAY(gePuppet_Material, P->MaterialCount);
+212: 	if (P->MaterialArray == NULL)
+213: 	{
+214: 		geErrorLog_Add(ERR_PUPPET_ENOMEM, NULL);
+215: 		return GE_FALSE;
+216: 	}
+217: 	
+218: 	for (i=0; i<P->MaterialCount; i++)
+219: 	{
+220: 		const char *Name;
+221: 		geBitmap *Bitmap;
+222: 		gePuppet_Material *M = &(P->MaterialArray[i]);
+223: 		geBody_GetMaterial( B, i, &(Name), &(Bitmap),
+224: 						&(M->Color.Red),&(M->Color.Green),&(M->Color.Blue));
+225: 
+226: 		if (Bitmap == NULL )
+227: 		{
+228: 			M->Bitmap     = NULL;
+229: 			M->UseTexture = GE_FALSE;
+230: 		}
+231: 		else
+232: 		{
+233: 			M->UseTexture = GE_TRUE;
+234: 			assert( P->World );
+235: 
+236: 			M->Bitmap = Bitmap;
+237: 			geBitmap_CreateRef(Bitmap);
+238: 
+239: 			if ( ! geWorld_AddBitmap(P->World,Bitmap) )
+240: 			{
+241: 				geErrorLog_AddString(-1,"Puppet_FetchTextures : World_AddBitmap", NULL);
+242: 				geRam_Free(P->MaterialArray);
+243: 				P->MaterialArray = NULL;
+244: 				P->MaterialCount = 0;
+245: 				return GE_FALSE;
+246: 			}
+247: 		}
+248: 		M->MaterialName = Name;
+249: 
+250: /* 08/27/2003 Wendell Buckner

@@ -1,0 +1,71 @@
+✔ small initial effect storage grows without changing live Float32 data or geometry ownership (3.008302ms)
+✔ effect batches keep their original maximums, custom limits, material states and culling (2.630284ms)
+✔ idle effect buffers release once after ten seconds, shrink, then resume in the same flush (0.651686ms)
+✔ empty or frustum-rejected billboard submissions never grow storage (1.000054ms)
+✔ beam bounds reject only complete quads outside each frustum plane and retain crossing vertices (0.592946ms)
+✔ accepted broad beam, ribbon and Gargoyle quads retain every coordinate, UV and vertex color (0.787085ms)
+✔ smoke/flame saves retain every live slot, fractional tick, timers, colour and future births (19.502821ms)
+✔ every shipped spout supports bounded save state including expired flash tails (86.634604ms)
+✔ invalid save pools, nonfinite numbers and duplicate emitter ids are rejected (0.450877ms)
+✔ world renderer hooks preserve saved smoke immediately without warm-up or catch-up (5.921794ms)
+✔ knight fragments restore actual positions, spin, contact history and fade without retracing history (21.611789ms)
+✔ legacy knight saves still replay once and malformed snapshots never create unbounded fragments (2.522424ms)
+✔ empty inactive or completed spouts preserve every native timer, slot and save field (1710.990081ms)
+✔ whole-cloud culling leaves moving, paused, disabled and returning spout draws identical (89.736656ms)
+✔ cloud bounds keep large tails and native-spout half-unit quads at every frustum plane (3.886076ms)
+✔ native deferred birth timers, triple launch speed and semi-implicit gravity (2.090257ms)
+✔ alpha has its own delayed integer fade and size uses lifetime, independent of image resolution (0.612706ms)
+✔ 15 reusable templates cap long-lived smoke, and first free slot reuses its launch and offset (4.206715ms)
+✔ cone tangents retain native narrowing and spread stays a world-XZ square for sideways emitters (0.247038ms)
+✔ pause is inert, disabled particles drain, and re-enable retains survivors without catch-up bursts (0.336768ms)
+✔ fixed simulation gives the same bounded cloud at 30, 60 and 120 Hz (2.591735ms)
+✔ finite Tower flash stops new births, drains its tail, and a restored expired flash cannot restart (5.455706ms)
+✔ colour cycling belongs to the emitter with the native half-second rate and channel mapping (0.346478ms)
+✔ every original authored emitter texture has a portable color/alpha pair (1.74262ms)
+✔ beacon assembles six radial rays then extends seventh to ceiling (0.787376ms)
+✔ corona size uses authored distance/radius bounds (0.155049ms)
+✔ dynamic light animation wraps and interpolates authored a-z functions (0.149469ms)
+✔ Davi-Script enabled beacon retains activation clock and resets only when disabled (4.280384ms)
+✔ turning off a flame stops emission and allows existing particles to expire (2.856983ms)
+✔ finite spout disable and repeated Enable commands reset only visual timers and keep live particles (3.054092ms)
+✖ authored dynamic light follows a moving model and Davi-Script disable (1.673479ms)
+✔ save beacon emits original staged sound and seventh-ray pitch without replaying after load (5.847024ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 31
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1887.129484
+
+✖ failing tests:
+
+test at tests/world-effects.test.mjs:84:1
+✖ authored dynamic light follows a moving model and Davi-Script disable (1.673479ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      {
+  +     castShadow: false,
+        color: [
+          0,
+          1,
+          0
+        ],
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-effects.test.mjs:87:29)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { position: [Array], color: [Array], radius: 300, castShadow: false } ],
+    expected: [ { position: [Array], color: [Array], radius: 300 } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

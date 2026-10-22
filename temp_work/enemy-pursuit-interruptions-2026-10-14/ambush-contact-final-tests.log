@@ -1,0 +1,24 @@
+✔ selected spider hit interrupts dormant movement and survives reload (5.072242ms)
+✔ selected spider hit interrupts descending movement and survives reload (0.759656ms)
+✔ selected spider hit interrupts returning movement and survives reload (0.667986ms)
+✔ selected spider hit interrupts ascending movement and survives reload (0.506297ms)
+✔ sound-only spider hits leave each active ambush movement intact (1.048054ms)
+✔ dormant skeleton hurt survives fresh Gameplay restore until its original deadline (0.382288ms)
+✔ lethal damage to dormant skeleton preserves its death state on reload (0.727266ms)
+✔ a script freeze preserves a selected spider hit instead of resuming its old ascent (0.978724ms)
+✔ fresh spider alert chooses descent near the ceiling and combat at the midpoint or below (1.132264ms)
+✔ post-hit spider return-for-descent survives reload and never resumes the old ascent (1.378843ms)
+✔ spider contact cooldown survives hurt and expires while still hurt (4.019668ms)
+✔ bat contact cooldown survives hurt and expires while still hurt (0.491788ms)
+✔ ghost contact cooldown survives hurt and expires while still hurt (0.290889ms)
+✔ zombie contact cooldown survives hurt and expires while still hurt (0.258968ms)
+✔ guardian contact cooldown survives hurt and expires while still hurt (0.300568ms)
+✔ reloading a hurt touching enemy preserves the remaining independent contact cooldown (1.76076ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 85.381928

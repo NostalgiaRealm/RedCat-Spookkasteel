@@ -1,0 +1,2124 @@
+{
+  "evidence_id": "ev_440531ea89e1519ce88d1ff351174afd225311d609695368951dd94064b09a72",
+  "subject": {
+    "name": "RcHcGame.dat",
+    "digest": {
+      "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+    },
+    "format": "pe",
+    "architecture": "x86",
+    "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+  },
+  "provider": {
+    "id": "hopper",
+    "name": "Hopper Disassembler",
+    "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+  },
+  "analysis_profile": {
+    "provider": {
+      "id": "hopper",
+      "name": "Hopper Disassembler",
+      "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+    },
+    "parameters": {
+      "target_kind": "executable",
+      "target_format": "pe",
+      "architecture": "x86",
+      "available_architectures": [
+        "x86"
+      ],
+      "loader": {
+        "source": "derived",
+        "arguments": [
+          "-l",
+          "WinPE",
+          "--intel-32"
+        ]
+      }
+    },
+    "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+  },
+  "predicate_type": "rea.analysis",
+  "operation": "analyze_function",
+  "parameters": {
+    "procedure": "0x5b8cc0"
+  },
+  "raw_result": null,
+  "normalized_result": {
+    "procedure": {
+      "address": "0x5b8cc0",
+      "name": "sub_5b8cc0",
+      "classification": null,
+      "body": {
+        "available": false,
+        "reason": "Hopper's public Python API does not expose complete function body ranges"
+      },
+      "signature": "int sub_5b8cc0(int arg0, int arg1, int arg2)",
+      "locals": [
+        {
+          "description": "Unnamed local (stack displacement 12)",
+          "provenance": "hopper-public-python-api",
+          "name": null,
+          "stack_displacement": "12"
+        },
+        {
+          "description": "Unnamed local (stack displacement 8)",
+          "provenance": "hopper-public-python-api",
+          "name": null,
+          "stack_displacement": "8"
+        },
+        {
+          "description": "Unnamed local (stack displacement 4)",
+          "provenance": "hopper-public-python-api",
+          "name": null,
+          "stack_displacement": "4"
+        },
+        {
+          "description": "var_4 (stack displacement -4)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_4",
+          "stack_displacement": "-4"
+        },
+        {
+          "description": "var_8 (stack displacement -8)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_8",
+          "stack_displacement": "-8"
+        },
+        {
+          "description": "var_C (stack displacement -12)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_C",
+          "stack_displacement": "-12"
+        },
+        {
+          "description": "var_10 (stack displacement -16)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_10",
+          "stack_displacement": "-16"
+        },
+        {
+          "description": "var_14 (stack displacement -20)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_14",
+          "stack_displacement": "-20"
+        },
+        {
+          "description": "var_18 (stack displacement -24)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_18",
+          "stack_displacement": "-24"
+        },
+        {
+          "description": "var_1C (stack displacement -28)",
+          "provenance": "hopper-public-python-api",
+          "name": "var_1C",
+          "stack_displacement": "-28"
+        }
+      ]
+    },
+    "pseudocode": "    eax = arg_0;\n    decomp_var_20 = ebx;\n    decomp_var_24 = ebp;\n    decomp_var_28 = esi;\n    esp = esp - 0x2c;\n    decomp_var_2c = edi;\n    if (eax >= 0x0) {\n            while (true) {\n                    if (*(*(*dword_6cc40c + 0xd5d4) + eax * 0x4) != **dword_6cc41c) {\n                            ecx = *dword_6cc41c;\n                            if (*(*dword_6cc41c + 0x14) == 0x0) {\n                                    ecx = *dword_6cc400;\n                                    *ecx = *ecx + 0x1;\n                                    esi = *(*dword_6cc420 + 0x4c) + (eax + (eax + eax * 0x4) * 0x2) * 0x4;\n                                    if (arg_8 != 0x0) {\n                                            ebp = 0x0;\n                                            eax = arg_4[0x1];\n                                            var_14 = eax;\n                                            ebx = eax + 0x4;\n                                            if (*eax > 0x0) {\n                                                    var_18 = eax + 0x10;\n                                                    var_1C = eax + 0x584;\n                                                    while (true) {\n                                                            var_10 = 0x1 << ebp;\n                                                            if ((arg_8 & 0x1 << ebp) == 0x0) {\n                                                                    ebp = &arg_fffffffffffffffd;\n                                                                    var_1C = var_1C + 0x4;\n                                                                    ecx = *eax;\n                                                                    ebx = ebx + 0x14;\n                                                                    var_18 = var_18 + 0x14;\n                                                                    if (ebp < ecx) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x0;\n                                                                    break;\n                                                            }\n                                                            edi = *var_1C;\n                                                            asm { fld        dword [esi+eax*4+0x14] };\n                                                            asm { fstp       dword [esp+0x2c+var_C] };\n                                                            asm { fld        dword [esi+ecx*4+0x14] };\n                                                            asm { fstp       dword [esp+0x2c+var_8] };\n                                                            asm { fld        dword [esi+edx*4+0x14] };\n                                                            asm { fstp       dword [esp+0x2c+var_4] };\n                                                            sub_5b2e40();\n                                                            eax = var_18;\n                                                            asm { fsub       dword [eax] };\n                                                            asm { fcomp      dword [dword_value_933741999+388] };\n                                                            asm { fnstsw     ax };\n                                                            if ((HIBYTE(eax) & 0x41) != 0x0) {\n                                                                    ecx = arg_4;\n                                                                    eax = sub_5b8fe0(arg_0, *ecx);\n                                                                    esp = (esp - 0x8) + 0x8;\n                                                                    temp_0 = 0x1;\n                                                                    break;\n                                                            }\n                                                            asm { fld        dword [esi+ecx*4+0x14] };\n                                                            asm { fstp       dword [esp+0x2c+var_C] };\n                                                            asm { fld        dword [esi+edx*4+0x14] };\n                                                            asm { fstp       dword [esp+0x2c+var_8] };\n                                                            asm { fld        dword [esi+eax*4+0x14] };\n                                                            asm { fstp       dword [esp+0x2c+var_4] };\n                                                            eax = sub_5b2e40();\n                                                            asm { fsub       dword [ebx+0xc] };\n                                                            asm { fcomp      dword [dword_value_933741999+388] };\n                                                            asm { fnstsw     ax };\n                                                            if ((HIBYTE(eax) & 0x1) == 0x0) {\n                                                                    arg_8 = arg_8 & !var_10;\n                                                            }\n                                                            eax = var_14;\n                                                            ebp = &arg_fffffffffffffffd;\n                                                            var_1C = var_1C + 0x4;\n                                                            ecx = *eax;\n                                                            ebx = ebx + 0x14;\n                                                            var_18 = var_18 + 0x14;\n                                                            if (ebp < ecx) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                                    if (temp_0 != 0x0) {\n                                                            temp_1 = 0x1;\n                                                            break;\n                                                    }\n                                                    else {\n                                                            edi = arg_4;\n                                                            sub_5c9480();\n                                                            sub_5d17f0();\n                                                            eax = esi[0x3];\n                                                            edx = *dword_6cc408;\n                                                            arg_0 = 0x1;\n                                                            ecx = eax << 0x4;\n                                                            asm { fcomp      dword [dword_value_933741999+388] };\n                                                            ecx = ecx + eax;\n                                                            eax = eax + eax * 0x8;\n                                                            ebx = edx + ecx * 0x8;\n                                                            asm { fnstsw     ax };\n                                                            if ((HIBYTE(eax) & 0x1) == 0x0) {\n                                                                    arg_0 = 0x0;\n                                                            }\n                                                            sub_5b8cc0(*(esi + arg_0 * 0x4), edi, arg_8);\n                                                            ecx = *dword_6cc420;\n                                                            eax = esi[0x4];\n                                                            esp = (esp - 0xc) + 0xc - 0x4;\n                                                            eax = ecx[0x19] + (eax + eax * 0x4) * 0x4;\n                                                            *dword_7228e8 = *eax;\n                                                            *dword_7228ec = eax[0x1];\n                                                            *dword_7228f0 = eax[0x2];\n                                                            eax = esi[0x4];\n                                                            asm { fld        dword [eax+edx*4+0xc] };\n                                                            asm { fstp       dword [dword_7228f4] };\n                                                            sub_59be40();\n                                                            sub_5b35b0(decomp_var_30);\n                                                            edi = 0x0;\n                                                            if (esi[0x2] > 0x0) {\n                                                                    ebp = &arg_8;\n                                                                    ebx = ebx + 0x58;\n                                                                    do {\n                                                                            ecx = *dword_6cc41c;\n                                                                            eax = esi[0x3];\n                                                                            eax = eax + edi;\n                                                                            if (*ebx == *ecx) {\n                                                                                    if (*ebp == arg_0) {\n                                                                                            ecx = *dword_6cc418;\n                                                                                            ecx[0xcda0] = ecx[0xcda0] + 0x1;\n                                                                                            sub_5ba710(eax, arg_4, arg_8);\n                                                                                            ecx = *dword_6cc41c;\n                                                                                            esp = (esp - 0xc) + 0xc;\n                                                                                    }\n                                                                                    edi = edi + 0x1;\n                                                                                    ebx = ebx + 0x88;\n                                                                                    ebp = &arg_20;\n                                                                                    if (edi < esi[0x2]) {\n                                                                                            continue;\n                                                                                    }\n                                                                                    break;\n                                                                            }\n                                                                            ecx = *dword_6cc41c;\n                                                                            if (*(*dword_6cc41c + 0x14) != 0x0) {\n                                                                                    edi = edi + 0x1;\n                                                                                    ebx = ebx + 0x88;\n                                                                                    ebp = &arg_20;\n                                                                                    if (edi < esi[0x2]) {\n                                                                                            continue;\n                                                                                    }\n                                                                                    break;\n                                                                            }\n                                                                            if (*ebp == arg_0) {\n                                                                                    ecx = *dword_6cc418;\n                                                                                    ecx[0xcda0] = ecx[0xcda0] + 0x1;\n                                                                                    sub_5ba710(eax, arg_4, arg_8);\n                                                                                    ecx = *dword_6cc41c;\n                                                                                    esp = (esp - 0xc) + 0xc;\n                                                                            }\n                                                                            edi = edi + 0x1;\n                                                                            ebx = ebx + 0x88;\n                                                                            ebp = &arg_20;\n                                                                    } while (edi < esi[0x2]);\n                                                            }\n                                                            else {\n                                                                    ecx = *dword_6cc41c;\n                                                            }\n                                                            esi = *(esi + (arg_0 == 0x0 ? 0x1 : 0x0) * 0x4);\n                                                            arg_0 = esi;\n                                                            eax = esi;\n                                                            if (esi >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_1 = 0x0;\n                                                            break;\n                                                    }\n                                            }\n                                            else {\n                                                    edi = arg_4;\n                                                    sub_5c9480();\n                                                    sub_5d17f0();\n                                                    eax = esi[0x3];\n                                                    edx = *dword_6cc408;\n                                                    arg_0 = 0x1;\n                                                    ecx = eax << 0x4;\n                                                    asm { fcomp      dword [dword_value_933741999+388] };\n                                                    ecx = ecx + eax;\n                                                    eax = eax + eax * 0x8;\n                                                    ebx = edx + ecx * 0x8;\n                                                    asm { fnstsw     ax };\n                                                    if ((HIBYTE(eax) & 0x1) == 0x0) {\n                                                            arg_0 = 0x0;\n                                                    }\n                                                    sub_5b8cc0(*(esi + arg_0 * 0x4), edi, arg_8);\n                                                    ecx = *dword_6cc420;\n                                                    eax = esi[0x4];\n                                                    esp = (esp - 0xc) + 0xc - 0x4;\n                                                    eax = ecx[0x19] + (eax + eax * 0x4) * 0x4;\n                                                    *dword_7228e8 = *eax;\n                                                    *dword_7228ec = eax[0x1];\n                                                    *dword_7228f0 = eax[0x2];\n                                                    eax = esi[0x4];\n                                                    asm { fld        dword [eax+edx*4+0xc] };\n                                                    asm { fstp       dword [dword_7228f4] };\n                                                    sub_59be40();\n                                                    sub_5b35b0(decomp_var_30);\n                                                    edi = 0x0;\n                                                    if (esi[0x2] > 0x0) {\n                                                            ebp = &arg_8;\n                                                            ebx = ebx + 0x58;\n                                                            do {\n                                                                    ecx = *dword_6cc41c;\n                                                                    eax = esi[0x3];\n                                                                    eax = eax + edi;\n                                                                    if (*ebx == *ecx) {\n                                                                            if (*ebp == arg_0) {\n                                                                                    ecx = *dword_6cc418;\n                                                                                    ecx[0xcda0] = ecx[0xcda0] + 0x1;\n                                                                                    sub_5ba710(eax, arg_4, arg_8);\n                                                                                    ecx = *dword_6cc41c;\n                                                                                    esp = (esp - 0xc) + 0xc;\n                                                                            }\n                                                                            edi = edi + 0x1;\n                                                                            ebx = ebx + 0x88;\n                                                                            ebp = &arg_20;\n                                                                            if (edi < esi[0x2]) {\n                                                                                    continue;\n                                                                            }\n                                                                            break;\n                                                                    }\n                                                                    ecx = *dword_6cc41c;\n                                                                    if (*(*dword_6cc41c + 0x14) != 0x0) {\n                                                                            edi = edi + 0x1;\n                                                                            ebx = ebx + 0x88;\n                                                                            ebp = &arg_20;\n                                                                            if (edi < esi[0x2]) {\n                                                                                    continue;\n                                                                            }\n                                                                            break;\n                                                                    }\n                                                                    if (*ebp == arg_0) {\n                                                                            ecx = *dword_6cc418;\n                                                                            ecx[0xcda0] = ecx[0xcda0] + 0x1;\n                                                                            sub_5ba710(eax, arg_4, arg_8);\n                                                                            ecx = *dword_6cc41c;\n                                                                            esp = (esp - 0xc) + 0xc;\n                                                                    }\n                                                                    edi = edi + 0x1;\n                                                                    ebx = ebx + 0x88;\n                                                                    ebp = &arg_20;\n                                                            } while (edi < esi[0x2]);\n                                                    }\n                                                    else {\n                                                            ecx = *dword_6cc41c;\n                                                    }\n                                                    esi = *(esi + (arg_0 == 0x0 ? 0x1 : 0x0) * 0x4);\n                                                    arg_0 = esi;\n                                                    eax = esi;\n                                                    if (esi >= 0x0) {\n                                                            continue;\n                                                    }\n                                                    temp_1 = 0x0;\n                                                    break;\n                                            }\n                                    }\n                                    else {\n                                            edi = arg_4;\n                                            sub_5c9480();\n                                            sub_5d17f0();\n                                            eax = esi[0x3];\n                                            edx = *dword_6cc408;\n                                            arg_0 = 0x1;\n                                            ecx = eax << 0x4;\n                                            asm { fcomp      dword [dword_value_933741999+388] };\n                                            ecx = ecx + eax;\n                                            eax = eax + eax * 0x8;\n                                            ebx = edx + ecx * 0x8;\n                                            asm { fnstsw     ax };\n                                            if ((HIBYTE(eax) & 0x1) == 0x0) {\n                                                    arg_0 = 0x0;\n                                            }\n                                            sub_5b8cc0(*(esi + arg_0 * 0x4), edi, arg_8);\n                                            ecx = *dword_6cc420;\n                                            eax = esi[0x4];\n                                            esp = (esp - 0xc) + 0xc - 0x4;\n                                            eax = ecx[0x19] + (eax + eax * 0x4) * 0x4;\n                                            *dword_7228e8 = *eax;\n                                            *dword_7228ec = eax[0x1];\n                                            *dword_7228f0 = eax[0x2];\n                                            eax = esi[0x4];\n                                            asm { fld        dword [eax+edx*4+0xc] };\n                                            asm { fstp       dword [dword_7228f4] };\n                                            sub_59be40();\n                                            sub_5b35b0(decomp_var_30);\n                                            edi = 0x0;\n                                            if (esi[0x2] > 0x0) {\n                                                    ebp = &arg_8;\n                                                    ebx = ebx + 0x58;\n                                                    do {\n                                                            ecx = *dword_6cc41c;\n                                                            eax = esi[0x3];\n                                                            eax = eax + edi;\n                                                            if (*ebx == *ecx) {\n                                                                    if (*ebp == arg_0) {\n                                                                            ecx = *dword_6cc418;\n                                                                            ecx[0xcda0] = ecx[0xcda0] + 0x1;\n                                                                            sub_5ba710(eax, arg_4, arg_8);\n                                                                            ecx = *dword_6cc41c;\n                                                                            esp = (esp - 0xc) + 0xc;\n                                                                    }\n                                                                    edi = edi + 0x1;\n                                                                    ebx = ebx + 0x88;\n                                                                    ebp = &arg_20;\n                                                                    if (edi < esi[0x2]) {\n                                                                            continue;\n                                                                    }\n                                                                    break;\n                                                            }\n                                                            ecx = *dword_6cc41c;\n                                                            if (*(*dword_6cc41c + 0x14) != 0x0) {\n                                                                    edi = edi + 0x1;\n                                                                    ebx = ebx + 0x88;\n                                                                    ebp = &arg_20;\n                                                                    if (edi < esi[0x2]) {\n                                                                            continue;\n                                                                    }\n                                                                    break;\n                                                            }\n                                                            if (*ebp == arg_0) {\n                                                                    ecx = *dword_6cc418;\n                                                                    ecx[0xcda0] = ecx[0xcda0] + 0x1;\n                                                                    sub_5ba710(eax, arg_4, arg_8);\n                                                                    ecx = *dword_6cc41c;\n                                                                    esp = (esp - 0xc) + 0xc;\n                                                            }\n                                                            edi = edi + 0x1;\n                                                            ebx = ebx + 0x88;\n                                                            ebp = &arg_20;\n                                                    } while (edi < esi[0x2]);\n                                            }\n                                            else {\n                                                    ecx = *dword_6cc41c;\n                                            }\n                                            esi = *(esi + (arg_0 == 0x0 ? 0x1 : 0x0) * 0x4);\n                                            arg_0 = esi;\n                                            eax = esi;\n                                            if (esi >= 0x0) {\n                                                    continue;\n                                            }\n                                            temp_1 = 0x0;\n                                            break;\n                                    }\n                            }\n                            else {\n                                    temp_1 = 0x1;\n                                    break;\n                            }\n                    }\n                    else {\n                            ecx = *dword_6cc400;\n                            *ecx = *ecx + 0x1;\n                            esi = *(*dword_6cc420 + 0x4c) + (eax + (eax + eax * 0x4) * 0x2) * 0x4;\n                            if (arg_8 != 0x0) {\n                                    ebp = 0x0;\n                                    eax = arg_4[0x1];\n                                    var_14 = eax;\n                                    ebx = eax + 0x4;\n                                    if (*eax > 0x0) {\n                                            var_18 = eax + 0x10;\n                                            var_1C = eax + 0x584;\n                                            while (true) {\n                                                    var_10 = 0x1 << ebp;\n                                                    if ((arg_8 & 0x1 << ebp) == 0x0) {\n                                                            ebp = &arg_fffffffffffffffd;\n                                                            var_1C = var_1C + 0x4;\n                                                            ecx = *eax;\n                                                            ebx = ebx + 0x14;\n                                                            var_18 = var_18 + 0x14;\n                                                            if (ebp < ecx) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                                    edi = *var_1C;\n                                                    asm { fld        dword [esi+eax*4+0x14] };\n                                                    asm { fstp       dword [esp+0x2c+var_C] };\n                                                    asm { fld        dword [esi+ecx*4+0x14] };\n                                                    asm { fstp       dword [esp+0x2c+var_8] };\n                                                    asm { fld        dword [esi+edx*4+0x14] };\n                                                    asm { fstp       dword [esp+0x2c+var_4] };\n                                                    sub_5b2e40();\n                                                    eax = var_18;\n                                                    asm { fsub       dword [eax] };\n                                                    asm { fcomp      dword [dword_value_933741999+388] };\n                                                    asm { fnstsw     ax };\n                                                    if ((HIBYTE(eax) & 0x41) != 0x0) {\n                                                            ecx = arg_4;\n                                                            eax = sub_5b8fe0(arg_0, *ecx);\n                                                            esp = (esp - 0x8) + 0x8;\n                                                            temp_0 = 0x1;\n                                                            break;\n                                                    }\n                                                    asm { fld        dword [esi+ecx*4+0x14] };\n                                                    asm { fstp       dword [esp+0x2c+var_C] };\n                                                    asm { fld        dword [esi+edx*4+0x14] };\n                                                    asm { fstp       dword [esp+0x2c+var_8] };\n                                                    asm { fld        dword [esi+eax*4+0x14] };\n                                                    asm { fstp       dword [esp+0x2c+var_4] };\n                                                    eax = sub_5b2e40();\n                                                    asm { fsub       dword [ebx+0xc] };\n                                                    asm { fcomp      dword [dword_value_933741999+388] };\n                                                    asm { fnstsw     ax };\n                                                    if ((HIBYTE(eax) & 0x1) == 0x0) {\n                                                            arg_8 = arg_8 & !var_10;\n                                                    }\n                                                    eax = var_14;\n                                                    ebp = &arg_fffffffffffffffd;\n                                                    var_1C = var_1C + 0x4;\n                                                    ecx = *eax;\n                                                    ebx = ebx + 0x14;\n                                                    var_18 = var_18 + 0x14;\n                                                    if (ebp < ecx) {\n                                                            continue;\n                                                    }\n                                                    temp_0 = 0x0;\n                                                    break;\n                                            }\n                                            if (temp_0 != 0x0) {\n                                                    temp_1 = 0x1;\n                                                    break;\n                                            }\n                                            else {\n                                                    edi = arg_4;\n                                                    sub_5c9480();\n                                                    sub_5d17f0();\n                                                    eax = esi[0x3];\n                                                    edx = *dword_6cc408;\n                                                    arg_0 = 0x1;\n                                                    ecx = eax << 0x4;\n                                                    asm { fcomp      dword [dword_value_933741999+388] };\n                                                    ecx = ecx + eax;\n                                                    eax = eax + eax * 0x8;\n                                                    ebx = edx + ecx * 0x8;\n                                                    asm { fnstsw     ax };\n                                                    if ((HIBYTE(eax) & 0x1) == 0x0) {\n                                                            arg_0 = 0x0;\n                                                    }\n                                                    sub_5b8cc0(*(esi + arg_0 * 0x4), edi, arg_8);\n                                                    ecx = *dword_6cc420;\n                                                    eax = esi[0x4];\n                                                    esp = (esp - 0xc) + 0xc - 0x4;\n                                                    eax = ecx[0x19] + (eax + eax * 0x4) * 0x4;\n                                                    *dword_7228e8 = *eax;\n                                                    *dword_7228ec = eax[0x1];\n                                                    *dword_7228f0 = eax[0x2];\n                                                    eax = esi[0x4];\n                                                    asm { fld        dword [eax+edx*4+0xc] };\n                                                    asm { fstp       dword [dword_7228f4] };\n                                                    sub_59be40();\n                                                    sub_5b35b0(decomp_var_30);\n                                                    edi = 0x0;\n                                                    if (esi[0x2] > 0x0) {\n                                                            ebp = &arg_8;\n                                                            ebx = ebx + 0x58;\n                                                            do {\n                                                                    ecx = *dword_6cc41c;\n                                                                    eax = esi[0x3];\n                                                                    eax = eax + edi;\n                                                                    if (*ebx == *ecx) {\n                                                                            if (*ebp == arg_0) {\n                                                                                    ecx = *dword_6cc418;\n                                                                                    ecx[0xcda0] = ecx[0xcda0] + 0x1;\n                                                                                    sub_5ba710(eax, arg_4, arg_8);\n                                                                                    ecx = *dword_6cc41c;\n                                                                                    esp = (esp - 0xc) + 0xc;\n                                                                            }\n                                                                            edi = edi + 0x1;\n                                                                            ebx = ebx + 0x88;\n                                                                            ebp = &arg_20;\n                                                                            if (edi < esi[0x2]) {\n                                                                                    continue;\n                                                                            }\n                                                                            break;\n                                                                    }\n                                                                    ecx = *dword_6cc41c;\n                                                                    if (*(*dword_6cc41c + 0x14) != 0x0) {\n                                                                            edi = edi + 0x1;\n                                                                            ebx = ebx + 0x88;\n                                                                            ebp = &arg_20;\n                                                                            if (edi < esi[0x2]) {\n                                                                                    continue;\n                                                                            }\n                                                                            break;\n                                                                    }\n                                                                    if (*ebp == arg_0) {\n                                                                            ecx = *dword_6cc418;\n                                                                            ecx[0xcda0] = ecx[0xcda0] + 0x1;\n                                                                            sub_5ba710(eax, arg_4, arg_8);\n                                                                            ecx = *dword_6cc41c;\n                                                                            esp = (esp - 0xc) + 0xc;\n                                                                    }\n                                                                    edi = edi + 0x1;\n                                                                    ebx = ebx + 0x88;\n                                                                    ebp = &arg_20;\n                                                            } while (edi < esi[0x2]);\n                                                    }\n                                                    else {\n                                                            ecx = *dword_6cc41c;\n                                                    }\n                                                    esi = *(esi + (arg_0 == 0x0 ? 0x1 : 0x0) * 0x4);\n                                                    arg_0 = esi;\n                                                    eax = esi;\n                                                    if (esi >= 0x0) {\n                                                            continue;\n                                                    }\n                                                    temp_1 = 0x0;\n                                                    break;\n                                            }\n                                    }\n                                    else {\n                                            edi = arg_4;\n                                            sub_5c9480();\n                                            sub_5d17f0();\n                                            eax = esi[0x3];\n                                            edx = *dword_6cc408;\n                                            arg_0 = 0x1;\n                                            ecx = eax << 0x4;\n                                            asm { fcomp      dword [dword_value_933741999+388] };\n                                            ecx = ecx + eax;\n                                            eax = eax + eax * 0x8;\n                                            ebx = edx + ecx * 0x8;\n                                            asm { fnstsw     ax };\n                                            if ((HIBYTE(eax) & 0x1) == 0x0) {\n                                                    arg_0 = 0x0;\n                                            }\n                                            sub_5b8cc0(*(esi + arg_0 * 0x4), edi, arg_8);\n                                            ecx = *dword_6cc420;\n                                            eax = esi[0x4];\n                                            esp = (esp - 0xc) + 0xc - 0x4;\n                                            eax = ecx[0x19] + (eax + eax * 0x4) * 0x4;\n                                            *dword_7228e8 = *eax;\n                                            *dword_7228ec = eax[0x1];\n                                            *dword_7228f0 = eax[0x2];\n                                            eax = esi[0x4];\n                                            asm { fld        dword [eax+edx*4+0xc] };\n                                            asm { fstp       dword [dword_7228f4] };\n                                            sub_59be40();\n                                            sub_5b35b0(decomp_var_30);\n                                            edi = 0x0;\n                                            if (esi[0x2] > 0x0) {\n                                                    ebp = &arg_8;\n                                                    ebx = ebx + 0x58;\n                                                    do {\n                                                            ecx = *dword_6cc41c;\n                                                            eax = esi[0x3];\n                                                            eax = eax + edi;\n                                                            if (*ebx == *ecx) {\n                                                                    if (*ebp == arg_0) {\n                                                                            ecx = *dword_6cc418;\n                                                                            ecx[0xcda0] = ecx[0xcda0] + 0x1;\n                                                                            sub_5ba710(eax, arg_4, arg_8);\n                                                                            ecx = *dword_6cc41c;\n                                                                            esp = (esp - 0xc) + 0xc;\n                                                                    }\n                                                                    edi = edi + 0x1;\n                                                                    ebx = ebx + 0x88;\n                                                                    ebp = &arg_20;\n                                                                    if (edi < esi[0x2]) {\n                                                                            continue;\n                                                                    }\n                                                                    break;\n                                                            }\n                                                            ecx = *dword_6cc41c;\n                                                            if (*(*dword_6cc41c + 0x14) != 0x0) {\n                                                                    edi = edi + 0x1;\n                                                                    ebx = ebx + 0x88;\n                                                                    ebp = &arg_20;\n                                                                    if (edi < esi[0x2]) {\n                                                                            continue;\n                                                                    }\n                                                                    break;\n                                                            }\n                                                            if (*ebp == arg_0) {\n                                                                    ecx = *dword_6cc418;\n                                                                    ecx[0xcda0] = ecx[0xcda0] + 0x1;\n                                                                    sub_5ba710(eax, arg_4, arg_8);\n                                                                    ecx = *dword_6cc41c;\n                                                                    esp = (esp - 0xc) + 0xc;\n                                                            }\n                                                            edi = edi + 0x1;\n                                                            ebx = ebx + 0x88;\n                                                            ebp = &arg_20;\n                                                    } while (edi < esi[0x2]);\n                                            }\n                                            else {\n                                                    ecx = *dword_6cc41c;\n                                            }\n                                            esi = *(esi + (arg_0 == 0x0 ? 0x1 : 0x0) * 0x4);\n                                            arg_0 = esi;\n                                            eax = esi;\n                                            if (esi >= 0x0) {\n                                                    continue;\n                                            }\n                                            temp_1 = 0x0;\n                                            break;\n                                    }\n                            }\n                            else {\n                                    edi = arg_4;\n                                    sub_5c9480();\n                                    sub_5d17f0();\n                                    eax = esi[0x3];\n                                    edx = *dword_6cc408;\n                                    arg_0 = 0x1;\n                                    ecx = eax << 0x4;\n                                    asm { fcomp      dword [dword_value_933741999+388] };\n                                    ecx = ecx + eax;\n                                    eax = eax + eax * 0x8;\n                                    ebx = edx + ecx * 0x8;\n                                    asm { fnstsw     ax };\n                                    if ((HIBYTE(eax) & 0x1) == 0x0) {\n                                            arg_0 = 0x0;\n                                    }\n                                    sub_5b8cc0(*(esi + arg_0 * 0x4), edi, arg_8);\n                                    ecx = *dword_6cc420;\n                                    eax = esi[0x4];\n                                    esp = (esp - 0xc) + 0xc - 0x4;\n                                    eax = ecx[0x19] + (eax + eax * 0x4) * 0x4;\n                                    *dword_7228e8 = *eax;\n                                    *dword_7228ec = eax[0x1];\n                                    *dword_7228f0 = eax[0x2];\n                                    eax = esi[0x4];\n                                    asm { fld        dword [eax+edx*4+0xc] };\n                                    asm { fstp       dword [dword_7228f4] };\n                                    sub_59be40();\n                                    sub_5b35b0(decomp_var_30);\n                                    edi = 0x0;\n                                    if (esi[0x2] > 0x0) {\n                                            ebp = &arg_8;\n                                            ebx = ebx + 0x58;\n                                            do {\n                                                    ecx = *dword_6cc41c;\n                                                    eax = esi[0x3];\n                                                    eax = eax + edi;\n                                                    if (*ebx == *ecx) {\n                                                            if (*ebp == arg_0) {\n                                                                    ecx = *dword_6cc418;\n                                                                    ecx[0xcda0] = ecx[0xcda0] + 0x1;\n                                                                    sub_5ba710(eax, arg_4, arg_8);\n                                                                    ecx = *dword_6cc41c;\n                                                                    esp = (esp - 0xc) + 0xc;\n                                                            }\n                                                            edi = edi + 0x1;\n                                                            ebx = ebx + 0x88;\n                                                            ebp = &arg_20;\n                                                            if (edi < esi[0x2]) {\n                                                                    continue;\n                                                            }\n                                                            break;\n                                                    }\n                                                    ecx = *dword_6cc41c;\n                                                    if (*(*dword_6cc41c + 0x14) != 0x0) {\n                                                            edi = edi + 0x1;\n                                                            ebx = ebx + 0x88;\n                                                            ebp = &arg_20;\n                                                            if (edi < esi[0x2]) {\n                                                                    continue;\n                                                            }\n                                                            break;\n                                                    }\n                                                    if (*ebp == arg_0) {\n                                                            ecx = *dword_6cc418;\n                                                            ecx[0xcda0] = ecx[0xcda0] + 0x1;\n                                                            sub_5ba710(eax, arg_4, arg_8);\n                                                            ecx = *dword_6cc41c;\n                                                            esp = (esp - 0xc) + 0xc;\n                                                    }\n                                                    edi = edi + 0x1;\n                                                    ebx = ebx + 0x88;\n                                                    ebp = &arg_20;\n                                            } while (edi < esi[0x2]);\n                                    }\n                                    else {\n                                            ecx = *dword_6cc41c;\n                                    }\n                                    esi = *(esi + (arg_0 == 0x0 ? 0x1 : 0x0) * 0x4);\n                                    arg_0 = esi;\n                                    eax = esi;\n                                    if (esi >= 0x0) {\n                                            continue;\n                                    }\n                                    temp_1 = 0x0;\n                                    break;\n                            }\n                    }\n            }\n            if (temp_1 == 0x0) {\n                    edx = eax + eax * 0x2 << 0x2;\n                    eax = *(ecx[0x6] + 0xd5cc);\n                    eax = *(eax - edx - 0x4);\n                    if (eax != 0x0) {\n                            ecx = *dword_6cc400;\n                            ecx[0x4] = ecx[0x4] + 0x1;\n                            sub_5b7e90(0x1, eax);\n                            esp = (esp - 0x8) + 0x8;\n                    }\n                    eax = *dword_6cc400;\n                    eax[0x2] = eax[0x2] + 0x1;\n            }\n    }\n    else {\n            edx = eax + eax * 0x2 << 0x2;\n            eax = *(*(*dword_6cc41c + 0x18) + 0xd5cc);\n            eax = *(eax - edx - 0x4);\n            if (eax != 0x0) {\n                    ecx = *dword_6cc400;\n                    ecx[0x4] = ecx[0x4] + 0x1;\n                    sub_5b7e90(0x1, eax);\n                    esp = (esp - 0x8) + 0x8;\n            }\n            eax = *dword_6cc400;\n            eax[0x2] = eax[0x2] + 0x1;\n    }\n    return eax;\n",
+    "assembly": [
+      "0x5b8cc0: mov eax, dword [esp+arg_0]",
+      "0x5b8cc4: mov ecx, dword [dword_6cc41c]",
+      "0x5b8cca: sub esp, 0x1c",
+      "0x5b8ccd: test eax, eax",
+      "0x5b8ccf: push ebx",
+      "0x5b8cd0: push ebp",
+      "0x5b8cd1: push esi",
+      "0x5b8cd2: push edi",
+      "0x5b8cd3: jl loc_5b8f80",
+      "0x5b8cd9: mov edx, dword [dword_6cc40c]",
+      "0x5b8cdf: mov esi, dword [ecx]",
+      "0x5b8ce1: mov edx, dword [edx+0xd5d4]",
+      "0x5b8ce7: mov edx, dword [edx+eax*4]",
+      "0x5b8cea: cmp edx, esi",
+      "0x5b8cec: je loc_5b8cf9",
+      "0x5b8cee: mov edx, dword [ecx+0x14]",
+      "0x5b8cf1: test edx, edx",
+      "0x5b8cf3: jne loc_5b8fd4",
+      "0x5b8cf9: mov ecx, dword [dword_6cc400]",
+      "0x5b8cff: mov edx, dword [ecx]",
+      "0x5b8d01: inc edx",
+      "0x5b8d02: mov dword [ecx], edx",
+      "0x5b8d04: lea ecx, dword [eax+eax*4]",
+      "0x5b8d07: lea edx, dword [eax+ecx*2]",
+      "0x5b8d0a: mov eax, dword [dword_6cc420]",
+      "0x5b8d0f: mov ecx, dword [eax+0x4c]",
+      "0x5b8d12: mov eax, dword [esp+0x2c+arg_8]",
+      "0x5b8d16: test eax, eax",
+      "0x5b8d18: lea esi, dword [ecx+edx*4]",
+      "0x5b8d1b: je loc_5b8e21",
+      "0x5b8d21: mov edx, dword [esp+0x2c+arg_4]",
+      "0x5b8d25: xor ebp, ebp",
+      "0x5b8d27: mov eax, dword [edx+4]",
+      "0x5b8d2a: mov dword [esp+0x2c+var_14], eax",
+      "0x5b8d2e: mov ecx, dword [eax]",
+      "0x5b8d30: lea ebx, dword [eax+4]",
+      "0x5b8d33: test ecx, ecx",
+      "0x5b8d35: jle loc_5b8e21",
+      "0x5b8d3b: lea ecx, dword [eax+0x10]",
+      "0x5b8d3e: lea edx, dword [eax+0x584]",
+      "0x5b8d44: mov dword [esp+0x2c+var_18], ecx",
+      "0x5b8d48: mov dword [esp+0x2c+var_1C], edx",
+      "0x5b8d65: mov edx, dword [esp+0x2c+var_1C]",
+      "0x5b8d69: mov edi, dword [edx]",
+      "0x5b8d6b: mov eax, dword [edi]",
+      "0x5b8d6d: fld dword [esi+eax*4+0x14]",
+      "0x5b8d71: fstp dword [esp+0x2c+var_C]",
+      "0x5b8d75: mov ecx, dword [edi+4]",
+      "0x5b8d78: fld dword [esi+ecx*4+0x14]",
+      "0x5b8d7c: lea ecx, dword [esp+0x2c+var_C]",
+      "0x5b8d80: fstp dword [esp+0x2c+var_8]",
+      "0x5b8d84: mov edx, dword [edi+8]",
+      "0x5b8d87: fld dword [esi+edx*4+0x14]",
+      "0x5b8d8b: mov edx, ebx",
+      "0x5b8d8d: fstp dword [esp+0x2c+var_4]",
+      "0x5b8d91: call sub_5b2e40",
+      "0x5b8d96: mov eax, dword [esp+0x2c+var_18]",
+      "0x5b8d9a: fsub dword [eax]",
+      "0x5b8d9c: fcomp dword [dword_value_933741999+388]",
+      "0x5b8da2: fnstsw ax",
+      "0x5b8da4: test ah, 0x41",
+      "0x5b8da7: jne loc_5b8fc0",
+      "0x5b8dad: mov ecx, dword [edi+0xc]",
+      "0x5b8db0: fld dword [esi+ecx*4+0x14]",
+      "0x5b8db4: lea ecx, dword [esp+0x2c+var_C]",
+      "0x5b8db8: fstp dword [esp+0x2c+var_C]",
+      "0x5b8dbc: mov edx, dword [edi+0x10]",
+      "0x5b8dbf: fld dword [esi+edx*4+0x14]",
+      "0x5b8dc3: mov edx, ebx",
+      "0x5b8dc5: fstp dword [esp+0x2c+var_8]",
+      "0x5b8dc9: mov eax, dword [edi+0x14]",
+      "0x5b8dcc: fld dword [esi+eax*4+0x14]",
+      "0x5b8dd0: fstp dword [esp+0x2c+var_4]",
+      "0x5b8dd4: call sub_5b2e40",
+      "0x5b8dd9: fsub dword [ebx+0xc]",
+      "0x5b8ddc: fcomp dword [dword_value_933741999+388]",
+      "0x5b8de2: fnstsw ax",
+      "0x5b8de4: test ah, 0x1",
+      "0x5b8de7: jne loc_5b8df9",
+      "0x5b8de9: mov eax, dword [esp+0x2c+var_10]",
+      "0x5b8ded: mov ecx, dword [esp+0x2c+arg_8]",
+      "0x5b8df1: not eax",
+      "0x5b8df3: and ecx, eax",
+      "0x5b8df5: mov dword [esp+0x2c+arg_8], ecx",
+      "0x5b8d4c: mov edx, 0x1",
+      "0x5b8d51: mov ecx, ebp",
+      "0x5b8d53: shl edx, cl",
+      "0x5b8d55: mov ecx, dword [esp+0x2c+arg_8]",
+      "0x5b8d59: test ecx, edx",
+      "0x5b8d5b: mov dword [esp+0x2c+var_10], edx",
+      "0x5b8d5f: je loc_5b8dfd",
+      "0x5b8e21: mov edi, dword [esp+0x2c+arg_4]",
+      "0x5b8e25: mov ecx, dword [edi]",
+      "0x5b8e27: call sub_5c9480",
+      "0x5b8e2c: mov edx, eax",
+      "0x5b8e2e: mov eax, dword [esi+0x10]",
+      "0x5b8e31: lea ecx, dword [eax+eax*4]",
+      "0x5b8e34: mov eax, dword [dword_6cc420]",
+      "0x5b8e39: mov eax, dword [eax+0x64]",
+      "0x5b8e3c: lea ecx, dword [eax+ecx*4]",
+      "0x5b8e3f: call sub_5d17f0",
+      "0x5b8e44: mov eax, dword [esi+0xc]",
+      "0x5b8e47: mov edx, dword [dword_6cc408]",
+      "0x5b8e4d: mov ecx, eax",
+      "0x5b8e4f: mov dword [esp+0x2c+arg_0], 0x1",
+      "0x5b8e57: shl ecx, 0x4",
+      "0x5b8e5a: fcomp dword [dword_value_933741999+388]",
+      "0x5b8e60: add ecx, eax",
+      "0x5b8e62: lea eax, dword [eax+eax*8]",
+      "0x5b8e65: lea ebx, dword [edx+ecx*8]",
+      "0x5b8e68: mov ecx, dword [dword_6cc420]",
+      "0x5b8e6e: mov edx, dword [ecx+0x68]",
+      "0x5b8e71: lea ebp, dword [edx+eax*4]",
+      "0x5b8e74: fnstsw ax",
+      "0x5b8e76: test ah, 0x1",
+      "0x5b8e79: jne loc_5b8e83",
+      "0x5b8e7b: mov dword [esp+0x2c+arg_0], 0x0",
+      "0x5b8ef8: mov ecx, dword [dword_6cc41c]",
+      "0x5b8efe: add ebp, 0xc",
+      "0x5b8f01: add ebx, 0x58",
+      "0x5b8f0f: mov edx, dword [ecx+0x14]",
+      "0x5b8f12: test edx, edx",
+      "0x5b8f14: jne loc_5b8f4b",
+      "0x5b8f16: mov edx, dword [esp+0x2c+arg_0]",
+      "0x5b8f1a: cmp dword [ebp], edx",
+      "0x5b8f1d: jne loc_5b8f4b",
+      "0x5b8f1f: mov ecx, dword [dword_6cc418]",
+      "0x5b8f25: mov edx, dword [ecx+0x33680]",
+      "0x5b8f2b: inc edx",
+      "0x5b8f2c: mov dword [ecx+0x33680], edx",
+      "0x5b8f32: mov ecx, dword [esp+0x2c+arg_8]",
+      "0x5b8f36: mov edx, dword [esp+0x2c+arg_4]",
+      "0x5b8f3a: push ecx",
+      "0x5b8f3b: push edx",
+      "0x5b8f3c: push eax",
+      "0x5b8f3d: call sub_5ba710",
+      "0x5b8f42: mov ecx, dword [dword_6cc41c]",
+      "0x5b8f48: add esp, 0xc",
+      "0x5b8f04: mov eax, dword [esi+0xc]",
+      "0x5b8f07: mov edx, dword [ebx]",
+      "0x5b8f09: add eax, edi",
+      "0x5b8f0b: cmp edx, dword [ecx]",
+      "0x5b8f0d: je loc_5b8f16",
+      "0x5b8f5c: jmp loc_5b8f64",
+      "0x5b8f64: mov edx, dword [esp+0x2c+arg_0]",
+      "0x5b8f68: xor eax, eax",
+      "0x5b8f6a: test edx, edx",
+      "0x5b8f6c: sete al",
+      "0x5b8f6f: mov esi, dword [esi+eax*4]",
+      "0x5b8f72: test esi, esi",
+      "0x5b8f74: mov dword [esp+0x2c+arg_0], esi",
+      "0x5b8f78: mov eax, esi",
+      "0x5b8f7a: jge loc_5b8cd9",
+      "0x5b8f80: mov ecx, dword [ecx+0x18]",
+      "0x5b8f83: lea edx, dword [eax+eax*2]",
+      "0x5b8f86: shl edx, 0x2",
+      "0x5b8f89: mov eax, dword [ecx+0xd5cc]",
+      "0x5b8f8f: sub eax, edx",
+      "0x5b8f91: mov eax, dword [eax-4]",
+      "0x5b8f94: test eax, eax",
+      "0x5b8f96: je loc_5b8fac",
+      "0x5b8f98: mov ecx, dword [dword_6cc400]",
+      "0x5b8f9e: push eax",
+      "0x5b8f9f: push 0x1",
+      "0x5b8fa1: inc dword [ecx+0x10]",
+      "0x5b8fa4: call sub_5b7e90",
+      "0x5b8fa9: add esp, 0x8",
+      "0x5b8fac: mov eax, dword [dword_6cc400]",
+      "0x5b8fb1: pop edi",
+      "0x5b8fb2: pop esi",
+      "0x5b8fb3: pop ebp",
+      "0x5b8fb4: mov ecx, dword [eax+8]",
+      "0x5b8fb7: pop ebx",
+      "0x5b8fb8: inc ecx",
+      "0x5b8fb9: mov dword [eax+8], ecx",
+      "0x5b8fbc: add esp, 0x1c",
+      "0x5b8fbf: ret",
+      "0x5b8f4b: mov eax, dword [esi+8]",
+      "0x5b8f4e: inc edi",
+      "0x5b8f4f: add ebx, 0x88",
+      "0x5b8f55: add ebp, 0x24",
+      "0x5b8f58: cmp edi, eax",
+      "0x5b8f5a: jl loc_5b8f04",
+      "0x5b8f5e: mov ecx, dword [dword_6cc41c]",
+      "0x5b8e83: mov ecx, dword [esp+0x2c+arg_0]",
+      "0x5b8e87: mov eax, dword [esp+0x2c+arg_8]",
+      "0x5b8e8b: push eax",
+      "0x5b8e8c: push edi",
+      "0x5b8e8d: mov edx, dword [esi+ecx*4]",
+      "0x5b8e90: push edx",
+      "0x5b8e91: call sub_5b8cc0",
+      "0x5b8e96: mov ecx, dword [dword_6cc420]",
+      "0x5b8e9c: mov eax, dword [esi+0x10]",
+      "0x5b8e9f: add esp, 0xc",
+      "0x5b8ea2: mov edx, dword [ecx+0x64]",
+      "0x5b8ea5: lea eax, dword [eax+eax*4]",
+      "0x5b8ea8: push 0x7228f8",
+      "0x5b8ead: lea eax, dword [edx+eax*4]",
+      "0x5b8eb0: mov edx, dword [eax]",
+      "0x5b8eb2: mov dword [dword_7228e8], edx",
+      "0x5b8eb8: mov edx, dword [eax+4]",
+      "0x5b8ebb: mov dword [dword_7228ec], edx",
+      "0x5b8ec1: mov eax, dword [eax+8]",
+      "0x5b8ec4: mov dword [dword_7228f0], eax",
+      "0x5b8ec9: mov eax, dword [esi+0x10]",
+      "0x5b8ecc: lea edx, dword [eax+eax*4]",
+      "0x5b8ecf: mov eax, dword [ecx+0x64]",
+      "0x5b8ed2: fld dword [eax+edx*4+0xc]",
+      "0x5b8ed6: fstp dword [dword_7228f4]",
+      "0x5b8edc: mov ecx, dword [edi]",
+      "0x5b8ede: call sub_59be40",
+      "0x5b8ee3: mov ecx, eax",
+      "0x5b8ee5: mov edx, dword_7228e8",
+      "0x5b8eea: call sub_5b35b0",
+      "0x5b8eef: mov eax, dword [esi+8]",
+      "0x5b8ef2: xor edi, edi",
+      "0x5b8ef4: test eax, eax",
+      "0x5b8ef6: jle loc_5b8f5e",
+      "0x5b8df9: mov eax, dword [esp+0x2c+var_14]",
+      "0x5b8fc0: mov ecx, dword [esp+0x2c+arg_4]",
+      "0x5b8fc4: mov eax, dword [esp+0x2c+arg_0]",
+      "0x5b8fc8: mov edx, dword [ecx]",
+      "0x5b8fca: push edx",
+      "0x5b8fcb: push eax",
+      "0x5b8fcc: call sub_5b8fe0",
+      "0x5b8fd1: add esp, 0x8",
+      "0x5b8dfd: mov ecx, dword [esp+0x2c+var_1C]",
+      "0x5b8e01: mov edi, dword [esp+0x2c+var_18]",
+      "0x5b8e05: add ecx, 0x4",
+      "0x5b8e08: inc ebp",
+      "0x5b8e09: mov dword [esp+0x2c+var_1C], ecx",
+      "0x5b8e0d: mov ecx, dword [eax]",
+      "0x5b8e0f: add edi, 0x14",
+      "0x5b8e12: add ebx, 0x14",
+      "0x5b8e15: cmp ebp, ecx",
+      "0x5b8e17: mov dword [esp+0x2c+var_18], edi",
+      "0x5b8e1b: jl loc_5b8d4c",
+      "0x5b8fd4: pop edi",
+      "0x5b8fd5: pop esi",
+      "0x5b8fd6: pop ebp",
+      "0x5b8fd7: pop ebx",
+      "0x5b8fd8: add esp, 0x1c",
+      "0x5b8fdb: ret"
+    ],
+    "comments": [],
+    "callers": [
+      {
+        "address": "0x5b8b40",
+        "name": "sub_5b8b40",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5b8cc0",
+        "name": "sub_5b8cc0",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5b90d0",
+        "name": "sub_5b90d0",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      }
+    ],
+    "callees": [
+      {
+        "address": "0x59be40",
+        "name": "sub_59be40",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5b2e40",
+        "name": "sub_5b2e40",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5b35b0",
+        "name": "sub_5b35b0",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5b7e90",
+        "name": "sub_5b7e90",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5b8cc0",
+        "name": "sub_5b8cc0",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5b8fe0",
+        "name": "sub_5b8fe0",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5ba710",
+        "name": "sub_5ba710",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5c9480",
+        "name": "sub_5c9480",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      },
+      {
+        "address": "0x5d17f0",
+        "name": "sub_5d17f0",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      }
+    ],
+    "incoming_references": [
+      {
+        "source_address": "0x5b8c64",
+        "target_address": "0x5b8cc0",
+        "source_procedure": {
+          "address": "0x5b8b40",
+          "name": "sub_5b8b40",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x5b927f",
+        "target_address": "0x5b8cc0",
+        "source_procedure": {
+          "address": "0x5b90d0",
+          "name": "sub_5b90d0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      }
+    ],
+    "outgoing_references": [
+      {
+        "source_address": "0x5b8cc4",
+        "target_address": "0x6cc41c",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8cd3",
+        "target_address": "0x5b8f80",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8cd9",
+        "target_address": "0x6cc40c",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8cec",
+        "target_address": "0x5b8cf9",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8cf3",
+        "target_address": "0x5b8fd4",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8cf9",
+        "target_address": "0x6cc400",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8d0a",
+        "target_address": "0x6cc420",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8d1b",
+        "target_address": "0x5b8e21",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8d35",
+        "target_address": "0x5b8e21",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8d5f",
+        "target_address": "0x5b8dfd",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8d91",
+        "target_address": "0x5b2e40",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b2e40",
+          "name": "sub_5b2e40",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x5b8d9c",
+        "target_address": "0x64a450",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8da7",
+        "target_address": "0x5b8fc0",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8dd4",
+        "target_address": "0x5b2e40",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b2e40",
+          "name": "sub_5b2e40",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x5b8ddc",
+        "target_address": "0x64a450",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8de7",
+        "target_address": "0x5b8df9",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8e1b",
+        "target_address": "0x5b8d4c",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8e27",
+        "target_address": "0x5c9480",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5c9480",
+          "name": "sub_5c9480",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x5b8e34",
+        "target_address": "0x6cc420",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8e3f",
+        "target_address": "0x5d17f0",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5d17f0",
+          "name": "sub_5d17f0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x5b8e47",
+        "target_address": "0x6cc408",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8e5a",
+        "target_address": "0x64a450",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8e68",
+        "target_address": "0x6cc420",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8e79",
+        "target_address": "0x5b8e83",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8e91",
+        "target_address": "0x5b8cc0",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x5b8e96",
+        "target_address": "0x6cc420",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8ea8",
+        "target_address": "0x7228f8",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8eb2",
+        "target_address": "0x7228e8",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8ebb",
+        "target_address": "0x7228ec",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8ec4",
+        "target_address": "0x7228f0",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8ed6",
+        "target_address": "0x7228f4",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8ede",
+        "target_address": "0x59be40",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x59be40",
+          "name": "sub_59be40",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x5b8ee5",
+        "target_address": "0x7228e8",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8eea",
+        "target_address": "0x5b35b0",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b35b0",
+          "name": "sub_5b35b0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x5b8ef6",
+        "target_address": "0x5b8f5e",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8ef8",
+        "target_address": "0x6cc41c",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8f0d",
+        "target_address": "0x5b8f16",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8f14",
+        "target_address": "0x5b8f4b",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8f1d",
+        "target_address": "0x5b8f4b",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8f1f",
+        "target_address": "0x6cc418",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8f3d",
+        "target_address": "0x5ba710",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5ba710",
+          "name": "sub_5ba710",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x5b8f42",
+        "target_address": "0x6cc41c",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8f5a",
+        "target_address": "0x5b8f04",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8f5c",
+        "target_address": "0x5b8f64",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8f5e",
+        "target_address": "0x6cc41c",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8f7a",
+        "target_address": "0x5b8cd9",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8f96",
+        "target_address": "0x5b8fac",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8f98",
+        "target_address": "0x6cc400",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8fa4",
+        "target_address": "0x5b7e90",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b7e90",
+          "name": "sub_5b7e90",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      },
+      {
+        "source_address": "0x5b8fac",
+        "target_address": "0x6cc400",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": null,
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        }
+      },
+      {
+        "source_address": "0x5b8fcc",
+        "target_address": "0x5b8fe0",
+        "source_procedure": {
+          "address": "0x5b8cc0",
+          "name": "sub_5b8cc0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x5b8fe0",
+          "name": "sub_5b8fe0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper exposes partial CallReference classification, but not detailed reference flags"
+        },
+        "call": {
+          "classification": "direct",
+          "provider_type": 2,
+          "provenance": "hopper-public-python-api:CallReference"
+        }
+      }
+    ],
+    "unresolved_calls": [],
+    "referenced_strings": [],
+    "referenced_names": [
+      {
+        "address": "0x59be40",
+        "value": "sub_59be40",
+        "source_address": "0x5b8ede"
+      },
+      {
+        "address": "0x5b2e40",
+        "value": "sub_5b2e40",
+        "source_address": "0x5b8d91"
+      },
+      {
+        "address": "0x5b2e40",
+        "value": "sub_5b2e40",
+        "source_address": "0x5b8dd4"
+      },
+      {
+        "address": "0x5b35b0",
+        "value": "sub_5b35b0",
+        "source_address": "0x5b8eea"
+      },
+      {
+        "address": "0x5b7e90",
+        "value": "sub_5b7e90",
+        "source_address": "0x5b8fa4"
+      },
+      {
+        "address": "0x5b8cc0",
+        "value": "sub_5b8cc0",
+        "source_address": "0x5b8e91"
+      },
+      {
+        "address": "0x5b8fe0",
+        "value": "sub_5b8fe0",
+        "source_address": "0x5b8fcc"
+      },
+      {
+        "address": "0x5ba710",
+        "value": "sub_5ba710",
+        "source_address": "0x5b8f3d"
+      },
+      {
+        "address": "0x5c9480",
+        "value": "sub_5c9480",
+        "source_address": "0x5b8e27"
+      },
+      {
+        "address": "0x5d17f0",
+        "value": "sub_5d17f0",
+        "source_address": "0x5b8e3f"
+      },
+      {
+        "address": "0x6cc400",
+        "value": "dword_6cc400",
+        "source_address": "0x5b8cf9"
+      },
+      {
+        "address": "0x6cc400",
+        "value": "dword_6cc400",
+        "source_address": "0x5b8f98"
+      },
+      {
+        "address": "0x6cc400",
+        "value": "dword_6cc400",
+        "source_address": "0x5b8fac"
+      },
+      {
+        "address": "0x6cc408",
+        "value": "dword_6cc408",
+        "source_address": "0x5b8e47"
+      },
+      {
+        "address": "0x6cc40c",
+        "value": "dword_6cc40c",
+        "source_address": "0x5b8cd9"
+      },
+      {
+        "address": "0x6cc418",
+        "value": "dword_6cc418",
+        "source_address": "0x5b8f1f"
+      },
+      {
+        "address": "0x6cc41c",
+        "value": "dword_6cc41c",
+        "source_address": "0x5b8cc4"
+      },
+      {
+        "address": "0x6cc41c",
+        "value": "dword_6cc41c",
+        "source_address": "0x5b8ef8"
+      },
+      {
+        "address": "0x6cc41c",
+        "value": "dword_6cc41c",
+        "source_address": "0x5b8f42"
+      },
+      {
+        "address": "0x6cc41c",
+        "value": "dword_6cc41c",
+        "source_address": "0x5b8f5e"
+      },
+      {
+        "address": "0x6cc420",
+        "value": "dword_6cc420",
+        "source_address": "0x5b8d0a"
+      },
+      {
+        "address": "0x6cc420",
+        "value": "dword_6cc420",
+        "source_address": "0x5b8e34"
+      },
+      {
+        "address": "0x6cc420",
+        "value": "dword_6cc420",
+        "source_address": "0x5b8e68"
+      },
+      {
+        "address": "0x6cc420",
+        "value": "dword_6cc420",
+        "source_address": "0x5b8e96"
+      },
+      {
+        "address": "0x7228e8",
+        "value": "dword_7228e8",
+        "source_address": "0x5b8eb2"
+      },
+      {
+        "address": "0x7228e8",
+        "value": "dword_7228e8",
+        "source_address": "0x5b8ee5"
+      },
+      {
+        "address": "0x7228ec",
+        "value": "dword_7228ec",
+        "source_address": "0x5b8ebb"
+      },
+      {
+        "address": "0x7228f0",
+        "value": "dword_7228f0",
+        "source_address": "0x5b8ec4"
+      },
+      {
+        "address": "0x7228f4",
+        "value": "dword_7228f4",
+        "source_address": "0x5b8ed6"
+      }
+    ],
+    "basic_blocks": [
+      {
+        "start": "0x5b8cc0",
+        "end": "0x5b8cd9",
+        "successors": [
+          "0x5b8cd9",
+          "0x5b8f80"
+        ]
+      },
+      {
+        "start": "0x5b8cd9",
+        "end": "0x5b8cee",
+        "successors": [
+          "0x5b8cee",
+          "0x5b8cf9"
+        ]
+      },
+      {
+        "start": "0x5b8cee",
+        "end": "0x5b8cf9",
+        "successors": [
+          "0x5b8cf9",
+          "0x5b8fd4"
+        ]
+      },
+      {
+        "start": "0x5b8cf9",
+        "end": "0x5b8d21",
+        "successors": [
+          "0x5b8d21",
+          "0x5b8e21"
+        ]
+      },
+      {
+        "start": "0x5b8d21",
+        "end": "0x5b8d3b",
+        "successors": [
+          "0x5b8d3b",
+          "0x5b8e21"
+        ]
+      },
+      {
+        "start": "0x5b8d3b",
+        "end": "0x5b8d4c",
+        "successors": [
+          "0x5b8d4c"
+        ]
+      },
+      {
+        "start": "0x5b8d65",
+        "end": "0x5b8dad",
+        "successors": [
+          "0x5b8dad",
+          "0x5b8fc0"
+        ]
+      },
+      {
+        "start": "0x5b8dad",
+        "end": "0x5b8de9",
+        "successors": [
+          "0x5b8de9",
+          "0x5b8df9"
+        ]
+      },
+      {
+        "start": "0x5b8de9",
+        "end": "0x5b8df9",
+        "successors": [
+          "0x5b8df9"
+        ]
+      },
+      {
+        "start": "0x5b8d4c",
+        "end": "0x5b8d65",
+        "successors": [
+          "0x5b8d65",
+          "0x5b8dfd"
+        ]
+      },
+      {
+        "start": "0x5b8e21",
+        "end": "0x5b8e7b",
+        "successors": [
+          "0x5b8e7b",
+          "0x5b8e83"
+        ]
+      },
+      {
+        "start": "0x5b8e7b",
+        "end": "0x5b8e83",
+        "successors": [
+          "0x5b8e83"
+        ]
+      },
+      {
+        "start": "0x5b8ef8",
+        "end": "0x5b8f04",
+        "successors": [
+          "0x5b8f04"
+        ]
+      },
+      {
+        "start": "0x5b8f0f",
+        "end": "0x5b8f16",
+        "successors": [
+          "0x5b8f16",
+          "0x5b8f4b"
+        ]
+      },
+      {
+        "start": "0x5b8f16",
+        "end": "0x5b8f1f",
+        "successors": [
+          "0x5b8f1f",
+          "0x5b8f4b"
+        ]
+      },
+      {
+        "start": "0x5b8f1f",
+        "end": "0x5b8f4b",
+        "successors": [
+          "0x5b8f4b"
+        ]
+      },
+      {
+        "start": "0x5b8f04",
+        "end": "0x5b8f0f",
+        "successors": [
+          "0x5b8f0f",
+          "0x5b8f16"
+        ]
+      },
+      {
+        "start": "0x5b8f5c",
+        "end": "0x5b8f5e",
+        "successors": [
+          "0x5b8f64"
+        ]
+      },
+      {
+        "start": "0x5b8f64",
+        "end": "0x5b8f80",
+        "successors": [
+          "0x5b8cd9",
+          "0x5b8f80"
+        ]
+      },
+      {
+        "start": "0x5b8f80",
+        "end": "0x5b8f98",
+        "successors": [
+          "0x5b8f98",
+          "0x5b8fac"
+        ]
+      },
+      {
+        "start": "0x5b8f98",
+        "end": "0x5b8fac",
+        "successors": [
+          "0x5b8fac"
+        ]
+      },
+      {
+        "start": "0x5b8fac",
+        "end": "0x5b8fc0",
+        "successors": []
+      },
+      {
+        "start": "0x5b8f4b",
+        "end": "0x5b8f5c",
+        "successors": [
+          "0x5b8f04",
+          "0x5b8f5c"
+        ]
+      },
+      {
+        "start": "0x5b8f5e",
+        "end": "0x5b8f64",
+        "successors": [
+          "0x5b8f64"
+        ]
+      },
+      {
+        "start": "0x5b8e83",
+        "end": "0x5b8ef8",
+        "successors": [
+          "0x5b8ef8",
+          "0x5b8f5e"
+        ]
+      },
+      {
+        "start": "0x5b8df9",
+        "end": "0x5b8dfd",
+        "successors": [
+          "0x5b8dfd"
+        ]
+      },
+      {
+        "start": "0x5b8fc0",
+        "end": "0x5b8fd4",
+        "successors": [
+          "0x5b8fd4"
+        ]
+      },
+      {
+        "start": "0x5b8dfd",
+        "end": "0x5b8e21",
+        "successors": [
+          "0x5b8d4c",
+          "0x5b8e21"
+        ]
+      },
+      {
+        "start": "0x5b8fd4",
+        "end": "0x5b8fdc",
+        "successors": []
+      }
+    ],
+    "native_api": null,
+    "native_value_flow": null,
+    "limitations": [
+      "Native CallReference classifications are observed where available; detailed reference flags remain unknown.",
+      "Hopper's public Python API does not expose equivalent external or thunk classification in this dossier.",
+      "Native calls without resolved target addresses are not represented as edges; enumeration beyond reported CallReference objects is unknown.",
+      "Pseudocode and assembly are provider-specific representations, not original source."
+    ]
+  },
+  "confidence": "observed",
+  "authority": "shipped-artifact",
+  "environment": null,
+  "limitations": [
+    "Results depend on Hopper's completed static analysis.",
+    "String values cover native typed objects. Hopper may split long literals into adjacent unterminated fragments; string searches match each object independently.",
+    "Undecodable typed objects retain native display text with an explicit decoding unknown; these values do not establish decoded source literals.",
+    "Reported string encodings are inferred from typed bytes and native display; the original source's intended encoding is unknown."
+  ],
+  "locations": [],
+  "evidence_links": []
+}

@@ -1,0 +1,8 @@
+✔ nearby stacked and nonadjacent rooms never allocate artwork; spatial cells are split by room ownership (6.740919ms)
+✔ the room beyond a closed doorway is prepared, and aligned open doorways preserve a farther visible room (1.750129ms)
+✔ crossing a doorway preloads the next room and promptly releases unrelated rooms even inside the distance grace radius (1.160043ms)
+✔ remote authored cameras select their own room and return safely; flying into solid exterior space retains the last valid room (1.286902ms)
+✔ actors and pooled fragment textures in unrelated rooms do not request maps or enter residency (6.745788ms)
+✔ flames and ribbons from excluded floors are omitted while large effects touching the selected room remain visible (1.760149ms)
+✔ missing room metadata falls back conservatively, without inventing a closed room (0.336268ms)
+✔ animation padding cannot assign an upstairs actor to the basement and shared admitted textures remain protected (0.996374ms)

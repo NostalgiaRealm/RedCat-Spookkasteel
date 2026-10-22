@@ -1,0 +1,18 @@
+✔ decoded actor maps upload through the frame queue before becoming render-ready (4.153376ms)
+✔ explicit actor load settling pumps bounded work and yields rather than deadlocking before the first frame (1.486702ms)
+✔ visible and pinned maps outrank background requests without retaining old priority forever (0.826805ms)
+✔ an expired decoded map skips graphics preparation and can be requested again (0.589577ms)
+✔ a fresh owner of the same map keeps an already decoded request alive (0.411678ms)
+✔ level disposal resolves staged actor work without a future frame or a disposed-handle upload (0.417547ms)
+✔ preparation failures propagate through settle and never expose a ready placeholder (0.619446ms)
+✔ without a shared work queue the standalone actor loader remains immediately usable (0.216959ms)
+✔ GPU eviction invalidates readiness and re-entry budgets a retained decoded-image upload without fetching again (0.554276ms)
+✔ GPU-evicted retained images still expire and a later owner fetches fresh artwork (0.594517ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 65.295175

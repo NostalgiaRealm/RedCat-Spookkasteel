@@ -1,0 +1,124 @@
+    decomp_var_28 = ebx;
+    ebx = arg_0;
+    decomp_var_2c = ebp;
+    ebp = ecx;
+    decomp_var_34 = edi;
+    edi = arg_4;
+    esp = esp - 0x3c;
+    (arg_388[0x1])(ebx, edi, decomp_var_34, esi, decomp_var_2c, decomp_var_28);
+    esi = *dword_6b915c;
+    var_12 = arg_3f4;
+    if (*dword_6b915c == 0x0) {
+            esi = sub_4bc480();
+    }
+    eax = esi[0x13a];
+    if (eax == 0x80000000) {
+            eax = esi[0x127];
+            if (eax == 0x0) {
+                    eax = 0x64a3b4;
+            }
+            eax = sub_60af10(eax);
+            esp = (esp - 0x4) + 0x4;
+            esi[0x13a] = eax;
+    }
+    if (eax == 0x0) {
+            esi = &arg_544;
+            var_10 = 0x32;
+            do {
+                    if (esi[0x6c] != 0x0) {
+                            esp = esp - 0x8;
+                            (*(*esi + 0x4))(ebx, edi);
+                    }
+                    esi = esi + 0x144;
+                    eax = var_10 - 0x1;
+                    var_10 = eax;
+            } while (eax != 0x0);
+            esp = esp - 0x8;
+            sub_47c2b0(ebx, edi, decomp_var_24, decomp_var_20, decomp_var_1c, var_18, decomp_var_14, var_10, decomp_var_c);
+    }
+    if (var_12 != 0x0) {
+            esp = esp - 0x8;
+            sub_47b860(ebx, edi, decomp_var_24, decomp_var_20, decomp_var_1c, var_18, decomp_var_14, var_10, decomp_var_c, var_8, var_4, saved_fp, arg_0, arg_4, arg_8);
+            arg_4b1c = arg_38c;
+            *(&arg_4b1c + 0x4) = *(&arg_38c + 0x4);
+            *(&arg_4b1c + 0x8) = *(&arg_38c + 0x8);
+    }
+    else {
+            if (var_11 != 0x0) {
+                    sub_47c580(0xffffffff);
+                    sub_47d1f0(0x2);
+                    esp = esp - 0xc;
+                    sub_47d2f0(0x1);
+            }
+    }
+    esi = *dword_6b915c;
+    if (*dword_6b915c == 0x0) {
+            esi = sub_4bc480();
+    }
+    eax = esi[0x13a];
+    if (eax == 0x80000000) {
+            eax = esi[0x127];
+            if (eax == 0x0) {
+                    eax = 0x64a3b4;
+            }
+            eax = sub_60af10(eax);
+            esp = (esp - 0x4) + 0x4;
+            esi[0x13a] = eax;
+    }
+    if (eax != 0x0) goto .l1;
+    goto loc_4796ab;
+
+.l1:
+    return eax;
+
+loc_4796ab:
+    ebx = &arg_374;
+    edi = &arg_448c;
+    var_8 = 0x5;
+    goto loc_4796bf;
+
+loc_4796bf:
+    if (edi[0x6c] != 0x0) {
+            arg_4 = edi[0x1];
+            eax = arg_4b1c;
+            edi[0x46] = eax;
+            edi[0x47] = *(&arg_4b1c + 0x4);
+            edi[0x48] = *(&arg_4b1c + 0x8);
+            esp = esp - 0x8;
+            (*(*edi + 0x4))(arg_18, arg_1c);
+            ecx = *(edi + 0x8);
+            eax = edi[0x1];
+            saved_fp = ecx;
+            ecx = *ebx;
+            var_4 = eax;
+            if (ecx != 0x0 && arg_4b50 != 0x0) {
+                    esp = esp - 0x10;
+                    (*(*ecx + 0x4))(arg_18, arg_1c, &arg_4, &var_4);
+            }
+    }
+    else {
+            arg_4b50 = 0x0;
+    }
+    ebx = ebx + 0x4;
+    edi = edi + 0x144;
+    eax = saved_fp - 0x1;
+    saved_fp = eax;
+    if (eax != 0x0) {
+            continue;
+    }
+    break;
+    ecx = arg_370;
+    if (ecx != 0x0) {
+            esp = esp - 0x4;
+            (*(*ecx + 0x4c))(&arg_4b1c);
+            asm { fld        dword [dword_value_1065353216+44] };
+            asm { fmul       dword [ebp+0x4b2c] };
+            esp = esp - 0x4;
+            var_18 = ecx;
+            asm { fstp       dword [esp+0x18+var_18] };
+            sub_4e2d60(var_18);
+            esp = esp - 0x4;
+            arg_c = 0x437f0000;
+            eax = sub_4e3090(&arg_c);
+    }
+    return eax;

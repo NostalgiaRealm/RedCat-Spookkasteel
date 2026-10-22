@@ -1,0 +1,54 @@
+--- temp_work/explosion-damage-2026-10-14/baseline/world.js	2026-10-14 00:14:08.483828603 +0200
++++ src/world.js	2026-10-14 00:17:01.189551311 +0200
+@@ -270,6 +270,7 @@
+       if(this.actorInstances.has(obj.id)){
+         if(obj.kind==='actor'){
+           const actor=this.actorInstances.get(obj.id);this.configureDestructible(obj,actor);
++          this.configureExplosionTarget(obj,actor);
+           this.registerActorCollision(obj,actor);
+         }
+         return;
+@@ -286,6 +287,7 @@
+         }
+         actor.position.fromArray(gameplay.objectPosition(obj));actor.visible=actorVisible(obj,gameplay.time);this.scene.add(actor);this.actorInstances.set(obj.id,actor);
+         if(obj.kind==='actor')this.configureDestructible(obj,actor);
++        if(obj.kind==='actor'||obj.kind==='enemy')this.configureExplosionTarget(obj,actor);
+         if(obj.kind==='enemy') {
+           if(actor.userData.animator) {
+             const stateAnimator=new ActorStateAnimator(actor.userData.animator,obj.stats);
+@@ -399,6 +401,27 @@
+     };
+     object.effectScale=()=>actor.userData.mesh?.scale.toArray()||[1,1,1];
+   }
++  configureExplosionTarget(object,actor) {
++    const game=this.gameplay;
++    object.explosionActive=()=>actorVisible(object,game.time)&&attachedActorVisible(object,game);
++    object.explosionBounds=()=>{
++      // Hurt cells use the posed actor box, not the narrower movement hull.
++      // Cache within a tick when several nearby crates explode together.
++      const cached=actor.userData.explosionBounds;
++      if(cached?.time===game.time)return cached.bounds;
++      const origin=game.objectPosition(object);
++      actor.position.fromArray(origin);
++      if(object.kind==='actor')actor.quaternion.copy(actorOrientation(object,actor.userData.template?.data.settings||{},game.scripts?.modelTransforms.get(object.modelIndex)));
++      else {
++        if(object.yaw!==undefined)actor.rotation.y=object.yaw;
++        if(object.rotation)actor.rotation.fromArray(object.rotation);
++      }
++      actor.updateWorldMatrix(true,true);
++      const box=new THREE.Box3().setFromObject(actor),bounds={origin:[...origin],min:box.min.toArray(),max:box.max.toArray()};
++      actor.userData.explosionBounds={time:game.time,bounds};
++      return bounds;
++    };
++  }
+   registerActorCollision(object,actor,overrideFlags={}) {
+     const record=this.actorCollisionRecord(object,actor,overrideFlags);
+     if(record&&!this.collider.actors.includes(record))this.collider.actors.push(record);
+@@ -874,6 +897,7 @@
+         },
+         traceShot:(a,b)=>this.collider.trace(a,b,[0,0,0],[0,0,0],this.physicalModels,'canBeShot'),
+         traceBeam:(a,b)=>this.collider.trace(a,b,[0,0,0],[0,0,0],this.physicalModels,null),
++        explosionLineOfSight:(a,b)=>this.collider.trace(a,b,[0,0,0],[0,0,0],this.physicalModels,null).fraction===1,
+         traceEnemy:(a,b,mins,maxs,object)=>this.collider.trace(a,b,mins,maxs,this.physicalModels,{mask:'blocksPlayer',ignoreId:object?.id}),
+         traceProjectile:(a,b,radius=0,projectile)=>this.collider.trace(a,b,[-radius,-radius,-radius],[radius,radius,radius],this.physicalModels,{mask:'canBeShot',ignoreId:projectile?.sourceId}),
+         lineOfSight:(a,b)=>this.collider.trace(a,b,[0,0,0],[0,0,0],this.physicalModels,'blocksLOS').fraction>0.98});

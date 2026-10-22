@@ -1,0 +1,40 @@
+✔ cached mathematical animation envelopes enclose every native clip and transitions without sampling bones (104.188685ms)
+✔ the envelope includes Hermite overshoot, hierarchy shear, unbound vertices and normalized quaternion keys (3.054553ms)
+✔ all 16 original RedCat clips produce finite, bounded animated geometry (23.460951ms)
+✔ animation advances vertices, loops and keeps instance poses separate (1.447932ms)
+✔ one-shot animation finishes without producing invalid samples (0.661576ms)
+✔ held poses do not invalidate their GPU geometry, while seeks and resumed movement do (1.585941ms)
+✔ completed poses stay cached and explicit restarts, clip changes and wraparound sample correctly (1.250963ms)
+✔ deferred native prop collision matches eager current-pose triangles through motion and transitions (532.323052ms)
+✔ masked, ignored, hidden and carried props retain deferred geometry until an exact query needs it (0.587157ms)
+✔ off-screen generic props retain current animation clocks and exact collision at any distance (5.44669ms)
+✔ parked and GPU-released mounted props remain exact remote collision surfaces after scripted motion (6.678753ms)
+✔ unchanged off-screen prop envelopes reuse collision bounds without evaluating bones or skinning vertices (0.781295ms)
+✔ stationary managed brush poses stop mesh writes while live brush states remain checked (3.302352ms)
+✔ pose map replacement, clears and new model collections do not leave stale subscriptions or transforms (0.639406ms)
+✔ ordinary mutable pose maps retain immediate numeric in-place updates (0.376988ms)
+✔ one-pass brush state preserves triggers, liquids, pickups, doors and live controller changes (24.175847ms)
+✔ current-pose radii enclose all original actor clips and transition poses without skinning vertices (99.926199ms)
+✔ unbound vertices, scaled/sheared bones and unsupported geometry retain conservative behavior (0.311899ms)
+✔ distant pending actors are rejected without skinning, while nearby targets retain exact geometry (2.441186ms)
+✔ several blast cells reuse one current-pose radius until bones are actually resampled (1.208653ms)
+✔ moving explosion targets keep identical reach decisions and exact damage through all current poses (14.304871ms)
+✔ a translating brush sweeps a stationary player instead of trapping or passing through the hull (5.733498ms)
+✔ a hinged door sweeps its arc and leaves RedCat free to move beside it (5.550849ms)
+✔ a wall-blocked door rejects its movement and cannot crush the player or teleport through a wall (1.345893ms)
+✔ the same brush transaction carries moving floors and refuses a ceiling crush (1.000995ms)
+✔ only committed support carrying contributes to takeoff momentum, never rejected moves or side pushes (2.649155ms)
+✔ world motion handoff adds actual platform carry to a jump and resets support velocity on the next frame (3.696049ms)
+✔ carrying ignores the floor own mounted prop at its previous pose while unrelated props still block (1.606631ms)
+✔ no-clip and disabled trigger brushes never push or stall the player (0.144429ms)
+✔ rejected motion segments wait before emitting their event or completion and resume without repeats (0.482787ms)
+✔ a motion event teleport supersedes the displacement already accepted before that event (1.911929ms)
+✔ the original tower witch door does not strand the player inside its opening leaf (8.107615ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 648.559011

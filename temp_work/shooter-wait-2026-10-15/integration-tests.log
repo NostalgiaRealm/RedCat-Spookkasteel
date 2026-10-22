@@ -1,0 +1,39 @@
+✔ Gameplay uses native adjacent approach, reserves before strict range completion, and stops mid-edge (4.859943ms)
+✔ all ordinary shooter families release the whole committed salvo after LOS, range and memory are lost (15.06571ms)
+✔ an unarmed inter-shot wait survives save and freeze without consuming its duration before first update (4.481174ms)
+✖ imported Forest Mushroom Brutus uses native closer and retains its committed mushroom salvo (32.527828ms)
+✔ Bone Brutus save/freeze keeps charge, ammo and committed shots without a duplicate charge entry (3.746035ms)
+✔ legacy Bone Brutus charge restores once and pending charge waits for the final shot pose (6.176872ms)
+✔ a native no-destination result starts and releases a shot outside attack range (0.3881ms)
+✔ snapshot and fresh Gameplay restore preserve an active release and remaining native salvo (1.940957ms)
+✔ snapshot restores an inter-shot wait without replaying the already released shot (1.883698ms)
+✔ legacy saves adopt the outstanding shot or inter-shot wait without starting a second full salvo (2.116468ms)
+✔ script freeze and cutscene shift native wait deadlines without consuming the committed child (2.115717ms)
+✔ actual selected hit cancels the native child and pending release, while sound-only hit preserves both (1.544428ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 11
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 156.165677
+
+✖ failing tests:
+
+test at tests/enemy-shooter-integration.test.mjs:81:1
+✖ imported Forest Mushroom Brutus uses native closer and retains its committed mushroom salvo (32.527828ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(shots.every(shot=>shot.kind==='mushroom'))
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/enemy-shooter-integration.test.mjs:92:43)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

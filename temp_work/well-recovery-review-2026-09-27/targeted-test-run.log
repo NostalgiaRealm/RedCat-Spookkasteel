@@ -1,0 +1,27 @@
+✔ a shallow embedded player hull is nudged to nearby supported body clearance (2.589283ms)
+✔ corner recovery clears both obstacles without crossing either solid (0.584137ms)
+✔ ordinary pushing against a wall, idle actors and flowing movement do not trigger recovery (1.64255ms)
+✔ a visited clear position is used when local candidates are unsafe and is revalidated (2.092437ms)
+✔ a newly closed gate prevents recovering through it to previously clear history (3.511497ms)
+✔ history under a moved obstacle is rejected in its current brush pose (0.459337ms)
+✔ ground recovery rejects cliffs, unsupported hull corners and hazardous candidate predicates (0.200958ms)
+✔ shallow recovery never tunnels through a thin obstacle when starting overlapped (0.171979ms)
+✔ history is capped, paused updates do no work, teleports clear old history, and searches are bounded (1.343241ms)
+✔ PlayerController recovers an overlap and clears stale airborne velocity without blocking normal noclip (1.278411ms)
+✔ ground frogs and flying enemies recover from body overlaps while preserving authored patrol targets (0.655216ms)
+✔ authored takeoff, dormant/descending spiders, turret phases and dead actors are excluded (4.920408ms)
+✔ PlayerController records dry support only and does not promote water to a safe return point (1.075723ms)
+✔ live player physics holding into a wall stays put until the user changes direction (2.843421ms)
+✔ resumed natural travel cancels an unfinished recovery search; loading resets stale history (0.294018ms)
+✔ a shallow well-side wedge leaves the raised base horizontally before settling on lower ground (0.664865ms)
+✔ a non-overlapping player pinched under a sloped well roof escapes diagonally down and resumes walking (2.96699ms)
+✔ extended airborne settling remains bounded and cannot bypass an intervening gate (0.614606ms)
+✔ normal free fall beside a wall does not trigger the suspended-body recovery (2.939551ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 78.843749

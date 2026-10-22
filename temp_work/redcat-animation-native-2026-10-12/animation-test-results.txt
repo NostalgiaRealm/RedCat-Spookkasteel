@@ -1,0 +1,47 @@
+✔ all 16 original RedCat clips produce finite, bounded animated geometry (28.799936ms)
+✔ animation advances vertices, loops and keeps instance poses separate (1.512549ms)
+✔ one-shot animation finishes without producing invalid samples (0.479527ms)
+✔ held poses do not invalidate their GPU geometry, while seeks and resumed movement do (1.802008ms)
+✔ completed poses stay cached and explicit restarts, clip changes and wraparound sample correctly (1.369121ms)
+✔ RedCat locomotion uses recovered strafe rates without changing diagonal controls (1.081333ms)
+✔ long jump and super-jump cycle their original motion; an upward fan is not a jump (15.137098ms)
+✔ drop detection retains positive floor measurements and probes only the native 1000 units (1.209192ms)
+✔ normal and charged shots yield to movement at native 80%, without altering the deadline (2.192555ms)
+✔ reactions and cutscene idle retain priority, and respawn idle alone uses 1.7x (1.864958ms)
+✔ save restoration preserves descending jumps, outgoing blend and boost clocks exactly (19.501669ms)
+✖ native transition freezes the old pose and blends keys with Hermite/SLERP over 250ms (0.842854ms)
+✔ rapid switches retain the original native transition until its remaining weight drops below half (0.679645ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 12
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 175.299649
+
+✖ failing tests:
+
+test at tests/player-animation-native.test.mjs:114:1
+✖ native transition freezes the old pose and blends keys with Hermite/SLERP over 250ms (0.842854ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 0.6000000000000001
+  - 0.6
+       ^
+  
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/player-animation-native.test.mjs:116:44)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0.6000000000000001,
+    expected: 0.6,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

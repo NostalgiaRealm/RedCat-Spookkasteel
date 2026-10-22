@@ -1,0 +1,1706 @@
+[
+  {
+    "level": "lvl00a",
+    "callers": [
+      {
+        "path": [
+          "functions",
+          60
+        ],
+        "function": {
+          "offset": 23732,
+          "tag": 59,
+          "index": 60,
+          "kind": "function",
+          "name": "CheckGameState",
+          "type": {
+            "code": 0,
+            "name": "void",
+            "classRef": null
+          },
+          "parameters": [],
+          "locals": [],
+          "instructions": [
+            {
+              "offset": 23761,
+              "opcode": 2,
+              "target": -2,
+              "whenTruthy": 0,
+              "a": {
+                "tag": 0,
+                "offset": 23767,
+                "type": 2,
+                "value": 1
+              },
+              "b": {
+                "tag": 4,
+                "offset": 23773,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 65,
+                      "index": 25
+                    }
+                  ],
+                  "id": "41:25",
+                  "name": "GetGameType",
+                  "kind": "external"
+                },
+                "callFlag": 1
+              },
+              "operator": 9
+            },
+            {
+              "offset": 23780,
+              "opcode": 3,
+              "destination": {
+                "tag": 1,
+                "offset": 23781,
+                "type": 4
+              },
+              "source": {
+                "tag": 2,
+                "offset": 23783,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 54,
+                      "index": 40
+                    }
+                  ],
+                  "id": "36:40",
+                  "name": "csmc01_tr",
+                  "kind": "object"
+                }
+              }
+            },
+            {
+              "offset": 23788,
+              "opcode": 3,
+              "destination": {
+                "tag": 3,
+                "offset": 23789
+              },
+              "source": {
+                "tag": 4,
+                "offset": 23790,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 60,
+                      "index": 6
+                    },
+                    {
+                      "tag": 66,
+                      "index": 0
+                    }
+                  ],
+                  "id": "42:0/3c:6",
+                  "name": "Disable",
+                  "kind": "method"
+                },
+                "callFlag": 1
+              }
+            },
+            {
+              "offset": 23799,
+              "opcode": 3,
+              "destination": {
+                "tag": 1,
+                "offset": 23800,
+                "type": 4
+              },
+              "source": {
+                "tag": 2,
+                "offset": 23802,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 54,
+                      "index": 43
+                    }
+                  ],
+                  "id": "36:43",
+                  "name": "csmc02_tr",
+                  "kind": "object"
+                }
+              }
+            },
+            {
+              "offset": 23807,
+              "opcode": 3,
+              "destination": {
+                "tag": 3,
+                "offset": 23808
+              },
+              "source": {
+                "tag": 4,
+                "offset": 23809,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 60,
+                      "index": 6
+                    },
+                    {
+                      "tag": 66,
+                      "index": 0
+                    }
+                  ],
+                  "id": "42:0/3c:6",
+                  "name": "Disable",
+                  "kind": "method"
+                },
+                "callFlag": 1
+              }
+            },
+            {
+              "offset": 23818,
+              "opcode": 3,
+              "destination": {
+                "tag": 1,
+                "offset": 23819,
+                "type": 4
+              },
+              "source": {
+                "tag": 2,
+                "offset": 23821,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 54,
+                      "index": 46
+                    }
+                  ],
+                  "id": "36:46",
+                  "name": "csmc03_tr",
+                  "kind": "object"
+                }
+              }
+            },
+            {
+              "offset": 23826,
+              "opcode": 3,
+              "destination": {
+                "tag": 3,
+                "offset": 23827
+              },
+              "source": {
+                "tag": 4,
+                "offset": 23828,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 60,
+                      "index": 6
+                    },
+                    {
+                      "tag": 66,
+                      "index": 0
+                    }
+                  ],
+                  "id": "42:0/3c:6",
+                  "name": "Disable",
+                  "kind": "method"
+                },
+                "callFlag": 1
+              }
+            },
+            {
+              "offset": 23837,
+              "opcode": 3,
+              "destination": {
+                "tag": 1,
+                "offset": 23838,
+                "type": 4
+              },
+              "source": {
+                "tag": 2,
+                "offset": 23840,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 54,
+                      "index": 52
+                    }
+                  ],
+                  "id": "36:52",
+                  "name": "csmc04_tr",
+                  "kind": "object"
+                }
+              }
+            },
+            {
+              "offset": 23845,
+              "opcode": 3,
+              "destination": {
+                "tag": 3,
+                "offset": 23846
+              },
+              "source": {
+                "tag": 4,
+                "offset": 23847,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 60,
+                      "index": 6
+                    },
+                    {
+                      "tag": 66,
+                      "index": 0
+                    }
+                  ],
+                  "id": "42:0/3c:6",
+                  "name": "Disable",
+                  "kind": "method"
+                },
+                "callFlag": 1
+              }
+            },
+            {
+              "offset": 23856,
+              "opcode": 3,
+              "destination": {
+                "tag": 1,
+                "offset": 23857,
+                "type": 4
+              },
+              "source": {
+                "tag": 2,
+                "offset": 23859,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 54,
+                      "index": 57
+                    }
+                  ],
+                  "id": "36:57",
+                  "name": "csmc05_tr",
+                  "kind": "object"
+                }
+              }
+            },
+            {
+              "offset": 23864,
+              "opcode": 3,
+              "destination": {
+                "tag": 3,
+                "offset": 23865
+              },
+              "source": {
+                "tag": 4,
+                "offset": 23866,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 60,
+                      "index": 6
+                    },
+                    {
+                      "tag": 66,
+                      "index": 0
+                    }
+                  ],
+                  "id": "42:0/3c:6",
+                  "name": "Disable",
+                  "kind": "method"
+                },
+                "callFlag": 1
+              }
+            },
+            {
+              "offset": 23875,
+              "opcode": 3,
+              "destination": {
+                "tag": 1,
+                "offset": 23876,
+                "type": 4
+              },
+              "source": {
+                "tag": 2,
+                "offset": 23878,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 54,
+                      "index": 73
+                    }
+                  ],
+                  "id": "36:73",
+                  "name": "csmc07_tr",
+                  "kind": "object"
+                }
+              }
+            },
+            {
+              "offset": 23883,
+              "opcode": 3,
+              "destination": {
+                "tag": 3,
+                "offset": 23884
+              },
+              "source": {
+                "tag": 4,
+                "offset": 23885,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 60,
+                      "index": 6
+                    },
+                    {
+                      "tag": 66,
+                      "index": 0
+                    }
+                  ],
+                  "id": "42:0/3c:6",
+                  "name": "Disable",
+                  "kind": "method"
+                },
+                "callFlag": 1
+              }
+            },
+            {
+              "offset": 23894,
+              "opcode": 3,
+              "destination": {
+                "tag": 1,
+                "offset": 23895,
+                "type": 4
+              },
+              "source": {
+                "tag": 2,
+                "offset": 23897,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 54,
+                      "index": 78
+                    }
+                  ],
+                  "id": "36:78",
+                  "name": "csmc08_tr",
+                  "kind": "object"
+                }
+              }
+            },
+            {
+              "offset": 23902,
+              "opcode": 3,
+              "destination": {
+                "tag": 3,
+                "offset": 23903
+              },
+              "source": {
+                "tag": 4,
+                "offset": 23904,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 60,
+                      "index": 6
+                    },
+                    {
+                      "tag": 66,
+                      "index": 0
+                    }
+                  ],
+                  "id": "42:0/3c:6",
+                  "name": "Disable",
+                  "kind": "method"
+                },
+                "callFlag": 1
+              }
+            },
+            {
+              "offset": 23913,
+              "opcode": 3,
+              "destination": {
+                "tag": 1,
+                "offset": 23914,
+                "type": 4
+              },
+              "source": {
+                "tag": 2,
+                "offset": 23916,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 54,
+                      "index": 92
+                    }
+                  ],
+                  "id": "36:92",
+                  "name": "csmc09_tr",
+                  "kind": "object"
+                }
+              }
+            },
+            {
+              "offset": 23921,
+              "opcode": 3,
+              "destination": {
+                "tag": 3,
+                "offset": 23922
+              },
+              "source": {
+                "tag": 4,
+                "offset": 23923,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 60,
+                      "index": 6
+                    },
+                    {
+                      "tag": 66,
+                      "index": 0
+                    }
+                  ],
+                  "id": "42:0/3c:6",
+                  "name": "Disable",
+                  "kind": "method"
+                },
+                "callFlag": 1
+              }
+            },
+            {
+              "offset": 23932,
+              "opcode": 0,
+              "target": -2
+            }
+          ],
+          "endOffset": 23937,
+          "id": "3b:60"
+        }
+      }
+    ],
+    "initialization": [
+      {
+        "path": [
+          "classes",
+          0,
+          "members",
+          67,
+          "handlers",
+          0
+        ],
+        "function": {
+          "offset": 9599,
+          "tag": 62,
+          "index": 0,
+          "kind": "handler",
+          "name": "OnInitCommand",
+          "type": {
+            "code": 0,
+            "name": "void",
+            "classRef": null
+          },
+          "parameters": [
+            {
+              "offset": 9621,
+              "tag": 53,
+              "index": 0,
+              "kind": "parameter",
+              "name": "@self",
+              "type": {
+                "code": 4,
+                "name": "object",
+                "classRef": {
+                  "path": [
+                    {
+                      "tag": 66,
+                      "index": 0
+                    }
+                  ],
+                  "id": "42:0",
+                  "name": "CAdamScriptGameObject",
+                  "kind": "class"
+                }
+              },
+              "stackOffset": -4,
+              "endOffset": 9638,
+              "id": "42:0/3d:67/3e:0/35:0"
+            }
+          ],
+          "locals": [],
+          "instructions": [
+            {
+              "offset": 9644,
+              "opcode": 3,
+              "destination": {
+                "tag": 3,
+                "offset": 9645
+              },
+              "source": {
+                "tag": 4,
+                "offset": 9646,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 59,
+                      "index": 60
+                    }
+                  ],
+                  "id": "3b:60",
+                  "name": "CheckGameState",
+                  "kind": "function"
+                },
+                "callFlag": 1
+              }
+            },
+            {
+              "offset": 9652,
+              "opcode": 0,
+              "target": -2
+            }
+          ],
+          "handlers": [],
+          "owner": {
+            "path": [
+              {
+                "tag": 54,
+                "index": 37
+              }
+            ],
+            "id": "36:37",
+            "name": "world",
+            "kind": "object"
+          },
+          "endOffset": 9665,
+          "id": "42:0/3d:67/3e:0"
+        }
+      }
+    ],
+    "targets": [
+      "csmc01_tr",
+      "csmc02_tr",
+      "csmc03_tr",
+      "csmc04_tr",
+      "csmc05_tr",
+      "csmc07_tr",
+      "csmc08_tr",
+      "csmc09_tr"
+    ],
+    "entities": [
+      {
+        "AddPlayerSpeed": "0.0 0.0 0.0",
+        "classname": "Trigger",
+        "CommandOnEnter": "csmc01.enable",
+        "CommandOnLeave": "",
+        "DamagePerSecond": "0.0",
+        "DaviName": "csmc01_tr",
+        "DaviNameGroup": "",
+        "DebugThisTrigger": "0",
+        "DifficultyLevel": "0",
+        "DiscardOnLowEndPC": "0",
+        "GOName": "<null>",
+        "IsInitiallyEnabled": "1",
+        "IsSecret": "0",
+        "MaxTriggerTimes": "1",
+        "MinTriggerTimes": "1",
+        "Model": "csmc01",
+        "Origin": "-1845 -135 3472",
+        "TargetSubLevel": "",
+        "%name%": "Trigger26"
+      },
+      {
+        "AddPlayerSpeed": "0.0 0.0 0.0",
+        "classname": "Trigger",
+        "CommandOnEnter": "csmc02.enable",
+        "CommandOnLeave": "",
+        "DamagePerSecond": "0.0",
+        "DaviName": "csmc02_tr",
+        "DaviNameGroup": "",
+        "DebugThisTrigger": "0",
+        "DifficultyLevel": "0",
+        "DiscardOnLowEndPC": "0",
+        "GOName": "<null>",
+        "IsInitiallyEnabled": "1",
+        "IsSecret": "0",
+        "MaxTriggerTimes": "1",
+        "MinTriggerTimes": "1",
+        "Model": "csmc02",
+        "Origin": "-2309 -138 2428",
+        "TargetSubLevel": "",
+        "%name%": "Trigger28"
+      },
+      {
+        "AddPlayerSpeed": "0.0 0.0 0.0",
+        "classname": "Trigger",
+        "CommandOnEnter": "csmc03.enable",
+        "CommandOnLeave": "",
+        "DamagePerSecond": "0.0",
+        "DaviName": "csmc03_tr",
+        "DaviNameGroup": "",
+        "DebugThisTrigger": "0",
+        "DifficultyLevel": "0",
+        "DiscardOnLowEndPC": "0",
+        "GOName": "<null>",
+        "IsInitiallyEnabled": "1",
+        "IsSecret": "0",
+        "MaxTriggerTimes": "1",
+        "MinTriggerTimes": "1",
+        "Model": "csmc03",
+        "Origin": "-3489 -130 1289",
+        "TargetSubLevel": "",
+        "%name%": "Trigger29"
+      },
+      {
+        "AddPlayerSpeed": "0.0 0.0 0.0",
+        "classname": "Trigger",
+        "CommandOnEnter": "csmc04.enable",
+        "CommandOnLeave": "",
+        "DamagePerSecond": "0.0",
+        "DaviName": "csmc04_tr",
+        "DaviNameGroup": "",
+        "DebugThisTrigger": "0",
+        "DifficultyLevel": "0",
+        "DiscardOnLowEndPC": "0",
+        "GOName": "<null>",
+        "IsInitiallyEnabled": "1",
+        "IsSecret": "0",
+        "MaxTriggerTimes": "1",
+        "MinTriggerTimes": "1",
+        "Model": "csmc04",
+        "Origin": "-2137 -129 1312",
+        "TargetSubLevel": "",
+        "%name%": "Trigger30"
+      },
+      {
+        "AddPlayerSpeed": "0.0 0.0 0.0",
+        "classname": "Trigger",
+        "CommandOnEnter": "csmc05.enable",
+        "CommandOnLeave": "",
+        "DamagePerSecond": "0.0",
+        "DaviName": "csmc05_tr",
+        "DaviNameGroup": "",
+        "DebugThisTrigger": "0",
+        "DifficultyLevel": "0",
+        "DiscardOnLowEndPC": "0",
+        "GOName": "<null>",
+        "IsInitiallyEnabled": "1",
+        "IsSecret": "0",
+        "MaxTriggerTimes": "1",
+        "MinTriggerTimes": "1",
+        "Model": "csmc05",
+        "Origin": "-1255 -117 231",
+        "TargetSubLevel": "",
+        "%name%": "Trigger31"
+      },
+      {
+        "AddPlayerSpeed": "0.0 0.0 0.0",
+        "classname": "Trigger",
+        "CommandOnEnter": "csmc07.enable",
+        "CommandOnLeave": "",
+        "DamagePerSecond": "0.0",
+        "DaviName": "csmc07_tr",
+        "DaviNameGroup": "",
+        "DebugThisTrigger": "0",
+        "DifficultyLevel": "0",
+        "DiscardOnLowEndPC": "0",
+        "GOName": "<null>",
+        "IsInitiallyEnabled": "1",
+        "IsSecret": "0",
+        "MaxTriggerTimes": "1",
+        "MinTriggerTimes": "1",
+        "Model": "csmc07",
+        "Origin": "-160 -115 -935",
+        "TargetSubLevel": "",
+        "%name%": "Trigger33"
+      },
+      {
+        "AddPlayerSpeed": "0.0 0.0 0.0",
+        "classname": "Trigger",
+        "CommandOnEnter": "csmc08.enable",
+        "CommandOnLeave": "",
+        "DamagePerSecond": "0.0",
+        "DaviName": "csmc08_tr",
+        "DaviNameGroup": "",
+        "DebugThisTrigger": "0",
+        "DifficultyLevel": "0",
+        "DiscardOnLowEndPC": "0",
+        "GOName": "<null>",
+        "IsInitiallyEnabled": "1",
+        "IsSecret": "0",
+        "MaxTriggerTimes": "1",
+        "MinTriggerTimes": "1",
+        "Model": "csmc08",
+        "Origin": "-40 -121 -2232",
+        "TargetSubLevel": "",
+        "%name%": "Trigger34"
+      },
+      {
+        "AddPlayerSpeed": "0.0 0.0 0.0",
+        "classname": "Trigger",
+        "CommandOnEnter": "csmc09.enable",
+        "CommandOnLeave": "",
+        "DamagePerSecond": "0.0",
+        "DaviName": "csmc09_tr",
+        "DaviNameGroup": "",
+        "DebugThisTrigger": "0",
+        "DifficultyLevel": "0",
+        "DiscardOnLowEndPC": "0",
+        "GOName": "<null>",
+        "IsInitiallyEnabled": "1",
+        "IsSecret": "0",
+        "MaxTriggerTimes": "1",
+        "MinTriggerTimes": "-1",
+        "Model": "csmc09",
+        "Origin": "1066 -103 -3285",
+        "TargetSubLevel": "",
+        "%name%": "Trigger35"
+      }
+    ]
+  },
+  {
+    "level": "lvl01a",
+    "callers": [],
+    "initialization": [],
+    "targets": [],
+    "entities": []
+  },
+  {
+    "level": "lvl02a",
+    "callers": [
+      {
+        "path": [
+          "functions",
+          58
+        ],
+        "function": {
+          "offset": 33933,
+          "tag": 59,
+          "index": 58,
+          "kind": "function",
+          "name": "CheckGameState",
+          "type": {
+            "code": 0,
+            "name": "void",
+            "classRef": null
+          },
+          "parameters": [],
+          "locals": [],
+          "instructions": [
+            {
+              "offset": 33962,
+              "opcode": 2,
+              "target": -2,
+              "whenTruthy": 0,
+              "a": {
+                "tag": 0,
+                "offset": 33968,
+                "type": 2,
+                "value": 1
+              },
+              "b": {
+                "tag": 4,
+                "offset": 33974,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 65,
+                      "index": 25
+                    }
+                  ],
+                  "id": "41:25",
+                  "name": "GetGameType",
+                  "kind": "external"
+                },
+                "callFlag": 1
+              },
+              "operator": 9
+            },
+            {
+              "offset": 33981,
+              "opcode": 3,
+              "destination": {
+                "tag": 1,
+                "offset": 33982,
+                "type": 4
+              },
+              "source": {
+                "tag": 2,
+                "offset": 33984,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 54,
+                      "index": 183
+                    }
+                  ],
+                  "id": "36:183",
+                  "name": "csmc02_tr",
+                  "kind": "object"
+                }
+              }
+            },
+            {
+              "offset": 33989,
+              "opcode": 3,
+              "destination": {
+                "tag": 3,
+                "offset": 33990
+              },
+              "source": {
+                "tag": 4,
+                "offset": 33991,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 60,
+                      "index": 6
+                    },
+                    {
+                      "tag": 66,
+                      "index": 0
+                    }
+                  ],
+                  "id": "42:0/3c:6",
+                  "name": "Disable",
+                  "kind": "method"
+                },
+                "callFlag": 1
+              }
+            },
+            {
+              "offset": 34000,
+              "opcode": 3,
+              "destination": {
+                "tag": 1,
+                "offset": 34001,
+                "type": 4
+              },
+              "source": {
+                "tag": 2,
+                "offset": 34003,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 54,
+                      "index": 198
+                    }
+                  ],
+                  "id": "36:198",
+                  "name": "csmc03_tr",
+                  "kind": "object"
+                }
+              }
+            },
+            {
+              "offset": 34008,
+              "opcode": 3,
+              "destination": {
+                "tag": 3,
+                "offset": 34009
+              },
+              "source": {
+                "tag": 4,
+                "offset": 34010,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 60,
+                      "index": 6
+                    },
+                    {
+                      "tag": 66,
+                      "index": 0
+                    }
+                  ],
+                  "id": "42:0/3c:6",
+                  "name": "Disable",
+                  "kind": "method"
+                },
+                "callFlag": 1
+              }
+            },
+            {
+              "offset": 34019,
+              "opcode": 0,
+              "target": -2
+            }
+          ],
+          "endOffset": 34024,
+          "id": "3b:58"
+        }
+      }
+    ],
+    "initialization": [
+      {
+        "path": [
+          "classes",
+          0,
+          "members",
+          67,
+          "handlers",
+          0
+        ],
+        "function": {
+          "offset": 16299,
+          "tag": 62,
+          "index": 0,
+          "kind": "handler",
+          "name": "OnInitCommand",
+          "type": {
+            "code": 0,
+            "name": "void",
+            "classRef": null
+          },
+          "parameters": [
+            {
+              "offset": 16321,
+              "tag": 53,
+              "index": 0,
+              "kind": "parameter",
+              "name": "@self",
+              "type": {
+                "code": 4,
+                "name": "object",
+                "classRef": {
+                  "path": [
+                    {
+                      "tag": 66,
+                      "index": 0
+                    }
+                  ],
+                  "id": "42:0",
+                  "name": "CAdamScriptGameObject",
+                  "kind": "class"
+                }
+              },
+              "stackOffset": -4,
+              "endOffset": 16338,
+              "id": "42:0/3d:67/3e:0/35:0"
+            }
+          ],
+          "locals": [],
+          "instructions": [
+            {
+              "offset": 16344,
+              "opcode": 3,
+              "destination": {
+                "tag": 2,
+                "offset": 16345,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 55,
+                      "index": 0
+                    }
+                  ],
+                  "id": "37:0",
+                  "name": "paal1",
+                  "kind": "local"
+                }
+              },
+              "source": {
+                "tag": 0,
+                "offset": 16350,
+                "type": 2,
+                "value": 0
+              }
+            },
+            {
+              "offset": 16356,
+              "opcode": 3,
+              "destination": {
+                "tag": 2,
+                "offset": 16357,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 55,
+                      "index": 1
+                    }
+                  ],
+                  "id": "37:1",
+                  "name": "paal2",
+                  "kind": "local"
+                }
+              },
+              "source": {
+                "tag": 0,
+                "offset": 16362,
+                "type": 2,
+                "value": 0
+              }
+            },
+            {
+              "offset": 16368,
+              "opcode": 3,
+              "destination": {
+                "tag": 2,
+                "offset": 16369,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 55,
+                      "index": 2
+                    }
+                  ],
+                  "id": "37:2",
+                  "name": "paal3",
+                  "kind": "local"
+                }
+              },
+              "source": {
+                "tag": 0,
+                "offset": 16374,
+                "type": 2,
+                "value": 1
+              }
+            },
+            {
+              "offset": 16380,
+              "opcode": 3,
+              "destination": {
+                "tag": 2,
+                "offset": 16381,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 55,
+                      "index": 3
+                    }
+                  ],
+                  "id": "37:3",
+                  "name": "paal4",
+                  "kind": "local"
+                }
+              },
+              "source": {
+                "tag": 0,
+                "offset": 16386,
+                "type": 2,
+                "value": 0
+              }
+            },
+            {
+              "offset": 16392,
+              "opcode": 3,
+              "destination": {
+                "tag": 2,
+                "offset": 16393,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 55,
+                      "index": 4
+                    }
+                  ],
+                  "id": "37:4",
+                  "name": "paal5",
+                  "kind": "local"
+                }
+              },
+              "source": {
+                "tag": 0,
+                "offset": 16398,
+                "type": 2,
+                "value": 0
+              }
+            },
+            {
+              "offset": 16404,
+              "opcode": 3,
+              "destination": {
+                "tag": 3,
+                "offset": 16405
+              },
+              "source": {
+                "tag": 4,
+                "offset": 16406,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 59,
+                      "index": 58
+                    }
+                  ],
+                  "id": "3b:58",
+                  "name": "CheckGameState",
+                  "kind": "function"
+                },
+                "callFlag": 1
+              }
+            },
+            {
+              "offset": 16412,
+              "opcode": 0,
+              "target": -2
+            }
+          ],
+          "handlers": [],
+          "owner": {
+            "path": [
+              {
+                "tag": 54,
+                "index": 174
+              }
+            ],
+            "id": "36:174",
+            "name": "world",
+            "kind": "object"
+          },
+          "endOffset": 16425,
+          "id": "42:0/3d:67/3e:0"
+        }
+      }
+    ],
+    "targets": [
+      "csmc02_tr",
+      "csmc03_tr"
+    ],
+    "entities": [
+      {
+        "AddPlayerSpeed": "0.0 0.0 0.0",
+        "classname": "Trigger",
+        "CommandOnEnter": "csmc02.enable",
+        "CommandOnLeave": "",
+        "DamagePerSecond": "0.0",
+        "DaviName": "csmc02_tr",
+        "DaviNameGroup": "",
+        "DebugThisTrigger": "0",
+        "DifficultyLevel": "0",
+        "DiscardOnLowEndPC": "0",
+        "GOName": "<null>",
+        "IsInitiallyEnabled": "1",
+        "IsSecret": "0",
+        "MaxTriggerTimes": "1",
+        "MinTriggerTimes": "-1",
+        "Model": "csmc02",
+        "Origin": "3787 -38 1810",
+        "TargetSubLevel": "",
+        "%name%": "Trigger27"
+      },
+      {
+        "AddPlayerSpeed": "0.0 0.0 0.0",
+        "classname": "Trigger",
+        "CommandOnEnter": "csmc03.enable",
+        "CommandOnLeave": "",
+        "DamagePerSecond": "0.0",
+        "DaviName": "csmc03_tr",
+        "DaviNameGroup": "",
+        "DebugThisTrigger": "0",
+        "DifficultyLevel": "0",
+        "DiscardOnLowEndPC": "0",
+        "GOName": "<null>",
+        "IsInitiallyEnabled": "1",
+        "IsSecret": "0",
+        "MaxTriggerTimes": "1",
+        "MinTriggerTimes": "-1",
+        "Model": "csmc03",
+        "Origin": "2105 -174 -3822",
+        "TargetSubLevel": "",
+        "%name%": "Trigger28"
+      }
+    ]
+  },
+  {
+    "level": "lvl03a",
+    "callers": [
+      {
+        "path": [
+          "functions",
+          51
+        ],
+        "function": {
+          "offset": 46847,
+          "tag": 59,
+          "index": 51,
+          "kind": "function",
+          "name": "CheckGameState",
+          "type": {
+            "code": 0,
+            "name": "void",
+            "classRef": null
+          },
+          "parameters": [],
+          "locals": [],
+          "instructions": [
+            {
+              "offset": 46876,
+              "opcode": 2,
+              "target": -2,
+              "whenTruthy": 0,
+              "a": {
+                "tag": 0,
+                "offset": 46882,
+                "type": 2,
+                "value": 1
+              },
+              "b": {
+                "tag": 4,
+                "offset": 46888,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 65,
+                      "index": 25
+                    }
+                  ],
+                  "id": "41:25",
+                  "name": "GetGameType",
+                  "kind": "external"
+                },
+                "callFlag": 1
+              },
+              "operator": 9
+            },
+            {
+              "offset": 46895,
+              "opcode": 3,
+              "destination": {
+                "tag": 1,
+                "offset": 46896,
+                "type": 4
+              },
+              "source": {
+                "tag": 2,
+                "offset": 46898,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 54,
+                      "index": 613
+                    }
+                  ],
+                  "id": "36:613",
+                  "name": "cutscene01",
+                  "kind": "object"
+                }
+              }
+            },
+            {
+              "offset": 46903,
+              "opcode": 3,
+              "destination": {
+                "tag": 3,
+                "offset": 46904
+              },
+              "source": {
+                "tag": 4,
+                "offset": 46905,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 60,
+                      "index": 6
+                    },
+                    {
+                      "tag": 66,
+                      "index": 0
+                    }
+                  ],
+                  "id": "42:0/3c:6",
+                  "name": "Disable",
+                  "kind": "method"
+                },
+                "callFlag": 1
+              }
+            },
+            {
+              "offset": 46914,
+              "opcode": 3,
+              "destination": {
+                "tag": 1,
+                "offset": 46915,
+                "type": 4
+              },
+              "source": {
+                "tag": 2,
+                "offset": 46917,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 54,
+                      "index": 621
+                    }
+                  ],
+                  "id": "36:621",
+                  "name": "trigger_cuts02",
+                  "kind": "object"
+                }
+              }
+            },
+            {
+              "offset": 46922,
+              "opcode": 3,
+              "destination": {
+                "tag": 3,
+                "offset": 46923
+              },
+              "source": {
+                "tag": 4,
+                "offset": 46924,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 60,
+                      "index": 6
+                    },
+                    {
+                      "tag": 66,
+                      "index": 0
+                    }
+                  ],
+                  "id": "42:0/3c:6",
+                  "name": "Disable",
+                  "kind": "method"
+                },
+                "callFlag": 1
+              }
+            },
+            {
+              "offset": 46933,
+              "opcode": 3,
+              "destination": {
+                "tag": 1,
+                "offset": 46934,
+                "type": 4
+              },
+              "source": {
+                "tag": 2,
+                "offset": 46936,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 54,
+                      "index": 643
+                    }
+                  ],
+                  "id": "36:643",
+                  "name": "trigger_cuts05",
+                  "kind": "object"
+                }
+              }
+            },
+            {
+              "offset": 46941,
+              "opcode": 3,
+              "destination": {
+                "tag": 3,
+                "offset": 46942
+              },
+              "source": {
+                "tag": 4,
+                "offset": 46943,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 60,
+                      "index": 6
+                    },
+                    {
+                      "tag": 66,
+                      "index": 0
+                    }
+                  ],
+                  "id": "42:0/3c:6",
+                  "name": "Disable",
+                  "kind": "method"
+                },
+                "callFlag": 1
+              }
+            },
+            {
+              "offset": 46952,
+              "opcode": 3,
+              "destination": {
+                "tag": 1,
+                "offset": 46953,
+                "type": 4
+              },
+              "source": {
+                "tag": 2,
+                "offset": 46955,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 54,
+                      "index": 647
+                    }
+                  ],
+                  "id": "36:647",
+                  "name": "trigger_cuts06",
+                  "kind": "object"
+                }
+              }
+            },
+            {
+              "offset": 46960,
+              "opcode": 3,
+              "destination": {
+                "tag": 3,
+                "offset": 46961
+              },
+              "source": {
+                "tag": 4,
+                "offset": 46962,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 60,
+                      "index": 6
+                    },
+                    {
+                      "tag": 66,
+                      "index": 0
+                    }
+                  ],
+                  "id": "42:0/3c:6",
+                  "name": "Disable",
+                  "kind": "method"
+                },
+                "callFlag": 1
+              }
+            },
+            {
+              "offset": 46971,
+              "opcode": 0,
+              "target": -2
+            }
+          ],
+          "endOffset": 46976,
+          "id": "3b:51"
+        }
+      }
+    ],
+    "initialization": [],
+    "targets": [
+      "cutscene01",
+      "trigger_cuts02",
+      "trigger_cuts05",
+      "trigger_cuts06"
+    ],
+    "entities": [
+      {
+        "classname": "ModelController",
+        "CrushDamagePerSecond": "0.0",
+        "DaviName": "cutscene01",
+        "DaviNameGroup": "",
+        "DebugThisModel": "0",
+        "DiscardOnLowEndPC": "0",
+        "GOName": "<null>",
+        "InitialPosition": "0.0",
+        "IsInitiallyEnabled": "1",
+        "Model": "cutscene01",
+        "MotionCommand": "CSL300_MotionCommand( a_Description, a_Time )",
+        "OnHitCommand": "",
+        "OnTouchCommand": "",
+        "Origin": "-636 256 3254",
+        "PlayerCollision": "1",
+        "RepeatMode": "0",
+        "%name%": "ModelController113"
+      },
+      {
+        "AddPlayerSpeed": "0.0 0.0 0.0",
+        "classname": "Trigger",
+        "CommandOnEnter": "cutscene02.enable;",
+        "CommandOnLeave": "",
+        "DamagePerSecond": "0.0",
+        "DaviName": "trigger_cuts02",
+        "DaviNameGroup": "",
+        "DebugThisTrigger": "0",
+        "DifficultyLevel": "0",
+        "DiscardOnLowEndPC": "0",
+        "GOName": "<null>",
+        "IsInitiallyEnabled": "1",
+        "IsSecret": "0",
+        "MaxTriggerTimes": "1",
+        "MinTriggerTimes": "1",
+        "Model": "trigger_cuts02",
+        "Origin": "178 25 1445",
+        "TargetSubLevel": "",
+        "%name%": "Trigger48"
+      },
+      {
+        "AddPlayerSpeed": "0.0 0.0 0.0",
+        "classname": "Trigger",
+        "CommandOnEnter": "cutscene05.enable;",
+        "CommandOnLeave": "",
+        "DamagePerSecond": "0.0",
+        "DaviName": "trigger_cuts05",
+        "DaviNameGroup": "",
+        "DebugThisTrigger": "0",
+        "DifficultyLevel": "0",
+        "DiscardOnLowEndPC": "0",
+        "GOName": "<null>",
+        "IsInitiallyEnabled": "1",
+        "IsSecret": "0",
+        "MaxTriggerTimes": "1",
+        "MinTriggerTimes": "-1",
+        "Model": "trigger_cuts05",
+        "Origin": "-72 26 -1524",
+        "TargetSubLevel": "",
+        "%name%": "Trigger51"
+      },
+      {
+        "AddPlayerSpeed": "0.0 0.0 0.0",
+        "classname": "Trigger",
+        "CommandOnEnter": "cutscene06.enable",
+        "CommandOnLeave": "",
+        "DamagePerSecond": "0.0",
+        "DaviName": "trigger_cuts06",
+        "DaviNameGroup": "",
+        "DebugThisTrigger": "0",
+        "DifficultyLevel": "0",
+        "DiscardOnLowEndPC": "0",
+        "GOName": "<null>",
+        "IsInitiallyEnabled": "1",
+        "IsSecret": "0",
+        "MaxTriggerTimes": "1",
+        "MinTriggerTimes": "-1",
+        "Model": "trigger_cuts06",
+        "Origin": "27 37 -3162",
+        "TargetSubLevel": "",
+        "%name%": "Trigger52"
+      }
+    ]
+  },
+  {
+    "level": "lvl04a",
+    "callers": [
+      {
+        "path": [
+          "functions",
+          45
+        ],
+        "function": {
+          "offset": 14560,
+          "tag": 59,
+          "index": 45,
+          "kind": "function",
+          "name": "CheckGameState",
+          "type": {
+            "code": 0,
+            "name": "void",
+            "classRef": null
+          },
+          "parameters": [],
+          "locals": [],
+          "instructions": [
+            {
+              "offset": 14589,
+              "opcode": 2,
+              "target": -2,
+              "whenTruthy": 0,
+              "a": {
+                "tag": 0,
+                "offset": 14595,
+                "type": 2,
+                "value": 1
+              },
+              "b": {
+                "tag": 4,
+                "offset": 14601,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 65,
+                      "index": 25
+                    }
+                  ],
+                  "id": "41:25",
+                  "name": "GetGameType",
+                  "kind": "external"
+                },
+                "callFlag": 1
+              },
+              "operator": 9
+            },
+            {
+              "offset": 14608,
+              "opcode": 3,
+              "destination": {
+                "tag": 1,
+                "offset": 14609,
+                "type": 4
+              },
+              "source": {
+                "tag": 2,
+                "offset": 14611,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 54,
+                      "index": 221
+                    }
+                  ],
+                  "id": "36:221",
+                  "name": "trigger_cuts01",
+                  "kind": "object"
+                }
+              }
+            },
+            {
+              "offset": 14616,
+              "opcode": 3,
+              "destination": {
+                "tag": 3,
+                "offset": 14617
+              },
+              "source": {
+                "tag": 4,
+                "offset": 14618,
+                "ref": {
+                  "path": [
+                    {
+                      "tag": 60,
+                      "index": 6
+                    },
+                    {
+                      "tag": 66,
+                      "index": 0
+                    }
+                  ],
+                  "id": "42:0/3c:6",
+                  "name": "Disable",
+                  "kind": "method"
+                },
+                "callFlag": 1
+              }
+            },
+            {
+              "offset": 14627,
+              "opcode": 0,
+              "target": -2
+            }
+          ],
+          "endOffset": 14632,
+          "id": "3b:45"
+        }
+      }
+    ],
+    "initialization": [],
+    "targets": [
+      "trigger_cuts01"
+    ],
+    "entities": [
+      {
+        "AddPlayerSpeed": "0.0 0.0 0.0",
+        "classname": "Trigger",
+        "CommandOnEnter": "cutscene01.enable;",
+        "CommandOnLeave": "",
+        "DamagePerSecond": "0.0",
+        "DaviName": "trigger_cuts01",
+        "DaviNameGroup": "",
+        "DebugThisTrigger": "0",
+        "DifficultyLevel": "0",
+        "DiscardOnLowEndPC": "0",
+        "GOName": "<null>",
+        "IsInitiallyEnabled": "1",
+        "IsSecret": "0",
+        "MaxTriggerTimes": "1",
+        "MinTriggerTimes": "-1",
+        "Model": "trigger_cuts01",
+        "Origin": "-204 -3830 -341",
+        "TargetSubLevel": "",
+        "%name%": "Trigger21"
+      }
+    ]
+  }
+]

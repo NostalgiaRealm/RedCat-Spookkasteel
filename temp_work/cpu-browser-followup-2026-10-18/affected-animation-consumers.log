@@ -1,0 +1,52 @@
+✔ original heart ambient interpolates red to white and wraps over two seconds (1.955848ms)
+✔ stained glass uses original fullbright ambient and ordinary actors retain world lighting (1.079954ms)
+✔ actors choose their own closest two in-range lights, never the camera selection (0.412638ms)
+✔ material clones used for ghosts and death fade retain isolated lighting state when repatched (0.683586ms)
+✔ default Sun and animated ambient use native fallback settings independently of actual Sun intensity (0.235708ms)
+✔ native projectile light colours and radius are independent of sprite size and disappear with owner (2.474244ms)
+✔ authored dynamic shadow flags reach actor floor lighting without changing actor direct-light eligibility (5.302116ms)
+✔ spiderg: walking uses original moving legs instead of its idle pose (5.953911ms)
+✔ spidery: walking uses original moving legs instead of its idle pose (2.825111ms)
+✔ spiderr: walking uses original moving legs instead of its idle pose (1.824398ms)
+✔ zombie: walking uses original moving legs instead of its idle pose (1.440351ms)
+✔ batg: active idle keeps flying while dormant and scripted hanging poses remain available (1.728438ms)
+✔ baty: active idle keeps flying while dormant and scripted hanging poses remain available (1.519741ms)
+✔ batr: active idle keeps flying while dormant and scripted hanging poses remain available (1.166523ms)
+✔ enemy attack runs once, holds its last pose, and restarts only for the next actual attack (0.992423ms)
+✔ original knight hit factor controls both rendered speed and reported gameplay duration (1.122493ms)
+✔ Bone Brutus charge uses its original one-shot clip and saved playback rate (2.343386ms)
+✔ cutscene freezing holds the current enemy animation pose (1.254812ms)
+✔ restoring a attack one-shot resumes the saved phase (0.845185ms)
+✔ restoring a hurt one-shot resumes the saved phase (0.768315ms)
+✔ restoring a death one-shot resumes the saved phase (1.049774ms)
+✔ defeated spiders remain visible while their death clip plays instead of vanishing on health zero (2.554354ms)
+✔ visible enemy projectiles follow simulation positions and disappear at impact (1.054053ms)
+✔ knight death uses all nine original breakup actors, freezes with cutscenes and cleans up (9.34174ms)
+✖ jump feedback fires once on a grounded jump, never from a held airborne input or cutscene (0.779955ms)
+✔ all original bitmap sequences use the recovered 50 ms interval and native frame counts (1.074094ms)
+✔ long updates do not skip frames or bypass the separate native rearm update (0.531027ms)
+✔ gameplay advances enemy and player animations and freezes only enemy ammunition (1.67018ms)
+✔ save and restore preserve an active deadline and its exact next frame (1.46548ms)
+✔ older saves start at frame zero and never acquire an age-derived or random phase (0.286298ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 29
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 131.905493
+
+✖ failing tests:
+
+test at tests/enemy-animation.test.mjs:120:1
+✖ jump feedback fires once on a grounded jump, never from a held airborne input or cutscene (0.779955ms)
+  TypeError: Cannot read properties of undefined (reading 'health')
+      at CastleWorld.update (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/src/world.js:918:136)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/enemy-animation.test.mjs:127:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)

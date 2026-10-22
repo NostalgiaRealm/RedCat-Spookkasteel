@@ -1,0 +1,294 @@
+{
+  "evidence_id": "ev_2b10017b972f5d9bd7c214fccc005202a8b13080eb4f58f98ecea91ce677dec7",
+  "subject": {
+    "name": "RcHcGame.dat",
+    "digest": {
+      "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5"
+    },
+    "format": "pe",
+    "architecture": "x86",
+    "local_path": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat"
+  },
+  "provider": {
+    "id": "hopper",
+    "name": "Hopper Disassembler",
+    "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+  },
+  "analysis_profile": {
+    "provider": {
+      "id": "hopper",
+      "name": "Hopper Disassembler",
+      "version": "launcher-sha256:1339f9e58377442b0c6fcb0dfc3cec20d593cc557408521fad9a00dbc6b8da13"
+    },
+    "parameters": {
+      "target_kind": "executable",
+      "target_format": "pe",
+      "architecture": "x86",
+      "available_architectures": [
+        "x86"
+      ],
+      "loader": {
+        "source": "derived",
+        "arguments": [
+          "-l",
+          "WinPE",
+          "--intel-32"
+        ]
+      }
+    },
+    "digest": "307ab9d7f0fc528666bb5c7ce27de8444042a28900cf9eba0bd10dadd47927c9"
+  },
+  "predicate_type": "rea.analysis",
+  "operation": "search_strings",
+  "parameters": {
+    "pattern": "[Ww]orld.*[Cc]reate|[Ww]orld.*[Dd]estroy|[Aa]ctor.*[Dd]ef|[Ll]oad.*[Ww]orld|[Tt]exture.*[Cc]ache|[Mm]odelVisible",
+    "mode": "regex",
+    "case_sensitive": false
+  },
+  "raw_result": null,
+  "normalized_result": [
+    {
+      "address": "0x694c4c",
+      "value": "! m_ActorDef.IsNull()",
+      "provider_value": "! m_ActorDef.IsNull()",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 22
+      }
+    },
+    {
+      "address": "0x694c9c",
+      "value": "m_ActorDefMgr",
+      "provider_value": "m_ActorDefMgr",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 14
+      }
+    },
+    {
+      "address": "0x69508c",
+      "value": "D:\\Work\\RCHorror\\AdamSource\\AdamActorDef.cpp",
+      "provider_value": "D:\\Work\\RCHorror\\AdamSource\\AdamActorDef.cpp",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 45
+      }
+    },
+    {
+      "address": "0x6950e0",
+      "value": "m_ActorDefs[ i ]->GetUseCount()==1",
+      "provider_value": "m_ActorDefs[ i ]->GetUseCount()==1",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 35
+      }
+    },
+    {
+      "address": "0x695104",
+      "value": "actor-definition %s is still in use",
+      "provider_value": "actor-definition %s is still in use",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 36
+      }
+    },
+    {
+      "address": "0x695128",
+      "value": "D:\\Work\\RCHorror\\AdamSource\\AdamActorDefMgr.cpp",
+      "provider_value": "D:\\Work\\RCHorror\\AdamSource\\AdamActorDefMgr.cpp",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 48
+      }
+    },
+    {
+      "address": "0x6951a8",
+      "value": "CAdamActorDefMgr::AddActorDefFromFile( %s )",
+      "provider_value": "CAdamActorDefMgr::AddActorDefFromFile( %s )",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 44
+      }
+    },
+    {
+      "address": "0x695a5c",
+      "value": "ActorLightingDefaultSunNormalZ",
+      "provider_value": "ActorLightingDefaultSunNormalZ",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 31
+      }
+    },
+    {
+      "address": "0x695a7c",
+      "value": "ActorLightingDefaultSunNormalY",
+      "provider_value": "ActorLightingDefaultSunNormalY",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 31
+      }
+    },
+    {
+      "address": "0x695a9c",
+      "value": "ActorLightingDefaultSunNormalX",
+      "provider_value": "ActorLightingDefaultSunNormalX",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 31
+      }
+    },
+    {
+      "address": "0x695abc",
+      "value": "ActorLightingDefaultSunBlue",
+      "provider_value": "ActorLightingDefaultSunBlue",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 28
+      }
+    },
+    {
+      "address": "0x695ad8",
+      "value": "ActorLightingDefaultSunGreen",
+      "provider_value": "ActorLightingDefaultSunGreen",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 29
+      }
+    },
+    {
+      "address": "0x695af8",
+      "value": "ActorLightingDefaultSunRed",
+      "provider_value": "ActorLightingDefaultSunRed",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 27
+      }
+    },
+    {
+      "address": "0x695b14",
+      "value": "ActorLightingUseDefaultSunOnly",
+      "provider_value": "ActorLightingUseDefaultSunOnly",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 31
+      }
+    },
+    {
+      "address": "0x695b34",
+      "value": "ActorLightingUseDefaultSun",
+      "provider_value": "ActorLightingUseDefaultSun",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 27
+      }
+    },
+    {
+      "address": "0x695cac",
+      "value": "ActorDefName",
+      "provider_value": "ActorDefName",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 13
+      }
+    },
+    {
+      "address": "0x69c6a4",
+      "value": "CAdamSubLevel::AddGameObject() actor def %s has not been preloaded",
+      "provider_value": "CAdamSubLevel::AddGameObject() actor def %s has not been preloaded",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 67
+      }
+    },
+    {
+      "address": "0x69c934",
+      "value": "No world created",
+      "provider_value": "No world created",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 17
+      }
+    },
+    {
+      "address": "0x69cd00",
+      "value": "CAdamSubLevel::PreloadDataBeforeGameObjects(void): add bitmaps to world",
+      "provider_value": "CAdamSubLevel::PreloadDataBeforeGameObjects(void): add bitmaps to world",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 72
+      }
+    },
+    {
+      "address": "0x6a28a8",
+      "value": "cannot create m_ActorDefMgr",
+      "provider_value": "cannot create m_ActorDefMgr",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 28
+      }
+    },
+    {
+      "address": "0x6a95a8",
+      "value": "Texture cache used: %4i",
+      "provider_value": "Texture cache used: %4i",
+      "string": {
+        "encoding": "utf-8",
+        "encoding_status": "inferred",
+        "termination": "present_or_not_required",
+        "byte_length": 24
+      }
+    }
+  ],
+  "confidence": "observed",
+  "authority": "shipped-artifact",
+  "environment": null,
+  "limitations": [
+    "Results depend on Hopper's completed static analysis.",
+    "Regex mode uses ECMAScript Unicode semantics in a supervised worker with a five-second matching deadline. Cancellation or deadline failure stops matching without blocking Hopper; literal mode retains native casefold semantics.",
+    "String values cover native typed objects. Hopper may split long literals into adjacent unterminated fragments; string searches match each object independently.",
+    "Undecodable typed objects retain native display text with an explicit decoding unknown; these values do not establish decoded source literals.",
+    "Reported string encodings are inferred from typed bytes and native display; the original source's intended encoding is unknown."
+  ],
+  "locations": [],
+  "evidence_links": []
+}

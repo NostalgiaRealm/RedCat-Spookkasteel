@@ -1,0 +1,249 @@
+{
+  "output": "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/lantern-hitch-2026-10-19/audio-continuity-1792418610946",
+  "method": "Focused real main-loop source/browser fault injection. Isolated retained headless Chrome profile; Level 1 startup, quiet settled background queue; real WebAudio music with output muted. Captures the actual animation-frame callback and advances it on real wall-clock intervals. No source edits, user profile writes, campaign traversal, historical tests, builds or CPU benchmark.",
+  "errors": [
+    "Error: Intentional audio continuity fault: asset load failure\n    at eval (eval at evaluate (:290:30), <anonymous>:43:52)\n    at async <anonymous>:316:30"
+  ],
+  "warnings": [],
+  "cases": [
+    {
+      "name": "short-wait-125ms",
+      "before": {
+        "mode": "playing",
+        "paused": false,
+        "context": "running",
+        "gameTime": 0,
+        "audioTime": 0,
+        "sourcePresent": true,
+        "overlay": false,
+        "queuePending": 0,
+        "calls": []
+      },
+      "during": {
+        "mode": "playing",
+        "paused": false,
+        "context": "running",
+        "gameTime": 0,
+        "audioTime": 0.12800000000000003,
+        "sourcePresent": true,
+        "overlay": false,
+        "queuePending": 0,
+        "calls": []
+      },
+      "after": {
+        "mode": "playing",
+        "paused": false,
+        "context": "running",
+        "gameTime": 0.001099999999627471,
+        "audioTime": 0.16,
+        "sourcePresent": true,
+        "overlay": false,
+        "queuePending": 0,
+        "calls": []
+      },
+      "sourceIdentityPreserved": true,
+      "passed": true
+    },
+    {
+      "name": "long-wait-350ms",
+      "before": {
+        "mode": "playing",
+        "paused": false,
+        "context": "running",
+        "gameTime": 0.001099999999627471,
+        "audioTime": 0.16,
+        "sourcePresent": true,
+        "overlay": false,
+        "queuePending": 0,
+        "calls": []
+      },
+      "during": {
+        "mode": "playing",
+        "paused": true,
+        "context": "running",
+        "gameTime": 0.001099999999627471,
+        "audioTime": 0.4053333333333333,
+        "sourcePresent": false,
+        "overlay": true,
+        "queuePending": 0,
+        "calls": [
+          {
+            "method": "pause",
+            "at": 3690.7999999988824,
+            "mode": "playing"
+          }
+        ]
+      },
+      "after": {
+        "mode": "playing",
+        "paused": false,
+        "context": "running",
+        "gameTime": 0.002200000001117587,
+        "audioTime": 0.43733333333333335,
+        "sourcePresent": true,
+        "overlay": false,
+        "queuePending": 0,
+        "calls": [
+          {
+            "method": "pause",
+            "at": 3690.7999999988824,
+            "mode": "playing"
+          },
+          {
+            "method": "resume",
+            "at": 3793,
+            "mode": "playing"
+          }
+        ]
+      },
+      "passed": true
+    },
+    {
+      "name": "explicit-user-pause-during-short-wait",
+      "userPaused": {
+        "mode": "paused",
+        "paused": true,
+        "context": "running",
+        "gameTime": 0.002200000001117587,
+        "audioTime": 0.45866666666666667,
+        "sourcePresent": false,
+        "overlay": false,
+        "queuePending": 0,
+        "calls": [
+          {
+            "method": "pause",
+            "at": 3849.4000000003725,
+            "mode": "paused"
+          }
+        ]
+      },
+      "stillPaused": {
+        "mode": "paused",
+        "paused": true,
+        "context": "running",
+        "gameTime": 0.002200000001117587,
+        "audioTime": 0.45866666666666667,
+        "sourcePresent": false,
+        "overlay": false,
+        "queuePending": 0,
+        "calls": [
+          {
+            "method": "pause",
+            "at": 3849.4000000003725,
+            "mode": "paused"
+          }
+        ]
+      },
+      "explicitResume": {
+        "mode": "playing",
+        "paused": false,
+        "context": "running",
+        "gameTime": 0.002200000001117587,
+        "audioTime": 0.4906666666666667,
+        "sourcePresent": true,
+        "overlay": false,
+        "queuePending": 0,
+        "calls": [
+          {
+            "method": "pause",
+            "at": 3849.4000000003725,
+            "mode": "paused"
+          },
+          {
+            "method": "resume",
+            "at": 3883.199999999255,
+            "mode": "playing"
+          }
+        ]
+      },
+      "passed": true
+    },
+    {
+      "name": "asset-error-final-case",
+      "before": {
+        "mode": "playing",
+        "paused": false,
+        "context": "running",
+        "gameTime": 0.002200000001117587,
+        "audioTime": 0.4906666666666667,
+        "sourcePresent": true,
+        "overlay": false,
+        "queuePending": 0,
+        "calls": []
+      },
+      "during": {
+        "mode": "error",
+        "paused": true,
+        "context": "running",
+        "gameTime": 0.002200000001117587,
+        "audioTime": 0.4906666666666667,
+        "sourcePresent": false,
+        "overlay": false,
+        "queuePending": 0,
+        "calls": [
+          {
+            "method": "pause",
+            "at": 3909.5,
+            "mode": "playing"
+          }
+        ]
+      },
+      "after": {
+        "mode": "error",
+        "paused": true,
+        "context": "running",
+        "gameTime": 0.002200000001117587,
+        "audioTime": 0.4906666666666667,
+        "sourcePresent": false,
+        "overlay": false,
+        "queuePending": 0,
+        "calls": [
+          {
+            "method": "pause",
+            "at": 3909.5,
+            "mode": "playing"
+          }
+        ]
+      },
+      "errorMessage": "Intentional audio continuity fault: asset load failure",
+      "passed": true
+    }
+  ],
+  "sourceHashes": {
+    "src/main.js": "f54440f7ea5301d49a34fbd407d543f950420a4255266d626438ac0d4d926255",
+    "src/world.js": "87f4227339cacafdba344e3f6968585f03d5c18e88f4645bba5f0178725e1a1f",
+    "src/world-streaming.js": "17b5f3ce9ce87f69db8cf6f3a448a23bfd555c64207dba9421df9a32ca33489e",
+    "src/room-visibility.js": "8114b69110f41071bba6ecbb9ee0fdfc630e32b54ae52529130b8e07a9d862f9",
+    "src/actor-render-residency.js": "4a29903c0239e14b037cdb546fa15e620caca595aec3a354323a1866e81d2759",
+    "src/actor-texture-stream.js": "01793fdcf641516f32dc34f0cb332a47c48cc6a6be9db84d5c562c664708501e",
+    "src/audio.js": "b194a71be7fcecf91a95c14464cd9ebe3a1baa44070765c8919cfd551932ea74"
+  },
+  "setup": {
+    "world": "lvl00a",
+    "mode": "playing",
+    "room": {
+      "area": 1,
+      "active": true,
+      "allowedAreas": [
+        1,
+        2
+      ],
+      "viewAreas": [
+        1,
+        2
+      ]
+    },
+    "queuePending": 0,
+    "ready": {
+      "world": true,
+      "actors": true,
+      "textures": true
+    },
+    "audioContext": "running"
+  },
+  "expectedErrors": [
+    "Error: Intentional audio continuity fault: asset load failure\n    at eval (eval at evaluate (:290:30), <anonymous>:43:52)\n    at async <anonymous>:316:30"
+  ],
+  "unexpectedErrors": [],
+  "passed": true
+}

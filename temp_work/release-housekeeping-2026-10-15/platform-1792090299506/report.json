@@ -1,0 +1,90 @@
+{
+  "checks": [
+    "native intro video decodes and plays",
+    "native Linux XWayland presentation, isolated profile and window/fullscreen render dimensions",
+    "two players create and load independent real source saves through menu controls"
+  ],
+  "errors": [],
+  "method": "Current source only, isolated profiles, synthetic CDP touch and real Linux XWayland window. No release packages or hardware controllers/mobile devices tested.",
+  "native": {
+    "profile": "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/release-housekeeping-2026-10-15/platform-1792090299506/electron-profile",
+    "features": {
+      "2d_canvas": "enabled",
+      "direct_rendering_display_compositor": "disabled_off_ok",
+      "gpu_compositing": "enabled",
+      "multiple_raster_threads": "enabled_on",
+      "opengl": "enabled_on",
+      "rasterization": "enabled",
+      "raw_draw": "disabled_off_ok",
+      "skia_graphite": "disabled_off",
+      "trees_in_viz": "disabled_off",
+      "video_decode": "enabled",
+      "video_encode": "disabled_software",
+      "vulkan": "disabled_off",
+      "webgl": "enabled",
+      "webgpu": "enabled",
+      "webgpu_on_vk_via_gl_interop": "disabled_off",
+      "webnn": "disabled_off"
+    },
+    "display": {
+      "accelerometerSupport": "unknown",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 2560,
+        "height": 1440
+      },
+      "colorDepth": 24,
+      "colorSpace": "{primaries:BT709, transfer:SRGB, matrix:RGB, range:FULL}",
+      "depthPerComponent": 8,
+      "detected": true,
+      "displayFrequency": 143.8685760498047,
+      "id": 33,
+      "internal": false,
+      "label": "",
+      "maximumCursorSize": {
+        "width": 0,
+        "height": 0
+      },
+      "monochrome": false,
+      "nativeOrigin": {
+        "x": 0,
+        "y": 0
+      },
+      "rotation": 0,
+      "scaleFactor": 1,
+      "size": {
+        "width": 2560,
+        "height": 1440
+      },
+      "workArea": {
+        "x": 0,
+        "y": 0,
+        "width": 2560,
+        "height": 1440
+      },
+      "workAreaSize": {
+        "width": 2560,
+        "height": 1440
+      },
+      "touchSupport": "unknown"
+    },
+    "windowId": 31457284
+  },
+  "video": {
+    "time": 0.312189,
+    "duration": 74.038,
+    "paused": false
+  },
+  "nativePixels": {
+    "width": 2560,
+    "height": 1440,
+    "colors": 5304
+  },
+  "profiles": {
+    "first": "legacy",
+    "second": "p_6dee2741-1b9c-4ce2-be8f-cad29209e89b",
+    "separateSaves": true
+  },
+  "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'Schieten'\n- 'SCHIETEN'\n\n    at file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/release-housekeeping-2026-10-15/desktop-touch-check.mjs:71:10"
+}

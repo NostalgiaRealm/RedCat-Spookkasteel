@@ -1,0 +1,102 @@
+✔ original cave intro moves its Max double away before the turret battle handoff (131.076446ms)
+✔ castle WhizKitty scene uses the inside endpoint despite its duplicate PlayerStart name (35.636863ms)
+✖ Brutus defeat restores ambient music and raises the mirror through the original ending motion (27.099597ms)
+✔ native boss activation selects special music in each original arena (70.221533ms)
+✖ boss defeat chooses action music while another living enemy remains engaged (20.671859ms)
+✔ older saves with a defeated Brutus no longer restart the stranded boss track (24.775892ms)
+✔ an empty authored music selection stops the previous track and remains stopped after loading (26.78633ms)
+✔ all four exit mirrors execute their authored route to the following level exactly once (190.364447ms)
+✔ both original grave buttons open the disabled paired doors through the compiled Davi callbacks (39.380669ms)
+✔ grave-door progress survives saving after one button and during the paired opening motion (64.835017ms)
+✔ disabled door still rejects direct player touch and use while explicit script Open works (1.282832ms)
+✔ death after every original maze stage and during moving hedges restores the replayable initial layout (806.750833ms)
+✔ the real death clip reaches one respawn and does not retrigger the maze at the old death position (61.751397ms)
+✔ fatal damage cancels an unfinished final button before it can start the maze exit cutscene (103.751629ms)
+✔ nonfatal damage leaves an unfinished final button able to commit its original completion callback (63.804204ms)
+✔ committed final button and fully open maze stay solved across respawn and save/load (217.289767ms)
+✔ save/load during death or after reset retains reset transforms and permits the original route again (163.110382ms)
+✔ maze retry preserves loot, enemy defeats, the crate secret, painting globals and the independent moving hedge (55.04007ms)
+✔ respawn does not reset a different levels original puzzle progress or motion (7.436403ms)
+✔ older saves with no motion-started fields still reset an unfinished maze after death (80.09574ms)
+✔ loading an older death save cancels its pending final-button callback before timelines advance (70.835519ms)
+✔ loading the stranded entrance pattern repairs only the maze and retains the saved level progress (68.267035ms)
+✔ loading viable intermediate, moving-door or committed maze saves does not rewind their progress (211.711542ms)
+✔ native fairy potion gates award SuperSkippie and BIG BENG only at 30 potions (109.784041ms)
+✔ fresh caves and a real graveyard carry keep BIG BENG locked; restored and earned ownership survive (71.719953ms)
+✔ SuperSkippie requires its skill and a released/repressed jump within native tap limits (58.03248ms)
+✔ original graveyard cave staircase needs three 72-unit ascents and SuperSkippie climbs all three (21.013276ms)
+✔ jump2 restarts at the airborne boost and retains the native 1.3x animation through descent (9.926247ms)
+✔ BIG BENG holds its native pose, releases once, scales damage, and recharges for the next shot (9.028122ms)
+✔ ordinary held fire stays available before BIG BENG and stale charges cancel on death/weapon removal (2.142026ms)
+✖ charging pauses across cutscenes and survives save/load without losing its release (0.703416ms)
+✔ touch press/release supplies the same SuperSkippie and charging edges as held keyboard input (10.142775ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 29
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2006.271134
+
+✖ failing tests:
+
+test at tests/boss-script-regressions.test.mjs:60:1
+✖ Brutus defeat restores ambient music and raises the mirror through the original ending motion (27.099597ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      id: 'EffectMusic1',
+  +   mode: 'ambient',
+      sound: 'Level 1 - The Forest.wav'
+    }
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/boss-script-regressions.test.mjs:71:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { id: 'EffectMusic1', sound: 'Level 1 - The Forest.wav', mode: 'ambient' },
+    expected: { id: 'EffectMusic1', sound: 'Level 1 - The Forest.wav' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/boss-script-regressions.test.mjs:96:1
+✖ boss defeat chooses action music while another living enemy remains engaged (20.671859ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'Level 4 - The Caves.wav'
+  - 'spookkort3.wav'
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/boss-script-regressions.test.mjs:102:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'Level 4 - The Caves.wav',
+    expected: 'spookkort3.wav',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/player-abilities.test.mjs:139:1
+✖ charging pauses across cutscenes and survives save/load without losing its release (0.703416ms)
+  TypeError: Cannot read properties of null (reading 'age')
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/player-abilities.test.mjs:141:101)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)

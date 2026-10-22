@@ -1,0 +1,39 @@
+✔ guardian approaches instead of causing distant melee damage, then attacks on contact (9.12936ms)
+✖ knight can hit during the end of its active strike window, only once (0.348808ms)
+✔ spider returns to its own hanging anchor after losing the target and restores mid ascent (1.096264ms)
+✖ knight strike-window end survives save and shifts with a script freeze (0.279269ms)
+✔ authored patrol and touch pursuit avoid searches; displaced actors retain bounded reacquisition (2.141768ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 3
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 89.907015
+
+✖ failing tests:
+
+test at tests/enemy-native-completion.test.mjs:56:1
+✖ knight can hit during the end of its active strike window, only once (0.348808ms)
+  TypeError: Cannot read properties of undefined (reading 'until')
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/enemy-native-completion.test.mjs:58:54)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+
+test at tests/enemy-native-completion.test.mjs:84:1
+✖ knight strike-window end survives save and shifts with a script freeze (0.279269ms)
+  TypeError: Cannot read properties of undefined (reading 'until')
+      at TestContext.<anonymous> (file:///mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/tests/enemy-native-completion.test.mjs:88:37)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at node:internal/test_runner/test:1037:31
+      at node:internal/process/task_queues:149:7
+      at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+      at AsyncResource.runMicrotask (node:internal/process/task_queues:146:8)

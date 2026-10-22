@@ -1,0 +1,14 @@
+✔ a cold turn within the present room reuses fully prepared geometry and maps behind the camera (7.134976ms)
+✔ same-room PVS-hidden surfaces prepare without drawing and survive a camera-leaf visibility change (1.70359ms)
+✔ whole-room preparation does not fetch another floor, a hidden doorway neighbor, or beyond the existing range (1.018874ms)
+✔ new background room work shares the existing three-job frame budget with visible uploads (5.297888ms)
+✔ hidden current-room actors prepare real textures and buffers before a turn while unrelated and distant actors stay unloaded (16.787636ms)
+✔ current-area queries invalidate when the player crosses a doorway, without treating all admitted rooms as current (0.783605ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 92.166484

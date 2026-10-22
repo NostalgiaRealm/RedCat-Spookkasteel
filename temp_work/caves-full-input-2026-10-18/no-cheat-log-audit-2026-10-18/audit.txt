@@ -1,0 +1,24 @@
+Scoped earned-campaign control-log audit — 18 October 2026
+
+Finding
+No manual player/enemy health, lives, inventory, upgrade, collectible, position, puzzle-state or no-clip assignment, injected fixture/save import, direct damage call, or script-command invocation was found in the reviewed command records and referenced helper sources. The records support earned progression with ordinary save/recovery retries, subject to the runtime qualifications below. They do not establish an untouched-runtime, real-time human playthrough.
+
+Scope
+Read-only review; no connection to API4511 and no gameplay run. Captured at 11:07:38 UTC: initial commands.jsonl (10 records), live-commands.jsonl (440 records, through an early Earth altar-route command), and resume-responses-2026-10-18.jsonl (381 records). Immutable copies and SHA-256 values are retained in this directory. All 381 response codes matched a live-command record. No reported noClip:true or cheat:true value was found. Later campaign commands are outside this cutoff; this is not an exhaustive engine or filesystem audit.
+
+Setup and ordinary recovery
+The initial driver creates a timestamp-named isolated profile. Initial commands record the Start avontuur button, then normal Continue after controlled-frame setup; they contain no stat seeding. This supports the fresh-game setup but is not an independent forensic proof that the profile directory had never existed.
+
+Nineteen early Forest commands call __redcat.saveGame(true) directly (live lines 3–28; exact list in checks.json). These serialize the current game through its save function; they are not imported or edited saves, but should be disclosed rather than described as exclusively F5 input. Later records include 150 commands mentioning F5 and 25 mentioning F9; these are command counts, not successful-save counts. Recovery was selected through the UI at live 185 (5-minute choice; its wait timed out) and live 272 (2-minute choice, restored living Graveyard state). Save exports read localStorage and write evidence files. No corresponding storage write/import operation was found.
+
+Runtime qualifications
+The harness replaces requestAnimationFrame with manually advanced callbacks, stubs pointer-lock acquisition, injects controller helpers, reads collision/enemy/platform state for routing and timing, and calls world.look as its mouse/camera adapter. Movement, shooting, jumping and use are supplied through key events. Thus it is instrumented validation with controlled frames with engine-state observations, not black-box real-time play.
+
+Live 80–81 replace the active player's MovementRecovery prototype with the fixed source class. Live 80 then fails while recording an invalid w.state.health field; its prototype change had already occurred. Live 81/82 retain existing history and hold W, allowing the repaired runtime to perform recovery. The saved response records a recovery count increase from 3 to 4 and a changed position with health/inventory unchanged. This is a real in-session source repair and must remain explicitly disclosed. It is not a direct coordinate or stat assignment in the command log. The preceding live 73/75/76/78/79 probes instantiate detached recovery objects and clone positions/history; they do not apply probe results to the player.
+
+Native living save, browser reload and Continue at live 282 and 287–288 subsequently reload source normally. Observer hooks wrap onEvent/__stepFrame and forward the original callbacks; they store logs/markers. No suppression of damage or progression events was found in those hooks.
+
+Evidence limits and recommended wording
+Current referenced helper/driver files were inspected and copied with hashes. Historical file contents at each path-based injection were not all embedded in the original command log, so the current snapshots cannot authenticate every prior helper version. The log review is evidence-scoped, not a guarantee against unlogged external actions.
+
+Suggested claim: “Earned campaign progression was validated with instrumented ordinary gameplay controls and native save/recovery, without fixture imports or manual progression/stat edits in the reviewed logs. The run includes a disclosed Castle recovery source hot-load and later normal source reloads.”

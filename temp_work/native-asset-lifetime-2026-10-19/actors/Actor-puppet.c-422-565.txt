@@ -1,0 +1,144 @@
+422: gePuppet *GENESISCC gePuppet_Create(geVFile *TextureFS, const geBody *B, geWorld *World)
+423: {
+424: 	gePuppet *P;
+425: 
+426: 	assert( geBody_IsValid(B)!=GE_FALSE );
+427: 	#pragma message ("Need geWorld_IsValid()")
+428: 	
+429: 	P = GE_RAM_ALLOCATE_STRUCT(gePuppet);
+430: 	if (P==NULL)
+431: 	{
+432: 		geErrorLog_Add(ERR_PUPPET_ENOMEM, NULL);
+433: 		return NULL;
+434: 	}
+435: 	
+436: 	memset(P,0,sizeof(*P));	
+437: 
+438: 	P->BodyInstance = NULL;
+439: 	P->MaxDynamicLightsToUse = PUPPET_DEFAULT_MAX_DYNAMIC_LIGHTS;
+440: 	P->LightReferenceBoneIndex = GE_POSE_ROOT_JOINT;
+441: 
+442: 	P->FillLightNormal.X = -0.2f;
+443: 	P->FillLightNormal.Y = 1.0f;
+444: 	P->FillLightNormal.Z = 0.4f;
+445: 	geVec3d_Normalize(&(P->FillLightNormal));
+446: 	P->FillLightColor.Red    = 0.25f;
+447: 	P->FillLightColor.Green  = 0.25f;
+448: 	P->FillLightColor.Blue   = 0.25f;
+449: 	P->UseFillLight = GE_TRUE;
+450: 	// LWM_ACTOR_RENDERING:
+451: 	P->OverallAlpha = 255.0f ;
+452: 
+453: 	P->AmbientLightIntensity.Red   = 0.1f;
+454: 	P->AmbientLightIntensity.Green = 0.1f;
+455: 	P->AmbientLightIntensity.Blue  = 0.1f;
+456: 	P->AmbientLightFromFloor = GE_TRUE;
+457: 
+458: 	P->DoShadow = GE_FALSE;
+459: 	P->ShadowScale = 0.0f;
+460: 	P->ShadowBoneIndex =  GE_POSE_ROOT_JOINT;
+461: 	P->TextureFileContext = TextureFS;
+462: 
+463: 	P->World = World;
+464: 	
+465: 	P->AmbientLightFromStaticLights = GE_FALSE;	//BY DEFAULT DO NOTHING 
+466: 	P->DoTestRayCollision = GE_FALSE; 
+467: 	P->MaxStaticLightsToUse = PUPPET_DEFAULT_MAX_DYNAMIC_LIGHTS;
+468:  
+469: 	//Set default environment options
+470: 	P->internal_env.PercentEnvironment = 0.0f;
+471: 	P->internal_env.PercentPuppet = 1.0f;
+472: 	P->internal_env.PercentMaterial = 1.0f;
+473: 	P->internal_env.UseEnvironmentMapping = GE_FALSE;
+474: 	P->internal_env.Supercede = GE_TRUE;
+475: 
+476: 	if (gePuppet_FetchTextures(P,B)==GE_FALSE)
+477: 	{
+478: 		geRam_Free(P);
+479: 		return NULL;
+480: 	}
+481: 
+482: 	P->BodyInstance = geBodyInst_Create(B);
+483: 	if (P->BodyInstance == NULL)
+484: 	{
+485: 		geErrorLog_Add(ERR_PUPPET_ENOMEM, NULL);
+486: 		gePuppet_Destroy( &P );
+487: 		return NULL;
+488: 	}
+489: 	gePuppet_StaticPuppetCount++;
+490: 
+491: // changed QD Shadows
+492: 	P->DoStencilShadow = GE_FALSE;
+493: 	P->UpdateBodyG = GE_TRUE;
+494: 	P->BodyG = NULL;
+495: // end change
+496: 	return P;
+497: }
+498: 
+499: 
+500: void GENESISCC gePuppet_Destroy(gePuppet **P)
+501: {
+502: 	assert( P  );
+503: 	assert( *P );
+504: 	if ( (*P)->BodyInstance )
+505: 	{
+506: 		geBodyInst_Destroy( &((*P)->BodyInstance) );
+507: 		(*P)->BodyInstance = NULL;
+508: 	}
+509: 	if ( (*P)->MaterialArray )
+510: 	{
+511: 		gePuppet_Material *M;
+512: 		int i;
+513: 
+514: 		for (i=0; i<(*P)->MaterialCount; i++)
+515: 		{
+516: 			M = &((*P)->MaterialArray[i]);
+517: 			if (M->UseTexture )
+518: 			{	
+519: /* 08/15/2003 Wendell Buckner 	
+520:     BUMPMAPPING               */
+521:                 geBitmap *BumpBmpAlt = NULL;
+522: 				
+523: 				assert( M->Bitmap );
+524: 				geWorld_RemoveBitmap( (*P)->World, M->Bitmap );
+525: 
+526: /* 02/17/2003 Wendell Buckner 	
+527:     DOT3 BUMPMAPPING               */
+528:                 geBitmap_DestroyBumpmapDot3 ( M->Bitmap );
+529: 
+530: /* 08/15/2003 Wendell Buckner 	
+531:     BUMPMAPPING               */
+532:                 BumpBmpAlt = geBitmap_DestroyBumpmap ( M->Bitmap );
+533: 
+534:                 if ( BumpBmpAlt )
+535: 				{
+536: 				 geWorld_RemoveBitmap( (*P)->World, BumpBmpAlt );
+537: 				 geBitmap_Destroy( &(BumpBmpAlt) );
+538: 				}
+539: 
+540: 				geBitmap_Destroy( &(M->Bitmap) );
+541: 				M->UseTexture = GE_FALSE;
+542: 			}
+543: 		}
+544: 
+545: 
+546: 		geRam_Free( (*P)->MaterialArray );
+547: 		(*P)->BodyInstance = NULL;
+548: 	}
+549: 	if ( (*P)->ShadowMap )
+550: 	{
+551: 		geBitmap_Destroy((geBitmap **)&((*P)->ShadowMap));
+552: 		(*P)->ShadowMap = NULL;
+553: 	}
+554: 
+555: 	geRam_Free( (*P) );
+556: 	*P = NULL;
+557: 	
+558: 	// clean up any shared resources.
+559: 	gePuppet_StaticPuppetCount--;
+560: 	if (gePuppet_StaticPuppetCount==0)
+561: 	{
+562: 		if (gePuppet_StaticBoneLightArray!=NULL)
+563: 			geRam_Free(gePuppet_StaticBoneLightArray);
+564: 
+565: 		gePuppet_StaticBoneLightArray=NULL;

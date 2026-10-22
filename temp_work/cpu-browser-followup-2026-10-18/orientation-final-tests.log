@@ -1,0 +1,22 @@
+✔ actor orientation applies native world-axis script and spin rotations before the brush rotation (0.984543ms)
+✔ original castle balls and cave rocks spin one revolution per second in opposite authored directions (0.840014ms)
+✔ attached actor and pickup anchors rotate about the model pivot without accumulating displacement (1.376961ms)
+✔ controller Disable pauses the support without hiding its actor, whereas Hide removes both (0.506506ms)
+✔ saving preserves local actor age, script rotation and its unmodified anchor while restoring the brush pose (2.424024ms)
+✔ an off-camera actor advances its authored animation clock and resumes the current pose when approached (1.841738ms)
+✔ moving a model-attached prop refreshes its existing collision surface and Hide disables it (2.014177ms)
+✔ the frame queries attached prop collision at the newly advanced support pose without advancing its animation twice (1.851758ms)
+✔ all original decorative actors resolve their assets, explicit motions and moving-model attachments (46.542983ms)
+✔ lazy actor triangles match eager sweeps through rotated, moving and newly animated props (21.946634ms)
+✔ effect batches upload only live vertices/instances through growth, shrinking and empty frames (1.720678ms)
+✔ sprite culling rejects distant artwork while retaining large, rotated, expanded and native spout edges (0.715475ms)
+✔ deferred skinning preserves live bone transforms, transitions, save state and exact later vertices (62.321818ms)
+✔ orientation cache follows authored/runtime turns, rotating pickups, moving supports and independent callers (1.165152ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 169.536399

@@ -1,0 +1,21 @@
+✔ pickup pinwheel uses five original textured triangles with native orbit and tapered width (1.420461ms)
+✔ pickup colours cycle one component at a time and re-sampling never advances a paused effect (0.410728ms)
+✔ every collectible emits the corresponding original score artwork exactly once (2.027556ms)
+✔ unavailable pickups and unnecessary health do not create reward effects (0.202379ms)
+✔ enemy kills award their authored score once; wounds, scenery and the zero-score witch do not (0.985883ms)
+✔ pickup effects capture the current model transform without following later movement (0.316478ms)
+✔ enemy score starts at the rendered bounds centre, with a collision-bounds fallback (0.281798ms)
+✔ save/load preserves active effect age and cannot replay collected items or dead enemies (1.451941ms)
+✔ cutscenes allow reward retirement while redraws at paused game time do not advance it (2.193826ms)
+✔ effect restoration rejects malformed, future and expired records while preserving legacy saves (0.317678ms)
+✔ burst pickup traffic stays bounded and keeps the newest 128 effects (1.623609ms)
+✔ native score quads expand, rise and fade for one second on pickups or 1.5 seconds on enemies (0.228759ms)
+✔ score artwork stays upright and finite under oblique or directly overhead cameras (0.166329ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 89.007846

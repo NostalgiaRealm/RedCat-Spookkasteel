@@ -1,0 +1,43 @@
+✔ broad phase preserves crossing, start-solid, zero-length and exact hull-boundary contacts (2.897861ms)
+✔ translated and rotated brush bounds follow replacement and in-place pose changes (1.147632ms)
+✔ collision leaf bounds extend undersized render metadata and missing bounds fall back (0.240328ms)
+✔ world exterior, disabled brushes and nearest-model ordering remain unchanged (0.302428ms)
+✔ distant model rejection avoids narrow-phase leaf visits (0.386957ms)
+✔ bounded randomized rotated hull sweeps match unpruned traversal (14.066059ms)
+✔ lvl02a authored collision matches unpruned traversal around static and moved models (25.293206ms)
+✔ lvl03a authored collision matches unpruned traversal around static and moved models (21.260602ms)
+✔ frozen physical lists visit only overlapping static brushes and preserve sweep results (3.324459ms)
+✔ moved, disabled, replaced and in-place mutated brush poses remain live in an indexed list (1.688819ms)
+✔ candidate ordering retains duplicate IDs, start-solid penetrations and the unbounded world (1.097593ms)
+✔ mutable lists retain immediate edits and non-finite hull queries use the original scan (0.297998ms)
+✔ stationary trace and contents queries reuse transformed planes and model/leaf bounds (3.274029ms)
+✔ in-place translation, rotation and pivot mutations immediately invalidate the pose (3.898375ms)
+✔ temporary old and destination poses restore exact collision without retaining historical poses (39.600302ms)
+✔ deleting a pose restores stationary bounds and reinserting it moves collision again (0.701405ms)
+✔ invalid mutations still fail validation after a valid pose has been cached (1.079713ms)
+✔ world model remains stationary and transform defaults and normalized quaternions stay valid (0.758065ms)
+✔ swept hull stops at an expanded solid wall, with outward normal (2.166966ms)
+✔ parallel movement outside a solid leaves full motion available (0.124489ms)
+✔ slide projects motion onto wall instead of passing through it (0.859344ms)
+✔ disabled moving model does not block movement (0.112059ms)
+✔ original level 1: spawn settles and player can walk/jump (17.070819ms)
+✔ original level 2: spawn settles and player can walk/jump (14.006738ms)
+✔ original level 3: spawn settles and player can walk/jump (14.311367ms)
+✔ original level 4: spawn settles and player can walk/jump (19.147036ms)
+✔ original level 5: spawn settles and player can walk/jump (6.352589ms)
+✔ translated brush collision follows motion beyond the original leaf bounds (0.613956ms)
+✔ model zero stays fixed and shared BSP leaves are visited for each model instance (0.220608ms)
+✔ rotated convex planes expand against the world AABB around an offset pivot (0.233049ms)
+✔ rotated BSP partition traversal uses the moved plane and world sweep extent (0.181409ms)
+✔ rotated collision honors inverted leaf sides and the nearest model hit (0.237869ms)
+✔ native thin projectile sweep hits the body but no longer catches empty space next to it (0.685995ms)
+✔ all generated shots use the recovered collision extent regardless of visual sprite size (2.739262ms)
+✔ projectile sweep resolves the earliest impact without tunnelling or applying hits through a wall (1.188543ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 126.453137

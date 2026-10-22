@@ -1,0 +1,149 @@
+  469770: sub    esp,0x68
+  469773: lea    eax,[ecx+0x110]
+  469779: push   ebx
+  46977a: mov    edx,eax
+  46977c: push   ebp
+  46977d: push   esi
+  46977e: push   edi
+  46977f: mov    esi,DWORD PTR [edx]
+  469781: mov    DWORD PTR [esp+0x30],0x0
+  469788: 
+  469789: mov    DWORD PTR [esp+0x6c],esi
+  46978d: mov    ebx,DWORD PTR [esp+0x30]
+  469791: mov    esi,DWORD PTR [edx+0x4]
+  469794: mov    DWORD PTR [esp+0x34],0x0
+  46979b: 
+  46979c: mov    edi,DWORD PTR [esp+0x34]
+  4697a0: mov    DWORD PTR [esp+0x70],esi
+  4697a4: mov    edx,DWORD PTR [edx+0x8]
+  4697a7: mov    DWORD PTR [esp+0x38],0x0
+  4697ae: 
+  4697af: mov    DWORD PTR [esp+0x74],edx
+  4697b3: mov    edx,DWORD PTR ds:0x64dadc // 1.0
+  4697b9: mov    DWORD PTR [esp+0x2c],edx
+  4697bd: mov    edx,DWORD PTR ds:0x64dae0 // 1.100000023841858
+  4697c3: mov    DWORD PTR [esp+0x28],edx
+  4697c7: mov    edx,DWORD PTR ds:0x64dae4 // 0.10000000149011612
+  4697cd: mov    DWORD PTR [esp+0x24],edx
+  4697d1: mov    edx,DWORD PTR ds:0x6b85d4 // None
+  4697d7: mov    DWORD PTR [esp+0x20],edx
+  4697db: mov    edx,DWORD PTR [ecx+0x11c]
+  4697e1: mov    DWORD PTR [esp+0x1c],edx
+  4697e5: mov    edx,DWORD PTR ds:0x64dae8 // 12.5
+  4697eb: mov    ebp,DWORD PTR [esp+0x38]
+  4697ef: mov    DWORD PTR [esp+0x18],edx
+  4697f3: mov    edx,DWORD PTR [eax]
+  4697f5: mov    DWORD PTR [esp+0x60],0x0
+  4697fc: 
+  4697fd: mov    DWORD PTR [esp+0x48],edx
+  469801: mov    edx,DWORD PTR [eax+0x4]
+  469804: mov    eax,DWORD PTR [eax+0x8]
+  469807: mov    DWORD PTR [esp+0x64],0x0
+  46980e: 
+  46980f: mov    DWORD PTR [esp+0x68],0x0
+  469816: 
+  469817: mov    DWORD PTR [esp+0x54],0x41a00000
+  46981e: 
+  46981f: mov    DWORD PTR [esp+0x58],0x41a00000
+  469826: 
+  469827: mov    DWORD PTR [esp+0x5c],0x41a00000
+  46982e: 
+  46982f: mov    DWORD PTR [esp+0x4c],edx
+  469833: mov    DWORD PTR [esp+0x50],eax
+  469837: mov    DWORD PTR [esp+0x3c],0x0
+  46983e: 
+  46983f: mov    DWORD PTR [esp+0x40],0x0
+  469846: 
+  469847: mov    DWORD PTR [esp+0x44],0x0
+  46984e: 
+  46984f: mov    DWORD PTR [esp+0x10],0x0
+  469856: 
+  469857: lea    esi,[ecx+0x3f4]
+  46985d: mov    DWORD PTR [esp+0x14],0x5
+  469864: 
+  469865: mov    ecx,DWORD PTR [esp+0x10]
+  469869: mov    eax,DWORD PTR [esp+0x3c]
+  46986d: push   ecx
+  46986e: mov    ecx,DWORD PTR [esp+0x44]
+  469872: sub    esp,0xc
+  469875: mov    edx,esp
+  469877: sub    esp,0xc
+  46987a: mov    DWORD PTR [edx],eax
+  46987c: mov    eax,DWORD PTR [esp+0x60]
+  469880: mov    DWORD PTR [edx+0x4],ecx
+  469883: mov    ecx,esp
+  469885: push   0x1
+  469887: mov    DWORD PTR [edx+0x8],eax
+  46988a: mov    edx,DWORD PTR [esp+0x68]
+  46988e: mov    eax,DWORD PTR [esp+0x6c]
+  469892: mov    DWORD PTR [ecx],edx
+  469894: mov    edx,DWORD PTR [esp+0x70]
+  469898: mov    DWORD PTR [ecx+0x4],eax
+  46989b: mov    eax,DWORD PTR [esp+0x38]
+  46989f: push   eax
+  4698a0: push   0x0
+  4698a2: mov    DWORD PTR [ecx+0x8],edx
+  4698a5: mov    ecx,DWORD PTR [esp+0x44]
+  4698a9: mov    edx,DWORD PTR [esp+0x48]
+  4698ad: push   ecx
+  4698ae: mov    ecx,DWORD PTR [esp+0x80]
+  4698b5: push   edx
+  4698b6: push   0x0
+  4698b8: push   0x0
+  4698ba: mov    edx,DWORD PTR [esp+0x90]
+  4698c1: sub    esp,0xc
+  4698c4: mov    eax,esp
+  4698c6: push   0x0
+  4698c8: mov    DWORD PTR [eax],ecx
+  4698ca: mov    ecx,DWORD PTR [esp+0xa4]
+  4698d1: mov    DWORD PTR [eax+0x4],edx
+  4698d4: mov    edx,DWORD PTR [esp+0x6c]
+  4698d8: push   edx
+  4698d9: mov    edx,DWORD PTR [esp+0xac]
+  4698e0: mov    DWORD PTR [eax+0x8],ecx
+  4698e3: mov    eax,DWORD PTR [esp+0x74]
+  4698e7: push   eax
+  4698e8: push   0x41200000
+  4698ed: push   0x42c80000
+  4698f2: mov    eax,DWORD PTR [esp+0xbc]
+  4698f9: sub    esp,0xc
+  4698fc: mov    ecx,esp
+  4698fe: push   0x2
+  469900: push   0x0
+  469902: mov    DWORD PTR [ecx],edx
+  469904: mov    edx,DWORD PTR [esp+0xd4]
+  46990b: push   0x0
+  46990d: push   0x0
+  46990f: mov    DWORD PTR [ecx+0x4],eax
+  469912: mov    eax,DWORD PTR [esp+0xa0]
+  469919: push   eax
+  46991a: mov    eax,DWORD PTR [esp+0xe4]
+  469921: sub    esp,0xc
+  469924: mov    DWORD PTR [ecx+0x8],edx
+  469927: mov    ecx,esp
+  469929: sub    esp,0xc
+  46992c: mov    edx,esp
+  46992e: mov    DWORD PTR [ecx],ebx
+  469930: mov    DWORD PTR [ecx+0x4],edi
+  469933: mov    DWORD PTR [ecx+0x8],ebp
+  469936: mov    ecx,DWORD PTR [esp+0x100]
+  46993d: mov    DWORD PTR [edx],eax
+  46993f: mov    eax,DWORD PTR [esp+0x104]
+  469946: mov    DWORD PTR [edx+0x4],ecx
+  469949: mov    ecx,esi
+  46994b: mov    DWORD PTR [edx+0x8],eax
+  46994e: call   0x47db60
+  469953: fld    DWORD PTR [esp+0x10]
+  469957: fadd   DWORD PTR ds:0x64db48 // 1.2566370964050293
+  46995d: mov    eax,DWORD PTR [esp+0x14]
+  469961: add    esi,0x144
+  469967: dec    eax
+  469968: mov    DWORD PTR [esp+0x14],eax
+  46996c: fstp   DWORD PTR [esp+0x10]
+  469970: jne    0x469865
+  469976: pop    edi
+  469977: pop    esi
+  469978: pop    ebp
+  469979: pop    ebx
+  46997a: add    esp,0x68
+  46997d: ret

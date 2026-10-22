@@ -1,0 +1,9 @@
+--- docs/building.md (before)
++++ docs/building.md
+@@ -340,4 +340,6 @@
+ 
+ ## Android and remaining platform work
+ 
++For the step-by-step work needed before an Android 10.0+ APK/AAB can be built, see [the Android roadmap](../ANDROID.md). Its commands are future instructions, not available build targets today.
++
+ The ARM64 recipes above are desktop packages. Electron's desktop wrapper cannot produce an Android APK/AAB; Android still needs a different application shell, lifecycle/audio integration and physical-device validation. Browser touch overlays and Gamepad API controls are already implemented. Linux/Windows ARM64 and both macOS architectures also still need the platform validation described above before release. See [portability.md](portability.md) for the remaining steps.

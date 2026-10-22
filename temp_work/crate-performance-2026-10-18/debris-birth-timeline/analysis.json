@@ -1,0 +1,51 @@
+{
+  "birth": {
+    "id": 433,
+    "time": 6519.70000000298,
+    "gameTime": 25.0012999999982,
+    "partsBefore": 0,
+    "functions": {
+      "game": 4.799999997019768,
+      "destructibles": 2.2999999970197678,
+      "lighting": 2.899999998509884,
+      "effects": 5.800000004470348,
+      "render": 2.399999998509884
+    },
+    "update": 14.5,
+    "parts": 91,
+    "poolOwned": 109
+  },
+  "maxUpdate": {
+    "id": 433,
+    "time": 6519.70000000298,
+    "gameTime": 25.0012999999982,
+    "partsBefore": 0,
+    "functions": {
+      "game": 4.799999997019768,
+      "destructibles": 2.2999999970197678,
+      "lighting": 2.899999998509884,
+      "effects": 5.800000004470348,
+      "render": 2.399999998509884
+    },
+    "update": 14.5,
+    "parts": 91,
+    "poolOwned": 109
+  },
+  "minorGC": {
+    "count": 94,
+    "maxMs": 0.839
+  },
+  "mainCompile": {
+    "count": 180,
+    "maxMs": 0.151
+  },
+  "mainFinalize": {
+    "maxMs": 0.935
+  },
+  "notes": [
+    "The heavily instrumented timeline did not reproduce the separate approximately 20ms update about2.6s after destruction.",
+    "Per-function performance marks add observable overhead. This trace is diagnostic rather than an FPS benchmark.",
+    "Observed GC and main-thread compile/finalize spans are individually too short to explain the whole first-birth spike.",
+    "CPU samples on the birth update identify repeated shared-material enumeration in ActorRenderResidency.protectedResources."
+  ]
+}

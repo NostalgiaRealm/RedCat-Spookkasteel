@@ -1,0 +1,254 @@
+✔ actor broad phase skips distant state predicates but still checks nearby dormant and hidden actors (1.065033ms)
+✔ actor masks and ignored actor/support identities still bypass collision and state checks (0.232489ms)
+✔ scalar actor bounds preserve touching and the original tolerance on every axis (0.684226ms)
+✔ an exactly touching actor surface allows moving away and still blocks moving into it (0.552636ms)
+✔ actor surfaces block a swept player and projectiles but respect native LOS flags (1.960987ms)
+✔ actor collision allows sliding, moving away, and passing empty portions of a triangle bounding box (0.342888ms)
+✔ standing on an actor surface remains stable and is not mistaken for starting inside it (2.390654ms)
+✔ original rotated graveyard statue blocks its pedestal while a disabled blocker disappears (4.383471ms)
+✖ a dormant graveyard zombie reuses its triangle collision until its pose or placement changes (38.553301ms)
+✖ Dungeon machine retains original geometry and exposes every turret part to player shots (12.181348ms)
+✖ Dungeon turret, crate, lid and exposed body all forward pellet damage to Max (1.168732ms)
+✖ Dungeon ammunition exits its own shields but other enemies still collide, and defeated shields disappear (0.994443ms)
+✔ a prop survives exact projectile equality, remains targetable/collidable, and breaks on the next positive hit (3.697275ms)
+✔ all projectile strengths and partial hits use the same strict accumulated limit (0.814565ms)
+✔ blast and projectile damage share one accumulator without suppressing later blast ticks at equality (0.543776ms)
+✖ saving at exact equality preserves an intact prop and its next-hit destruction across actor loading (2.752461ms)
+✔ legacy saves keep their remaining budget and same-world restoration clears newer accumulated damage (0.664726ms)
+✔ explicit script destruction still bypasses the threshold, including an equality-state prop (0.207229ms)
+✔ indestructible actors still run OnHit commands while ignoring damage, and enemy equality still defeats (0.583446ms)
+✔ invalid damage and accumulator state cannot revive destroyed props or poison future damage (0.243788ms)
+✔ beam scratch vectors preserve exact previous vertices, colours and ribbon UVs across consecutive rays (2.437363ms)
+✔ discs and custom coloured quads preserve earlier batch data, capacity and upload state (0.590446ms)
+✔ precomputed light distances retain stable ties, player priority, eligibility and eight-light limit (0.413207ms)
+✔ light order matches previous calculation after camera, light position and radius changes (1.366551ms)
+✔ actor lighting reads freshly updated scene matrices for mounted parts and debris without ancestor refreshes (2.92748ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 20
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 184.29101
+
+✖ failing tests:
+
+test at tests/actor-collision.test.mjs:50:1
+✖ a dormant graveyard zombie reuses its triangle collision until its pose or placement changes (38.553301ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" not to be strictly deep-equal to:
+  
+  [
+    {
+      max: [
+        104.80066108703613,
+        11.796038627624512,
+        13.900444984436035
+      ],
+      min: [
+        103.02119088172913,
+        6.6217827796936035,
+        10.815491676330566
+      ],
+      projections: [
+        {
+          max: 104.80066108703613,
+          min: 103.02119088172913,
+          normal: [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          max: 11.796038627624512,
+          min: 6.6217827796936035,
+          normal: [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          max: 13.900444984436035,
+          min: 10.815491676330566,
+          normal: [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          max: -3.592475985355911,
+          min: -3.5924759853559127,
+          normal: [
+            -0.09193636748441825,
+            -0.5059950071629512,
+  ...
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:67:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      ... 278 more items
+    ],
+    expected: [
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      ... 278 more items
+    ],
+    operator: 'notDeepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/actor-collision.test.mjs:90:1
+✖ Dungeon machine retains original geometry and exposes every turret part to player shots (12.181348ms)
+  TypeError: Cannot set properties of undefined (setting 'recoveryDoors')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/src/world.js:265:30)
+      at dungeonMachine (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:86:15)
+      at async TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:91:30)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/actor-collision.test.mjs:112:1
+✖ Dungeon turret, crate, lid and exposed body all forward pellet damage to Max (1.168732ms)
+  TypeError: Cannot set properties of undefined (setting 'recoveryDoors')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/src/world.js:265:30)
+      at dungeonMachine (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:86:15)
+      at async TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:113:27)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/actor-collision.test.mjs:141:1
+✖ Dungeon ammunition exits its own shields but other enemies still collide, and defeated shields disappear (0.994443ms)
+  TypeError: Cannot set properties of undefined (setting 'recoveryDoors')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/src/world.js:265:30)
+      at dungeonMachine (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:86:15)
+      at async TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:142:27)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/destructible-threshold.test.mjs:67:1
+✖ saving at exact equality preserves an intact prop and its next-hit destruction across actor loading (2.752461ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/destructible-threshold.test.mjs:77:62)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

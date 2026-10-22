@@ -1,0 +1,31 @@
+    decomp_var_4 = esi;
+    esp = esp - 0x8;
+    decomp_var_8 = edi;
+    edi = arg_0;
+    esi = ecx;
+    eax = edi[0x1];
+    if (eax == 0x0) {
+            eax = 0x64a3b4;
+    }
+    esp = (esp - 0x8) + 0x8;
+    if (sub_6195f0(eax, "enable") == 0x0) {
+            sub_502350(0x1);
+            sub_47cdb0();
+            eax = 0x1;
+    }
+    else {
+            eax = edi[0x1];
+            if (eax == 0x0) {
+                    eax = 0x64a3b4;
+            }
+            eax = sub_6195f0(eax, "disable");
+            esp = (esp - 0x8) + 0x8;
+            if (eax == 0x0) {
+                    sub_502350(eax);
+                    eax = 0x1;
+            }
+            else {
+                    eax = sub_5027d0(edi, arg_4);
+            }
+    }
+    return eax;

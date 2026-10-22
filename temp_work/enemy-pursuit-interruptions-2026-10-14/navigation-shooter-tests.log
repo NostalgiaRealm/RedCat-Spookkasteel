@@ -1,0 +1,46 @@
+✔ native shooter approach randomly selects strictly closer neighbors, never arbitrary endpoints (3.419451ms)
+✔ native closer comparison uses full 3D distance, strict inequality, and current player clearance (0.251129ms)
+✔ busy and unlinked-start nodes are not replaced with a forbidden or arbitrary destination (0.363638ms)
+✔ changing the target actor position retains an unfinished native cursor edge (0.230098ms)
+✔ off-node bodies safely reacquire their cursor before selecting another native edge (0.208429ms)
+✔ native graph approach retires old arbitrary jobs without refunding current search credits (0.297898ms)
+✔ native no-neighbor and absent-path results are distinct for the gameplay state caller (0.167749ms)
+✔ native MoveFurther chooses the strictly farthest valid adjacent slot without consuming RNG (0.215799ms)
+✔ native retreat retains committed edges then reevaluates current-player gates at the next node (0.242129ms)
+✔ native retreat rejects equal-distance neighbors and allows bounded off-node reacquisition (0.207379ms)
+✔ nearby detour does not sweep hundreds of distant waypoint candidates (14.259451ms)
+✔ failed large search is spread over frames, then cached even as the player moves (7.691997ms)
+✔ simultaneously alerted enemies share a bounded search budget and each completes (8.048866ms)
+✔ blocked cached edge waits for the retry deadline and normal local collision (5.563079ms)
+✔ completed route save shape remains plain data; in-progress searches are transient (11.006629ms)
+✔ pending routes restart after pursuit stops or either endpoint moves substantially (5.57147ms)
+✔ ground pursuit and flight detours share the same bounded fair collision allowance (9.933176ms)
+✔ finishing a search cannot reset an enemy allowance within the same update (0.797325ms)
+✔ inactive and finished searches stop reserving the next update allowance (1.091704ms)
+✔ explicit spider return destination cannot be replaced by a nearer arbitrary waypoint (0.576856ms)
+✔ switching to an explicit return endpoint retires a cached chase route without resetting search credits (7.695628ms)
+✔ ordinary closer selects before strict range completion and preserves its selected mid-edge target (0.991624ms)
+✔ a no-destination closer enters shoot outside attack range instead of inventing another endpoint (0.141819ms)
+✔ whole salvo remains committed and inter-shot wait begins only after complete shoot motion (0.253699ms)
+✔ after-salvo chance chooses another closer without an unconditional extra wait or memory gate (0.1422ms)
+✔ a completed parent wait shoots at inclusive attack range and otherwise re-enters closer (0.1625ms)
+✔ skeleton shoots first, retreats after the completed salvo, and stops only beyond attack range (0.168929ms)
+✔ skeleton retreat failure shoots immediately; expired memory ends its completed child first (0.171159ms)
+✔ safe waypoint reacquisition forwards its explicit destination and native edges bypass search (0.482257ms)
+✔ phase state remains plain save data and wait deadlines can be shifted across a freeze (0.201739ms)
+✔ bosses and non-ranged touch variants retain separate states, and missing paths retain the portable fallback (0.214849ms)
+✔ current and destination claims update immediately and ignore their owner or retired actors (1.131264ms)
+✔ direct pursuit releases stale patrol claims while active waypoint modes reserve them (0.232659ms)
+✔ reservation rebuild runs once per update and explicit invalidation supports loading at the same time (0.216439ms)
+✔ ordinary patrol observes touch reservations and claims its selected edge before later actors choose (0.331539ms)
+✔ minimum player distance applies to ordinary and relocation choices without forbidden fallback (0.205989ms)
+✔ generic random selection includes the previous neighbor and works without frame synchronization (2.070799ms)
+✔ arrival preserves the current-point claim after relocation and immediately reserves a subsequent patrol edge (0.258749ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 118.634247

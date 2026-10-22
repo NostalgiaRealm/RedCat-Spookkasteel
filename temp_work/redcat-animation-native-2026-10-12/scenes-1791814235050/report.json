@@ -1,0 +1,156 @@
+{
+  "report": {
+    "samples": [
+      {
+        "name": "idle",
+        "time": 0.30000000000000004,
+        "rate": 1,
+        "loop": true,
+        "transition": null
+      },
+      {
+        "name": "walkfw",
+        "time": 0.30000000000000004,
+        "rate": 1,
+        "loop": true,
+        "transition": {
+          "name": "idle",
+          "time": 0.30000000000000004,
+          "weight": 0,
+          "sampleWeight": 1
+        }
+      },
+      {
+        "name": "walkbw",
+        "time": 0.6600000000000001,
+        "rate": 2.2,
+        "loop": true,
+        "transition": {
+          "name": "walkfw",
+          "time": 0.30000000000000004,
+          "weight": 0,
+          "sampleWeight": 1
+        }
+      },
+      {
+        "name": "strafer",
+        "time": 0.72,
+        "rate": 2.4,
+        "loop": true,
+        "transition": {
+          "name": "walkbw",
+          "time": 0.6600000000000001,
+          "weight": 0,
+          "sampleWeight": 1
+        }
+      },
+      {
+        "name": "strafel",
+        "time": 0.72,
+        "rate": 2.4,
+        "loop": true,
+        "transition": {
+          "name": "strafer",
+          "time": 0.72,
+          "weight": 0,
+          "sampleWeight": 1
+        }
+      },
+      {
+        "phase": "hit",
+        "name": "hit",
+        "time": 0.30000000000000004,
+        "rate": 1.5
+      },
+      {
+        "phase": "death",
+        "name": "death",
+        "time": 0.32000000000000006,
+        "rate": 1.6
+      },
+      {
+        "phase": "respawn",
+        "name": "re-spawn",
+        "time": 0.2,
+        "rate": 1
+      }
+    ],
+    "before": {
+      "name": "jump1",
+      "time": 0.20999999999999996,
+      "rate": 1.4,
+      "loop": true,
+      "transition": {
+        "name": "strafel",
+        "time": 0.72,
+        "weight": 0.4,
+        "sampleWeight": 1
+      }
+    },
+    "after": {
+      "name": "jump1",
+      "time": 0.20999999999999996,
+      "transition": {
+        "name": "strafel",
+        "time": 0.72,
+        "weight": 0.4,
+        "sampleWeight": 1
+      }
+    },
+    "resumed": {
+      "name": "jump1",
+      "time": 0.238,
+      "jumpKind": "normal",
+      "velocityY": -45
+    },
+    "charge": {
+      "name": "shoot1",
+      "time": 0.5026691937446595,
+      "rate": 0
+    },
+    "beforeQuery": {
+      "name": "shoot1",
+      "time": 2.220446049250313e-16,
+      "rate": 1.9,
+      "loop": false,
+      "transition": {
+        "name": "jump1",
+        "time": 0.238,
+        "weight": 0.8400000000000001,
+        "sampleWeight": 0.92
+      }
+    },
+    "afterQuery": {
+      "name": "shoot1",
+      "time": 2.220446049250313e-16,
+      "rate": 1.9,
+      "loop": false,
+      "transition": {
+        "name": "jump1",
+        "time": 0.238,
+        "weight": 0.8400000000000001,
+        "sampleWeight": 0.92
+      }
+    },
+    "handoff": "walkfw",
+    "cutscene": "idle",
+    "respawnIdle": {
+      "name": "idle",
+      "rate": 1.7
+    },
+    "savedKeys": [
+      "version",
+      "level",
+      "position",
+      "lastSafe",
+      "playerMotion",
+      "playerAnimation",
+      "noClip",
+      "yaw",
+      "pitch",
+      "game",
+      "savedAt"
+    ]
+  },
+  "errors": []
+}

@@ -1,0 +1,23 @@
+✔ authored crate damage rates/radii use the native percentages and the visual blast births (1.807898ms)
+✔ nearby RedCat receives whole frame doses through the inclusive first-activation deadline (2.973011ms)
+✔ RedCat range and LOS use his native eye-height movement origin (0.386607ms)
+✔ moving out of range stops damage while moving into an expired blast never damages (0.300458ms)
+✔ enemy falloff uses the nearest posed box edge and tries native centre-relative corner rays (0.267928ms)
+✔ exploding crates kill nearby enemies, preserve distant enemies, and award defeat once (1.48298ms)
+✔ hurt cells damage smoke-only crates and chain destructible actors without projectile OnHit hooks (0.742675ms)
+✔ hidden and inactive targets stay protected, and brush OnHit callbacks do not receive splash (0.365258ms)
+✔ player death fires once; noclip immunity and cutscene protection remain intact (0.743485ms)
+✔ saving mid-blast resumes only remaining damage and respawn clears pending damage (3.10288ms)
+✔ a synchronous respawn during blast damage discards the old cell iteration immediately (0.294658ms)
+✔ delayed blasts arm on the first eligible frame and do not clip that frame or the inclusive end (0.253688ms)
+✔ the first frame beyond expiry does not receive a clipped remainder (0.194479ms)
+✔ pending saves preserve first activation, old saves retain their original expiry, and bad clocks are rejected (0.248138ms)
+✔ world explosion targets expose rendered bounds for rotated, scaled moving actors (1.55759ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 98.711623

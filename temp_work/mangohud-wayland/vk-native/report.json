@@ -1,0 +1,69 @@
+{
+  "variant": "vk-native",
+  "logs": [
+    "[153166:1007/212506.986889:WARNING:components/dbus/xdg/portal.cc:126] Failed to register with org.freedesktop.host.portal.Registry\n",
+    "[153212:1007/212507.025533:WARNING:sandbox/policy/linux/sandbox_linux.cc:405] InitializeSandbox() called with multiple threads in process gpu-process.\n",
+    "[153166:1007/212507.251610:INFO:CONSOLE:72] \"[object DOMException]\", source: redcat://game/src/main.js (72)\n",
+    "[153166:1007/212507.251815:INFO:CONSOLE:72] \"[object DOMException]\", source: redcat://game/src/main.js (72)\n"
+  ],
+  "window": {
+    "visibility": "visible",
+    "gl": "WebKit WebGL"
+  },
+  "gpu": {
+    "info": {
+      "auxAttributes": {
+        "amdSwitchable": false,
+        "canSupportThreadedTextureMailbox": false,
+        "glImplementationParts": "(gl=none,angle=none)",
+        "glResetNotificationStrategy": 0,
+        "hardwareSupportsVulkan": false,
+        "inProcessGpu": true,
+        "initializationTime": 0,
+        "isAsan": false,
+        "isClangCoverage": false,
+        "jpegDecodeAcceleratorSupported": false,
+        "optimus": false,
+        "passthroughCmdDecoder": false,
+        "sandboxed": false,
+        "skiaBackendType": "None",
+        "subpixelFontRendering": true,
+        "targetCpuBits": 64,
+        "visibilityCallbackCallCount": 0
+      },
+      "gpuDevice": [
+        {
+          "active": true,
+          "deviceId": 29663,
+          "gpuPreference": 0,
+          "vendorId": 4098
+        }
+      ]
+    },
+    "processes": [
+      {
+        "cpu": {
+          "cumulativeCPUUsage": 0.31,
+          "percentCPUUsage": 0,
+          "idleWakeupsPerSecond": 0
+        },
+        "pid": 153212,
+        "type": "GPU",
+        "creationTime": 1791401106880,
+        "serviceName": "GPU",
+        "memory": {
+          "workingSetSize": 169812,
+          "peakWorkingSetSize": 169812
+        }
+      }
+    ]
+  },
+  "libs": [
+    "/usr/lib64/libvulkan_radeon.so",
+    "/usr/lib64/libvulkan_lvp.so",
+    "/usr/lib64/libvulkan_dzn.so",
+    "/usr/lib64/mangohud/libMangoHud.so",
+    "/mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/node_modules/electron/dist/libvulkan.so.1",
+    "/usr/lib64/mangohud/libMangoHud_shim.so"
+  ]
+}
