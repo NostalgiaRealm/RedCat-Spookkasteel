@@ -176,7 +176,8 @@ These adaptations are intentional:
   cheats and links to Besturing and Over. Switching sections preserves draft
   values; OK applies them together and Annuleren discards them.
 - Per-player progress, save recovery, restart safeguards and JSON save export
-  remain available. See [save-export.md](save-export.md).
+  remain available. The added Importeren action restores an exported backup
+  into the selected player after validation and explicit confirmation. See [save-export.md](save-export.md).
 - WinHelp is replaced by the searchable portable viewer using the original
   Dutch content.
 - The leaderboard avoids duplicate entries and retains the actual chapter.
@@ -215,7 +216,11 @@ Source validation on 20 October 2026 covered:
 
 The [integration record](../temp_work/native-menu-restoration-2026-10-20/compatibility/integration-result.json)
 and [visual evidence](../temp_work/native-menu-restoration-2026-10-20/assets/README.md)
-retain the reports, screenshots and isolated test profiles. User saves were
-not modified. No release packages were built; an actual Android device/document
-provider and the operating system's desktop save dialog still need platform
-testing beyond the adapter checks.
+retain the findings and reports. Disposable screenshots and test profiles were
+removed in the 22 October cleanup; user saves were not modified. The original
+menu source pass built no packages. The subsequent
+[1.0.1 release verification](../temp_work/release-1.0.1-2026-10-20/release-verification.json)
+records six desktop packages and a Linux packaged startup/save/export check.
+That check supplied the desktop save-dialog destination: interacting with the
+real OS dialog and an Android device/document provider still needs platform
+validation.

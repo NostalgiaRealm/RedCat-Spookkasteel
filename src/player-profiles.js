@@ -1,9 +1,12 @@
+import {validateSaveImport} from './save-import.js';
+
 export const PLAYER_PROFILES_KEY = 'redcat.players.v1';
 export const LEGACY_PROFILE_ID = 'legacy';
 export const PLAYER_NAME_MAX_LENGTH = 12;
 export const MAX_PLAYERS = 8;
 export const PROFILE_STORAGE_KEYS = Object.freeze([
   'redcat.save.v1', 'redcat.progress.v1', 'redcat.player-options.v1',
+  'redcat.adventure-revision.v1',
   'redcat.touch-intro-hint.v1', 'redcat.desktop-intro-hint.v1',
 ]);
 const SHARED_SETTINGS_KEY = 'redcat.settings.v1';
@@ -135,6 +138,33 @@ export class PlayerProfiles {
     const player = this.requirePlayer(id);
     if (id !== this.activeId) this.commit({...this.state, activeId: id});
     return copy(player);
+  }
+
+  importAdventure(id, bundle) {
+    this.requirePlayer(id);
+    if (this.readMetadata() !== this.raw) throw new PlayerProfileError('stale-metadata', 'De spelerlijst is in een ander spelvenster gewijzigd. Herlaad dit venster.');
+    const validated = validateSaveImport(bundle);
+    const values = [['redcat.save.v1', validated.save], ['redcat.progress.v1', validated.progress], ['redcat.player-options.v1', validated.options], ['redcat.adventure-revision.v1', generateId()]];
+    const writes = values.map(([base, value]) => ({key: this.key(base, id), raw: JSON.stringify(value)}));
+    try {for (const entry of writes) entry.before = this.storage.getItem(entry.key);}
+    catch (cause) {throw new PlayerProfileError('storage-read', 'De opgeslagen voortgang kan niet worden gelezen. Er is niets gewijzigd.', cause);}
+    const changed = [];
+    try {
+      for (const entry of writes) {
+        if (entry.raw === entry.before) continue;
+        this.storage.setItem(entry.key, entry.raw); changed.push(entry);
+      }
+    } catch (cause) {
+      // Web Storage writes are individually atomic. Release the replacement
+      // payloads before restoring old bytes, so a quota failure cannot leave
+      // less free space than before this import. Metadata/history are untouched.
+      let rollbackError;
+      for (const entry of changed) try {this.storage.removeItem(entry.key);} catch (error) {rollbackError ||= error;}
+      for (const entry of changed) if (entry.before !== null) try {this.storage.setItem(entry.key, entry.before);} catch (error) {rollbackError ||= error;}
+      if (rollbackError) throw new PlayerProfileError('storage-rollback', 'Importeren is mislukt en de vorige voortgang kon niet volledig worden teruggezet. Bewaar je exportbestand en herlaad het spel.', rollbackError);
+      throw new PlayerProfileError('storage-write', 'Het avontuur kon niet worden geïmporteerd. De vorige voortgang is behouden.', cause);
+    }
+    return validated;
   }
 
   remove(id) {

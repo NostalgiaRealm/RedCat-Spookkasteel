@@ -91,9 +91,12 @@ Only MSAA/settings/rendering checks were run for this change; no new packages.
 - Settings apply/cancel/persistence and desktop/mobile layout checked using
   isolated profiles, without modifying the user's save or running game.
 
-Retained scripts, reports and screenshots are under
+Retained scripts and reports are under
 `temp_work/msaa-settings-2026-10-20/`. The `hardware/` directory holds the hardware
-checks. Initial failed experiments are kept separately for reference.
+checks. Initial failed experiments are kept separately for reference. Disposable
+screenshots and test profiles were removed in the 22 October cleanup. The later
+1.0.1 package/release verification is recorded separately in
+`temp_work/release-1.0.1-2026-10-20/`.
 
 ### Automatic quality follow-up
 

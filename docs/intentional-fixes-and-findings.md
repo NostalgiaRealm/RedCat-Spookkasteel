@@ -13,8 +13,11 @@ corrections to original content defects, and technical adaptations for a new
 engine. A technical approximation with unresolved fidelity is identified as
 such; it is not automatically a desired change to the original game.
 
-Retain research files, profiles and diagnostics in named `temp_work/`
-subfolders for later comparison.
+Keep investigation output in named `temp_work/` subfolders. Retain useful
+research, measurements and unique source evidence; disposable browser profiles,
+copied saves, screenshots and duplicates were removed in the
+[22 October cleanup](../temp_work/cleanup-2026-10-22/README.md). Its index
+identifies retained evidence and canonical copies of deduplicated files.
 
 ## At a glance
 
@@ -30,7 +33,7 @@ subfolders for later comparison.
   reliable floor lighting and a camera that avoids RedCat's body near walls.
 - Widescreen/resolution settings, touch/controller input, responsive menus and
   scoreboards, and bounded rendering/navigation/effect work.
-- Portable original Help, per-player save export, retained advanced menu
+- Portable original Help, per-player save export/import, retained advanced menu
   settings and a leaderboard that keeps each player's best result.
 
 ## Saving, access and recovery
@@ -42,7 +45,7 @@ subfolders for later comparison.
 | Recovery history | Offer saves from approximately 2, 5 and 10 minutes of playing time ago. Retain at most eleven minute checkpoints; older ones are discarded. Paused/offline time does not age them. | [Recovery storage and retention](autosave.md#retention-and-storage) |
 | Transient-state continuity | New saves retain smoke/flame pools, knight fragment physics, active WAV positions, dialogue queues, loop waits and crossfade progress. Loading continues these states instead of restarting them. This extends the port's save format; it is not a claim about the original RCR format. | [Effect continuity](effects-save-continuity.md), [audio continuity](audio-save-continuity.md) |
 | Safer adventure replacement | The original **Avontuur → Startinfo** route continues an existing save. **Meer opties → Opnieuw beginnen** retains confirmation; **Snelspel** selects a chapter without replacing the save until **Level Spelen** is confirmed. Replacement occurs only after the new level loads successfully. | [Starting a new adventure](autosave.md#starting-a-new-adventure), [original menu](original-menu-native.md) |
-| Export a player's save | **Spelerlijst → Exporteren** downloads the selected player's primary save and permanent progress without switching players or changing their saves. Browser download, desktop file picker and Android document picker share the same JSON format. This is an export format, not native RCR compatibility or a new import feature. | [Save export](save-export.md) |
+| Export and import a player's save | **Spelerlijst → Exporteren** copies the selected player's primary save and permanent progress. **Importeren** validates that JSON backup and asks before replacing the selected player’s save, progress and gameplay options. Other players, shared settings and local recovery points remain. Browser, desktop and Android share the same format; native RCR files are unsupported. | [Save backups](save-export.md) |
 | Optional cheats | A settings submenu fills mirror pieces and potions to their limits, adds 9000 points, unlocks all chapters, or enables free flight. Supplies do not collect actual level objects or complete their scripts. | [Cheat implementation](../src/cheats.js), [chapter access](campaign-menu-native.md) |
 | Invulnerable no-clip | Free flight ignores all damage, including enemies, liquids, beams and scripted kills. Exiting inside geometry seeks a safe position; if none is available, flight and protection stay enabled. | [No-clip protection](player-protection-progress-and-local-audio.md#no-clip-protection) |
 | Campaign ownership | Unlocks and earned abilities are stored separately from individual checkpoints. Earlier chapter replays and recovery loads retain them. A confirmed new adventure resets shooting upgrades, SuperSkippie and played-level history; chapter unlocks and preferences remain. | [Permanent abilities](player-protection-progress-and-local-audio.md#earned-abilities-across-chapter-replays), [replay history](replayed-level-intros-native.md#automatic-replay-policy-in-the-port) |
@@ -193,7 +196,7 @@ are restored. The following adaptations deliberately remain:
 - Highscores retain one best entry per player and their actual chapter,
   avoiding repeated duplicate entries and the original misleading **Klaar!**
   label on older entries.
-- Player saves, recent recovery saves, restart safeguards and save export
+- Player saves, recent recovery saves, restart safeguards and save export/import
   remain available alongside the original menu routes.
 
 See [native menu evidence and verification](original-menu-native.md) and

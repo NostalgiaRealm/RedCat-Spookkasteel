@@ -3,8 +3,12 @@
 Initial audit: 23 September 2026. Documentation status reviewed against source:
 6 October 2026; enemy lifecycle, attack, threshold and boss follow-ups updated
 15 October, with source-runtime validation status updated 18 October 2026.
+Gameplay fidelity boundaries and the later 1.0.1 release records were reviewed
+on 22 October; that review added no tests, builds or new campaign run.
 
-There is still work before this project can claim full original-game parity.
+The desktop/browser campaign is feature-complete in practical terms; exact
+original-engine parity and validation on every supported device are separate
+claims that this project does not make.
 This audit compares the current source, imported original assets/settings and
 compiled campaign scripts with the project's recovered executable evidence. It
 began as a source audit; the bounded port playthrough evidence added on
@@ -15,19 +19,19 @@ current. Follow the linked recovery documents for implemented behavior and
 specific portability limits. Test results cited there belong to their recorded
 runs; this documentation review did not rerun gameplay tests or create builds.
 
-## Completion assessment (18 October 2026)
+## Completion assessment (reviewed 22 October 2026)
 
-The Linux/Windows/web game is close to feature-complete. This bounded source
-review found no clearly missing major campaign system. The subsequent current-
-source playthrough found and fixed Castle fall-pocket recovery and dead-save
-overwrite failures with focused regressions. The earned five-level source
-campaign has now completed Forest, Castle, Graveyard, all four Caves altars,
+This bounded source review found no clearly missing major campaign system.
+The 15–18 October source playthrough found and fixed Castle fall-pocket recovery
+and dead-save overwrite failures with focused regressions. That earned
+five-level source campaign completed Forest, Castle, Graveyard, all four Caves altars,
 Max, Tower's full ascent and both bonus rooms, the five mirrors, the Witch,
 the unskipped authored ending and the full outro return to menu. It used normal
 controls and saves/recovery in an isolated browser profile, with controlled
 game-frame advancement and read-only route planning. It was not deathless and
 did not use a save import or inventory/health/puzzle-state grants in the earned
-route. Older complete campaign records predate many later fixes.
+route. This run predates the later room-streaming, original-menu and MSAA
+changes; it is evidence of campaign completion, not a fresh 1.0.1 playthrough.
 
 All 13 authored secret objects now have physical ordinary-input route checks
 across the earned run and explicitly separate continuations/fixtures. Tower's
@@ -48,7 +52,17 @@ prove the cause of the original startup failure. See the
 [detailed earned finale record](../temp_work/campaign-finale-2026-10-18/earned-finale-report.md)
 and [audio cleanup evidence](audio-media-lifetime.md).
 
-The practical remaining work, in priority order:
+The 20 October [1.0.1 release record](../temp_work/release-1.0.1-2026-10-20/release-verification.json)
+records successful Linux, Windows and macOS x64/ARM64 builds, archive/input
+verification, 49 focused checks and publication verification. Its packaged Linux
+startup/render/save-reload smoke used Xvfb and SwiftShader. Separate source MSAA
+checks used hardware rendering; neither establishes native Windows/macOS/ARM
+runtime behavior or sustained performance on a low-end machine. The original
+menu, all 38 mapped Help topics and save export are implemented, as described in
+the [1.0.1 notes](../RELEASE_NOTES_1.0.1).
+
+The remaining work falls into validation, test maintenance, optional additions
+and fidelity polish:
 
 1. **Validate long-session media on the intended runtime.** Audio release now
    explicitly destroys the browser player; focused checks observed 66 matching
@@ -56,13 +70,19 @@ The practical remaining work, in priority order:
    preceded this small cleanup change. Its successful normal reload retry
    establishes a working outro asset, but not the cause of the initial error.
    Keep the failure and separate secret/fixture setup scopes visible.
-2. **Validate the intended releases.** Once builds are authorized, check the
-   actual Linux/Windows packages and the deployed browser files, including
-   controls, fullscreen/resolution, complete audio/video playback, persistence
-   and sustained performance. Recent isolated Linux Electron and browser checks
-   are useful evidence, but are not a complete Windows or campaign test.
-3. **Refine specific native differences if exact fidelity is the goal:**
-   ordinary authored chase now uses recovered adjacent-node closer and skeleton
+2. **Extend current-release coverage on actual devices.** The six 1.0.1 desktop
+   archives are already built and published. Check the current release through
+   a complete campaign and the deployed browser experience, including controls,
+   fullscreen/resolution, audio/video, persistence and sustained performance.
+   The earlier Normal campaign and focused release checks do not establish a
+   single 100% collection run, every difficulty, mobile browser/device behavior
+   or performance on the user's 2019 i3. Windows/macOS/ARM native runtime checks
+   remain; existing Linux/source checks should not be described as absent.
+3. **Optional exact-fidelity investigation.** Remaining boundaries are native
+   global RNG/dispatcher ordering, collision tolerances and a full native-runtime
+   battle comparison. The recovered behavior described next is already
+   implemented, not an outstanding feature list: ordinary authored chase uses
+   recovered adjacent-node closer and skeleton
    farthest-retreat selection. The bounded arbitrary-position search in
    `pursuitChecks` remains an off-graph collision-recovery fallback. Common hit
    interruption, dormant-stone immunity and the Brutus damage receivers are
@@ -92,12 +112,29 @@ The practical remaining work, in priority order:
 4. **Treat small presentation differences as polish.** Camera collision and
    compensation retain documented portability boundaries. Generic smoke/flame
    particle pools, knight fragments and audio playback now survive new saves;
-   older saves without those fields cannot recover their lost state, and
-   browser output-buffer/sample timing is not preserved. See
+   older saves without those fields cannot recover their lost state. Generic
+   breakable-prop fragments still reconstruct their short trajectory against
+   restored geometry rather than saving every live fragment pose; this can alter
+   visual debris after a reload, while object destruction and blast damage state
+   are saved. Browser output-buffer/sample timing is not preserved. See
    [effects](effects-save-continuity.md) and [audio](audio-save-continuity.md).
    Preserve the requested overhead camera protection near walls,
    anti-stuck recovery, bounded lighting/navigation work and deliberate audio
    changes; they are not missing features to undo.
+5. **Backup restoration is now implemented.** Spelerlijst exports and imports
+   the selected player’s JSON backup, with validation and replacement
+   confirmation. Other players, shared settings and existing recovery points
+   remain intact. This is a portable convenience feature; original RCR files
+   are still unsupported. See [the format and limits](save-export.md).
+6. **Refresh older test fixtures.** The 18 October CPU pass recorded six failures
+   in older actor-collision, destructible-threshold and enemy-animation fixtures,
+   reproduced on its pre-edit baseline. The current fixtures still contain the
+   assumptions identified then: collision stability before a blend settles,
+   incomplete turret/player initialization, discarded explosion visuals after
+   restore and a minimal gameplay fake for a full frame update. They need
+   focused maintenance and reruns; this audit did not rerun or certify the
+   broader test suite. The 49 passing release checks do not cover these old
+   failures. See [the recorded fixture limitations](browser-cpu-performance-followup.md#correctness-and-scope).
 
 Android device readiness and Mac/ARM hardware validation are separate platform
 milestones. Original RCR save import is optional migration functionality. Neither
@@ -218,7 +255,7 @@ See [automatic replay introductions](replayed-level-intros-native.md).
 
 ## Verification and platform work
 
-1. **The earned current-source campaign is complete, within its recorded scope.**
+1. **The earned 15–18 October campaign is complete, within its recorded scope.**
    The [15–18 October validation report](campaign-validation-2026-10-18.md)
    separates the ordinary-input five-level run, actual deaths/recoveries,
    secret continuations/fixtures and source-platform checks. The full ending
@@ -228,10 +265,13 @@ See [automatic replay introductions](replayed-level-intros-native.md).
    human real-time combat difficulty, exact native animation fidelity or target
    package/hardware behavior. Compare remaining fidelity questions with native
    footage and run focused regressions for resulting fixes.
-2. **Validate the current source on actual Linux and Windows systems** when a
-   new build is authorized. Older prepared packages do not establish coverage
-   for later source changes. Check rendering, sound, pause/resume, controls and
-   saves on both platforms.
+2. **Build generation and publication are complete for 1.0.1; hardware QA is
+   still bounded.** All six desktop variants have archive/version/input checks
+   and recorded GitHub/GitLab publication verification. The Linux x64 packaged
+   startup/save smoke is a software-rendered check, separate from the earlier
+   native Linux and hardware-rendered source checks. Actual Windows/macOS/ARM,
+   mobile-browser, low-end performance and full current-release campaign/media
+   checks remain. See [the release record](../temp_work/release-1.0.1-2026-10-20/release-verification.json).
 3. **Additional platforms still need device validation.** Android now has a
    Kotlin/WebView shell, offline asset preparation, lifecycle/audio-focus
    integration, Back/fullscreen handling and renderer retry. Compilation,
@@ -240,11 +280,14 @@ See [automatic replay introductions](replayed-level-intros-native.md).
    hardware with working touch, media and save/resume; then campaign,
    interruption/process-death, performance and signed-release validation. See
    [Android setup and remaining work](../ANDROID.md). Linux/Windows ARM64 and
-   Intel/Apple Silicon macOS have documented experimental packaging recipes;
-   actual target-hardware validation remains. See [portability](portability.md).
-4. **Original RCR save import is absent.** The remake has its own full-state saves,
-   autosaves and 2/5/10-minute recovery history. RCR compatibility is separate
-   optional migration work, not a prerequisite for playing the remake.
+   Intel/Apple Silicon macOS packages exist. Windows packages are unsigned;
+   macOS packages are unsigned and not notarized. Signing/notarization are
+   separate distribution work. See [portability](portability.md).
+4. **Original RCR import remains optional migration work.** The remake has its
+   own full-state saves, autosaves and 2/5/10-minute recovery history. Its exported
+   JSON backups can now be restored through Spelerlijst. Original Windows RCR
+   saves use a different format and remain unsupported; this does not block a
+   new campaign.
 
 ## Items that should not be reopened as missing
 

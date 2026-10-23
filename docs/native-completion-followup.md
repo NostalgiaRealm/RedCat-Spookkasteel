@@ -4,18 +4,22 @@
 `e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5`.
 These changes use recovered values and imported assets; they do not establish
 complete frame-for-frame native parity. No builds or packages were made.
-Status reviewed against the current source on 5 October 2026. The verification
-results below describe their original focused runs, not new tests during this
-documentation review.
+The initial status review was on 5 October 2026; the navigation summary was
+updated on 22 October to reflect the later recovered pursuit selectors. The
+verification results below describe their original focused runs, not new tests
+during either documentation review.
 
 ## Enemy navigation and combat
 
 - The graph search at `0x59c630` floods integer hop counts from the destination;
-  `0x5994c0` chooses a neighbour with the lowest label. The remake now uses this
-  breadth-first route rule for pursuit around obstacles. Choosing nearby entry
-  and terminal nodes, body clearance and a short retry cache remain portable
-  implementation choices. Authored patrol edges bypass pursuit search, fixing
-  the [graveyard performance regression](graveyard-performance-regression.md).
+  `0x5994c0` chooses a neighbour with the lowest label. Minimum-hop routing is
+  retained for fixed destinations such as an explicit return to the authored
+  start. Later [pursuit recovery](enemy-pursuit-interruptions-native.md) replaced
+  ordinary chase endpoint search with the recovered adjacent-node closer and
+  skeleton farthest-retreat selectors. Arbitrary-position entry/terminal search
+  remains only in bounded off-graph collision recovery. Body clearance and a
+  short retry cache are portable safeguards; authored movement bypasses full
+  search, preserving the [graveyard performance fix](graveyard-performance-regression.md).
 - `RcShootInfo` construction (`0x426800`, count calculation
   `0x426905–0x426948`) samples
   `trunc(1 + (AverageShotsPerSalvo - 1) * (rand % 10000) * .0001)` once.

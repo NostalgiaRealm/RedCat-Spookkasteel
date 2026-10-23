@@ -1,8 +1,9 @@
 const { app, BrowserWindow, ipcMain, protocol, net, screen, Menu, shell, dialog } = require('electron');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
-const { writeFile } = require('node:fs/promises');
+const { writeFile, open } = require('node:fs/promises');
 const { createSaveExporter } = require('./save-export.cjs');
+const { createSaveImporter } = require('./save-import.cjs');
 const aboutLinks = new Set([
   'https://ko-fi.com/nostalgiarealm',
   'https://www.nostalgiarealm.com/',
@@ -76,7 +77,16 @@ app.whenReady().then(() => {
     return { fullscreen: win.isFullScreen(), size: win.getContentSize() };
   });
   ipcMain.handle('app:quit', () => app.quit());
-  ipcMain.handle('save:export', createSaveExporter({getWindow: () => win, dialog, writeFile}));
+  // Import and export share one modal picker, including its asynchronous IO.
+  let saveDialogBusy = false;
+  const oneSaveDialog = action => async (...args) => {
+    if (saveDialogBusy) throw new Error('Er is al een bestandsvenster geopend.');
+    saveDialogBusy = true;
+    try { return await action(...args); }
+    finally { saveDialogBusy = false; }
+  };
+  ipcMain.handle('save:export', oneSaveDialog(createSaveExporter({getWindow: () => win, dialog, writeFile})));
+  ipcMain.handle('save:import', oneSaveDialog(createSaveImporter({getWindow: () => win, dialog, openFile: open})));
   win.loadURL('redcat://game/index.html');
 });
 app.on('window-all-closed', () => app.quit());

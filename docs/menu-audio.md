@@ -65,8 +65,9 @@ windows; labels are accessible HTML. Besturing and Over retain the plain
 Focused checks: `tests/quit-menu.test.mjs` and
 `temp_work/menu-stop/browser-check.mjs`. Browser verification simulates voice
 completion and closure to verify ordering without closing the user's session.
-Desktop/mobile screenshots and the imported-art contact sheet are retained in
-`temp_work/menu-stop/`. No new builds created.
+The browser harness and result report remain in `temp_work/menu-stop/`;
+screenshots and the contact sheet were removed in the 22 October cleanup. No
+packages were generated during that focused change.
 
 ## Slider voice feedback
 
@@ -81,7 +82,7 @@ Opening settings, assigning saved values and unchanged values do not trigger
 slider feedback. Leaving settings cancels pending feedback. The sound slider
 previews menu audio at its current value; closing without applying restores the
 saved volume and channel levels. Effects and music have independent gains;
-the port's master volume remains under Geavanceerd. Zero volume remains silent.
+the port's master volume is under Meer instellingen. Zero volume remains silent.
 
 Focused checks: `tests/slider-audio.test.mjs` and
 `temp_work/slider-audio/browser-check.mjs` (actual controls with simulated voice

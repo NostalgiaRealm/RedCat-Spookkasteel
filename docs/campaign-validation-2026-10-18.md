@@ -1,9 +1,13 @@
 # Campaign and release-source validation — 15–18 October 2026
 
-This pass uses the current source and imported campaign assets. **No new builds
-were produced, and personal game profiles were not used or changed.** All
-harnesses, isolated profiles, logs, failed attempts and screenshots remain under
-`temp_work/`.
+This pass used the source and imported campaign assets available on 15–18
+October 2026. **No new builds were produced during that pass, and personal game
+profiles were not used or changed.** Later release records are linked below;
+this is not a new playthrough of 1.0.1. Useful harnesses, logs and findings remain
+under `temp_work/`. The [22 October cleanup](../temp_work/cleanup-2026-10-22/README.md)
+removed disposable profiles, copied saves and screenshots, and deduplicated
+source evidence. Historical capture paths below identify the original run,
+not a promise that those disposable files remain.
 
 ## What the evidence establishes
 
@@ -367,7 +371,9 @@ This small audio change followed the completed campaign and received those
 focused checks; the campaign was not rerun afterward. The retained
 [final file/evidence summary](../temp_work/campaign-validation-2026-10-15/final-validation-summary-2026-10-18.json)
 compares 115 source files with the campaign manifest and identifies `src/audio.js`
-as the sole subsequent source change. No build was created.
+as the sole subsequent source change at that point on 18 October. Later streaming,
+menu and graphics changes are outside that manifest comparison. No build was
+created during this campaign pass.
 
 ## Source release checks and remaining validation
 
@@ -380,10 +386,19 @@ that prefix; retained evidence is in
 `temp_work/campaign-validation-2026-10-15/web-prefix/`. This is a local source
 server check, not a deployed Nginx test.
 
-Still required before claiming complete release validation:
+Subsequent [1.0.1 release verification](../temp_work/release-1.0.1-2026-10-20/release-verification.json)
+records all six desktop variants built and published, with matching archive
+contents and uploaded checksums. The
+[packaged Linux check](../temp_work/release-1.0.1-2026-10-20/smoke-KDiwvP/report.json)
+covered the menu, Help, settings, first-level startup, save export and reload on
+Xvfb/SwiftShader. These later checks supersede the earlier package-generation
+TODO; they do not extend this campaign's recorded source/hardware scope.
 
-1. Check actual release packages after builds are authorized. No executable
-   existing packages were available for this pass, and no new ones were made.
+Still required before claiming complete current-release validation:
+
+1. Complete a current-release campaign and deployed-browser check after the later
+   streaming, menu and graphics changes. Building the packages and exercising
+   the first level do not establish a full campaign on those packages.
 2. Test actual Windows/macOS/ARM/Android hardware, physical controllers/touch and
    sustained low-end performance. Simulated inputs and development-machine CPU
    measurements do not replace those checks.

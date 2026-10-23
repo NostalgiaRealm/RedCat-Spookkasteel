@@ -86,3 +86,41 @@ test('Android save export validates names and byte limits and rejects disposed r
   await assert.rejects(pending,/gesloten/);
   assert.equal(host.exports.size,0);
 });
+
+test('Android import correlates picker results, supports cancellation and excludes export concurrently', async () => {
+  const {window,messages,emit}=nativeWindow(), host=new AndroidHost(window);
+  host.connect();
+  const first=host.importSave(), request=messages.at(-1);
+  assert.deepEqual(request,{type:'import-save',id:'import-1'});
+  await assert.rejects(host.importSave(),/bestandsvenster/);
+  await assert.rejects(host.exportSave({filename:'RedCat-Spookkasteel-Rick.json',text:'{}'}),/importvenster/);
+  emit({type:'import-result',id:'unrelated',ok:true,text:'{}',filename:'backup.json'});
+  assert.equal(host.imports.size,1);
+  emit({type:'import-result',id:request.id,canceled:true});
+  assert.deepEqual(await first,{canceled:true});
+  const second=host.importSave();
+  emit({type:'import-result',id:'import-2',ok:true,text:'{"name":"Renée"}',filename:'backup.json'});
+  assert.deepEqual(await second,{text:'{"name":"Renée"}',filename:'backup.json'});
+  const exporting=host.exportSave({filename:'RedCat-Spookkasteel-Rick.json',text:'{}'});
+  await assert.rejects(host.importSave(),/bestandsvenster/);
+  emit({type:'export-result',id:'save-3',canceled:true}); await exporting;
+});
+
+test('Android import rejects malformed results, native read errors and disposed requests', async () => {
+  const {window,messages,emit}=nativeWindow(),host=new AndroidHost(window);
+  await assert.rejects(host.importSave(),/niet beschikbaar/);
+  host.connect();
+  for (const result of [
+    {ok:true,text:'{}',filename:'backup.txt'}, {ok:true,text:'',filename:'backup.json'},
+    {ok:true,text:'é'.repeat(17*1024*1024),filename:'backup.json'},
+    {error:'Bestand niet leesbaar'},
+  ]) {
+    const pending=host.importSave();
+    emit({type:'import-result',id:messages.at(-1).id,...result});
+    await assert.rejects(pending);
+    assert.equal(host.imports.size,0);
+  }
+  const pending=host.importSave(); host.dispose();
+  await assert.rejects(pending,/gesloten/);
+  assert.equal(host.imports.size,0);
+});

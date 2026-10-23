@@ -29,9 +29,10 @@ display-synchronized behavior for one launch:
 REDCAT_VSYNC=1 npm start -- --ozone-platform=wayland
 ```
 
-The same environment option works with `Start-RedCat.sh` once the executable it
-launches includes this source change. The launcher prefers existing `dist`
-packages, which have **not** been rebuilt. Use `npm start` to test current source.
+The same environment option works with `Start-RedCat.sh`. The launcher prefers
+existing `dist` packages; the published 1.0.0 and 1.0.1 packages include this
+change. Use `npm start` when testing newer source edits rather than a previously
+built executable.
 An explicit MangoHud/driver limit can still impose its own cap.
 
 Browser tabs and Android retain their existing frame loop. A web page cannot

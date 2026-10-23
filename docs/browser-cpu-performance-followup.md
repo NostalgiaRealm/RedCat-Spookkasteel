@@ -1,6 +1,6 @@
 # Browser CPU performance follow-up
 
-Implemented on 18 October 2026, after the 0.9.9 release and a further report of high CPU usage in Linux Chromium on a 2019 Core i3. This extends the [first CPU optimization pass](low-end-cpu-performance.md). The previous release packages have not been rebuilt or republished with these changes.
+Implemented on 18 October 2026, after the 0.9.9 release and a further report of high CPU usage in Linux Chromium on a 2019 Core i3. This extends the [first CPU optimization pass](low-end-cpu-performance.md). These changes were subsequently included in the 1.0.0 and 1.0.1 packages; the measurements below describe the original source comparison, not a new target-hardware benchmark.
 
 A [subsequent query/scene-update pass](cpu-spatial-query-performance.md) adds conservative collision/light spatial lookups and further matrix/resource bookkeeping reductions. Its measurements use this pass's completed working source as their baseline.
 
@@ -42,9 +42,16 @@ A separate real-frame-loop check at 800 × 600 observed **46 paused world draws 
 - No browser script errors were recorded in the final scene and paused-menu checks. Syntax and whitespace checks pass. User saves/profiles were not modified.
 - Exploratory checks also encountered six failures in older fixtures. The identical failures reproduce using the retained pre-edit source: `actor-collision.test.mjs` has a dormant-animation assertion that ignores the outgoing transition and a turret factory lacking the player/level setup now required by `attachGameplay`; `destructible-threshold.test.mjs` expects saved explosion visuals to be discarded; the jump-feedback fixture in `enemy-animation.test.mjs` lacks the gameplay state now required by the frame update. Those historical fixtures were not changed as part of this performance work; their failures are retained rather than reported as passing. The changed collision paths receive the new differential and actual-browser checks above.
 
+The 22 October documentation audit found these fixture assumptions still in the
+current test sources. This remains test-maintenance work, not a newly observed
+gameplay regression or a claim that six tests were rerun and failed on 22 October.
+The later 1.0.1 release checks cover a separate focused set.
+
 ## Retained evidence and reproduction
 
 Evidence is retained in [`temp_work/cpu-browser-followup-2026-10-18/`](../temp_work/cpu-browser-followup-2026-10-18/):
+
+The list below describes the original run layout. The [22 October cleanup](../temp_work/cleanup-2026-10-22/README.md) removed disposable browser profiles, screenshots and full saves, and deduplicated source copies. Measurement reports, CPU profiles and unique evidence remain; use the cleanup's duplicate lookup and recorded Git revision to recover a removed baseline before rerunning a historical harness.
 
 - `before/src/`: complete source snapshot before this pass.
 - `benchmark-warm.mjs`, `final-warm-before-4x/`, `final-warm-after-4x/`, `final-comparison.json`: final timings, profiles, snapshots and images.
@@ -61,4 +68,4 @@ node temp_work/cpu-browser-followup-2026-10-18/benchmark-warm.mjs after-recheck 
 node --test tests/cpu-browser-work.test.mjs
 ```
 
-The harness overrides only retained JavaScript files for its baseline, leaving stylesheets with their proper MIME type. An earlier intermediate route incorrectly served the copied stylesheet as JavaScript; those screenshots/timings are not used in the final comparison. The corrected runs retain the same layout and images. Temporary browser files remain under the project's `temp_work/` directory.
+The harness overrides only the baseline JavaScript files, leaving stylesheets with their proper MIME type. An earlier intermediate route incorrectly served the copied stylesheet as JavaScript; those screenshots/timings were not used in the final comparison. The corrected runs used the same layout and images. Create any fresh temporary browser files under the project's `temp_work/` directory; the original disposable browser files have been removed.

@@ -1,6 +1,6 @@
 # Android app: setup, implementation and remaining work
 
-Updated **6 October 2026**. An initial **Kotlin/Android WebView wrapper now exists**. It runs the shared JavaScript/Three.js game with bundled assets, targeting **Android 16 / API 36** and allowing installation on **Android 10 / API 29 or newer**.
+Updated **22 October 2026**; initial implementation **6 October 2026**. An initial **Kotlin/Android WebView wrapper now exists**. It runs the shared JavaScript/Three.js game with bundled assets, targeting **Android 16 / API 36** and allowing installation on **Android 10 / API 29 or newer**.
 
 The Kotlin code compiles and focused checks pass. **No APK/AAB has been generated or run on an Android device yet.** This document gives repeatable setup and validation commands, followed by the remaining work before a supported release.
 
@@ -15,7 +15,7 @@ The Kotlin code compiles and focused checks pass. **No APK/AAB has been generate
 | Native adapter | `src/android-host.js` uses the origin-restricted `RedCatAndroid` message endpoint. It does not impersonate Electron's `window.desktop`. |
 | Display and input | Native fullscreen preference, system-bar/cutout insets, Back-button routing and existing touch/controller UI. |
 | Interruptions | Lifecycle/audio-focus messages suspend gameplay, audio, intro/outro video and background rendering, clear held input, and keep gameplay paused on return. |
-| Saves | Existing localStorage latest save and IndexedDB recovery history; Android quit waits for pending recovery capture. |
+| Saves | Per-player localStorage latest save and IndexedDB recovery history; Android quit waits for pending recovery capture. Spelerlijst exports a selected player through the document picker. |
 | Failure handling | Readable startup/old-WebView errors, renderer retry, and an audio-focus retry overlay that preserves the current WebView. |
 
 Android-specific behavior requires the native bridge. Ordinary desktop and mobile browsers keep their existing resolution, fullscreen, touch detection and audio behavior. Electron source and packaging recipes are unchanged. The intentional music looping/scheduling changes remain intact.
@@ -73,7 +73,7 @@ The downloaded archive and installed JDK are retained locally under `temp_work/a
 Keep the imported `assets/` and `data/` alongside the source. If missing, follow [the asset/build instructions](docs/building.md) first. From a Linux shell:
 
 ```sh
-cd /mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW
+cd "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW"
 export REDCAT_ROOT="$PWD"
 export ANDROID_HOME="$HOME/Android/Sdk"
 export JAVA_HOME="$REDCAT_ROOT/temp_work/android-initial-2026-10-06/toolchain/jdk-21.0.12.1+1"
@@ -91,7 +91,7 @@ cd ..
 
 Replace the project/SDK/JDK paths when using another machine. `npm ci` installs the pinned Node dependencies; it does not import missing game assets. Android Studio users should select the same JDK under the project's Gradle settings. `ANDROID_HOME` locates the SDK; an ignored `android/local.properties` containing `sdk.dir=/absolute/path/to/sdk` is another option.
 
-All research, temporary work, profiles and logs belong under `temp_work/` and are retained. `RCSPOOK_WEBSITE/` is not used. Gradle's ordinary dependency cache remains in its normal user directory. The wrapper ZIP checksum is pinned in `android/gradle/wrapper/gradle-wrapper.properties`; the verified wrapper JAR SHA-256 is `81a82aaea5abcc8ff68b3dfcb58b3c3c429378efd98e7433460610fecd7ae45f`.
+Research and temporary validation output belong under `temp_work/`. Useful findings, scripts and logs are retained; the 22 October cleanup removed disposable browser profiles, copied saves, screenshots and duplicates. See the [retained research index](temp_work/README.md). `RCSPOOK_WEBSITE/` is not used. Gradle's ordinary dependency cache remains in its normal user directory. The wrapper ZIP checksum is pinned in `android/gradle/wrapper/gradle-wrapper.properties`; the verified wrapper JAR SHA-256 is `81a82aaea5abcc8ff68b3dfcb58b3c3c429378efd98e7433460610fecd7ae45f`.
 
 ## 4. Stage the game files
 
@@ -115,7 +115,7 @@ android/app/build/generated/gameAssets/
 
 The tool checks all five level metadata files, intro/outro MP4 and WebM files, and required Three.js files before replacing generated output. It preserves relative paths and filename case, rejects symlinks/unsafe output locations, and removes stale generated files only from output it owns. It does not include Electron, development dependencies other than Three.js, tests, original executables, the ISO or `temp_work/`.
 
-The final initial staging contains **2,993 files / 195,051,239 bytes**, about **186 MiB** before APK compression. `asset-manifest.json` records deterministic per-file hashes and the combined content hash. The ownership marker contains local paths and is explicitly excluded by Gradle. Source changes cause Gradle to restage the assets; manual preparation is useful for inspection, but is not a required extra step before each Gradle compile.
+The initial 6 October staging contained **2,993 files / 195,051,239 bytes**, about **186 MiB** before APK compression; these historical measurements are not the size of the current source or a future APK. `asset-manifest.json` records deterministic per-file hashes and the combined content hash. The ownership marker contains local paths and is explicitly excluded by Gradle. Source changes cause Gradle to restage the assets; manual preparation is useful for inspection, but is not a required extra step before each Gradle compile.
 
 Do not edit staged files. Edit the shared source/assets instead. An advanced `--output` option is available for an owned output directory inside the project, but Gradle always uses the default directory above.
 
@@ -137,9 +137,9 @@ Backgrounding pauses game audio and its AudioContext, freezes rendering/simulati
 
 ### Saves and recovery limits
 
-The stable app ID and HTTPS origin retain localStorage settings/latest save and IndexedDB 2/5/10-minute recovery history. Normal autosave continues, leaving gameplay captures a save, and Android Back from the main menu waits for recovery capture before asking Android to finish. There is no quit button in the game menu. Debug uses `com.nostalgiarealm.redcatspookkasteel.debug`; release uses `com.nostalgiarealm.redcatspookkasteel`. These have separate saves, also separate from browser and Electron saves.
+The stable app ID and HTTPS origin retain localStorage settings/latest save and IndexedDB 2/5/10-minute recovery history. Normal autosave continues, leaving gameplay captures a save, and Android Back from the main menu waits for recovery capture before asking Android to finish. The restored menu also provides **Stoppen**, with confirmation and the same save-before-quit handling. Debug uses `com.nostalgiarealm.redcatspookkasteel.debug`; release uses `com.nostalgiarealm.redcatspookkasteel`. These have separate saves, also separate from browser and Electron saves.
 
-Cloud backup/device transfer are explicitly disabled for this initial app. Uninstalling or clearing app data deletes its saves. There is no native atomic backup or cross-app save import/export yet. Do not promise survival of an arbitrary process kill from JavaScript checks alone: validate actual process-death and app-update persistence on Android before release.
+Cloud backup/device transfer are explicitly disabled for this initial app. Uninstalling or clearing app data deletes its saves. Spelerlijst exports and imports one player’s latest save, campaign progress and per-player options through Android’s document picker; see [save backups](docs/save-export.md). Import validates the selected file and requires confirmation before replacing the selected player’s data. An automatic atomic app-private backup is not implemented. The Android document adapters have source checks, but still need a real document-provider/device pass. Do not promise survival of an arbitrary process kill from JavaScript checks alone: validate actual process-death and app-update persistence on Android before release.
 
 Renderer termination shows a retry screen; after reopening, use **Verder spelen** to restore the latest stored save. Missing bridge support or startup failure shows a readable error. A tested minimum WebView version and complete WebGL context-loss recovery still need device validation.
 
@@ -159,7 +159,7 @@ cd ..
 
 The browser scene check needs Playwright's installed Node dependency and Google Chrome (default `/usr/bin/google-chrome`, override with `CHROME_PATH`). It launches an isolated local server/profile and tests a simulated native bridge plus ordinary desktop/mobile browser contexts. `ANDROID_TEST_SCOPE=native node tests/android-host-scenes.mjs` runs only the native bridge/visibility subset. These are Chrome checks, not Android emulator tests. The script uses relative `TMPDIR=temp_work` because Chromium Unix socket paths can exceed their length limit inside a deeply nested absolute temporary directory.
 
-The focused Electron check uses the existing app source, an isolated save profile and a graphical desktop session; Linux needs X11/XWayland. It does not package the desktop app or run the historical gameplay test suite. Profiles/reports/screenshots are retained under `temp_work/android-initial-2026-10-06/`.
+The focused Electron check uses the existing app source, an isolated save profile and a graphical desktop session; Linux needs X11/XWayland. It does not package the desktop app or run the historical gameplay test suite. Reports and harnesses are retained under `temp_work/android-initial-2026-10-06/`; generated profiles and screenshots were removed during the 22 October cleanup.
 
 Gradle tasks above compile Kotlin/resources, run JVM tests, merge assets and lint. They **do not create an installable APK or AAB**, though resource/compiler intermediates are generated. First-time dependency downloads require network access. Windows uses `gradlew.bat` and Windows environment syntax; the supplied shell examples and validation were performed on Linux. If resources are moved and an incremental merge reports a stale missing resource, rerun the affected Gradle tasks with `--rerun-tasks`.
 
@@ -171,9 +171,9 @@ Gradle tasks above compile Kotlin/resources, run JVM tests, merge assets and lin
 - Final native-only visibility checks: **9 checks passed**, including hidden level-loading completion and visibility arriving before native pause messages.
 - Existing Linux Electron app: intro, Level 1, saving, pause/resume and native fullscreen/windowed switching passed with no page errors.
 - Android Kotlin compilation, asset merge and **10 JVM tests passed**. Lint reported **0 errors**; remaining warnings concern pinned dependency versions, newer platform attributes and a leftover empty resource-folder qualifier.
-- Merged assets exclude the local ownership marker. Current frontend files match the staged hashes. No APK/AAB was generated.
+- Merged assets excluded the local ownership marker, and the frontend files matched staged hashes in that initial run. Later source changes require restaging. No APK/AAB was generated.
 
-Evidence is under `temp_work/android-initial-2026-10-06/`: `validation-summary.json`, `host-unit-tests.log`, `native-validation-summary.json`, `native-final-validation-02.log`, `native-lint-final.txt`, `staged-assets-check.json`, and retained scene profiles/reports. Initial failed setup/check attempts are retained too; the summary identifies the final successful runs. Windows desktop execution and actual Android execution were not tested during this work.
+Evidence is under `temp_work/android-initial-2026-10-06/`: `validation-summary.json`, `host-unit-tests.log`, `native-validation-summary.json`, `native-final-validation-02.log`, `native-lint-final.txt`, `staged-assets-check.json`, and retained scene reports. The cleanup removed scene profiles and screenshots; retained reports describe their checks. Initial failed setup/check attempts are retained too; the summary identifies the final successful runs. Windows desktop execution and actual Android execution were not tested during this work.
 
 ## 7. Build a debug APK later, when ready for device testing
 
@@ -202,7 +202,7 @@ Do not call the Android version supported until the device checks below pass.
 
 1. **Offline launch and media:** test cold launch in airplane mode, menu, both intro/outro formats, media seeking, textures, binary level data and WAV audio. Record WebView provider/version and establish its minimum; check ES modules/import maps, WebGL 2, Web Audio and IndexedDB.
 2. **OS/device matrix:** test the API-36 target on Android 16, an API-29 emulator and physical Android 10 hardware, plus a low-end ARM64 device. Check portrait/landscape, rotation, cutouts, multi-window and system-edge gestures.
-3. **Interruptions and saves:** test Home, lock/unlock, calls/audio focus, headphones, process death, app relaunch and updates. Verify latest and older recovery saves. Add an acknowledged atomic app-private backup/export path if WebView persistence proves insufficient.
+3. **Interruptions and saves:** test Home, lock/unlock, calls/audio focus, headphones, process death, app relaunch and updates. Verify latest and older recovery saves, plus document-picker export/import, cancellation, invalid files and error handling. Add an acknowledged atomic app-private backup if WebView persistence proves insufficient. The implemented JSON import is a manual recovery/transfer option, not an automatic backup.
 4. **Controls and campaign:** test simultaneous movement/look/jump/shoot, charged shots, SuperSkippie, skipping, settings, cheats, debriefing and real USB/Bluetooth controllers. Then make one deliberate five-level campaign pass including bosses, portals and complete audio loops.
 5. **Performance/recovery:** measure long-session frame times, RAM, GPU resources, texture/audio memory and heat, especially the Graveyard. Preserve existing streaming and bounded AI; distant scripts/collision still need to run. Validate renderer termination and WebGL context loss without silently discarding progress.
 6. **Distribution:** measure APK download/install size. Bundled assets are the initial design; use [Play Asset Delivery](https://developer.android.com/guide/playcore/asset-delivery) only if needed. Configure and securely retain release signing credentials outside source control, then test the signed build itself.

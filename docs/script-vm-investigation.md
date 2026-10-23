@@ -125,8 +125,13 @@ The tool bounds-checks candidate lengths and validates declaration type/paramete
 Items 1–6 below describe the original research plan and were subsequently
 implemented by `tools/import_scripts.py`, `src/davi-vm.js`, `src/script-host.js`,
 `tools/import_motions.py` and `src/motions.js`. They are retained to explain the
-research sequence, not as an outstanding-work checklist. Complete normal
-campaign playthrough validation in item 7 remains separate from focused tests.
+research sequence, not as an outstanding-work checklist. Item 7 subsequently
+received the [15–18 October earned campaign validation](campaign-validation-2026-10-18.md):
+all five levels, required puzzles, upgrades, bosses and ending completed through
+normal inputs in an isolated browser with controlled frame advancement. Its
+recorded deaths, reloads, initial outro failure and successful retry remain part
+of that evidence. Later release/hardware validation and exact native fidelity
+remain separate; the historical plan below is not a fresh TODO list.
 
 1. Map the native loader's five collection reads at `0x005ebb40`, `0x005ebb4f`, `0x005ebb5e`, `0x005ebb70` and `0x005ebb7f`; they call `0x005ed1f0`. Identify the tagged-record factory and record readers. Implement a complete parser that consumes every object exactly and rejects unresolved references.
 2. Use the shipped 53 methods, 26 events and 32 externs as known fixtures. Verify the full type system, constant tables, object IDs and per-instance event-handler linkage before evaluating any instructions.

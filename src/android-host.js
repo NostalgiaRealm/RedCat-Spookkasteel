@@ -10,6 +10,7 @@ export class AndroidHost {
     this.listener = null;
     this.exportSequence = 0;
     this.exports = new Map();
+    this.imports = new Map();
   }
 
   connect({onSuspend = () => {}, onForeground = () => {}, onBack = () => {}} = {}) {
@@ -28,6 +29,16 @@ export class AndroidHost {
         if (message.canceled === true) pending.resolve(false);
         else if (message.ok === true) pending.resolve({saved:true});
         else pending.reject(new Error(message.error || 'Het avontuur kon niet worden geëxporteerd.'));
+      } else if (message?.type === 'import-result') {
+        const pending = this.imports.get(message.id);
+        if (!pending) return;
+        this.imports.delete(message.id);
+        if (message.canceled === true) pending.resolve({canceled:true});
+        else if (message.ok === true && typeof message.filename === 'string' && /\.json$/i.test(message.filename) &&
+            typeof message.text === 'string' && message.text.length > 0 &&
+            new TextEncoder().encode(message.text).length <= 32 * 1024 * 1024) {
+          pending.resolve({text:message.text,filename:message.filename});
+        } else pending.reject(new Error(message.error || 'Het avontuur kon niet worden geïmporteerd.'));
       }
     };
     this.window.addEventListener('redcat:android', this.listener);
@@ -51,6 +62,7 @@ export class AndroidHost {
   exportSave({filename, text} = {}) {
     if (!this.enabled || !this.listener) return Promise.reject(new Error('Android-export is niet beschikbaar.'));
     if (this.exports.size) return Promise.reject(new Error('Er is al een exportvenster geopend.'));
+    if (this.imports.size) return Promise.reject(new Error('Er is al een importvenster geopend.'));
     if (typeof filename !== 'string' || !/^RedCat-Spookkasteel-[A-Za-z0-9_-]{1,100}\.json$/.test(filename) ||
         typeof text !== 'string' || !text.length || new TextEncoder().encode(text).length > 32 * 1024 * 1024) {
       return Promise.reject(new Error('Het exportbestand is ongeldig of te groot (maximaal 32 MiB).'));
@@ -62,11 +74,23 @@ export class AndroidHost {
       catch (error) { this.exports.delete(id); reject(error); }
     });
   }
+  importSave() {
+    if (!this.enabled || !this.listener) return Promise.reject(new Error('Android-import is niet beschikbaar.'));
+    if (this.imports.size || this.exports.size) return Promise.reject(new Error('Er is al een bestandsvenster geopend.'));
+    const id = `import-${++this.exportSequence}`;
+    return new Promise((resolve, reject) => {
+      this.imports.set(id, {resolve, reject});
+      try { this.send({type:'import-save', id}); }
+      catch (error) { this.imports.delete(id); reject(error); }
+    });
+  }
   dispose() {
     if (this.listener) this.window.removeEventListener('redcat:android', this.listener);
     this.listener = null;
     for (const pending of this.exports.values()) pending.reject(new Error('Het exportvenster is gesloten.'));
     this.exports.clear();
+    for (const pending of this.imports.values()) pending.reject(new Error('Het importvenster is gesloten.'));
+    this.imports.clear();
   }
 }
 

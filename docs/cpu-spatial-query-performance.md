@@ -1,6 +1,6 @@
 # Further CPU query and scene-update improvements
 
-Implemented on 18 October 2026 after a further report of high CPU use in Linux Chromium on a 2019 Core i3. The user confirmed hardware-accelerated WebGL/WebGPU. This extends [the previous browser CPU pass](browser-cpu-performance-followup.md); release packages have not been rebuilt with these source changes.
+Implemented on 18 October 2026 after a further report of high CPU use in Linux Chromium on a 2019 Core i3. The user confirmed hardware-accelerated WebGL/WebGPU. This extends [the previous browser CPU pass](browser-cpu-performance-followup.md). These changes were subsequently included in the 1.0.0 and 1.0.1 packages; the measurements below remain the original source comparison, not validation on the user's i3.
 
 A subsequent [GPU effect-buffer residency pass](gpu-effect-buffer-residency.md) reduces unused draw-buffer allocations and off-camera beam submissions. Its baseline is the completed CPU source measured here.
 
@@ -38,7 +38,7 @@ All three final gameplay snapshots match the baseline exactly, all three screens
 
 ## Retained evidence
 
-[`temp_work/cpu-deeper-2026-10-18/`](../temp_work/cpu-deeper-2026-10-18/) contains the complete `before/src/` source, source hashes, `before-4x/`, `final-after-4x/` and `final-comparison.json`, browser profiles/snapshots/screenshots, focused logs and subsystem differential scripts/results under `collision/`, `lighting/` and `visibility/`.
+[`temp_work/cpu-deeper-2026-10-18/`](../temp_work/cpu-deeper-2026-10-18/) retains source hashes, `before-4x/`, `final-after-4x/` and `final-comparison.json`, CPU measurements, focused logs and subsystem differential scripts/results under `collision/`, `lighting/` and `visibility/`. The [22 October cleanup](../temp_work/cleanup-2026-10-22/README.md) removed disposable browser profiles, screenshots and full saves, and deduplicated source copies. Consult its duplicate lookup and recorded Git revision to restore a removed baseline before rerunning a historical harness.
 
 The initial static-tree experiment passed isolated collision tests but added overhead in the real Graveyard because many stationary mechanisms still retain transforms. Its `after-4x/` results are retained as an intermediate experiment. The current tracked-pose/refit implementation supersedes that design. The subsequent `refit-after-4x/` comparison is also retained; it predates the final scalar collision allocation reduction.
 

@@ -8,6 +8,8 @@ import { OriginalMenu } from './original-menu.js';
 import { NativeHelp } from './native-help.js';
 import { HIGHSCORES_KEY, recordHighscore } from './menu-highscores.js';
 import { createSaveExport, downloadSaveExport } from './save-export.js';
+import { parseSaveImport } from './save-import.js';
+import { pickSaveImport } from './save-import-picker.js';
 import { normalizeControlBindings, readKeyboardInput, bindingPressed, controlBindingLabel } from './control-bindings.js';
 import { KeySettingsMenu } from './key-settings-menu.js';
 import { SliderAudio, SLIDER_VOICES } from './slider-audio.js';
@@ -41,8 +43,9 @@ const LEVELS=[{id:'lvl00a',name:'Het Bos',subtitle:'Waar het avontuur begint'},{
 const DEFAULTS={resolution:'native',renderScale:100,msaa:4,showFps:false,fullscreen:true,fov:65,sensitivity:1,volume:0.6,effectsVolume:1,musicVolume:1,autoIntro:true,camera:'third',noClip:false,difficulty:'Normal',touchControls:'auto'};
 const SETTINGS_KEY='redcat.settings.v1',SAVE_KEY='redcat.save.v1',PROGRESS_KEY='redcat.progress.v1';
 const PLAYER_OPTIONS_KEY='redcat.player-options.v1';
-const PLAYER_KEYS=new Set([SAVE_KEY,PROGRESS_KEY,PLAYER_OPTIONS_KEY,TOUCH_INTRO_HINT_KEY,DESKTOP_INTRO_HINT_KEY]);
-let profiles=null,profileInitError=null,profileSwitching=false,worldProfileId=null;
+const ADVENTURE_REVISION_KEY='redcat.adventure-revision.v1';
+const PLAYER_KEYS=new Set([SAVE_KEY,PROGRESS_KEY,PLAYER_OPTIONS_KEY,ADVENTURE_REVISION_KEY,TOUCH_INTRO_HINT_KEY,DESKTOP_INTRO_HINT_KEY]);
+let profiles=null,profileInitError=null,profileSwitching=false,worldProfileId=null,worldAdventureRevision=null;
 try{profiles=new PlayerProfiles({storage:localStorage});}catch(error){profileInitError=error;}
 function storageKey(key){return PLAYER_KEYS.has(key)&&profiles?profiles.key(key):key;}
 function readStored(key){try{return JSON.parse(localStorage.getItem(storageKey(key))||'null');}catch{return null;}}
@@ -106,6 +109,7 @@ function showError(error){console.error(error);$('fatal-message').textContent=er
 function toast(message,duration=3500){$('toast').textContent=message;$('toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('visible'),duration);}
 function store(key,value){try{
   if(PLAYER_KEYS.has(key)&&profileInitError)throw profileInitError;
+  if(world&&worldProfileId===profiles?.activeId&&worldAdventureRevision!==readStored(ADVENTURE_REVISION_KEY)&&(PLAYER_KEYS.has(key)||key===SETTINGS_KEY))return false;
   if(key===SETTINGS_KEY&&profiles)localStorage.setItem(profiles.key(PLAYER_OPTIONS_KEY),JSON.stringify({difficulty:value.difficulty,noClip:value.noClip}));
   localStorage.setItem(storageKey(key),JSON.stringify(value));return true;
 }catch{toast('Opslaan is niet gelukt: lokale opslag is niet beschikbaar.');return false;}}
@@ -167,10 +171,45 @@ async function exportPlayer(id){
   const exportFile=androidHost.enabled?file=>androidHost.exportSave(file):window.desktop?.exportSave;
   return downloadSaveExport(exported,{exportFile});
 }
+async function readImport(){
+  const importFile=androidHost.enabled?()=>androidHost.importSave():window.desktop?.importSave;
+  const result=await pickSaveImport({importFile});
+  if(!result||result.canceled||result.cancelled)return {canceled:true};
+  return {bundle:parseSaveImport(result.text)};
+}
+async function importPlayer(id,bundle){
+  if(!profiles||profileSwitching||mode!=='menu')throw new Error('Ga eerst terug naar het hoofdmenu.');
+  profiles.requirePlayer(id);
+  profileSwitching=true;
+  try{
+    // Drain old captures before replacing the primary save. Existing recovery
+    // points remain available as a way back; imports never mix profile owners.
+    await pendingRecoveryCapture;await recovery.flush();
+    profiles.importAdventure(id,bundle);
+    if(id===profiles.activeId){
+      // The paused world is older than the imported save. Retire it before
+      // allowing quit, visibility or autosave callbacks to write again.
+      const previousWorld=world;world=null;gameplay=null;worldProfileId=null;
+      // A cleanup error must not report the already committed import as failed.
+      try{stopAudio();}catch(error){console.warn('Imported adventure audio cleanup:',error);}
+      try{previousWorld?.dispose();}catch(error){console.warn('Imported adventure world cleanup:',error);}
+      campaign=readCampaignProgress(readStored(PROGRESS_KEY),readStored(SAVE_KEY));
+      const options=readStored(PLAYER_OPTIONS_KEY)||{};
+      settings.difficulty=normalizeDifficulty(options.difficulty);settings.noClip=options.noClip===true;
+      selected=Math.max(0,LEVELS.findIndex(level=>level.id===readStored(SAVE_KEY)?.level));levelReplaySelected=false;
+      autosave.reset();clearInputs();streamingWait=null;renderQuality.reset();debriefing.hide();
+      for(const hint of [touchIntroHint,desktopIntroHint])Object.assign(hint,{pending:false,openingSeen:false});
+      clearTimeout(toastTimer);$('toast').classList.remove('visible');$('subtitle').hidden=true;document.body.classList.remove('in-cutscene');
+      refreshPlayerName();refreshContinue();renderChapters();updateCheatControls();syncTouchUI();
+    }
+    return true;
+  }finally{profileSwitching=false;}
+}
 function validSave(save){return validAdventureSave(save);}
 function adventureSnapshot(){return {version:1,level:world.id,position:[...world.player.position],lastSafe:[...world.player.lastSafe],playerMotion:world.player.snapshotMotion(),playerAnimation:world.snapshotPlayerAnimation(),noClip:world.player.noClip,yaw:world.yaw,pitch:world.pitch,game:gameplay.snapshot(),audio:audio.saveState(),savedAt:new Date().toISOString()};}
 function saveGame(silent=false){
   if(profileSwitching||!world||!gameplay||worldProfileId!==profiles?.activeId)return false;
+  if(worldAdventureRevision!==readStored(ADVENTURE_REVISION_KEY))return false;
   // Death animations and game-over menus must not replace a usable save.
   if(gameplay.state.health<=0){if(!silent)toast('Je avontuur is niet opgeslagen. Probeer het opnieuw zodra RedCat terug is.');return false;}
   const save=adventureSnapshot(),ok=store(SAVE_KEY,save);
@@ -380,7 +419,7 @@ async function startLevel(index,save=null,progress=null,{resetRecovery=false,new
     loadingScreen.setProgress(.05);
     await next.load(LEVELS[index].id,(_message,progress)=>loadingScreen.setProgress(progress));
     loadingScreen.setProgress(.65);
-    world=next;worldProfileId=profiles.activeId;gameplay=new Gameplay(world.level,{onEvent:handleGameEvent,deferInit:true,difficulty:save?normalizeDifficulty(save.game.difficulty):settings.difficulty});
+    world=next;worldProfileId=profiles.activeId;worldAdventureRevision=readStored(ADVENTURE_REVISION_KEY);gameplay=new Gameplay(world.level,{onEvent:handleGameEvent,deferInit:true,difficulty:save?normalizeDifficulty(save.game.difficulty):settings.difficulty});
     if(progress){const skill=gameplay.state.skill;Object.assign(gameplay.state,progress,{potions:0,skill:skill|progress.skill});}
     if(save){
       if(!gameplay.restore(save.game))throw new Error('Het opgeslagen avontuur is ongeldig.');world.player.position=[...save.position];world.yaw=save.yaw;world.pitch=save.pitch;
@@ -603,7 +642,7 @@ $('open-cheats').onclick=showCheats;$('close-cheats').onclick=closeCheats;$('bac
 $('open-help').onclick=()=>$('help').hidden=false;$('close-help').onclick=()=>{$('help').hidden=true;menuAudio.say(['rcmn2.wav']);};$('fatal-close').onclick=()=>{$('fatal').hidden=true;returnMenu();};$('play-intro').onclick=()=>playIntro();$('skip-intro').onclick=finishIntro;$('intro-video').onended=finishIntro;$('intro-video').onerror=introFailed;
 async function quitGame(){saveGame(true);await pendingRecoveryCapture;stopAudio();if(androidHost.enabled)androidHost.quit();else if(window.desktop)await window.desktop.quit();else window.close();}
 const quitMenu=new QuitMenu({dialog:$('quit-confirmation'),openButton:$('open-quit'),yesButton:$('quit-yes'),noButton:$('quit-no'),status:$('quit-status'),audio:menuAudio,closeGame:quitGame,browser:!window.desktop&&!androidHost.enabled});
-const playerMenu=new PlayerMenu({profiles,audio:menuAudio,selectPlayer,removePlayer,exportPlayer,error:profileInitError,canOpen:()=>{
+const playerMenu=new PlayerMenu({profiles,audio:menuAudio,selectPlayer,removePlayer,exportPlayer,readImport,importPlayer,error:profileInitError,canOpen:()=>{
   if(mode!=='menu'||profileSwitching)return false;
   clearInputs();return true;
 }});
@@ -651,6 +690,13 @@ window.addEventListener('pointerdown',event=>{if(event.isTrusted)setControllerAc
 window.addEventListener('keydown',()=>{if(!androidSuspended())menuAudio.resume();},{capture:true});
 window.addEventListener('blur',()=>{clearInputs();pause();menuAudio.pause();});window.addEventListener('focus',()=>{if(!androidSuspended())menuAudio.resume();});document.addEventListener('visibilitychange',()=>{if(document.hidden){clearInputs();pause();menuAudio.pause();}else if(!androidSuspended())menuAudio.resume();});
 window.addEventListener('resize',()=>{clearInputs();resize();});window.addEventListener('beforeunload',()=>saveGame(true));
+// Another tab may restore this same player's backup. Reload the menu rather
+// than allowing this window's old simulation or pending level load to save it.
+window.addEventListener('storage',event=>{
+  if(event.storageArea!==localStorage||event.key!==storageKey(ADVENTURE_REVISION_KEY)||event.newValue===event.oldValue)return;
+  profileSwitching=true;
+  window.location.reload();
+});
 let fullscreenPreference=window.desktop||androidHost.enabled?null:new FullscreenPreference(document,{
   enabled:settings.fullscreen,shouldRequest:()=>$('settings').hidden&&$('cheats').hidden,
 });
@@ -665,7 +711,7 @@ function readInput(){const keyboard=readKeyboardInput(keys,settings.controlBindi
   use:(keyboard.use||!!touch.use||!!pad.use)&&!skipHold.consumed
 };}
 function controllerMenuRoot(){
-  for(const id of ['native-help-viewer','key-settings','player-delete-dialog','player-name-dialog','player-list','quit-confirmation','new-adventure-warning','recovery-saves','about'])if($(id).open)return $(id);
+  for(const id of ['native-help-viewer','key-settings','player-import-dialog','player-delete-dialog','player-name-dialog','player-list','quit-confirmation','new-adventure-warning','recovery-saves','about'])if($(id).open)return $(id);
   for(const id of ['fatal','intro','cheats','help','settings','pause','debriefing','menu'])if(!$(id).hidden)return $(id);
   return null;
 }
@@ -673,7 +719,7 @@ function controllerBack(root){
   switch(root?.id){
     case 'native-help-viewer':nativeHelp.back();break;
     case 'key-settings':keySettings.back();break;
-    case 'player-delete-dialog':case 'player-name-dialog':case 'player-list':playerMenu.back(root.id);break;
+    case 'player-import-dialog':case 'player-delete-dialog':case 'player-name-dialog':case 'player-list':playerMenu.back(root.id);break;
     case 'quit-confirmation':quitMenu.cancel();break;
     case 'new-adventure-warning':cancelAdventureStart();break;
     case 'recovery-saves':$('recovery-saves').close();break;

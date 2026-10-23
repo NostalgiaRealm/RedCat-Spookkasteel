@@ -1,0 +1,25 @@
+Version 1.0.2 adds save-backup import to Spelerlijst, completing the export-and-restore workflow introduced in 1.0.1. It also makes the retained porting research available in the source repositories and updates documentation to distinguish completed work from remaining verification.
+
+## Player Save Import
+
+- **Added Importeren to Spelerlijst:** Select a destination player, choose a previously exported JSON backup, and confirm the import. The confirmation names both the backup's player and the destination player. Use Nieuw first to restore into a separate player instead of replacing an existing adventure.
+- **Restore the selected player's adventure:** Import replaces that player's primary save, campaign progress and per-player difficulty/no-clip preferences. It does not rename the player or switch profiles automatically. Other players and shared display, audio and control settings are preserved.
+- **Integrated file selection on each platform:** Browsers use a JSON file picker; Electron uses the operating system's file-open dialog. The Android source includes a document-picker adapter that reads only the selected file without general storage permissions.
+- **Validate backups before replacing progress:** Files must use the supported export container and adventure format, with a maximum UTF-8 size of 32 MiB. Malformed files, unsupported versions and invalid nested game/script data receive an explanatory message. Compatible older exports remain supported; original Windows save files are not imported.
+- **Protect existing progress during import:** Cancelling file selection, choosing Nee or rejecting an invalid file leaves progress untouched. Failed storage writes restore the previous values. Pending recovery writes finish before import, and the replaced live world is retired so it cannot overwrite the restored adventure. An older tab using the same player reloads safely after the import.
+- **Keep local recovery points:** Existing two/five/ten-minute recovery points remain available as an additional fallback. They may initially return to the adventure from before import; exported backups themselves do not contain recovery history. After importing, select the player with OK and start the adventure normally.
+
+## Research Archive & Documentation
+
+- **Published the retained investigation archive:** The source repositories now include useful native disassemblies, REA findings, investigation scripts, unique historical source snapshots, animation measurements, performance traces and campaign reports from temp_work. An index and provenance records explain where retained evidence can be found.
+- **Removed disposable and duplicate investigation data:** Browser profiles, copied saves, screenshots, generated caches and redundant file copies were removed from the archive. Full save payloads embedded in diagnostic reports were replaced with compact findings and identifying metadata. The large animation dataset is retained as a lossless compressed archive; the local Android JDK is documented for reproduction rather than committed as an installed toolchain.
+- **Corrected obsolete implementation notes:** The README, build/platform guides and parity reports now distinguish implemented systems, intentional departures from the original, historical measurements and checks that still need device or release validation. These documentation corrections do not introduce new gameplay or performance changes.
+- **Documented backup restoration:** The save-format guide now covers importing, confirmation, player isolation, cancellation, validation, recovery-history retention and platform adapters. See [export and import an adventure](docs/save-export.md).
+
+## Release Scope & Technical Notes
+
+- **Updated version information to 1.0.2:** The menu and desktop package metadata agree. The Android source uses version name 1.0.2 and version code 4.
+- **Retained source-check evidence for the new feature:** Focused checks cover backup validation, cancellation, player isolation, failed-write rollback, pending saves, browser reload persistence and stale-tab protection. A real exported engine snapshot was restored through the ordinary adventure menu. The Android source compiled successfully; real-device document-picker verification remains outstanding.
+- **Desktop downloads cover Linux, Windows and macOS:** Packages are supplied for x64 and ARM64. Windows packages are unsigned; macOS bundles built on Linux are unsigned and not notarized. The Android wrapper remains source work, not an APK/AAB release.
+- **Built packages were not runtime-tested for this release:** The 1.0.2 publishing pass builds, ZIPs and uploads the packages without launching package tests. Earlier source checks and historical campaign findings are not a new complete campaign playthrough or certification of every target platform.
+- These notes cover changes after the **1.0.1 release commit, `71a2b234`**. The original menu, Help, save export, MSAA, automatic render scaling and earlier gameplay/performance improvements remain included and are not repeated as new 1.0.2 features.

@@ -4,10 +4,13 @@ The application now executes the original compiled level scripts, using a portab
 Davi-Script interpreter and game-command adapter. It does not execute the original
 Windows DAT/EXE or compile script text into JavaScript. Recovered enemy movement,
 attacks, boss phases, player actions and effects run in the portable engine.
-Some collision, camera and rendering details remain adaptations, and a complete
-playthrough of the current source has not yet been verified. The README's older
-manual campaign runs do not establish coverage for subsequent changes. Status below reflects the source
-reviewed on 5 October 2026; earlier validation results are not new test runs.
+Some collision, camera and rendering details remain adaptations. The
+[15–18 October source campaign](campaign-validation-2026-10-18.md) completed all
+five levels without cheats, including required puzzles, upgrades, bosses and the
+full ending. That controlled-frame browser run is evidence for its recorded
+source and setup, not a new playthrough of later releases or a frame-for-frame
+native comparison. This summary was checked for stale implementation claims on
+22 October 2026; no gameplay tests were rerun for that documentation review.
 
 ## Script pipeline
 

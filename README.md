@@ -65,8 +65,12 @@ Browser saves belong to that website's address and browser profile. They are sep
 To keep a copy of a player's current progress, open **Spelerlijst**, select the
 player and choose **Exporteren**. This downloads a JSON backup, or opens the
 system file picker in the desktop/Android app. Exporting does not change the
-active player or overwrite their save. See [save export](docs/save-export.md)
-for the file format and current restore limitations.
+active player or overwrite their save. To restore a backup, select its destination
+player, choose **Importeren**, pick the JSON file and confirm. Create a player
+with **Nieuw** first if you want to keep the restored adventure separate.
+Only that player’s save, progress and gameplay options are replaced; global
+settings and existing local recovery points remain. See [save backups](docs/save-export.md)
+for details.
 
 ### From a prepared desktop package
 
@@ -209,11 +213,11 @@ node --test tests/motions.test.mjs
 
 Feature documents list the relevant unit and scene checks. `npm test` runs the broader JavaScript unit suite; importer and release validation are described in the [build guide](docs/building.md). Browser checks use Chromium/Playwright; many accept `CHROME_PATH` for an installed browser. Desktop presentation checks require a graphical session.
 
-Keep new temporary profiles, research and diagnostic output in a named `temp_work/` subfolder, and retain it for comparison. Use isolated profiles rather than the player's normal saves.
+Keep temporary profiles, research and diagnostic output in a named `temp_work/` subfolder. Use isolated profiles rather than the player's normal saves. Retain useful research, measurements and unique source evidence; disposable profiles, copied saves, screenshots and duplicates were removed in the [22 October cleanup](temp_work/cleanup-2026-10-22/README.md). Its index identifies retained evidence and canonical copies.
 
 ### Creating desktop packages
 
-Packaging bundles this implementation and its resources with Electron; it does not compile the original Genesis3D game. The configured outputs are Linux x64 and Windows x64 portable directories.
+Packaging bundles this implementation and its resources with Electron; it does not compile the original Genesis3D game. The npm helpers create Linux x64 and Windows x64 portable directories. The build guide also covers direct-CLI packaging for Linux/Windows ARM64 and macOS x64/ARM64; version 1.0.2 provides all six desktop variants.
 
 The packaging helper requires **`REDCAT_PACKAGE_VERSION`** containing three dot-separated integers. This is generated-package metadata, separate from the game's About display. Follow the [packaging instructions](docs/building.md#5-generate-portable-packages-when-ready) when running `npm run build:linux` or `npm run build:windows`. A Windows package can be generated on Linux, but that does not replace testing it on Windows.
 
@@ -238,11 +242,13 @@ The browser game is served as static files and does not require an Electron pack
 
 ## Current limits and future platforms
 
-The [15–18 October source validation](docs/campaign-validation-2026-10-18.md) completed a fresh Normal campaign through all five levels, earned upgrades, bosses and the complete ending without cheats. All 13 authored secret routes were also checked across that campaign and separate continuations; this was not a single 100% save. The instrumented run used ordinary saves/recovery, found and fixed a Castle fall-pocket and a dead-save overwrite, and needed a browser reload after one outro startup failure. A subsequent browser-audio cleanup fix passed focused tests. Linux/browser input and performance checks are documented separately. Actual release packages, target hardware and long-session media playback still need validation; no new builds were made. Implemented systems can still have bugs or differ from the original in fine details.
+The desktop/browser campaign is feature-complete in practical terms: the current source review found no clearly missing level, puzzle, boss or major original-game system. This does not mean every behavior is identical or every device is validated.
 
-Known differences include camera/collision behavior, bounded arbitrary-position enemy pursuit, whole-engine attack-dispatch timing, particle integration and random sequences, and bounded lighting/query budgets. Native animation blending, skeleton/stone-enemy lifecycles and knight-armour particle rules are implemented, with documented portable limits. Original RCR save import is absent. The [implementation audit](docs/native-parity-audit.md) distinguishes these from features already completed; historical research notes should not be read as current task lists.
+The [15–18 October source validation](docs/campaign-validation-2026-10-18.md) completed a fresh Normal campaign through all five levels, earned upgrades, bosses and the complete ending without cheats. All 13 authored secret routes were also checked across that campaign and separate continuations; this was not a single 100% save. The instrumented run used ordinary saves/recovery, found and fixed a Castle fall-pocket and a dead-save overwrite, and needed a browser reload after one outro startup failure. A subsequent browser-audio cleanup fix passed focused tests. That full campaign predates the later room-streaming, original-menu and MSAA changes. [Version 1.0.1](RELEASE_NOTES_1.0.1) has focused browser/graphics checks and a packaged Linux x64 startup/save check, plus archive and publication verification for all six desktop variants. [Version 1.0.2](RELEASE_NOTES_1.0.2) adds save-backup import with focused source/browser checks. Its release packages were built and archived without package tests, as requested. A fresh complete campaign/long-session media run on the release and actual Windows, macOS, ARM and low-end hardware validation remain separate work.
 
-**Apple Silicon macOS** needs arm64 packaging and hardware validation, with signing/notarization for distribution. **Packaged Android** has an initial Kotlin/WebView shell, offline asset preparation and lifecycle/audio integration targeting API 36 with minimum API 29. Compilation and focused desktop/browser compatibility checks pass; Android device testing, signing and release validation remain. Electron does not run on Android. See [Android setup and remaining work](ANDROID.md). See [platform architecture](docs/portability.md).
+Known differences include camera/collision behavior, bounded arbitrary-position enemy pursuit, whole-engine attack-dispatch timing, particle integration and random sequences, and bounded lighting/query budgets. Native animation blending, skeleton/stone-enemy lifecycles and knight-armour particle rules are implemented, with documented portable limits. Spelerlijst exports and imports JSON backups; see [save backups](docs/save-export.md). Original RCR save import is absent and is a separate optional migration feature. The [implementation audit](docs/native-parity-audit.md) distinguishes these from features already completed; historical research notes should not be read as current task lists.
+
+**macOS Intel/Apple Silicon and Linux/Windows ARM64** packages are provided for 1.0.2; native target-hardware testing is still needed. Windows packages are unsigned, and macOS packages are unsigned and not notarized. **Packaged Android** has an initial Kotlin/WebView shell, offline asset preparation and lifecycle/audio integration targeting API 36 with minimum API 29. Compilation and focused desktop/browser compatibility checks pass; generating an APK/AAB, Android device testing, signing and release validation remain. Electron does not run on Android. See [Android setup and remaining work](ANDROID.md) and [platform architecture](docs/portability.md).
 
 ## Technical documentation
 

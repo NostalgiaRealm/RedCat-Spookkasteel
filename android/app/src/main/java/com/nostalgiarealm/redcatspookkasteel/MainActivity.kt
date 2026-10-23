@@ -15,6 +15,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.provider.OpenableColumns
 import android.view.Gravity
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -44,6 +45,9 @@ import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 import org.json.JSONObject
 import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.nio.ByteBuffer
+import java.nio.charset.CodingErrorAction
 import java.util.concurrent.Executors
 
 class MainActivity : ComponentActivity() {
@@ -52,25 +56,57 @@ class MainActivity : ComponentActivity() {
         // JSON.stringify escapes the file text a second time for the message.
         const val MAX_EXPORT_MESSAGE_CHARS = MAX_EXPORT_BYTES * 2 + 4096
     }
-    private data class PendingExport(val id: String, val view: WebView, val bytes: ByteArray)
+    private data class PendingExport(val id: String, val view: WebView, val generation: Int, val bytes: ByteArray)
+    private data class PendingImport(val id: String, val view: WebView, val generation: Int)
     private val exportWriter = Executors.newSingleThreadExecutor()
     private var pendingExport: PendingExport? = null
+    private var pendingImport: PendingImport? = null
+    private var exportPickerOpen = false
+    private var importPickerOpen = false
+    private var pageGeneration = 0
     private val exportDocument = registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
         val request = pendingExport
-        pendingExport = null
-        if (request != null && request.view === webView) {
-            if (uri == null) exportResult(request.id, request.view, canceled = true)
+        exportPickerOpen = false
+        if (request != null && currentDocumentPage(request.view, request.generation)) {
+            if (uri == null) {
+                pendingExport = null
+                exportResult(request.id, request.view, canceled = true)
+            }
             else exportWriter.execute {
                 val error = runCatching {
                     contentResolver.openOutputStream(uri, "wt")?.use { it.write(request.bytes) }
                         ?: throw java.io.IOException("De gekozen locatie kan niet worden beschreven.")
                 }.exceptionOrNull()
                 handler.post {
-                    exportResult(request.id, request.view,
-                        error = if (error == null) null else "Het avontuur kon niet worden opgeslagen op de gekozen locatie.")
+                    if (pendingExport === request) pendingExport = null
+                    if (currentDocumentPage(request.view, request.generation)) {
+                        exportResult(request.id, request.view,
+                            error = if (error == null) null else "Het avontuur kon niet worden opgeslagen op de gekozen locatie.")
+                    }
                 }
             }
-        }
+        } else pendingExport = null
+    }
+    private val importDocument = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        val request = pendingImport
+        importPickerOpen = false
+        if (request != null && currentDocumentPage(request.view, request.generation)) {
+            if (uri == null) {
+                pendingImport = null
+                importResult(request, canceled = true)
+            } else exportWriter.execute {
+                val result = runCatching { readImportDocument(uri) }
+                handler.post {
+                    if (pendingImport === request) pendingImport = null
+                    if (currentDocumentPage(request.view, request.generation)) {
+                        result.fold(
+                            onSuccess = { (filename, text) -> importResult(request, filename = filename, text = text) },
+                            onFailure = { importResult(request, error = it.message ?: "Het avontuur kon niet worden geïmporteerd.") }
+                        )
+                    }
+                }
+            }
+        } else pendingImport = null
     }
     private lateinit var root: FrameLayout
     private lateinit var audioManager: AudioManager
@@ -175,7 +211,12 @@ class MainActivity : ComponentActivity() {
             }
 
             override fun onPageStarted(view: WebView, url: String, favicon: android.graphics.Bitmap?) {
-                if (view === webView) pageReady = false
+                if (view === webView) {
+                    pageReady = false
+                    pageGeneration++
+                    pendingExport = null
+                    pendingImport = null
+                }
             }
 
             override fun onPageFinished(view: WebView, url: String) {
@@ -269,6 +310,7 @@ class MainActivity : ComponentActivity() {
             // The web adapter completes its normal save before sending quit.
             "quit" -> finish()
             "export-save" -> exportSave(message)
+            "import-save" -> importSave(message)
         }
     }
 
@@ -276,8 +318,8 @@ class MainActivity : ComponentActivity() {
         val view = webView ?: return
         val id = message.optString("id")
         if (!Regex("[A-Za-z0-9_-]{1,80}").matches(id)) return
-        if (pendingExport != null) {
-            exportResult(id, view, error = "Er is al een exportvenster geopend.")
+        if (documentPickerBusy()) {
+            exportResult(id, view, error = "Er is al een bestandsvenster geopend.")
             return
         }
         val filename = message.optString("filename")
@@ -297,10 +339,12 @@ class MainActivity : ComponentActivity() {
             exportResult(id, view, error = "Het bestand is geen geldig opgeslagen RedCat-avontuur.")
             return
         }
-        pendingExport = PendingExport(id, view, bytes)
+        pendingExport = PendingExport(id, view, pageGeneration, bytes)
+        exportPickerOpen = true
         try { exportDocument.launch(filename) }
         catch (_: RuntimeException) {
             pendingExport = null
+            exportPickerOpen = false
             exportResult(id, view, error = "Het Android-bestandsvenster kon niet worden geopend.")
         }
     }
@@ -309,6 +353,81 @@ class MainActivity : ComponentActivity() {
         if (view !== webView) return
         sendEvent(JSONObject().put("type", "export-result").put("id", id)
             .put("ok", !canceled && error == null).put("canceled", canceled).put("error", error))
+    }
+
+    private fun currentDocumentPage(view: WebView, generation: Int): Boolean =
+        view === webView && generation == pageGeneration && pageReady && GameUrls.isGamePage(view.url ?: "")
+
+    private fun documentPickerBusy(): Boolean =
+        exportPickerOpen || importPickerOpen || pendingExport != null || pendingImport != null
+
+    private fun importSave(message: JSONObject) {
+        val view = webView ?: return
+        val id = message.optString("id")
+        if (!Regex("[A-Za-z0-9_-]{1,80}").matches(id)) return
+        val request = PendingImport(id, view, pageGeneration)
+        if (documentPickerBusy()) {
+            importResult(request, error = "Er is al een bestandsvenster geopend.")
+            return
+        }
+        pendingImport = request
+        importPickerOpen = true
+        try { importDocument.launch(arrayOf("application/json", "text/json", "text/plain", "application/octet-stream")) }
+        catch (_: RuntimeException) {
+            pendingImport = null
+            importPickerOpen = false
+            importResult(request, error = "Het Android-bestandsvenster kon niet worden geopend.")
+        }
+    }
+
+    // A document provider supplies an opaque URI, never a filesystem path.
+    // Metadata is only an early rejection: bound bytes read from the stream too.
+    private fun readImportDocument(uri: Uri): Pair<String, String> {
+        var filename = ""
+        contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE), null, null, null)?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val nameColumn = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (nameColumn >= 0) filename = cursor.getString(nameColumn) ?: ""
+                val sizeColumn = cursor.getColumnIndex(OpenableColumns.SIZE)
+                if (sizeColumn >= 0 && !cursor.isNull(sizeColumn) && cursor.getLong(sizeColumn) > MAX_EXPORT_BYTES) {
+                    throw java.io.IOException("Het importbestand is te groot (maximaal 32 MiB).")
+                }
+            }
+        }
+        if (filename.length !in 6..255 || !filename.endsWith(".json", ignoreCase = true) ||
+            filename.any { it == '/' || it == '\\' || it.code < 32 }) {
+            throw java.io.IOException("Kies een opgeslagen RedCat-avontuur als JSON-bestand.")
+        }
+        val bytes = contentResolver.openInputStream(uri)?.use { stream ->
+            val output = ByteArrayOutputStream()
+            val buffer = ByteArray(64 * 1024)
+            while (true) {
+                val count = stream.read(buffer, 0, minOf(buffer.size, MAX_EXPORT_BYTES + 1 - output.size()))
+                if (count == -1) break
+                if (count == 0) throw java.io.IOException("Het importbestand kon niet worden gelezen.")
+                if (output.size() + count > MAX_EXPORT_BYTES) {
+                    throw java.io.IOException("Het importbestand is te groot (maximaal 32 MiB).")
+                }
+                output.write(buffer, 0, count)
+            }
+            output.toByteArray()
+        } ?: throw java.io.IOException("Het gekozen bestand kon niet worden geopend.")
+        if (bytes.isEmpty()) throw java.io.IOException("Het importbestand is leeg.")
+        val text = try {
+            Charsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
+                .onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(bytes)).toString()
+        } catch (_: java.nio.charset.CharacterCodingException) {
+            throw java.io.IOException("Het importbestand bevat geen geldige UTF-8-tekst.")
+        }
+        return filename to text.removePrefix("\uFEFF")
+    }
+
+    private fun importResult(request: PendingImport, canceled: Boolean = false, error: String? = null,
+                             filename: String? = null, text: String? = null) {
+        if (!currentDocumentPage(request.view, request.generation)) return
+        sendEvent(JSONObject().put("type", "import-result").put("id", request.id)
+            .put("ok", !canceled && error == null).put("canceled", canceled).put("error", error)
+            .put("filename", filename).put("text", text))
     }
 
     private fun watchStartup(view: WebView) {
@@ -401,6 +520,8 @@ class MainActivity : ComponentActivity() {
         val old = webView
         webView = null
         pendingExport = null
+        pendingImport = null
+        pageGeneration++
         pageReady = false
         keepAwakeRequested = false
         updateKeepAwake()
