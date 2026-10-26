@@ -15,9 +15,11 @@ function actor(materials){const actor=new Group(),mesh=new Mesh(new BoxGeometry(
 
 test('native death motion is followed by five seconds of fade; clocks freeze and saves resume without replay',()=>{
   const {game,object}=fixture();game.time=12;game.destroy(object);
-  assert.equal(object.deathStartedAt,12);assert.equal(object.animationUntil,13.6);assert.equal(object.corpseUntil,18.6);
-  assert.equal(enemyDeathOpacity(object,13),1);assert.ok(Math.abs(enemyDeathOpacity(object,16.1)-.5)<1e-10);assert.equal(enemyDeathOpacity(object,18.7),0);
-  game.time=16.1;const before=enemyDeathOpacity(object,game.time),age=game.time-object.deathStartedAt;
+  assert.equal(object.deathStartedAt,12);
+  const fadeStart=object.animationUntil,fadeEnd=object.corpseUntil;
+  assert.ok(fadeStart>12);assert.ok(Math.abs(fadeEnd-fadeStart-5)<1e-10,'fade duration is independent of the native randomized actor playback rate');
+  assert.equal(enemyDeathOpacity(object,fadeStart-.1),1);assert.ok(Math.abs(enemyDeathOpacity(object,fadeStart+2.5)-.5)<1e-10);assert.equal(enemyDeathOpacity(object,fadeEnd+.1),0);
+  game.time=fadeStart+2.5;const before=enemyDeathOpacity(object,game.time),age=game.time-object.deathStartedAt;
   game.scripts={enemiesFrozen:true};game.update(.05,[10000,0,0]);
   assert.ok(Math.abs(enemyDeathOpacity(object,game.time)-before)<1e-10);assert.ok(Math.abs(game.time-object.deathStartedAt-age)<1e-10);
   game.scripts=null;object.deathSmokeAnchors=Array.from({length:15},(_,i)=>[i,2*i,3*i]);
@@ -42,13 +44,15 @@ test('purple smoke emits once per death, is stable on redraw and restores origin
   const {game,object}=fixture();game.destroy(object);
   const a=actor(new MeshBasicMaterial()),world={actorInstances:new Map([[object.id,a]])},effect=new EnemyDeathEffects(world,game),draws=[],batches=new Map([[DEATH_SMOKE_TEXTURE,{add:(...p)=>draws.push(p)}]]);
   game.time=.4;effect.update(batches);assert.equal(draws.length,15);assert.deepEqual(draws[0][3],DEATH_SMOKE_COLOR);
+  assert.equal(draws[0][7],2,'smoke selects its native camera-position billboard basis and UV corners');
   const first=structuredClone(draws);draws.length=0;effect.update(batches);assert.deepEqual(draws,first,'redraw has no particle emission or random advancement');
   game.time=3;draws.length=0;effect.update(batches);const mid=structuredClone(draws),save=game.snapshot();
   const restored=fixture();restored.game.restore(save);a.position.set(500,500,500);draws.length=0;
   new EnemyDeathEffects(world,restored.game).update(batches);assert.deepEqual(draws,mid,'restored smoke uses saved anchors and age');
   game.time=8;draws.length=0;effect.update(batches);assert.equal(draws.length,0);assert.equal(effect.states.size,0);
-  assert.equal(deathSmokeParticle(1,7,[0,0,0]),null);assert.equal(deathSmokeParticle(1,-1,[0,0,0]),null);
-  assert.equal(deathSmokeParticle(0,0,[0,0,0]).size,40);assert.equal(deathSmokeParticle(0,0,[0,0,0]).opacity,.5);
+  assert.notEqual(deathSmokeParticle(1,7,[0,0,0]),null,'lifetime arms on the first update');
+  assert.equal(deathSmokeParticle(1,422/60,[0,0,0]),null);assert.equal(deathSmokeParticle(1,-1,[0,0,0]),null);
+  assert.equal(deathSmokeParticle(0,0,[0,0,0]).size,40);assert.equal(deathSmokeParticle(0,0,[0,0,0]).opacity,127/255);
 });
 
 test('script-retired witch does not receive generic death smoke',()=>{
@@ -64,7 +68,21 @@ test('smoke follows native bind-bone offsets, outward velocity and positive acce
   assert.deepEqual(particles[1],{position:[10,20,10],velocity:[0,0,-.5]});
   assert.deepEqual(particles[2],{position:[10,32,46],velocity:[0,.6,.8]},'native indexing wraps before the final bone');
   const p=deathSmokeParticle(2,2,particles[2].position,particles[2].velocity);
-  assert.deepEqual(p.position,[10,36.400000000000006,47.6]);
+  assert.ok(Math.abs(p.position[1]-(32+.6*2+3.2266876697540283))<1e-5,'original-byte 60Hz probe: native rise after 2000ms');
+  assert.equal(p.position[0],10);assert.ok(Math.abs(p.position[2]-47.6)<1e-5);
+});
+
+test('smoke uses native independent clock deadlines, byte alpha and bounded fixed-step sampling',()=>{
+  const anchor=[10,20,30],velocity=[1,2,3],sample=age=>deathSmokeParticle(0,age,anchor,velocity);
+  assert.deepEqual(sample(1/120),sample(0),'rendering between visual steps cannot integrate motion');
+  assert.equal(sample(61/60).opacity,127/255,'delay is still live at its exact 1016ms deadline');
+  assert.equal(sample(62/60).opacity,127/255,'delay expiration only arms the following fade check');
+  assert.equal(sample(2).opacity,107/255,'1050ms fade start plus float32(6.2) yields a 7249ms fade end');
+  const fraction=Math.fround((7016-2000)/7000);
+  assert.equal(sample(2).size,2*Math.fround(20*fraction+60*(1-fraction)));
+  assert.deepEqual(sample(2+.001),sample(2));
+  assert.equal(sample(421/60).size,120,'the final live deadline sample reaches the full native radius');
+  assert.equal(sample(422/60),null);assert.equal(sample(1e8),null);assert.equal(sample(NaN),null);
 });
 
 test('knight breakup resumes its age after load and does not restart at its expiry',()=>{

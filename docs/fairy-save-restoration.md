@@ -13,6 +13,12 @@ the fractional fixed-step accumulator. Inactive slots store only the oscillator
 state that survives reuse. Pools and trails are bounded; restoration validates
 their shape and finite values before accepting the snapshot.
 
+The [26 October particle-clock correction](presentation-source-parity-2026-10-26.md)
+also saves each active secondary star's native lifetime, fade-delay and fade
+deadlines, fade mode and displayed byte alpha. Older pool snapshots without
+those fields receive bounded clock-only reconstruction; their position,
+velocity and visible opacity survive without replaying emission or movement.
+
 The [native ribbon follow-up](fairy-ribbon-fade-native.md) additionally preserves
 each segment's orbiter and both endpoint timestamps (`trailFormat: 2`). Earlier
 segment-only saves migrate once. The original opacity is derived from these

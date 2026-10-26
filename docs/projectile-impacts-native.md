@@ -63,13 +63,35 @@ The light cell separately creates a world light (`0x4aecfc–0x4aed04`) with a
 `trunc(float32(SizePercentage × .01 × 360))` (`0x4639b6–0x463aa0`). Its
 uninterpolated radius sequence is `pszzzspmea`: each letter represents
 `(letter − 'a') / 25`. World surfaces use the recovered BSP texture-axis
-octagonal falloff and per-luxel clamping; actors use linear falloff. The gameplay record survives the short light tail and is
-discarded after one second; no persistent list of old projectile IDs is kept.
+octagonal falloff and per-luxel clamping; actors use linear falloff.
 
-Impact state saves only `{id, kind, birth, position}` alongside the gameplay
-clock. Reloading reconstructs the same frame and light phase. Old saves without
-this optional array remain compatible. Pause freezes the gameplay clock; effects
-can finish during cutscenes while the usual cutscene damage protection remains.
+The independent light now shares the recovered `CAdamLight` clock with prop
+explosions. It starts at its maximum radius when created; as a newly appended
+actor, its first update is on the next actor tick. That update samples `p`
+**before** advancing the modulo-1000ms pattern and lazily starts its 1000ms
+lifetime. The expiry comparison is strict (`now > deadline`), so the exact
+deadline still draws. On the port's deterministic 60 Hz visual clock, its first
+tick is 16 ms, the deadline is 1016 ms, and retirement is the 62nd tick (about 1033 ms).
+This includes the original brief wrapped `p` sample at the inclusive deadline.
+Impact records remain only until that retirement tick; the sprite's 699 ms
+sequence, shockwave, damage, projectile timing and audio remain unchanged.
+No persistent list of old projectile IDs is kept.
+
+Impact saves contain `{id, kind, birth, position, lightState}`. `lightState`
+preserves only validated scalar clock fields (tick, pattern phase, lazy deadline,
+sampled strength and active state), never renderer handles. A save between
+presentation updates advances a clock copy to the save time. Legacy or invalid
+light state reconstructs through at most 62 small integer-clock steps. Pause
+freezes the gameplay clock; effects can finish during cutscenes while the usual
+cutscene damage protection remains.
+
+The native kernel is `0x4e2590` with interpolator `0x568e00`, sample
+`0x569480` and modulo advance `0x5690f0`. A bounded original-byte probe of 74
+tick samples (including irregular deltas, exact expiry and post-expiry method
+calls) matched the port clock and float32 radius exactly. This verifies the
+light kernel, not a whole-game rendering equivalence. The portable 60 Hz clock
+remains intentional; the native game uses variable frame deltas. See
+[light review and retained evidence](../temp_work/native-behavior-followup-2026-10-26/world/final-root-additions-review.md).
 
 ## Charged-hit shockwave
 

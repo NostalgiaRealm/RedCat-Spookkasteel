@@ -12,11 +12,14 @@ import {SCORE_TEXTURES,PICKUP_TEXTURE,rewardScoreQuad,pickupTrailQuads} from './
 import { DecalEffects, decalTextureKey } from './decal-effects.js';
 import { nativeCoronaRadius, saveBeaconUv, CoronaVisibilityCache } from './presentation-native.js';
 import { impactLight } from './projectile-impacts.js';
+import {nativeExplosionLight} from './explosion-light-native.js';
 import { patchWorldLightShader } from './world-lighting-material.js';
 import { PlayerWorldLight } from './player-world-light.js';
 import {TorchFlames} from './torch-flames.js';
 import {WorldLightShadows} from './world-light-shadows.js';
 import {NativeSpoutEffect,restoreSpoutSnapshots} from './spout-effects.js';
+import {explosionTextureFilter} from './explosion-variants.js';
+import {ELECTRIC_SPARK_TEXTURE} from './electric-explosion-native.js';
 
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
 const number=(e,key,fallback=0)=>Number.isFinite(Number(e[key]))&&e[key]!==''?Number(e[key]):fallback;
@@ -167,7 +170,8 @@ export class BillboardBatch {
 void main(){
   effectUv=uv;effectTint=effectColor;vec4 p;
   if(effectNativeSpout>.5){
-    // CRcParticleSystem 0x468123/0x477d50 faces each particle toward the
+    // CRcParticleSystem 0x468123 and death smoke 0x46e4b0 share the
+    // 0x477d50 basis: each particle faces the
     // camera position, independently of camera roll or its view direction.
     vec3 toward=cameraPosition-effectPosition;
     if(dot(toward,toward)<1.e-12)toward=vec3(0.,0.,1.);
@@ -181,8 +185,9 @@ void main(){
     if(toward.y>0.){right=-right;up=-up;}
     vec3 worldPosition=effectPosition+right*(position.x*effectSize.x)+up*(position.y*effectSize.y)+vec3(position.xy,0.);
     p=viewMatrix*vec4(worldPosition,1.);
-    // Native's top-left UV is (1,0); these maps upload with flipY=true.
-    effectUv=vec2(1.-uv.x,uv.y);
+    // Spout top-left UV is (1,0); death-smoke UV is (0,1).
+    // These original maps upload with flipY=true.
+    effectUv=effectNativeSpout>1.5?vec2(uv.x,1.-uv.y):vec2(1.-uv.x,uv.y);
   }else{
     p=modelViewMatrix*vec4(effectPosition,1.);float c=cos(effectRotation),s=sin(effectRotation);
     p.xy+=mat2(c,s,-s,c)*(position.xy*effectSize*(position.x*position.y<0.?effectDiagonal.x:effectDiagonal.y));
@@ -324,19 +329,21 @@ export class WorldEffects {
     const response=await fetch('assets/effects/manifest.json');if(!response.ok)throw new Error('Ontbrekende originele effecten');
     const manifest=await response.json(),effects=new WorldEffects(world,gameplay,manifest);
     // RedCat's projected ground shadow owns its texture and quad separately.
-    const textures=await Promise.all(Object.entries(manifest.textures).filter(([key])=>key!=='rcsdw.bmp|rcsdw_a.bmp').map(async([key,entry])=>{
+    const explosionTextureNeeded=explosionTextureFilter(gameplay,world.settings?.effectsQuality??3);
+    const textures=await Promise.all(Object.entries(manifest.textures).filter(([key])=>key!=='rcsdw.bmp|rcsdw_a.bmp'&&explosionTextureNeeded(key)).map(async([key,entry])=>{
       const map=await world.texture('assets/effects/'+entry.file);
       // Blast UVs are copied from Genesis: V=1 is the translucent bottom
       // of kaboom_a at the red tail, V=0 the bright yellow head. Billboard
       // effects use the opposite convention; flipping this map hides its fade.
       // PTrail also uses literal Genesis UVs (its mask is vertically symmetric).
-      map.flipY=key!==GARGOYLE_BLAST_TEXTURE&&key!==FAIRY_RIBBON_TEXTURE;map.wrapS=map.wrapT=THREE.ClampToEdgeWrapping;
+      map.flipY=key!==GARGOYLE_BLAST_TEXTURE&&key!==FAIRY_RIBBON_TEXTURE&&key!==ELECTRIC_SPARK_TEXTURE;map.wrapS=map.wrapT=THREE.ClampToEdgeWrapping;
       if(key===ENERGY)map.wrapT=THREE.RepeatWrapping;
       return [key,map];
     }));
     const decals=new Set(gameplay.objects.filter(o=>o.entity.classname==='EffectDecalEntity').map(o=>decalTextureKey(o.entity)));
     for(const [key,map]of textures) {
       if(decals.has(key))continue;
+      if(key===ELECTRIC_SPARK_TEXTURE){effects.beamBatches.set(key,new BeamBatch(world,map,4096));continue;}
       if(SCORE_TEXTURES.includes(key)||key===PICKUP_TEXTURE||key===GARGOYLE_BLAST_TEXTURE){effects.beamBatches.set(key,new BeamBatch(world,map,key===PICKUP_TEXTURE?640:128));continue;}
       if([BEAM,ENERGY,BLAST,FLEURI,FAIRY_RIBBON_TEXTURE].includes(key))effects.beamBatches.set(key,new BeamBatch(world,map));
       if(![BEAM,ENERGY,BLAST,FAIRY_RIBBON_TEXTURE].includes(key))effects.batches.set(key,new BillboardBatch(world,map,key===CORONA||key===SPARK));
@@ -491,7 +498,7 @@ export class WorldEffects {
       }
     }
     this.lights.push(...this.torches.lights);
-    this.destructibles?.update(dt,this.batches);
+    this.destructibles?.update(dt,this.batches,this.beamBatches);
     this.enemyDeaths?.update(this.batches);
     this.enemyCombat?.update(this.batches);
     const blastBatch=this.beamBatches.get(GARGOYLE_BLAST_TEXTURE);
@@ -503,8 +510,13 @@ export class WorldEffects {
       const light=projectileLight(projectile,this.gameplay.settings,this.gameplay.difficulty);
       if(light)this.lights.push(light);
     }
+    // Both kinds share the saved native light clock. Their cached records
+    // advance from gameplay time, independently of render/display frequency.
     for(const impact of this.gameplay.projectileImpacts||[]) {
       const light=impactLight(impact,this.gameplay.time);if(light)this.lights.push(light);
+    }
+    for(const blast of this.destructibles?.blasts||[]) {
+      const light=nativeExplosionLight(blast,this.gameplay.time);if(light)this.lights.push(light);
     }
     const playerLight=this.playerLight.update();if(playerLight)this.lights.push(playerLight);
     this.world.syncActorLighting?.(this.lights);

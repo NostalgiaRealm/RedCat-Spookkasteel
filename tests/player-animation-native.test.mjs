@@ -7,6 +7,8 @@ import {playerMotion,snapshotPlayerAnimation,restorePlayerAnimation} from '../sr
 import {CastleWorld} from '../src/world.js';
 import {PLAYER_SHOOT_MOTION,PLAYER_SUPER_CHARGE} from '../src/player-projectiles.js';
 import {PLAYER_REACTIONS} from '../src/player-lifecycle.js';
+import {Gameplay} from '../src/gameplay.js';
+import {ScriptHost} from '../src/script-host.js';
 const data=JSON.parse(readFileSync(new URL('../assets/actors/redcat.json',import.meta.url)));
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-7,`${a} != ${b}`);
 function animator(asset=data,blend=true) {
@@ -24,6 +26,45 @@ function world() {
 }
 const sync=(w,dt=0,input={})=>CastleWorld.prototype.syncPlayer.call(w,dt,input);
 const pose=a=>[...a.geometry.attributes.position.array];
+
+test('RcHintMotion accepts the native range, ignores invalid values and survives legacy/new saves',()=>{
+  const game=new Gameplay({id:'lvl00a',entities:[],spawn:{position:[0,0,0]}}),host=new ScriptHost(game,{version:27});
+  assert.equal(host.hintMotion,0);
+  for(let i=0;i<16;i++){host.callNative('RcHintMotion',[i]);assert.equal(host.hintMotion,i);}
+  host.callNative('RcHintMotion',[12]);
+  for(const value of [-1,16,Infinity,NaN]){host.callNative('RcHintMotion',[value]);assert.equal(host.hintMotion,12);}
+  const saved=JSON.parse(JSON.stringify(host.snapshot()));
+  host.callNative('RcHintMotion',[0]);host.restore(saved);assert.equal(host.hintMotion,12);
+  delete saved.hintMotion;host.restore(saved);assert.equal(host.hintMotion,0);
+});
+
+test('dormant hint 12 repeatedly requests fall1 until cleared, then yields on a movement-state change',()=>{
+  const w=world(),g=w.gameplay,a=w.redcat.userData.animator;g.scripts.hintMotion=12;
+  sync(w,.1,{forward:1});assert.equal(a.name,'fall1');near(a.time,.15);assert.equal(a.loop,false);
+  sync(w,.1,{forward:1});near(a.time,.15,'native repeated non-looping request restarts the clip');
+  const before=snapshotPlayerAnimation(w.redcat),restored=world();restored.gameplay.scripts.hintMotion=12;
+  restorePlayerAnimation(restored.redcat,JSON.parse(JSON.stringify(before)),restored.player);
+  sync(restored,0,{forward:1});assert.deepEqual(pose(restored.redcat.userData.animator),pose(a));
+  g.scripts.hintMotion=0;restored.gameplay.scripts.hintMotion=0;
+  sync(w,.1,{forward:1});sync(restored,.1,{forward:1});near(a.time,.3);
+  assert.deepEqual(pose(restored.redcat.userData.animator),pose(a));
+  sync(w,.1);assert.equal(a.name,'idle','changing movement state releases the hinted motion');
+  g.scripts.hintMotion=11;sync(w,.1,{forward:1});assert.equal(a.name,'walkfw');
+});
+
+test('hinted fall never overrides jumps or the deliberate protected player states',()=>{
+  for(const jumpKind of ['normal','super']){
+    const w=world();w.gameplay.scripts.hintMotion=12;
+    Object.assign(w.player,{grounded:false,jumpKind,jumpSerial:1});sync(w,.1);
+    assert.equal(w.redcat.userData.animator.name,jumpKind==='normal'?'jump1':'jump2');
+  }
+  const w=world(),g=w.gameplay,a=w.redcat.userData.animator;g.scripts.hintMotion=12;
+  for(const [phase,spec] of Object.entries(PLAYER_REACTIONS)){
+    g.playerReaction={phase,age:.1};sync(w,.01);assert.equal(a.name,spec.motion);
+  }
+  g.scripts.cutscene=true;sync(w,.01);assert.equal(a.name,'idle');
+  g.scripts.cutscene=false;g.playerReaction=null;w.player.noClip=true;sync(w,.01);assert.equal(a.name,'idle');
+});
 
 test('RedCat locomotion uses recovered strafe rates without changing diagonal controls',()=>{
   const p={grounded:true,jumpKind:null};

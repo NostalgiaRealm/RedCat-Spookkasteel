@@ -1,4 +1,4 @@
-import {FootstepClock,jumpSound,liquidLandingSound} from './locomotion-audio.js';
+import {FootstepClock,jumpSound,landingSound} from './locomotion-audio.js';
 import {playerInputVelocity} from './player-movement.js';
 import {doorMovementSound} from './door-audio.js';
 // Sound choices for gameplay actions, separate from level-script ambience.
@@ -75,6 +75,12 @@ export class GameplayAudio {
       const sound=(PLAYER_PROJECTILE_SOUNDS[event.kind]||PLAYER_PROJECTILE_SOUNDS.shot).fire;
       if(sound)play({sound});
     }
+    if(event.type==='electricExplosionSpark'&&/^spark[1-6]\.wav$/.test(event.sound||'')&&
+      Array.isArray(event.position)&&event.position.length===3&&event.position.every(Number.isFinite)) {
+      // Dormant native Electric explosions: independent positioned crackles.
+      // The effect clock suppresses restored/stale births; never replace a key.
+      play({sound:event.sound,spatial:true,position:event.position,volume:1});
+    }
     if(event.type==='playerProjectileImpact') {
       const sound=(PLAYER_PROJECTILE_SOUNDS[event.kind]||PLAYER_PROJECTILE_SOUNDS.shot).impact;
       play({sound,spatial:true,position:event.position});
@@ -83,7 +89,7 @@ export class GameplayAudio {
       const contents=event.position?gameplay?.playerContactContents?.(event.position)||0:0;
       if(event.type==='jump')play({sound:jumpSound(contents),key:'player:jump'});
       else {
-        const landing=liquidLandingSound(event.impactSpeed,contents,gameplay?.settings?.game);
+        const landing=landingSound(event.impactSpeed,contents,gameplay?.settings?.game);
         if(landing)play({...landing,group:'player:land'});
       }
     }

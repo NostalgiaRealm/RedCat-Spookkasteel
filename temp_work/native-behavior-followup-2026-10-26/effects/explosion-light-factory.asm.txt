@@ -1,0 +1,125 @@
+
+/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat:     file format pei-i386
+
+
+Disassembly of section .text:
+
+0058dbdd <.text+0x18cbdd>:
+  58dbdd:	00 00                	add    %al,(%eax)
+  58dbdf:	d9 85 84 01 00 00    	flds   0x184(%ebp)
+  58dbe5:	d8 0d 74 c5 64 00    	fmuls  0x64c574
+  58dbeb:	68 d4 00 00 00       	push   $0xd4
+  58dbf0:	d8 0d 88 fe 64 00    	fmuls  0x64fe88
+  58dbf6:	d9 5c 24 24          	fstps  0x24(%esp)
+  58dbfa:	e8 b6 c4 07 00       	call   0x60a0b5
+  58dbff:	83 c4 04             	add    $0x4,%esp
+  58dc02:	89 44 24 28          	mov    %eax,0x28(%esp)
+  58dc06:	3b c7                	cmp    %edi,%eax
+  58dc08:	c7 44 24 78 0f 00 00 	movl   $0xf,0x78(%esp)
+  58dc0f:	00 
+  58dc10:	74 10                	je     0x58dc22
+  58dc12:	8d 4d 5c             	lea    0x5c(%ebp),%ecx
+  58dc15:	51                   	push   %ecx
+  58dc16:	57                   	push   %edi
+  58dc17:	8b c8                	mov    %eax,%ecx
+  58dc19:	e8 42 09 f2 ff       	call   0x4ae560
+  58dc1e:	8b d8                	mov    %eax,%ebx
+  58dc20:	eb 02                	jmp    0x58dc24
+  58dc22:	33 db                	xor    %ebx,%ebx
+  58dc24:	53                   	push   %ebx
+  58dc25:	8b cd                	mov    %ebp,%ecx
+  58dc27:	c7 44 24 7c ff ff ff 	movl   $0xffffffff,0x7c(%esp)
+  58dc2e:	ff 
+  58dc2f:	e8 ac f4 f1 ff       	call   0x4ad0e0
+  58dc34:	8b c8                	mov    %eax,%ecx
+  58dc36:	e8 a5 f6 f1 ff       	call   0x4ad2e0
+  58dc3b:	8b 85 7c 01 00 00    	mov    0x17c(%ebp),%eax
+  58dc41:	48                   	dec    %eax
+  58dc42:	74 3a                	je     0x58dc7e
+  58dc44:	48                   	dec    %eax
+  58dc45:	74 1d                	je     0x58dc64
+  58dc47:	48                   	dec    %eax
+  58dc48:	75 34                	jne    0x58dc7e
+  58dc4a:	c7 44 24 60 00 00 a0 	movl   $0x42a00000,0x60(%esp)
+  58dc51:	42 
+  58dc52:	c7 44 24 64 00 00 75 	movl   $0x43750000,0x64(%esp)
+  58dc59:	43 
+  58dc5a:	c7 44 24 68 00 00 5c 	movl   $0x435c0000,0x68(%esp)
+  58dc61:	43 
+  58dc62:	eb 32                	jmp    0x58dc96
+  58dc64:	c7 44 24 60 00 00 08 	movl   $0x42080000,0x60(%esp)
+  58dc6b:	42 
+  58dc6c:	c7 44 24 64 00 00 5a 	movl   $0x435a0000,0x64(%esp)
+  58dc73:	43 
+  58dc74:	c7 44 24 68 00 00 20 	movl   $0x42200000,0x68(%esp)
+  58dc7b:	42 
+  58dc7c:	eb 18                	jmp    0x58dc96
+  58dc7e:	c7 44 24 60 00 00 7f 	movl   $0x437f0000,0x60(%esp)
+  58dc85:	43 
+  58dc86:	c7 44 24 64 00 00 40 	movl   $0x43400000,0x64(%esp)
+  58dc8d:	43 
+  58dc8e:	c7 44 24 68 00 00 00 	movl   $0x0,0x68(%esp)
+  58dc95:	00 
+  58dc96:	8d 54 24 60          	lea    0x60(%esp),%edx
+  58dc9a:	8b cb                	mov    %ebx,%ecx
+  58dc9c:	52                   	push   %edx
+  58dc9d:	c7 44 24 70 00 00 7f 	movl   $0x437f0000,0x70(%esp)
+  58dca4:	43 
+  58dca5:	e8 96 0d f2 ff       	call   0x4aea40
+  58dcaa:	68 e8 03 00 00       	push   $0x3e8
+  58dcaf:	8b cb                	mov    %ebx,%ecx
+  58dcb1:	e8 0a a4 01 00       	call   0x5a80c0
+  58dcb6:	d9 44 24 20          	flds   0x20(%esp)
+  58dcba:	e8 61 ce 07 00       	call   0x60ab20
+  58dcbf:	8b f0                	mov    %eax,%esi
+  58dcc1:	8b cb                	mov    %ebx,%ecx
+  58dcc3:	56                   	push   %esi
+  58dcc4:	89 74 24 20          	mov    %esi,0x20(%esp)
+  58dcc8:	e8 83 0c f2 ff       	call   0x4ae950
+  58dccd:	8a 44 24 13          	mov    0x13(%esp),%al
+  58dcd1:	6a 00                	push   $0x0
+  58dcd3:	8d 4c 24 54          	lea    0x54(%esp),%ecx
+  58dcd7:	88 44 24 54          	mov    %al,0x54(%esp)
+  58dcdb:	e8 c0 63 e7 ff       	call   0x4040a0
+  58dce0:	bf b8 28 69 00       	mov    $0x6928b8,%edi
+  58dce5:	83 c9 ff             	or     $0xffffffff,%ecx
+  58dce8:	33 c0                	xor    %eax,%eax
+  58dcea:	6a 01                	push   $0x1
+  58dcec:	f2 ae                	repnz scas %es:(%edi),%al
+  58dcee:	f7 d1                	not    %ecx
+  58dcf0:	49                   	dec    %ecx
+  58dcf1:	89 4c 24 24          	mov    %ecx,0x24(%esp)
+  58dcf5:	51                   	push   %ecx
+  58dcf6:	8d 4c 24 58          	lea    0x58(%esp),%ecx
+  58dcfa:	e8 41 3c e7 ff       	call   0x401940
+  58dcff:	84 c0                	test   %al,%al
+  58dd01:	74 2b                	je     0x58dd2e
+  58dd03:	8b 44 24 20          	mov    0x20(%esp),%eax
+  58dd07:	8b 7c 24 54          	mov    0x54(%esp),%edi
+  58dd0b:	8b c8                	mov    %eax,%ecx
+  58dd0d:	be b8 28 69 00       	mov    $0x6928b8,%esi
+  58dd12:	8b d1                	mov    %ecx,%edx
+  58dd14:	50                   	push   %eax
+  58dd15:	c1 e9 02             	shr    $0x2,%ecx
+  58dd18:	f3 a5                	rep movsl %ds:(%esi),%es:(%edi)
+  58dd1a:	8b ca                	mov    %edx,%ecx
+  58dd1c:	83 e1 03             	and    $0x3,%ecx
+  58dd1f:	f3 a4                	rep movsb %ds:(%esi),%es:(%edi)
+  58dd21:	8d 4c 24 54          	lea    0x54(%esp),%ecx
+  58dd25:	e8 66 64 e7 ff       	call   0x404190
+  58dd2a:	8b 74 24 1c          	mov    0x1c(%esp),%esi
+  58dd2e:	6a 00                	push   $0x0
+  58dd30:	56                   	push   %esi
+  58dd31:	8d 44 24 58          	lea    0x58(%esp),%eax
+  58dd35:	6a 00                	push   $0x0
+  58dd37:	50                   	push   %eax
+  58dd38:	68 00 00 80 3f       	push   $0x3f800000
+  58dd3d:	8b cb                	mov    %ebx,%ecx
+  58dd3f:	c7 84 24 8c 00 00 00 	movl   $0x10,0x8c(%esp)
+  58dd46:	10 00 00 00 
+  58dd4a:	e8 b1 0a f2 ff       	call   0x4ae800
+  58dd4f:	6a 01                	push   $0x1
+  58dd51:	8d 4c 24 54          	lea    0x54(%esp),%ecx
+  58dd55:	c7 44 24 7c ff ff ff 	movl   $0xffffffff,0x7c(%esp)
+  58dd5c:	ff 
+  58dd5d:	e8 3e 63 e7 ff       	call   0x4040a0

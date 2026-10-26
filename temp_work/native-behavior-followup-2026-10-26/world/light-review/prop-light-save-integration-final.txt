@@ -1,0 +1,51 @@
+✖ prop fragments retain live poses, collisions and fade across JSON save/load without historical traces (8.082937ms)
+✔ empty saved cohorts stay empty, preserve smoke records and release renderer hooks (1.135352ms)
+✔ legacy and invalid prop records use bounded replay while unknown or oversized saved cohorts are rejected (2.024497ms)
+✔ synchronous gameplay saves retain the last integrated time and imported callback fields cannot execute (1.032034ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 3
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 75.738376
+
+✖ failing tests:
+
+test at tests/prop-debris-save.test.mjs:24:1
+✖ prop fragments retain live poses, collisions and fade across JSON save/load without historical traces (8.082937ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    [
+      {
+        birth: 0,
+        debrisState: {
+          at: 0.4250000000000001,
+  ...
+            lifeEndMs: 1016,
+  +         phaseMs: 400,
+  -         phaseMs: 416,
+            sample: 1,
+  +         tick: 24,
+  -         tick: 25,
+            version: 1
+          }
+        ],
+        position: [
+          10,
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/prop-debris-save.test.mjs:43:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { id: 'save-crate', sourceId: 'crate', birth: 0, position: [Array], scale: [Array], settings: [Object], debrisState: [Object], lightState: [Array] } ],
+    expected: [ { id: 'save-crate', sourceId: 'crate', birth: 0, position: [Array], scale: [Array], settings: [Object], debrisState: [Object], lightState: [Array] } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

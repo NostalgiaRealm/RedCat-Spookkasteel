@@ -1,17 +1,12 @@
 import {DEATH_SMOKE_TEXTURE,DEATH_SMOKE_COLOR} from './enemy-death-effects.js';
+import {jesterTeleportFrame} from './jester-teleport-timing.js';
 
-// CRcJesterMax's 0x4777b0 effect uses 15 strail quads, a one-second
-// particle life, 29/19 ms emission spacing and opposite radial motion.
+// Native finite particle clocks and integration are shared table samples.
 export function jesterTeleportParticles(effect,floorY=effect.position[1]) {
-  const arrival=effect.phase==='arrival',particles=[],spacing=arrival?.019:.029;
-  for(let i=0;i<15;i++) {
-    const age=effect.age-(i+1)*spacing;if(age<0||age>=1)continue;
-    const radius=arrival?.1+29.9*age:50-49.9*age;
-    const angle=i*Math.PI*2/15+(arrival?18.5:12.5)*age;
-    const y=arrival?floorY+50*age:floorY+75*(1-age);
-    const size=2*(arrival?5+35*age:40-35*age);
-    particles.push({position:[effect.position[0]+Math.cos(angle)*radius,y,effect.position[2]+Math.sin(angle)*radius],
-      size,color:DEATH_SMOKE_COLOR,opacity:(arrival?100-65*age:25+75*age)/100});
+  const frame=jesterTeleportFrame(effect.phase,effect.age),particles=[];
+  for(let i=0;i<frame.length;i+=5) {
+    particles.push({position:[effect.position[0]+frame[i],floorY+frame[i+1],effect.position[2]+frame[i+2]],
+      size:frame[i+3],color:DEATH_SMOKE_COLOR,opacity:frame[i+4]});
   }
   return particles;
 }
@@ -32,7 +27,8 @@ export class EnemyCombatEffects {
         const start=effect.position.map((v,i)=>v+(i===1?10:0)),end=start.map((v,i)=>v-(i===1?10000:0));
         const hit=this.world.collider?.trace(start,end,[0,0,0],[0,0,0],this.world.physicalModels);
         const floorY=hit&&hit.fraction<1?hit.end[1]:effect.position[1];
-        for(const p of jesterTeleportParticles(effect,floorY))batch.add(p.position,p.size,p.size,p.color,p.opacity);
+        // 0x477260 has the same camera-position basis/UVs as death smoke.
+        for(const p of jesterTeleportParticles(effect,floorY))batch.add(p.position,p.size,p.size,p.color,p.opacity,0,null,2);
       }
     }
   }

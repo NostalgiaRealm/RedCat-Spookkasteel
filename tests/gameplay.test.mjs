@@ -72,7 +72,7 @@ test('attack requires aim and line of sight, defeats enemy, runs destruction com
   const shoot=lineOfSight=>{
     game.attackCooldown=0;game.attack([0,0,0],[0,0,-1]);
     assert.equal(game.projectiles.length,0,'The pellet is released during the original shoot motion');
-    game.time=game.pendingPlayerAttack.at;game.releasePlayerAttack();
+    game.time=game.pendingPlayerAttack.at+.000001;game.releasePlayerAttack();
     for(let i=0;i<50;i++)game.updateProjectiles(.1,[0,0,0],null,lineOfSight);
   };
   shoot(()=>false);assert.equal(game.find('frog')[0].health,3);

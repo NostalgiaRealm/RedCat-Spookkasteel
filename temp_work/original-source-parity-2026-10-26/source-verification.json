@@ -1,0 +1,91 @@
+{
+  "date": "2026-10-26",
+  "baseline": "59d6298a214124ab8d4d69f153c182f280d7c822",
+  "checks": [
+    {
+      "log": "davi-vm-tests.tap",
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "sha256": "a6151e70d9ddc80a64c1e9c7a66138b6ca6304d4d3c23cc88a7b349b0f8dca9b"
+    },
+    {
+      "log": "player-landing-tests.tap",
+      "tests": 11,
+      "pass": 11,
+      "fail": 0,
+      "sha256": "e4f884f2ef1d774a6cf830c6d771a2d049fbb9ac1df356b1173820a692179828"
+    },
+    {
+      "log": "gameplay/projectile-tests.log",
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "sha256": "13c2e41de05704fad2c1ad789f332eff0e46918fa8db66b5fac487a9586ae584"
+    },
+    {
+      "log": "gameplay/standing-shooter-tests.log",
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "sha256": "b9c909c9379bad45f82042e00e0f6b6c891ffdb722f1a3bdc6124126b563d1ab"
+    },
+    {
+      "log": "presentation/particle-clock-final-tests.log",
+      "tests": 36,
+      "pass": 36,
+      "fail": 0,
+      "sha256": "70e763a28a0ec14e574a5a38c0ab8d464fca78012baf90e9225d525399fba17a"
+    }
+  ],
+  "passing_tests": 80,
+  "failing_tests": 0,
+  "all_five_campaign_ir_equal": true,
+  "modified_source_sha256": {
+    "docs/davi-vm-opcodes.md": "6e34a7a7b4ef01be14fe45391141175cdcca7fa2bb595ef56453fe807181e79c",
+    "docs/effects-save-continuity.md": "c0055bb72a28d01aef9d8d1d0e11fee212eaca0e59802bb1e859bce6863cbe9e",
+    "docs/fairy-save-restoration.md": "5b497fa3d2120b9627f4b807775ceb1fce18f2b3a051c2ca9496903485d9428d",
+    "docs/native-enemy-projectile-flight.md": "b54cb36391ff0fdccab95508b252016682da0b49e2e7c59ce3ccfee48fab0e02",
+    "docs/native-parity-audit.md": "d3ba06cf6201efa99fe5a19923d955891e6a513ffbfd0cc27a34083830584391",
+    "docs/original-source-comparison-2026-10-26.md": "78392dd77099f04875ff0868df716f71a134625a68c986c95a3748467948b6ad",
+    "docs/patrol-boss-native.md": "7f8b56e0f90b54a62fc460c107ab7cb2dd6a614140d06a3211e0c66114342452",
+    "docs/portal-native-recovery.md": "15058f393b584807c1922063761fe7db9df1a8a4541ecf4950b0ab8f665095a0",
+    "docs/presentation-source-parity-2026-10-26.md": "28adebe969a16a0b123d8b7736e5bf84fd4ab61f15d19219239e93650627bc46",
+    "docs/water-native.md": "a8ac249b452d33ac8ff64236b0089b74d1ace8ceac4da1044dc72f3bdf862118",
+    "src/davi-vm.js": "49d2f29f4ea297f91b0f9886de5b2c8b9a634123f565f835fa797265133ae13f",
+    "src/enemy-ambush.js": "1a4417ce416f9e71c32d6ced5acbaf8dde8ba954fa84cb77c2009083346ed3d3",
+    "src/enemy-hit-native.js": "8309f054e90e5afaa63fcba183f0c89ac75366eee524c5da4153ed7a414821c2",
+    "src/enemy-projectiles.js": "19a25a816e7ecd3276da661bcb728e84e30d77829609013e4707700e14cdd43e",
+    "src/enemy-standing-shooter-native.js": "942d8e6805b02374709701ca63e2b57e82b7e781523ad8f5098ab5006392d4d4",
+    "src/fairy-effects.js": "a5dd548a201ba7e576540a31301199a917917f5cf114361fe3ffe7abed801a78",
+    "src/gameplay-audio.js": "9c49b4d76997a26ad7790be0d04c8da5800c36f2b655fec205b4b189c915300c",
+    "src/gameplay.js": "9b5e4fc658680fa2fc7377e0f279fed7fc99878c5ceb17e67fff845e611e3ff5",
+    "src/locomotion-audio.js": "3baf6cfc42b6a73ecb074c15a0dc5272f8a77f8f41291d51e019ff5f5beafa74",
+    "src/particle-clock-native.js": "49f9eb376013845c891f0ded02db2732c287658202e76599be8d73017cdad019",
+    "src/player-landing.js": "82977a49ca3ef18fee0290f709fe007fb11b58b165764e14153199458baf0ec1",
+    "src/teleporter-effects.js": "bbec7e0c0572634350cf4c03d316b777c247e6ff71826b342cefd4a03b34ac72",
+    "src/world.js": "9051b9370c9e57085429e1d1cb6d9818679e95598d2aaadf11fb9876c3b34a33",
+    "tests/davi-vm.test.mjs": "0a8225fc78adddc87c25649a5fe6f9c7ada408af2dfbffaaa459f5697920618d",
+    "tests/enemy-projectiles.test.mjs": "0b21b82bc5160704647598eec47cca58db5d7209e99baa236ab371b0735a088e",
+    "tests/enemy-standing-shooter-native.test.mjs": "6adc379a28488f82c9cb088d1147790a2fcb53cdf95887beaff35268518946f4",
+    "tests/fairy-native-state.test.mjs": "7aa51d4eeeb3ed83854d3147db8b0eff37db3dc3c2aeee39bd687a463b956fe0",
+    "tests/particle-clock-native.test.mjs": "5bfde52df01c608c2a415f2e3a8f058ff5b640125cb449464e0246bb8f3d126f",
+    "tests/player-landing.test.mjs": "8a44ab774f8a7816121a3d4fc1caa748e02c44e3c94008557b8f400fb1304a48",
+    "tests/teleporter-native.test.mjs": "3e4e1bc7a9d74768c6274fbb35350f9b6703344bb88411c74deffc4ab34ca555",
+    "tests/water-audio.test.mjs": "7f36ea34b1a12129e80c1d167455aad21ff6626b806cc1ceb6a23b01e828948b"
+  },
+  "builds_run": false,
+  "full_suite_run": false,
+  "native_runtime_campaign_run": false,
+  "source_campaign_run": false,
+  "scope": "Focused source checks and static native comparison; native export has separate verification.",
+  "native_delivery_verification": {
+    "path": "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/VERIFICATION.json",
+    "sha256": "9fa6b3d4770b9bb3ec573e45485dc52a4cae1984050450d555dfa3132da74fae",
+    "status": "pass",
+    "binaries": 11,
+    "functions": 30648,
+    "decompiled": 30648,
+    "assembly_fallbacks": 0
+  }
+}

@@ -1,3 +1,5 @@
+import {createParticleClock,advanceParticleClock,validParticleClock,legacyParticleClock,particleMilliseconds} from './particle-clock-native.js';
+
 const clamp=v=>Math.max(0,Math.min(1,v));
 export const FAIRY_TEXTURES={core:'fleuri.bmp|fleuri_a.bmp',halo:'fleurl8.bmp|fleurl8_a.bmp',rays:'fleurl7.bmp|fleurl7_a.bmp',star:'star.bmp|star_a.bmp'};
 export const FAIRY_DEPARTURE_SECONDS=4;
@@ -109,7 +111,7 @@ export class NativeFairyEffect {
       if(Array.isArray(p)) {if(p.length!==2||!Number.isFinite(p[0])||typeof p[1]!=='boolean')return null;continue;}
       if(!p||p.active!==true||!vector(p.position)||!vector(p.velocity)||!Number.isFinite(p.wiggle)||typeof p.wiggleUp!=='boolean'||
         !Number.isFinite(p.born)||p.born<0||p.born>saved.time||!Number.isSafeInteger(p.serial)||p.serial<1||p.serial>saved.serial||
-        !['slow','burst'].includes(p.kind))return null;
+        !['slow','burst'].includes(p.kind)||p.clock!==undefined&&!validParticleClock(p.clock))return null;
     }
     if(saved.trailFormat!==undefined&&saved.trailFormat!==2)return null;
     if(saved.trails.some(t=>!t||!vector(t.start)||!vector(t.end)||!Number.isFinite(t.born)||t.born<0||t.born>saved.time+1e-9))return null;
@@ -123,6 +125,8 @@ export class NativeFairyEffect {
     for(const key of Object.keys(effect))effect[key]=structuredClone(saved[key]);
     effect.pool=effect.pool.map(p=>p===null?{active:false,wiggle:0,wiggleUp:true}:
       Array.isArray(p)?{active:false,wiggle:p[0],wiggleUp:p[1]}:p);
+    for(const p of effect.pool)if(p.active&&!p.clock)
+      p.clock=legacyParticleClock(4,1,3,Math.round(p.born*60)+1,effect.time,clamp((4-(effect.time-p.born))/3));
     if(saved.trailFormat!==2) {
       // Older saves stored five independent segments per tick in orbiter
       // order. Preserve their path once, then continue with a moving endpoint.
@@ -155,7 +159,7 @@ export class NativeFairyEffect {
   spawn(slot,speed,burst=false) {
     const p=this.pool[slot],x=this.random()*.0002-1,y=this.random()*.0001,z=this.random()*.0002-1;
     const ySign=(slot%4===0?1:-1)*(burst?-1:1);
-    Object.assign(p,{active:true,position:[...(burst?this.lastCentre:this.centre.position)],velocity:[x*speed,y*ySign*speed,z*speed],born:this.time,serial:++this.serial,kind:burst?'burst':'slow'});
+    Object.assign(p,{active:true,position:[...(burst?this.lastCentre:this.centre.position)],velocity:[x*speed,y*ySign*speed,z*speed],born:this.time,serial:++this.serial,kind:burst?'burst':'slow',clock:createParticleClock(4,1,3)});
     // Reused slots retain their oscillator phase, just like 0x47e710.
   }
   burst(count=-1) {
@@ -166,7 +170,7 @@ export class NativeFairyEffect {
   }
   updatePool(dt) {
     for(const p of this.pool)if(p.active) {
-      if(this.time-p.born>=FAIRY_DEPARTURE_SECONDS-1e-9){p.active=false;continue;}
+      if(!advanceParticleClock(p.clock,particleMilliseconds(this.time))){p.active=false;continue;}
       // 0x47e090 / 0x47ef00: eased ±.8 wiggle on X/Z, gravity-1.5,
       // both multiplied by32 before semi-implicit integration. No collision.
       const q=Math.abs(p.wiggle)/.8,step=(2*(1-q)+(q>.7?.4:0))*dt;
@@ -262,7 +266,7 @@ export class NativeFairyEffect {
       );
       for(const position of this.lastTips)sprites.push({texture:FAIRY_TEXTURES.star,position:[...position],width:6,height:6,color:[r,1,b],opacity:1,rotation:0});
     }
-    for(const p of this.pool)if(p.active)sprites.push({texture:FAIRY_TEXTURES.star,position:[...p.position],width:6,height:6,color:[r,1,b],opacity:clamp((4-(this.time-p.born))/3),rotation:0});
+    for(const p of this.pool)if(p.active)sprites.push({texture:FAIRY_TEXTURES.star,position:[...p.position],width:6,height:6,color:[r,1,b],opacity:p.clock.opacity,rotation:0});
     const rays=[];
     if(this.active)for(const group of ribbonGroups(this.trails)) {
       if(!group.length)continue;

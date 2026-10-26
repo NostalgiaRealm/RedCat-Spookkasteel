@@ -36,15 +36,17 @@ test('native impact artwork and scale use 100ms cells and the 699ms final cell',
   }
 });
 
-test('independent native light follows pszzzspmea for one second after impact', () => {
+test('independent native impact light follows the shared lazy pre-step clock', () => {
   for (const [kind,radius,color] of [['shot',180,[255,192,0]],['powerShot',126,[80,245,220]],['superShot',270,[34,218,40]]]) {
     const effect=createProjectileImpact(pellet(kind),0);
-    for (const [age,letter] of [[0,'p'],[.15,'s'],[.3,'z'],[.51,'s'],[.75,'m'],[.85,'e'],[.95,'a']]) {
+    for (const [age,letter] of [[1/60,'p'],[.15,'s'],[.3,'z'],[.51,'z'],[.75,'m'],[.85,'e'],[.95,'a']]) {
       const light=impactLight(effect,age);
-      assert.ok(Math.abs(light.radius-radius*(letter.charCodeAt(0)-97)/25)<1e-8);
+      assert.ok(light.radius===Math.fround(radius*Math.fround((letter.charCodeAt(0)-97)*Math.fround(.04))));
       assert.deepEqual(light.color,color.map(v=>v/255));
     }
-    assert.equal(impactLight(effect,1),null);
+    assert.equal(impactLight(effect,1).radius,0);
+    assert.ok(impactLight(effect,61/60).radius>0);
+    assert.equal(impactLight(effect,62/60),null);
   }
 });
 
@@ -66,11 +68,13 @@ test('actual wall and enemy contacts each create one effect, but expiry and miss
 test('impact state survives gameplay saves, rejects malformed entries and retires without an ID history', () => {
   const game=new Gameplay(level);game.time=10;game.projectileImpacts=[createProjectileImpact(pellet('superShot'),9.5)];
   const restored=new Gameplay(level,{save:JSON.parse(JSON.stringify(game.snapshot()))});
-  assert.deepEqual(restored.projectileImpacts,game.projectileImpacts);
+  assert.deepEqual(restored.projectileImpacts.map(({lightState,...effect})=>effect),game.projectileImpacts);
+  assert.deepEqual(impactLight(restored.projectileImpacts[0],10),impactLight(game.projectileImpacts[0],10));
   assert.deepEqual(projectileImpactSprite(restored.projectileImpacts[0],restored.time),projectileImpactSprite(game.projectileImpacts[0],game.time));
   assert.deepEqual(restoreProjectileImpacts([null,{...game.projectileImpacts[0],kind:'__proto__'},{...game.projectileImpacts[0],position:[NaN,0,0]},{...game.projectileImpacts[0],birth:11}],10),[]);
   assert.deepEqual(restoreProjectileImpacts(undefined,10),[],'older saves need no migration');
-  restored.time=10.5;restored.updateProjectiles(0,[0,0,0]);assert.equal(restored.projectileImpacts.length,0);
+  restored.time=10.5;restored.updateProjectiles(0,[0,0,0]);assert.equal(restored.projectileImpacts.length,1,'independent light still lives at1000ms');
+  restored.time=9.5+62/60;restored.updateProjectiles(0,[0,0,0]);assert.equal(restored.projectileImpacts.length,0);
   assert.equal(retainProjectileImpacts(Array.from({length:1000},(_,i)=>({...game.projectileImpacts[0],id:String(i)})),10).length,128);
 });
 

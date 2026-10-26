@@ -89,8 +89,13 @@ suppresses the separate long-drop pose.
 Shooting's 80% threshold is at `0x433310–0x43332f`, using normalized time from
 `0x4a1060` and the double `.8` at `0x64c568`. Visual handoff is about 0.814 s
 from an ordinary shot's start, or 0.549 s after release from the .26 charge hold.
-The full-clip saved deadline, recharge, projectile emission and damage are
-unchanged; only animation priority ends earlier.
+The initial animation pass only changed visual priority. The 26 October
+follow-up traced the firing-state reset and confirmed that the next shot also
+becomes available after this cutoff, on the next controller update; RedCat
+discards the common projectile factory's recharge timer. That firing cadence
+is now implemented, while the full-clip saved deadline still supplies the
+animation phase. Projectile emission remains beyond 46% and damage is unchanged;
+see [player projectile timing](player-projectiles-native.md#timing-and-movement).
 
 ## Transition blending and performance
 
@@ -143,10 +148,16 @@ remain loadable and resume their ordinary death/respawn lifecycle.
   see [movement recovery](player-movement-native.md#superskippie-latch-and-animation-interaction).
 - Protected conversational idle, non-frozen gravity during hurt, and the
   existing checkpoint/game-over policies remain deliberate port behavior.
-- `RcHintMotion(12)` can request `fall1` in native; the port records but does not
-  consume this hint. All five imported campaign scripts declare this external
-  without calling it. It is dormant API parity, not a demonstrated missing
-  campaign animation.
+- `RcHintMotion(12)` is implemented as dormant API parity. The setter
+  `0x436f40` accepts 0–15 and ignores invalid values; only 12 has a selector
+  consumer (`0x433445`). It requests non-looping `fall1` at 1.5× unless the
+  jump state suppresses it. Because the request repeats each update and
+  `0x4a06b0` restarts a non-looping request, the beginning of the pose repeats
+  while the hint remains active. Clearing it alone leaves that last motion
+  to finish until the movement state changes. The port preserves those
+  details and saves the hint, while retaining protected cutscene/reaction
+  and no-clip priorities. All five campaign scripts declare this external
+  without calling it; this is not a previously missing campaign animation.
 - Native uses integer motion clocks and frame-quantized state changes; the port
   uses continuous seconds. The recovered rates/thresholds do not guarantee
   identical frames at every display refresh rate or collision boundary.

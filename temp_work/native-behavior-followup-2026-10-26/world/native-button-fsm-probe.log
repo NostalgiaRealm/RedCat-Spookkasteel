@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/native-behavior-followup-2026-10-26/world/native-button-fsm-probe.py", line 40, in <module>
+    for ms,request in [(100,True),(100,False),(500,True),(500,False),(500,False),(500,False),(100,False),(100,False),(100,False),(500,False),(500,False),(500,False),(500,False),(100,False),(100,False),(100,False)]:step(ms,request)
+                                                                                                                                                                                                                      ^^^^^^^^^^^^^^^^
+  File "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/native-behavior-followup-2026-10-26/world/native-button-fsm-probe.py", line 37, in step
+    events.clear();n.call(0x4cb420,[0,ms],ecx=obj)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/native-behavior-followup-2026-10-26/vm/native_vm_probe.py", line 41, in call
+    self.uc.emu_start(address, 0x20ff000, timeout=1000000, count=500000)
+  File "/home/rick/.local/share/reverse-engineering/python-analysis/lib/python3.12/site-packages/unicorn/unicorn_py3/unicorn.py", line 766, in emu_start
+    raise UcError(status)
+unicorn.unicorn_py3.unicorn.UcError: Invalid memory fetch (UC_ERR_FETCH_UNMAPPED)

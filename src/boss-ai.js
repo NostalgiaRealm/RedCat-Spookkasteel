@@ -4,6 +4,7 @@
 import { enemyRandom } from './enemy-navigation.js';
 import {enemySalvoSize} from './enemy-combat-native.js';
 import {nativeShooterWaitComplete} from './enemy-shooter-native.js';
+import {JESTER_EFFECT_SECONDS} from './jester-teleport-timing.js';
 const n=(v,f=0)=>Number.isFinite(Number(v))?Number(v):f;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const distance=(a,b)=>Math.hypot(...a.map((v,i)=>v-b[i]));
@@ -88,7 +89,7 @@ export function updateBoss(game,o,dt,context) {
   if(!o.boss)initializeBoss(game,o);
   if(!o.enabled||o.health<=0||game.scripts?.cutscene||game.scripts?.enemiesFrozen)return true;
   const b=o.boss;
-  b.teleportEffects=(b.teleportEffects||[]).map(effect=>({...effect,age:effect.age+dt})).filter(effect=>effect.age<1.5);
+  b.teleportEffects=(b.teleportEffects||[]).map(effect=>({...effect,age:effect.age+dt})).filter(effect=>effect.age<JESTER_EFFECT_SECONDS);
   if(!b.started){
     b.started=true;
     if(o.enemyType==='witch')enter(game,o,'start',duration(game,o,'start',3.2666831016540527),'start');
@@ -271,7 +272,7 @@ export function restoreBossState(game,o,saved) {
   b.waitUntil=saved.waitUntil===null?null:Number.isFinite(saved.waitUntil)?Math.max(0,saved.waitUntil):
     (o.enemyType==='witch'&&['betweenShots','salvoWait'].includes(saved.phase)?b.duration:null);
   b.teleportEffects=(Array.isArray(saved.teleportEffects)?saved.teleportEffects:[]).filter(effect=>
-    ['departure','arrival'].includes(effect.phase)&&Number.isFinite(effect.age)&&effect.age>=0&&effect.age<1.5&&
+    ['departure','arrival'].includes(effect.phase)&&Number.isFinite(effect.age)&&effect.age>=0&&effect.age<JESTER_EFFECT_SECONDS&&
     Array.isArray(effect.position)&&effect.position.length===3&&effect.position.every(Number.isFinite))
     .slice(-2).map(effect=>({phase:effect.phase,age:effect.age,position:[...effect.position]}));
   if(saved.target===null||game.navigation.find(saved.target))b.target=saved.target;

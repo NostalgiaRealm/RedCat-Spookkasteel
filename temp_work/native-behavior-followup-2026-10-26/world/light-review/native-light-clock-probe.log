@@ -1,0 +1,696 @@
+{
+  "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5",
+  "scope": "Execute original CAdamLight Tick and step-interpolator machine code.\nEngine cell processing, scene-light dirty upload and actor deletion are hooked;\ntimer, pattern sample, modulo advance and all native float math run unchanged.\n",
+  "addresses": [
+    "0x4e2590",
+    "0x569050",
+    "0x568e00",
+    "0x569480",
+    "0x5690f0",
+    "0x569bf0"
+  ],
+  "scenarios": [
+    {
+      "maximum": 200,
+      "ticks": [
+        {
+          "nowMs": 16,
+          "dtMs": 16,
+          "phaseBefore": 0,
+          "phaseAfter": 16,
+          "radius": 119.99999237060547,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 33,
+          "dtMs": 17,
+          "phaseBefore": 16,
+          "phaseAfter": 33,
+          "radius": 119.99999237060547,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 50,
+          "dtMs": 17,
+          "phaseBefore": 33,
+          "phaseAfter": 50,
+          "radius": 119.99999237060547,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 66,
+          "dtMs": 16,
+          "phaseBefore": 50,
+          "phaseAfter": 66,
+          "radius": 119.99999237060547,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 83,
+          "dtMs": 17,
+          "phaseBefore": 66,
+          "phaseAfter": 83,
+          "radius": 119.99999237060547,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 100,
+          "dtMs": 17,
+          "phaseBefore": 83,
+          "phaseAfter": 100,
+          "radius": 119.99999237060547,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 116,
+          "dtMs": 16,
+          "phaseBefore": 100,
+          "phaseAfter": 116,
+          "radius": 144.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 133,
+          "dtMs": 17,
+          "phaseBefore": 116,
+          "phaseAfter": 133,
+          "radius": 144.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 150,
+          "dtMs": 17,
+          "phaseBefore": 133,
+          "phaseAfter": 150,
+          "radius": 144.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 166,
+          "dtMs": 16,
+          "phaseBefore": 150,
+          "phaseAfter": 166,
+          "radius": 144.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 183,
+          "dtMs": 17,
+          "phaseBefore": 166,
+          "phaseAfter": 183,
+          "radius": 144.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 200,
+          "dtMs": 17,
+          "phaseBefore": 183,
+          "phaseAfter": 200,
+          "radius": 144.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 216,
+          "dtMs": 16,
+          "phaseBefore": 200,
+          "phaseAfter": 216,
+          "radius": 200.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 233,
+          "dtMs": 17,
+          "phaseBefore": 216,
+          "phaseAfter": 233,
+          "radius": 200.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 250,
+          "dtMs": 17,
+          "phaseBefore": 233,
+          "phaseAfter": 250,
+          "radius": 200.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 266,
+          "dtMs": 16,
+          "phaseBefore": 250,
+          "phaseAfter": 266,
+          "radius": 200.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 283,
+          "dtMs": 17,
+          "phaseBefore": 266,
+          "phaseAfter": 283,
+          "radius": 200.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 300,
+          "dtMs": 17,
+          "phaseBefore": 283,
+          "phaseAfter": 300,
+          "radius": 200.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 316,
+          "dtMs": 16,
+          "phaseBefore": 300,
+          "phaseAfter": 316,
+          "radius": 200.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 333,
+          "dtMs": 17,
+          "phaseBefore": 316,
+          "phaseAfter": 333,
+          "radius": 200.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 350,
+          "dtMs": 17,
+          "phaseBefore": 333,
+          "phaseAfter": 350,
+          "radius": 200.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 366,
+          "dtMs": 16,
+          "phaseBefore": 350,
+          "phaseAfter": 366,
+          "radius": 200.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 383,
+          "dtMs": 17,
+          "phaseBefore": 366,
+          "phaseAfter": 383,
+          "radius": 200.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 400,
+          "dtMs": 17,
+          "phaseBefore": 383,
+          "phaseAfter": 400,
+          "radius": 200.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 416,
+          "dtMs": 16,
+          "phaseBefore": 400,
+          "phaseAfter": 416,
+          "radius": 200.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 433,
+          "dtMs": 17,
+          "phaseBefore": 416,
+          "phaseAfter": 433,
+          "radius": 200.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 450,
+          "dtMs": 17,
+          "phaseBefore": 433,
+          "phaseAfter": 450,
+          "radius": 200.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 466,
+          "dtMs": 16,
+          "phaseBefore": 450,
+          "phaseAfter": 466,
+          "radius": 200.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 483,
+          "dtMs": 17,
+          "phaseBefore": 466,
+          "phaseAfter": 483,
+          "radius": 200.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 500,
+          "dtMs": 17,
+          "phaseBefore": 483,
+          "phaseAfter": 500,
+          "radius": 200.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 516,
+          "dtMs": 16,
+          "phaseBefore": 500,
+          "phaseAfter": 516,
+          "radius": 144.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 533,
+          "dtMs": 17,
+          "phaseBefore": 516,
+          "phaseAfter": 533,
+          "radius": 144.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 550,
+          "dtMs": 17,
+          "phaseBefore": 533,
+          "phaseAfter": 550,
+          "radius": 144.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 566,
+          "dtMs": 16,
+          "phaseBefore": 550,
+          "phaseAfter": 566,
+          "radius": 144.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 583,
+          "dtMs": 17,
+          "phaseBefore": 566,
+          "phaseAfter": 583,
+          "radius": 144.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 600,
+          "dtMs": 17,
+          "phaseBefore": 583,
+          "phaseAfter": 600,
+          "radius": 144.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 616,
+          "dtMs": 16,
+          "phaseBefore": 600,
+          "phaseAfter": 616,
+          "radius": 119.99999237060547,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 633,
+          "dtMs": 17,
+          "phaseBefore": 616,
+          "phaseAfter": 633,
+          "radius": 119.99999237060547,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 650,
+          "dtMs": 17,
+          "phaseBefore": 633,
+          "phaseAfter": 650,
+          "radius": 119.99999237060547,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 666,
+          "dtMs": 16,
+          "phaseBefore": 650,
+          "phaseAfter": 666,
+          "radius": 119.99999237060547,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 683,
+          "dtMs": 17,
+          "phaseBefore": 666,
+          "phaseAfter": 683,
+          "radius": 119.99999237060547,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 700,
+          "dtMs": 17,
+          "phaseBefore": 683,
+          "phaseAfter": 700,
+          "radius": 119.99999237060547,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 716,
+          "dtMs": 16,
+          "phaseBefore": 700,
+          "phaseAfter": 716,
+          "radius": 96.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 733,
+          "dtMs": 17,
+          "phaseBefore": 716,
+          "phaseAfter": 733,
+          "radius": 96.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 750,
+          "dtMs": 17,
+          "phaseBefore": 733,
+          "phaseAfter": 750,
+          "radius": 96.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 766,
+          "dtMs": 16,
+          "phaseBefore": 750,
+          "phaseAfter": 766,
+          "radius": 96.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 783,
+          "dtMs": 17,
+          "phaseBefore": 766,
+          "phaseAfter": 783,
+          "radius": 96.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 800,
+          "dtMs": 17,
+          "phaseBefore": 783,
+          "phaseAfter": 800,
+          "radius": 96.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 816,
+          "dtMs": 16,
+          "phaseBefore": 800,
+          "phaseAfter": 816,
+          "radius": 32.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 833,
+          "dtMs": 17,
+          "phaseBefore": 816,
+          "phaseAfter": 833,
+          "radius": 32.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 850,
+          "dtMs": 17,
+          "phaseBefore": 833,
+          "phaseAfter": 850,
+          "radius": 32.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 866,
+          "dtMs": 16,
+          "phaseBefore": 850,
+          "phaseAfter": 866,
+          "radius": 32.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 883,
+          "dtMs": 17,
+          "phaseBefore": 866,
+          "phaseAfter": 883,
+          "radius": 32.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 900,
+          "dtMs": 17,
+          "phaseBefore": 883,
+          "phaseAfter": 900,
+          "radius": 32.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 916,
+          "dtMs": 16,
+          "phaseBefore": 900,
+          "phaseAfter": 916,
+          "radius": 0.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 933,
+          "dtMs": 17,
+          "phaseBefore": 916,
+          "phaseAfter": 933,
+          "radius": 0.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 950,
+          "dtMs": 17,
+          "phaseBefore": 933,
+          "phaseAfter": 950,
+          "radius": 0.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 966,
+          "dtMs": 16,
+          "phaseBefore": 950,
+          "phaseAfter": 966,
+          "radius": 0.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 983,
+          "dtMs": 17,
+          "phaseBefore": 966,
+          "phaseAfter": 983,
+          "radius": 0.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 1000,
+          "dtMs": 17,
+          "phaseBefore": 983,
+          "phaseAfter": 0,
+          "radius": 0.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 1016,
+          "dtMs": 16,
+          "phaseBefore": 0,
+          "phaseAfter": 16,
+          "radius": 119.99999237060547,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 1033,
+          "dtMs": 17,
+          "phaseBefore": 16,
+          "phaseAfter": 33,
+          "radius": 119.99999237060547,
+          "lifeEndMs": 1016,
+          "alive": false
+        },
+        {
+          "nowMs": 1050,
+          "dtMs": 17,
+          "phaseBefore": 33,
+          "phaseAfter": 50,
+          "radius": 119.99999237060547,
+          "lifeEndMs": 1016,
+          "alive": false
+        }
+      ]
+    },
+    {
+      "maximum": 99,
+      "ticks": [
+        {
+          "nowMs": 16,
+          "dtMs": 16,
+          "phaseBefore": 0,
+          "phaseAfter": 16,
+          "radius": 59.39999771118164,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 100,
+          "dtMs": 84,
+          "phaseBefore": 16,
+          "phaseAfter": 100,
+          "radius": 59.39999771118164,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 101,
+          "dtMs": 1,
+          "phaseBefore": 100,
+          "phaseAfter": 101,
+          "radius": 71.27999877929688,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 999,
+          "dtMs": 898,
+          "phaseBefore": 101,
+          "phaseAfter": 999,
+          "radius": 71.27999877929688,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 1016,
+          "dtMs": 17,
+          "phaseBefore": 999,
+          "phaseAfter": 16,
+          "radius": 0.0,
+          "lifeEndMs": 1016,
+          "alive": true
+        },
+        {
+          "nowMs": 1017,
+          "dtMs": 1,
+          "phaseBefore": 16,
+          "phaseAfter": 17,
+          "radius": 59.39999771118164,
+          "lifeEndMs": 1016,
+          "alive": false
+        }
+      ]
+    },
+    {
+      "maximum": 180,
+      "ticks": [
+        {
+          "nowMs": 100,
+          "dtMs": 100,
+          "phaseBefore": 0,
+          "phaseAfter": 100,
+          "radius": 107.99999237060547,
+          "lifeEndMs": 1100,
+          "alive": true
+        },
+        {
+          "nowMs": 200,
+          "dtMs": 100,
+          "phaseBefore": 100,
+          "phaseAfter": 200,
+          "radius": 129.59999084472656,
+          "lifeEndMs": 1100,
+          "alive": true
+        },
+        {
+          "nowMs": 1000,
+          "dtMs": 800,
+          "phaseBefore": 200,
+          "phaseAfter": 0,
+          "radius": 180.0,
+          "lifeEndMs": 1100,
+          "alive": true
+        },
+        {
+          "nowMs": 1100,
+          "dtMs": 100,
+          "phaseBefore": 0,
+          "phaseAfter": 100,
+          "radius": 107.99999237060547,
+          "lifeEndMs": 1100,
+          "alive": true
+        },
+        {
+          "nowMs": 1101,
+          "dtMs": 1,
+          "phaseBefore": 100,
+          "phaseAfter": 101,
+          "radius": 129.59999084472656,
+          "lifeEndMs": 1100,
+          "alive": false
+        }
+      ]
+    }
+  ],
+  "instructionsVisited": 231
+}

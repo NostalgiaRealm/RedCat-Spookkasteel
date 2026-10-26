@@ -1,0 +1,24 @@
+✔ MoveTo retains the current endpoint and overrides authored pingpong playback (2.988252ms)
+✔ SetTo is a deferred enabled-controller operation, replaces a loop, and dispatches native forward labels (0.886874ms)
+✔ pending target commands and completed target mode survive saves and enable toggles (1.514171ms)
+✔ SetTo retains motion collision guards and does not replay a label when blocked (0.271538ms)
+✔ a label may replace SetTo without a stale target overriding its new command (0.280668ms)
+✔ controller Reset discards target mode; target commands clamp to authored motion rather than event tail (0.261208ms)
+✔ explicit Trigger is an enabled-independent Enter/Leave pulse with positive use limits (0.257399ms)
+✔ zero limits mean unlimited for triggers, buttons and shootable-button selection (0.363328ms)
+✔ original Caves altar/button counters and four-pulse gate callbacks retain their authored thresholds (39.851105ms)
+✔ rapid presses cannot cancel the Castle bookcase endpoint callback, including after a save (37.237131ms)
+✔ restoring an earlier snapshot into the same host clears a later target override (0.510777ms)
+✔ re-enabling completed once-only playback does not rewind or replay its last marker (0.245658ms)
+✔ physical button contact waits during motion and can activate again at the next settled endpoint (1.135273ms)
+✔ physical trigger minimum counts, enter/stay/leave phases and maximum exhaustion match native (0.488667ms)
+✔ trigger occupancy phase saves preserve callbacks and old occupied saves migrate to stay (0.469787ms)
+✔ disabled buttons retain one explicit request while ignoring direct contact requests (0.181789ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 173.840032

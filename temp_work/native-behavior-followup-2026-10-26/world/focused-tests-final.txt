@@ -1,0 +1,17 @@
+✔ MoveTo retains the current endpoint and overrides authored pingpong playback (2.445545ms)
+✔ SetTo is a deferred enabled-controller operation, replaces a loop, and dispatches native forward labels (0.830515ms)
+✔ pending target commands and completed target mode survive saves and enable toggles (1.104173ms)
+✔ SetTo retains motion collision guards and does not replay a label when blocked (0.266969ms)
+✔ a label may replace SetTo without a stale target overriding its new command (0.265299ms)
+✔ controller Reset discards target mode; target commands clamp to authored motion rather than event tail (0.800336ms)
+✔ explicit Trigger is an enabled-independent Enter/Leave pulse with positive use limits (0.257799ms)
+✔ zero limits mean unlimited for triggers, buttons and shootable-button selection (0.361967ms)
+✔ original Caves altar/button counters and four-pulse gate callbacks retain their authored thresholds (36.420667ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 118.320415

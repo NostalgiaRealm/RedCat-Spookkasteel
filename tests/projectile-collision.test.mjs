@@ -13,7 +13,7 @@ test('native thin projectile sweep hits the body but no longer catches empty spa
 });
 
 test('all generated shots use the recovered collision extent regardless of visual sprite size',()=>{
-  const game=new Gameplay(level);game.attack([0,0,0],[0,0,-1]);game.time=game.pendingPlayerAttack.at;game.releasePlayerAttack();
+  const game=new Gameplay(level);game.attack([0,0,0],[0,0,-1]);game.time=game.pendingPlayerAttack.at+.000001;game.releasePlayerAttack();
   for(const enemyType of ['brutusm','brutusb','witch','maxj','spider','frog','plant'])game.enemyProjectile({id:enemyType,position:[0,0,-100],enemyType,stats:{},aiRandomState:1},[0,0,0]);
   assert.equal(game.projectiles.length,8);
   for(const shot of game.projectiles)assert.equal(shot.radius,NATIVE_PROJECTILE_RADIUS);
@@ -28,7 +28,7 @@ test('projectile sweep resolves the earliest impact without tunnelling or applyi
   const events=[],game=new Gameplay(level,{onEvent:e=>events.push(e)});
   const enemy={id:'target',kind:'enemy',enabled:true,visible:true,health:5,position:[0,0,-50],collisionMins:[-10,0,-10],collisionMaxs:[10,56,10],stats:{},entity:{}};
   game.objects.push(enemy);
-  const shoot=()=>{game.attackCooldown=0;game.attack([0,0,0],[0,0,-1]);game.time=game.pendingPlayerAttack.at;game.releasePlayerAttack();};
+  const shoot=()=>{game.attackCooldown=0;game.attack([0,0,0],[0,0,-1]);game.time=game.pendingPlayerAttack.at+.000001;game.releasePlayerAttack();};
   shoot();game.updateProjectiles(.5,[0,0,0],(a,b)=>({fraction:.1,end:a.map((v,i)=>v+(b[i]-v)*.1)}));
   assert.equal(enemy.health,5);assert.equal(game.projectiles.length,0);assert.equal(events.findLast(e=>e.type==='playerProjectileImpact').target,null);
   shoot();game.updateProjectiles(.5,[0,0,0],(a,b)=>({fraction:1,end:b}));

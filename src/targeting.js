@@ -10,7 +10,7 @@ export function targetableObject(object) {
   if(!object||object.enabled===false||object.visible===false||object.collected||object.health<=0||object.targetAvailable===false)return false;
   if(object.kind==='enemy')return targetableEnemy(object);
   const e=object.entity||{};
-  if(object.kind==='button')return Number(e.ShootToSwitch)>0&&!(e.MaxSwitchTimes!==undefined&&Number(e.MaxSwitchTimes)>=0&&(object.switchCount||0)>=Number(e.MaxSwitchTimes));
+  if(object.kind==='button')return Number(e.ShootToSwitch)>0&&!(Number(e.MaxSwitchTimes)>0&&(object.switchCount||0)>=Number(e.MaxSwitchTimes));
   // AdamAnyActor.Targetable is an authored opt-in. Many lamps/torches can
   // receive damage, but their ActorDestroyable INI flag does not add them
   // to the original target list. In the shipped levels only crates opt in.

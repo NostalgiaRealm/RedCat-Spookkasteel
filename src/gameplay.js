@@ -5,12 +5,12 @@ import { moveEnemy, sweepPlayer, resolveZombieSpawn } from './enemies.js';
 import {updateZombieGraveRise} from './zombie-grave-rise.js';
 import { EnemyNavigation, enemyRandom } from './enemy-navigation.js';
 import {initializeEnemySalvo,enemySalvoSize,usesTouchPursuit} from './enemy-combat-native.js';
-import { PLAYER_SHOOT_MOTION, PLAYER_SUPER_CHARGE, playerShotDefinition, sweepActor, advancePlayerProjectile } from './player-projectiles.js';
+import { PLAYER_SHOOT_MOTION, PLAYER_SUPER_CHARGE, playerShotDefinition, sweepActor, advancePlayerProjectile, restorePlayerProjectileFlight } from './player-projectiles.js';
 import { BspCollider } from './collision.js';
 import { visibleLiquidGroups, liquidContactModels, liquidDamageRate } from './liquids.js';
 import { ProjectileHazards, mushroomTrailDefinition } from './projectile-hazards.js';
 import { advanceProjectileAnimation } from './projectile-animation.js';
-import { ENEMY_PROJECTILE_GRAVITY_SCALE, enemyProjectileLifetime, restoreEnemyProjectileFlight, retargetMagicProjectile } from './enemy-projectiles.js';
+import { ENEMY_PROJECTILE_GRAVITY_SCALE, enemyProjectileDeviation, enemyProjectileLifetime, restoreEnemyProjectileFlight, retargetMagicProjectile, enemyProjectileFlightBudget, advanceEnemyProjectileFlight } from './enemy-projectiles.js';
 import { normalizeDifficulty } from './difficulty.js';
 import { initializeBoss, updateBoss, bossHitResult, bossWasHit, snapshotBossState, restoreBossState } from './boss-ai.js';
 import { playerInventoryLimits } from './player-inventory.js';
@@ -37,6 +37,10 @@ import {pickupPosition} from './pickup-placement.js';
 import {enemyMotionRate,nativeEnemyIdleCycle,enemyIdleClip} from './enemy-animation-rules.js';
 import {ordinaryEnemyHit,reactToEnemyHit} from './enemy-hit-native.js';
 import {usesNativeShooter,updateNativeShooter,restoreNativeShooterState} from './enemy-shooter-native.js';
+import {usesNativeStandingShooter,updateNativeStandingShooter,restoreNativeStandingShooter} from './enemy-standing-shooter-native.js';
+import {playerLandingImpact} from './player-landing.js';
+import {restoreTriggerPhase,updateTriggerContact} from './trigger-contact-native.js';
+import {buttonSettled} from './button-controller-native.js';
 
 const n = (value, fallback=0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
 const clamp = (value,min,max) => Math.max(min,Math.min(max,value));
@@ -103,6 +107,7 @@ export class Gameplay {
         switchedOn:initial(e,'IsInitiallySwitchedOn',false),triggerCount:0,switchCount:0,inside:false,attackTimer:0};
       object.openFraction=object.open?1:0;
       if(kind==='pickup')object.actorFile=itemActor(e);
+      if(kind==='trigger')object.triggerPhase=0;
       if(kind==='enemy') {
         const def=enemyDefinition(e,settings,difficulty);object.actorFile=def.actorFile;object.stats=def.stats;
         object.health=Math.max(1,n(def.stats.Health,3));object.maxHealth=object.health;
@@ -192,8 +197,8 @@ export class Gameplay {
     }
     if(verb==='show'&&e.classname==='TeleporterFX'){showTeleporter(object);return;}
     if(verb==='show'||verb==='hide'){object.visible=verb==='show';this.emit('visibility',{id:object.id,modelIndex:object.modelIndex,visible:object.visible});return;}
-    if(['switchon','switchoff','switch','toggle'].includes(verb)){this.switchButton(object,verb==='switchon'?true:verb==='switchoff'?false:!object.switchedOn,depth);return;}
-    if(verb==='trigger'){this.trigger(object,depth);return;}
+    if(['switchon','switchoff','switch','toggle'].includes(verb)){this.switchButton(object,verb==='switchon'?true:verb==='switchoff'?false:!object.switchedOn,depth,{explicit:true});return;}
+    if(verb==='trigger'){this.trigger(object,depth,{explicit:true});return;}
     if(['destroy','kill'].includes(verb)){this.destroy(object,depth);return;}
     this.unknown(`${e.DaviName||object.id}.${verb}`);
   }
@@ -231,25 +236,43 @@ export class Gameplay {
     }
   }
 
-  switchButton(object,on=!object.switchedOn,depth=0) {
+  switchButton(object,on=!object.switchedOn,depth=0,{explicit=false}={}) {
+    if(!object.enabled&&!explicit||object.switchedOn===on)return;
+    if(object.hasMotion){
+      // Native requests latch even while disabled or moving. The controller
+      // consumes one request at a settled endpoint on a later tick.
+      object.pendingButtonSwitch=on;return;
+    }
     const max=n(object.entity.MaxSwitchTimes,-1);
-    if(!object.enabled||object.switchedOn===on||(max>=0&&object.switchCount>=max))return;
+    if(max>0&&object.switchCount>=max)return;
+    // Defensive source-only fallback for a button without imported motion.
     object.switchedOn=on;object.switchCount++;
-    if(on)discoverSecret(this,object);
-    this.runEvent(object,on?'SwitchOnCommand':'SwitchOffCommand',[],depth+1);
-    if(!this.scripts?.doorMotion(object,on))this.runEvent(object,on?'AfterSwitchOnCommand':'AfterSwitchOffCommand',[],depth+1);
-    this.emit('button',{id:object.id,modelIndex:object.modelIndex,on});
+    this.beginButtonSwitch(object,depth);
+    this.runEvent(object,on?'AfterSwitchOnCommand':'AfterSwitchOffCommand',[],depth+1);
   }
 
-  trigger(object,depth=0) {
+  beginButtonSwitch(object,depth=0) {
+    const on=object.switchedOn;
+    if(on)discoverSecret(this,object);
+    this.emit('button',{id:object.id,modelIndex:object.modelIndex,on});
+    this.runEvent(object,on?'SwitchOnCommand':'SwitchOffCommand',[],depth+1);
+    this.scripts?.doorMotion(object,on);
+  }
+
+  trigger(object,depth=0,{explicit=false,contact=false}={}) {
     const e=object.entity,max=n(e.MaxTriggerTimes,-1);
-    if(!object.enabled||(max>=0&&object.triggerCount>=max))return;
+    // CAdamTriggerModel::Trigger (0x4d4310) is a scripted Enter/Leave pulse,
+    // independent of the automatic-contact enable flag. Limits <= 0 are
+    // unlimited; positive limits and the minimum still apply to both routes.
+    if(!explicit&&!object.enabled||max>0&&object.triggerCount>=max)return;
     object.triggerCount++;
     if(object.triggerCount<n(e.MinTriggerTimes,-1))return;
+    if(contact)object.triggerPhase=1;
     discoverSecret(this,object);
     if(e.classname==='CameraTrigger')this.scripts?.activateCamera(object);
     this.runEvent(object,'CommandOnEnter',[],depth+1);
     if(e.TargetSubLevel)this.complete(e.TargetSubLevel);
+    if(explicit)this.runEvent(object,'CommandOnLeave',[],depth+1);
   }
 
   complete(target=null) {
@@ -275,6 +298,13 @@ export class Gameplay {
       if(continuous)this.environmentFeedbackCooldown=.65;
     }
     if(this.state.health===0){this.cancelPlayerCharge();this.pendingPlayerAttack=null;this.playerAttackUntil=0;this.attackCooldown=0;this.state.lives=Math.max(0,this.state.lives-1);cancelPendingGraveyardMazeExit(this);this.emit('death',{lives:this.state.lives,checkpoint:this.checkpoint});}
+  }
+
+  land(impactSpeed,position) {
+    const impact=playerLandingImpact(impactSpeed,this.settings.game);
+    if(!impact)return;
+    this.damage(impact.damage,'fall');
+    this.emit('land',{position:[...position],impactSpeed});
   }
 
   respawn() {
@@ -424,14 +454,14 @@ export class Gameplay {
       const direction=delta.map(v=>v/length),spread=n(object.stats.BulletDeviation);
       // Native shooting perturbs all three normalized direction components by
       // independent +/- BulletDeviation values and then normalizes again.
-      if(spread>0)for(let i=0;i<3;i++)direction[i]+=(enemyRandom(object)*2-1)*spread;
+      if(spread>0)for(let i=0;i<3;i++)direction[i]+=enemyProjectileDeviation(spread,enemyRandom(object));
       const aimLength=Math.hypot(...direction)||1,speed=n(stats.InitialSpeed,n(stats.Speed,300)),velocity=direction.map(v=>v/aimLength*speed);
       const radius=NATIVE_PROJECTILE_RADIUS,life=enemyProjectileLifetime(stats,enemyRandom(object));
       const kind=key.slice(2).replace(/^./,s=>s.toLowerCase());
       this.projectiles.push({id:`enemy-projectile-${this.nextProjectileId++}`,sourceId:object.id,kind,
         position,velocity,radius,collisionProfile:'native',life,damage:n(stats.Damage,1),gravity:n(stats.Gravity)*ENEMY_PROJECTILE_GRAVITY_SCALE,gravityUnits:'world',
         ...(object.enemyType==='gargoyle'?{visualEffect:'gargoyleBlast'}:{}),
-        ...(kind==='magicBall'?{homingSpeed:speed}:{}),age:0,spriteScale:n(stats.Size,.8)});
+        ...(kind==='magicBall'?{homingSpeed:speed}:{}),enemyFlightPhase:0,enemyFlightDebt:0,age:0,spriteScale:n(stats.Size,.8)});
       if(object.enemyType==='gargoyle'&&!this.gargoyleBlasts.some(e=>e.sourceId===object.id))
         this.gargoyleBlasts.push(createGargoyleBlast(object.id,position,velocity,playerPosition.map((v,i)=>v+(i===1?28:0)),object.aiRandomState));
       this.emit('enemyProjectile',{id:object.id,kind,position:[...position]});
@@ -445,14 +475,14 @@ export class Gameplay {
     for(const projectile of this.projectiles) {
       // FreezeEnemies stops enemy ammunition; RedCat can still shoot puzzles.
       if(this.scripts?.enemiesFrozen&&projectile.owner!=='player'){active.push(projectile);continue;}
-      const start=projectile.position;
-      const step=Math.min(dt,Math.max(0,projectile.life-projectile.age));
-      advanceProjectileAnimation(projectile,step);
-      projectile.velocity[1]-=projectile.gravity*step;
-      const end=projectile.owner==='player'?advancePlayerProjectile(projectile,step):start.map((v,i)=>v+projectile.velocity[i]*step);
-      const wall=traceProjectile?.(start,end,projectile.radius,projectile)||{fraction:1,end};
-      const wallFraction=clamp(n(wall.fraction,1),0,1);
       if(projectile.owner==='player') {
+        const start=projectile.position;
+        const step=Math.min(dt,Math.max(0,projectile.life-projectile.age));
+        advanceProjectileAnimation(projectile,step);
+        projectile.velocity[1]-=projectile.gravity*step;
+        const end=advancePlayerProjectile(projectile,step);
+        const wall=traceProjectile?.(start,end,projectile.radius,projectile)||{fraction:1,end};
+        const wallFraction=clamp(n(wall.fraction,1),0,1);
         let target=null,fraction=wallFraction;
         if(wallFraction<1){
           // Actor collision can be the exact first hit. Looking only at the
@@ -480,18 +510,33 @@ export class Gameplay {
         } else if(projectile.age<projectile.life-1e-8)active.push(projectile);
         continue;
       }
-      const playerHit=sweepPlayer(start,end,playerPosition,projectile.radius);
-      const hitPlayer=playerHit!==null&&playerHit<wallFraction;
-      projectile.position=hitPlayer?start.map((v,i)=>v+(end[i]-v)*playerHit):(wall.end||start.map((v,i)=>v+(end[i]-v)*wallFraction));
-      projectile.age+=step;
-      retargetMagicProjectile(projectile,playerPosition);
-      this.hazards.trace(projectile,start,projectile.position,{dt:step});
-      if(hitPlayer||wallFraction<1) {
-        const lives=this.state.lives;
-        if(hitPlayer)this.damage(projectile.damage,projectile.sourceId);
-        this.emit('enemyProjectileImpact',{sourceId:projectile.sourceId,kind:projectile.kind,position:[...projectile.position],hitPlayer});
-        if(this.state.lives!==lives||this.state.health<=0){this.projectiles=[];this.gargoyleBlasts=[];this.hazards.retainProjectiles([]);return;}
-      } else if(projectile.age<projectile.life-1e-8)active.push(projectile);
+      const start=projectile.position, budget=enemyProjectileFlightBudget(projectile,dt);
+      advanceProjectileAnimation(projectile,budget);
+      let remaining=budget, impacted=false;
+      // At most seven partial/complete 60 Hz segments fit a 100 ms budget.
+      // Each is swept before the next turn or gravity step: no corner cutting.
+      while(remaining>1e-10) {
+        const from=projectile.position, flight=advanceEnemyProjectileFlight(projectile,remaining), end=flight.end;
+        const wall=traceProjectile?.(from,end,projectile.radius,projectile)||{fraction:1,end};
+        const wallFraction=clamp(n(wall.fraction,1),0,1);
+        const playerHit=sweepPlayer(from,end,playerPosition,projectile.radius);
+        const hitPlayer=playerHit!==null&&playerHit<wallFraction;
+        projectile.position=hitPlayer?from.map((v,i)=>v+(end[i]-v)*playerHit):(wall.end||from.map((v,i)=>v+(end[i]-v)*wallFraction));
+        projectile.age+=flight.step;remaining-=flight.step;
+        if(hitPlayer||wallFraction<1) {
+          const lives=this.state.lives;
+          if(hitPlayer)this.damage(projectile.damage,projectile.sourceId);
+          this.emit('enemyProjectileImpact',{sourceId:projectile.sourceId,kind:projectile.kind,position:[...projectile.position],hitPlayer});
+          if(this.state.lives!==lives||this.state.health<=0){this.projectiles=[];this.gargoyleBlasts=[];this.hazards.retainProjectiles([]);return;}
+          impacted=true;break;
+        }
+        // 0x446690 homes after the shared movement/collision tick, not after
+        // every high-refresh display interpolation of that same tick.
+        if(flight.complete)retargetMagicProjectile(projectile,playerPosition);
+      }
+      // Preserve the separate visual ribbon sampler's per-display schedule.
+      this.hazards.trace(projectile,start,projectile.position,{dt:budget-remaining});
+      if(!impacted&&projectile.age<projectile.life-1e-8)active.push(projectile);
     }
     this.projectiles=active;
     this.hazards.retainProjectiles(active);
@@ -499,7 +544,7 @@ export class Gameplay {
 
   playerProjectileHit(target,projectile) {
     this.runEvent(target,'OnHitCommand',[projectile.damage,projectile.type]);
-    if(target.kind==='button')this.switchButton(target);
+    if(target.kind==='button'){if(buttonSettled(target))this.switchButton(target);}
     else if(target.kind==='enemy')this.hurtEnemy(target,projectile.damage);
     else if(target.kind==='actor')damageDestructible(this,target,projectile.damage);
   }
@@ -609,6 +654,8 @@ export class Gameplay {
       } else if(this.time>=windowEnd)object.pendingAttack=null;
     }
     if(locked){if(visible||object.animationState==='attack'&&usesNativeShooter(object))face(playerPosition);moveEnemy(object,[0,0,0],dt,traceEnemy);return;}
+    if(updateNativeStandingShooter(this,object,{visible,distance:d,
+      moveIdle:()=>{face(playerPosition);moveEnemy(object,[0,0,0],dt,traceEnemy);}}))return;
     if(updateNativeShooter(this,object,dt,{playerPosition,visible,distance:d,lineOfSight,
       walk:(target,options)=>{const apart=batSeparationTarget(this,object);return walk(apart||target,apart?{}:options);},
       moveIdle:()=>{face(playerPosition);moveEnemy(object,[0,0,0],dt,traceEnemy);}}))return;
@@ -714,15 +761,15 @@ export class Gameplay {
     this.playerCharge=null;
   }
 
-  updatePlayerAttackInput(dt,held,position,forward,target=null) {
+  updatePlayerAttackInput(dt,held,position,forward,target=null,canStart=true) {
     if(this.scripts&&(!this.scripts.weaponsEnabled||this.scripts.cutscene)||this.playerReaction||this.state.health<=0||this.completed) {
       this.cancelPlayerCharge();return;
     }
     if(!(this.state.skill&4)) {
-      this.cancelPlayerCharge();if(held)this.attack(position,forward,target);return;
+      this.cancelPlayerCharge();if(held&&canStart)this.attack(position,forward,target);return;
     }
     if(held) {
-      if(!this.playerCharge&&this.attackCooldown<=1e-8&&!this.pendingPlayerAttack) {
+      if(!this.playerCharge&&canStart&&this.attackCooldown<=1e-8&&!this.pendingPlayerAttack) {
         this.playerCharge={age:0};this.emit('player-charge',{active:true,position:[...position]});
       } else if(this.playerCharge)this.playerCharge.age=Math.min(PLAYER_SUPER_CHARGE.duration,this.playerCharge.age+dt);
     } else if(this.playerCharge) {
@@ -734,8 +781,11 @@ export class Gameplay {
 
   attack(position,forward,target=null,{chargeFraction=1,startFraction=0}={}) {
     if(this.playerReaction||this.state.health<=0||this.completed||this.attackCooldown>1e-8||this.pendingPlayerAttack||this.scripts&&(!this.scripts.weaponsEnabled||this.scripts.cutscene||!(this.state.skill&1)))return false;
-    const shot=playerShotDefinition(this.state.skill,this.settings,this.difficulty),duration=PLAYER_SHOOT_MOTION.duration/PLAYER_SHOOT_MOTION.rate;
-    this.attackCooldown=Math.max(n(shot.stats.RechargeTime,1),duration);
+    const duration=PLAYER_SHOOT_MOTION.duration/PLAYER_SHOOT_MOTION.rate;
+    // CRcPlayer ends its firing state at shoot1's 80% point (0x433315).
+    // The common projectile factory's RechargeTime result is discarded by
+    // this caller; waiting for it or the full clip makes held fire too slow.
+    this.attackCooldown=duration*(PLAYER_SHOOT_MOTION.finishFraction-startFraction);
     this.playerAttackSerial++;this.playerAttackUntil=this.time+duration*(1-startFraction);
     this.pendingPlayerAttack={at:this.time+duration*(PLAYER_SHOOT_MOTION.releaseFraction-startFraction),position:v3(position),forward:v3(forward),skill:this.state.skill,chargeFraction};
     this.notePlayerAttack(target);
@@ -744,7 +794,7 @@ export class Gameplay {
 
   releasePlayerAttack(position=null,forward=null,releaseOrigin=null,aimTarget=null) {
     const pending=this.pendingPlayerAttack;
-    if(!pending||this.time+1e-8<pending.at)return;
+    if(!pending||this.time<=pending.at)return;
     this.pendingPlayerAttack=null;
     if(this.scripts&&(!this.scripts.weaponsEnabled||this.scripts.cutscene))return;
     const shot=playerShotDefinition(pending.skill,this.settings,this.difficulty),stats=shot.stats;
@@ -756,7 +806,7 @@ export class Gameplay {
     if(target){const delta=target.map((v,i)=>v-origin[i]),distance=Math.hypot(...delta)||1;dir=delta.map(v=>v/distance);}
     const projectile={id:`player-projectile-${this.nextProjectileId++}`,sourceId:'redcat',owner:'player',kind:shot.kind,type:shot.type,
       position:[...origin],velocity:dir.map(v=>v*speed),radius:NATIVE_PROJECTILE_RADIUS,collisionProfile:'native',life:n(stats.MaximumLifeTimeInSeconds,5),
-      damage:Math.max(1,n(stats.Damage,1)*(shot.type===4?clamp(n(pending.chargeFraction,1),0,1):1)),gravity:n(stats.Gravity),acceleration:n(stats.SpeedIncreasePerSecond),maximumSpeed:n(stats.MaximumSpeed,1000),age:0};
+      damage:Math.max(1,n(stats.Damage,1)*(shot.type===4?clamp(n(pending.chargeFraction,1),0,1):1)),gravity:n(stats.Gravity),acceleration:n(stats.SpeedIncreasePerSecond),maximumSpeed:n(stats.MaximumSpeed,1000),age:0,playerFlightPhase:0};
     this.projectiles.push(projectile);
     this.emit('attack',{id:projectile.id,kind:shot.kind,origin,direction:dir});
   }
@@ -766,6 +816,9 @@ export class Gameplay {
     this.rewardEffects=retainRewardEffects(this.rewardEffects,this.time);
     const wasRecovering=this.playerReaction?.phase==='death'||this.playerReaction?.phase==='respawn';
     this.updatePlayerReaction(dt);
+    // Native checks input before retiring the current firing state. Crossing
+    // 80% releases the next controller tick, not another shot on this tick.
+    const canStartPlayerAttack=this.attackCooldown<=1e-8;
     this.hitCooldown=Math.max(0,this.hitCooldown-dt);if(!this.scripts?.cutscene)this.attackCooldown=Math.max(0,this.attackCooldown-dt);
     // Do not run interactions against the old death position on the tick that
     // the event handler moves RedCat back to his checkpoint.
@@ -778,6 +831,7 @@ export class Gameplay {
       for(const key of ['animationUntil','corpseUntil','deathStartedAt','nextIdleAt','lastSeenAt','lastAttackedAt'])if(Number.isFinite(object[key]))object[key]+=dt;
       if(object.pendingAttack){object.pendingAttack.at+=dt;if(Number.isFinite(object.pendingAttack.until))object.pendingAttack.until+=dt;}
       if(Number.isFinite(object.nativeShooter?.waitUntil))object.nativeShooter.waitUntil+=dt;
+      if(Number.isFinite(object.nativeStandingShooter?.waitUntil))object.nativeStandingShooter.waitUntil+=dt;
     }
     if(this.scripts?.cutscene){
       this.cancelPlayerCharge();this.pendingPlayerAttack=null;this.playerAttackUntil=0;
@@ -797,7 +851,7 @@ export class Gameplay {
     if(this.state.lives!==lives||this.state.health<=0)return;
     this.updateProjectiles(dt,this.playerPosition,traceProjectile||traceShot,lineOfSight);
     if(this.state.lives!==lives||this.state.health<=0)return;
-    this.updatePlayerAttackInput(dt,attack,this.playerPosition,forward,attackTarget?.());
+    this.updatePlayerAttackInput(dt,attack,this.playerPosition,forward,attackTarget?.(),canStartPlayerAttack);
     this.releasePlayerAttack(this.playerPosition,forward,releaseOrigin,aimTarget);
     // Pausing a model's timeline does not remove its solid brush or contact hooks.
     for(const index of touchedModels)for(const object of this.modelObjects.get(index)||[])if(object.kind==='controller'&&object.visible&&object.health>0)this.runEvent(object,'OnTouchCommand');
@@ -812,10 +866,7 @@ export class Gameplay {
       }
       if(object.kind==='trigger') {
         const inside=this.contains(object,playerPosition);
-        if(inside&&!object.inside)this.trigger(object);
-        if(!inside&&object.inside)this.runEvent(object,'CommandOnLeave');
-        object.inside=inside;
-        if(inside&&n(e.DamagePerSecond)>0)this.damage(n(e.DamagePerSecond)*dt,object.id,{continuous:true});
+        updateTriggerContact(this,object,inside,dt);
         if(this.state.lives!==lives||this.state.health<=0)return;
       }
       if(object.kind==='door') {
@@ -827,7 +878,11 @@ export class Gameplay {
       }
       if(object.kind==='button') {
         const activated=playerActivatesModel(this,object,playerPosition,touchedModels);
-        if(activated&&(!object.inside||pressedUse))this.switchButton(object);
+        // Native physical contact (0x4cb3a0) is accepted only at a settled
+        // endpoint. Script/shot requests separately latch during movement.
+        // A motion-less fallback has no native endpoint/FSM delay. Keep its
+        // contact latch so it cannot switch every frame with no animation.
+        if(activated&&buttonSettled(object)&&(object.hasMotion||!object.inside||pressedUse))this.switchButton(object);
         object.inside=activated;
       }
       // SavePoint is the crystal's visual beam effect. The authored trigger's
@@ -872,12 +927,13 @@ export class Gameplay {
       projectileImpacts:restoreProjectileImpacts(this.projectileImpacts,this.time),
       rewardEffects:restoreRewardEffects(this.rewardEffects,this.time),
       scripts:this.scripts?.snapshot(),checkpoint:{...this.checkpoint,position:[...this.checkpoint.position]},variables:[...this.variables],
-      objects:this.objects.map(o=>({id:o.id,position:[...o.position],enabled:o.enabled,visible:o.visible,collected:o.collected,health:o.health,propDamage:o.propDamage,open:o.open,locked:o.locked,switchedOn:o.switchedOn,triggerCount:o.triggerCount,switchCount:o.switchCount,openFraction:o.openFraction,closeAt:o.closeAt,inside:o.inside,volume:o.volume,motionSpeed:o.motionSpeed,
+      objects:this.objects.map(o=>({id:o.id,position:[...o.position],enabled:o.enabled,visible:o.visible,collected:o.collected,health:o.health,propDamage:o.propDamage,open:o.open,locked:o.locked,switchedOn:o.switchedOn,pendingButtonSwitch:o.pendingButtonSwitch,buttonPhase:o.kind==='button'?(o.buttonPhase??(o.switchedOn?5:1)):undefined,triggerCount:o.triggerCount,switchCount:o.switchCount,openFraction:o.openFraction,closeAt:o.closeAt,inside:o.inside,triggerPhase:o.triggerPhase,volume:o.volume,motionSpeed:o.motionSpeed,
         animationPose:o.animationSnapshot?.()||o.animationPose,machinePose:o.machineAnimationSnapshot?.()||o.machinePose,animationState:o.animationState,animationSerial:o.animationSerial,animationUntil:o.animationUntil,animationRate:o.animationRate,animationLoop:o.animationLoop,animationIdleClip:o.animationIdleClip,corpseUntil:o.corpseUntil,deathStartedAt:o.deathStartedAt,deathSmokeAnchors:o.deathSmokeAnchors?.map(p=>[...p]),deathSmokeVelocities:o.deathSmokeVelocities?.map(p=>[...p]),effectAge:o.effectAge,teleportEffectAge:o.teleportEffectAge,teleportEffectSerial:o.teleportEffectSerial,teleportTerminalSoundSerial:o.teleportTerminalSoundSerial,teleporterState:o.teleporterSnapshot?.()||o.teleporterState,beamContactDelay:o.beamContactDelay,beamTriggered:o.beamTriggered,secretFound:o.secretFound,actorAge:o.actorAge,lastAttackedAt:o.lastAttackedAt,rotation:o.rotation?[...o.rotation]:undefined,
         fairyState:o.fairySnapshot?o.fairySnapshot():o.fairyState?structuredClone(o.fairyState):undefined,
         knightDebrisState:o.knightDebrisSnapshot?o.knightDebrisSnapshot():o.knightDebrisState,
         pendingAttack:o.pendingAttack?{...o.pendingAttack}:null,attackTimer:o.attackTimer,salvoRemaining:o.salvoRemaining,salvoSize:o.salvoSize,pursuit:o.pursuit?structuredClone(o.pursuit):null,
         nativeShooter:restoreNativeShooterState(o.nativeShooter),
+        nativeStandingShooter:restoreNativeStandingShooter(o.nativeStandingShooter),
         boss:snapshotBossState(o),ambush:o.ambush?structuredClone(o.ambush):null,flightDetour:o.flightDetour?{...o.flightDetour}:null,batContact:o.batContact?{...o.batContact}:null,
         patrol:o.patrol?{...o.patrol}:null,aiRandomState:o.aiRandomState,relocateAfterSalvo:o.relocateAfterSalvo,boneSkullPhase:o.boneSkullPhase,boneChargePending:o.boneChargePending,lastSeenPosition:o.lastSeenPosition?[...o.lastSeenPosition]:null,
         velocityY:o.velocityY,grounded:o.grounded,lastSeenAt:o.lastSeenAt,nextIdleAt:o.nextIdleAt,alerted:o.alerted,yaw:o.yaw}))};
@@ -921,15 +977,17 @@ export class Gameplay {
     this.playerCharge=save.playerCharge&&(this.state.skill&4)?{age:clamp(n(save.playerCharge.age),0,PLAYER_SUPER_CHARGE.duration)}:null;
     this.pendingPlayerAttack=save.pendingPlayerAttack&&Number.isFinite(save.pendingPlayerAttack.at)?{...save.pendingPlayerAttack,position:v3(save.pendingPlayerAttack.position),forward:v3(save.pendingPlayerAttack.forward)}:null;
     this.projectiles=(Array.isArray(save.projectiles)?save.projectiles:[]).filter(p=>p&&typeof p.id==='string'&&Array.isArray(p.position)&&p.position.length===3&&p.position.every(Number.isFinite)&&Array.isArray(p.velocity)&&p.velocity.length===3&&p.velocity.every(Number.isFinite)&&['radius','life','damage','gravity','age'].every(key=>Number.isFinite(p[key]))&&p.life>p.age).slice(0,256).map(p=>({...p,position:[...p.position],velocity:[...p.velocity]}));
-    for(const projectile of this.projectiles){restoreEnemyProjectileFlight(projectile,this.settings['projectile'+this.difficulty.toLowerCase()]);restoreProjectileCollision(projectile);}
+    for(const projectile of this.projectiles){restoreEnemyProjectileFlight(projectile,this.settings['projectile'+this.difficulty.toLowerCase()]);restorePlayerProjectileFlight(projectile);restoreProjectileCollision(projectile);}
     this.hazards.retainProjectiles(this.projectiles);
     const saved=new Map((save.objects||[]).map(o=>[o.id,o]));
     for(const object of this.objects) {
       const value=saved.get(object.id);if(!value)continue;
       object.movementRecovery?.reset();delete object.lastMovementRecovery;
       if(Number.isFinite(value.health))object.restoredHealth=true;
-      for(const key of ['enabled','visible','collected','open','locked','switchedOn','inside','grounded','alerted','relocateAfterSalvo','boneSkullPhase','boneChargePending','beamTriggered','secretFound','animationLoop'])if(typeof value[key]==='boolean')object[key]=value[key];
+      for(const key of ['enabled','visible','collected','open','locked','switchedOn','pendingButtonSwitch','inside','grounded','alerted','relocateAfterSalvo','boneSkullPhase','boneChargePending','beamTriggered','secretFound','animationLoop'])if(typeof value[key]==='boolean')object[key]=value[key];
       for(const key of ['health','triggerCount','switchCount','openFraction','closeAt','volume','motionSpeed','animationSerial','animationUntil','corpseUntil','attackTimer','salvoRemaining','velocityY','lastSeenAt','lastAttackedAt','nextIdleAt','yaw','aiRandomState'])if(Number.isFinite(value[key]))object[key]=value[key];
+      if(object.kind==='trigger')restoreTriggerPhase(object,value.triggerPhase);
+      if(object.kind==='button'){delete object.pendingButtonSwitch;if(typeof value.pendingButtonSwitch==='boolean')object.pendingButtonSwitch=value.pendingButtonSwitch;object.buttonPhase=Number.isInteger(value.buttonPhase)&&value.buttonPhase>=1&&value.buttonPhase<=8?value.buttonPhase:undefined;}
       restorePropDamage(object,value.propDamage);
       if(Number.isFinite(value.deathStartedAt)&&object.health<=0)object.deathStartedAt=value.deathStartedAt;else delete object.deathStartedAt;
       for(const key of ['deathSmokeAnchors','deathSmokeVelocities']) {
@@ -949,6 +1007,15 @@ export class Gameplay {
       if(['idle','walk','walkback','attack','hurt','death','charge','start','retract','teleport','dormant'].includes(value.animationState))object.animationState=value.animationState;
       object.pendingAttack=value.pendingAttack&&Number.isFinite(value.pendingAttack.at)?{at:value.pendingAttack.at,...(Number.isFinite(value.pendingAttack.until)?{until:Math.max(value.pendingAttack.at,value.pendingAttack.until)}:{})}:null;
       object.nativeShooter=usesNativeShooter(object)?restoreNativeShooterState(value.nativeShooter):null;
+      object.nativeStandingShooter=usesNativeStandingShooter(object)?restoreNativeStandingShooter(value.nativeStandingShooter):null;
+      if(usesNativeStandingShooter(object)&&!object.nativeStandingShooter&&!value.nativeStandingShooter){
+        // Preserve an existing committed salvo or remaining old cooldown;
+        // loading must not replay its first shot or restart a full wait.
+        if(object.pendingAttack||value.animationState==='attack'||n(value.salvoRemaining)>0)
+          object.nativeStandingShooter={version:1,phase:'shoot',remaining:clamp(Math.trunc(n(value.salvoRemaining)),0,1024),waitUntil:null};
+        else if(n(value.attackTimer)>0)
+          object.nativeStandingShooter={version:1,phase:'wait',remaining:0,waitUntil:this.time+n(value.attackTimer)};
+      }
       const legacyShooter=usesNativeShooter(object)&&!object.nativeShooter&&!value.nativeShooter;
       // A saved Bone charge has already switched ammo. Adopt its playing
       // clip, without repeating that entry action or resurrecting the salvo.

@@ -15,10 +15,15 @@ def import_effects(installation, output, levels):
         pairs.add((f'expl_gen{frame:02}_red.bmp',f'expl_gen_a_{frame:02}.bmp'))
         pairs.add((f'expl_gen{frame:02}_yel.bmp',f'expl_gen_a_{frame:02}.bmp'))
         pairs.add((f'explosie{frame:02}.bmp',f'explosie{frame:02}_a.bmp'))
+        pairs.add((f'expl_sup{frame:02}.bmp',f'expl_sup{frame:02}_a.bmp'))
     pairs.add(('smoke_05.bmp','smoke_green_a.bmp'))
     pairs.add(('strail.bmp','strail_a.bmp'))
     pairs.add(('ptrail.bmp','ptrail_a.bmp'))
     pairs.add(('electricwave.bmp','electricwave_a.bmp'))
+    pairs.add(('ring.bmp','ring_a.bmp'))
+    pairs.add(('spark.bmp','spark_a.bmp'))
+    for frame in (1,4,5,7,8,9):
+        pairs.add((f'spark_{frame:02}.bmp',f'spark_a_{frame:02}.bmp'))
     pairs.add(('kaboom.bmp','kaboom_a.bmp'))
     pairs.add(('kaboom2.bmp','kaboom2_a.bmp'))
     pairs.add(('rcsdw.bmp','rcsdw_a.bmp'))
@@ -30,6 +35,8 @@ def import_effects(installation, output, levels):
                 pairs.add((entity['BitmapFileName'].lower(), entity['BitmapAlphaFileName'].lower()))
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
+    manifest_file = output/'manifest.json'
+    previous = json.loads(manifest_file.read_text()) if manifest_file.exists() else {}
     manifest = {'format':'redcat-world-effects-v1', 'textures':{}, 'sources':{}}
     for bitmap, mask in sorted(pairs):
         with Image.open(files[bitmap]) as image:
@@ -44,7 +51,13 @@ def import_effects(installation, output, levels):
         manifest['textures'][bitmap+'|'+mask] = {'file':name, 'width':rgba.width, 'height':rgba.height}
         for original in (bitmap,mask):
             manifest['sources'][original] = hashlib.sha256(files[original].read_bytes()).hexdigest()
-    (output/'manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
+    # Preserve existing effect registration order: transparent batches with
+    # equal depths can retain that draw order. New dormant artwork appends.
+    for section in ('textures', 'sources'):
+        values = manifest[section]
+        manifest[section] = {key: values[key] for key in previous.get(section, {}) if key in values}
+        manifest[section].update({key: value for key, value in values.items() if key not in manifest[section]})
+    manifest_file.write_text(json.dumps(manifest, indent=2)+'\n')
     return manifest
 
 

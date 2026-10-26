@@ -1,0 +1,22 @@
+✔ player pellets hit the nearest brush and emit enemy hurt only on arrival (3.471849ms)
+✔ attack requires aim and line of sight, defeats enemy, runs destruction command (4.719491ms)
+✔ an aimed attack that misses has a finite music duration (24.672596ms)
+✔ shot: Gameplay emits the native firing and impact recordings only at their actual events (3.25131ms)
+✔ shot: expiry is silent and a saved in-flight pellet retains its impact sound after skills change (1.54854ms)
+✔ powerShot: Gameplay emits the native firing and impact recordings only at their actual events (0.323688ms)
+✔ powerShot: expiry is silent and a saved in-flight pellet retains its impact sound after skills change (1.109173ms)
+✔ superShot: Gameplay emits the native firing and impact recordings only at their actual events (0.456097ms)
+✔ superShot: expiry is silent and a saved in-flight pellet retains its impact sound after skills change (0.380558ms)
+✔ successive player shots and impacts keep independent complete one-shot tails (0.769406ms)
+✔ all generated shots use the recovered collision extent regardless of visual sprite size (3.045381ms)
+✔ projectile sweep resolves the earliest impact without tunnelling or applying hits through a wall (1.061924ms)
+✔ shooting the inactive graveyard plank brush invokes its original destruction script (16.646657ms)
+✔ an original shootable button is selected by the first brush hit (3.2238ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 177.080239

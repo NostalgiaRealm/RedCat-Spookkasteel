@@ -6,13 +6,29 @@ Initial audit: 23 September 2026. Documentation status reviewed against source:
 Gameplay fidelity boundaries and the later 1.0.1 release records were reviewed
 on 22 October; that review added no tests, builds or new campaign run.
 
+On **26 October 2026**, a separate full-binary decompilation and a fresh,
+scoped native-code comparison corrected projectile sampling, stationary-shooter
+waits, particle fade clocks, shared landing feedback/damage and unused VM unary
+operators. See the [comparison and change record](original-source-comparison-2026-10-26.md)
+for current evidence, focused validation and the limits of that pass. It does
+not turn the earlier campaign run into a new current-source playthrough.
+
+The continued [26 October behavior pass](native-behavior-followup-2026-10-26.md)
+also corrects player firing/flight, enemy projectile stepping, dormant motion
+hints, world trigger/controller/button semantics, numeric/string VM conversions,
+death smoke and Jester swirls. Prop explosions now include their original brief
+dynamic light. New prop saves retain live fragment state.
+Original-byte kernel comparisons, focused regressions and shader comparisons
+are recorded separately from full campaign or hardware-package validation.
+
 The desktop/browser campaign is feature-complete in practical terms; exact
 original-engine parity and validation on every supported device are separate
 claims that this project does not make.
 This audit compares the current source, imported original assets/settings and
 compiled campaign scripts with the project's recovered executable evidence. It
 began as a source audit; the bounded port playthrough evidence added on
-18 October is described below. It is not a fresh original-executable comparison.
+18 October is described below. The original audit was not a fresh
+original-executable comparison; the separately scoped 26 October pass is linked above.
 Earlier research
 notes describe their own point in time; their TODO lists are not necessarily
 current. Follow the linked recovery documents for implemented behavior and
@@ -112,11 +128,11 @@ and fidelity polish:
 4. **Treat small presentation differences as polish.** Camera collision and
    compensation retain documented portability boundaries. Generic smoke/flame
    particle pools, knight fragments and audio playback now survive new saves;
-   older saves without those fields cannot recover their lost state. Generic
-   breakable-prop fragments still reconstruct their short trajectory against
-   restored geometry rather than saving every live fragment pose; this can alter
-   visual debris after a reload, while object destruction and blast damage state
-   are saved. Browser output-buffer/sample timing is not preserved. See
+   older saves without those fields cannot recover their lost state. New
+   breakable-prop saves also retain live fragment poses, velocity, spin, contacts
+   and fade state; only old saves without these fields reconstruct a bounded
+   trajectory against restored geometry. Object destruction and blast damage
+   state remain saved. Browser output-buffer/sample timing is not preserved. See
    [effects](effects-save-continuity.md) and [audio](audio-save-continuity.md).
    Preserve the requested overhead camera protection near walls,
    anti-stuck recovery, bounded lighting/navigation work and deliberate audio
@@ -179,7 +195,10 @@ See [automatic replay introductions](replayed-level-intros-native.md).
 ## Recovered features and remaining portability differences
 
 - **Projectile contact:** bitmap clocks, imported frames, mushroom ribbon timing,
-  gravity/lifetime variation and Witch homing are implemented. The shared native projectile collision hull is recovered and separated
+  gravity/lifetime variation and Witch homing are implemented. The 26 October
+  follow-up corrects accelerate/cap/gravity-before-movement ordering and
+  post-movement Witch homing on a bounded canonical flight clock, with
+  fractional-phase saves and smooth high-refresh motion. The shared native projectile collision hull is recovered and separated
   from visual size. Animated muzzle placement, player-shot impact sprites/light
   pulses and the charged-hit electric ripple/floor fold are recovered. The nine enemy subclasses have empty impact callbacks
   and no secondary effect factory. The native mushroom TrailDamage setting has no
@@ -203,13 +222,25 @@ See [automatic replay introductions](replayed-level-intros-native.md).
   including full-frame doses through the inclusive deadline, to RedCat, enemies and
   destroyable props, including brush LOS and active-blast save restoration.
   Fixed-step timing, local RNG and portable collision tolerances
-  still differ from Genesis. Actor fragments now use the recovered actor light selection and shading. See
+  still differ from Genesis. Actor fragments now use the recovered actor light selection and shading.
+  Ordinary blast lights and the dormant Green/Electric visual branches are now
+  connected. The latter use original artwork, ring geometry and gold-spark
+  behavior; all shipped actors disable both optional flags. The original
+  Electric trail bitmap is absent from the installation and CD, and that
+  unavailable visual is explicitly omitted. See [variant evidence and limits](explosion-variants-native.md).
+  New prop-fragment saves retain actual integrator state instead of replaying
+  old collisions; legacy saves retain bounded reconstruction. See
   [portal recovery](portal-native-recovery.md),
   [portal audio](portal-audio-native.md),
   [debris recovery](debris-native-recovery.md) and
   [explosion damage and strict accumulated prop thresholds](explosion-damage-native.md).
 - **Enemy death effects:** the native fade and purple smoke are implemented.
-  Smoke uses a continuous trajectory rather than the native per-frame integrator.
+  Death smoke now follows recovered particle clocks, byte alpha, rising
+  integrator, size and billboard geometry on the preserved 60 Hz visual clock.
+  Shared tables avoid historical simulation; native global frame/RNG and
+  arbitrary world-space floating-point rounding remain bounded differences.
+  Jester swirls also follow the recovered emission/radial/fade ordering and
+  complete particle lifetime; see [the native-byte and GPU comparisons](death-smoke-native-followup-2026-10-26.md).
   Knight armour now shares the recovered actor-particle solver: nine original
   fragments, upward 40–80 launch speed, individual 3–4-second lifetimes and
   axe-only settling fade. New saves retain live fragment positions, velocities,

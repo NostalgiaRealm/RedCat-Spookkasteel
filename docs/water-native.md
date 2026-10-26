@@ -132,8 +132,12 @@ speed multiplied by `MinNoDamageImpactSpeedFactor` (.05) and
 `MaxNoDamageImpactSpeedFactor` (2), respectively. The multiplications are at
 `0x4dc2ba` and `0x4dc41c`. For a level pool floor, the new contact cue follows
 that minimum threshold and the clamped impact/full-volume ratio; the sound
-mixer performs its existing native gain conversion. This adds audio only,
-without adding fall damage or changing dry-ground landing behavior.
+mixer performs its existing native gain conversion. That water-specific change
+initially added audio only. The [26 October full-source comparison](original-source-comparison-2026-10-26.md)
+subsequently recovered the complete shared landing branch: dry ground now plays
+`rcland1.wav`, and impact above the maximum threshold applies fractional fall
+damage using the shipped `DamageAtDoubleImpact=1`. Normal jumps remain below
+that threshold; no-clip and cutscene protection remain intact.
 
 Evidence is disassembled code and the shipped resources, plus the user's
 confirmation of audible splashes in this moat. No frame-by-frame recording

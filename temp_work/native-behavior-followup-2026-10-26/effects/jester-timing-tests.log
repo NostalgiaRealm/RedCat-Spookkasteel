@@ -1,0 +1,35 @@
+✖ Jester emits one native delayed slot at a time and retains the complete last particle (1.48197ms)
+✔ Jester uses half-second radial motion, delayed byte alpha and previous-tick height (0.216769ms)
+✔ saved phase/age reproduces identical particle geometry while each effect retains its own origin (0.207489ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 39.002253
+
+✖ failing tests:
+
+test at tests/jester-teleport-timing.test.mjs:9:1
+✖ Jester emits one native delayed slot at a time and retains the complete last particle (1.48197ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 1.7833333333333332
+  - 1.7833333333333334
+                     ^
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/jester-teleport-timing.test.mjs:16:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1.7833333333333332,
+    expected: 1.7833333333333334,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

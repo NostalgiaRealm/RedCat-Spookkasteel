@@ -1,0 +1,23 @@
+✔ knopdisc01 touch runs the full original flip before the stay-open delay, then resets and repeats (22.508711ms)
+✔ knopdisc02 touch runs the full original flip before the stay-open delay, then resets and repeats (9.837254ms)
+✔ the scripted bookcase ignores E and direct contact but still accepts its script open command (1.822428ms)
+✔ loading an old premature timer during paused opening waits for completion before scheduling closure (9.932134ms)
+✔ doors without motion still schedule their wait, and AfterOpen closing is not overwritten (0.496827ms)
+✔ the actual graveyard puzzle tile fires by solid contact, once until RedCat steps off (13.870868ms)
+✔ the original cave fan volumes supply their signed velocities and obey button group commands (8.186515ms)
+✔ a fan drives swept player motion without penetrating a wall and noclip ignores wind (0.809405ms)
+✔ original cave spring-box volumes launch a grounded player higher than the ordinary jump (4.606279ms)
+✔ the original cave hidden-button room plays SecretFound on entry once, including across save/reload (19.771318ms)
+✔ a crate collider takes both pellets, survives native threshold equality, and explodes only once (2.833391ms)
+✔ the authored vertical fan refreshes an airborne launch every tick at 20, 60 and 120 Hz (10.830598ms)
+✔ leaving or disabling the fan removes external speed but preserves the launched flight (7.109602ms)
+✔ fan flight respects ceiling and floor collision, clears carry on landing and ignores wind in noclip (0.440207ms)
+✔ midpoint gravity retains the original ordinary jump height of 1.3 metres (0.221118ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 169.450852

@@ -1,0 +1,14 @@
+✔ native button request, sound, motion and completion occupy separate checks in both directions (3.468919ms)
+✔ button phase saves retain deferred sound/completion and old moving saves migrate without replay (3.159531ms)
+✔ button endpoint collision refusal delays the completion callback and preserves queued requests (0.299028ms)
+✔ button Reset restores its authored endpoint, enabled state and clears pending work (0.519657ms)
+✔ button reset callbacks retain the native phase-derived on/off state and endpoint callback (0.691475ms)
+✔ restored native button phases are authoritative over a stale duplicate on/off flag (0.664126ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 90.093046

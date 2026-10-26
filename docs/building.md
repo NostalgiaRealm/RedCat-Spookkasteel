@@ -173,13 +173,13 @@ validation beyond Linux x64 remains pending.
 
 ## 5. Generate portable packages when ready
 
-**Only run this section when you intend to create new builds.** Close the game first. These commands update the corresponding directories under `dist/`; copy an older build elsewhere first if you want to preserve it. The current source displays **1.0.2** in **Over** and uses **1.0.2** in `package.json` and the root lockfile. The packaging helper still requires an explicit `REDCAT_PACKAGE_VERSION` for each packaging command; use `1.0.2` for this source version. It overrides the generated package metadata without modifying the source, lockfile or displayed version. Use three dot-separated integers chosen for your distribution; the helper has no default. Without this value, the packaging command stops before creating a build.
+**Only run this section when you intend to create new builds.** Close the game first. These commands update the corresponding directories under `dist/`; copy an older build elsewhere first if you want to preserve it. The current source displays **1.0.3** in **Over** and uses **1.0.3** in `package.json` and the root lockfile. The packaging helper still requires an explicit `REDCAT_PACKAGE_VERSION` for each packaging command; use `1.0.3` for this source version. It overrides the generated package metadata without modifying the source, lockfile or displayed version. Use three dot-separated integers chosen for your distribution; the helper has no default. Without this value, the packaging command stops before creating a build.
 
-For **1.0.2** packages, enter **1.0.2** at the version prompts below
-(or set `REDCAT_PACKAGE_VERSION=1.0.2` in Bash / `$env:REDCAT_PACKAGE_VERSION = '1.0.2'`
+For **1.0.3** packages, enter **1.0.3** at the version prompts below
+(or set `REDCAT_PACKAGE_VERSION=1.0.3` in Bash / `$env:REDCAT_PACKAGE_VERSION = '1.0.3'`
 in PowerShell). Use the same version for every desktop architecture. The current
-Over dialog displays **1.0.2**; the separate Android preview uses `versionName = "1.0.2"`
-and `versionCode = 4`. No new package is created by updating this documentation
+Over dialog displays **1.0.3**; the separate Android preview uses `versionName = "1.0.3"`
+and `versionCode = 5`. No new package is created by updating this documentation
 or the display version.
 
 ### Available targets and current limits

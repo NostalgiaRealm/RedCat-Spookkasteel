@@ -1,0 +1,160 @@
+{
+  "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5",
+  "scope": "Run the original button Tick bytes with bounded engine dependency hooks.\n\nOnly sound/script callbacks, proximity and collision transforms are substituted.\nThe original FSM instructions, bounds, counters and time arithmetic execute.\nThis is a controller-unit trace, not a native game/renderer/collision test.\n",
+  "ticks": [
+    {
+      "dtMs": 100,
+      "request": true,
+      "phase": 2,
+      "time": 0.0,
+      "count": 1,
+      "pending": 0,
+      "events": []
+    },
+    {
+      "dtMs": 100,
+      "request": false,
+      "phase": 3,
+      "time": 0.0,
+      "count": 1,
+      "pending": 0,
+      "events": [
+        "sound",
+        "BeforeOn:phase2"
+      ]
+    },
+    {
+      "dtMs": 500,
+      "request": true,
+      "phase": 3,
+      "time": 0.5,
+      "count": 1,
+      "pending": 1,
+      "events": []
+    },
+    {
+      "dtMs": 500,
+      "request": false,
+      "phase": 3,
+      "time": 1.0,
+      "count": 1,
+      "pending": 1,
+      "events": []
+    },
+    {
+      "dtMs": 500,
+      "request": false,
+      "phase": 3,
+      "time": 1.5,
+      "count": 1,
+      "pending": 1,
+      "events": []
+    },
+    {
+      "dtMs": 500,
+      "request": false,
+      "phase": 4,
+      "time": 2.0,
+      "count": 1,
+      "pending": 1,
+      "events": []
+    },
+    {
+      "dtMs": 100,
+      "request": false,
+      "phase": 5,
+      "time": 2.0,
+      "count": 1,
+      "pending": 1,
+      "events": [
+        "AfterOn:phase4"
+      ]
+    },
+    {
+      "dtMs": 100,
+      "request": false,
+      "phase": 6,
+      "time": 2.0,
+      "count": 2,
+      "pending": 0,
+      "events": []
+    },
+    {
+      "dtMs": 100,
+      "request": false,
+      "phase": 7,
+      "time": 2.0,
+      "count": 2,
+      "pending": 0,
+      "events": [
+        "sound",
+        "BeforeOff:phase6"
+      ]
+    },
+    {
+      "dtMs": 500,
+      "request": false,
+      "phase": 7,
+      "time": 1.5,
+      "count": 2,
+      "pending": 0,
+      "events": []
+    },
+    {
+      "dtMs": 500,
+      "request": false,
+      "phase": 7,
+      "time": 1.0,
+      "count": 2,
+      "pending": 0,
+      "events": []
+    },
+    {
+      "dtMs": 500,
+      "request": false,
+      "phase": 7,
+      "time": 0.4999999701976776,
+      "count": 2,
+      "pending": 0,
+      "events": []
+    },
+    {
+      "dtMs": 500,
+      "request": false,
+      "phase": 8,
+      "time": 0.0,
+      "count": 2,
+      "pending": 0,
+      "events": []
+    },
+    {
+      "dtMs": 100,
+      "request": false,
+      "phase": 1,
+      "time": 0.0,
+      "count": 2,
+      "pending": 0,
+      "events": [
+        "AfterOff:phase1"
+      ]
+    },
+    {
+      "dtMs": 100,
+      "request": false,
+      "phase": 1,
+      "time": 0.0,
+      "count": 2,
+      "pending": 0,
+      "events": []
+    },
+    {
+      "dtMs": 100,
+      "request": false,
+      "phase": 1,
+      "time": 0.0,
+      "count": 2,
+      "pending": 0,
+      "events": []
+    }
+  ]
+}

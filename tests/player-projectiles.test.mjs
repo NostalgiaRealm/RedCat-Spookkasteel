@@ -9,32 +9,44 @@ const clear=(start,end)=>({fraction:1,end});
 const make=()=>{const events=[];const game=new Gameplay({id:'lvl00a',spawn:{position:[0,0,0]},entities:[]},{onEvent:e=>events.push({...e,time:game.time})});return {game,events};};
 const tick=(game,seconds,options={})=>{for(let t=0;t<seconds-1e-8;t+=.01)game.update(Math.min(.01,seconds-t),[0,0,0],{forward:[0,0,-1],traceProjectile:clear,...options});};
 
-test('held shooting uses original shoot motion release and approximately one-second cadence',()=>{
+test('held shooting releases after 46% and restarts after the native 80% handoff',()=>{
   const {game,events}=make(),duration=PLAYER_SHOOT_MOTION.duration/PLAYER_SHOOT_MOTION.rate;
   game.attack([0,0,0],[0,0,-1]);
   tick(game,duration*.46-.001,{attack:true});assert.equal(game.projectiles.length,0);
   tick(game,.002,{attack:true});assert.equal(game.projectiles.length,1);
   assert.equal(game.projectiles[0].kind,'shot');assert.equal(game.projectiles[0].damage,1);
   tick(game,2.7,{attack:true});
-  const shots=events.filter(e=>e.type==='attack');assert.equal(shots.length,3);
-  for(let i=1;i<shots.length;i++)assert.ok(shots[i].time-shots[i-1].time>=1&&shots[i].time-shots[i-1].time<1.04);
+  const shots=events.filter(e=>e.type==='attack');assert.equal(shots.length,4);
+  for(let i=1;i<shots.length;i++)assert.ok(shots[i].time-shots[i-1].time>=duration*.8&&shots[i].time-shots[i-1].time<duration*.8+.03);
+});
+
+test('native release threshold is strict and firing can re-arm only on the following update',()=>{
+  const {game}=make(),duration=PLAYER_SHOOT_MOTION.duration/PLAYER_SHOOT_MOTION.rate;
+  game.attack([0,0,0],[0,0,-1]);game.time=game.pendingPlayerAttack.at;game.releasePlayerAttack();
+  assert.equal(game.projectiles.length,0,'exactly 46% does not yet release the pellet');
+  game.time+=.000001;game.releasePlayerAttack();assert.equal(game.projectiles.length,1);
+  game.attackCooldown=.001;game.update(.01,[0,0,0],{attack:true,traceProjectile:clear});
+  assert.equal(game.playerAttackSerial,1,'this update retires the previous firing state');
+  game.update(.01,[0,0,0],{attack:true,traceProjectile:clear});
+  assert.equal(game.playerAttackSerial,2,'the next held-input check starts a fresh shot');
+  assert.ok(Math.abs(game.attackCooldown-duration*.8)<1e-10);
 });
 
 test('player pellets accelerate at the authored rate, cap their speed, and have finite lifetime',()=>{
-  const {game}=make();game.attack([0,0,0],[0,0,-1]);game.time=game.pendingPlayerAttack.at;game.releasePlayerAttack();
+  const {game}=make();game.attack([0,0,0],[0,0,-1]);game.time=game.pendingPlayerAttack.at+.000001;game.releasePlayerAttack();
   const pellet=game.projectiles[0];assert.equal(Math.hypot(...pellet.velocity),300);
   for(let i=0;i<10;i++)game.updateProjectiles(.1,[0,0,0],clear);
-  assert.ok(Math.abs(pellet.position[2]+380)<1e-8);assert.ok(Math.abs(Math.hypot(...pellet.velocity)-460)<1e-8);
+  assert.ok(Math.abs(pellet.position[2]+381.3333333333333)<1e-8);assert.ok(Math.abs(Math.hypot(...pellet.velocity)-460)<1e-8);
   for(let i=0;i<41;i++)game.updateProjectiles(.1,[0,0,0],clear);
   assert.equal(game.projectiles.length,0);
   const fast={position:[0,0,0],velocity:[990,0,0],acceleration:160,maximumSpeed:1000};
-  assert.ok(Math.abs(advancePlayerProjectile(fast,.1)[0]-99.6875)<1e-8);assert.equal(fast.velocity[0],1000);
+  assert.ok(Math.abs(advancePlayerProjectile(fast,.1)[0]-99.76666666666667)<1e-8);assert.equal(fast.velocity[0],1000);
 });
 
 test('skill upgrades retain native projectile kinds, damage and speed',()=>{
   for(const [skill,kind,damage,speed] of [[1,'shot',1,300],[3,'powerShot',2,300],[7,'superShot',4,240]]) {
     const {game}=make();game.state.skill=skill;game.attack([0,0,0],[0,0,-1]);
-    game.time=game.pendingPlayerAttack.at;game.releasePlayerAttack();const pellet=game.projectiles[0];
+    game.time=game.pendingPlayerAttack.at+.000001;game.releasePlayerAttack();const pellet=game.projectiles[0];
     assert.equal(pellet.kind,kind);assert.equal(pellet.damage,damage);assert.equal(Math.hypot(...pellet.velocity),speed);
   }
 });
@@ -46,14 +58,16 @@ test('the renderer supplies the animated right-hand origin only at pellet releas
   tick(game,.02,{releaseOrigin});assert.equal(calls,1);assert.deepEqual(game.projectiles[0].position,[12,29,-15]);
 });
 
-test('cutscenes pause queued release and save/load preserves cadence and in-flight pellets',()=>{
+test('cutscenes cancel queued release while ordinary save/load preserves cadence and in-flight pellets',()=>{
   const {game}=make();game.attack([0,0,0],[0,0,-1]);tick(game,.2);
-  game.scripts={cutscene:true,weaponsEnabled:true,modelTransforms:new Map()};
-  tick(game,2);assert.equal(game.projectiles.length,0);
-  game.scripts=null;
   const saved=JSON.parse(JSON.stringify(game.snapshot())),restored=new Gameplay(game.level,{save:saved});
+  game.scripts={cutscene:true,weaponsEnabled:true,modelTransforms:new Map()};
+  tick(game,2);assert.equal(game.projectiles.length,0);assert.equal(game.pendingPlayerAttack,null);
+  game.scripts=null;
+  tick(game,.3);assert.equal(game.projectiles.length,0,'dialogue must not release the cancelled shot');
   tick(restored,.3);assert.equal(restored.projectiles.length,1);
   assert.equal(restored.playerAttackSerial,1);
+  assert.ok(Math.abs(restored.attackCooldown-(saved.attackCooldown-.3))<1e-8);
   tick(restored,.1);
   const airborne=JSON.parse(JSON.stringify(restored.snapshot())),again=new Gameplay(game.level,{save:airborne});
   assert.deepEqual(again.projectiles,restored.projectiles);

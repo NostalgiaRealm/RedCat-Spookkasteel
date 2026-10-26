@@ -1,0 +1,25 @@
+✔ blasts follow the native longest-axis layout and are staggered rather than simultaneous (1.685529ms)
+✔ each blast emits a finite native smoke cohort with authored sizes, upward velocity and lifetimes (0.194539ms)
+✔ smoke motion, opacity and size use each puff lifetime without per-frame emission or allocation (0.207528ms)
+✔ renderer retains original flash clocks, supports smoke-only/green clouds and releases cohorts (1.690869ms)
+✔ green flashes use their own original eight alpha-paired frames with unchanged normal artwork (2.412014ms)
+✔ green native shockwave grows from radius5 to200 for600ms, folds onto floor and obeys smoke-only (0.345288ms)
+✔ new variant textures stay unloaded for all authored campaign actors, but load for opt-in actors or saved blasts (74.584173ms)
+✔ green wave submits original alpha texture in a bounded reused mesh and cleans up after expiry (1.173563ms)
+✔ only the three live player factories emit impacts, five units behind contact along flight velocity (1.133653ms)
+✔ native impact artwork and scale use 100ms cells and the 699ms final cell (1.090533ms)
+✔ independent native light follows pszzzspmea for one second after impact (0.307008ms)
+✔ actual wall and enemy contacts each create one effect, but expiry and misses do not (1.59701ms)
+✔ impact state survives gameplay saves, rejects malformed entries and retires without an ID history (1.55372ms)
+✔ impact renderer submits the original sprite without allocating destruction debris (0.492257ms)
+✔ charged hit Electricwave is an upright camera-facing quad with native delayed squared-radius growth (0.371758ms)
+✔ charged wave touching the floor retains its upright quad and folds the bottom onto the surface (0.218119ms)
+✔ charged wave renders original alpha artwork in one bounded reusable mesh and clears after retirement (1.165162ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 148.904596

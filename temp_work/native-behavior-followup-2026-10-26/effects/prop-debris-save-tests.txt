@@ -1,0 +1,24 @@
+✔ native fragments originate throughout the source bounds and launch in its steep upward cone (2.792832ms)
+✔ fragment INI owns lifetime, collision dimensions and physics, independent of the destroyed parent (0.517306ms)
+✔ semi-implicit gravity, linear air drag and velocity-scaled spin use recovered units (0.483007ms)
+✔ native normalized reflection applies friction and removes grazing components before restoring speed (0.168489ms)
+✔ spin composes world X/Y/Z rotations instead of accumulating Euler angles (0.416158ms)
+✔ fragments remain opaque while flying and begin a two-second fade only after settling (0.486597ms)
+✔ collision work is bounded and settled fragments stop tracing (0.383958ms)
+✔ embedded corner contacts reflect along the nearest separating plane (0.317267ms)
+✔ a new explosion creates one bounded fragment cohort and pools then disposes its cloned materials (5.034597ms)
+✔ blasts follow the native longest-axis layout and are staggered rather than simultaneous (1.776719ms)
+✔ each blast emits a finite native smoke cohort with authored sizes, upward velocity and lifetimes (0.199409ms)
+✔ smoke motion, opacity and size use each puff lifetime without per-frame emission or allocation (0.218888ms)
+✔ renderer retains original flash clocks, supports smoke-only/green clouds and releases cohorts (1.648869ms)
+✔ prop fragments retain live poses, collisions and fade across JSON save/load without historical traces (9.400139ms)
+✔ empty saved cohorts stay empty, preserve smoke records and release renderer hooks (1.350621ms)
+✔ legacy and invalid prop records use bounded replay while unknown or oversized saved cohorts are rejected (1.425701ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 74.975984

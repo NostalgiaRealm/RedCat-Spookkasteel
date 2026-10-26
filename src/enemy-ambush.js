@@ -206,7 +206,7 @@ export function updateStoneAlert(game,object,dt) {
   if(state.phase==='awake'&&!object.alerted) {
     // A standing shooter completes its already-entered salvo child before
     // returning to stone alert, including a shot committed behind cover.
-    if(state.type==='gargoyle'&&(object.pendingAttack||object.salvoRemaining>0||
+    if(state.type==='gargoyle'&&(object.nativeStandingShooter||object.pendingAttack||object.salvoRemaining>0||
       object.animationState==='attack'&&game.time<object.animationUntil))return false;
     object.pendingAttack=null;object.salvoRemaining=0;object.attackTimer=0;
     if(state.type==='knight') {

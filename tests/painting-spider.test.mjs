@@ -26,7 +26,7 @@ function solve(app) {
   const {game,host,until}=app;
   for(const [index,count] of [3,1,0,3,2].entries())for(let i=0;i<count;i++){
     const button=game.find(`puzbut${index+1}_mc`)[0],piece=game.find(`puzstuk${index+1}_mc`)[0];
-    game.switchButton(button);until(()=>!button.switchedOn);until(()=>!piece.enabled);
+    game.switchButton(button);until(()=>button.switchedOn);until(()=>!button.switchedOn);until(()=>!piece.enabled);
     until(()=>!host.players.get(button.id).playing);
   }
 }

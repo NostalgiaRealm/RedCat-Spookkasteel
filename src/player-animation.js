@@ -1,6 +1,23 @@
+export function playerMotionHintValue(value) {
+  const hint=Number(value);
+  if(!Number.isFinite(hint))return null;
+  const integer=Math.trunc(hint);
+  return integer>=0&&integer<16?integer:null;
+}
+
+// 0x436f40 stores 0..15, but only hint 12 is consumed (0x433445).
+// It is an explicit repeated non-looping request, unlike automatic drop
+// detection. Clearing the hint alone does not change the native motion state.
+export function playerHintMotion(state,hint,selectionKey,blocked=false) {
+  if(blocked){delete state.hintMotionKey;return null;}
+  if(hint===12){state.hintMotionKey=selectionKey;return 'restart';}
+  if(state.hintMotionKey===selectionKey)return 'continue';
+  delete state.hintMotionKey;return null;
+}
+
 // The native state-6 jump selects the whole jump1 motion at 1.4x. The
-// second half of that motion already brings the limbs back down. Its jump
-// flag suppresses the separate long-drop motion until the player lands.
+// second half already brings the limbs back down. Its jump flag suppresses
+// the separate long-drop motion until the player lands.
 export function playerMotion(state,player,input,dt,groundDistance=0) {
   const wasAirborne=state.airborne===true,airborne=!player.grounded&&!player.noClip;
   const gap=Math.max(0,groundDistance),previousGap=state.groundDistance??0;
@@ -44,6 +61,7 @@ export function restorePlayerAnimation(actor,saved,player) {
     data.motionState={airborne:m.airborne===true,jumping:m.jumping===true,falling:m.falling===true,
       age:m.age,groundDistance:Number.isFinite(m.groundDistance)?Math.max(0,m.groundDistance):0,
       jumpSerial:Number.isSafeInteger(m.jumpSerial)?m.jumpSerial:player.jumpSerial,respawnIdle:m.respawnIdle===true};
+    if(typeof m.hintMotionKey==='string'&&m.hintMotionKey.length<=64)data.motionState.hintMotionKey=m.hintMotionKey;
   } else if(!player.grounded&&!player.noClip&&player.jumpKind) {
     // Older saves only have the physics clock. Normal jump age is recoverable;
     // an old super-jump save cannot recover the exact boost restart time.

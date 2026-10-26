@@ -16,7 +16,11 @@ The setup at `0x4775b0` gives the particles one-second lives and angles separate
 | Billboard radius | 40 → 5 | 5 → 40 |
 | Alpha percent | 25 → 100 | 100 → 35 |
 
-The portable effect evaluates those envelopes continuously instead of reproducing native frame integration. Boss state stores effect origin, phase and age, so arrival does not move a departing swirl to the new position, save restoration does not emit a second lifecycle event, and a script freeze pauses the swirl. Each particle expires after one second; the bounded effect record expires after 1.5 seconds. `bossTeleportEffect` announces actual departure and arrival starts for audio integration.
+The [26 October follow-up](death-smoke-native-followup-2026-10-26.md) replaces the continuous approximation with two small shared fixed-step tables. The radial transition takes **500 ms**, independently of the one-second particle life. Emission rearms on the following controller update, and both lifetime and fade timers use strict native deadline checks. Rotation advances before positioning and turns in the original negative-Z direction; height uses the preceding life fraction. Alpha is a delayed integer-byte fade, rather than an immediate continuous interpolation. The billboard now uses the original camera-position basis and UVs.
+
+At the retained 60 Hz visual cadence, both 19/29 ms intervals produce one birth every three ticks: the first at 50 ms and the fifteenth at 750 ms. The final particle remains visible at 1750 ms and expires on the next tick. The boss's save/cleanup boundary now comes from the shared table (107/60 seconds), so the old 1.5-second cutoff does not truncate that tail. These frame-quantized times are for the portable fixed clock; the original wall-clock birth spacing depended on its controller cadence.
+
+Boss state still stores effect origin, phase and age. Loading resumes the same corrected samples without another lifecycle/audio event; script freeze pauses the effect. Older records remain supported, with the corrected curve evaluated at their retained age. `bossTeleportEffect` still announces the same departure and arrival starts for audio integration. No sound or music scheduling was changed.
 
 ## Projectile artwork and trails
 
@@ -49,7 +53,7 @@ The shared projectile tick `0x44c760` checks a periodic effect timer and invokes
 
 Magic ball's override calls the shared tick, then updates its homing velocity (`0x4466a2–0x446737`); it does not emit another effect. The shared tick's remaining work covers lifetime, velocity/gravity, sprite animation, collision and position. This verifies the absence of an independent emitter beyond merely inspecting a null vtable slot.
 
-Mushroom Brutus has a separate explicit ribbon: its override `0x449090` creates `SpriteProjectileParticle` and enables a textured trail. Its native sampling, opacity and lifetime are documented in [mushroom-trail-native.md](mushroom-trail-native.md). Forest Brutus fires this mushroom projectile; the later Bone Brutus uses the bone and skull ammunition. Jester's purple `strail` teleport swirl remains unchanged and is separate from his projectile artwork.
+Mushroom Brutus has a separate explicit ribbon: its override `0x449090` creates `SpriteProjectileParticle` and enables a textured trail. Its native sampling, opacity and lifetime are documented in [mushroom-trail-native.md](mushroom-trail-native.md). Forest Brutus fires this mushroom projectile; the later Bone Brutus uses the bone and skull ammunition. Jester's purple `strail` teleport swirl is separate from his projectile artwork; its later timing and billboard correction is described above.
 
 Existing supported effects were reviewed: generic enemy purple death smoke/fade, knight detached armor, spider descent thread, mushroom's visual ribbon, and scripted Witch retirement. Follow-up native contact recovery found that mushroom `TrailDamage` is unused; only the projectile body causes damage. The audit adds no arbitrary emissions to bone, goo, poison or contact-only enemies.
 
@@ -70,3 +74,5 @@ For the follow-up native trail audit, only the changed flight-effect regression 
 ```sh
 node --test --test-name-pattern='native non-ribbon|Jester departure' tests/enemy-combat-effects.test.mjs
 ```
+
+The 26 October follow-up also passed three isolated Jester clock/transform/save tests, the two focused lifecycle/projectile-isolation checks, and an original-byte differential probe covering 212 effect frames and 1,830 live-particle samples. See the linked follow-up for exact agreement and floating-point limits.

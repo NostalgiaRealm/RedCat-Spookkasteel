@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import {Gameplay} from '../src/gameplay.js';
 import {GameplayAudio} from '../src/gameplay-audio.js';
 import {BspCollider,PlayerController,PLAYER_JUMP} from '../src/collision.js';
-import {liquidLandingSound} from '../src/locomotion-audio.js';
+import {landingSound} from '../src/locomotion-audio.js';
 
 const level=id=>JSON.parse(readFileSync(new URL(`../data/levels/${id}/level.json`,import.meta.url)));
 function fixture(id='lvl00a',position=[-1810,-164.95,1250]) {
@@ -70,11 +70,11 @@ test('water contact follows its brush pose without changing the collision exclus
 test('liquid jump and landing use native contact slots with impact-scaled landing gain',()=>{
   const jumpSpeed=Math.sqrt(2*PLAYER_JUMP.gravity*PLAYER_JUMP.height);
   for(const contents of [0x10000,0x20000,0x30000]) {
-    assert.equal(liquidLandingSound(jumpSpeed*.049,contents),null);
-    assert.deepEqual(liquidLandingSound(jumpSpeed,contents),{sound:'rcwalk1.wav',volume:.5});
-    assert.deepEqual(liquidLandingSound(jumpSpeed*3,contents),{sound:'rcwalk1.wav',volume:1});
+    assert.equal(landingSound(jumpSpeed*.049,contents),null);
+    assert.deepEqual(landingSound(jumpSpeed,contents),{sound:'rcwalk1.wav',volume:.5});
+    assert.deepEqual(landingSound(jumpSpeed*3,contents),{sound:'rcwalk1.wav',volume:1});
   }
-  assert.equal(liquidLandingSound(jumpSpeed,0),null,'no splash on dry landing');
+  assert.deepEqual(landingSound(jumpSpeed,0),{sound:'rcland1.wav',volume:.5},'dry ground has its own landing sound');
   for(const [id,position,expected] of [
     ['lvl00a',[-1810,-164.95,1250],'rcwalk1.wav'],
     ['lvl01a',[200,-151.95,1650],'rcwalk1.wav'],
@@ -84,7 +84,7 @@ test('liquid jump and landing use native contact slots with impact-scaled landin
     f.router.handle({type:'jump',position},f.game);
     assert.equal(f.events[0].sound,expected);
     f.router.handle({type:'land',position,impactSpeed:jumpSpeed},f.game);
-    assert.deepEqual(f.events.slice(1),expected==='rcwalk1.wav'?[{sound:'rcwalk1.wav',volume:.5,group:'player:land'}]:[]);
+    assert.deepEqual(f.events.slice(1),[{sound:expected==='rcwalk1.wav'?'rcwalk1.wav':'rcland1.wav',volume:.5,group:'player:land'}]);
   }
 });
 

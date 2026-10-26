@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {Gameplay} from '../src/gameplay.js';
 import {GAMEPLAY_SETTINGS} from '../src/gameplay-settings.js';
-import {enemyProjectileLifetime} from '../src/enemy-projectiles.js';
+import {enemyProjectileDeviation,enemyProjectileLifetime,enemyProjectileSample} from '../src/enemy-projectiles.js';
+import {enemyRandom} from '../src/enemy-navigation.js';
 
 const level={id:'projectile-flight-fixture',entities:[]};
 const farPlayer=[10000,97,0];
@@ -44,12 +45,42 @@ test('forest Brutus mushrooms fly at InitialSpeed, with no invented acceleration
 test('native lifetimes sample the full authored range on 1/10000 steps and truncate to milliseconds',()=>{
   const bone=GAMEPLAY_SETTINGS.projectilenormal.RcBone;
   assert.equal(enemyProjectileLifetime(bone,0),4);
-  assert.equal(enemyProjectileLifetime(bone,.5),5);
-  assert.equal(enemyProjectileLifetime(bone,.99999),5.999);
-  assert.equal(enemyProjectileLifetime(bone,.1234),enemyProjectileLifetime(bone,.1234999));
-  assert.equal(enemyProjectileLifetime(GAMEPLAY_SETTINGS.projectilenormal.RcJesterBall,.5),6.5);
-  assert.equal(enemyProjectileLifetime(GAMEPLAY_SETTINGS.projectilenormal.RcGoo,.5),15);
+  assert.equal(enemyProjectileLifetime(bone,5000/32768),5);
+  assert.equal(enemyProjectileLifetime(bone,9999/32768),5.999);
+  assert.equal(enemyProjectileLifetime(bone,10000/32768),4,'native modulo wraps instead of continuing a uniform float');
+  assert.equal(enemyProjectileLifetime(bone,1234/32768),enemyProjectileLifetime(bone,1234.9/32768));
+  assert.equal(enemyProjectileLifetime(GAMEPLAY_SETTINGS.projectilenormal.RcJesterBall,5000/32768),6.5);
+  assert.equal(enemyProjectileLifetime(GAMEPLAY_SETTINGS.projectilenormal.RcGoo,5000/32768),15);
   for(const random of [0,.23,.99999])assert.equal(enemyProjectileLifetime(GAMEPLAY_SETTINGS.projectilenormal.RcMushRoom,random),5);
+});
+
+test('projectile randomness preserves the shipped 15-bit modulo distribution and excludes the upper endpoint',()=>{
+  const counts=new Uint8Array(10000);
+  for(let raw=0;raw<32768;raw++){
+    const value=enemyProjectileSample(raw/32768);
+    assert.equal(value,raw%10000);counts[value]++;
+  }
+  for(let value=0;value<10000;value++)assert.equal(counts[value],value<2768?4:3);
+  assert.equal(enemyProjectileSample(1),2767);
+  for(const invalid of [-1,NaN,Infinity,undefined])assert.equal(enemyProjectileSample(invalid),0);
+  const extent=Math.fround(.05);
+  assert.equal(enemyProjectileDeviation(.05,0),-extent);
+  assert.ok(enemyProjectileDeviation(.05,9999/32768)<extent);
+  assert.ok(Math.abs(enemyProjectileDeviation(.05,5000/32768))<1e-8);
+  assert.equal(enemyProjectileDeviation(.05,10000/32768),-extent);
+});
+
+test('all shooter families apply independent native spread samples before normalization without changing speed',()=>{
+  for(const type of ['spider','gargoyle','maxd']){
+    const game=make(),o=enemy(type,{aiRandomState:1234567,stats:{BulletDeviation:.05}}),rng={...o};
+    const aim=[1,0,0].map(value=>value+enemyProjectileDeviation(.05,enemyRandom(rng)));
+    const length=Math.hypot(...aim);
+    enemyRandom(rng); // Lifetime consumes the next saved draw.
+    game.enemyProjectile(o,farPlayer);const p=game.projectiles[0];
+    p.velocity.forEach((value,index)=>near(value,aim[index]/length*400));
+    near(Math.hypot(...p.velocity),400);
+    assert.equal(o.aiRandomState,rng.aiRandomState);
+  }
 });
 
 test('sampled lifetimes and the next salvo remain deterministic after save/load',()=>{
@@ -69,9 +100,15 @@ test('sampled lifetimes and the next salvo remain deterministic after save/load'
 test('witch magic applies native shared movement, then homes toward the moved player at authored speed',()=>{
   const game=make(),p=shoot(game,'witch'),movedPlayer=[0,97,1000];
   game.updateProjectiles(.1,movedPlayer);
-  near(p.position[0],8);near(p.position[1],124.04);near(p.position[2],0);
-  const toCenter=[-8,.96,1000],length=Math.hypot(...toCenter);
-  p.velocity.forEach((value,index)=>near(value,toCenter[index]/length*80));
+  const reference={position:[0,125,0],velocity:[80,0,0]};
+  for(let tick=0;tick<6;tick++){
+    reference.velocity[1]-=96/60;
+    reference.position=reference.position.map((value,index)=>value+reference.velocity[index]/60);
+    const toCenter=movedPlayer.map((value,index)=>value+(index===1?28:0)-reference.position[index]),length=Math.hypot(...toCenter);
+    reference.velocity=toCenter.map(value=>value/length*80);
+  }
+  p.position.forEach((value,index)=>near(value,reference.position[index]));
+  p.velocity.forEach((value,index)=>near(value,reference.velocity[index]));
   near(Math.hypot(...p.velocity),80);
   game.updateProjectiles(.1,movedPlayer);
   assert.ok(p.position[0]<8&&p.position[2]>0,'the next step uses the new heading');

@@ -1,0 +1,90 @@
+✔ native fairy seek integrates before speed cap and advances only one authored waypoint per tick (0.836506ms)
+✔ native fairy hover applies conditional14-unit offset and Z-then-X jitter; missing waypoints stop centre (1.162024ms)
+✔ native fairy timer priority emits one slow per250ms then a five-star burst on the following tick (4.693146ms)
+✔ native fairy shared pool retains living particles and slot oscillator phase across departure/re-enable (1.287334ms)
+✖ native fairy particle random generator, opposite slot Y biases, gravity and delayed fade use recovered constants (0.953095ms)
+✔ native fairy saved active age replays once; render-only refresh preserves state and emits no duplicate audio (27.414782ms)
+✔ native fairy fixed-step trajectory and cached trail geometry do not depend on rendering frame size (3.872341ms)
+✔ fairy ribbon uses native alpha100/255, linear800ms attenuation and alpha5 cutoff (0.672636ms)
+✔ fairy ribbon commits a history point only beyond1.6units and keeps a moving head (1.434413ms)
+✔ fairy ribbon first quad uses its newer timestamp and following quads use their older timestamp (0.524717ms)
+✔ fairy ribbon disappears with central particle while departure stars keep their own fade (8.532017ms)
+✔ fairy ribbon snapshot preserves point timestamps and fractional clock without mutating on draw (17.359992ms)
+✔ legacy segment-only fairy saves migrate without rejecting the rest of their effect state (0.855246ms)
+✔ malformed ribbon timing and ownership in new saves are rejected (1.428243ms)
+✔ fairy save preserves current seek/hover, random stream, fractional tick and pulse history (36.564075ms)
+✔ departure saves restore living particles without resurrecting the fairy or replaying the burst (11.644851ms)
+✔ reused and dormant slots retain oscillator state across saves and later activations (30.119218ms)
+✔ snapshot copies never share live state and malformed unbounded pools or paths are rejected (2.12604ms)
+✔ real gameplay saves restore fairy draw buffers before ticking and resume only one idle loop (49.47252ms)
+✔ skip after restore clears the saved tail and does not resume an idle sound on the next tick (20.207558ms)
+✔ legacy age-only fairy saves remain supported without replaying their appearance cue (13.7536ms)
+✔ CParticle arms lifetime/delay independently, fades on the following update, and keeps integer alpha (1.133144ms)
+✔ CParticle restart retains current alpha until its new fade, without inheriting old deadlines (0.136919ms)
+✔ Fleurifee departure stars retain their native deadline tick and resume exact fade clocks from saves (2.193219ms)
+✔ Portal lifetime/fade clocks survive all phases and legacy saves without replaying movement (33.73106ms)
+✔ Fleurifee legacy star states retain position and displayed alpha when timer fields were absent (4.231979ms)
+✖ native standby timer releases four corner particles and integrates upward acceleration (2.314959ms)
+✔ special beam radius finishes contracting at2.1 seconds while orbit continues for6.8 (2.718657ms)
+✔ Show changes living corner particles into Seek and fills at most250 native orbit slots (15.680821ms)
+✔ native orbit centres only follow height continuously for every third slot (0.656796ms)
+✔ terminal flash lasts300ms, expands8→80 and moves towards the camera before outward burst (20.024029ms)
+✔ native portal state survives save/restore without replay, and geometry refresh is pure (20.216578ms)
+✔ expired portal save slots are compact and retain exact future slot reuse (35.344601ms)
+✔ native energy UV scroll changes direction once and continues past the negative endpoint (0.305068ms)
+✔ fixed native particle steps give matching trajectories across renderer frame rates (6.104609ms)
+✔ legacy portal sampling is bounded regardless of saved level age (3.372133ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 34
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 266.656653
+
+✖ failing tests:
+
+test at tests/fairy-native-state.test.mjs:51:1
+✖ native fairy particle random generator, opposite slot Y biases, gravity and delayed fade use recovered constants (0.953095ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 0.996078431372549
+  - 1
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/fairy-native-state.test.mjs:58:77)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0.996078431372549,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/teleporter-native.test.mjs:9:1
+✖ native standby timer releases four corner particles and integrates upward acceleration (2.314959ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 0.996078431372549
+  - 1
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/teleporter-native.test.mjs:17:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0.996078431372549,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

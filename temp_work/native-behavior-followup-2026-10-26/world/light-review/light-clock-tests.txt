@@ -1,0 +1,29 @@
+✔ normal and green explosion lights use original radius, colour and one-second pattern (1.5911ms)
+✔ smoke-only and zero-size blasts add no light, delayed blasts start independently and reuse records (0.376358ms)
+✔ world update passes blast lights to actors while retaining the existing eight world-light slots (3.482888ms)
+✔ light constructors, pre-step pattern boundaries and inclusive lazy expiry match native ordering (0.168749ms)
+✔ original-byte light/interpolator trace agrees with timer and float radius for all retained tick samples (0.933104ms)
+✔ fixed light clock is independent of display frequency and catches up in at most62 tiny steps (0.142049ms)
+✖ explosion light save roundtrips current phase and continues with the same cached cohort (0.307898ms)
+✔ light snapshots reject future, malformed and stale-birth clock state without changing legacy appearance (0.387847ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 84.115614
+
+✖ failing tests:
+
+test at tests/explosion-light-native.test.mjs:96:1
+✖ explosion light save roundtrips current phase and continues with the same cached cohort (0.307898ms)
+  TypeError: Cannot read properties of undefined (reading 'lightState')
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/explosion-light-native.test.mjs:100:25)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)

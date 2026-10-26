@@ -1,0 +1,26 @@
+✔ death after every original maze stage and during moving hedges restores the replayable initial layout (895.981078ms)
+✔ the real death clip reaches one respawn and does not retrigger the maze at the old death position (71.122707ms)
+✔ fatal damage cancels an unfinished final button before it can start the maze exit cutscene (114.566609ms)
+✔ nonfatal damage leaves an unfinished final button able to commit its original completion callback (55.69195ms)
+✔ committed final button and fully open maze stay solved across respawn and save/load (257.934416ms)
+✔ save/load during death or after reset retains reset transforms and permits the original route again (217.362856ms)
+✔ maze retry preserves loot, enemy defeats, the crate secret, painting globals and the independent moving hedge (79.7422ms)
+✔ respawn does not reset a different levels original puzzle progress or motion (7.56455ms)
+✔ older saves with no motion-started fields still reset an unfinished maze after death (116.515546ms)
+✔ loading an older death save cancels its pending final-button callback before timelines advance (102.45106ms)
+✔ loading the stranded entrance pattern repairs only the maze and retains the saved level progress (102.50862ms)
+✔ loading viable intermediate, moving-door or committed maze saves does not rewind their progress (298.22084ms)
+✔ fatal damage before the first button controller check also cancels its queued maze exit (104.841134ms)
+✔ original painting solution wraps at path end, enables all three spiders, and breaks the entryway (53.530194ms)
+✔ the three roof-origin spiders wait for approach, descend at native FallSpeed, then land (10.989896ms)
+✔ hanging spider perception uses its ceiling eye, horizontal range and two native sight rays (9.489157ms)
+✔ pre-fix solved saves recover skipped spider enables and roof placement without replaying the gate cutscene (59.832983ms)
+✔ saving retains descent progress and does not rewind a fought or roaming roof-origin spider (43.953848ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2517.372289

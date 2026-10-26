@@ -131,8 +131,9 @@ test('ordinary held fire stays available before BIG BENG and stale charges cance
   const {game,events}=gameWithSkill(3);tick(game,2.7,true);
   assert.equal(events.filter(e=>e.type==='attack').length,3);assert.equal(game.playerCharge,null);
   game.state.skill=7;tick(game,1.6,true);assert.ok(game.playerCharge);
+  const released=events.filter(e=>e.type==='attack').length;
   game.damage(10);assert.equal(game.playerCharge,null);game.respawn();tick(game,.5);
-  assert.equal(events.filter(e=>e.type==='attack').length,3);
+  assert.equal(events.filter(e=>e.type==='attack').length,released,'death must not release the cancelled charge');
   tick(game,.4,true);game.scripts={weaponsEnabled:false};tick(game,.01,true);assert.equal(game.playerCharge,null);
 });
 

@@ -14,7 +14,7 @@ test('native standby timer releases four corner particles and integrates upward 
     const p=e.pool[i];assert.equal(p.kind,'corner');
     close(p.velocity[1],32*TELEPORT_STEP);
     close(p.position[1],options.waypoints[i][1]+32*TELEPORT_STEP**2);
-    assert.equal(p.opacity,1);
+    assert.equal(p.opacity,254/255);
   }
   e.advance(.75);assert.equal(live(e).length,4);
   e.advance(TELEPORT_STEP);assert.equal(live(e).length,8);

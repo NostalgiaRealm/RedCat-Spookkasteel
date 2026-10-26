@@ -18,13 +18,18 @@ subtracts one before indexing its jump table; these are one-based type IDs.
 The ordinary firing branch at `0x434c25` selects animation speed 1.9. At
 `0x434d03` it reads the animation's normalized progress (the accessor at
 `0x4a1060` divides elapsed motion time by duration) and compares it with 0.46
-from `0x64c598` before emitting the pellet. The imported RedCat `shoot1` motion
-lasts 1.9333430528640747 seconds, so a normal firing cycle is about 1.018 seconds
-and the pellet is released about 0.468 seconds after that cycle begins.
+from `0x64c598` before emitting the pellet. Release requires progress strictly
+greater than 0.46. The imported RedCat `shoot1` motion lasts
+1.9333430528640747 seconds: at 1.9×, the full clip is about 1.018 seconds and
+the pellet releases on the first update beyond about 0.468 seconds.
+
 The simulation and rendered player animation share this clock. The 12 October
-animation audit additionally recovered the visual handoff at **80%**: shooting
-yields to movement/idle after about .814 seconds, while projectile release and
-recharge remain unchanged. See [animation recovery](redcat-animations-native.md).
+animation audit recovered the handoff at **80%**. A further assembly check on
+26 October established that this also ends the firing state, not only its
+visual priority: `0x433315–0x43332f` clears both the firing flag and cached
+previous state. Held fire may start the next shot on the following controller
+update, after about .814 seconds rather than waiting for the full clip.
+The port now preserves that ordering. See [animation recovery](redcat-animations-native.md).
 
 `ProjectileEasy.ini`, `ProjectileNormal.ini`, and `ProjectileHard.ini` contain
 the active per-projectile properties. These are already imported into
@@ -40,12 +45,24 @@ used. Normal difficulty has:
 The RcShot property reader at `0x44eca0` fills its initial velocity from
 `InitialSpeed` at `0x44f34b`, acceleration at `0x44f392`, maximum speed at
 `0x44f3df`, and recharge at `0x44f3f7`. The generic emitter converts recharge
-seconds to milliseconds at `0x44d3b5`. The common flight update at `0x44cacf`
+seconds to milliseconds at `0x44d3b5`. These recharge values configure the
+common factory's returned timer; RedCat's caller at `0x434dac` discards that
+stack-local timer. Its firing input gate tests the learned skill mask
+(`0x4324a4`, `0x432906`), not this recharge interval. Accordingly, player fire
+uses the recovered motion cutoff while other emitters retain their own timers.
+The common flight update at `0x44cacf`
 adds acceleration times delta time and caps speed before translating.
-The portable update integrates that acceleration continuously to keep travel
-consistent across frame rates and sweeps every segment against world brushes
-and actor hulls. Projectile lifetime, pending release, firing cooldown and
-animation phase survive saving and loading. Cutscenes pause firing; freezing
+The portable update now applies that ordering on a canonical 60 Hz flight
+clock, with smooth partial-step travel at higher refresh rates. Previously it
+used a continuous acceleration integral, missing the native advance-before-move
+term: an ordinary shot travels 381.333 units in its first second at native
+60 Hz, rather than the prior 380 units. All authored player shots have zero
+gravity and a fixed direction, so whole steps (including the speed cap) can be
+summed arithmetically without extra collision queries or an unbounded loop.
+The combined straight segment is swept against world brushes and actor hulls.
+Projectile lifetime, fractional flight phase, pending release, firing cooldown
+and animation phase survive saving and loading. Protected dialogue cancels an
+unreleased shot, so it cannot fire after the conversation; freezing
 enemies still allows RedCat's projectiles to operate shootable puzzles.
 
 ## Original animated artwork
@@ -82,15 +99,21 @@ the held pose, 1.5-second charge, release timing and scaled damage.
 The shared native collision hull, approximately ±0.032 units, is implemented
 independently of sprite size; see [projectile contact](player-reactions-and-projectile-contact-native.md).
 The [player impact factories](projectile-impacts-native.md) also use their
-recovered artwork, timing and light profiles. Continuous flight integration and
-portable BSP/actor traces still do not claim bit-identical Genesis3D collision
-or frame stepping.
+recovered artwork, timing and light profiles. The canonical flight clock is a
+portable frame-rate adaptation: it preserves the recovered native step ordering
+at 60 Hz, not arbitrary native display-dependent stepping or bit-identical
+Genesis3D/x87 collision. Custom player projectiles combining acceleration with
+nonzero gravity are outside the authored zero-gravity helper's parity scope.
 
 ## Verification
 
 `tests/player-projectiles.test.mjs` verifies delayed release, held-fire cadence,
 authored acceleration and speed caps, projectile lifetime, upgraded shot kinds,
-save/load mid-animation and mid-flight, cutscene pause and frozen-enemy puzzles.
+save/load mid-animation and mid-flight, dialogue cancellation and frozen-enemy puzzles.
+The 26 October focused run of this file plus `tests/player-abilities.test.mjs`
+passed 19 tests, including strict release boundaries and next-update rearming.
+The retained assembly and finding record are in
+`temp_work/native-behavior-followup-2026-10-26/player/`.
 Existing gameplay and Davi-Script tests now advance real pellet flight before
 asserting damage or brush callbacks, including inactive graveyard planks and the
 forest shootable switch. The bitmap importer test checks original RGB retention,
@@ -101,3 +124,9 @@ Brutus's `RcMushRoom` sequence is also imported as `mushRoom`: `msh0.bmp` throug
 `0x448b70`–`0x448e67` uses a 50 ms interval from `0x64ceec`; the authored Size
 0.3 gives 9.6-unit dimensions for these 32×32 frames. Its separate mushroom
 trail effect remains distinct from the animated projectile sprite.
+
+The subsequent flight correction passes 15 focused tests across
+`player-projectiles`, `player-projectile-flight-native`, and
+`projectile-collision`, retained in `player-flight-tests.tap`. These compare
+30–240 Hz travel, partial-step/save continuity, native capped acceleration,
+large elapsed time without a step loop, and swept wall/body impact behavior.

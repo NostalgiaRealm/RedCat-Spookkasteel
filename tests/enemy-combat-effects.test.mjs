@@ -9,6 +9,7 @@ import {attachedActorVisible} from '../src/actor-placement.js';
 import {updateBoss} from '../src/boss-ai.js';
 import {enemyDeathOpacity,DEATH_SMOKE_TEXTURE} from '../src/enemy-death-effects.js';
 import {jesterTeleportParticles,EnemyCombatEffects} from '../src/enemy-combat-effects.js';
+import {JESTER_EFFECT_SECONDS} from '../src/jester-teleport-timing.js';
 
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 function scene(id,save=null) {
@@ -50,11 +51,15 @@ test('Jester departure and arrival retain native particle counts, directions and
   assert.deepEqual(events.filter(e=>e.type==='bossTeleportEffect').map(e=>e.phase),['departure','arrival']);
   const saved=game.snapshot();game.restore(saved);assert.deepEqual(boss.boss.teleportEffects,saved.objects[0].boss.teleportEffects);
   const before=structuredClone(boss.boss.teleportEffects);game.scripts={enemiesFrozen:true};updateBoss(game,boss,.1,context);assert.deepEqual(boss.boss.teleportEffects,before);
-  const depart=jesterTeleportParticles({phase:'departure',age:.5,position:[0,0,0]}),arrive=jesterTeleportParticles({phase:'arrival',age:.5,position:[0,0,0]});
+  const depart=jesterTeleportParticles({phase:'departure',age:.75,position:[0,0,0]}),arrive=jesterTeleportParticles({phase:'arrival',age:.75,position:[0,0,0]});
   assert.equal(depart.length,15);assert.equal(arrive.length,15);
   assert.ok(depart[0].position[1]<depart[14].position[1],'staggered particles descend');
   assert.ok(arrive[0].position[1]>arrive[14].position[1]);
-  assert.equal(jesterTeleportParticles({phase:'departure',age:1.5,position:[0,0,0]}).length,0);
+  assert.equal(jesterTeleportParticles({phase:'departure',age:JESTER_EFFECT_SECONDS,position:[0,0,0]}).length,0);
+  game.scripts=null;boss.boss.teleportEffects=[{phase:'departure',age:1.6,position:[0,0,0]}];
+  const tail=game.snapshot();game.restore(tail);assert.deepEqual(boss.boss.teleportEffects,tail.objects[0].boss.teleportEffects,'the original final particles survive the old 1.5-second cutoff on load');
+  updateBoss(game,boss,.01,context);assert.equal(boss.boss.teleportEffects.length,1);
+  updateBoss(game,boss,.2,context);assert.equal(boss.boss.teleportEffects.length,0);
 });
 
 test('native non-ribbon projectiles do not emit invented smoke trails or impact tails',()=>{
@@ -69,9 +74,10 @@ test('native non-ribbon projectiles do not emit invented smoke trails or impact 
   }
   game.projectiles=[];game.time=1.2;effects.update(batches);
   assert.deepEqual(draws,[],'native null effect factories create no independent flight or impact particles');
-  game.objects=[{enemyType:'maxj',health:1,boss:{teleportEffects:[{phase:'departure',age:.5,position:[0,0,0]}]}}];
+  game.objects=[{enemyType:'maxj',health:1,boss:{teleportEffects:[{phase:'departure',age:.75,position:[0,0,0]}]}}];
   effects.update(batches);
   assert.equal(draws.length,15,'Jester teleport particles remain a separate native effect');
+  assert.ok(draws.every(draw=>draw[7]===2),'Jester uses its native per-particle camera-position basis and UVs');
 });
 
 test('all enemy projectile kinds have the original imported frame sequences and INI sprite sizes',()=>{

@@ -1,0 +1,18 @@
+✔ native enemy initial speed and gravity follow authored projectile classes, including both Brutus attacks (2.141829ms)
+✔ Brutus bones use native gravity before each movement step and retain forward speed (1.100814ms)
+✔ forest Brutus mushrooms fly at InitialSpeed, with no invented acceleration or fallback Speed override (4.527547ms)
+✔ native lifetimes sample the full authored range on 1/10000 steps and truncate to milliseconds (0.164149ms)
+✔ projectile randomness preserves the shipped 15-bit modulo distribution and excludes the upper endpoint (2.542627ms)
+✔ all shooter families apply independent native spread samples before normalization without changing speed (0.344718ms)
+✔ sampled lifetimes and the next salvo remain deterministic after save/load (2.338868ms)
+✔ witch magic applies native shared movement, then homes toward the moved player at authored speed (0.236599ms)
+✔ legacy generated enemy gravity migrates exactly once without altering player or custom units (0.487447ms)
+✔ frozen enemy ammunition preserves the entire ballistic or homing flight state (0.244389ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 102.07408

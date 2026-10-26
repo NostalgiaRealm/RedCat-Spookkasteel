@@ -1,0 +1,32 @@
+✖ normal and green explosion lights use original radius, colour and one-second pattern (1.63371ms)
+✔ smoke-only and zero-size blasts add no light, delayed blasts start independently and reuse records (0.466408ms)
+✔ world update passes blast lights to actors while retaining the existing eight world-light slots (3.002432ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 77.028283
+
+✖ failing tests:
+
+test at tests/explosion-light-native.test.mjs:11:1
+✖ normal and green explosion lights use original radius, colour and one-second pattern (1.63371ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  144 !== 200
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/explosion-light-native.test.mjs:16:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 144,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

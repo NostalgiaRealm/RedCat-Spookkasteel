@@ -2,6 +2,9 @@ import { DaviVM } from './davi-vm.js';
 import { MotionPlayer } from './motions.js';
 import { repairGraveyardMazeSave } from './graveyard-maze.js';
 import { ModelTransformMap } from './model-transforms.js';
+import {queueControllerTarget,restoreControllerTarget,updateControllerTarget} from './model-controller-target.js';
+import {buttonSettled,setButtonPhase,restoreButtonPhase,updateButtonController} from './button-controller-native.js';
+import {playerMotionHintValue} from './player-animation.js';
 
 const number=(value,fallback=0)=>Number.isFinite(Number(value))?Number(value):fallback;
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
@@ -16,6 +19,7 @@ export class ScriptHost {
     this.game=gameplay;this.dialogue=dialogue;this.bindings=new Map();this.players=new Map();
     this.modelTransforms=new ModelTransformMap();this.keyItems=new Set();this.missions=new Map();
     this.cutscene=false;this.playerVisible=true;this.enemiesFrozen=false;this.weaponsEnabled=true;
+    this.hintMotion=0;
     this.isDialoguePlaying=isDialoguePlaying;this.pendingCutsceneStop=null;
     this.replayLevel=replayLevel===true;
     this.portalTransition=null;
@@ -77,7 +81,7 @@ export class ScriptHost {
         if(object.teleportEffectSerial!==before)this.portalTransition={id:object.id,serial:object.teleportEffectSerial,fromVisible:this.playerVisible};
       }
       else if(['open','close','lock','unlock','enable','disable','show','hide','switch','switchon','switchoff','trigger','destroy'].includes(verb))this.game.command(object,verb);
-      else if(verb==='setto') {const p=this.players.get(object.id);if(p){p.seek(number(args[0]));this.applyMotion(object,p);}}
+      else if(verb==='setto') {const p=this.players.get(object.id);if(p){if(object.kind==='controller')queueControllerTarget(object,p,'set',number(args[0]));else {p.seek(number(args[0]));this.applyMotion(object,p);}}}
       else if(verb==='moveto')this.startMotion(object,number(args[0]));
       else if(verb==='setmotionspeed'||verb==='multiplymotionspeed') {
         object.motionSpeed=(verb==='setmotionspeed'?1:number(object.motionSpeed,1))*number(args[0],1);
@@ -91,7 +95,7 @@ export class ScriptHost {
         if(object.entity.classname==='EffectMusic'){this.afterBossMusicId=null;this.musicState={id:object.id,stop:true};this.game.emit('scriptMusic',this.musicState);}
         else this.game.emit('scriptSound',{id:object.id,stop:true});
       }
-      else if(verb==='reset') {object.triggerCount=0;object.switchCount=0;object.inside=false;const p=this.players.get(object.id);if(p){p.stop();p.seek(p.motion.startTime);this.applyMotion(object,p);}}
+      else if(verb==='reset') {object.triggerCount=0;object.switchCount=0;object.inside=false;object.triggerPhase=0;delete object.pendingButtonSwitch;if(object.kind==='button'){object.switchedOn=number(object.entity.IsInitiallySwitchedOn)!==0;object.enabled=number(object.entity.IsInitiallyEnabled,1)!==0;object.buttonPhase=object.switchedOn?5:1;object.moving=false;}const p=this.players.get(object.id);if(p){delete p.controllerTarget;p.stop();p.seek(object.kind==='button'?(object.switchedOn?p.motion.endTime:0):number(object.entity.InitialPosition,p.motion.startTime));this.applyMotion(object,p);}}
       else if(['rotatex','rotatey','rotatez'].includes(verb)){object.rotation||=[0,0,0];object.rotation['xyz'.indexOf(verb.at(-1))]+=number(args[0])*Math.PI/180;}
       else if(verb==='enableshadow'||verb==='disableshadow')object.shadow=verb==='enableshadow';
       else if(verb==='setfollowdaviname')object.followName=String(args[0]);
@@ -127,7 +131,7 @@ export class ScriptHost {
         const target=game.find(a)[0];if(!target)throw new Error(`Missing Davi-Script savepoint: ${a}`);
         game.setCheckpoint(target.position,number(args[1]),target.id);return 0;
       }
-      case 'rchintmotion':this.hintMotion=number(a);return 0;
+      case 'rchintmotion': {const hint=playerMotionHintValue(a);if(hint!==null)this.hintMotion=hint;return 0;}
       case 'playwavsound':game.emit('scriptSound',{sound:String(a)});return 0;
       case 'rchasallpotions': {
         const conf=game.settings.game?.Player||game.settings.game?.Game||{};
@@ -247,7 +251,8 @@ export class ScriptHost {
     }
     if(object.kind==='controller') {
       const p=this.players.get(object.id);
-      if(enabled&&changed){if(p&&!p.finished&&object.motionStarted)p.resume();else this.startMotion(object);}else if(!enabled)p?.stop();
+      if(p?.controllerTarget){if(!enabled){p.stop();object.moving=false;}}
+      else if(enabled&&changed){if(p&&!p.finished&&object.motionStarted)p.resume();else this.startMotion(object);}else if(!enabled)p?.stop();
     }
     if(object.entity.classname==='EffectSound'&&(changed||enabled&&!number(object.entity.Replay)))this.sound(object,enabled);
     if(changed&&enabled&&object.entity.classname==='FlashEffect')this.game.emit('flash',{id:object.id});
@@ -270,6 +275,7 @@ export class ScriptHost {
   }
   startMotion(object,to=null) {
     const player=this.players.get(object.id);if(!player)return false;
+    if(to!==null&&object.kind==='controller'){queueControllerTarget(object,player,'move',to);return true;}
     const clip=player.motion;
     const mode=number(object.entity.RepeatMode),loop=object.kind==='controller'?(mode===2?'pingpong':mode===1):false;
     // Native repeat controllers wrap/reflect at the path extent. Extending a
@@ -278,8 +284,13 @@ export class ScriptHost {
     // Repeating controllers do not normally finish. An old save that lost
     // its repeat mode can have completed one lap; restore the authored phase
     // on its next Enable so staggered hazards do not restart as one cluster.
-    const from=player.finished?(loop?clamp(number(object.entity.InitialPosition,clip.startTime),clip.startTime,end):clip.startTime):Math.min(player.time,end);
+    const finished=player.finished;
+    const from=finished&&loop?clamp(number(object.entity.InitialPosition,clip.startTime),clip.startTime,end):Math.min(player.time,end);
     player.play({from,to:to??end,speed:number(object.motionSpeed,1),loop,loopFrom:clip.startTime,loopTo:end});
+    // Ordinary completed controllers stay at the endpoint when re-enabled.
+    // Native Enable only changes registration (0x502350); it does not reset
+    // the timeline or replay its final MotionCommand. Reset is separate.
+    if(finished&&!loop)player.includeStart=false;
     object.moving=true;object.motionStarted=true;return true;
   }
   doorMotion(object,open) {
@@ -288,9 +299,9 @@ export class ScriptHost {
   }
   motionComplete(object) {
     object.moving=false;
-    if(object.kind==='controller')object.enabled=false;
+    if(object.kind==='controller'&&!this.players.get(object.id)?.controllerTarget)object.enabled=false;
     if(object.kind==='door')this.game.doorMotionComplete(object);
-    if(object.kind==='button')this.game.runEvent(object,object.switchedOn?'AfterSwitchOnCommand':'AfterSwitchOffCommand');
+    if(object.kind==='button')setButtonPhase(object,object.buttonPhase===7?8:4);
   }
   applyMotion(object,player,pose=player.sample()) {
     this.modelTransforms.set(object.modelIndex,{...pose,origin:player.motion.origin});
@@ -299,8 +310,10 @@ export class ScriptHost {
     this.time+=dt;
     this.updateBossMusic();
     for(const [id,player] of this.players) {
-      const object=player.object;
-      if(player.playing)this.applyMotion(object,player,player.update(dt));
+      const object=player.object,previousTime=player.time;
+      if(updateButtonController(this,object,player,dt)){if(player.time!==previousTime)this.applyMotion(object,player);}
+      else if(updateControllerTarget(object,player,dt)){if(player.time!==previousTime)this.applyMotion(object,player);}
+      else if(player.playing)this.applyMotion(object,player,player.update(dt));
     }
     if(this.camera?.duration>0&&this.time-this.camera.start>=this.camera.duration)this.camera=null;
     if(this.pendingCutsceneStop&&!this.isDialoguePlaying())this.finishCutscene(this.pendingCutsceneStop.fade);
@@ -314,16 +327,18 @@ export class ScriptHost {
     try {
       if(this.pendingCutsceneStop)this.finishCutscene(this.pendingCutsceneStop.fade);
       for(let elapsed=0;this.cutscene&&elapsed<maximumSeconds;elapsed+=.05){
-        if(![...this.players.values()].some(p=>p.playing))break;
+        if(![...this.players.values()].some(p=>p.object.kind==='button'
+          ?p.object.enabled&&(!buttonSettled(p.object)||typeof p.object.pendingButtonSwitch==='boolean')
+          :p.playing||p.object.enabled&&p.controllerTarget?.pending))break;
         this.update(.05);onStep();
       }
       return !this.cutscene;
     } finally {this.skippingCutscene=false;}
   }
   snapshot() {
-    return {version:1,replayLevel:this.replayLevel,vm:this.vm.snapshot(),time:this.time,cutscene:this.cutscene,playerVisible:this.playerVisible,enemiesFrozen:this.enemiesFrozen,weaponsEnabled:this.weaponsEnabled,
+    return {version:1,replayLevel:this.replayLevel,vm:this.vm.snapshot(),time:this.time,cutscene:this.cutscene,playerVisible:this.playerVisible,enemiesFrozen:this.enemiesFrozen,weaponsEnabled:this.weaponsEnabled,hintMotion:this.hintMotion,
       poses:copy([...this.modelTransforms]),camera:copy(this.camera),subtitle:copy(this.subtitle),pendingCutsceneStop:copy(this.pendingCutsceneStop),portalTransition:copy(this.portalTransition),musicState:copy(this.musicState),afterBossMusicId:this.afterBossMusicId,combatThreats:this.combatThreats,combatBoss:this.combatBoss,keyItems:[...this.keyItems],missions:[...this.missions],
-      motions:[...this.players].map(([id,p])=>({id,started:!!p.object.motionStarted,time:p.time,from:p.from,to:p.to,speed:p.speed,loop:p.loop,playing:p.playing,finished:p.finished,includeStart:p.includeStart,loopFrom:p.loopFrom,loopTo:p.loopTo}))};
+      motions:[...this.players].map(([id,p])=>({id,started:!!p.object.motionStarted,time:p.time,from:p.from,to:p.to,speed:p.speed,loop:p.loop,playing:p.playing,finished:p.finished,includeStart:p.includeStart,loopFrom:p.loopFrom,loopTo:p.loopTo,...(p.controllerTarget?{controllerTarget:{...p.controllerTarget}}:{}),...(p.object.kind==='button'?{buttonPhase:p.object.buttonPhase??(p.object.switchedOn?5:1)}:{})}))};
   }
   restore(save) {
     if(save?.version!==1)return;
@@ -331,6 +346,7 @@ export class ScriptHost {
     // them into replays merely because their chapter now appears in history.
     this.replayLevel=save.replayLevel===true;
     this.vm.restore(save.vm);this.time=number(save.time);
+    this.hintMotion=playerMotionHintValue(save.hintMotion)??0;
     for(const key of ['cutscene','playerVisible','enemiesFrozen','weaponsEnabled'])if(typeof save[key]==='boolean')this[key]=save[key];
     this.camera=save.camera||null;this.subtitle=save.subtitle||null;this.keyItems=new Set(save.keyItems||[]);this.missions=new Map(save.missions||[]);
     this.pendingCutsceneStop=save.pendingCutsceneStop||null;
@@ -338,6 +354,7 @@ export class ScriptHost {
     const correctedPoses=new Set();
     for(const s of save.motions||[]) {
       const p=this.players.get(s.id);if(!p)continue;
+      restoreControllerTarget(p,s.controllerTarget);
       const savedLoop=s.loop==='pingpong'?'pingpong':!!s.loop;
       const repeat=number(p.object.entity.RepeatMode),nativeLoop=p.object.kind==='controller'?(repeat===2?'pingpong':repeat===1):false;
       // Older saves did not distinguish a never-started controller from a
@@ -357,7 +374,7 @@ export class ScriptHost {
       const firstMarker=paintingTail?p.motion.events.find(e=>e.time>p.motion.startTime&&e.time<=end):null;
       p.seek(firstMarker?firstMarker.time:Math.min(number(s.time),end));p.includeStart=firstMarker?false:!!s.includeStart;if(!s.playing)p.stop();
       if(firstMarker)correctedPoses.add(p.object.modelIndex);
-      p.finished=!!s.finished;p.object.motionStarted=typeof s.started==='boolean'?s.started:!legacyUnstarted;p.object.moving=!!s.playing;this.applyMotion(p.object,p);
+      p.finished=!!s.finished;p.object.motionStarted=typeof s.started==='boolean'?s.started:!legacyUnstarted;p.object.moving=!!s.playing;if(p.object.kind==='button')restoreButtonPhase(p.object,p,s.buttonPhase);this.applyMotion(p.object,p);
       if(paintingTail){
         // Pre-fix saves stopped at paal*e (8.01), missing the paal*a enables
         // at the wrap. Restore those three original side effects only; do not

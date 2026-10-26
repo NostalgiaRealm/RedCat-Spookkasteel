@@ -200,7 +200,7 @@ test('shooting the inactive graveyard plank brush invokes its original destructi
   const {game,object}=boot(2),planks=object('planken1_mc');
   assert.equal(planks.enabled,false);
   game.attack([10000,0,10000],[0,0,-1]);
-  game.time=game.pendingPlayerAttack.at;game.releasePlayerAttack();
+  game.time=game.pendingPlayerAttack.at+.000001;game.releasePlayerAttack();
   game.updateProjectiles(.01,[10000,0,10000],()=>({fraction:.001,modelIndex:planks.modelIndex}));
   assert.equal(planks.visible,false);
   assert.equal(game.modelState(planks.modelIndex).solid,false);
@@ -211,7 +211,7 @@ test('an original shootable button is selected by the first brush hit',()=>{
   const {game,object}=boot(0),button=object('schietknop_mc');
   game.state.skill=1;
   game.attack([10000,0,10000],[0,0,-1]);
-  game.time=game.pendingPlayerAttack.at;game.releasePlayerAttack();
+  game.time=game.pendingPlayerAttack.at+.000001;game.releasePlayerAttack();
   game.updateProjectiles(.01,[10000,0,10000],()=>({fraction:.001,modelIndex:button.modelIndex}),()=>false);
   assert.equal(button.switchedOn,true);
 });

@@ -1,3 +1,5 @@
+import {nativePatternLight,snapshotNativeLight,NATIVE_LIGHT_RETAIN_SECONDS} from './explosion-light-native.js';
+import {nativeShockwave} from './shockwave-native.js';
 // RcWeaponShot/PowerShot/SuperShot's live RcExplosion factories and cells.
 // Enemy factories return null. See docs/projectile-impacts-native.md.
 const PROFILES = Object.freeze({
@@ -5,8 +7,11 @@ const PROFILES = Object.freeze({
   powerShot: {suffix: '_red', size: 35, light: [80, 245, 220]},
   superShot: {suffix: '', size: 75, light: [34, 218, 40]},
 });
+// Authored light duration; its lazy next-tick start and inclusive expiry
+// extend the record tail to NATIVE_LIGHT_RETAIN_SECONDS on the visual clock.
 export const PROJECTILE_IMPACT_SECONDS = 1;
 export const IMPACT_WAVE_TEXTURE = 'electricwave.bmp|electricwave_a.bmp';
+const LIGHT_COLORS=Object.fromEntries(Object.entries(PROFILES).map(([kind,profile])=>[kind,Object.freeze(profile.light.map(value=>value/255))]));
 const MAX_IMPACTS = 128;
 const vector = value => Array.isArray(value) && value.length === 3 && value.every(Number.isFinite);
 
@@ -21,14 +26,15 @@ export function createProjectileImpact(projectile, time) {
 }
 
 export function retainProjectileImpacts(impacts, time) {
-  return impacts.filter(effect => time - effect.birth < PROJECTILE_IMPACT_SECONDS).slice(-MAX_IMPACTS);
+  return impacts.filter(effect => time - effect.birth < NATIVE_LIGHT_RETAIN_SECONDS - 1e-10).slice(-MAX_IMPACTS);
 }
 
 export function restoreProjectileImpacts(saved, time) {
   return (Array.isArray(saved) ? saved : []).slice(-MAX_IMPACTS).filter(effect =>
     effect && typeof effect.id === 'string' && Object.hasOwn(PROFILES, effect.kind) && vector(effect.position) &&
-    Number.isFinite(effect.birth) && effect.birth <= time && time - effect.birth < PROJECTILE_IMPACT_SECONDS
-  ).map(effect => ({id: effect.id, kind: effect.kind, birth: effect.birth, position: [...effect.position]}));
+    Number.isFinite(effect.birth) && effect.birth <= time && time - effect.birth < NATIVE_LIGHT_RETAIN_SECONDS - 1e-10
+  ).map(effect => ({id: effect.id, kind: effect.kind, birth: effect.birth, position: [...effect.position],
+    lightState:snapshotNativeLight(effect,time)}));
 }
 
 export function projectileImpactSprite(effect, time) {
@@ -46,11 +52,8 @@ export function projectileImpactSprite(effect, time) {
 }
 
 export function impactLight(effect, time) {
-  const profile = Object.hasOwn(PROFILES, effect.kind) && PROFILES[effect.kind], age = time - effect.birth;
-  if (!profile || age < 0 || age >= PROJECTILE_IMPACT_SECONDS) return null;
-  const pattern = 'pszzzspmea', index = Math.min(pattern.length - 1, Math.floor(age * pattern.length));
-  return {position: effect.position, radius: Math.trunc(profile.size * .01 * 360) * (pattern.charCodeAt(index) - 97) / 25,
-    color: profile.light.map(value => value / 255), intensity: 1};
+  const profile = Object.hasOwn(PROFILES, effect.kind) && PROFILES[effect.kind];
+  return profile?nativePatternLight(effect,time,Math.trunc(Math.fround(profile.size*.01*360)),LIGHT_COLORS[effect.kind]):null;
 }
 
 // CAdamShockwaveCell::Render, 0x4b4cc0. This is an upright camera-facing
@@ -59,22 +62,5 @@ export function projectileImpactWave(effect, time, camera, trace) {
   const age = time - effect.birth;
   if (effect.kind !== 'superShot' || age < .4 || age > .699 + 1e-10 || !vector(camera)) return null;
   const progress = (age - .4) / .6, radius = 50 * Math.sqrt(.01 * (1 - progress) + .04 * progress);
-  const origin = effect.position, dx = origin[0] - camera[0], dz = origin[2] - camera[2], horizontal = Math.hypot(dx, dz);
-  // Looking straight down makes the native cross product degenerate. Keep a
-  // stable upright plane for that camera singularity instead of NaN vertices.
-  const direction = horizontal > 1e-8 ? [dx / horizontal, 0, dz / horizontal] : [0, 0, 1];
-  const right = [direction[2] * radius, 0, -direction[0] * radius];
-  const point = (centre, side, vertical = 0) => centre.map((value, axis) => value + right[axis] * side + (axis === 1 ? vertical : 0));
-  const quads = [{points: [point(origin,-1,radius),point(origin,1,radius),point(origin,1,-radius),point(origin,-1,-radius)], uvs: [[0,0],[1,0],[1,1],[0,1]]}];
-  const down = [origin[0], origin[1] - radius, origin[2]], hit = trace?.(origin, down);
-  if (hit && hit.fraction < 1 && vector(hit.end)) {
-    const distance = Math.hypot(...hit.end.map((value,axis) => value - origin[axis]));
-    if (distance < radius) {
-      const folded = 1 - distance / radius, depth = folded * radius * .85;
-      const rear = hit.end.map((value,axis) => value - direction[axis] * depth);
-      quads.push({points:[point(hit.end,-1),point(hit.end,1),point(rear,.85),point(rear,-.85)],
-        uvs:[[0,1-folded*.5],[1,1-folded*.5],[1,1],[0,1]]});
-    }
-  }
-  return {quads, radius, opacity:1-progress};
+  return nativeShockwave(effect.position,camera,radius,1-progress,trace);
 }

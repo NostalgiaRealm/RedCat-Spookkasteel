@@ -16,7 +16,7 @@ import { WorldEffects } from './world-effects.js';
 import { EnemyTargeting, targetAimPoint, targetDirection, targetableObject, transformedTargetBounds, targetMarkerPose } from './targeting.js';
 import { actorOrientation, attachedActorVisible, nativePlayerYaw } from './actor-placement.js';
 import {pickupBounds,pickupPlacement} from './pickup-placement.js';
-import { playerMotion, snapshotPlayerAnimation, restorePlayerAnimation } from './player-animation.js';
+import { playerMotion, playerHintMotion, snapshotPlayerAnimation, restorePlayerAnimation } from './player-animation.js';
 import { playerReactionMotion } from './player-lifecycle.js';
 import { PLAYER_SUPER_CHARGE, PLAYER_SHOOT_MOTION } from './player-projectiles.js';
 import { actorOverrideKey, actorOverrideColor } from './actor-materials.js';
@@ -1007,11 +1007,19 @@ export class CastleWorld {
       gap=origin[1]-floor.end[1];
     }
     const motion=playerMotion(state,this.player,input,dt,gap);
-    // Keep the saved full-clip deadline and weapon cooldown unchanged. Native
-    // releases visual priority at 80%, before the shoot1 file itself ends.
+    // Keep the full-clip deadline for phase reconstruction. Native ends both
+    // visual priority and the firing state at 80%, before shoot1 itself ends.
     const shotTime=PLAYER_SHOOT_MOTION.duration-((game?.playerAttackUntil||0)-(game?.time||0))*PLAYER_SHOOT_MOTION.rate;
     const shooting=game?.playerAttackUntil>game?.time&&shotTime<PLAYER_SHOOT_MOTION.duration*PLAYER_SHOOT_MOTION.finishFraction;
-    if(game?.playerCharge) {
+    const selection=game?.playerCharge||shooting?`shoot1:${game.playerAttackSerial}`:motion.name;
+    const hint=playerHintMotion(state,host?.hintMotion,selection,this.player.noClip||state.jumping);
+    if(hint) {
+      state.respawnIdle=false;
+      // The dormant native hint repeatedly requests a non-looping fall1;
+      // 0x4a06b0 restarts that request even when the clip is already selected.
+      // Read-only zero-delta bone queries retain their existing pose.
+      animator.timeScale=1.5;animator.play('fall1',false,hint==='restart'&&dt>0);animator.update(dt);
+    } else if(game?.playerCharge) {
       state.respawnIdle=false;
       animator.timeScale=0;animator.play('shoot1',false);
       animator.time=PLAYER_SHOOT_MOTION.duration*PLAYER_SUPER_CHARGE.holdFraction;animator.update(0,dt);
@@ -1102,7 +1110,7 @@ export class CastleWorld {
     // own horizontal step participates in footstep contact feedback.
     this.player.stepDisplacement=playerFrozen||this.player.recoveredThisStep?0:Math.hypot(this.player.position[0]-stepStart[0],this.player.position[2]-stepStart[2]);
     if(!playerFrozen&&this.player.didJump)this.gameplay?.emit('jump',{position:[...this.player.position],kind:this.player.didJump});
-    if(!playerFrozen&&this.player.didLand>0)this.gameplay?.emit('land',{position:[...this.player.position],impactSpeed:this.player.didLand});
+    if(!playerFrozen&&this.player.didLand>0)this.gameplay?.land(this.player.didLand,this.player.position);
     if(!this.player.noClip&&this.player.position[1]<this.level.bounds.min[1]-350) {this.player.position=[...this.player.lastSafe];this.player.position[1]+=4;this.player.resetVelocity();this.player.movementRecovery.reset();this.gameplay?.damage?.(2);}
     const p=this.player.position;
     if(this.gameplay){

@@ -1,0 +1,19 @@
+✔ RcHintMotion accepts the native range, ignores invalid values and survives legacy/new saves (2.159686ms)
+✔ dormant hint 12 repeatedly requests fall1 until cleared, then yields on a movement-state change (14.771563ms)
+✔ hinted fall never overrides jumps or the deliberate protected player states (3.485887ms)
+✔ RedCat locomotion uses recovered strafe rates without changing diagonal controls (0.181699ms)
+✔ long jump and super-jump cycle their original motion; an upward fan is not a jump (2.466984ms)
+✔ drop detection retains positive floor measurements and probes only the native 1000 units (0.441427ms)
+✔ normal and charged shots yield to movement at native 80%, without altering the deadline (1.127853ms)
+✔ reactions and cutscene idle retain priority, and respawn idle alone uses 1.7x (1.792718ms)
+✔ save restoration preserves descending jumps, outgoing blend and boost clocks exactly (13.077054ms)
+✔ native transition freezes the old pose and blends keys with Hermite/SLERP over 250ms (0.478227ms)
+✔ rapid switches retain the original native transition until its remaining weight drops below half (1.113242ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 141.489255

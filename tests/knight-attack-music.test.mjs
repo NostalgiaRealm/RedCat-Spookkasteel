@@ -57,7 +57,7 @@ test('a free-aim hit gives a distant knight native hit memory and music expires 
 
 test('an aimed attack that misses has a finite music duration',()=>{
   const {game,host,knight,position}=boot();game.attack(position,[0,0,-1],knight);
-  game.time=game.pendingPlayerAttack.at;game.releasePlayerAttack();
+  game.time=game.pendingPlayerAttack.at+.000001;game.releasePlayerAttack();
   game.updateProjectiles(.05,position,(a,b)=>({fraction:.5,end:b,modelIndex:0}));
   assert.equal(game.projectiles.length,0);assert.equal(knight.health,5);assert.equal(!!knight.alerted,false);
   game.time=knight.lastAttackedAt+knight.stats.TimeToRememberVisual+.01;host.update(0);

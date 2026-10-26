@@ -1,0 +1,124 @@
+{
+  "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5",
+  "cases": 47,
+  "differences": [
+    {
+      "operator": 16,
+      "left": {
+        "type": 2,
+        "value": 3
+      },
+      "right": {
+        "type": 2,
+        "value": 34
+      },
+      "native": {
+        "type": 2,
+        "value": -217042214
+      },
+      "portable": {
+        "type": 2,
+        "value": -217042294
+      }
+    },
+    {
+      "operator": 16,
+      "left": {
+        "type": 1,
+        "value": 3.0
+      },
+      "right": {
+        "type": 1,
+        "value": 2.0
+      },
+      "native": {
+        "type": 1,
+        "value": 9.000000000000002
+      },
+      "portable": {
+        "type": 1,
+        "value": 9
+      }
+    },
+    {
+      "operator": 16,
+      "left": {
+        "type": 1,
+        "value": -3.0
+      },
+      "right": {
+        "type": 1,
+        "value": 3.0
+      },
+      "native": {
+        "type": 1,
+        "value": -27.00000000000001
+      },
+      "portable": {
+        "type": 1,
+        "value": -27
+      }
+    },
+    {
+      "operator": 12,
+      "operand": {
+        "type": 1,
+        "value": 0.25
+      },
+      "native": {
+        "type": 1,
+        "value": 0.25261231680816826
+      },
+      "portable": {
+        "type": 1,
+        "value": 0.2526123168081683
+      }
+    },
+    {
+      "operator": 12,
+      "operand": {
+        "type": 1,
+        "value": 0.75
+      },
+      "native": {
+        "type": 1,
+        "value": 0.8223167319358301
+      },
+      "portable": {
+        "type": 1,
+        "value": 0.82231673193583
+      }
+    },
+    {
+      "operator": 13,
+      "operand": {
+        "type": 1,
+        "value": 0.25
+      },
+      "native": {
+        "type": 1,
+        "value": 0.24491866240370908
+      },
+      "portable": {
+        "type": 1,
+        "value": 0.24491866240370913
+      }
+    },
+    {
+      "operator": 18,
+      "operand": {
+        "type": 1,
+        "value": 0.75
+      },
+      "native": {
+        "type": 1,
+        "value": -0.12493873660829995
+      },
+      "portable": {
+        "type": 1,
+        "value": -0.12493873660829993
+      }
+    }
+  ],
+  "scope": "Read-only isolated native-byte operator checks: power, logical binary operations, finite interior transcendental inputs. Not a campaign test."
+}

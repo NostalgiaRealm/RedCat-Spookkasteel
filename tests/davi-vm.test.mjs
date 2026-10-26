@@ -150,3 +150,35 @@ test('invalid instructions, stack underflow, missing native implementations and 
   assert.ok(native.vm.lastError);
   assert.throws(() => native.vm.restore({ version: 1, script: 'wrong' }), DaviRuntimeError);
 });
+
+test('native unary jump table includes hyperbolic and inverse trigonometric operations', () => {
+  for (const [operator, value, expected] of [
+    [12, 0, 0], [12, 1, (Math.E - 1 / Math.E) / 2],
+    [13, 0, 0], [13, 1, (Math.E ** 2 - 1) / (Math.E ** 2 + 1)],
+    [14, 0, 1], [14, 1, (Math.E + 1 / Math.E) / 2],
+    [15, 1, Math.PI / 2], [15, -1, -Math.PI / 2],
+    [16, 1, 0], [16, -1, Math.PI],
+  ]) {
+    const actual = daviUnary(operator, { type: 1, value });
+    assert.equal(actual.type, 1);
+    assert.ok(Math.abs(actual.value - expected) < 1e-14);
+    assert.throws(() => daviUnary(operator, { type: 3, value: '1' }), DaviRuntimeError);
+  }
+});
+
+test('native string unary operators retain byte encoding, C locale and terminators', () => {
+  const unary = (operator, value) => daviUnary(operator, { type: typeof value === 'string' ? 3 : 2, value });
+  assert.deepEqual(unary(21, 'RedCat €\0hidden'), { type: 2, value: 15 });
+  assert.deepEqual(unary(22, 'RedCAT ÄÉ\0hidden'), { type: 3, value: 'redcat ÄÉ' });
+  assert.deepEqual(unary(23, 'Redcat äé\0hidden'), { type: 3, value: 'REDCAT äé' });
+  for (const [byte, character] of [[65, 'A'], [128, '€'], [150, '–'], [196, 'Ä'], [255, 'ÿ']]) {
+    assert.deepEqual(unary(24, character), { type: 2, value: byte });
+    assert.deepEqual(unary(25, byte), { type: 3, value: character });
+    assert.deepEqual(unary(25, byte + 256), { type: 3, value: character });
+  }
+  assert.deepEqual(unary(25, -1), { type: 3, value: 'ÿ' });
+  assert.deepEqual(unary(25, 256), { type: 3, value: '' });
+  assert.deepEqual(unary(24, ''), { type: 2, value: 0 });
+  assert.deepEqual(unary(24, '\0hidden'), { type: 2, value: 0 });
+  assert.throws(() => unary(21, '😀'), /Windows-1252/);
+});

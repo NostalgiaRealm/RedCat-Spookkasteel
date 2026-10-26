@@ -1,0 +1,9 @@
+{
+  "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5",
+  "ticks": 74,
+  "mismatches": 0,
+  "differences": [],
+  "boundary": "Execute original CAdamLight Tick and step-interpolator machine code.\nEngine cell processing, scene-light dirty upload and actor deletion are hooked;\ntimer, pattern sample, modulo advance and all native float math run unchanged.\n",
+  "reference": "native-light-clock-probe.json",
+  "note": "Includes two deliberate calls after retirement to inspect method semantics; the port fixed clock stops at the first dead tick. No whole-game rendering claim."
+}

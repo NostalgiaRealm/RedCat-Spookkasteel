@@ -78,8 +78,14 @@ the particle position/output objects and existing billboard batches. Expired
 cohorts and consumed event IDs are removed; no smoke traces, material creation
 or unbounded emission occur during playback. The existing portable limit of
 16 blasts guards malformed counts. All currently imported actors author one
-blast and disable Green/Electric; the unused green **flash** still uses the
-previous colour substitute, and electrical arcs are not newly implemented.
+blast and disable Green/Electric. The 26 October follow-up restored the dormant
+Green flash's original `Expl_sup` artwork and Ring shockwave, and Electric's
+gold-spark generators, short streaks and crackles. Electric is independent of
+the visual-type selector; calling it a generic electrical-arc branch was
+incorrect. Its original `grobber_trail3.bmp` is missing from the installation
+and CD, so that particular trail visual remains unavailable without inventing
+artwork. See [explosion variants](explosion-variants-native.md) for exact
+addresses, conditional asset loading, save continuity and verification.
 
 ## Focused checks
 
@@ -94,3 +100,11 @@ size/opacity/motion, unchanged flash clocks, smoke-only/green selection,
 and cohort/event cleanup.
 
 No package build or unrelated regression suite was run.
+
+## Save continuity follow-up (26 October 2026)
+
+New prop-fragment saves preserve their live integrator state rather than
+replaying earlier collisions. The recovered launch/physics behavior and pooled
+renderer remain unchanged; only older saves need bounded reconstruction.
+See [effect save continuity](effects-save-continuity.md#breakable-object-fragments-26-october-follow-up)
+for fields, validation, synchronous-save ordering and focused checks.

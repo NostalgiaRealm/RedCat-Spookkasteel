@@ -1,0 +1,23 @@
+✔ player flight matches native accelerate/cap-before-translation at canonical60Hz (0.719776ms)
+✔ player native flight keeps smooth partial movement and identical travel across display rates (1.423912ms)
+✔ saved player flight validates its partial step and preserves simulation roundtrips (2.474415ms)
+✔ held shooting releases after 46% and restarts after the native 80% handoff (5.540326ms)
+✔ native release threshold is strict and firing can re-arm only on the following update (0.291798ms)
+✔ player pellets accelerate at the authored rate, cap their speed, and have finite lifetime (0.331528ms)
+✔ skill upgrades retain native projectile kinds, damage and speed (0.297498ms)
+✔ the renderer supplies the animated right-hand origin only at pellet release (0.710766ms)
+✔ cutscenes cancel queued release while ordinary save/load preserves cadence and in-flight pellets (2.453275ms)
+✔ freezing enemies leaves player pellets active for shootable puzzles (0.497807ms)
+✔ death cancels an unreleased pellet so it cannot fire after checkpoint respawn (0.717655ms)
+✔ all three original animated player pellet sequences are packaged with alpha (14.509991ms)
+✔ native thin projectile sweep hits the body but no longer catches empty space next to it (0.601477ms)
+✔ all generated shots use the recovered collision extent regardless of visual sprite size (2.522565ms)
+✔ projectile sweep resolves the earliest impact without tunnelling or applying hits through a wall (1.023123ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 111.368786

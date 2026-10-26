@@ -119,7 +119,7 @@ test('saved enemy animation, salvo cooldown and projectile flight resume without
 
 test('player pellets hit the nearest brush and emit enemy hurt only on arrival',()=>{
   const {game,events}=fixture([enemy(1,{Origin:'0 0 -200'})]);
-  const fire=()=>{game.attackCooldown=0;game.attack([0,0,0],[0,0,-1]);game.time=game.pendingPlayerAttack.at;game.releasePlayerAttack();};
+  const fire=()=>{game.attackCooldown=0;game.attack([0,0,0],[0,0,-1]);game.time=game.pendingPlayerAttack.at+.000001;game.releasePlayerAttack();};
   const wall=(start,end)=>end[2]<=-100?{fraction:(-100-start[2])/(end[2]-start[2]),modelIndex:0}:{fraction:1,end};
   fire();assert.equal(events.filter(e=>e.type==='playerProjectileImpact').length,0);
   for(let i=0;i<10;i++)game.updateProjectiles(.1,[0,0,0],wall);

@@ -77,6 +77,12 @@ and 2.4-second fade duration. Restart preserves its current alpha and wiggle
 burst disperses. This is an actual trajectory transition, rather than a
 replacement circle of particles appearing after the flash.
 
+The [26 October particle comparison](presentation-source-parity-2026-10-26.md)
+also restores the separate, lazily armed lifetime/delay/fade clocks and byte
+alpha conversion in `CParticle::Tick`. Expiry is strict and happens before
+movement. The stored float32 `.9` delay converts to 899 milliseconds. Restart
+retains current opacity until the new fade writes its configured endpoints.
+
 ## Timing, saves and renderer boundaries
 
 The portable implementation steps recovered Euler operations at 60 Hz.
@@ -99,6 +105,10 @@ warmup and one effect/burst lifetime, never the entire saved level age. The old
 completed age of exactly seven seconds migrates to completed, without restarting
 the recovered closing flash or loop.
 
+Active records now include their independent particle-clock deadlines and fade
+mode. Older pool snapshots lacking these fields receive bounded clock-only
+reconstruction while retaining their saved positions, velocities and opacity.
+
 World rendering still owns floor/ceiling traces, original texture batches,
 light allocation and audio. Davi-Script/motion events own RedCat's relocation
 and visibility. The effect does not relocate the player or invent a teleport
@@ -115,8 +125,10 @@ for the separately recovered sound arguments and terminal cue.
   uses the recovered [BSP lightmap falloff](world-light-falloff-research.md) and
   [actor lighting](actor-lighting-native.md), rather than the former generic
   Three.js falloff. The eight-light world rendering budget remains a portable limit.
-- Billboard basis construction, integer alpha rounding, floating-point
-  precision and Genesis clipping are not byte-identical. Recovered sizes,
+- Billboard basis construction, floating-point integration and Genesis clipping
+  are not byte-identical. Ordinary particle integer alpha and timer ordering
+  are now recovered; beam/flash rendering remains on the portable visual clock.
+  Recovered sizes,
   phases, trajectories and artwork replace the substantial approximation;
   this does not claim pixel-identical rendering.
 - Hover randomness uses the recovered MSVC generator with a per-effect seed,

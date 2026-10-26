@@ -86,6 +86,14 @@ replacing the performance-bounded navigation system.
   Both now wait only after their completed salvo. Plant's subclass constructor
   `0x406c40` calls `0x40a1d0` and retains the shared update/shoot methods, while
   overriding the post-salvo idle wait at `0x406c60`.
+  A 26 October comparison additionally replaced their combined attack/cooldown
+  timer with the actual separate standing-shooter wait state. The clock arms
+  on its first check and expires strictly after its integer-ms deadline
+  (`0x404020`); the plant override delegates to that same clock. A running
+  wait finishes before lost memory returns a gargoyle to stone. While the
+  attack parent retains target memory, its next salvo does not add a new
+  attack-range gate. Save/load and script freezes preserve that state; see
+  [the focused findings](../temp_work/original-source-parity-2026-10-26/gameplay/findings.md).
 - A retreating spider supplies its own start waypoint ID to the native move
   controller (`0x40931f`, `0x40993f`). The getter chain `0x414180` → `0x4283d0`
   → `0x595480` retrieves the actor's stored start waypoint. The port now keeps

@@ -20,7 +20,7 @@ function boot(save=null){
 function touch(app,name){
   const button=app.game.find(name)[0];
   app.step(.05,button.position,{touchedModels:[button.modelIndex],use:false});
-  assert.equal(button.switchedOn,true);app.until(()=>app.disc.open);return button;
+  assert.equal(button.pendingButtonSwitch,true);app.until(()=>app.disc.open);assert.equal(button.switchedOn,true);return button;
 }
 
 for(const name of ['knopdisc01','knopdisc02'])test(`${name} touch runs the full original flip before the stay-open delay, then resets and repeats`,()=>{

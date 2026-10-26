@@ -1,0 +1,64 @@
+✔ both original grave buttons open the disabled paired doors through the compiled Davi callbacks (33.768329ms)
+✔ grave-door progress survives saving after one button and during the paired opening motion (64.30134ms)
+✔ disabled door still rejects direct player touch and use while explicit script Open works (1.211912ms)
+✔ MoveTo retains the current endpoint and overrides authored pingpong playback (2.598294ms)
+✔ SetTo is a deferred enabled-controller operation, replaces a loop, and dispatches native forward labels (0.904664ms)
+✔ pending target commands and completed target mode survive saves and enable toggles (1.122813ms)
+✔ SetTo retains motion collision guards and does not replay a label when blocked (0.279939ms)
+✖ a label may replace SetTo without a stale target overriding its new command (0.722626ms)
+✔ controller Reset discards target mode; target commands clamp to authored motion rather than event tail (0.869964ms)
+✔ explicit Trigger is an enabled-independent Enter/Leave pulse with positive use limits (0.262418ms)
+✔ zero limits mean unlimited for triggers, buttons and shootable-button selection (0.377698ms)
+✖ original Caves altar button callbacks still unlock Max only after all four completed puzzle counters (39.045187ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 10
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 199.44031
+
+✖ failing tests:
+
+test at tests/world-script-commands-native.test.mjs:52:1
+✖ a label may replace SetTo without a stale target overriding its new command (0.722626ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0.75
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-script-commands-native.test.mjs:54:90)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0.75,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/world-script-commands-native.test.mjs:80:1
+✖ original Caves altar button callbacks still unlock Max only after all four completed puzzle counters (39.045187ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-script-commands-native.test.mjs:90:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

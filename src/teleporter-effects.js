@@ -1,4 +1,5 @@
 import { stepFairyCentre } from './fairy-effects.js';
+import {createParticleClock,advanceParticleClock,validParticleClock,legacyParticleClock,particleMilliseconds} from './particle-clock-native.js';
 
 // CRTeleporterFx / CParticle in RcHcGame.dat. Address-by-address recovery is
 // recorded in docs/portal-native-recovery.md. Time is seconds, positions are
@@ -66,11 +67,14 @@ export class NativeTeleporterEffect {
       if(p.active&&(!['corner','seek','orbit','burst'].includes(p.kind)||!vector(p.position)||!vector(p.centre)||
         !['born','life','alpha','opacity','fadeDelay','fadeDuration','phase'].every(k=>Number.isFinite(p[k]))||p.life<=0||p.fadeDuration<=0))return null;
       if(p.active&&p.kind==='seek'&&(typeof p.seeking!=='boolean'||p.waypoint!==0))return null;
+      if(p.active&&p.clock!==undefined&&!validParticleClock(p.clock))return null;
     }
     const effect=new NativeTeleporterEffect(snapshot);
     for(const key of Object.keys(effect))effect[key]=clone(snapshot[key]);
     effect.pool=effect.pool.map(p=>p===null?{active:false,wiggle:0,wiggleUp:true,velocity:[0,0,0]}:
       Array.isArray(p)?{active:false,wiggle:p[0],wiggleUp:p[1],velocity:[0,0,0]}:p);
+    for(const p of effect.pool)if(p.active&&!p.clock)
+      p.clock=legacyParticleClock(p.life,p.fadeDelay,p.fadeDuration,Math.round(p.born*60)+(p.kind==='corner'||p.kind==='orbit'?0:1),effect.time,p.opacity);
     return effect;
   }
   show() {
@@ -81,6 +85,7 @@ export class NativeTeleporterEffect {
     // analytically respawned. Their target is the first rotating energy beam.
     for(const p of this.pool)if(p.active) {
       p.kind='seek';p.born=this.time;p.life=.9;p.fadeDelay=.9;p.fadeDuration=.9;
+      p.clock=createParticleClock(p.life,p.fadeDelay,p.fadeDuration,{opacity:p.opacity});
       p.seeking=true;p.waypoint=0;
     }
     return true;
@@ -98,6 +103,7 @@ export class NativeTeleporterEffect {
     Object.assign(p,{active:true,kind:orbit?'orbit':'corner',born:this.time,life:orbit?50:3,
       alpha:1,opacity:1,fadeDelay:.9,fadeDuration:orbit?50:2.4,
       position:[...(anchor||this.origin)],velocity:[0,0,0],centre:this.orbitCentre(index),phase:1});
+    p.clock=createParticleClock(p.life,p.fadeDelay,p.fadeDuration);p.opacity=p.clock.opacity;
     // CParticle::Start resets velocity, but keeps the slot's wiggle oscillator.
   }
   end() {
@@ -108,12 +114,12 @@ export class NativeTeleporterEffect {
       const delta=p.position.map((v,i)=>v-this.origin[i]),length=Math.hypot(...delta);
       p.kind='burst';p.velocity=delta.map(v=>length?v/length*110:0);
       p.born=this.time;p.life=3;p.fadeDelay=.9;p.fadeDuration=2.4;
+      p.clock=createParticleClock(p.life,p.fadeDelay,p.fadeDuration,{opacity:p.opacity});
     }
   }
   updateParticle(p,index,dt) {
-    const age=this.time-p.born;
-    if(age>p.life+1e-9){p.active=false;return;}
-    if(age>p.fadeDelay)p.opacity=p.alpha*clamp(1-(age-p.fadeDelay)/p.fadeDuration);
+    if(!advanceParticleClock(p.clock,particleMilliseconds(this.time))){p.active=false;return;}
+    p.opacity=p.clock.opacity;
     if(p.kind==='orbit') {
       // Only every third orbit's centre follows the moving height. The other
       // centres retain their spawn height (0x474ea6–0x474ee8).

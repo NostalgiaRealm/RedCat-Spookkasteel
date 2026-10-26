@@ -1,0 +1,16 @@
+✔ normal and green explosion lights use original radius, colour and one-second pattern (1.54631ms)
+✔ smoke-only and zero-size blasts add no light, delayed blasts start independently and reuse records (0.415097ms)
+✔ world update passes blast lights to actors while retaining the existing eight world-light slots (3.187059ms)
+✔ light constructors, pre-step pattern boundaries and inclusive lazy expiry match native ordering (0.164159ms)
+✔ original-byte light/interpolator trace agrees with timer and float radius for all retained tick samples (0.343658ms)
+✔ fixed light clock is independent of display frequency and catches up in at most62 tiny steps (0.141789ms)
+✔ explosion light save roundtrips current phase and continues with the same cached cohort (0.944364ms)
+✔ light snapshots reject future, malformed and stale-birth clock state without changing legacy appearance (0.360908ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 77.180136

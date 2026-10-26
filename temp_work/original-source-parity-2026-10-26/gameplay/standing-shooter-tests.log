@@ -1,0 +1,21 @@
+✔ a committed plant shot releases once even if RedCat moves out of range and behind cover (3.370843ms)
+✔ standing-shooter salvo finishes without new visibility gates or invented between-shot waits (2.386168ms)
+✔ gargoyle finishes a committed salvo after alert memory expires (3.120634ms)
+✔ a selected hit reaction cancels an unreleased shot and death cannot emit it later (1.84563ms)
+✔ knight melee still requires RedCat inside the actual strike range (0.536047ms)
+✔ saved and frozen committed release retains its remaining deadline (1.887211ms)
+✔ standing wait begins after the complete salvo, arms on a later check and expires strictly after the deadline (1.171324ms)
+✔ standing waits with zero duration still arm and require a later millisecond (0.150109ms)
+✔ standing parent retains the wait through memory loss and uses remembered target rather than a fresh range gate (0.163629ms)
+✔ standing save restoration and script freeze preserve both unarmed and armed waits (9.135434ms)
+✔ gargoyle keeps its wait child until expiry, then returns to stone if its target was forgotten (1.520223ms)
+✔ selected hits cancel standing waits and ordinary saved legacy cooldowns retain remaining duration (0.898966ms)
+✔ invalid standing state cannot inject an invalid phase, count or timer into a save (0.136179ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 103.625793

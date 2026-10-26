@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "boundary": "Focused current-source checks only. No whole campaign playthrough, packages, or builds.",
+  "distinctPassingChecks": 71,
+  "finalSourceLogs": [
+    {
+      "path": "world/world-save-skip-final.txt",
+      "passing": 28,
+      "scope": "23 world commands/controller/button/trigger checks plus5 cutscene skip checks"
+    },
+    {
+      "path": "player/model-controller-target-order-tests.tap",
+      "passing": 8,
+      "scope": "native target callback ordering, collision and saved retry"
+    },
+    {
+      "path": "world/button-fsm-maze-painting-final.txt",
+      "passing": 18,
+      "scope": "maze death/recovery/save and painting puzzle/spiders"
+    },
+    {
+      "path": "world/button-fsm-contact-final.txt",
+      "passing": 15,
+      "scope": "Castle bookcases, auto-contact, fans and environmental interactions"
+    },
+    {
+      "path": "world/button-callback-review-final.txt",
+      "passing": 6,
+      "distinctAdditionalChecks": 2,
+      "scope": "two new callback Reset/phase-restore checks plus four affected button checks already counted in world-save-skip-final.txt"
+    }
+  ],
+  "overlappingLogs": [
+    {
+      "path": "player/model-controller-target-integration-tests.tap",
+      "passing": 6,
+      "overlaps": "world/world-save-skip-final.txt"
+    }
+  ],
+  "nativeDifferential": {
+    "path": "world/button-fsm-differential.json",
+    "ticks": 16,
+    "mismatches": 0,
+    "reference": "world/native-button-fsm-probe.json",
+    "boundary": "Original button Tick instructions in private emulated memory; sound/script callbacks and collision/proximity dependencies hooked."
+  },
+  "otherEvidence": [
+    {
+      "path": "world/vm-review/double-parse-probe.json",
+      "scope": "Native STRING-to-DOUBLE review findings handed to root VM owner"
+    }
+  ]
+}

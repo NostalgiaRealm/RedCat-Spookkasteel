@@ -55,9 +55,12 @@ test('native fairy particle random generator, opposite slot Y biases, gravity an
   fast.spawn(1,110,true);assert.ok(fast.pool[1].velocity[1]>0);
   slow.active=false;slow.pool[0].velocity=[0,0,0];slow.advance(.5);
   close(slow.pool[0].velocity[1],-24);close(slow.pool[0].position[1],-6.2);
-  let sprite=slow.geometry().sprites[0];assert.equal(sprite.width,6);assert.equal(sprite.opacity,1);
-  slow.advance(1.5);sprite=slow.geometry().sprites[0];close(sprite.opacity,2/3);assert.equal(sprite.width,6);
-  slow.advance(2);assert.equal(slow.geometry().sprites.length,0);
+  let sprite=slow.geometry().sprites[0];assert.equal(sprite.width,6);assert.equal(sprite.opacity,254/255);
+  // First update arms at 16ms, delay expires at 1033ms, fade arms at
+  // 1050ms; at 2000ms the integer alpha is trunc(255*2050/3000).
+  slow.advance(1.5);sprite=slow.geometry().sprites[0];close(sprite.opacity,174/255);assert.equal(sprite.width,6);
+  slow.advance(2);assert.equal(slow.geometry().sprites.length,1);
+  slow.advance(FAIRY_STEP*2);assert.equal(slow.geometry().sprites.length,0);
 });
 
 function harness(effectAge=0,lifeTime=20) {

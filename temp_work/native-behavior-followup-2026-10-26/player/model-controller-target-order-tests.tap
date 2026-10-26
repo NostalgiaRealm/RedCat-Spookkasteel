@@ -1,0 +1,16 @@
+✔ reverse target motion emits native ascending labels but collision travels toward the target (1.44136ms)
+✔ forward target motion excludes its endpoint and includes it on a later interval only if moving beyond (0.555786ms)
+✔ blocked target motion preserves native label-before-pose ordering without replaying labels on retry (0.187078ms)
+✔ a native target label callback sees the old time and supersedes its pending position commit (0.167059ms)
+✔ exact-target pending completion persists through a motion snapshot and disabled update (0.259238ms)
+✔ target label retry state survives save/load and a callback disabling midway (0.232798ms)
+✔ SetTo keeps old time during callbacks and saves marker progress separately from a blocked pose (0.216509ms)
+✔ SetTo replacement callbacks cannot carry the player using an obsolete final pose (0.150819ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 38.836352

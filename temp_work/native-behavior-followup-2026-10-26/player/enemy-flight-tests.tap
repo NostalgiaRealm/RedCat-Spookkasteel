@@ -1,0 +1,24 @@
+✔ ballistic and homing enemy flight use identical canonical ticks at low and high display rates (13.107975ms)
+✔ partial steps move smoothly but witch steering waits until the native tick completes (0.527127ms)
+✔ enemy collision sweeps follow every curved segment and stop at the first wall (0.247188ms)
+✔ large direct updates defer flight within a bounded trace budget and persist the debt (2.525734ms)
+✔ fractional enemy flight saves continue exactly and invalid or legacy phases reset safely (0.802564ms)
+✔ gravity-free non-homing shots retain a single collinear sweep per display update (0.258258ms)
+✔ native enemy initial speed and gravity follow authored projectile classes, including both Brutus attacks (2.166325ms)
+✔ Brutus bones use native gravity before each movement step and retain forward speed (1.286232ms)
+✔ forest Brutus mushrooms fly at InitialSpeed, with no invented acceleration or fallback Speed override (1.585379ms)
+✔ native lifetimes sample the full authored range on 1/10000 steps and truncate to milliseconds (0.12155ms)
+✔ projectile randomness preserves the shipped 15-bit modulo distribution and excludes the upper endpoint (2.272725ms)
+✔ all shooter families apply independent native spread samples before normalization without changing speed (0.366708ms)
+✔ sampled lifetimes and the next salvo remain deterministic after save/load (2.557364ms)
+✔ witch magic applies native shared movement, then homes toward the moved player at authored speed (0.400897ms)
+✔ legacy generated enemy gravity migrates exactly once without altering player or custom units (0.567786ms)
+✔ frozen enemy ammunition preserves the entire ballistic or homing flight state (0.249778ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 97.002511

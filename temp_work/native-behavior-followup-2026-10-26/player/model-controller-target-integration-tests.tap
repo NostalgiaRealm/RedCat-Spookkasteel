@@ -1,0 +1,14 @@
+✔ MoveTo retains the current endpoint and overrides authored pingpong playback (2.721292ms)
+✔ SetTo is a deferred enabled-controller operation, replaces a loop, and dispatches native forward labels (0.861704ms)
+✔ pending target commands and completed target mode survive saves and enable toggles (1.633879ms)
+✔ SetTo retains motion collision guards and does not replay a label when blocked (0.280838ms)
+✔ a label may replace SetTo without a stale target overriding its new command (0.277608ms)
+✔ controller Reset discards target mode; target commands clamp to authored motion rather than event tail (0.336867ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 84.045371

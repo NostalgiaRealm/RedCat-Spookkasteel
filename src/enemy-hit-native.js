@@ -24,7 +24,7 @@ export function reactToEnemyHit(game,object,react) {
   // replaced attack child. A hit cannot grant an extra immediate contact hit.
   if(!usesTouchPursuit(object))object.attackTimer=0;
   object.relocateAfterSalvo=false;object.boneChargePending=false;
-  object.batContact=null;object.nativeShooter=null;
+  object.batContact=null;object.nativeShooter=null;object.nativeStandingShooter=null;
   if(object.patrol)object.patrol.relocating=false;
   if(object.ambush){
     object.alerted=true;

@@ -76,17 +76,22 @@ The super-shot branch at `0x434b24` checks factory type 11 (skill mask 4).
 `0x64c410`. While held, `0x434bda` seeks `shoot1` to normalized time .26 and
 sets playback speed to zero. It does not select the separate imported
 `charge` clip. On release, the original 1.9× shooting rate resumes and the
-projectile emits at .46, about 203 ms after release. The same clip follows the simulation clock, including restored saves, until
-the recovered 80% visual handoff to locomotion/idle.
+projectile emits beyond .46, about 203 ms after release. The same clip follows
+the simulation clock, including restored saves, until the recovered 80% handoff
+to locomotion/idle.
 
 At `0x434db1`, projectile damage is multiplied by charge percentage, with a
 minimum of 1. The imported super-shot damage of 4 therefore gives damage 1
 for a quick tap, 2 for a .75-second hold, and 4 at 1.5 seconds or longer.
 Super shots keep their authored sprite, speed, acceleration, and lifetime.
-Ordinary/power shots retain their existing held-fire cadence.
+Ordinary/power shots use the same 80% firing-state cutoff.
 
-The input path waits for recharge before beginning the next held charge,
-releases exactly once and preserves elapsed charge in saves. Charging is
+The input path waits for the released shot to reach 80% before beginning the
+next held charge on the following update, about 549 ms after release from the
+26% hold pose. The 26 October assembly audit confirmed that RedCat discards
+the common factory's returned `RechargeTime` timer; see
+[player projectile timing](player-projectiles-native.md#timing-and-movement).
+It releases exactly once and preserves elapsed charge in saves. Charging is
 canceled on death, respawn, weapon removal, or entry into dialogue. The last
 case is the deliberate dialogue protection described in
 [cutscene completion](enemy-combat-effects-native.md): RedCat returns to idle

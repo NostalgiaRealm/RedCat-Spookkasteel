@@ -20,7 +20,7 @@ function setup(skill=1,save=null){
   return {audio,game,events};
 }
 const names=audio=>audio.snapshot().map(record=>record.sound);
-function release(game){game.time=game.pendingPlayerAttack.at;game.releasePlayerAttack();}
+function release(game){game.time=game.pendingPlayerAttack.at+.000001;game.releasePlayerAttack();}
 
 for(const [skill,kind,fire,impact] of [[1,'shot','rcshoot1.wav','rcshoot4.wav'],[3,'powerShot','rcshoot2.wav','rcshoot5.wav'],[7,'superShot',null,'rcshoot6.wav']]){
   test(`${kind}: Gameplay emits the native firing and impact recordings only at their actual events`,()=>{

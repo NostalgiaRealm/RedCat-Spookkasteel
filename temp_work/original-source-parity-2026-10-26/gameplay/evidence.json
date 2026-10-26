@@ -1,0 +1,51 @@
+{
+  "original": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel/RcHcGame.dat",
+  "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5",
+  "analysis": "Fresh read-only objdump check plus retained prior REA assembly and full Ghidra export",
+  "addresses": {
+    "rand-lifetime": [
+      [
+        "0x60a4a0",
+        "0x60a4be"
+      ],
+      [
+        "0x442e30",
+        "0x442e5c"
+      ],
+      [
+        "0x4432e0",
+        "0x443320"
+      ]
+    ],
+    "standing-wait": [
+      [
+        "0x40a200",
+        "0x40a4b4"
+      ],
+      [
+        "0x403ed0",
+        "0x40408c"
+      ],
+      [
+        "0x406c40",
+        "0x406d68"
+      ]
+    ],
+    "standing-aim-height": [
+      [
+        "0x42b550",
+        "0x42b61b"
+      ]
+    ]
+  },
+  "distribution": {
+    "inputRange": [
+      0,
+      32767
+    ],
+    "modulus": 10000,
+    "outcomes0Through2767": 4,
+    "outcomes2768Through9999": 3,
+    "nativeGlobalRngReplaced": false
+  }
+}

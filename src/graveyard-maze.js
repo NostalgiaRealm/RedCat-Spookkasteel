@@ -24,11 +24,12 @@ function resetObject(game,object) {
   object.enabled=initial(e,'IsInitiallyEnabled',initial(e,'Active',true));
   object.visible=true;object.open=initial(e,'IsInitiallyOpen',false);object.locked=initial(e,'IsInitiallyLocked',false);
   object.switchedOn=initial(e,'IsInitiallySwitchedOn',false);
-  object.triggerCount=0;object.switchCount=0;object.inside=false;
+  object.triggerCount=0;object.switchCount=0;object.inside=false;object.triggerPhase=0;delete object.pendingButtonSwitch;if(object.kind==='button')object.buttonPhase=object.switchedOn?5:1;
   object.openFraction=object.open?1:0;object.closeAt=null;object.moving=false;object.motionStarted=false;
   delete object.motionSpeed;
   const player=host.players.get(object.id);
   if(player){
+    delete player.controllerTarget;
     const clip=player.motion,start=clip.startTime??0,end=clip.playbackEndTime??clip.endTime;
     // stop/seek invalidates any in-flight event dispatch. Never rewind by
     // playing backwards: that would replay commands and exit-cutscene work.
@@ -42,7 +43,7 @@ function resetObject(game,object) {
 export function cancelPendingGraveyardMazeExit(game) {
   if(!eligible(game)||completed(game))return false;
   const button=find(game,'mazedeur1_knop');
-  if(!button?.switchedOn&&!game.scripts.players.get(button?.id)?.playing)return false;
+  if(!button?.switchedOn&&typeof button?.pendingButtonSwitch!=='boolean'&&!game.scripts.players.get(button?.id)?.playing)return false;
   // Model timelines advance during the death animation. Cancel the pending
   // press now so it cannot start a cutscene and suspend the death/respawn clock.
   resetObject(game,button);return true;

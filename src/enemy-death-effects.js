@@ -1,6 +1,8 @@
 // RcEnemyDeathState starts a 5000 ms alpha fade after the death motion
 // (0x403b92). CRcSmokeEffect uses fifteen strail billboards (0x46db52),
 // RGB 211/63/255, a seven-second life and a 20 -> 60 radius (0x46e230).
+import {createParticleClock,advanceParticleClock,particleMilliseconds} from './particle-clock-native.js';
+
 export const ENEMY_FADE_SECONDS=5;
 export const DEATH_SMOKE_TEXTURE='strail.bmp|strail_a.bmp';
 export const DEATH_SMOKE_COLOR=[211/255,63/255,1];
@@ -55,13 +57,36 @@ export function initializeDeathSmoke(origin,bones=[]) {
   });
 }
 
-// Native mode-1 particle acceleration is (0,.05,0)*32 (0x47e301).
-// Evaluate its continuous trajectory without frame-rate-dependent accumulation.
+// CRcSmokeEffect shares CParticle's independently armed lifetime/delay/fade
+// timers. Its fifteen particles start together. Cache their common 60Hz clock,
+// size and velocity-before-position acceleration once, not per dead actor or
+// redraw. Saved anchors/velocities plus age are sufficient for exact reuse.
+const SMOKE_STEP=1/60;
+const smokeFrames=(()=>{
+  const clock=createParticleClock(7,1,6.2,{start:50}),frames=[];
+  let rise=0,upSpeed=0,travel=0;
+  for(let tick=0;tick<430;tick++) {
+    const now=particleMilliseconds(tick*SMOKE_STEP);
+    if(tick) {
+      if(!advanceParticleClock(clock,now))break;
+      const dt=Math.fround((now-particleMilliseconds((tick-1)*SMOKE_STEP))*Math.fround(.001));
+      upSpeed=Math.fround(upSpeed+Math.fround(Math.fround(.05)*Math.fround(32*dt)));
+      rise=Math.fround(rise+Math.fround(upSpeed*dt));travel+=dt;
+    }
+    const remaining=clock.lifeEnd===null?1:Math.fround((clock.lifeEnd-now)/clock.life);
+    frames.push({travel,rise,size:2*Math.fround(20*remaining+60*(1-remaining)),opacity:clock.opacity});
+  }
+  return frames;
+})();
+const smokeFrame=age=>Number.isFinite(age)&&age>=0?smokeFrames[Math.floor(age/SMOKE_STEP+1e-9)]:null;
+
+// Native mode-1 acceleration is (0,.05,0)*32 (0x47e301), with velocity
+// updated before position. Sampling a fixed shared table preserves this order
+// without historical replay, per-particle timers or render-rate-dependent work.
 export function deathSmokeParticle(index,age,anchor,velocity=[0,0,0]) {
-  if(age<0||age>=DEATH_SMOKE_SECONDS)return null;
-  const t=age/DEATH_SMOKE_SECONDS;
-  return {position:anchor.map((v,i)=>v+velocity[i]*age+(i===1?.8*age*age:0)),
-    size:2*(20+40*t),opacity:.5*(1-clamp((age-1)/6.2)),color:DEATH_SMOKE_COLOR};
+  const frame=smokeFrame(age);if(!frame)return null;
+  return {position:anchor.map((v,i)=>v+velocity[i]*frame.travel+(i===1?frame.rise:0)),
+    size:frame.size,opacity:frame.opacity,color:DEATH_SMOKE_COLOR};
 }
 
 export class EnemyDeathEffects {
@@ -72,7 +97,7 @@ export class EnemyDeathEffects {
     for(const object of game.objects) {
       if(object.kind!=='enemy'||object.health>0||object.animationState!=='death'||object.enemyType==='witch'||!Number.isFinite(object.deathStartedAt))continue;
       const age=game.time-object.deathStartedAt;
-      if(age<0||age>=DEATH_SMOKE_SECONDS)continue;
+      if(!smokeFrame(age))continue;
       const actor=this.world.actorInstances.get(object.id);if(!actor)continue;
       active.add(object.id);
       const serial=object.animationSerial||0;
@@ -86,7 +111,7 @@ export class EnemyDeathEffects {
       state.age=age;
       for(let i=0;i<15;i++) {
         const p=deathSmokeParticle(i,age,state.anchors[i],state.velocities[i]);
-        if(p)batch.add(p.position,p.size,p.size,p.color,p.opacity);
+        if(p)batch.add(p.position,p.size,p.size,p.color,p.opacity,0,null,2);
       }
     }
     for(const id of this.states.keys())if(!active.has(id))this.states.delete(id);

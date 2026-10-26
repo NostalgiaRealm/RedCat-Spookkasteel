@@ -13,6 +13,10 @@ const defaultValue = type => typeCode(type) === 3 ? '' : typeCode(type) === 4 ? 
 const typed = (type, value) => ({ type: typeCode(type), value });
 const objectName = object => typeof object === 'string' ? object : object?.daviName ?? object?.name;
 const key = record => record.id ?? `${record.tag.toString(16)}:${record.index}`;
+// __ftol stores a signed 64-bit x87 result; Davi keeps its low 32 bits.
+// Invalid/out-of-range conversions produce the integer-indefinite low word 0.
+const nativeTruncatedInt = value => value >= -0x8000000000000000 && value < 0x8000000000000000
+  ? Math.trunc(value) | 0 : 0;
 
 function coerce(type, value) {
   const code = typeCode(type);
@@ -34,13 +38,19 @@ function coerce(type, value) {
   throw new DaviRuntimeError(`Unknown value type ${code}`);
 }
 
-/** Native BINOP dispatch (0x005f8740), including signed 32-bit arithmetic. */
+/** Native BINOP dispatch, including signed 32-bit arithmetic; versioned addresses are in docs/davi-vm-opcodes.md. */
 export function daviBinary(operator, left, right) {
   if (left.type !== right.type) throw new DaviRuntimeError(`Binary type mismatch: ${left.type}, ${right.type}`);
   const a = left.value, b = right.value, integer = left.type === 2;
-  const number = value => typed(integer ? 2 : 1, integer ? Math.trunc(value) | 0 : value);
+  const number = value => typed(integer ? 2 : 1, integer ? nativeTruncatedInt(value) : value);
   const boolean = value => typed(2, Number(value));
   if (operator >= 5 && operator <= 10) {
+    if (left.type === 3) {
+      const comparison = compareNativeStrings(a, b);
+      return boolean(operator === 5 ? comparison >= 0 : operator === 6 ? comparison <= 0
+        : operator === 7 ? comparison > 0 : operator === 8 ? comparison < 0
+          : operator === 9 ? comparison === 0 : comparison !== 0);
+    }
     if (operator === 5) return boolean(a >= b);
     if (operator === 6) return boolean(a <= b);
     if (operator === 7) return boolean(a > b);
@@ -57,31 +67,112 @@ export function daviBinary(operator, left, right) {
   if (operator === 4) return number(a / b);
   if (operator === 11 && integer) return boolean(a !== 0 || b !== 0);
   if (operator === 12 && integer) return boolean(a !== 0 && b !== 0);
-  if (operator === 14) return number(a % b);
-  if (operator === 15) return typed(2, Math.trunc(a / b) | 0);
+  // The double branch also truncates its quotient through the low signed
+  // 32-bit result of __ftol, then subtracts quotient * divisor (005f8df9).
+  if (operator === 14) return number(integer ? a % b : a - nativeTruncatedInt(a / b) * b);
+  if (operator === 15) return typed(2, nativeTruncatedInt(a / b));
   if (operator === 16) return number(a ** b);
   throw new DaviRuntimeError(`Unknown binary operator ${operator}`);
 }
 
-/** Native UNOP/CAST dispatch (0x005fc230). Unmapped operators fail explicitly. */
+// Native strings are Windows-1252 byte strings, not Unicode code points. The
+// C runtime's default locale changes only ASCII letters for STRLWR/STRUPR.
+const nativeCharacters = new TextDecoder('windows-1252').decode(Uint8Array.from({ length: 256 }, (_, i) => i));
+const nativeString = value => value.split('\0', 1)[0];
+const nativeByte = value => {
+  const byte = nativeCharacters.indexOf(value[0] ?? '\0');
+  if (byte < 0) throw new DaviRuntimeError('Character is outside the native Windows-1252 string encoding');
+  return byte;
+};
+
+// Native 00484b80 compares stored lengths and unsigned Windows-1252 bytes,
+// including embedded NULs. Unicode code-point order differs for this encoding.
+function compareNativeStrings(a, b) {
+  for (let i = 0; i < Math.min(a.length, b.length); i++) {
+    const difference = nativeByte(a[i]) - nativeByte(b[i]);
+    if (difference) return Math.sign(difference);
+  }
+  return Math.sign(a.length - b.length);
+}
+
+function nativeIntegerString(value) {
+  // The shipped atoi (0060ae85) wraps after each digit and accepts only
+  // C-locale whitespace. parseInt loses low bits of sufficiently long input.
+  const match = /^[\t\n\v\f\r ]*([+-]?)([0-9]+)/.exec(value);
+  if (!match) return 0;
+  let result = 0;
+  for (const digit of match[2]) result = (Math.imul(result, 10) + digit.charCodeAt(0) - 48) | 0;
+  return match[1] === '-' ? -result | 0 : result;
+}
+
+function nativeStringDouble(value) {
+  // Shipped atof (0060ea4c) accepts C whitespace and E/D decimal exponents,
+  // but no Unicode whitespace, literal Infinity/NaN or hexadecimal floats.
+  // Keep signed zero; `parseFloat(value) || 0` discarded it.
+  const match = /^[\t\n\v\f\r ]*([+-]?(?:[0-9]+\.?[0-9]*|\.[0-9]+)(?:[eEdD][+-]?[0-9]+)?)/.exec(value);
+  return match ? Number(match[1].replace(/[dD]/, 'e')) : 0;
+}
+
+function nativeDoubleString(value) {
+  // Davi uses the shipped CRT's default %lg: six significant digits, scientific
+  // notation below 1e-4 or from 1e6, and a three-digit exponent.
+  if (Number.isNaN(value)) return '1.#QNAN';
+  if (!Number.isFinite(value)) return value < 0 ? '-1.#INF' : '1.#INF';
+  if (value === 0) return '0';
+  // 0061d4a8 first generates 17 decimal digits; 0061d431 then rounds
+  // that digit string to six. A direct binary64 toPrecision(6) differs at
+  // double-rounding boundaries, e.g. 1.234575 must become 1.23458.
+  const [mantissa, exponentText] = Math.abs(value).toExponential(16).split('e');
+  const source = mantissa.replace('.', '');
+  let exponent = Number(exponentText);
+  let rounded = Number(source.slice(0, 6)) + Number(source[6] >= '5');
+  if (rounded === 1000000) { rounded = 100000; exponent++; }
+  const digits = String(rounded).replace(/0+$/, '');
+  const sign = value < 0 ? '-' : '';
+  if (exponent < -4 || exponent >= 6) {
+    const significand = digits.length > 1 ? `${digits[0]}.${digits.slice(1)}` : digits;
+    return `${sign}${significand}e${exponent < 0 ? '-' : '+'}${String(Math.abs(exponent)).padStart(3, '0')}`;
+  }
+  const point = exponent + 1;
+  return sign + (point <= 0 ? `0.${'0'.repeat(-point)}${digits}`
+    : point >= digits.length ? digits.padEnd(point, '0')
+      : `${digits.slice(0, point)}.${digits.slice(point)}`);
+}
+
+/** Native UNOP/CAST dispatch: 0x005fc480 in the e30781fc reference build. */
 export function daviUnary(operator, operand) {
   const value = operand.value;
   if (operator === 0 && [1, 2].includes(operand.type)) return typed(operand.type, operand.type === 2 ? -value | 0 : -value);
   if (operator === 1 && operand.type === 2) return typed(2, Number(value === 0));
   if (operator === 2 && operand.type === 2) return typed(1, value);
   if (operator === 3 && operand.type === 2) return typed(3, String(value));
-  if (operator === 4 && operand.type === 1) return typed(3, Number(value.toPrecision(6)).toString());
-  if (operator === 5 && operand.type === 1) return typed(2, Math.trunc(value) | 0);
-  if (operator === 6 && operand.type === 3) return typed(2, Number.parseInt(value, 10) | 0);
-  if (operator === 7 && operand.type === 3) return typed(1, Number.parseFloat(value) || 0);
-  if (operator === 8 && operand.type === 1) return typed(2, Math.trunc(value + .5) | 0);
+  if (operator === 4 && operand.type === 1) return typed(3, nativeDoubleString(value));
+  if (operator === 5 && operand.type === 1) return typed(2, nativeTruncatedInt(value));
+  if (operator === 6 && operand.type === 3) return typed(2, nativeIntegerString(value));
+  if (operator === 7 && operand.type === 3) return typed(1, nativeStringDouble(value));
+  if (operator === 8 && operand.type === 1) return typed(2, nativeTruncatedInt(value + .5));
   if (operator === 9 && operand.type === 1) return typed(1, Math.sin(value));
   if (operator === 10 && operand.type === 1) return typed(1, Math.cos(value));
   if (operator === 11 && operand.type === 1) return typed(1, Math.tan(value));
+  if (operator === 12 && operand.type === 1) return typed(1, Math.sinh(value));
+  if (operator === 13 && operand.type === 1) return typed(1, Math.tanh(value));
+  if (operator === 14 && operand.type === 1) return typed(1, Math.cosh(value));
+  if (operator === 15 && operand.type === 1) return typed(1, Math.asin(value));
+  if (operator === 16 && operand.type === 1) return typed(1, Math.acos(value));
   if (operator === 17 && operand.type === 1) return typed(1, Math.atan(value));
   if (operator === 18 && operand.type === 1) return typed(1, Math.log10(value));
   if (operator === 19 && operand.type === 1) return typed(1, Math.exp(value));
   if (operator === 20 && operand.type === 1) return typed(1, Math.log(value));
+  if (operator === 21 && operand.type === 3) {
+    // Native +8 string length includes bytes after an embedded NUL; unlike
+    // the case-conversion helpers this is not a call to the CRT strlen.
+    for (const character of value) nativeByte(character);
+    return typed(2, value.length);
+  }
+  if (operator === 22 && operand.type === 3) return typed(3, nativeString(value).replace(/[A-Z]/g, character => character.toLowerCase()));
+  if (operator === 23 && operand.type === 3) return typed(3, nativeString(value).replace(/[a-z]/g, character => character.toUpperCase()));
+  if (operator === 24 && operand.type === 3) return typed(2, nativeByte(value));
+  if (operator === 25 && operand.type === 2) return typed(3, (value & 255) ? nativeCharacters[value & 255] : '');
   throw new DaviRuntimeError(`Unsupported unary operator ${operator} for ${TYPE_NAMES[operand.type]}`);
 }
 

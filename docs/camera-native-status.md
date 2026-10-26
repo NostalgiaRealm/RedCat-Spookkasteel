@@ -78,10 +78,11 @@ Disable pauses its scheduled updates, retaining its current pose/time.
 
 `Reset` is a separate inherited model command at `0x004d1794`, invoking the
 controller reset override at `0x004d2f80`. That override reloads the original
-configuration and initial position. Re-enabling a completed once-only controller
-does not itself show a native rewind operation in the inspected command path;
-automatic rewind on re-enable should be treated as an explicit compatibility
-choice, not assumed native semantics.
+configuration and initial position. The 26 October follow-up also checked the native controller tick and setter: a
+completed once-only controller remains at its endpoint when enabled again.
+The port now preserves that pose without replaying endpoint markers, and Reset
+restores the authored InitialPosition. See [world-controller evidence and
+focused checks](world-script-commands-native.md).
 
 This investigation verifies dispatch, field precedence and bounded timing
 behavior. It is not a native/portable visual comparison or a campaign

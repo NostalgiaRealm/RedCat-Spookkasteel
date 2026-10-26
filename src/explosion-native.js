@@ -1,16 +1,19 @@
 import {nativeEffectRandom} from './debris-native.js';
+import {snapshotNativeLight} from './explosion-light-native.js';
+import {restorePropDebrisState} from './prop-debris-state.js';
+import {restoreElectricExplosion,snapshotElectricExplosion} from './electric-explosion-native.js';
 
 const number=(value,fallback=0)=>Number.isFinite(Number(value))?Number(value):fallback;
 const mix=(a,b,t)=>a+(b-a)*t;
 // Production explosion records are immutable spawn descriptions. Damage and
 // rendering need the same seeded cohort, but only rendering mutates smoke's
 // transient render fields. A private cache avoids constructing it twice and
-// never adds visual state to JSON saves; the public factory stays fresh.
+// only serializes explicitly validated effect clocks; the public factory stays fresh.
 const blastCohorts=new WeakMap();
 export function nativeBlastsForEffect(effect) {
   const conf=effect.settings?.explosion||{},min=effect.bounds?.min,max=effect.bounds?.max;
   const values=[effect.id,effect.birth,...effect.position,min?.[0],min?.[1],min?.[2],max?.[0],max?.[1],max?.[2],
-    conf.NrExplosions,conf.SizePercentage,conf.SmokeOnly,conf.Green];
+    conf.NrExplosions,conf.SizePercentage,conf.SmokeOnly,conf.Green,conf.Electric];
   let cached=blastCohorts.get(effect);
   if(!cached||values.some((value,i)=>value!==cached.values[i])) {
     cached={values,blasts:createNativeBlasts(effect)};blastCohorts.set(effect,cached);
@@ -37,7 +40,9 @@ export function createNativeBlasts(effect) {
   const conf=effect.settings?.explosion||{},authoredCount=Math.max(0,number(conf.NrExplosions,1));
   const count=Math.min(16,Math.ceil(authoredCount)),rand=nativeEffectRandom(effect.id+':blasts'),fraction=()=>rand()%10000*.0001;
   const percentage=Math.max(0,number(conf.SizePercentage,25))*.01,diameter=percentage*20*32;
-  if(!diameter)return[];
+  // The optional ring and Electric generator are independent of flash size
+  // in 0x58d710. Zero-size dormant variants must still reach those branches.
+  if(!diameter&&!conf.Green&&!conf.Electric)return[];
   const min=effect.bounds?.min||[0,0,0],max=effect.bounds?.max||[0,0,0];
   const centre=effect.position.map((v,i)=>v+(number(min[i])+number(max[i]))*.5),extent=max.map((v,i)=>Math.max(0,number(v)-number(min[i])));
   const longest=extent[0]>=extent[1]&&extent[0]>=extent[2]?0:extent[1]>=extent[2]?1:2,blasts=[];
@@ -46,6 +51,8 @@ export function createNativeBlasts(effect) {
     const spread=SPREAD[Math.trunc(authoredCount)%6][i%6]-.5;
     const position=centre.map((v,axis)=>v+extent[axis]*(axis===longest?spread+fraction()*.1-.05:fraction()*.4-.2));
     const blast={birth:number(effect.birth)+Math.trunc(delay*1000)/1000,position,diameter,smokeOnly:!!conf.SmokeOnly,green:!!conf.Green,smoke:[]};
+    if(effect.lightState?.[i])blast.lightState=effect.lightState[i];
+    if(conf.Electric){blast.electric=true;blast.id=`${effect.id}:electric:${i}`;}
     // 0x58e917 / 0x58eb7b: start 200 ms, repeat 400 ms. The cell's
     // native expiry calculation (0x4ada4e/0x4adb04) includes its start
     // offset twice, allowing a fourth puff on the 1400 ms boundary.
@@ -87,7 +94,16 @@ export function restoreNativeExplosions(values,time) {
     vector(effect.position)&&Number.isFinite(effect.birth)&&effect.birth<=time&&time-effect.birth<6&&
     effect.settings&&typeof effect.settings==='object'&&!Array.isArray(effect.settings)&&
     (!effect.bounds||vector(effect.bounds.min)&&vector(effect.bounds.max)))
-    .slice(0,256).map(effect=>({id:effect.id,sourceId:effect.sourceId,birth:effect.birth,position:[...effect.position],
+    .slice(0,256).map(effect=>{const restored={id:effect.id,sourceId:effect.sourceId,birth:effect.birth,position:[...effect.position],
       bounds:effect.bounds?{min:[...effect.bounds.min],max:[...effect.bounds.max]}:undefined,
-      scale:vector(effect.scale)?[...effect.scale]:undefined,settings:structuredClone(effect.settings)}));
+      scale:vector(effect.scale)?[...effect.scale]:undefined,settings:structuredClone(effect.settings),
+      debrisState:restorePropDebrisState(typeof effect.debrisSnapshot==='function'?effect.debrisSnapshot():effect.debrisState,effect,time)};
+      const sourceBlasts=nativeBlastsForEffect(effect);
+      restored.lightState=sourceBlasts.map(blast=>snapshotNativeLight(blast,time));
+      const saved=typeof effect.electricSnapshot==='function'?effect.electricSnapshot():effect.electricState;
+      if(restored.settings.explosion?.Electric&&Array.isArray(saved)&&saved.length<=16)
+        restored.electricState=nativeBlastsForEffect(restored).map((blast,index)=>
+          snapshotElectricExplosion(restoreElectricExplosion(saved[index],blast,time)));
+      return restored;
+    });
 }

@@ -133,7 +133,8 @@ test('nonfatal damage leaves an unfinished final button able to commit its origi
 });
 
 test('committed final button and fully open maze stay solved across respawn and save/load',()=>{
-  for(const elapsed of [1.02,14]){
+  // Native buttons defer acceptance, start and completion to separate checks.
+  for(const elapsed of [1.1,14]){
     let scene=boot();advanceStages(scene,5);
     scene.game.switchButton(scene.object('mazedeur1_knop'),true);tick(scene,elapsed);
     assert.equal(scene.object('mazedeur1_groen').enabled,true);
@@ -248,7 +249,7 @@ test('loading viable intermediate, moving-door or committed maze saves does not 
       original.game.command(original.object('heg2_mc'),'close');tick(original,.2);
     }
     if(scenario==='committed exit'){
-      original.game.switchButton(original.object('mazedeur1_knop'),true);tick(original,1.02);
+      original.game.switchButton(original.object('mazedeur1_knop'),true);tick(original,1.1);
     }
     const save=clone(original.game.snapshot()),restored=boot(save,'lvl02a',position);
     for(const name of triggers)assert.equal(restored.object(name).triggerCount,original.object(name).triggerCount,scenario+' '+name);
@@ -257,4 +258,13 @@ test('loading viable intermediate, moving-door or committed maze saves does not 
       assert.equal(restored.player(name).playing,original.player(name).playing,scenario+' '+name);
     }
   }
+});
+
+
+test('fatal damage before the first button controller check also cancels its queued maze exit',()=>{
+  const scene=boot();advanceStages(scene,5);const button=scene.object('mazedeur1_knop');
+  scene.game.switchButton(button,true);assert.equal(button.switchedOn,false);assert.equal(button.pendingButtonSwitch,true);
+  scene.game.damage(100);assert.equal(button.pendingButtonSwitch,undefined);
+  tick(scene,PLAYER_REACTIONS.death.duration,true);assertInitialMaze(scene);
+  tick(scene,14);assert.equal(scene.object('mazedeur1_dm').open,false);
 });
