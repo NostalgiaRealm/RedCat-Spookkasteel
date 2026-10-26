@@ -1,0 +1,132 @@
+/*
+ * FUN_0043b3ec at 0043b3ec
+ * undefined __register FUN_0043b3ec(int param_1, int * param_2)
+ * Address ranges: 0043b3ec-0043b5c6
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ */
+
+void FUN_0043b3ec(int param_1,int *param_2)
+
+{
+  undefined1 *puVar1;
+  int *piVar2;
+  uint uVar3;
+  int *piVar4;
+  undefined1 *extraout_ECX;
+  undefined1 *extraout_ECX_00;
+  undefined1 *extraout_ECX_01;
+  undefined1 *puVar5;
+  uint extraout_ECX_02;
+  undefined4 extraout_EDX;
+  undefined4 extraout_EDX_00;
+  undefined4 extraout_EDX_01;
+  undefined4 extraout_EDX_02;
+  undefined4 uVar6;
+  undefined4 extraout_EDX_03;
+  int iVar7;
+  undefined4 *in_FS_OFFSET;
+  undefined4 uVar8;
+  undefined4 uStack_3c;
+  undefined1 *puStack_38;
+  undefined1 *puStack_34;
+  int local_24;
+  int local_20;
+  int local_1c;
+  int local_18;
+  int *local_14;
+  int local_10;
+  int local_c;
+  int *local_8;
+  
+  puStack_34 = &stack0xfffffffc;
+  local_10 = 0;
+  puStack_38 = &LAB_0043b5e4;
+  uStack_3c = *in_FS_OFFSET;
+  *in_FS_OFFSET = &uStack_3c;
+  local_c = param_1;
+  local_8 = param_2;
+  FUN_0043bac4(param_1,*(int **)(param_1 + 100),0);
+  FUN_0043ab00(local_c);
+  uVar8 = *in_FS_OFFSET;
+  *in_FS_OFFSET = &stack0xffffffb8;
+  (**(code **)(*local_8 + 4))(local_8,&local_20,4);
+  (**(code **)(*local_8 + 4))(local_8,&local_24,4);
+  if (-1 < local_24 + -1) {
+    local_20 = 0;
+    puVar5 = extraout_ECX;
+    uVar6 = extraout_EDX;
+    iVar7 = local_24;
+    do {
+      puVar1 = &stack0xfffffffc;
+      FUN_0043b3a4(&local_10,uVar6,(uint)puVar5,(int)&stack0xfffffffc);
+      puVar5 = puVar1;
+      uVar6 = extraout_EDX_00;
+      if (local_10 != 0) {
+        FUN_00403270(*(int **)(local_c + 0x14),local_10,&local_14);
+        puVar5 = extraout_ECX_00;
+        uVar6 = extraout_EDX_01;
+        if (local_14 != (int *)0x0) {
+          FUN_0043262c(local_14,0,extraout_ECX_00);
+          uVar8 = 0;
+          FUN_00433298(local_14,*(int **)(local_c + 0x14),0,0);
+          puVar5 = extraout_ECX_01;
+          uVar6 = extraout_EDX_02;
+        }
+      }
+      local_20 = local_20 + 1;
+      iVar7 = iVar7 + -1;
+    } while (iVar7 != 0);
+  }
+  (**(code **)(*local_8 + 4))(local_8,local_c + 0x68,4);
+  local_1c = 0;
+  piVar4 = (int *)0x0;
+LAB_0043b4c9:
+  do {
+    (**(code **)(*local_8 + 4))(local_8,&local_18,4);
+    if (local_18 == DAT_0056f8ac) {
+      *in_FS_OFFSET = uVar8;
+      FUN_0043ab04(local_c);
+      return;
+    }
+    piVar2 = (int *)FUN_0043a48c((int *)&LAB_0042f688,'\x01',local_c);
+    (**(code **)(*local_8 + 4))(local_8,piVar2 + 4,1);
+    (**(code **)(*local_8 + 4))(local_8,piVar2 + 8,4);
+    FUN_0043b3a4(&local_10,extraout_EDX_03,extraout_ECX_02,(int)&stack0xfffffffc);
+    if (local_10 != 0) {
+      uVar3 = FUN_0043a73c((int)piVar2,local_10);
+      if ((char)uVar3 == '\0') {
+        FUN_00403094(piVar2);
+        goto LAB_0043b4c9;
+      }
+    }
+    if (local_18 == 0) {
+      *(int **)(local_c + 100) = piVar2;
+    }
+    else if (local_18 == local_1c) {
+      piVar4[3] = (int)piVar2;
+      piVar2[6] = (int)piVar4;
+      piVar2[5] = piVar4[5];
+    }
+    else if (local_1c < local_18) {
+      piVar4[2] = (int)piVar2;
+      piVar2[5] = (int)piVar4;
+    }
+    else if (local_18 < local_1c) {
+      local_1c = local_1c - local_18;
+      if (0 < local_1c) {
+        local_20 = 1;
+        do {
+          piVar4 = (int *)piVar4[5];
+          local_20 = local_20 + 1;
+          local_1c = local_1c + -1;
+        } while (local_1c != 0);
+      }
+      piVar4[3] = (int)piVar2;
+      piVar2[6] = (int)piVar4;
+      piVar2[5] = piVar4[5];
+    }
+    local_1c = local_18;
+    piVar4 = piVar2;
+  } while( true );
+}
+

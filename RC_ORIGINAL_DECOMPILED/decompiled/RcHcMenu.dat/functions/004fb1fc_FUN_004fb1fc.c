@@ -1,0 +1,17 @@
+/*
+ * FUN_004fb1fc at 004fb1fc
+ * undefined4 __register FUN_004fb1fc(int param_1, int * param_2)
+ * Address ranges: 004fb1fc-004fb22f
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ */
+
+undefined4 FUN_004fb1fc(int param_1,int *param_2)
+
+{
+  undefined4 uVar1;
+  
+  uVar1 = FUN_004f24a0(*(undefined4 *)(param_1 + 0x2b4),param_1,*(undefined1 *)(param_1 + 0x205),
+                       param_2);
+  return uVar1;
+}
+

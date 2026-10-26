@@ -1,0 +1,498 @@
+{
+  "offset": 4,
+  "endOffset": 1904,
+  "class": "TfrmLoginPrompt",
+  "name": "frmLoginPrompt",
+  "flags": 0,
+  "childPosition": null,
+  "properties": [
+    {
+      "name": "Left",
+      "offset": 40,
+      "type": 3,
+      "value": 251
+    },
+    {
+      "name": "Top",
+      "offset": 47,
+      "type": 3,
+      "value": 245
+    },
+    {
+      "name": "ActiveControl",
+      "offset": 64,
+      "type": 7,
+      "value": "txtUserName"
+    },
+    {
+      "name": "BorderIcons",
+      "offset": 89,
+      "type": 11,
+      "value": [
+        "biSystemMenu"
+      ]
+    },
+    {
+      "name": "BorderStyle",
+      "offset": 116,
+      "type": 7,
+      "value": "bsDialog"
+    },
+    {
+      "name": "Caption",
+      "offset": 134,
+      "type": 6,
+      "value": "Inloggen"
+    },
+    {
+      "name": "ClientHeight",
+      "offset": 157,
+      "type": 3,
+      "value": 132
+    },
+    {
+      "name": "ClientWidth",
+      "offset": 172,
+      "type": 3,
+      "value": 326
+    },
+    {
+      "name": "Font.Charset",
+      "offset": 188,
+      "type": 7,
+      "value": "DEFAULT_CHARSET"
+    },
+    {
+      "name": "Font.Color",
+      "offset": 216,
+      "type": 7,
+      "value": "clWindowText"
+    },
+    {
+      "name": "Font.Height",
+      "offset": 242,
+      "type": 2,
+      "value": -11
+    },
+    {
+      "name": "Font.Name",
+      "offset": 254,
+      "type": 6,
+      "value": "MS Sans Serif"
+    },
+    {
+      "name": "Font.Style",
+      "offset": 280,
+      "type": 11,
+      "value": []
+    },
+    {
+      "name": "Icon.Data",
+      "offset": 292,
+      "type": 10,
+      "value": {
+        "binary_hex": "0000010001002020100000000000e8020000160000002800000020000000400000000100040000000000800200000000000000000000100000000000000000000000000080000080000000808000800000008000800080800000c0c0c000808080000000ff0000ff000000ffff00ff000000ff00ff00ffff0000ffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ff777800000000000000000000000000ff777800000000000000000088cc0000ff77780000000000000000887f77c000ff77780000000000000008877f77c000ff77780000000000000887fff8777cc00007780000000000088fffff8088777c0007780000000000877fff880088777c00077800000000008ff77800cc008777cc077800000000008f8880cccccc0887770778000000000088800ccccccc08877707780000000000000cccccccccc0087707780000000000cccccccbbcccccc088077800000000008ccccccbbcccccc0880778000000000008ccccccc7bbbccc0007780000000000008cccccccccbbbc00077800000000000008ccccccccbbbc000778000000000000008ccccbbbbcc0ff77780000000000000008ccccccccc0ff777800000000000000008cccccccc0ff7778000000000000000008ccccccc0ff77780000000000000000008cccc000fffff000000000000000000008cc0000fffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffff7fffffff9fffffff9ffffffc0ffffe7803fffc3803fff01803ffe00003ff800003fe000003f8000003f0000003f0000003f0000003f0000003f0000003f0000003f8000003fc000003fe000003ff000003ff800003ffc00003ffe00003fff00003fff8000ffffc080ffffe3c1fffffffffffffffffffffffff",
+        "bytes": 766,
+        "sha256": "8d7877b2f3fba0bd560680808a33b171d0278cbc5e71b58c177845f311c56024"
+      }
+    },
+    {
+      "name": "Position",
+      "offset": 1072,
+      "type": 7,
+      "value": "poScreenCenter"
+    },
+    {
+      "name": "PixelsPerInch",
+      "offset": 1102,
+      "type": 2,
+      "value": 96
+    },
+    {
+      "name": "TextHeight",
+      "offset": 1115,
+      "type": 2,
+      "value": 13
+    }
+  ],
+  "children": [
+    {
+      "offset": 1118,
+      "endOffset": 1230,
+      "class": "TLabel",
+      "name": "lblUsername",
+      "flags": 0,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 1142,
+          "type": 2,
+          "value": 24
+        },
+        {
+          "name": "Top",
+          "offset": 1148,
+          "type": 2,
+          "value": 24
+        },
+        {
+          "name": "Width",
+          "offset": 1156,
+          "type": 2,
+          "value": 97
+        },
+        {
+          "name": "Height",
+          "offset": 1165,
+          "type": 2,
+          "value": 17
+        },
+        {
+          "name": "AutoSize",
+          "offset": 1176,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Caption",
+          "offset": 1185,
+          "type": 6,
+          "value": "&Gebruikersnaam"
+        },
+        {
+          "name": "FocusControl",
+          "offset": 1215,
+          "type": 7,
+          "value": "txtUserName"
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 1230,
+      "endOffset": 1338,
+      "class": "TLabel",
+      "name": "lblPassword",
+      "flags": 0,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 1254,
+          "type": 2,
+          "value": 24
+        },
+        {
+          "name": "Top",
+          "offset": 1260,
+          "type": 2,
+          "value": 56
+        },
+        {
+          "name": "Width",
+          "offset": 1268,
+          "type": 2,
+          "value": 97
+        },
+        {
+          "name": "Height",
+          "offset": 1277,
+          "type": 2,
+          "value": 17
+        },
+        {
+          "name": "AutoSize",
+          "offset": 1288,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Caption",
+          "offset": 1297,
+          "type": 6,
+          "value": "&Wachtwoord"
+        },
+        {
+          "name": "FocusControl",
+          "offset": 1323,
+          "type": 7,
+          "value": "txtPassword"
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 1338,
+      "endOffset": 1401,
+      "class": "TEdit",
+      "name": "txtUserName",
+      "flags": 0,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 1361,
+          "type": 3,
+          "value": 128
+        },
+        {
+          "name": "Top",
+          "offset": 1368,
+          "type": 2,
+          "value": 20
+        },
+        {
+          "name": "Width",
+          "offset": 1376,
+          "type": 3,
+          "value": 177
+        },
+        {
+          "name": "Height",
+          "offset": 1386,
+          "type": 2,
+          "value": 21
+        },
+        {
+          "name": "TabOrder",
+          "offset": 1397,
+          "type": 2,
+          "value": 0
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 1401,
+      "endOffset": 1480,
+      "class": "TEdit",
+      "name": "txtPassword",
+      "flags": 0,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 1424,
+          "type": 3,
+          "value": 128
+        },
+        {
+          "name": "Top",
+          "offset": 1431,
+          "type": 2,
+          "value": 52
+        },
+        {
+          "name": "Width",
+          "offset": 1439,
+          "type": 3,
+          "value": 177
+        },
+        {
+          "name": "Height",
+          "offset": 1449,
+          "type": 2,
+          "value": 21
+        },
+        {
+          "name": "PasswordChar",
+          "offset": 1464,
+          "type": 6,
+          "value": "*"
+        },
+        {
+          "name": "TabOrder",
+          "offset": 1476,
+          "type": 2,
+          "value": 1
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 1480,
+      "endOffset": 1697,
+      "class": "TDaviButton",
+      "name": "btnOk",
+      "flags": 0,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 1503,
+          "type": 2,
+          "value": 96
+        },
+        {
+          "name": "Top",
+          "offset": 1509,
+          "type": 2,
+          "value": 96
+        },
+        {
+          "name": "Width",
+          "offset": 1517,
+          "type": 2,
+          "value": 104
+        },
+        {
+          "name": "Height",
+          "offset": 1526,
+          "type": 2,
+          "value": 24
+        },
+        {
+          "name": "Font.Charset",
+          "offset": 1541,
+          "type": 7,
+          "value": "DEFAULT_CHARSET"
+        },
+        {
+          "name": "Font.Color",
+          "offset": 1569,
+          "type": 7,
+          "value": "clBtnText"
+        },
+        {
+          "name": "Font.Height",
+          "offset": 1592,
+          "type": 2,
+          "value": -11
+        },
+        {
+          "name": "Font.Name",
+          "offset": 1604,
+          "type": 6,
+          "value": "MS Sans Serif"
+        },
+        {
+          "name": "Font.Style",
+          "offset": 1630,
+          "type": 11,
+          "value": []
+        },
+        {
+          "name": "ParentFont",
+          "offset": 1643,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "TabOrder",
+          "offset": 1653,
+          "type": 2,
+          "value": 2
+        },
+        {
+          "name": "OnClick",
+          "offset": 1663,
+          "type": 7,
+          "value": "btnOkClick"
+        },
+        {
+          "name": "Kind",
+          "offset": 1680,
+          "type": 7,
+          "value": "bkOK"
+        },
+        {
+          "name": "Margin",
+          "offset": 1693,
+          "type": 2,
+          "value": 4
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 1697,
+      "endOffset": 1903,
+      "class": "TDaviButton",
+      "name": "btnCancel",
+      "flags": 0,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 1724,
+          "type": 3,
+          "value": 200
+        },
+        {
+          "name": "Top",
+          "offset": 1731,
+          "type": 2,
+          "value": 96
+        },
+        {
+          "name": "Width",
+          "offset": 1739,
+          "type": 2,
+          "value": 104
+        },
+        {
+          "name": "Height",
+          "offset": 1748,
+          "type": 2,
+          "value": 24
+        },
+        {
+          "name": "Font.Charset",
+          "offset": 1763,
+          "type": 7,
+          "value": "DEFAULT_CHARSET"
+        },
+        {
+          "name": "Font.Color",
+          "offset": 1791,
+          "type": 7,
+          "value": "clBtnText"
+        },
+        {
+          "name": "Font.Height",
+          "offset": 1814,
+          "type": 2,
+          "value": -11
+        },
+        {
+          "name": "Font.Name",
+          "offset": 1826,
+          "type": 6,
+          "value": "MS Sans Serif"
+        },
+        {
+          "name": "Font.Style",
+          "offset": 1852,
+          "type": 11,
+          "value": []
+        },
+        {
+          "name": "ParentFont",
+          "offset": 1865,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "TabOrder",
+          "offset": 1875,
+          "type": 2,
+          "value": 3
+        },
+        {
+          "name": "Kind",
+          "offset": 1882,
+          "type": 7,
+          "value": "bkCancel"
+        },
+        {
+          "name": "Margin",
+          "offset": 1899,
+          "type": 2,
+          "value": 4
+        }
+      ],
+      "children": []
+    }
+  ]
+}

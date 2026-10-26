@@ -1,0 +1,820 @@
+{
+  "offset": 4,
+  "endOffset": 5016,
+  "class": "TfrmException2",
+  "name": "frmException2",
+  "flags": 0,
+  "childPosition": null,
+  "properties": [
+    {
+      "name": "Left",
+      "offset": 38,
+      "type": 3,
+      "value": 476
+    },
+    {
+      "name": "Top",
+      "offset": 45,
+      "type": 3,
+      "value": 239
+    },
+    {
+      "name": "ActiveControl",
+      "offset": 62,
+      "type": 7,
+      "value": "radioService"
+    },
+    {
+      "name": "BorderStyle",
+      "offset": 88,
+      "type": 7,
+      "value": "bsDialog"
+    },
+    {
+      "name": "Caption",
+      "offset": 106,
+      "type": 6,
+      "value": "Fout"
+    },
+    {
+      "name": "ClientHeight",
+      "offset": 125,
+      "type": 3,
+      "value": 356
+    },
+    {
+      "name": "ClientWidth",
+      "offset": 140,
+      "type": 3,
+      "value": 436
+    },
+    {
+      "name": "Color",
+      "offset": 149,
+      "type": 7,
+      "value": "clBtnFace"
+    },
+    {
+      "name": "Font.Charset",
+      "offset": 173,
+      "type": 7,
+      "value": "DEFAULT_CHARSET"
+    },
+    {
+      "name": "Font.Color",
+      "offset": 201,
+      "type": 7,
+      "value": "clWindowText"
+    },
+    {
+      "name": "Font.Height",
+      "offset": 227,
+      "type": 2,
+      "value": -11
+    },
+    {
+      "name": "Font.Name",
+      "offset": 239,
+      "type": 6,
+      "value": "MS Sans Serif"
+    },
+    {
+      "name": "Font.Style",
+      "offset": 265,
+      "type": 11,
+      "value": []
+    },
+    {
+      "name": "KeyPreview",
+      "offset": 278,
+      "type": 9,
+      "value": true
+    },
+    {
+      "name": "OldCreateOrder",
+      "offset": 294,
+      "type": 9,
+      "value": true
+    },
+    {
+      "name": "Position",
+      "offset": 304,
+      "type": 7,
+      "value": "poScreenCenter"
+    },
+    {
+      "name": "OnClose",
+      "offset": 328,
+      "type": 7,
+      "value": "FormClose"
+    },
+    {
+      "name": "OnCloseQuery",
+      "offset": 352,
+      "type": 7,
+      "value": "FormCloseQuery"
+    },
+    {
+      "name": "OnCreate",
+      "offset": 377,
+      "type": 7,
+      "value": "FormCreate"
+    },
+    {
+      "name": "OnKeyPress",
+      "offset": 400,
+      "type": 7,
+      "value": "FormKeyPress"
+    },
+    {
+      "name": "OnShow",
+      "offset": 421,
+      "type": 7,
+      "value": "FormShow"
+    },
+    {
+      "name": "PixelsPerInch",
+      "offset": 445,
+      "type": 2,
+      "value": 96
+    },
+    {
+      "name": "TextHeight",
+      "offset": 458,
+      "type": 2,
+      "value": 13
+    }
+  ],
+  "children": [
+    {
+      "offset": 461,
+      "endOffset": 578,
+      "class": "TLabel",
+      "name": "lblError",
+      "flags": 0,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 482,
+          "type": 2,
+          "value": 56
+        },
+        {
+          "name": "Top",
+          "offset": 488,
+          "type": 2,
+          "value": 8
+        },
+        {
+          "name": "Width",
+          "offset": 496,
+          "type": 3,
+          "value": 369
+        },
+        {
+          "name": "Height",
+          "offset": 506,
+          "type": 2,
+          "value": 89
+        },
+        {
+          "name": "AutoSize",
+          "offset": 517,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Caption",
+          "offset": 526,
+          "type": 6,
+          "value": "Er is een onverwachte fout opgetreden."
+        },
+        {
+          "name": "WordWrap",
+          "offset": 575,
+          "type": 9,
+          "value": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 578,
+      "endOffset": 3397,
+      "class": "TImage",
+      "name": "imgError",
+      "flags": 0,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 599,
+          "type": 2,
+          "value": 8
+        },
+        {
+          "name": "Top",
+          "offset": 605,
+          "type": 2,
+          "value": 8
+        },
+        {
+          "name": "Width",
+          "offset": 613,
+          "type": 2,
+          "value": 39
+        },
+        {
+          "name": "Height",
+          "offset": 622,
+          "type": 2,
+          "value": 41
+        },
+        {
+          "name": "AutoSize",
+          "offset": 633,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "Picture.Data",
+          "offset": 647,
+          "type": 10,
+          "value": {
+            "binary_hex": "07544269746d61709e0a0000424d9e0a00000000000036040000280000002700000029000000010008000000000068060000ce0e0000c40e00000001000000000000000000004000000080000000ff000000002000004020000080200000ff200000004000004040000080400000ff400000006000004060000080600000ff600000008000004080000080800000ff80000000a0000040a0000080a00000ffa0000000c0000040c0000080c00000ffc0000000ff000040ff000080ff0000ffff0000000020004000200080002000ff002000002020004020200080202000ff202000004020004040200080402000ff402000006020004060200080602000ff602000008020004080200080802000ff80200000a0200040a0200080a02000ffa0200000c0200040c0200080c02000ffc0200000ff200040ff200080ff2000ffff2000000040004000400080004000ff004000002040004020400080204000ff204000004040004040400080404000ff404000006040004060400080604000ff604000008040004080400080804000ff80400000a0400040a0400080a04000ffa0400000c0400040c0400080c04000ffc0400000ff400040ff400080ff4000ffff4000000060004000600080006000ff006000002060004020600080206000ff206000004060004040600080406000ff406000006060004060600080606000ff606000008060004080600080806000ff80600000a0600040a0600080a06000ffa0600000c0600040c0600080c06000ffc0600000ff600040ff600080ff6000ffff6000000080004000800080008000ff008000002080004020800080208000ff208000004080004040800080408000ff408000006080004060800080608000ff608000008080004080800080808000ff80800000a0800040a0800080a08000ffa0800000c0800040c0800080c08000ffc0800000ff800040ff800080ff8000ffff80000000a0004000a0008000a000ff00a0000020a0004020a0008020a000ff20a0000040a0004040a0008040a000ff40a0000060a0004060a0008060a000ff60a0000080a0004080a0008080a000ff80a00000a0a00040a0a00080a0a000ffa0a00000c0a00040c0a00080c0a000ffc0a00000ffa00040ffa00080ffa000ffffa0000000c0004000c0008000c000ff00c0000020c0004020c0008020c000ff20c0000040c0004040c0008040c000ff40c0000060c0004060c0008060c000ff60c0000080c0004080c0008080c000ff80c00000a0c00040a0c00080a0c000ffa0c00000c0c00040c0c00080c0c000ffc0c00000ffc00040ffc00080ffc000ffffc0000000ff004000ff008000ff00ff00ff000020ff004020ff008020ff00ff20ff000040ff004040ff008040ff00ff40ff000060ff004060ff008060ff00ff60ff000080ff004080ff008080ff00ff80ff0000a0ff0040a0ff0080a0ff00ffa0ff0000c0ff0040c0ff0080c0ff00ffc0ff0000ffff0040ffff0080ffff00ffffff0096969696969696969696969696969696969696969696969696969696969696969696969696969600969696969696969696969696969696969696969696969696969696969696969696969696969696009696969696969696969696969696969696969696969696969696969696969696969696969696960096969696969696969696969696969696969696969696969696969696969696969696969696969600969696969696969696969696969696969696969696969696969696969696969696969696969696009696969696969696969696969696969696969696969696969696969696969696969696969696960096969696969696969696969696969696966d6d6d6d6d6d6d6d96969696969696969696969696960096969696969696969696969696966d6d6d6d6d6d6d6d6d6d6d6d6d6d969696969696969696969600969696969696969696969696966d6d60606060606060606d6d6d6d6d6d969696969696969696960096969696969696969696966d606060e0e0e0e0e0e0e0e06060606d6d6d6d6d969696969696969600969696969696969696966d60e0e0e0e0e0e0e0e0e0e0e0e0e0e0606d6d6d6d6d96969696969696009696969696969696966060e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e060606d6d6d6d96969696969600969696969696969660e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0606d6d6d969696969696009696969696969660e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0606d6d6d9696969696009696969696969660e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0606d6d6d6d969696960096969696969660e0e0e0e0e0e0ffe0e0e0e0e0e0e0e0e0e0ffe0e0e0e0e0e0606d6d6d9696969600969696969660e0e0e0e0e0e0ffffffe0e0e0e0e0e0e0e0ffffffe0e0e0e0e0e0606d6d9696969600969696969660e0e0e0e0e0ffffffffffe0e0e0e0e0e0ffffffffffe0e0e0e0e0606d6d6d96969600969696969660e0e0e0e0e0e0ffffffffffe0e0e0e0ffffffffffe0e0e0e0e0e0606d6d6d969696009696969660e0e0e0e0e0e0e0e0ffffffffffe0e0ffffffffffe0e0e0e0e0e0e0e0606d6d969696009696969660e0e0e0e0e0e0e0e0e0ffffffffffffffffffffe0e0e0e0e0e0e0e0e0606d6d969696009696969660e0e0e0e0e0e0e0e0e0e0ffffffffffffffffe0e0e0e0e0e0e0e0e0e0606d6d969696009696969660e0e0e0e0e0e0e0e0e0e0e0ffffffffffffe0e0e0e0e0e0e0e0e0e0e0606d6d969696009696969660e0e0e0e0e0e0e0e0e0e0e0ffffffffffffe0e0e0e0e0e0e0e0e0e0e0606d6d969696009696969660e0e0e0e0e0e0e0e0e0e0ffffffffffffffffe0e0e0e0e0e0e0e0e0e0606d6d969696009696969660e0e0e0e0e0e0e0e0e0ffffffffffffffffffffe0e0e0e0e0e0e0e0e0606d96969696009696969660e0e0e0e0e0e0e0e0ffffffffffe0e0ffffffffffe0e0e0e0e0e0e0e0606d9696969600969696969660e0e0e0e0e0e0ffffffffffe0e0e0e0ffffffffffe0e0e0e0e0e0606d6d9696969600969696969660e0e0e0e0e0ffffffffffe0e0e0e0e0e0ffffffffffe0e0e0e0e0606d969696969600969696969660e0e0e0e0e0e0ffffffe0e0e0e0e0e0e0e0ffffffe0e0e0e0e0e0609696969696960096969696969660e0e0e0e0e0e0ffe0e0e0e0e0e0e0e0e0e0ffe0e0e0e0e0e0606d969696969696009696969696969660e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0606d96969696969696009696969696969660e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e060969696969696969600969696969696969660e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e060969696969696969696009696969696969696966060e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e060609696969696969696969600969696969696969696969660e0e0e0e0e0e0e0e0e0e0e0e0e0e06096969696969696969696969600969696969696969696969696606060e0e0e0e0e0e0e0e0606060969696969696969696969696960096969696969696969696969696969660606060606060609696969696969696969696969696969600969696969696969696969696969696969696969696969696969696969696969696969696969696009696969696969696969696969696969696969696969696969696969696969696969696969696960096969696969696969696969696969696969696969696969696969696969696969696969696969600",
+            "bytes": 2730,
+            "sha256": "ed9d45e140142050b0b6af4029a7152022555977c6b440d66f06d18339c53a4c"
+          }
+        },
+        {
+          "name": "Transparent",
+          "offset": 3394,
+          "type": 9,
+          "value": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 3397,
+      "endOffset": 3538,
+      "class": "TLabel",
+      "name": "lblMessage",
+      "flags": 0,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 3420,
+          "type": 2,
+          "value": 56
+        },
+        {
+          "name": "Top",
+          "offset": 3426,
+          "type": 3,
+          "value": 192
+        },
+        {
+          "name": "Width",
+          "offset": 3435,
+          "type": 3,
+          "value": 339
+        },
+        {
+          "name": "Height",
+          "offset": 3445,
+          "type": 2,
+          "value": 13
+        },
+        {
+          "name": "Caption",
+          "offset": 3455,
+          "type": 6,
+          "value": "Foutmelding (Toets Ctrl+C om de melding naar het klembord te kopiëren)"
+        },
+        {
+          "name": "Visible",
+          "offset": 3535,
+          "type": 8,
+          "value": false
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 3538,
+      "endOffset": 3933,
+      "class": "TPanel",
+      "name": "pnlBottom",
+      "flags": 0,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 3560,
+          "type": 2,
+          "value": 0
+        },
+        {
+          "name": "Top",
+          "offset": 3566,
+          "type": 3,
+          "value": 316
+        },
+        {
+          "name": "Width",
+          "offset": 3575,
+          "type": 3,
+          "value": 436
+        },
+        {
+          "name": "Height",
+          "offset": 3585,
+          "type": 2,
+          "value": 40
+        },
+        {
+          "name": "Align",
+          "offset": 3593,
+          "type": 7,
+          "value": "alBottom"
+        },
+        {
+          "name": "BevelOuter",
+          "offset": 3614,
+          "type": 7,
+          "value": "bvNone"
+        },
+        {
+          "name": "TabOrder",
+          "offset": 3631,
+          "type": 2,
+          "value": 0
+        }
+      ],
+      "children": [
+        {
+          "offset": 3634,
+          "endOffset": 3714,
+          "class": "TBevel",
+          "name": "Bevel1",
+          "flags": 0,
+          "childPosition": null,
+          "properties": [
+            {
+              "name": "Left",
+              "offset": 3653,
+              "type": 2,
+              "value": 0
+            },
+            {
+              "name": "Top",
+              "offset": 3659,
+              "type": 2,
+              "value": 0
+            },
+            {
+              "name": "Width",
+              "offset": 3667,
+              "type": 3,
+              "value": 436
+            },
+            {
+              "name": "Height",
+              "offset": 3677,
+              "type": 2,
+              "value": 40
+            },
+            {
+              "name": "Align",
+              "offset": 3685,
+              "type": 7,
+              "value": "alClient"
+            },
+            {
+              "name": "Shape",
+              "offset": 3701,
+              "type": 7,
+              "value": "bsTopLine"
+            }
+          ],
+          "children": []
+        },
+        {
+          "offset": 3714,
+          "endOffset": 3932,
+          "class": "TDaviButton",
+          "name": "btnOk",
+          "flags": 0,
+          "childPosition": null,
+          "properties": [
+            {
+              "name": "Left",
+              "offset": 3737,
+              "type": 3,
+              "value": 320
+            },
+            {
+              "name": "Top",
+              "offset": 3744,
+              "type": 2,
+              "value": 8
+            },
+            {
+              "name": "Width",
+              "offset": 3752,
+              "type": 2,
+              "value": 104
+            },
+            {
+              "name": "Height",
+              "offset": 3761,
+              "type": 2,
+              "value": 24
+            },
+            {
+              "name": "Font.Charset",
+              "offset": 3776,
+              "type": 7,
+              "value": "DEFAULT_CHARSET"
+            },
+            {
+              "name": "Font.Color",
+              "offset": 3804,
+              "type": 7,
+              "value": "clBtnText"
+            },
+            {
+              "name": "Font.Height",
+              "offset": 3827,
+              "type": 2,
+              "value": -11
+            },
+            {
+              "name": "Font.Name",
+              "offset": 3839,
+              "type": 6,
+              "value": "MS Sans Serif"
+            },
+            {
+              "name": "Font.Style",
+              "offset": 3865,
+              "type": 11,
+              "value": []
+            },
+            {
+              "name": "ParentFont",
+              "offset": 3878,
+              "type": 8,
+              "value": false
+            },
+            {
+              "name": "TabOrder",
+              "offset": 3888,
+              "type": 2,
+              "value": 0
+            },
+            {
+              "name": "OnClick",
+              "offset": 3898,
+              "type": 7,
+              "value": "btnOkClick"
+            },
+            {
+              "name": "Kind",
+              "offset": 3915,
+              "type": 7,
+              "value": "bkOK"
+            },
+            {
+              "name": "Margin",
+              "offset": 3928,
+              "type": 2,
+              "value": 4
+            }
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "offset": 3933,
+      "endOffset": 4011,
+      "class": "TMemo",
+      "name": "memoMsg",
+      "flags": 0,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 3952,
+          "type": 2,
+          "value": 56
+        },
+        {
+          "name": "Top",
+          "offset": 3958,
+          "type": 3,
+          "value": 216
+        },
+        {
+          "name": "Width",
+          "offset": 3967,
+          "type": 3,
+          "value": 361
+        },
+        {
+          "name": "Height",
+          "offset": 3977,
+          "type": 2,
+          "value": 89
+        },
+        {
+          "name": "ReadOnly",
+          "offset": 3988,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "TabOrder",
+          "offset": 3998,
+          "type": 2,
+          "value": 1
+        },
+        {
+          "name": "Visible",
+          "offset": 4008,
+          "type": 8,
+          "value": false
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 4011,
+      "endOffset": 4121,
+      "class": "TRadioButton",
+      "name": "radioService",
+      "flags": 0,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 4042,
+          "type": 2,
+          "value": 56
+        },
+        {
+          "name": "Top",
+          "offset": 4048,
+          "type": 2,
+          "value": 104
+        },
+        {
+          "name": "Width",
+          "offset": 4056,
+          "type": 3,
+          "value": 369
+        },
+        {
+          "name": "Height",
+          "offset": 4066,
+          "type": 2,
+          "value": 17
+        },
+        {
+          "name": "Caption",
+          "offset": 4076,
+          "type": 6,
+          "value": "radioService"
+        },
+        {
+          "name": "Checked",
+          "offset": 4098,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "TabOrder",
+          "offset": 4108,
+          "type": 2,
+          "value": 2
+        },
+        {
+          "name": "TabStop",
+          "offset": 4118,
+          "type": 9,
+          "value": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 4121,
+      "endOffset": 4216,
+      "class": "TRadioButton",
+      "name": "radioCloseApp",
+      "flags": 0,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 4153,
+          "type": 2,
+          "value": 56
+        },
+        {
+          "name": "Top",
+          "offset": 4159,
+          "type": 3,
+          "value": 128
+        },
+        {
+          "name": "Width",
+          "offset": 4168,
+          "type": 3,
+          "value": 369
+        },
+        {
+          "name": "Height",
+          "offset": 4178,
+          "type": 2,
+          "value": 17
+        },
+        {
+          "name": "Caption",
+          "offset": 4188,
+          "type": 6,
+          "value": "radioCloseApp"
+        },
+        {
+          "name": "TabOrder",
+          "offset": 4212,
+          "type": 2,
+          "value": 3
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 4216,
+      "endOffset": 4307,
+      "class": "TRadioButton",
+      "name": "radioIgnore",
+      "flags": 0,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 4246,
+          "type": 2,
+          "value": 56
+        },
+        {
+          "name": "Top",
+          "offset": 4252,
+          "type": 3,
+          "value": 152
+        },
+        {
+          "name": "Width",
+          "offset": 4261,
+          "type": 3,
+          "value": 369
+        },
+        {
+          "name": "Height",
+          "offset": 4271,
+          "type": 2,
+          "value": 17
+        },
+        {
+          "name": "Caption",
+          "offset": 4281,
+          "type": 6,
+          "value": "radioIgnore"
+        },
+        {
+          "name": "TabOrder",
+          "offset": 4303,
+          "type": 2,
+          "value": 4
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 4307,
+      "endOffset": 5015,
+      "class": "TDaviButton",
+      "name": "btnDetails",
+      "flags": 0,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 4335,
+          "type": 2,
+          "value": 56
+        },
+        {
+          "name": "Top",
+          "offset": 4341,
+          "type": 3,
+          "value": 184
+        },
+        {
+          "name": "Width",
+          "offset": 4350,
+          "type": 2,
+          "value": 104
+        },
+        {
+          "name": "Height",
+          "offset": 4359,
+          "type": 2,
+          "value": 24
+        },
+        {
+          "name": "Caption",
+          "offset": 4369,
+          "type": 6,
+          "value": "&Details >>"
+        },
+        {
+          "name": "Font.Charset",
+          "offset": 4395,
+          "type": 7,
+          "value": "DEFAULT_CHARSET"
+        },
+        {
+          "name": "Font.Color",
+          "offset": 4423,
+          "type": 7,
+          "value": "clBtnText"
+        },
+        {
+          "name": "Font.Height",
+          "offset": 4446,
+          "type": 2,
+          "value": -11
+        },
+        {
+          "name": "Font.Name",
+          "offset": 4458,
+          "type": 6,
+          "value": "MS Sans Serif"
+        },
+        {
+          "name": "Font.Style",
+          "offset": 4484,
+          "type": 11,
+          "value": []
+        },
+        {
+          "name": "ParentFont",
+          "offset": 4497,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "TabOrder",
+          "offset": 4507,
+          "type": 2,
+          "value": 5
+        },
+        {
+          "name": "OnClick",
+          "offset": 4517,
+          "type": 7,
+          "value": "btnDetailsClick"
+        },
+        {
+          "name": "Glyph.Data",
+          "offset": 4545,
+          "type": 10,
+          "value": {
+            "binary_hex": "b6010000424db60100000000000076000000280000002400000010000000010004000000000040010000c30e0000c30e00001000000010000000ff00ff007f000000a4a0a000ffffff008080800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000044444444444444440044444444444444440000004222222222222224004222222222222224000000422222222222222400422222222222222400000042233333333332240042244444444442240000004223333333333224004224444444444224000000422333333333322400422444444444422400000042233333333332240042244444444442240000004222222222222224004222222222222224000000422222222222222400422222222222222400000042222222222222240042222222222222240000004222222222222224004222222222222224000000411111111111111400444444444444444400000041111111111111140044444444444444440000004444444444444444004444444444444444000000000000000000000000000000000000000000000",
+            "bytes": 442,
+            "sha256": "525f496075414d1bfe57cd293265dc6c9d94fa84cf71768e7d1f695c1879fcda"
+          }
+        },
+        {
+          "name": "Margin",
+          "offset": 4999,
+          "type": 2,
+          "value": 4
+        },
+        {
+          "name": "NumGlyphs",
+          "offset": 5011,
+          "type": 2,
+          "value": 2
+        }
+      ],
+      "children": []
+    }
+  ]
+}

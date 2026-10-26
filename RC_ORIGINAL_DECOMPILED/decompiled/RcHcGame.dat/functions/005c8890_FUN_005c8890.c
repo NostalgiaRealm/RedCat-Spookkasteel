@@ -1,0 +1,70 @@
+/*
+ * FUN_005c8890 at 005c8890
+ * undefined FUN_005c8890(void)
+ * Address ranges: 005c8890-005c8972
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ */
+
+undefined4 FUN_005c8890(int *param_1,uint *param_2,int *param_3,uint *param_4)
+
+{
+  int *piVar1;
+  uint uVar2;
+  uint uVar3;
+  int *piVar4;
+  int *piVar5;
+  
+  if (param_2 != (uint *)0x0) {
+    *param_2 = 0;
+  }
+  if (param_3 != (int *)0x0) {
+    *param_3 = 0;
+  }
+  if (param_4 != (uint *)0x0) {
+    *param_4 = 0;
+  }
+  piVar5 = param_1 + 3;
+  if ((*param_1 == 0x46464952) && (param_1[2] == 0x45564157)) {
+    piVar1 = (int *)(param_1[1] + -4 + (int)piVar5);
+    while (piVar5 < piVar1) {
+      uVar2 = piVar5[1];
+      piVar4 = piVar5 + 2;
+      if (*piVar5 == 0x20746d66) {
+        if ((param_2 != (uint *)0x0) && (*param_2 == 0)) {
+          if (uVar2 < 0xe) {
+            return 0;
+          }
+          *param_2 = (uint)piVar4;
+          if ((param_3 == (int *)0x0) || (*param_3 != 0)) {
+            if (param_4 == (uint *)0x0) {
+              return 1;
+            }
+            uVar3 = *param_4;
+            goto joined_r0x005c8956;
+          }
+        }
+      }
+      else if ((*piVar5 == 0x61746164) &&
+              (((param_3 != (int *)0x0 && (*param_3 == 0)) ||
+               ((param_4 != (uint *)0x0 && (*param_4 == 0)))))) {
+        if (param_3 != (int *)0x0) {
+          *param_3 = (int)piVar4;
+        }
+        if (param_4 != (uint *)0x0) {
+          *param_4 = uVar2;
+        }
+        if (param_2 == (uint *)0x0) {
+          return 1;
+        }
+        uVar3 = *param_2;
+joined_r0x005c8956:
+        if (uVar3 != 0) {
+          return 1;
+        }
+      }
+      piVar5 = (int *)((int)piVar4 + (uVar2 + 1 & 0xfffffffe));
+    }
+  }
+  return 0;
+}
+

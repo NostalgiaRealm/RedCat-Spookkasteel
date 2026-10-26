@@ -1,0 +1,14 @@
+/*
+ * Unwind@00626d80 at 00626d80
+ * undefined Unwind@00626d80(void)
+ * Address ranges: 00626d80-00626d87
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ */
+
+void Unwind_00626d80(void)
+
+{
+  FUN_0057d310();
+  return;
+}
+

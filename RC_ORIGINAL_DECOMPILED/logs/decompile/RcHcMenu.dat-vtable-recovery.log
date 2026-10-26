@@ -1,0 +1,178 @@
+Picked up JAVA_TOOL_OPTIONS: -Djava.io.tmpdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.tempdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.cachedir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work"
+Picked up JAVA_TOOL_OPTIONS: -Djava.io.tmpdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.tempdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.cachedir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work"
+Picked up JAVA_TOOL_OPTIONS: -Djava.io.tmpdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.tempdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.cachedir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work"
+Picked up JAVA_TOOL_OPTIONS: -Djava.io.tmpdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.tempdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.cachedir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work"
+openjdk version "25.0.4.1" 2026-08-18
+OpenJDK Runtime Environment (Red_Hat-25.0.4.1.1-1) (build 25.0.4.1+1)
+OpenJDK 64-Bit Server VM (Red_Hat-25.0.4.1.1-1) (build 25.0.4.1+1, mixed mode)
+INFO  Using log config file: jar:file:/home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Framework/Generic/lib/Generic.jar!/generic.log4j.xml (LoggingInitialization)  
+INFO  Using log file: /home/rick/.config/ghidra/ghidra_12.1.4_PUBLIC/application.log (LoggingInitialization)  
+INFO  Loading user preferences: /home/rick/.config/ghidra/ghidra_12.1.4_PUBLIC/preferences (Preferences)  
+INFO  Searching for classes... (ClassSearcher)  
+INFO  Class search complete (753 ms) (ClassSearcher)  
+INFO  Initializing SSL Context (DefaultSSLContextInitializer)  
+INFO  Initializing Random Number Generator... (SecureRandomFactory)  
+INFO  Random Number Generator initialization complete: NativePRNGNonBlocking (SecureRandomFactory)  
+INFO  Trust manager disabled, cacerts have not been set (DefaultTrustManagerFactory)  
+INFO  Headless startup complete (1501 ms) (AnalyzeHeadless)  
+INFO  Class searcher loaded 59 extension points (20 false positives) (ClassSearcher)  
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::staticFieldOffset has been called by org.apache.felix.framework.util.SecureAction (file:/home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/Base/lib/org.apache.felix.framework-7.0.5.jar)
+WARNING: Please consider reporting this to the maintainers of class org.apache.felix.framework.util.SecureAction
+WARNING: sun.misc.Unsafe::staticFieldOffset will be removed in a future release
+INFO  HEADLESS Script Paths:
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/SwiftDemangler/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/Base/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/WildcardAssembler/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/DecompilerDependent/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/VersionTracking/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/GnuDemangler/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/DATA/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/JVM/ghidra_scripts
+    /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/8051/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/SystemEmulation/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/Atmel/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Debug/Debugger-rmi-trace/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/FileFormats/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/MicrosoftCodeAnalyzer/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/PyGhidra/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/BSim/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Debug/Debugger/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/PDB/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/PIC/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/Decompiler/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/BytePatterns/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/FunctionID/ghidra_scripts (HeadlessAnalyzer)  
+INFO  HEADLESS: execution starts (HeadlessAnalyzer)  
+INFO  Opening existing project: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/analysis-projects/RcHcMenu.dat/analysis (HeadlessAnalyzer)  
+INFO  Opening project: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/analysis-projects/RcHcMenu.dat/analysis (HeadlessProject)  
+INFO  REPORT: Processing project file: /RcHcMenu.dat (HeadlessAnalyzer)  
+INFO  REPORT: Execute script: RecoverVtableFunctions.java '/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/inventory/RcHcMenu.dat-vtable-seeds.tsv'  (HeadlessAnalyzer)  
+INFO  SCRIPT: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/scripts/RecoverVtableFunctions.java (HeadlessAnalyzer)  
+INFO  RecoverVtableFunctions.java> SEED clear crossing inferred instruction at 0041e9f4: 0041e9f3-0041e9f5 ADD byte ptr [EBX + 0x56],DL (GhidraScript)  
+INFO  RecoverVtableFunctions.java> SEED clear crossing inferred instruction at 00429f9c: 00429f9b-00429f9d ADD byte ptr [EBX + 0x56],DL (GhidraScript)  
+INFO  RecoverVtableFunctions.java> SEED clear crossing inferred instruction at 0043d56c: 0043d569-0043d56f IMUL EBP,dword ptr [ESI + 0x6b],-0x3e17a9ad (GhidraScript)  
+INFO  RecoverVtableFunctions.java> SEED clear crossing inferred instruction at 00468468: 00468467-00468469 ADD byte ptr [EBP + -0x75],DL (GhidraScript)  
+INFO  RecoverVtableFunctions.java> SEED clear crossing inferred instruction at 0048a874: 0048a86f-0048a874 ADD byte ptr [ECX + 0x550000fe],DH (GhidraScript)  
+INFO  RecoverVtableFunctions.java> SEED clear crossing inferred instruction at 00498d88: 00498d85-00498d88 JC 0x00498dde (GhidraScript)  
+INFO  RecoverVtableFunctions.java> SEED clear crossing inferred instruction at 004b1a88: 004b1a83-004b1a88 ADD byte ptr [ECX + 0x550000fe],AH (GhidraScript)  
+INFO  RecoverVtableFunctions.java> SEED clear crossing inferred instruction at 004b33d8: 004b33d7-004b33d9 ADD byte ptr [EBP + -0x75],DL (GhidraScript)  
+INFO  RecoverVtableFunctions.java> SEED clear crossing inferred instruction at 004e71f8: 004e71f7-004e71f9 ADD byte ptr [EBP + -0x75],DL (GhidraScript)  
+INFO  RecoverVtableFunctions.java> SEED clear crossing inferred instruction at 004e92dc: 004e92db-004e92dd ADD byte ptr [EBP + -0x75],DL (GhidraScript)  
+INFO  RecoverVtableFunctions.java> SEED clear crossing inferred instruction at 004ebf08: 004ebf07-004ebf09 ADD byte ptr [EBP + -0x75],DL (GhidraScript)  
+INFO  RecoverVtableFunctions.java> SEED clear crossing inferred instruction at 00543094: 00543093-00543095 ADD byte ptr [EBP + -0x75],DL (GhidraScript)  
+INFO  RecoverVtableFunctions.java> SEED clear crossing inferred instruction at 00504ac0: 00504abf-00504ac1 ADD byte ptr [EBP + -0x75],DL (GhidraScript)  
+INFO  RecoverVtableFunctions.java> SEED clear crossing inferred instruction at 00559cd4: 00559cd3-00559cd5 ADD byte ptr [EBP + -0x75],DL (GhidraScript)  
+INFO  RecoverVtableFunctions.java> SEED clear crossing inferred instruction at 0055ccd8: 0055ccd4-0055ccd8 AND EAX,0x55000064 (GhidraScript)  
+INFO  RecoverVtableFunctions.java> VTABLE RECOVERY created=15 existing=2812 failed=0 (GhidraScript)  
+INFO  -----------------------------------------------------
+    Call Convention ID                         0.000 secs
+    Call-Fixup Installer                       0.002 secs
+    Decompiler Parameter ID                    2.142 secs
+    Decompiler Switch Analysis                 0.000 secs
+    Function Start Search After Code           0.003 secs
+    Non-Returning Functions - Discovered       0.000 secs
+    Reference                                  0.000 secs
+    Scalar Operand References                  0.000 secs
+    Shared Return Calls                        0.007 secs
+    Stack                                      0.016 secs
+    Subroutine References                      0.000 secs
+    WindowsResourceReference                   0.256 secs
+    X86 Function Callee Purge                  0.002 secs
+    x86 Constant Reference Analyzer            0.032 secs
+-----------------------------------------------------
+     Total Time   2 secs
+-----------------------------------------------------
+ (AutoAnalysisManager)  
+INFO  REPORT: Execute script: RecoverFunctions.java  (HeadlessAnalyzer)  
+INFO  SCRIPT: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/scripts/RecoverFunctions.java (HeadlessAnalyzer)  
+INFO  RecoverFunctions.java> RECOVERED 0 explicit entry/direct-call functions (GhidraScript)  
+INFO  REPORT: Execute script: ExportAll.java '/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/decompiled/RcHcMenu.dat'  (HeadlessAnalyzer)  
+INFO  SCRIPT: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/scripts/ExportAll.java (HeadlessAnalyzer)  
+INFO  ExportAll.java> Exported 100 functions; decompiled=100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 200 functions; decompiled=200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 300 functions; decompiled=300, fallback=0 (GhidraScript)  
+WARN  Decompiling 00405abc: Unable to read bytes at ram:92e95e5f (DecompileCallback)  
+INFO  ExportAll.java> Exported 400 functions; decompiled=400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 500 functions; decompiled=500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 600 functions; decompiled=600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 700 functions; decompiled=700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 800 functions; decompiled=800, fallback=0 (GhidraScript)  
+WARN  Decompiling 0040a55f: Unable to read bytes at ram:40e8c031 (DecompileCallback)  
+INFO  ExportAll.java> Exported 900 functions; decompiled=900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1000 functions; decompiled=1000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1100 functions; decompiled=1100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1200 functions; decompiled=1200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1300 functions; decompiled=1300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1400 functions; decompiled=1400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1500 functions; decompiled=1500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1600 functions; decompiled=1600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1700 functions; decompiled=1700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1800 functions; decompiled=1800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1900 functions; decompiled=1900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2000 functions; decompiled=2000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2100 functions; decompiled=2100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2200 functions; decompiled=2200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2300 functions; decompiled=2300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2400 functions; decompiled=2400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2500 functions; decompiled=2500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2600 functions; decompiled=2600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2700 functions; decompiled=2700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2800 functions; decompiled=2800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2900 functions; decompiled=2900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 3000 functions; decompiled=3000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 3100 functions; decompiled=3100, fallback=0 (GhidraScript)  
+WARN  Decompiling 0045f3b8: Unable to read bytes at ram:082444d9 (DecompileCallback)  
+INFO  ExportAll.java> Exported 3200 functions; decompiled=3200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 3300 functions; decompiled=3300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 3400 functions; decompiled=3400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 3500 functions; decompiled=3500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 3600 functions; decompiled=3600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 3700 functions; decompiled=3700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 3800 functions; decompiled=3800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 3900 functions; decompiled=3900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4000 functions; decompiled=4000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4100 functions; decompiled=4100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4200 functions; decompiled=4200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4300 functions; decompiled=4300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4400 functions; decompiled=4400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4500 functions; decompiled=4500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4600 functions; decompiled=4600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4700 functions; decompiled=4700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4800 functions; decompiled=4800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4900 functions; decompiled=4900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5000 functions; decompiled=5000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5100 functions; decompiled=5100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5200 functions; decompiled=5200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5300 functions; decompiled=5300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5400 functions; decompiled=5400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5500 functions; decompiled=5500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5600 functions; decompiled=5600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5700 functions; decompiled=5700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5800 functions; decompiled=5800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5900 functions; decompiled=5900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6000 functions; decompiled=6000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6100 functions; decompiled=6100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6200 functions; decompiled=6200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6300 functions; decompiled=6300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6400 functions; decompiled=6400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6500 functions; decompiled=6500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6600 functions; decompiled=6600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6700 functions; decompiled=6700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6800 functions; decompiled=6800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6900 functions; decompiled=6900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7000 functions; decompiled=7000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7100 functions; decompiled=7100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7200 functions; decompiled=7200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7300 functions; decompiled=7300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7400 functions; decompiled=7400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7500 functions; decompiled=7500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7600 functions; decompiled=7600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7700 functions; decompiled=7700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7800 functions; decompiled=7800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7900 functions; decompiled=7900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 8000 functions; decompiled=8000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 8100 functions; decompiled=8100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> EXPORT COMPLETE: functions=8125 decompiled=8125 fallback=0 output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/decompiled/RcHcMenu.dat (GhidraScript)  
+INFO  REPORT: Save succeeded for processed file: /RcHcMenu.dat (HeadlessAnalyzer)  

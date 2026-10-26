@@ -1,0 +1,773 @@
+{
+  "offset": 4,
+  "endOffset": 1783,
+  "class": "TfrmAdventure",
+  "name": "frmAdventure",
+  "flags": 1,
+  "childPosition": null,
+  "properties": [
+    {
+      "name": "Left",
+      "offset": 37,
+      "type": 2,
+      "value": 67
+    },
+    {
+      "name": "Top",
+      "offset": 43,
+      "type": 2,
+      "value": 99
+    },
+    {
+      "name": "ActiveControl",
+      "offset": 59,
+      "type": 7,
+      "value": "BtnNext.WrapperBtnNext"
+    },
+    {
+      "name": "Caption",
+      "offset": 91,
+      "type": 6,
+      "value": "frmAdventure"
+    },
+    {
+      "name": "PixelsPerInch",
+      "offset": 119,
+      "type": 2,
+      "value": 96
+    },
+    {
+      "name": "TextHeight",
+      "offset": 132,
+      "type": 2,
+      "value": 13
+    }
+  ],
+  "children": [
+    {
+      "offset": 135,
+      "endOffset": 168,
+      "class": "TGDIButton",
+      "name": "btnHelp",
+      "flags": 1,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "TabOrder",
+          "offset": 164,
+          "type": 2,
+          "value": 1
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 168,
+      "endOffset": 205,
+      "class": "TGDIButton",
+      "name": "BtnPrevious",
+      "flags": 1,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "TabOrder",
+          "offset": 201,
+          "type": 2,
+          "value": 6
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 205,
+      "endOffset": 260,
+      "class": "TGDIButton",
+      "name": "BtnNext",
+      "flags": 1,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "TabOrder",
+          "offset": 234,
+          "type": 2,
+          "value": 0
+        },
+        {
+          "name": "OnClick",
+          "offset": 244,
+          "type": 7,
+          "value": "BtnNextClick"
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 260,
+      "endOffset": 293,
+      "class": "TGDIButton",
+      "name": "BtnQuit",
+      "flags": 1,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "TabOrder",
+          "offset": 289,
+          "type": 2,
+          "value": 2
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 293,
+      "endOffset": 456,
+      "class": "TGDIRadioButton",
+      "name": "btnContinue",
+      "flags": 2,
+      "childPosition": {
+        "offset": 294,
+        "type": 2,
+        "value": 6
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 329,
+          "type": 3,
+          "value": 296
+        },
+        {
+          "name": "Top",
+          "offset": 336,
+          "type": 3,
+          "value": 392
+        },
+        {
+          "name": "Width",
+          "offset": 345,
+          "type": 3,
+          "value": 175
+        },
+        {
+          "name": "Height",
+          "offset": 355,
+          "type": 2,
+          "value": 67
+        },
+        {
+          "name": "Checked",
+          "offset": 365,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "Definition",
+          "offset": 377,
+          "type": 7,
+          "value": "Data.gdfRadioBtn"
+        },
+        {
+          "name": "TabOrder",
+          "offset": 404,
+          "type": 2,
+          "value": 4
+        },
+        {
+          "name": "TabStop",
+          "offset": 414,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "Caption",
+          "offset": 423,
+          "type": 6,
+          "value": "btnContinue"
+        },
+        {
+          "name": "MouseCheckDelay",
+          "offset": 452,
+          "type": 2,
+          "value": 60
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 456,
+      "endOffset": 627,
+      "class": "TGDIRadioButton",
+      "name": "btnNewAdventure",
+      "flags": 2,
+      "childPosition": {
+        "offset": 457,
+        "type": 2,
+        "value": 7
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 496,
+          "type": 3,
+          "value": 296
+        },
+        {
+          "name": "Top",
+          "offset": 503,
+          "type": 3,
+          "value": 456
+        },
+        {
+          "name": "Width",
+          "offset": 512,
+          "type": 3,
+          "value": 175
+        },
+        {
+          "name": "Height",
+          "offset": 522,
+          "type": 2,
+          "value": 67
+        },
+        {
+          "name": "Checked",
+          "offset": 532,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Definition",
+          "offset": 544,
+          "type": 7,
+          "value": "Data.gdfRadioBtn"
+        },
+        {
+          "name": "TabOrder",
+          "offset": 571,
+          "type": 2,
+          "value": 5
+        },
+        {
+          "name": "TabStop",
+          "offset": 581,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "Caption",
+          "offset": 590,
+          "type": 6,
+          "value": "btnNewAdventure"
+        },
+        {
+          "name": "MouseCheckDelay",
+          "offset": 623,
+          "type": 2,
+          "value": 60
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 627,
+      "endOffset": 856,
+      "class": "TLabel",
+      "name": "lblPlayerInfo",
+      "flags": 2,
+      "childPosition": {
+        "offset": 628,
+        "type": 2,
+        "value": 8
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 656,
+          "type": 3,
+          "value": 410
+        },
+        {
+          "name": "Top",
+          "offset": 663,
+          "type": 3,
+          "value": 322
+        },
+        {
+          "name": "Width",
+          "offset": 672,
+          "type": 3,
+          "value": 191
+        },
+        {
+          "name": "Height",
+          "offset": 682,
+          "type": 2,
+          "value": 31
+        },
+        {
+          "name": "AutoSize",
+          "offset": 693,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Caption",
+          "offset": 702,
+          "type": 6,
+          "value": "lblPlayerInfo"
+        },
+        {
+          "name": "Font.Charset",
+          "offset": 730,
+          "type": 7,
+          "value": "DEFAULT_CHARSET"
+        },
+        {
+          "name": "Font.Color",
+          "offset": 758,
+          "type": 7,
+          "value": "clWhite"
+        },
+        {
+          "name": "Font.Height",
+          "offset": 779,
+          "type": 2,
+          "value": -19
+        },
+        {
+          "name": "Font.Name",
+          "offset": 791,
+          "type": 6,
+          "value": "MS Sans Serif"
+        },
+        {
+          "name": "Font.Style",
+          "offset": 817,
+          "type": 11,
+          "value": []
+        },
+        {
+          "name": "ParentFont",
+          "offset": 830,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Transparent",
+          "offset": 843,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "WordWrap",
+          "offset": 853,
+          "type": 9,
+          "value": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 856,
+      "endOffset": 1027,
+      "class": "TGDIButton",
+      "name": "AdvLevelBtn",
+      "flags": 2,
+      "childPosition": {
+        "offset": 857,
+        "type": 2,
+        "value": 10
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 887,
+          "type": 3,
+          "value": 296
+        },
+        {
+          "name": "Top",
+          "offset": 894,
+          "type": 3,
+          "value": 160
+        },
+        {
+          "name": "Width",
+          "offset": 903,
+          "type": 2,
+          "value": 120
+        },
+        {
+          "name": "Height",
+          "offset": 912,
+          "type": 2,
+          "value": 80
+        },
+        {
+          "name": "Cancel",
+          "offset": 921,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Default",
+          "offset": 930,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "ModalResult",
+          "offset": 943,
+          "type": 2,
+          "value": 0
+        },
+        {
+          "name": "Definition",
+          "offset": 956,
+          "type": 7,
+          "value": "Data.gdfCurLevel1"
+        },
+        {
+          "name": "MouseCheckDelay",
+          "offset": 991,
+          "type": 2,
+          "value": 60
+        },
+        {
+          "name": "TabOrder",
+          "offset": 1002,
+          "type": 2,
+          "value": 7
+        },
+        {
+          "name": "Caption",
+          "offset": 1012,
+          "type": 6,
+          "value": "AdvLevelBtn"
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 1027,
+      "endOffset": 1284,
+      "class": "TLabel",
+      "name": "lblScore",
+      "flags": 2,
+      "childPosition": {
+        "offset": 1028,
+        "type": 2,
+        "value": 11
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 1051,
+          "type": 3,
+          "value": 410
+        },
+        {
+          "name": "Top",
+          "offset": 1058,
+          "type": 3,
+          "value": 346
+        },
+        {
+          "name": "Width",
+          "offset": 1067,
+          "type": 3,
+          "value": 191
+        },
+        {
+          "name": "Height",
+          "offset": 1077,
+          "type": 2,
+          "value": 31
+        },
+        {
+          "name": "AutoSize",
+          "offset": 1088,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Caption",
+          "offset": 1097,
+          "type": 6,
+          "value": "lblPlayerInfo"
+        },
+        {
+          "name": "Color",
+          "offset": 1118,
+          "type": 7,
+          "value": "clBackground"
+        },
+        {
+          "name": "Font.Charset",
+          "offset": 1145,
+          "type": 7,
+          "value": "DEFAULT_CHARSET"
+        },
+        {
+          "name": "Font.Color",
+          "offset": 1173,
+          "type": 7,
+          "value": "clWhite"
+        },
+        {
+          "name": "Font.Height",
+          "offset": 1194,
+          "type": 2,
+          "value": -19
+        },
+        {
+          "name": "Font.Name",
+          "offset": 1206,
+          "type": 6,
+          "value": "Comic Sans MS"
+        },
+        {
+          "name": "Font.Style",
+          "offset": 1232,
+          "type": 11,
+          "value": []
+        },
+        {
+          "name": "ParentColor",
+          "offset": 1246,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "ParentFont",
+          "offset": 1258,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Transparent",
+          "offset": 1271,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "WordWrap",
+          "offset": 1281,
+          "type": 9,
+          "value": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 1284,
+      "endOffset": 1550,
+      "class": "TLabel",
+      "name": "lblPlayerScoreText",
+      "flags": 2,
+      "childPosition": {
+        "offset": 1285,
+        "type": 2,
+        "value": 12
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 1318,
+          "type": 3,
+          "value": 298
+        },
+        {
+          "name": "Top",
+          "offset": 1325,
+          "type": 3,
+          "value": 346
+        },
+        {
+          "name": "Width",
+          "offset": 1334,
+          "type": 2,
+          "value": 95
+        },
+        {
+          "name": "Height",
+          "offset": 1343,
+          "type": 2,
+          "value": 31
+        },
+        {
+          "name": "AutoSize",
+          "offset": 1354,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Caption",
+          "offset": 1363,
+          "type": 6,
+          "value": "lblPlayerInfo"
+        },
+        {
+          "name": "Color",
+          "offset": 1384,
+          "type": 7,
+          "value": "clBackground"
+        },
+        {
+          "name": "Font.Charset",
+          "offset": 1411,
+          "type": 7,
+          "value": "DEFAULT_CHARSET"
+        },
+        {
+          "name": "Font.Color",
+          "offset": 1439,
+          "type": 7,
+          "value": "clWhite"
+        },
+        {
+          "name": "Font.Height",
+          "offset": 1460,
+          "type": 2,
+          "value": -19
+        },
+        {
+          "name": "Font.Name",
+          "offset": 1472,
+          "type": 6,
+          "value": "Comic Sans MS"
+        },
+        {
+          "name": "Font.Style",
+          "offset": 1498,
+          "type": 11,
+          "value": []
+        },
+        {
+          "name": "ParentColor",
+          "offset": 1512,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "ParentFont",
+          "offset": 1524,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Transparent",
+          "offset": 1537,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "WordWrap",
+          "offset": 1547,
+          "type": 9,
+          "value": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 1550,
+      "endOffset": 1782,
+      "class": "TLabel",
+      "name": "lblPlayerNameText",
+      "flags": 2,
+      "childPosition": {
+        "offset": 1551,
+        "type": 2,
+        "value": 13
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 1583,
+          "type": 3,
+          "value": 298
+        },
+        {
+          "name": "Top",
+          "offset": 1590,
+          "type": 3,
+          "value": 322
+        },
+        {
+          "name": "Width",
+          "offset": 1599,
+          "type": 2,
+          "value": 95
+        },
+        {
+          "name": "Height",
+          "offset": 1608,
+          "type": 2,
+          "value": 31
+        },
+        {
+          "name": "AutoSize",
+          "offset": 1619,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Caption",
+          "offset": 1628,
+          "type": 6,
+          "value": "lblPlayerInfo"
+        },
+        {
+          "name": "Font.Charset",
+          "offset": 1656,
+          "type": 7,
+          "value": "DEFAULT_CHARSET"
+        },
+        {
+          "name": "Font.Color",
+          "offset": 1684,
+          "type": 7,
+          "value": "clWhite"
+        },
+        {
+          "name": "Font.Height",
+          "offset": 1705,
+          "type": 2,
+          "value": -19
+        },
+        {
+          "name": "Font.Name",
+          "offset": 1717,
+          "type": 6,
+          "value": "MS Sans Serif"
+        },
+        {
+          "name": "Font.Style",
+          "offset": 1743,
+          "type": 11,
+          "value": []
+        },
+        {
+          "name": "ParentFont",
+          "offset": 1756,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Transparent",
+          "offset": 1769,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "WordWrap",
+          "offset": 1779,
+          "type": 9,
+          "value": true
+        }
+      ],
+      "children": []
+    }
+  ]
+}

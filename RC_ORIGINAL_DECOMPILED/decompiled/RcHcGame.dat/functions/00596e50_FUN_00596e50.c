@@ -1,0 +1,28 @@
+/*
+ * FUN_00596e50 at 00596e50
+ * undefined FUN_00596e50(void)
+ * Address ranges: 00596e50-00596e85
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ */
+
+void __thiscall FUN_00596e50(int param_1,int *param_2)
+
+{
+  int iVar1;
+  int iVar2;
+  
+  iVar1 = *(int *)(param_1 + 0x24);
+  if (iVar1 != *param_2) {
+    if ((iVar1 != 0) &&
+       (iVar2 = *(int *)(iVar1 + 0x14) + -1, *(int *)(iVar1 + 0x14) = iVar2, iVar2 == 0)) {
+      FUN_005abfc0(0);
+    }
+    iVar1 = *param_2;
+    *(int *)(param_1 + 0x24) = iVar1;
+    if (iVar1 != 0) {
+      *(int *)(iVar1 + 0x14) = *(int *)(iVar1 + 0x14) + 1;
+    }
+  }
+  return;
+}
+

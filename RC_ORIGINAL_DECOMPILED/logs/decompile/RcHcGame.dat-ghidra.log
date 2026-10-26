@@ -1,0 +1,347 @@
+2026-10-26 13:51:01 INFO  (LoggingInitialization) Using log config file: jar:file:/home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Framework/Generic/lib/Generic.jar!/generic.log4j.xml  
+2026-10-26 13:51:01 INFO  (LoggingInitialization) Using log file: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/logs/decompile/RcHcGame.dat-ghidra.log  
+2026-10-26 13:51:01 DEBUG (GhidraObjectInputFilter) Including serial input filter: FileSystem/data/client.rmi.serial.filter  
+2026-10-26 13:51:01 INFO  (Preferences) Loading user preferences: /home/rick/.config/ghidra/ghidra_12.1.4_PUBLIC/preferences  
+2026-10-26 13:51:01 INFO  (ClassSearcher) Searching for classes...  
+2026-10-26 13:51:01 INFO  (ClassSearcher) Class search complete (753 ms)  
+2026-10-26 13:51:01 INFO  (DefaultSSLContextInitializer) Initializing SSL Context  
+2026-10-26 13:51:02 INFO  (SecureRandomFactory) Initializing Random Number Generator...  
+2026-10-26 13:51:02 INFO  (SecureRandomFactory) Random Number Generator initialization complete: NativePRNGNonBlocking  
+2026-10-26 13:51:02 INFO  (DefaultTrustManagerFactory) Trust manager disabled, cacerts have not been set  
+2026-10-26 13:51:02 INFO  (FileCacheMaintenanceDaemon) Starting cache cleanup: /var/tmp/rick-ghidra/fscache2  
+2026-10-26 13:51:02 INFO  (FileCacheMaintenanceDaemon) Finished cache cleanup, estimated storage used: 0  
+2026-10-26 13:51:02 INFO  (AnalyzeHeadless) Headless startup complete (1638 ms)  
+2026-10-26 13:51:02 INFO  (ClassSearcher) Class searcher loaded 59 extension points (20 false positives)  
+2026-10-26 13:51:02 INFO  (HeadlessAnalyzer) HEADLESS Script Paths:
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/SwiftDemangler/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/Base/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/WildcardAssembler/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/DecompilerDependent/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/VersionTracking/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/GnuDemangler/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/DATA/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/JVM/ghidra_scripts
+    /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/8051/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/SystemEmulation/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/Atmel/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Debug/Debugger-rmi-trace/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/FileFormats/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/MicrosoftCodeAnalyzer/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/PyGhidra/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/BSim/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Debug/Debugger/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/PDB/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/PIC/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/Decompiler/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/BytePatterns/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/FunctionID/ghidra_scripts  
+2026-10-26 13:51:02 INFO  (HeadlessAnalyzer) HEADLESS: execution starts  
+2026-10-26 13:51:02 INFO  (HeadlessAnalyzer) Creating project: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/analysis-projects/RcHcGame.dat/analysis  
+2026-10-26 13:51:02 INFO  (DefaultProject) Creating project: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/analysis-projects/RcHcGame.dat/analysis  
+2026-10-26 13:51:02 INFO  (HeadlessAnalyzer) REPORT: Processing input files:   
+2026-10-26 13:51:02 INFO  (HeadlessAnalyzer)      project: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/analysis-projects/RcHcGame.dat/analysis  
+2026-10-26 13:51:02 INFO  (HeadlessAnalyzer) IMPORTING: file:///home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/originals/RcHcGame.dat  
+2026-10-26 13:51:03 INFO  (ProgramLoader) Using Loader: Portable Executable (PE)  
+2026-10-26 13:51:03 INFO  (ProgramLoader) Using Language/Compiler: x86:LE:32:default:windows  
+2026-10-26 13:51:03 INFO  (ProgramLoader) Using Library Search Path: [., /bin, /lib, /lib64, /lib/x86_64-linux-gnu, /lib/aarch64-linux-gnu, /usr/bin, /usr/lib, /usr/X11R6/bin, /usr/X11R6/lib, /usr/java/packages/lib, /usr/lib64]  
+2026-10-26 13:51:03 INFO  (ProgramLoader) Additional info:
+Loading file:///home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/originals/RcHcGame.dat?MD5=c0fe622862bedde3e0536d772ef94e36...
+------------------------------------------------
+
+Searching 7 paths for library COMDLG32.DLL...
+Library not found.
+------------------------------------------------
+
+Searching 7 paths for library DINPUT.DLL...
+Library not found.
+------------------------------------------------
+
+Searching 7 paths for library GDI32.DLL...
+Library not found.
+------------------------------------------------
+
+Searching 7 paths for library KERNEL32.DLL...
+Library not found.
+------------------------------------------------
+
+Searching 7 paths for library USER32.DLL...
+Library not found.
+------------------------------------------------
+
+Searching 7 paths for library WINMM.DLL...
+Library not found.
+------------------------------------------------
+
+Linking the External Programs of 'RcHcGame.dat' to imported libraries...
+  [KERNEL32.DLL] -> not found in project
+  [USER32.DLL] -> not found in project
+  [GDI32.DLL] -> not found in project
+  [COMDLG32.DLL] -> not found in project
+  [WINMM.DLL] -> not found in project
+  [DINPUT.DLL] -> not found in project
+------------------------------------------------
+
+  
+2026-10-26 13:51:03 INFO  (HeadlessAnalyzer) IMPORTING: Loaded 0 additional files  
+2026-10-26 13:51:04 INFO  (HeadlessAnalyzer) ANALYZING all memory and code: file:///home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/originals/RcHcGame.dat  
+2026-10-26 13:51:04 WARN  (NoReturnFunctionAnalyzer) Ignoring leading '_' chars on no-return name '___raise_securityfailure' specified in file: /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/Base/data/PEFunctionsThatDoNotReturn  
+2026-10-26 13:51:04 WARN  (NoReturnFunctionAnalyzer) Ignoring leading '_' chars on no-return name '___report_rangecheckfailure' specified in file: /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/Base/data/PEFunctionsThatDoNotReturn  
+2026-10-26 13:51:04 INFO  (PdbUniversalAnalyzer) Skipping PDB processing: missing PDB information in program metadata  
+2026-10-26 13:51:04 INFO  (PackedDatabaseCache) Packed database cache: /var/tmp/rick-ghidra/packed-db-cache  
+2026-10-26 13:51:04 DEBUG (PackedDatabaseCache) Using cached packed database: /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/Base/data/typeinfo/win32/windows_vs12_32.gdt  
+2026-10-26 13:51:08 INFO  (TypeDescriptorModel) Unprocessed TypeDescriptor: char *  
+2026-10-26 13:51:08 INFO  (TypeDescriptorModel) Unprocessed TypeDescriptor: char *  
+2026-10-26 13:51:49 INFO  (TypeDescriptorModel) Unprocessed TypeDescriptor: char *  
+2026-10-26 13:51:49 INFO  (TypeDescriptorModel) Unprocessed TypeDescriptor: char *  
+2026-10-26 13:51:49 INFO  (TypeDescriptorModel) Unprocessed TypeDescriptor: void *  
+2026-10-26 13:51:49 INFO  (TypeDescriptorModel) Unprocessed TypeDescriptor: void *  
+2026-10-26 13:51:50 INFO  (TypeDescriptorModel) Unprocessed TypeDescriptor: char *  
+2026-10-26 13:51:50 INFO  (TypeDescriptorModel) Unprocessed TypeDescriptor: char *  
+2026-10-26 13:51:50 INFO  (TypeDescriptorModel) Unprocessed TypeDescriptor: void *  
+2026-10-26 13:51:50 INFO  (TypeDescriptorModel) Unprocessed TypeDescriptor: void *  
+2026-10-26 13:51:59 INFO  (ApplyDataArchiveAnalyzer) Applied data type archive: windows_vs12_32  
+2026-10-26 13:51:59 INFO  (ApplyDataArchiveAnalyzer) Applied data type archive: windows_vs12_32  
+2026-10-26 13:52:14 INFO  (AutoAnalysisManager) -----------------------------------------------------
+    ASCII Strings                              0.407 secs
+    Apply Data Archives                        0.165 secs
+    Call Convention ID                         0.001 secs
+    Call-Fixup Installer                       0.218 secs
+    Create Address Tables                      0.266 secs
+    Create Address Tables - One Time           1.481 secs
+    Create Function                            1.080 secs
+    Data Reference                             1.069 secs
+    Decompiler Switch Analysis                17.157 secs
+    Demangler Microsoft                        0.474 secs
+    Disassemble                                2.357 secs
+    Disassemble Entry Points                   0.923 secs
+    Embedded Media                             0.028 secs
+    External Entry References                  0.000 secs
+    Function ID                                2.287 secs
+    Function Start Pre Search                  0.028 secs
+    Function Start Search                      0.243 secs
+    Function Start Search After Code           0.089 secs
+    Function Start Search After Data           0.150 secs
+    Function Start Search delayed - One Time   0.005 secs
+    Non-Returning Functions - Discovered       1.998 secs
+    Non-Returning Functions - Known            0.005 secs
+    PDB Universal                              0.001 secs
+    Reference                                  1.181 secs
+    Scalar Operand References                  1.626 secs
+    Shared Return Calls                        0.991 secs
+    Stack                                      8.896 secs
+    Subroutine References                      1.361 secs
+    Subroutine References - One Time           0.006 secs
+    Windows x86 PE Exception Handling          6.313 secs
+    Windows x86 PE RTTI Analyzer               0.589 secs
+    Windows x86 Thread Environment Block (TEB) Analyzer     0.010 secs
+    WindowsResourceReference                   0.499 secs
+    X86 Function Callee Purge                  9.003 secs
+    x86 Constant Reference Analyzer            9.296 secs
+-----------------------------------------------------
+     Total Time   70 secs
+-----------------------------------------------------
+  
+2026-10-26 13:52:14 INFO  (HeadlessAnalyzer) REPORT: Analysis succeeded for file: file:///home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/originals/RcHcGame.dat  
+2026-10-26 13:52:14 INFO  (HeadlessAnalyzer) REPORT: Execute script: RecoverFunctions.java   
+2026-10-26 13:52:14 INFO  (HeadlessAnalyzer) SCRIPT: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/scripts/RecoverFunctions.java  
+2026-10-26 13:52:14 INFO  (GhidraScript) RecoverFunctions.java> RECOVERED 0 explicit entry/direct-call functions  
+2026-10-26 13:52:14 INFO  (HeadlessAnalyzer) REPORT: Execute script: ExportAll.java '/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/decompiled/RcHcGame.dat'   
+2026-10-26 13:52:14 INFO  (HeadlessAnalyzer) SCRIPT: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/scripts/ExportAll.java  
+2026-10-26 13:52:18 INFO  (GhidraScript) ExportAll.java> Exported 100 functions; decompiled=100, fallback=0  
+2026-10-26 13:52:18 INFO  (GhidraScript) ExportAll.java> Exported 200 functions; decompiled=200, fallback=0  
+2026-10-26 13:52:19 INFO  (GhidraScript) ExportAll.java> Exported 300 functions; decompiled=300, fallback=0  
+2026-10-26 13:52:19 INFO  (GhidraScript) ExportAll.java> Exported 400 functions; decompiled=400, fallback=0  
+2026-10-26 13:52:19 INFO  (GhidraScript) ExportAll.java> Exported 500 functions; decompiled=500, fallback=0  
+2026-10-26 13:52:20 INFO  (GhidraScript) ExportAll.java> Exported 600 functions; decompiled=600, fallback=0  
+2026-10-26 13:52:21 INFO  (GhidraScript) ExportAll.java> Exported 700 functions; decompiled=700, fallback=0  
+2026-10-26 13:52:21 INFO  (GhidraScript) ExportAll.java> Exported 800 functions; decompiled=800, fallback=0  
+2026-10-26 13:52:22 INFO  (GhidraScript) ExportAll.java> Exported 900 functions; decompiled=900, fallback=0  
+2026-10-26 13:52:23 INFO  (GhidraScript) ExportAll.java> Exported 1000 functions; decompiled=1000, fallback=0  
+2026-10-26 13:52:23 INFO  (GhidraScript) ExportAll.java> Exported 1100 functions; decompiled=1100, fallback=0  
+2026-10-26 13:52:24 INFO  (GhidraScript) ExportAll.java> Exported 1200 functions; decompiled=1200, fallback=0  
+2026-10-26 13:52:24 INFO  (GhidraScript) ExportAll.java> Exported 1300 functions; decompiled=1300, fallback=0  
+2026-10-26 13:52:26 INFO  (GhidraScript) ExportAll.java> Exported 1400 functions; decompiled=1400, fallback=0  
+2026-10-26 13:52:26 INFO  (GhidraScript) ExportAll.java> Exported 1500 functions; decompiled=1500, fallback=0  
+2026-10-26 13:52:27 INFO  (GhidraScript) ExportAll.java> Exported 1600 functions; decompiled=1600, fallback=0  
+2026-10-26 13:52:28 INFO  (GhidraScript) ExportAll.java> Exported 1700 functions; decompiled=1700, fallback=0  
+2026-10-26 13:52:29 INFO  (GhidraScript) ExportAll.java> Exported 1800 functions; decompiled=1800, fallback=0  
+2026-10-26 13:52:30 INFO  (GhidraScript) ExportAll.java> Exported 1900 functions; decompiled=1900, fallback=0  
+2026-10-26 13:52:32 INFO  (GhidraScript) ExportAll.java> Exported 2000 functions; decompiled=2000, fallback=0  
+2026-10-26 13:52:33 INFO  (GhidraScript) ExportAll.java> Exported 2100 functions; decompiled=2100, fallback=0  
+2026-10-26 13:52:38 INFO  (GhidraScript) ExportAll.java> Exported 2200 functions; decompiled=2200, fallback=0  
+2026-10-26 13:52:39 INFO  (GhidraScript) ExportAll.java> Exported 2300 functions; decompiled=2300, fallback=0  
+2026-10-26 13:52:40 INFO  (GhidraScript) ExportAll.java> Exported 2400 functions; decompiled=2400, fallback=0  
+2026-10-26 13:52:41 INFO  (GhidraScript) ExportAll.java> Exported 2500 functions; decompiled=2500, fallback=0  
+2026-10-26 13:52:43 INFO  (GhidraScript) ExportAll.java> Exported 2600 functions; decompiled=2600, fallback=0  
+2026-10-26 13:52:44 INFO  (GhidraScript) ExportAll.java> Exported 2700 functions; decompiled=2700, fallback=0  
+2026-10-26 13:52:46 INFO  (GhidraScript) ExportAll.java> Exported 2800 functions; decompiled=2800, fallback=0  
+2026-10-26 13:52:46 INFO  (GhidraScript) ExportAll.java> Exported 2900 functions; decompiled=2900, fallback=0  
+2026-10-26 13:52:47 INFO  (GhidraScript) ExportAll.java> Exported 3000 functions; decompiled=3000, fallback=0  
+2026-10-26 13:52:48 INFO  (GhidraScript) ExportAll.java> Exported 3100 functions; decompiled=3100, fallback=0  
+2026-10-26 13:52:49 INFO  (GhidraScript) ExportAll.java> Exported 3200 functions; decompiled=3200, fallback=0  
+2026-10-26 13:52:49 INFO  (GhidraScript) ExportAll.java> Exported 3300 functions; decompiled=3300, fallback=0  
+2026-10-26 13:52:56 INFO  (GhidraScript) ExportAll.java> Exported 3400 functions; decompiled=3400, fallback=0  
+2026-10-26 13:52:58 INFO  (GhidraScript) ExportAll.java> Exported 3500 functions; decompiled=3500, fallback=0  
+2026-10-26 13:52:59 INFO  (GhidraScript) ExportAll.java> Exported 3600 functions; decompiled=3600, fallback=0  
+2026-10-26 13:53:00 INFO  (GhidraScript) ExportAll.java> Exported 3700 functions; decompiled=3700, fallback=0  
+2026-10-26 13:53:01 INFO  (GhidraScript) ExportAll.java> Exported 3800 functions; decompiled=3800, fallback=0  
+2026-10-26 13:53:03 INFO  (GhidraScript) ExportAll.java> Exported 3900 functions; decompiled=3900, fallback=0  
+2026-10-26 13:53:04 INFO  (GhidraScript) ExportAll.java> Exported 4000 functions; decompiled=4000, fallback=0  
+2026-10-26 13:53:05 INFO  (GhidraScript) ExportAll.java> Exported 4100 functions; decompiled=4100, fallback=0  
+2026-10-26 13:53:05 INFO  (GhidraScript) ExportAll.java> Exported 4200 functions; decompiled=4200, fallback=0  
+2026-10-26 13:53:06 INFO  (GhidraScript) ExportAll.java> Exported 4300 functions; decompiled=4300, fallback=0  
+2026-10-26 13:53:07 INFO  (GhidraScript) ExportAll.java> Exported 4400 functions; decompiled=4400, fallback=0  
+2026-10-26 13:53:08 INFO  (GhidraScript) ExportAll.java> Exported 4500 functions; decompiled=4500, fallback=0  
+2026-10-26 13:53:08 INFO  (GhidraScript) ExportAll.java> Exported 4600 functions; decompiled=4600, fallback=0  
+2026-10-26 13:53:09 INFO  (GhidraScript) ExportAll.java> Exported 4700 functions; decompiled=4700, fallback=0  
+2026-10-26 13:53:09 INFO  (GhidraScript) ExportAll.java> Exported 4800 functions; decompiled=4800, fallback=0  
+2026-10-26 13:53:10 INFO  (GhidraScript) ExportAll.java> Exported 4900 functions; decompiled=4900, fallback=0  
+2026-10-26 13:53:10 INFO  (GhidraScript) ExportAll.java> Exported 5000 functions; decompiled=5000, fallback=0  
+2026-10-26 13:53:11 INFO  (GhidraScript) ExportAll.java> Exported 5100 functions; decompiled=5100, fallback=0  
+2026-10-26 13:53:11 INFO  (GhidraScript) ExportAll.java> Exported 5200 functions; decompiled=5200, fallback=0  
+2026-10-26 13:53:12 INFO  (GhidraScript) ExportAll.java> Exported 5300 functions; decompiled=5300, fallback=0  
+2026-10-26 13:53:13 INFO  (GhidraScript) ExportAll.java> Exported 5400 functions; decompiled=5400, fallback=0  
+2026-10-26 13:53:13 INFO  (GhidraScript) ExportAll.java> Exported 5500 functions; decompiled=5500, fallback=0  
+2026-10-26 13:53:13 INFO  (GhidraScript) ExportAll.java> Exported 5600 functions; decompiled=5600, fallback=0  
+2026-10-26 13:53:14 INFO  (GhidraScript) ExportAll.java> Exported 5700 functions; decompiled=5700, fallback=0  
+2026-10-26 13:53:14 INFO  (GhidraScript) ExportAll.java> Exported 5800 functions; decompiled=5800, fallback=0  
+2026-10-26 13:53:14 INFO  (GhidraScript) ExportAll.java> Exported 5900 functions; decompiled=5900, fallback=0  
+2026-10-26 13:53:15 INFO  (GhidraScript) ExportAll.java> Exported 6000 functions; decompiled=6000, fallback=0  
+2026-10-26 13:53:15 INFO  (GhidraScript) ExportAll.java> Exported 6100 functions; decompiled=6100, fallback=0  
+2026-10-26 13:53:16 INFO  (GhidraScript) ExportAll.java> Exported 6200 functions; decompiled=6200, fallback=0  
+2026-10-26 13:53:16 INFO  (GhidraScript) ExportAll.java> Exported 6300 functions; decompiled=6300, fallback=0  
+2026-10-26 13:53:16 INFO  (GhidraScript) ExportAll.java> Exported 6400 functions; decompiled=6400, fallback=0  
+2026-10-26 13:53:17 INFO  (GhidraScript) ExportAll.java> Exported 6500 functions; decompiled=6500, fallback=0  
+2026-10-26 13:53:17 INFO  (GhidraScript) ExportAll.java> Exported 6600 functions; decompiled=6600, fallback=0  
+2026-10-26 13:53:18 INFO  (GhidraScript) ExportAll.java> Exported 6700 functions; decompiled=6700, fallback=0  
+2026-10-26 13:53:18 INFO  (GhidraScript) ExportAll.java> Exported 6800 functions; decompiled=6800, fallback=0  
+2026-10-26 13:53:18 INFO  (GhidraScript) ExportAll.java> Exported 6900 functions; decompiled=6900, fallback=0  
+2026-10-26 13:53:18 INFO  (GhidraScript) ExportAll.java> Exported 7000 functions; decompiled=7000, fallback=0  
+2026-10-26 13:53:18 INFO  (GhidraScript) ExportAll.java> Exported 7100 functions; decompiled=7100, fallback=0  
+2026-10-26 13:53:18 INFO  (GhidraScript) ExportAll.java> Exported 7200 functions; decompiled=7200, fallback=0  
+2026-10-26 13:53:18 INFO  (GhidraScript) ExportAll.java> Exported 7300 functions; decompiled=7300, fallback=0  
+2026-10-26 13:53:18 INFO  (GhidraScript) ExportAll.java> Exported 7400 functions; decompiled=7400, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 7500 functions; decompiled=7500, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 7600 functions; decompiled=7600, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 7700 functions; decompiled=7700, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 7800 functions; decompiled=7800, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 7900 functions; decompiled=7900, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 8000 functions; decompiled=8000, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 8100 functions; decompiled=8100, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 8200 functions; decompiled=8200, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 8300 functions; decompiled=8300, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 8400 functions; decompiled=8400, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 8500 functions; decompiled=8500, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 8600 functions; decompiled=8600, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 8700 functions; decompiled=8700, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 8800 functions; decompiled=8800, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 8900 functions; decompiled=8900, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 9000 functions; decompiled=9000, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 9100 functions; decompiled=9100, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 9200 functions; decompiled=9200, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 9300 functions; decompiled=9300, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 9400 functions; decompiled=9400, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 9500 functions; decompiled=9500, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 9600 functions; decompiled=9600, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 9700 functions; decompiled=9700, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 9800 functions; decompiled=9800, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 9900 functions; decompiled=9900, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 10000 functions; decompiled=10000, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 10100 functions; decompiled=10100, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 10200 functions; decompiled=10200, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 10300 functions; decompiled=10300, fallback=0  
+2026-10-26 13:53:19 INFO  (GhidraScript) ExportAll.java> Exported 10400 functions; decompiled=10400, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 10500 functions; decompiled=10500, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 10600 functions; decompiled=10600, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 10700 functions; decompiled=10700, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 10800 functions; decompiled=10800, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 10900 functions; decompiled=10900, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 11000 functions; decompiled=11000, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 11100 functions; decompiled=11100, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 11200 functions; decompiled=11200, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 11300 functions; decompiled=11300, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 11400 functions; decompiled=11400, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 11500 functions; decompiled=11500, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 11600 functions; decompiled=11600, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 11700 functions; decompiled=11700, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 11800 functions; decompiled=11800, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 11900 functions; decompiled=11900, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 12000 functions; decompiled=12000, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 12100 functions; decompiled=12100, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 12200 functions; decompiled=12200, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 12300 functions; decompiled=12300, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 12400 functions; decompiled=12400, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 12500 functions; decompiled=12500, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 12600 functions; decompiled=12600, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 12700 functions; decompiled=12700, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 12800 functions; decompiled=12800, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 12900 functions; decompiled=12900, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 13000 functions; decompiled=13000, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 13100 functions; decompiled=13100, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 13200 functions; decompiled=13200, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 13300 functions; decompiled=13300, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 13400 functions; decompiled=13400, fallback=0  
+2026-10-26 13:53:20 INFO  (GhidraScript) ExportAll.java> Exported 13500 functions; decompiled=13500, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 13600 functions; decompiled=13600, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 13700 functions; decompiled=13700, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 13800 functions; decompiled=13800, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 13900 functions; decompiled=13900, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 14000 functions; decompiled=14000, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 14100 functions; decompiled=14100, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 14200 functions; decompiled=14200, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 14300 functions; decompiled=14300, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 14400 functions; decompiled=14400, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 14500 functions; decompiled=14500, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 14600 functions; decompiled=14600, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 14700 functions; decompiled=14700, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 14800 functions; decompiled=14800, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 14900 functions; decompiled=14900, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 15000 functions; decompiled=15000, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 15100 functions; decompiled=15100, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 15200 functions; decompiled=15200, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 15300 functions; decompiled=15300, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 15400 functions; decompiled=15400, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 15500 functions; decompiled=15500, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 15600 functions; decompiled=15600, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 15700 functions; decompiled=15700, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 15800 functions; decompiled=15800, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 15900 functions; decompiled=15900, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 16000 functions; decompiled=16000, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 16100 functions; decompiled=16100, fallback=0  
+2026-10-26 13:53:21 INFO  (GhidraScript) ExportAll.java> Exported 16200 functions; decompiled=16200, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 16300 functions; decompiled=16300, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 16400 functions; decompiled=16400, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 16500 functions; decompiled=16500, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 16600 functions; decompiled=16600, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 16700 functions; decompiled=16700, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 16800 functions; decompiled=16800, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 16900 functions; decompiled=16900, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 17000 functions; decompiled=17000, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 17100 functions; decompiled=17100, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 17200 functions; decompiled=17200, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 17300 functions; decompiled=17300, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 17400 functions; decompiled=17400, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 17500 functions; decompiled=17500, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 17600 functions; decompiled=17600, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 17700 functions; decompiled=17700, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 17800 functions; decompiled=17800, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 17900 functions; decompiled=17900, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 18000 functions; decompiled=18000, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 18100 functions; decompiled=18100, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 18200 functions; decompiled=18200, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 18300 functions; decompiled=18300, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 18400 functions; decompiled=18400, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 18500 functions; decompiled=18500, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 18600 functions; decompiled=18600, fallback=0  
+2026-10-26 13:53:22 INFO  (GhidraScript) ExportAll.java> Exported 18700 functions; decompiled=18700, fallback=0  
+2026-10-26 13:53:23 INFO  (GhidraScript) ExportAll.java> Exported 18800 functions; decompiled=18800, fallback=0  
+2026-10-26 13:53:23 INFO  (GhidraScript) ExportAll.java> Exported 18900 functions; decompiled=18900, fallback=0  
+2026-10-26 13:53:23 INFO  (GhidraScript) ExportAll.java> Exported 19000 functions; decompiled=19000, fallback=0  
+2026-10-26 13:53:23 INFO  (GhidraScript) ExportAll.java> Exported 19100 functions; decompiled=19100, fallback=0  
+2026-10-26 13:53:23 INFO  (GhidraScript) ExportAll.java> EXPORT COMPLETE: functions=19163 decompiled=19163 fallback=0 output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/decompiled/RcHcGame.dat  
+2026-10-26 13:53:23 INFO  (HeadlessAnalyzer) ANALYZING changes made by post scripts: file:///home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/originals/RcHcGame.dat  
+2026-10-26 13:53:23 INFO  (HeadlessAnalyzer) REPORT: Post-analysis succeeded for file: file:///home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/originals/RcHcGame.dat  
+2026-10-26 13:53:23 INFO  (LocalFileSystem) /RcHcGame.dat: file created (rick)  
+2026-10-26 13:53:23 INFO  (HeadlessAnalyzer) REPORT: Save succeeded for: /RcHcGame.dat (analysis:/RcHcGame.dat)  
+2026-10-26 13:53:23 INFO  (HeadlessAnalyzer) REPORT: Import succeeded  

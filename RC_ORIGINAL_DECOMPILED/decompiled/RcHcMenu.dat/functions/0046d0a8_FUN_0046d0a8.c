@@ -1,0 +1,31 @@
+/*
+ * FUN_0046d0a8 at 0046d0a8
+ * undefined __register FUN_0046d0a8(int param_1, int * param_2)
+ * Address ranges: 0046d0a8-0046d0ee
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ */
+
+void FUN_0046d0a8(int param_1,int *param_2)
+
+{
+  int *piVar1;
+  undefined4 *in_FS_OFFSET;
+  undefined4 uStack_1c;
+  undefined1 *puStack_18;
+  undefined1 *puStack_14;
+  
+  puStack_14 = (undefined1 *)0x46d0be;
+  piVar1 = (int *)(**(code **)(**(int **)(param_1 + 0x28) + 0x210))
+                            (*(int **)(param_1 + 0x28),param_1,0);
+  puStack_18 = &LAB_0046d0ef;
+  uStack_1c = *in_FS_OFFSET;
+  *in_FS_OFFSET = &uStack_1c;
+  puStack_14 = &stack0xfffffffc;
+  (**(code **)(*param_2 + 0x5c))(param_2,piVar1);
+  *in_FS_OFFSET = uStack_1c;
+  puStack_14 = &LAB_0046d0f6;
+  puStack_18 = (undefined1 *)0x46d0ee;
+  FUN_00403094(piVar1);
+  return;
+}
+

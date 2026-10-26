@@ -1,0 +1,721 @@
+{
+  "source_root": "/home/rick/Games/redcat-spookkasteel/drive_c/Program Files (x86)/Davilex/RedCat Spookkasteel",
+  "created_utc": "2026-10-26T13:02:40Z",
+  "files": [
+    {
+      "path": "CTL3D32.DLL",
+      "bytes": 27136,
+      "sha256": "12657e8e28a37b047d1eb16c6ee911ee90059b9cb4211a0805bc1a88595cdb31",
+      "magic_hex": "4d5a90000300000004000000ffff0000",
+      "kind": "native-pe",
+      "image_base": "0x5f000000",
+      "entry": "0x5f004710",
+      "machine": "0x14c",
+      "sections": [
+        {
+          "name": ".text",
+          "rva": 4096,
+          "raw_offset": 1024,
+          "raw_bytes": 15360,
+          "virtual_bytes": 15240,
+          "entropy": 6.18379634842114,
+          "characteristics": 1610612768
+        },
+        {
+          "name": ".bss",
+          "rva": 20480,
+          "raw_offset": 0,
+          "raw_bytes": 0,
+          "virtual_bytes": 21416,
+          "entropy": 0.0,
+          "characteristics": 3221225600
+        },
+        {
+          "name": ".rdata",
+          "rva": 45056,
+          "raw_offset": 16384,
+          "raw_bytes": 512,
+          "virtual_bytes": 384,
+          "entropy": 1.973340299334375,
+          "characteristics": 1073741888
+        },
+        {
+          "name": ".data",
+          "rva": 49152,
+          "raw_offset": 16896,
+          "raw_bytes": 1024,
+          "virtual_bytes": 605,
+          "entropy": 3.0499584173329284,
+          "characteristics": 3221225536
+        },
+        {
+          "name": ".idata",
+          "rva": 53248,
+          "raw_offset": 17920,
+          "raw_bytes": 2560,
+          "virtual_bytes": 2218,
+          "entropy": 5.221832191285533,
+          "characteristics": 1073741888
+        },
+        {
+          "name": ".edata",
+          "rva": 57344,
+          "raw_offset": 20480,
+          "raw_bytes": 1024,
+          "virtual_bytes": 717,
+          "entropy": 3.856250264403714,
+          "characteristics": 1073741888
+        },
+        {
+          "name": ".rsrc",
+          "rva": 61440,
+          "raw_offset": 21504,
+          "raw_bytes": 2560,
+          "virtual_bytes": 2400,
+          "entropy": 4.335083291731866,
+          "characteristics": 3221225536
+        },
+        {
+          "name": ".reloc",
+          "rva": 65536,
+          "raw_offset": 24064,
+          "raw_bytes": 2048,
+          "virtual_bytes": 1624,
+          "entropy": 5.702078809277841,
+          "characteristics": 1107296320
+        }
+      ],
+      "import_libraries": [
+        "KERNEL32.dll",
+        "USER32.dll",
+        "GDI32.dll"
+      ],
+      "prepared_path": "originals/CTL3D32.DLL",
+      "prepared_sha256": "12657e8e28a37b047d1eb16c6ee911ee90059b9cb4211a0805bc1a88595cdb31",
+      "packing_assessment": "Normal mapped code sections and ordinary import tables; no UPX sections/signature. Original image imported unchanged; no unpacking stub used."
+    },
+    {
+      "path": "D3DDrv.dll",
+      "bytes": 106496,
+      "sha256": "73fccccd3d75382875578a81722dc1b3555ad4f082e13dd2ccadeb175e2d7017",
+      "magic_hex": "4d5a90000300000004000000ffff0000",
+      "kind": "native-pe",
+      "image_base": "0x10000000",
+      "entry": "0x1000836c",
+      "machine": "0x14c",
+      "sections": [
+        {
+          "name": ".text",
+          "rva": 4096,
+          "raw_offset": 4096,
+          "raw_bytes": 65536,
+          "virtual_bytes": 63163,
+          "entropy": 6.618359063035466,
+          "characteristics": 1610612768
+        },
+        {
+          "name": ".rdata",
+          "rva": 69632,
+          "raw_offset": 69632,
+          "raw_bytes": 4096,
+          "virtual_bytes": 3944,
+          "entropy": 5.33061835556359,
+          "characteristics": 1073741888
+        },
+        {
+          "name": ".data",
+          "rva": 73728,
+          "raw_offset": 73728,
+          "raw_bytes": 20480,
+          "virtual_bytes": 1781260,
+          "entropy": 5.050265471092652,
+          "characteristics": 3221225536
+        },
+        {
+          "name": ".reloc",
+          "rva": 1855488,
+          "raw_offset": 94208,
+          "raw_bytes": 12288,
+          "virtual_bytes": 10686,
+          "entropy": 3.300572506332782,
+          "characteristics": 1107296320
+        }
+      ],
+      "import_libraries": [
+        "DDRAW.dll",
+        "KERNEL32.dll",
+        "USER32.dll"
+      ],
+      "prepared_path": "originals/D3DDrv.dll",
+      "prepared_sha256": "73fccccd3d75382875578a81722dc1b3555ad4f082e13dd2ccadeb175e2d7017",
+      "packing_assessment": "Normal mapped code sections and ordinary import tables; no UPX sections/signature. Original image imported unchanged; no unpacking stub used."
+    },
+    {
+      "path": "D3DDrvRGB.dll",
+      "bytes": 118784,
+      "sha256": "83e873a997bc184cb26c19d4200f1f86afc429b60619e6e687c24f6a95024c6d",
+      "magic_hex": "4d5a90000300000004000000ffff0000",
+      "kind": "native-pe",
+      "image_base": "0x10000000",
+      "entry": "0x10009415",
+      "machine": "0x14c",
+      "sections": [
+        {
+          "name": ".text",
+          "rva": 4096,
+          "raw_offset": 4096,
+          "raw_bytes": 73728,
+          "virtual_bytes": 71621,
+          "entropy": 6.608215512571702,
+          "characteristics": 1610612768
+        },
+        {
+          "name": ".rdata",
+          "rva": 77824,
+          "raw_offset": 77824,
+          "raw_bytes": 8192,
+          "virtual_bytes": 4299,
+          "entropy": 3.4190827042794996,
+          "characteristics": 1073741888
+        },
+        {
+          "name": ".data",
+          "rva": 86016,
+          "raw_offset": 86016,
+          "raw_bytes": 20480,
+          "virtual_bytes": 886860,
+          "entropy": 5.245632570992432,
+          "characteristics": 3221225536
+        },
+        {
+          "name": ".reloc",
+          "rva": 974848,
+          "raw_offset": 106496,
+          "raw_bytes": 12288,
+          "virtual_bytes": 8690,
+          "entropy": 3.437402860592729,
+          "characteristics": 1107296320
+        }
+      ],
+      "import_libraries": [
+        "USER32.dll",
+        "KERNEL32.dll",
+        "DDRAW.dll"
+      ],
+      "prepared_path": "originals/D3DDrvRGB.dll",
+      "prepared_sha256": "83e873a997bc184cb26c19d4200f1f86afc429b60619e6e687c24f6a95024c6d",
+      "packing_assessment": "Normal mapped code sections and ordinary import tables; no UPX sections/signature. Original image imported unchanged; no unpacking stub used."
+    },
+    {
+      "path": "GBSPLib.dll",
+      "bytes": 290816,
+      "sha256": "028277e7bb8c71f76369e46ab651e0af4b4ec02996520cd3fd1970a9d61c2637",
+      "magic_hex": "4d5a90000300000004000000ffff0000",
+      "kind": "native-pe",
+      "image_base": "0x10000000",
+      "entry": "0x1002887f",
+      "machine": "0x14c",
+      "sections": [
+        {
+          "name": ".text",
+          "rva": 4096,
+          "raw_offset": 4096,
+          "raw_bytes": 208896,
+          "virtual_bytes": 206330,
+          "entropy": 6.625148669389936,
+          "characteristics": 1610612768
+        },
+        {
+          "name": ".rdata",
+          "rva": 212992,
+          "raw_offset": 212992,
+          "raw_bytes": 8192,
+          "virtual_bytes": 6008,
+          "entropy": 4.034071529083487,
+          "characteristics": 1073741888
+        },
+        {
+          "name": ".data",
+          "rva": 221184,
+          "raw_offset": 221184,
+          "raw_bytes": 40960,
+          "virtual_bytes": 5200620,
+          "entropy": 3.669133776670833,
+          "characteristics": 3221225536
+        },
+        {
+          "name": ".reloc",
+          "rva": 5423104,
+          "raw_offset": 262144,
+          "raw_bytes": 28672,
+          "virtual_bytes": 27704,
+          "entropy": 3.7464005723217464,
+          "characteristics": 1107296320
+        }
+      ],
+      "import_libraries": [
+        "KERNEL32.dll"
+      ],
+      "prepared_path": "originals/GBSPLib.dll",
+      "prepared_sha256": "028277e7bb8c71f76369e46ab651e0af4b4ec02996520cd3fd1970a9d61c2637",
+      "packing_assessment": "Normal mapped code sections and ordinary import tables; no UPX sections/signature. Original image imported unchanged; no unpacking stub used."
+    },
+    {
+      "path": "GlideDrv.dll",
+      "bytes": 86016,
+      "sha256": "86ea51aefa315e87ad847efbc58d90a8738fbc6d710b52a1315ac42420193811",
+      "magic_hex": "4d5a90000300000004000000ffff0000",
+      "kind": "native-pe",
+      "image_base": "0x10000000",
+      "entry": "0x100042fc",
+      "machine": "0x14c",
+      "sections": [
+        {
+          "name": ".text",
+          "rva": 4096,
+          "raw_offset": 4096,
+          "raw_bytes": 45056,
+          "virtual_bytes": 42298,
+          "entropy": 6.452052008111107,
+          "characteristics": 1610612768
+        },
+        {
+          "name": ".rdata",
+          "rva": 49152,
+          "raw_offset": 49152,
+          "raw_bytes": 8192,
+          "virtual_bytes": 4730,
+          "entropy": 3.69787438821569,
+          "characteristics": 1073741888
+        },
+        {
+          "name": ".data",
+          "rva": 57344,
+          "raw_offset": 57344,
+          "raw_bytes": 16384,
+          "virtual_bytes": 2001612,
+          "entropy": 2.1301894585368664,
+          "characteristics": 3221225536
+        },
+        {
+          "name": ".reloc",
+          "rva": 2060288,
+          "raw_offset": 73728,
+          "raw_bytes": 12288,
+          "virtual_bytes": 9526,
+          "entropy": 2.1733169070583114,
+          "characteristics": 1107296320
+        }
+      ],
+      "import_libraries": [
+        "glide2x.dll",
+        "KERNEL32.dll",
+        "USER32.dll"
+      ],
+      "prepared_path": "originals/GlideDrv.dll",
+      "prepared_sha256": "86ea51aefa315e87ad847efbc58d90a8738fbc6d710b52a1315ac42420193811",
+      "packing_assessment": "Normal mapped code sections and ordinary import tables; no UPX sections/signature. Original image imported unchanged; no unpacking stub used."
+    },
+    {
+      "path": "RcHcGame.dat",
+      "bytes": 2842624,
+      "sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5",
+      "magic_hex": "4d5a90000300000004000000ffff0000",
+      "kind": "native-pe",
+      "image_base": "0x400000",
+      "entry": "0x60db85",
+      "machine": "0x14c",
+      "sections": [
+        {
+          "name": ".text",
+          "rva": 4096,
+          "raw_offset": 4096,
+          "raw_bytes": 2396160,
+          "virtual_bytes": 2395126,
+          "entropy": 6.611901449149281,
+          "characteristics": 1610612768
+        },
+        {
+          "name": ".rdata",
+          "rva": 2400256,
+          "raw_offset": 2400256,
+          "raw_bytes": 270336,
+          "virtual_bytes": 267362,
+          "entropy": 4.036696514770703,
+          "characteristics": 1073741888
+        },
+        {
+          "name": ".data",
+          "rva": 2670592,
+          "raw_offset": 2670592,
+          "raw_bytes": 163840,
+          "virtual_bytes": 773836,
+          "entropy": 5.221873814685299,
+          "characteristics": 3221225536
+        },
+        {
+          "name": ".rsrc",
+          "rva": 3444736,
+          "raw_offset": 2834432,
+          "raw_bytes": 8192,
+          "virtual_bytes": 4240,
+          "entropy": 2.145510567670345,
+          "characteristics": 1073741888
+        }
+      ],
+      "import_libraries": [
+        "KERNEL32.dll",
+        "USER32.dll",
+        "GDI32.dll",
+        "comdlg32.dll",
+        "WINMM.dll",
+        "DINPUT.dll"
+      ],
+      "prepared_path": "originals/RcHcGame.dat",
+      "prepared_sha256": "e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5",
+      "packing_assessment": "Normal mapped code sections and ordinary import tables; no UPX sections/signature. Original image imported unchanged; no unpacking stub used."
+    },
+    {
+      "path": "RcHcMenu.dat",
+      "bytes": 1859072,
+      "sha256": "c859320e2cb5be2db8e1c344a15ee388a7bee9728e10f09b89b7e1111485698f",
+      "magic_hex": "4d5a50000200000004000f00ffff0000",
+      "kind": "native-pe",
+      "image_base": "0x400000",
+      "entry": "0x56dec4",
+      "machine": "0x14c",
+      "sections": [
+        {
+          "name": "CODE",
+          "rva": 4096,
+          "raw_offset": 1024,
+          "raw_bytes": 1495552,
+          "virtual_bytes": 1495492,
+          "entropy": 6.459515864421493,
+          "characteristics": 1610612768
+        },
+        {
+          "name": "DATA",
+          "rva": 1503232,
+          "raw_offset": 1496576,
+          "raw_bytes": 14336,
+          "virtual_bytes": 13872,
+          "entropy": 4.6749145527522895,
+          "characteristics": 3221225536
+        },
+        {
+          "name": "BSS",
+          "rva": 1519616,
+          "raw_offset": 1510912,
+          "raw_bytes": 0,
+          "virtual_bytes": 6413,
+          "entropy": 0.0,
+          "characteristics": 3221225472
+        },
+        {
+          "name": ".idata",
+          "rva": 1527808,
+          "raw_offset": 1510912,
+          "raw_bytes": 10752,
+          "virtual_bytes": 10560,
+          "entropy": 4.868543528368682,
+          "characteristics": 3221225536
+        },
+        {
+          "name": ".tls",
+          "rva": 1540096,
+          "raw_offset": 1521664,
+          "raw_bytes": 0,
+          "virtual_bytes": 16,
+          "entropy": 0.0,
+          "characteristics": 3221225472
+        },
+        {
+          "name": ".rdata",
+          "rva": 1544192,
+          "raw_offset": 1521664,
+          "raw_bytes": 512,
+          "virtual_bytes": 54,
+          "entropy": 0.7272908802589005,
+          "characteristics": 1342177344
+        },
+        {
+          "name": ".reloc",
+          "rva": 1548288,
+          "raw_offset": 1522176,
+          "raw_bytes": 105984,
+          "virtual_bytes": 105948,
+          "entropy": 6.635996871032061,
+          "characteristics": 1342177344
+        },
+        {
+          "name": ".rsrc",
+          "rva": 1654784,
+          "raw_offset": 1628160,
+          "raw_bytes": 230912,
+          "virtual_bytes": 230912,
+          "entropy": 5.633902287920291,
+          "characteristics": 1342177344
+        }
+      ],
+      "import_libraries": [
+        "kernel32.dll",
+        "user32.dll",
+        "advapi32.dll",
+        "oleaut32.dll",
+        "kernel32.dll",
+        "advapi32.dll",
+        "kernel32.dll",
+        "version.dll",
+        "gdi32.dll",
+        "user32.dll",
+        "ole32.dll",
+        "oleaut32.dll",
+        "comctl32.dll",
+        "shell32.dll",
+        "winmm.dll",
+        "avifil32.dll",
+        "DSound.dll",
+        "RSC.DLL"
+      ],
+      "prepared_path": "originals/RcHcMenu.dat",
+      "prepared_sha256": "c859320e2cb5be2db8e1c344a15ee388a7bee9728e10f09b89b7e1111485698f",
+      "packing_assessment": "Normal mapped code sections and ordinary import tables; no UPX sections/signature. Original image imported unchanged; no unpacking stub used."
+    },
+    {
+      "path": "RedCat.exe",
+      "bytes": 36864,
+      "sha256": "4c4db9e6696d8f04bc876c0808d7c700893a909cb63584284dcfdac29807afa9",
+      "magic_hex": "4d5a90000300000004000000ffff0000",
+      "kind": "native-pe",
+      "image_base": "0x400000",
+      "entry": "0x40175e",
+      "machine": "0x14c",
+      "sections": [
+        {
+          "name": ".text",
+          "rva": 4096,
+          "raw_offset": 4096,
+          "raw_bytes": 20480,
+          "virtual_bytes": 18711,
+          "entropy": 6.2909761694694195,
+          "characteristics": 1610612768
+        },
+        {
+          "name": ".rdata",
+          "rva": 24576,
+          "raw_offset": 24576,
+          "raw_bytes": 4096,
+          "virtual_bytes": 2868,
+          "entropy": 4.173061799181473,
+          "characteristics": 1073741888
+        },
+        {
+          "name": ".data",
+          "rva": 28672,
+          "raw_offset": 28672,
+          "raw_bytes": 4096,
+          "virtual_bytes": 9372,
+          "entropy": 2.1922860409210645,
+          "characteristics": 3221225536
+        },
+        {
+          "name": ".rsrc",
+          "rva": 40960,
+          "raw_offset": 32768,
+          "raw_bytes": 4096,
+          "virtual_bytes": 1288,
+          "entropy": 1.3629384372265032,
+          "characteristics": 1073741888
+        }
+      ],
+      "import_libraries": [
+        "KERNEL32.dll",
+        "USER32.dll",
+        "GDI32.dll"
+      ],
+      "prepared_path": "originals/RedCat.exe",
+      "prepared_sha256": "4c4db9e6696d8f04bc876c0808d7c700893a909cb63584284dcfdac29807afa9",
+      "packing_assessment": "Normal mapped code sections and ordinary import tables; no UPX sections/signature. Original image imported unchanged; no unpacking stub used."
+    },
+    {
+      "path": "Rsc.dll",
+      "bytes": 217134,
+      "sha256": "9dd77374ae5b636734260e993830f9d4ea10f21728a5d1debe0c10de87f3cda4",
+      "magic_hex": "4d5a90000300000004000000ffff0000",
+      "kind": "native-pe",
+      "image_base": "0x10000000",
+      "entry": "0x10002bd0",
+      "machine": "0x14c",
+      "sections": [
+        {
+          "name": ".text",
+          "rva": 4096,
+          "raw_offset": 4096,
+          "raw_bytes": 176128,
+          "virtual_bytes": 173280,
+          "entropy": 5.574830858034025,
+          "characteristics": 1610612768
+        },
+        {
+          "name": ".rdata",
+          "rva": 180224,
+          "raw_offset": 180224,
+          "raw_bytes": 12288,
+          "virtual_bytes": 8818,
+          "entropy": 3.655531044076992,
+          "characteristics": 1073741888
+        },
+        {
+          "name": ".data",
+          "rva": 192512,
+          "raw_offset": 192512,
+          "raw_bytes": 12288,
+          "virtual_bytes": 16248,
+          "entropy": 1.820659746555841,
+          "characteristics": 3221225536
+        },
+        {
+          "name": ".idata",
+          "rva": 208896,
+          "raw_offset": 204800,
+          "raw_bytes": 4096,
+          "virtual_bytes": 2778,
+          "entropy": 3.417903673103264,
+          "characteristics": 3221225536
+        },
+        {
+          "name": ".reloc",
+          "rva": 212992,
+          "raw_offset": 208896,
+          "raw_bytes": 8192,
+          "virtual_bytes": 6117,
+          "entropy": 5.070068699741135,
+          "characteristics": 1107296320
+        }
+      ],
+      "import_libraries": [
+        "KERNEL32.dll",
+        "USER32.dll"
+      ],
+      "prepared_path": "originals/Rsc.dll",
+      "prepared_sha256": "9dd77374ae5b636734260e993830f9d4ea10f21728a5d1debe0c10de87f3cda4",
+      "packing_assessment": "Normal mapped code sections and ordinary import tables; no UPX sections/signature. Original image imported unchanged; no unpacking stub used."
+    },
+    {
+      "path": "SoftDrv.dll",
+      "bytes": 172032,
+      "sha256": "8b40e8483ce8d7d92028ef9058854cbccb9c82fa54b9bc98d4d678dc94b660e5",
+      "magic_hex": "4d5a90000300000004000000ffff0000",
+      "kind": "native-pe",
+      "image_base": "0x10000000",
+      "entry": "0x100191e0",
+      "machine": "0x14c",
+      "sections": [
+        {
+          "name": ".text",
+          "rva": 4096,
+          "raw_offset": 4096,
+          "raw_bytes": 126976,
+          "virtual_bytes": 124890,
+          "entropy": 6.466692156290854,
+          "characteristics": 1610612768
+        },
+        {
+          "name": ".rdata",
+          "rva": 131072,
+          "raw_offset": 131072,
+          "raw_bytes": 4096,
+          "virtual_bytes": 3753,
+          "entropy": 5.253615755284615,
+          "characteristics": 1073741888
+        },
+        {
+          "name": ".data",
+          "rva": 135168,
+          "raw_offset": 135168,
+          "raw_bytes": 16384,
+          "virtual_bytes": 2026880,
+          "entropy": 1.7268918649898486,
+          "characteristics": 3221225536
+        },
+        {
+          "name": ".reloc",
+          "rva": 2162688,
+          "raw_offset": 151552,
+          "raw_bytes": 20480,
+          "virtual_bytes": 19348,
+          "entropy": 5.048823163205064,
+          "characteristics": 1107296320
+        }
+      ],
+      "import_libraries": [
+        "KERNEL32.dll",
+        "USER32.dll",
+        "GDI32.dll"
+      ],
+      "prepared_path": "originals/SoftDrv.dll",
+      "prepared_sha256": "8b40e8483ce8d7d92028ef9058854cbccb9c82fa54b9bc98d4d678dc94b660e5",
+      "packing_assessment": "Normal mapped code sections and ordinary import tables; no UPX sections/signature. Original image imported unchanged; no unpacking stub used."
+    },
+    {
+      "path": "UNINST32.EXE",
+      "bytes": 150016,
+      "sha256": "67c73f62830aadfa3b535ae629959057219721e4a6d6df42848de92291eda95e",
+      "magic_hex": "4d5a90000300000004000000ffff0000",
+      "kind": "native-pe",
+      "image_base": "0x400000",
+      "entry": "0x40c959",
+      "machine": "0x14c",
+      "sections": [
+        {
+          "name": ".text",
+          "rva": 4096,
+          "raw_offset": 1024,
+          "raw_bytes": 59904,
+          "virtual_bytes": 59703,
+          "entropy": 6.318107701545932,
+          "characteristics": 1610612768
+        },
+        {
+          "name": ".rdata",
+          "rva": 65536,
+          "raw_offset": 60928,
+          "raw_bytes": 7680,
+          "virtual_bytes": 7605,
+          "entropy": 5.632888601046514,
+          "characteristics": 1073741888
+        },
+        {
+          "name": ".data",
+          "rva": 73728,
+          "raw_offset": 68608,
+          "raw_bytes": 5632,
+          "virtual_bytes": 7964,
+          "entropy": 4.783380675590951,
+          "characteristics": 3221225536
+        },
+        {
+          "name": ".rsrc",
+          "rva": 81920,
+          "raw_offset": 74240,
+          "raw_bytes": 75776,
+          "virtual_bytes": 75256,
+          "entropy": 4.877745915809436,
+          "characteristics": 1073741888
+        }
+      ],
+      "import_libraries": [
+        "KERNEL32.dll",
+        "USER32.dll",
+        "GDI32.dll",
+        "comdlg32.dll",
+        "ADVAPI32.dll",
+        "ole32.dll"
+      ],
+      "prepared_path": "originals/UNINST32.EXE",
+      "prepared_sha256": "67c73f62830aadfa3b535ae629959057219721e4a6d6df42848de92291eda95e",
+      "packing_assessment": "Normal mapped code sections and ordinary import tables; no UPX sections/signature. Original image imported unchanged; no unpacking stub used."
+    }
+  ]
+}

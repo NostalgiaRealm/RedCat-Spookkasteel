@@ -1,0 +1,599 @@
+Picked up JAVA_TOOL_OPTIONS: -Djava.io.tmpdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.tempdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.cachedir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work"
+Picked up JAVA_TOOL_OPTIONS: -Djava.io.tmpdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.tempdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.cachedir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work"
+Picked up JAVA_TOOL_OPTIONS: -Djava.io.tmpdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.tempdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.cachedir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work"
+Picked up JAVA_TOOL_OPTIONS: -Djava.io.tmpdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.tempdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.cachedir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work"
+openjdk version "25.0.4.1" 2026-08-18
+OpenJDK Runtime Environment (Red_Hat-25.0.4.1.1-1) (build 25.0.4.1+1)
+OpenJDK 64-Bit Server VM (Red_Hat-25.0.4.1.1-1) (build 25.0.4.1+1, mixed mode)
+INFO  Using log config file: jar:file:/home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Framework/Generic/lib/Generic.jar!/generic.log4j.xml (LoggingInitialization)  
+INFO  Using log file: /home/rick/.config/ghidra/ghidra_12.1.4_PUBLIC/application.log (LoggingInitialization)  
+INFO  Loading user preferences: /home/rick/.config/ghidra/ghidra_12.1.4_PUBLIC/preferences (Preferences)  
+INFO  Searching for classes... (ClassSearcher)  
+INFO  Class search complete (803 ms) (ClassSearcher)  
+INFO  Initializing SSL Context (DefaultSSLContextInitializer)  
+INFO  Initializing Random Number Generator... (SecureRandomFactory)  
+INFO  Random Number Generator initialization complete: NativePRNGNonBlocking (SecureRandomFactory)  
+INFO  Trust manager disabled, cacerts have not been set (DefaultTrustManagerFactory)  
+INFO  Headless startup complete (1608 ms) (AnalyzeHeadless)  
+INFO  Class searcher loaded 59 extension points (20 false positives) (ClassSearcher)  
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::staticFieldOffset has been called by org.apache.felix.framework.util.SecureAction (file:/home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/Base/lib/org.apache.felix.framework-7.0.5.jar)
+WARNING: Please consider reporting this to the maintainers of class org.apache.felix.framework.util.SecureAction
+WARNING: sun.misc.Unsafe::staticFieldOffset will be removed in a future release
+INFO  HEADLESS Script Paths:
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/SwiftDemangler/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/Base/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/WildcardAssembler/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/DecompilerDependent/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/VersionTracking/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/GnuDemangler/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/DATA/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/JVM/ghidra_scripts
+    /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/8051/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/SystemEmulation/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/Atmel/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Debug/Debugger-rmi-trace/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/FileFormats/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/MicrosoftCodeAnalyzer/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/PyGhidra/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/BSim/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Debug/Debugger/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/PDB/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/PIC/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/Decompiler/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/BytePatterns/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/FunctionID/ghidra_scripts (HeadlessAnalyzer)  
+INFO  HEADLESS: execution starts (HeadlessAnalyzer)  
+INFO  Opening existing project: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/analysis-projects/RcHcGame.dat/analysis (HeadlessAnalyzer)  
+INFO  Opening project: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/analysis-projects/RcHcGame.dat/analysis (HeadlessProject)  
+INFO  REPORT: Processing project file: /RcHcGame.dat (HeadlessAnalyzer)  
+INFO  REPORT: Execute script: RecoverDaviSwitch.java  (HeadlessAnalyzer)  
+INFO  SCRIPT: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/scripts/RecoverDaviSwitch.java (HeadlessAnalyzer)  
+INFO  RecoverDaviSwitch.java>  (GhidraScript)  
+INFO  RecoverDaviSwitch.java> 
+/* Recovered UNOP 26-case table from original bytes at 005fcb90. Analysis-only switch override; no
+   binary bytes changed. 0 -> 005fc4b4, 1 -> 005fc4ec, 2 -> 005fc509, 3 -> 005fc511, 4 -> 005fc579,
+   5 -> 005fc5ec, 6 -> 005fc621, 7 -> 005fc678, 8 -> 005fc6cf, 9 -> 005fc71c, 10 -> 005fc74c, 11 ->
+   005fc6ea, 12 -> 005fc814, 13 -> 005fc847, 14 -> 005fc87a, 15 -> 005fc77c, 16 -> 005fc7af, 17 ->
+   005fc7e2, 18 -> 005fc8ad, 19 -> 005fc8e1, 20 -> 005fc902, 21 -> 005fc90c, 22 -> 005fc965, 23 ->
+   005fcafa, 24 -> 005fca59, 25 -> 005fc9cd */
+
+undefined4 * FUN_005fc480(undefined4 *param_1,undefined4 param_2,int param_3)
+
+{
+  double dVar1;
+  char cVar2;
+  bool bVar3;
+  undefined1 *puVar4;
+  int iVar5;
+  byte *pbVar6;
+  undefined4 uVar7;
+  uint uVar8;
+  undefined1 **ppuVar9;
+  float10 fVar10;
+  float10 fVar11;
+  undefined1 *puStack_dc;
+  undefined1 *puStack_d8;
+  undefined8 uStack_d4;
+  undefined1 *local_c0;
+  undefined4 uStack_bc;
+  undefined1 auStack_b4 [16];
+  undefined1 auStack_a4 [16];
+  undefined1 auStack_94 [16];
+  undefined1 auStack_84 [16];
+  undefined1 auStack_74 [16];
+  undefined1 auStack_64 [16];
+  undefined1 auStack_54 [16];
+  undefined1 auStack_44 [16];
+  undefined1 auStack_34 [16];
+  undefined1 auStack_24 [4];
+  int iStack_20;
+  void *pvStack_14;
+  undefined1 *puStack_10;
+  undefined4 uStack_c;
+  
+  uStack_c = 0xffffffff;
+  puStack_10 = &LAB_00648bae;
+  pvStack_14 = ExceptionList;
+  bVar3 = false;
+  local_c0 = (undefined1 *)0x0;
+                    /* WARNING: Switch is manually overridden */
+  switch(param_2) {
+  case 0:
+    if (*(int *)(param_3 + 8) == 2) {
+      uStack_d4 = (double)CONCAT44(-*(int *)(param_3 + 0x10),0x5fc4cd);
+      ExceptionList = &pvStack_14;
+      FUN_005f4290();
+      goto LAB_005fc604;
+    }
+    fVar10 = -(float10)*(double *)(param_3 + 0x10);
+    break;
+  case 1:
+    uStack_d4 = (double)CONCAT44((uint)(*(int *)(param_3 + 0x10) == 0),0x5fc504);
+    ExceptionList = &pvStack_14;
+    FUN_005f4290();
+    goto LAB_005fc604;
+  case 2:
+    fVar10 = (float10)*(int *)(param_3 + 0x10);
+    break;
+  case 3:
+    puStack_d8 = auStack_34;
+    uStack_d4 = (double)CONCAT44(*(undefined4 *)(param_3 + 0x10),&DAT_00690818);
+    puStack_dc = (undefined1 *)0x5fc52a;
+    ExceptionList = &pvStack_14;
+    uVar7 = FUN_005e7110();
+    uStack_c = 0;
+    uStack_d4 = (double)CONCAT44(uVar7,0x5fc543);
+    FUN_005e2be0();
+    *param_1 = &PTR_FUN_00650ad4;
+    uStack_c = 0xffffffff;
+    uStack_d4 = 2.12509676928811e-314;
+    FUN_004040a0();
+    ExceptionList = pvStack_14;
+    return param_1;
+  case 4:
+    local_c0 = *(undefined1 **)(param_3 + 0x10);
+    uStack_bc = *(undefined4 *)(param_3 + 0x14);
+    uStack_d4 = *(double *)(param_3 + 0x10);
+    puStack_dc = auStack_54;
+    puStack_d8 = &DAT_006b1798;
+    ExceptionList = &pvStack_14;
+    uVar7 = FUN_005e7110();
+    uStack_c = 1;
+    uStack_d4 = (double)CONCAT44(uVar7,0x5fc5b9);
+    FUN_005e2be0();
+    *param_1 = &PTR_FUN_00650ad4;
+    uStack_c = 0xffffffff;
+    uStack_d4 = 2.12509682610566e-314;
+    FUN_004040a0();
+    ExceptionList = pvStack_14;
+    return param_1;
+  case 5:
+    ExceptionList = &pvStack_14;
+    param_1[2] = 2;
+    goto LAB_005fc5fc;
+  case 6:
+    uStack_d4 = (double)CONCAT44(auStack_74,0x5fc62e);
+    ExceptionList = &pvStack_14;
+    iVar5 = FUN_0045da10();
+    puVar4 = *(undefined1 **)(iVar5 + 4);
+    if (puVar4 == (undefined1 *)0x0) {
+      puVar4 = &DAT_0064a3b4;
+    }
+    uStack_d4 = (double)CONCAT44(puVar4,0x5fc640);
+    uVar7 = FUN_0060af10();
+    param_1[2] = 2;
+    param_1[4] = uVar7;
+    *param_1 = &PTR_FUN_00650ad4;
+    uStack_d4 = 2.12509689527485e-314;
+    FUN_004040a0();
+    ExceptionList = pvStack_14;
+    return param_1;
+  case 7:
+    uStack_d4 = (double)CONCAT44(auStack_a4,0x5fc685);
+    ExceptionList = &pvStack_14;
+    iVar5 = FUN_0045da10();
+    puVar4 = *(undefined1 **)(iVar5 + 4);
+    if (puVar4 == (undefined1 *)0x0) {
+      puVar4 = &DAT_0064a3b4;
+    }
+    uStack_d4 = (double)CONCAT44(puVar4,0x5fc697);
+    fVar10 = (float10)FUN_0060ea4c();
+    *(double *)(param_1 + 4) = (double)fVar10;
+    param_1[2] = 1;
+    *param_1 = &PTR_FUN_00650ad4;
+    uStack_d4 = 2.12509693825856e-314;
+    FUN_004040a0();
+    ExceptionList = pvStack_14;
+    return param_1;
+  case 8:
+    ExceptionList = &pvStack_14;
+    param_1[2] = 2;
+LAB_005fc5fc:
+    uStack_d4 = (double)CONCAT44(0x5fc601,(undefined4)uStack_d4);
+    uVar7 = __ftol();
+    param_1[4] = uVar7;
+    goto LAB_005fc604;
+  case 9:
+    fVar10 = (float10)fsin((float10)*(double *)(param_3 + 0x10));
+    param_1[2] = 1;
+    *param_1 = &PTR_FUN_00650ad4;
+    *(double *)(param_1 + 4) = (double)fVar10;
+    return param_1;
+  case 10:
+    fVar10 = (float10)fcos((float10)*(double *)(param_3 + 0x10));
+    param_1[2] = 1;
+    *param_1 = &PTR_FUN_00650ad4;
+    *(double *)(param_1 + 4) = (double)fVar10;
+    return param_1;
+  case 0xb:
+    fVar10 = (float10)fptan((float10)*(double *)(param_3 + 0x10));
+    param_1[2] = 1;
+    *param_1 = &PTR_FUN_00650ad4;
+    *(double *)(param_1 + 4) = (double)fVar10;
+    return param_1;
+  case 0xc:
+    uStack_d4 = (double)CONCAT44(0x5fc81f,(undefined4)uStack_d4);
+    ExceptionList = &pvStack_14;
+    fVar10 = (float10)FUN_0060eab8();
+    *(double *)(param_1 + 4) = (double)fVar10;
+    param_1[2] = 1;
+    *param_1 = &PTR_FUN_00650ad4;
+    ExceptionList = pvStack_14;
+    return param_1;
+  case 0xd:
+    uStack_d4 = (double)CONCAT44(0x5fc852,(undefined4)uStack_d4);
+    ExceptionList = &pvStack_14;
+    fVar10 = (float10)FUN_0060eac9();
+    *(double *)(param_1 + 4) = (double)fVar10;
+    param_1[2] = 1;
+    *param_1 = &PTR_FUN_00650ad4;
+    ExceptionList = pvStack_14;
+    return param_1;
+  case 0xe:
+    uStack_d4 = (double)CONCAT44(0x5fc885,(undefined4)uStack_d4);
+    ExceptionList = &pvStack_14;
+    fVar10 = (float10)FUN_0060eac2();
+    *(double *)(param_1 + 4) = (double)fVar10;
+    param_1[2] = 1;
+    *param_1 = &PTR_FUN_00650ad4;
+    ExceptionList = pvStack_14;
+    return param_1;
+  case 0xf:
+    uStack_d4 = (double)CONCAT44(0x5fc787,(undefined4)uStack_d4);
+    ExceptionList = &pvStack_14;
+    fVar10 = (float10)FUN_0060b110();
+    *(double *)(param_1 + 4) = (double)fVar10;
+    param_1[2] = 1;
+    *param_1 = &PTR_FUN_00650ad4;
+    ExceptionList = pvStack_14;
+    return param_1;
+  case 0x10:
+    uStack_d4 = (double)CONCAT44(0x5fc7ba,(undefined4)uStack_d4);
+    ExceptionList = &pvStack_14;
+    fVar10 = (float10)FUN_0060dcd0();
+    *(double *)(param_1 + 4) = (double)fVar10;
+    param_1[2] = 1;
+    *param_1 = &PTR_FUN_00650ad4;
+    ExceptionList = pvStack_14;
+    return param_1;
+  case 0x11:
+    dVar1 = *(double *)(param_3 + 0x10);
+    param_1[2] = 1;
+    *param_1 = &PTR_FUN_00650ad4;
+    fVar10 = (float10)fpatan((float10)dVar1,(float10)1);
+    *(double *)(param_1 + 4) = (double)fVar10;
+    return param_1;
+  case 0x12:
+    dVar1 = *(double *)(param_3 + 0x10);
+    fVar10 = (float10)0.3010299956639812;
+    goto LAB_005fc8b5;
+  case 0x13:
+    fVar11 = (float10)1.4426950408889634 * (float10)*(double *)(param_3 + 0x10);
+    fVar10 = ROUND(fVar11);
+    fVar11 = (float10)f2xm1(fVar11 - fVar10);
+    fVar10 = (float10)fscale((float10)1 + fVar11,fVar10);
+    break;
+  case 0x14:
+    dVar1 = *(double *)(param_3 + 0x10);
+    fVar10 = (float10)0.6931471805599453;
+LAB_005fc8b5:
+    fVar11 = (float10)log2((float10)dVar1);
+    param_1[2] = 1;
+    *param_1 = &PTR_FUN_00650ad4;
+    *(double *)(param_1 + 4) = (double)(fVar10 * fVar11);
+    return param_1;
+  case 0x15:
+    uStack_d4 = (double)CONCAT44(auStack_94,0x5fc919);
+    ExceptionList = &pvStack_14;
+    iVar5 = FUN_0045da10();
+    uStack_c = 2;
+    uStack_d4 = (double)CONCAT44(*(undefined4 *)(iVar5 + 8),0x5fc932);
+    FUN_005f4290();
+    *param_1 = &PTR_FUN_00650ad4;
+    uStack_c = 0xffffffff;
+    uStack_d4 = 2.12509726533002e-314;
+    FUN_004040a0();
+    ExceptionList = pvStack_14;
+    return param_1;
+  case 0x16:
+    local_c0 = (undefined1 *)&puStack_dc;
+    ExceptionList = &pvStack_14;
+    FUN_0045da10(&puStack_dc);
+    uVar7 = FUN_005fcc00(auStack_84);
+    uStack_c = 3;
+    uStack_d4 = (double)CONCAT44(uVar7,0x5fc99a);
+    FUN_005e2be0();
+    *param_1 = &PTR_FUN_00650ad4;
+    uStack_c = 0xffffffff;
+    uStack_d4 = 2.12509731671285e-314;
+    FUN_004040a0();
+    ExceptionList = pvStack_14;
+    return param_1;
+  case 0x17:
+    local_c0 = (undefined1 *)&puStack_dc;
+    ExceptionList = &pvStack_14;
+    FUN_0045da10(&puStack_dc);
+    uVar7 = FUN_005fccf0(auStack_24);
+    uStack_c = 6;
+    uStack_d4 = (double)CONCAT44(uVar7,0x5fcb32);
+    FUN_005e2be0();
+    *param_1 = &PTR_FUN_00650ad4;
+    if (iStack_20 == 0) {
+      ExceptionList = pvStack_14;
+      return param_1;
+    }
+    cVar2 = *(char *)(iStack_20 + -1);
+    if ((cVar2 != '\0') && (cVar2 != -1)) {
+      *(char *)(iStack_20 + -1) = cVar2 + -1;
+      ExceptionList = pvStack_14;
+      return param_1;
+    }
+    uStack_d4 = (double)CONCAT44((char *)(iStack_20 + -1),0x5fcb76);
+    FUN_005fe5f0();
+    ExceptionList = pvStack_14;
+    return param_1;
+  case 0x18:
+    uStack_d4 = (double)CONCAT44(auStack_44,0x5fca6b);
+    ExceptionList = &pvStack_14;
+    iVar5 = FUN_0045da10();
+    uStack_c = 5;
+    if (*(int *)(iVar5 + 8) == 0) {
+      uVar8 = 0;
+    }
+    else {
+      uStack_d4 = (double)CONCAT44(auStack_64,0x5fca89);
+      iVar5 = FUN_0045da10();
+      pbVar6 = *(byte **)(iVar5 + 4);
+      bVar3 = true;
+      if (pbVar6 == (byte *)0x0) {
+        pbVar6 = &DAT_0064a3b4;
+      }
+      uVar8 = (uint)*pbVar6;
+    }
+    param_1[2] = 2;
+    param_1[4] = uVar8;
+    *param_1 = &PTR_FUN_00650ad4;
+    if (bVar3) {
+      uStack_d4 = 2.12509745307497e-314;
+      FUN_004040a0();
+    }
+    uStack_c = 0xffffffff;
+    uStack_d4 = 2.12509746542661e-314;
+    FUN_004040a0();
+    ExceptionList = pvStack_14;
+    return param_1;
+  case 0x19:
+    auStack_b4[0] = (undefined1)*(uint *)(param_3 + 0x10);
+    local_c0 = (undefined1 *)(*(uint *)(param_3 + 0x10) & 0xff);
+    uStack_d4 = 3.1015539093177e-317;
+    ExceptionList = &pvStack_14;
+    FUN_004040a0();
+    uVar8 = 0xffffffff;
+    ppuVar9 = &local_c0;
+    do {
+      if (uVar8 == 0) break;
+      uVar8 = uVar8 - 1;
+      cVar2 = *(char *)ppuVar9;
+      ppuVar9 = (undefined1 **)((int)ppuVar9 + 1);
+    } while (cVar2 != '\0');
+    uStack_d4 = (double)CONCAT44(~uVar8 - 1,&local_c0);
+    puStack_d8 = (undefined1 *)0x5fca0c;
+    FUN_004040f0();
+    uStack_c = 4;
+    uStack_d4 = (double)CONCAT44(auStack_b4,0x5fca26);
+    FUN_005e2be0();
+    *param_1 = &PTR_FUN_00650ad4;
+    uStack_c = 0xffffffff;
+    uStack_d4 = 2.12509738588204e-314;
+    FUN_004040a0();
+    ExceptionList = pvStack_14;
+    return param_1;
+  }
+  uStack_d4 = (double)fVar10;
+  puStack_d8 = (undefined1 *)0x5fc4e7;
+  ExceptionList = &pvStack_14;
+  FUN_005f4270();
+LAB_005fc604:
+  *param_1 = &PTR_FUN_00650ad4;
+  ExceptionList = pvStack_14;
+  return param_1;
+}
+
+ (GhidraScript)  
+INFO  REPORT: Execute script: ExportAll.java '/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/decompiled/RcHcGame.dat'  (HeadlessAnalyzer)  
+INFO  SCRIPT: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/scripts/ExportAll.java (HeadlessAnalyzer)  
+INFO  ExportAll.java> Exported 100 functions; decompiled=100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 200 functions; decompiled=200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 300 functions; decompiled=300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 400 functions; decompiled=400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 500 functions; decompiled=500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 600 functions; decompiled=600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 700 functions; decompiled=700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 800 functions; decompiled=800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 900 functions; decompiled=900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1000 functions; decompiled=1000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1100 functions; decompiled=1100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1200 functions; decompiled=1200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1300 functions; decompiled=1300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1400 functions; decompiled=1400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1500 functions; decompiled=1500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1600 functions; decompiled=1600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1700 functions; decompiled=1700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1800 functions; decompiled=1800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 1900 functions; decompiled=1900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2000 functions; decompiled=2000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2100 functions; decompiled=2100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2200 functions; decompiled=2200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2300 functions; decompiled=2300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2400 functions; decompiled=2400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2500 functions; decompiled=2500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2600 functions; decompiled=2600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2700 functions; decompiled=2700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2800 functions; decompiled=2800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 2900 functions; decompiled=2900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 3000 functions; decompiled=3000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 3100 functions; decompiled=3100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 3200 functions; decompiled=3200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 3300 functions; decompiled=3300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 3400 functions; decompiled=3400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 3500 functions; decompiled=3500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 3600 functions; decompiled=3600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 3700 functions; decompiled=3700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 3800 functions; decompiled=3800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 3900 functions; decompiled=3900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4000 functions; decompiled=4000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4100 functions; decompiled=4100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4200 functions; decompiled=4200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4300 functions; decompiled=4300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4400 functions; decompiled=4400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4500 functions; decompiled=4500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4600 functions; decompiled=4600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4700 functions; decompiled=4700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4800 functions; decompiled=4800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 4900 functions; decompiled=4900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5000 functions; decompiled=5000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5100 functions; decompiled=5100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5200 functions; decompiled=5200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5300 functions; decompiled=5300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5400 functions; decompiled=5400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5500 functions; decompiled=5500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5600 functions; decompiled=5600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5700 functions; decompiled=5700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5800 functions; decompiled=5800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 5900 functions; decompiled=5900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6000 functions; decompiled=6000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6100 functions; decompiled=6100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6200 functions; decompiled=6200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6300 functions; decompiled=6300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6400 functions; decompiled=6400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6500 functions; decompiled=6500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6600 functions; decompiled=6600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6700 functions; decompiled=6700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6800 functions; decompiled=6800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 6900 functions; decompiled=6900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7000 functions; decompiled=7000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7100 functions; decompiled=7100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7200 functions; decompiled=7200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7300 functions; decompiled=7300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7400 functions; decompiled=7400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7500 functions; decompiled=7500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7600 functions; decompiled=7600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7700 functions; decompiled=7700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7800 functions; decompiled=7800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 7900 functions; decompiled=7900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 8000 functions; decompiled=8000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 8100 functions; decompiled=8100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 8200 functions; decompiled=8200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 8300 functions; decompiled=8300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 8400 functions; decompiled=8400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 8500 functions; decompiled=8500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 8600 functions; decompiled=8600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 8700 functions; decompiled=8700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 8800 functions; decompiled=8800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 8900 functions; decompiled=8900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 9000 functions; decompiled=9000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 9100 functions; decompiled=9100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 9200 functions; decompiled=9200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 9300 functions; decompiled=9300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 9400 functions; decompiled=9400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 9500 functions; decompiled=9500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 9600 functions; decompiled=9600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 9700 functions; decompiled=9700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 9800 functions; decompiled=9800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 9900 functions; decompiled=9900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 10000 functions; decompiled=10000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 10100 functions; decompiled=10100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 10200 functions; decompiled=10200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 10300 functions; decompiled=10300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 10400 functions; decompiled=10400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 10500 functions; decompiled=10500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 10600 functions; decompiled=10600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 10700 functions; decompiled=10700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 10800 functions; decompiled=10800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 10900 functions; decompiled=10900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 11000 functions; decompiled=11000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 11100 functions; decompiled=11100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 11200 functions; decompiled=11200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 11300 functions; decompiled=11300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 11400 functions; decompiled=11400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 11500 functions; decompiled=11500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 11600 functions; decompiled=11600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 11700 functions; decompiled=11700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 11800 functions; decompiled=11800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 11900 functions; decompiled=11900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 12000 functions; decompiled=12000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 12100 functions; decompiled=12100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 12200 functions; decompiled=12200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 12300 functions; decompiled=12300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 12400 functions; decompiled=12400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 12500 functions; decompiled=12500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 12600 functions; decompiled=12600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 12700 functions; decompiled=12700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 12800 functions; decompiled=12800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 12900 functions; decompiled=12900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 13000 functions; decompiled=13000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 13100 functions; decompiled=13100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 13200 functions; decompiled=13200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 13300 functions; decompiled=13300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 13400 functions; decompiled=13400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 13500 functions; decompiled=13500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 13600 functions; decompiled=13600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 13700 functions; decompiled=13700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 13800 functions; decompiled=13800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 13900 functions; decompiled=13900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 14000 functions; decompiled=14000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 14100 functions; decompiled=14100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 14200 functions; decompiled=14200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 14300 functions; decompiled=14300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 14400 functions; decompiled=14400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 14500 functions; decompiled=14500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 14600 functions; decompiled=14600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 14700 functions; decompiled=14700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 14800 functions; decompiled=14800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 14900 functions; decompiled=14900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 15000 functions; decompiled=15000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 15100 functions; decompiled=15100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 15200 functions; decompiled=15200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 15300 functions; decompiled=15300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 15400 functions; decompiled=15400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 15500 functions; decompiled=15500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 15600 functions; decompiled=15600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 15700 functions; decompiled=15700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 15800 functions; decompiled=15800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 15900 functions; decompiled=15900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 16000 functions; decompiled=16000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 16100 functions; decompiled=16100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 16200 functions; decompiled=16200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 16300 functions; decompiled=16300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 16400 functions; decompiled=16400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 16500 functions; decompiled=16500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 16600 functions; decompiled=16600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 16700 functions; decompiled=16700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 16800 functions; decompiled=16800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 16900 functions; decompiled=16900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 17000 functions; decompiled=17000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 17100 functions; decompiled=17100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 17200 functions; decompiled=17200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 17300 functions; decompiled=17300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 17400 functions; decompiled=17400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 17500 functions; decompiled=17500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 17600 functions; decompiled=17600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 17700 functions; decompiled=17700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 17800 functions; decompiled=17800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 17900 functions; decompiled=17900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 18000 functions; decompiled=18000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 18100 functions; decompiled=18100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 18200 functions; decompiled=18200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 18300 functions; decompiled=18300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 18400 functions; decompiled=18400, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 18500 functions; decompiled=18500, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 18600 functions; decompiled=18600, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 18700 functions; decompiled=18700, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 18800 functions; decompiled=18800, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 18900 functions; decompiled=18900, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 19000 functions; decompiled=19000, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 19100 functions; decompiled=19100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> EXPORT COMPLETE: functions=19163 decompiled=19163 fallback=0 output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/decompiled/RcHcGame.dat (GhidraScript)  
+INFO  REPORT: Save succeeded for processed file: /RcHcGame.dat (HeadlessAnalyzer)  

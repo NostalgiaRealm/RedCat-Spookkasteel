@@ -1,0 +1,84 @@
+address	bytes	instruction	category
+10001000	cc	INT3	padding-like-instruction
+1000ea30	8b4c2404	MOV ECX,dword ptr [ESP + 0x4]	decoded-instruction-unowned
+1000ea34	f7410406000000	TEST dword ptr [ECX + 0x4],0x6	decoded-instruction-unowned
+1000ea3b	b801000000	MOV EAX,0x1	decoded-instruction-unowned
+1000ea40	740f	JZ 0x1000ea51	decoded-instruction-unowned
+1000ea42	8b442408	MOV EAX,dword ptr [ESP + 0x8]	decoded-instruction-unowned
+1000ea46	8b542410	MOV EDX,dword ptr [ESP + 0x10]	decoded-instruction-unowned
+1000ea4a	8902	MOV dword ptr [EDX],EAX	decoded-instruction-unowned
+1000ea4c	b803000000	MOV EAX,0x3	decoded-instruction-unowned
+1000ea51	c3	RET	decoded-instruction-unowned
+1000eb08	55	PUSH EBP	decoded-instruction-unowned
+1000eb09	8bec	MOV EBP,ESP	decoded-instruction-unowned
+1000eb0b	83ec08	SUB ESP,0x8	decoded-instruction-unowned
+1000eb0e	53	PUSH EBX	decoded-instruction-unowned
+1000eb0f	56	PUSH ESI	decoded-instruction-unowned
+1000eb10	57	PUSH EDI	decoded-instruction-unowned
+1000eb11	55	PUSH EBP	decoded-instruction-unowned
+1000eb12	fc	CLD	decoded-instruction-unowned
+1000eb13	8b5d0c	MOV EBX,dword ptr [EBP + 0xc]	decoded-instruction-unowned
+1000eb16	8b4508	MOV EAX,dword ptr [EBP + 0x8]	decoded-instruction-unowned
+1000eb19	f7400406000000	TEST dword ptr [EAX + 0x4],0x6	decoded-instruction-unowned
+1000eb20	0f8582000000	JNZ 0x1000eba8	decoded-instruction-unowned
+1000eb26	8945f8	MOV dword ptr [EBP + -0x8],EAX	decoded-instruction-unowned
+1000eb29	8b4510	MOV EAX,dword ptr [EBP + 0x10]	decoded-instruction-unowned
+1000eb2c	8945fc	MOV dword ptr [EBP + -0x4],EAX	decoded-instruction-unowned
+1000eb2f	8d45f8	LEA EAX,[EBP + -0x8]	decoded-instruction-unowned
+1000eb32	8943fc	MOV dword ptr [EBX + -0x4],EAX	decoded-instruction-unowned
+1000eb35	8b730c	MOV ESI,dword ptr [EBX + 0xc]	decoded-instruction-unowned
+1000eb38	8b7b08	MOV EDI,dword ptr [EBX + 0x8]	decoded-instruction-unowned
+1000eb3b	83feff	CMP ESI,-0x1	decoded-instruction-unowned
+1000eb3e	7461	JZ 0x1000eba1	decoded-instruction-unowned
+1000eb40	8d0c76	LEA ECX,[ESI + ESI*0x2]	decoded-instruction-unowned
+1000eb43	837c8f0400	CMP dword ptr [EDI + ECX*0x4 + 0x4],0x0	decoded-instruction-unowned
+1000eb48	7445	JZ 0x1000eb8f	decoded-instruction-unowned
+1000eb4a	56	PUSH ESI	decoded-instruction-unowned
+1000eb4b	55	PUSH EBP	decoded-instruction-unowned
+1000eb4c	8d6b10	LEA EBP,[EBX + 0x10]	decoded-instruction-unowned
+1000eb4f	ff548f04	CALL dword ptr [EDI + ECX*0x4 + 0x4]	decoded-instruction-unowned
+1000eb53	5d	POP EBP	decoded-instruction-unowned
+1000eb54	5e	POP ESI	decoded-instruction-unowned
+1000eb55	8b5d0c	MOV EBX,dword ptr [EBP + 0xc]	decoded-instruction-unowned
+1000eb58	0bc0	OR EAX,EAX	decoded-instruction-unowned
+1000eb5a	7433	JZ 0x1000eb8f	decoded-instruction-unowned
+1000eb5c	783c	JS 0x1000eb9a	decoded-instruction-unowned
+1000eb5e	8b7b08	MOV EDI,dword ptr [EBX + 0x8]	decoded-instruction-unowned
+1000eb61	53	PUSH EBX	decoded-instruction-unowned
+1000eb62	e8a9feffff	CALL 0x1000ea10	decoded-instruction-unowned
+1000eb67	83c404	ADD ESP,0x4	decoded-instruction-unowned
+1000eb6a	8d6b10	LEA EBP,[EBX + 0x10]	decoded-instruction-unowned
+1000eb6d	56	PUSH ESI	decoded-instruction-unowned
+1000eb6e	53	PUSH EBX	decoded-instruction-unowned
+1000eb6f	e8defeffff	CALL 0x1000ea52	decoded-instruction-unowned
+1000eb74	83c408	ADD ESP,0x8	decoded-instruction-unowned
+1000eb77	8d0c76	LEA ECX,[ESI + ESI*0x2]	decoded-instruction-unowned
+1000eb7a	6a01	PUSH 0x1	decoded-instruction-unowned
+1000eb7c	8b448f08	MOV EAX,dword ptr [EDI + ECX*0x4 + 0x8]	decoded-instruction-unowned
+1000eb80	e861ffffff	CALL 0x1000eae6	decoded-instruction-unowned
+1000eb85	8b048f	MOV EAX,dword ptr [EDI + ECX*0x4]	decoded-instruction-unowned
+1000eb88	89430c	MOV dword ptr [EBX + 0xc],EAX	decoded-instruction-unowned
+1000eb8b	ff548f08	CALL dword ptr [EDI + ECX*0x4 + 0x8]	decoded-instruction-unowned
+1000eb8f	8b7b08	MOV EDI,dword ptr [EBX + 0x8]	decoded-instruction-unowned
+1000eb92	8d0c76	LEA ECX,[ESI + ESI*0x2]	decoded-instruction-unowned
+1000eb95	8b348f	MOV ESI,dword ptr [EDI + ECX*0x4]	decoded-instruction-unowned
+1000eb98	eba1	JMP 0x1000eb3b	decoded-instruction-unowned
+1000eb9a	b800000000	MOV EAX,0x0	decoded-instruction-unowned
+1000eb9f	eb1c	JMP 0x1000ebbd	decoded-instruction-unowned
+1000eba1	b801000000	MOV EAX,0x1	decoded-instruction-unowned
+1000eba6	eb15	JMP 0x1000ebbd	decoded-instruction-unowned
+1000eba8	55	PUSH EBP	decoded-instruction-unowned
+1000eba9	8d6b10	LEA EBP,[EBX + 0x10]	decoded-instruction-unowned
+1000ebac	6aff	PUSH -0x1	decoded-instruction-unowned
+1000ebae	53	PUSH EBX	decoded-instruction-unowned
+1000ebaf	e89efeffff	CALL 0x1000ea52	decoded-instruction-unowned
+1000ebb4	83c408	ADD ESP,0x8	decoded-instruction-unowned
+1000ebb7	5d	POP EBP	decoded-instruction-unowned
+1000ebb8	b801000000	MOV EAX,0x1	decoded-instruction-unowned
+1000ebbd	5d	POP EBP	decoded-instruction-unowned
+1000ebbe	5f	POP EDI	decoded-instruction-unowned
+1000ebbf	5e	POP ESI	decoded-instruction-unowned
+1000ebc0	5b	POP EBX	decoded-instruction-unowned
+1000ebc1	8be5	MOV ESP,EBP	decoded-instruction-unowned
+1000ebc3	5d	POP EBP	decoded-instruction-unowned
+1000ebc4	c3	RET	decoded-instruction-unowned

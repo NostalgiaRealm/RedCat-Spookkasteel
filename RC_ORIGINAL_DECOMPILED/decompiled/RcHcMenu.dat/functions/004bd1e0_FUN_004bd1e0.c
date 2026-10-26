@@ -1,0 +1,68 @@
+/*
+ * FUN_004bd1e0 at 004bd1e0
+ * undefined __register FUN_004bd1e0(int * param_1)
+ * Address ranges: 004bd1e0-004bd28e;004bd2db-004bd2f8
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ * Analysis note: Recovered original virtual function entry from validated Delphi VMT 0x4bcd20 slot 16 for TAppDAOQuery. Original bytes unchanged; names and types still inferred.
+ */
+
+/* Recovered original virtual function entry from validated Delphi VMT 0x4bcd20 slot 16 for
+   TAppDAOQuery. Original bytes unchanged; names and types still inferred. */
+
+void FUN_004bd1e0(int *param_1)
+
+{
+  undefined1 *puVar1;
+  char cVar2;
+  undefined4 *in_FS_OFFSET;
+  undefined4 uStack_144;
+  undefined1 *puStack_140;
+  undefined1 *puStack_13c;
+  undefined4 uStack_138;
+  undefined1 *puStack_134;
+  undefined1 *puStack_130;
+  int local_20;
+  _union_2683 local_1c;
+  undefined4 local_c;
+  int *local_8;
+  
+  puStack_130 = &stack0xfffffffc;
+  local_20 = 0;
+  local_1c._0_4_ = 0;
+  local_1c.decVal.Hi32 = 0;
+  local_1c._8_4_ = 0;
+  local_1c._12_4_ = 0;
+  puStack_134 = &LAB_004bd2f9;
+  uStack_138 = *in_FS_OFFSET;
+  *in_FS_OFFSET = &uStack_138;
+  puVar1 = &stack0xfffffffc;
+  local_8 = param_1;
+  if (param_1[0xd] == 0) {
+    puStack_13c = (undefined1 *)0x4bd22b;
+    FUN_00403d94("TAppDAOQuery.RecordCount: No recordset.");
+    puVar1 = puStack_130;
+  }
+  puStack_130 = puVar1;
+  local_c = 0;
+  puStack_13c = (undefined1 *)0x4bd238;
+  cVar2 = (**(code **)(*local_8 + 0x3c))();
+  if (cVar2 != '\0') {
+    puStack_140 = &LAB_004bd28f;
+    uStack_144 = *in_FS_OFFSET;
+    *in_FS_OFFSET = &uStack_144;
+    puStack_13c = &stack0xfffffffc;
+    FUN_004b9bb0(local_8[0xd],(VARIANT *)&local_1c.n2);
+    FUN_004bacdc(local_8[0xd]);
+    local_c = FUN_004ba114(local_8[0xd]);
+    FUN_004b9cc8(local_8[0xd],(undefined2 *)&local_1c);
+    *in_FS_OFFSET = uStack_144;
+  }
+  *in_FS_OFFSET = uStack_138;
+  puStack_130 = &LAB_004bd300;
+  puStack_134 = (undefined1 *)0x4bd2f0;
+  FUN_00403db0(&local_20);
+  puStack_134 = (undefined1 *)0x4bd2f8;
+  FUN_00405bcc((VARIANTARG *)&local_1c.n2);
+  return;
+}
+

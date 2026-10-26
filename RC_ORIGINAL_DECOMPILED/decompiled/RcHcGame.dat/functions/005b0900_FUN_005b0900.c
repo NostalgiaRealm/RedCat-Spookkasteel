@@ -1,0 +1,20 @@
+/*
+ * FUN_005b0900 at 005b0900
+ * undefined FUN_005b0900(void)
+ * Address ranges: 005b0900-005b0933
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ */
+
+void FUN_005b0900(undefined4 *param_1,undefined4 *param_2,undefined4 *param_3)
+
+{
+  *param_1 = *param_2;
+  param_1[1] = param_2[1];
+  param_1[2] = param_2[2];
+  param_1[5] = *param_3;
+  param_1[6] = param_3[1];
+  param_1[7] = param_3[2];
+  param_1[8] = param_3[3];
+  return;
+}
+

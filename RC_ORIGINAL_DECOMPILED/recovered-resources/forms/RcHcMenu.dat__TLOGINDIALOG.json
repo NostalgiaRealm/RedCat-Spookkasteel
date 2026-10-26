@@ -1,0 +1,621 @@
+{
+  "offset": 4,
+  "endOffset": 1139,
+  "class": "TLoginDialog",
+  "name": "LoginDialog",
+  "flags": 0,
+  "childPosition": null,
+  "properties": [
+    {
+      "name": "Left",
+      "offset": 34,
+      "type": 3,
+      "value": 307
+    },
+    {
+      "name": "Top",
+      "offset": 41,
+      "type": 3,
+      "value": 131
+    },
+    {
+      "name": "ActiveControl",
+      "offset": 58,
+      "type": 7,
+      "value": "Password"
+    },
+    {
+      "name": "BorderStyle",
+      "offset": 80,
+      "type": 7,
+      "value": "bsDialog"
+    },
+    {
+      "name": "Caption",
+      "offset": 98,
+      "type": 6,
+      "value": "Database Login"
+    },
+    {
+      "name": "ClientHeight",
+      "offset": 127,
+      "type": 3,
+      "value": 147
+    },
+    {
+      "name": "ClientWidth",
+      "offset": 142,
+      "type": 3,
+      "value": 273
+    },
+    {
+      "name": "ParentFont",
+      "offset": 156,
+      "type": 9,
+      "value": true
+    },
+    {
+      "name": "Position",
+      "offset": 166,
+      "type": 7,
+      "value": "poScreenCenter"
+    },
+    {
+      "name": "OnShow",
+      "offset": 189,
+      "type": 7,
+      "value": "FormShow"
+    },
+    {
+      "name": "PixelsPerInch",
+      "offset": 213,
+      "type": 2,
+      "value": 96
+    },
+    {
+      "name": "TextHeight",
+      "offset": 226,
+      "type": 2,
+      "value": 13
+    }
+  ],
+  "children": [
+    {
+      "offset": 229,
+      "endOffset": 325,
+      "class": "TButton",
+      "name": "OKButton",
+      "flags": 0,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 251,
+          "type": 2,
+          "value": 109
+        },
+        {
+          "name": "Top",
+          "offset": 257,
+          "type": 2,
+          "value": 114
+        },
+        {
+          "name": "Width",
+          "offset": 265,
+          "type": 2,
+          "value": 75
+        },
+        {
+          "name": "Height",
+          "offset": 274,
+          "type": 2,
+          "value": 25
+        },
+        {
+          "name": "Caption",
+          "offset": 284,
+          "type": 6,
+          "value": "&OK"
+        },
+        {
+          "name": "Default",
+          "offset": 297,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "ModalResult",
+          "offset": 310,
+          "type": 2,
+          "value": 1
+        },
+        {
+          "name": "TabOrder",
+          "offset": 321,
+          "type": 2,
+          "value": 0
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 325,
+      "endOffset": 428,
+      "class": "TButton",
+      "name": "CancelButton",
+      "flags": 0,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 351,
+          "type": 3,
+          "value": 190
+        },
+        {
+          "name": "Top",
+          "offset": 358,
+          "type": 2,
+          "value": 114
+        },
+        {
+          "name": "Width",
+          "offset": 366,
+          "type": 2,
+          "value": 75
+        },
+        {
+          "name": "Height",
+          "offset": 375,
+          "type": 2,
+          "value": 25
+        },
+        {
+          "name": "Cancel",
+          "offset": 384,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "Caption",
+          "offset": 393,
+          "type": 6,
+          "value": "Cancel"
+        },
+        {
+          "name": "ModalResult",
+          "offset": 413,
+          "type": 2,
+          "value": 2
+        },
+        {
+          "name": "TabOrder",
+          "offset": 424,
+          "type": 2,
+          "value": 1
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 428,
+      "endOffset": 1138,
+      "class": "TPanel",
+      "name": "Panel",
+      "flags": 0,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 446,
+          "type": 2,
+          "value": 8
+        },
+        {
+          "name": "Top",
+          "offset": 452,
+          "type": 2,
+          "value": 7
+        },
+        {
+          "name": "Width",
+          "offset": 460,
+          "type": 3,
+          "value": 257
+        },
+        {
+          "name": "Height",
+          "offset": 470,
+          "type": 2,
+          "value": 98
+        },
+        {
+          "name": "BevelInner",
+          "offset": 483,
+          "type": 7,
+          "value": "bvRaised"
+        },
+        {
+          "name": "BevelOuter",
+          "offset": 504,
+          "type": 7,
+          "value": "bvLowered"
+        },
+        {
+          "name": "TabOrder",
+          "offset": 524,
+          "type": 2,
+          "value": 2
+        }
+      ],
+      "children": [
+        {
+          "offset": 527,
+          "endOffset": 592,
+          "class": "TLabel",
+          "name": "Label3",
+          "flags": 0,
+          "childPosition": null,
+          "properties": [
+            {
+              "name": "Left",
+              "offset": 546,
+              "type": 2,
+              "value": 10
+            },
+            {
+              "name": "Top",
+              "offset": 552,
+              "type": 2,
+              "value": 6
+            },
+            {
+              "name": "Width",
+              "offset": 560,
+              "type": 2,
+              "value": 49
+            },
+            {
+              "name": "Height",
+              "offset": 569,
+              "type": 2,
+              "value": 13
+            },
+            {
+              "name": "Caption",
+              "offset": 579,
+              "type": 6,
+              "value": "Database:"
+            }
+          ],
+          "children": []
+        },
+        {
+          "offset": 592,
+          "endOffset": 644,
+          "class": "TLabel",
+          "name": "DatabaseName",
+          "flags": 0,
+          "childPosition": null,
+          "properties": [
+            {
+              "name": "Left",
+              "offset": 617,
+              "type": 2,
+              "value": 91
+            },
+            {
+              "name": "Top",
+              "offset": 623,
+              "type": 2,
+              "value": 6
+            },
+            {
+              "name": "Width",
+              "offset": 631,
+              "type": 2,
+              "value": 3
+            },
+            {
+              "name": "Height",
+              "offset": 640,
+              "type": 2,
+              "value": 13
+            }
+          ],
+          "children": []
+        },
+        {
+          "offset": 644,
+          "endOffset": 707,
+          "class": "TBevel",
+          "name": "Bevel",
+          "flags": 0,
+          "childPosition": null,
+          "properties": [
+            {
+              "name": "Left",
+              "offset": 662,
+              "type": 2,
+              "value": 1
+            },
+            {
+              "name": "Top",
+              "offset": 668,
+              "type": 2,
+              "value": 24
+            },
+            {
+              "name": "Width",
+              "offset": 676,
+              "type": 3,
+              "value": 254
+            },
+            {
+              "name": "Height",
+              "offset": 686,
+              "type": 2,
+              "value": 9
+            },
+            {
+              "name": "Shape",
+              "offset": 694,
+              "type": 7,
+              "value": "bsTopLine"
+            }
+          ],
+          "children": []
+        },
+        {
+          "offset": 707,
+          "endOffset": 1137,
+          "class": "TPanel",
+          "name": "Panel1",
+          "flags": 0,
+          "childPosition": null,
+          "properties": [
+            {
+              "name": "Left",
+              "offset": 726,
+              "type": 2,
+              "value": 2
+            },
+            {
+              "name": "Top",
+              "offset": 732,
+              "type": 2,
+              "value": 31
+            },
+            {
+              "name": "Width",
+              "offset": 740,
+              "type": 3,
+              "value": 253
+            },
+            {
+              "name": "Height",
+              "offset": 750,
+              "type": 2,
+              "value": 65
+            },
+            {
+              "name": "Align",
+              "offset": 758,
+              "type": 7,
+              "value": "alBottom"
+            },
+            {
+              "name": "BevelOuter",
+              "offset": 779,
+              "type": 7,
+              "value": "bvNone"
+            },
+            {
+              "name": "TabOrder",
+              "offset": 796,
+              "type": 2,
+              "value": 0
+            }
+          ],
+          "children": [
+            {
+              "offset": 799,
+              "endOffset": 889,
+              "class": "TLabel",
+              "name": "Label1",
+              "flags": 0,
+              "childPosition": null,
+              "properties": [
+                {
+                  "name": "Left",
+                  "offset": 818,
+                  "type": 2,
+                  "value": 8
+                },
+                {
+                  "name": "Top",
+                  "offset": 824,
+                  "type": 2,
+                  "value": 8
+                },
+                {
+                  "name": "Width",
+                  "offset": 832,
+                  "type": 2,
+                  "value": 56
+                },
+                {
+                  "name": "Height",
+                  "offset": 841,
+                  "type": 2,
+                  "value": 13
+                },
+                {
+                  "name": "Caption",
+                  "offset": 851,
+                  "type": 6,
+                  "value": "&User Name:"
+                },
+                {
+                  "name": "FocusControl",
+                  "offset": 877,
+                  "type": 7,
+                  "value": "UserName"
+                }
+              ],
+              "children": []
+            },
+            {
+              "offset": 889,
+              "endOffset": 978,
+              "class": "TLabel",
+              "name": "Label2",
+              "flags": 0,
+              "childPosition": null,
+              "properties": [
+                {
+                  "name": "Left",
+                  "offset": 908,
+                  "type": 2,
+                  "value": 8
+                },
+                {
+                  "name": "Top",
+                  "offset": 914,
+                  "type": 2,
+                  "value": 36
+                },
+                {
+                  "name": "Width",
+                  "offset": 922,
+                  "type": 2,
+                  "value": 49
+                },
+                {
+                  "name": "Height",
+                  "offset": 931,
+                  "type": 2,
+                  "value": 13
+                },
+                {
+                  "name": "Caption",
+                  "offset": 941,
+                  "type": 6,
+                  "value": "&Password:"
+                },
+                {
+                  "name": "FocusControl",
+                  "offset": 966,
+                  "type": 7,
+                  "value": "Password"
+                }
+              ],
+              "children": []
+            },
+            {
+              "offset": 978,
+              "endOffset": 1049,
+              "class": "TEdit",
+              "name": "UserName",
+              "flags": 0,
+              "childPosition": null,
+              "properties": [
+                {
+                  "name": "Left",
+                  "offset": 998,
+                  "type": 2,
+                  "value": 86
+                },
+                {
+                  "name": "Top",
+                  "offset": 1004,
+                  "type": 2,
+                  "value": 5
+                },
+                {
+                  "name": "Width",
+                  "offset": 1012,
+                  "type": 3,
+                  "value": 153
+                },
+                {
+                  "name": "Height",
+                  "offset": 1022,
+                  "type": 2,
+                  "value": 21
+                },
+                {
+                  "name": "MaxLength",
+                  "offset": 1034,
+                  "type": 2,
+                  "value": 31
+                },
+                {
+                  "name": "TabOrder",
+                  "offset": 1045,
+                  "type": 2,
+                  "value": 0
+                }
+              ],
+              "children": []
+            },
+            {
+              "offset": 1049,
+              "endOffset": 1136,
+              "class": "TEdit",
+              "name": "Password",
+              "flags": 0,
+              "childPosition": null,
+              "properties": [
+                {
+                  "name": "Left",
+                  "offset": 1069,
+                  "type": 2,
+                  "value": 86
+                },
+                {
+                  "name": "Top",
+                  "offset": 1075,
+                  "type": 2,
+                  "value": 33
+                },
+                {
+                  "name": "Width",
+                  "offset": 1083,
+                  "type": 3,
+                  "value": 153
+                },
+                {
+                  "name": "Height",
+                  "offset": 1093,
+                  "type": 2,
+                  "value": 21
+                },
+                {
+                  "name": "MaxLength",
+                  "offset": 1105,
+                  "type": 2,
+                  "value": 31
+                },
+                {
+                  "name": "PasswordChar",
+                  "offset": 1120,
+                  "type": 6,
+                  "value": "*"
+                },
+                {
+                  "name": "TabOrder",
+                  "offset": 1132,
+                  "type": 2,
+                  "value": 1
+                }
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,753 @@
+{
+  "offset": 4,
+  "endOffset": 1726,
+  "class": "TfrmMainScreen",
+  "name": "frmMainScreen",
+  "flags": 1,
+  "childPosition": null,
+  "properties": [
+    {
+      "name": "Top",
+      "offset": 38,
+      "type": 2,
+      "value": 1
+    },
+    {
+      "name": "ActiveControl",
+      "offset": 54,
+      "type": 7,
+      "value": "BtnNext.WrapperBtnNext"
+    },
+    {
+      "name": "Caption",
+      "offset": 86,
+      "type": 6,
+      "value": "frmMainScreen"
+    },
+    {
+      "name": "ClientHeight",
+      "offset": 114,
+      "type": 3,
+      "value": 740
+    },
+    {
+      "name": "PixelsPerInch",
+      "offset": 131,
+      "type": 2,
+      "value": 96
+    },
+    {
+      "name": "TextHeight",
+      "offset": 144,
+      "type": 2,
+      "value": 13
+    }
+  ],
+  "children": [
+    {
+      "offset": 147,
+      "endOffset": 181,
+      "class": "TImage",
+      "name": "imgBackGround",
+      "flags": 1,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Height",
+          "offset": 176,
+          "type": 3,
+          "value": 740
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 181,
+      "endOffset": 406,
+      "class": "TLabel",
+      "name": "lblTextBlock",
+      "flags": 2,
+      "childPosition": {
+        "offset": 182,
+        "type": 2,
+        "value": 1
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 209,
+          "type": 2,
+          "value": 100
+        },
+        {
+          "name": "Top",
+          "offset": 215,
+          "type": 2,
+          "value": 100
+        },
+        {
+          "name": "Width",
+          "offset": 223,
+          "type": 3,
+          "value": 567
+        },
+        {
+          "name": "Height",
+          "offset": 233,
+          "type": 2,
+          "value": 103
+        },
+        {
+          "name": "AutoSize",
+          "offset": 244,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Caption",
+          "offset": 253,
+          "type": 6,
+          "value": "lblTextBlock"
+        },
+        {
+          "name": "Font.Charset",
+          "offset": 280,
+          "type": 7,
+          "value": "DEFAULT_CHARSET"
+        },
+        {
+          "name": "Font.Color",
+          "offset": 308,
+          "type": 7,
+          "value": "clWhite"
+        },
+        {
+          "name": "Font.Height",
+          "offset": 329,
+          "type": 2,
+          "value": -23
+        },
+        {
+          "name": "Font.Name",
+          "offset": 341,
+          "type": 6,
+          "value": "Comic Sans MS"
+        },
+        {
+          "name": "Font.Style",
+          "offset": 367,
+          "type": 11,
+          "value": []
+        },
+        {
+          "name": "ParentFont",
+          "offset": 380,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Transparent",
+          "offset": 393,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "WordWrap",
+          "offset": 403,
+          "type": 9,
+          "value": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 406,
+      "endOffset": 456,
+      "class": "TImage",
+      "name": "imgCar",
+      "flags": 2,
+      "childPosition": {
+        "offset": 407,
+        "type": 2,
+        "value": 2
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 428,
+          "type": 3,
+          "value": 754
+        },
+        {
+          "name": "Top",
+          "offset": 435,
+          "type": 2,
+          "value": 27
+        },
+        {
+          "name": "Width",
+          "offset": 443,
+          "type": 2,
+          "value": 10
+        },
+        {
+          "name": "Height",
+          "offset": 452,
+          "type": 2,
+          "value": 11
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 456,
+      "endOffset": 658,
+      "class": "TGDIButton",
+      "name": "btnPlayer",
+      "flags": 2,
+      "childPosition": {
+        "offset": 457,
+        "type": 2,
+        "value": 3
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 485,
+          "type": 3,
+          "value": 176
+        },
+        {
+          "name": "Top",
+          "offset": 492,
+          "type": 3,
+          "value": 536
+        },
+        {
+          "name": "Width",
+          "offset": 501,
+          "type": 3,
+          "value": 175
+        },
+        {
+          "name": "Height",
+          "offset": 511,
+          "type": 2,
+          "value": 67
+        },
+        {
+          "name": "Cancel",
+          "offset": 520,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Default",
+          "offset": 529,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "ModalResult",
+          "offset": 542,
+          "type": 2,
+          "value": 0
+        },
+        {
+          "name": "Definition",
+          "offset": 555,
+          "type": 7,
+          "value": "Data.gdfPlayerListBtn"
+        },
+        {
+          "name": "MouseCheckDelay",
+          "offset": 594,
+          "type": 2,
+          "value": 60
+        },
+        {
+          "name": "TabOrder",
+          "offset": 605,
+          "type": 2,
+          "value": 7
+        },
+        {
+          "name": "TabStop",
+          "offset": 615,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "Caption",
+          "offset": 624,
+          "type": 6,
+          "value": "Speler"
+        },
+        {
+          "name": "OnClick",
+          "offset": 640,
+          "type": 7,
+          "value": "btnPlayerClick"
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 658,
+      "endOffset": 858,
+      "class": "TGDIButton",
+      "name": "btnOptions",
+      "flags": 2,
+      "childPosition": {
+        "offset": 659,
+        "type": 2,
+        "value": 4
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 688,
+          "type": 2,
+          "value": 0
+        },
+        {
+          "name": "Top",
+          "offset": 694,
+          "type": 3,
+          "value": 536
+        },
+        {
+          "name": "Width",
+          "offset": 703,
+          "type": 3,
+          "value": 175
+        },
+        {
+          "name": "Height",
+          "offset": 713,
+          "type": 2,
+          "value": 67
+        },
+        {
+          "name": "Cancel",
+          "offset": 722,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Default",
+          "offset": 731,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "ModalResult",
+          "offset": 744,
+          "type": 2,
+          "value": 0
+        },
+        {
+          "name": "Definition",
+          "offset": 757,
+          "type": 7,
+          "value": "Data.gdfOptionBtn"
+        },
+        {
+          "name": "MouseCheckDelay",
+          "offset": 792,
+          "type": 2,
+          "value": 60
+        },
+        {
+          "name": "TabOrder",
+          "offset": 803,
+          "type": 2,
+          "value": 8
+        },
+        {
+          "name": "TabStop",
+          "offset": 813,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "Caption",
+          "offset": 822,
+          "type": 6,
+          "value": "Options"
+        },
+        {
+          "name": "OnClick",
+          "offset": 839,
+          "type": 7,
+          "value": "btnOptionsClick"
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 858,
+      "endOffset": 895,
+      "class": "TGDIButton",
+      "name": "BtnPrevious",
+      "flags": 1,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "TabOrder",
+          "offset": 891,
+          "type": 2,
+          "value": 9
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 895,
+      "endOffset": 928,
+      "class": "TGDIButton",
+      "name": "BtnNext",
+      "flags": 1,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "TabOrder",
+          "offset": 924,
+          "type": 2,
+          "value": 10
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 928,
+      "endOffset": 976,
+      "class": "TGDIButton",
+      "name": "BtnQuit",
+      "flags": 1,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "TabOrder",
+          "offset": 957,
+          "type": 2,
+          "value": 1
+        },
+        {
+          "name": "Caption",
+          "offset": 967,
+          "type": 6,
+          "value": "Einde"
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 976,
+      "endOffset": 1165,
+      "class": "TGDIRadioButton",
+      "name": "BtnAvontuur",
+      "flags": 2,
+      "childPosition": {
+        "offset": 977,
+        "type": 2,
+        "value": 10
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 1012,
+          "type": 3,
+          "value": 304
+        },
+        {
+          "name": "Top",
+          "offset": 1019,
+          "type": 3,
+          "value": 224
+        },
+        {
+          "name": "Width",
+          "offset": 1028,
+          "type": 3,
+          "value": 175
+        },
+        {
+          "name": "Height",
+          "offset": 1038,
+          "type": 2,
+          "value": 67
+        },
+        {
+          "name": "Checked",
+          "offset": 1048,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Definition",
+          "offset": 1060,
+          "type": 7,
+          "value": "Data.gdfRadioBtn"
+        },
+        {
+          "name": "TabOrder",
+          "offset": 1087,
+          "type": 2,
+          "value": 2
+        },
+        {
+          "name": "TabStop",
+          "offset": 1097,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "Caption",
+          "offset": 1106,
+          "type": 6,
+          "value": "BtnAvontuur"
+        },
+        {
+          "name": "MouseCheckDelay",
+          "offset": 1135,
+          "type": 2,
+          "value": 60
+        },
+        {
+          "name": "OnClick",
+          "offset": 1145,
+          "type": 7,
+          "value": "BtnAvontuurClick"
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 1165,
+      "endOffset": 1357,
+      "class": "TGDIRadioButton",
+      "name": "BtnQuickPlay",
+      "flags": 2,
+      "childPosition": {
+        "offset": 1166,
+        "type": 2,
+        "value": 11
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 1202,
+          "type": 3,
+          "value": 304
+        },
+        {
+          "name": "Top",
+          "offset": 1209,
+          "type": 3,
+          "value": 288
+        },
+        {
+          "name": "Width",
+          "offset": 1218,
+          "type": 3,
+          "value": 175
+        },
+        {
+          "name": "Height",
+          "offset": 1228,
+          "type": 2,
+          "value": 67
+        },
+        {
+          "name": "Checked",
+          "offset": 1238,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Definition",
+          "offset": 1250,
+          "type": 7,
+          "value": "Data.gdfRadioBtn"
+        },
+        {
+          "name": "TabOrder",
+          "offset": 1277,
+          "type": 2,
+          "value": 3
+        },
+        {
+          "name": "TabStop",
+          "offset": 1287,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "Caption",
+          "offset": 1296,
+          "type": 6,
+          "value": "BtnQuickPlay"
+        },
+        {
+          "name": "MouseCheckDelay",
+          "offset": 1326,
+          "type": 2,
+          "value": 60
+        },
+        {
+          "name": "OnClick",
+          "offset": 1336,
+          "type": 7,
+          "value": "BtnQuickPlayClick"
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 1357,
+      "endOffset": 1549,
+      "class": "TGDIRadioButton",
+      "name": "BtnHighScore",
+      "flags": 2,
+      "childPosition": {
+        "offset": 1358,
+        "type": 2,
+        "value": 12
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 1394,
+          "type": 3,
+          "value": 304
+        },
+        {
+          "name": "Top",
+          "offset": 1401,
+          "type": 3,
+          "value": 352
+        },
+        {
+          "name": "Width",
+          "offset": 1410,
+          "type": 3,
+          "value": 175
+        },
+        {
+          "name": "Height",
+          "offset": 1420,
+          "type": 2,
+          "value": 67
+        },
+        {
+          "name": "Checked",
+          "offset": 1430,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Definition",
+          "offset": 1442,
+          "type": 7,
+          "value": "Data.gdfRadioBtn"
+        },
+        {
+          "name": "TabOrder",
+          "offset": 1469,
+          "type": 2,
+          "value": 4
+        },
+        {
+          "name": "TabStop",
+          "offset": 1479,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "Caption",
+          "offset": 1488,
+          "type": 6,
+          "value": "BtnHighScore"
+        },
+        {
+          "name": "MouseCheckDelay",
+          "offset": 1518,
+          "type": 2,
+          "value": 60
+        },
+        {
+          "name": "OnClick",
+          "offset": 1528,
+          "type": 7,
+          "value": "BtnHighScoreClick"
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 1549,
+      "endOffset": 1643,
+      "class": "TGDIGraphic",
+      "name": "imgBlack",
+      "flags": 1,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "LinkedGraphic.Storage",
+          "offset": 1593,
+          "type": 7,
+          "value": "SL_INTERNAL"
+        },
+        {
+          "name": "Translucent",
+          "offset": 1618,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "TranslucencyFactor",
+          "offset": 1638,
+          "type": 3,
+          "value": 255
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 1643,
+      "endOffset": 1725,
+      "class": "TLabel",
+      "name": "lblTitle",
+      "flags": 1,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "Width",
+          "offset": 1666,
+          "type": 2,
+          "value": 61
+        },
+        {
+          "name": "Height",
+          "offset": 1675,
+          "type": 2,
+          "value": 26
+        },
+        {
+          "name": "Font.Color",
+          "offset": 1688,
+          "type": 7,
+          "value": "clYellow"
+        },
+        {
+          "name": "Font.Name",
+          "offset": 1708,
+          "type": 6,
+          "value": "Comic Sans MS"
+        }
+      ],
+      "children": []
+    }
+  ]
+}

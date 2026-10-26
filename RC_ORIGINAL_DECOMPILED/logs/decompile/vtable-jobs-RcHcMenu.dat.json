@@ -1,0 +1,24 @@
+[
+  {
+    "binary": "RcHcMenu.dat",
+    "exit_code": 0,
+    "command": [
+      "/home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/support/analyzeHeadless",
+      "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/analysis-projects/RcHcMenu.dat",
+      "analysis",
+      "-process",
+      "RcHcMenu.dat",
+      "-noanalysis",
+      "-scriptPath",
+      "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/scripts",
+      "-postScript",
+      "RecoverVtableFunctions.java",
+      "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/inventory/RcHcMenu.dat-vtable-seeds.tsv",
+      "-postScript",
+      "RecoverFunctions.java",
+      "-postScript",
+      "ExportAll.java",
+      "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/decompiled/RcHcMenu.dat"
+    ]
+  }
+]

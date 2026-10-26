@@ -1,0 +1,1346 @@
+{
+  "offset": 4,
+  "endOffset": 3144,
+  "class": "TfrmStartGame",
+  "name": "frmStartGame",
+  "flags": 1,
+  "childPosition": null,
+  "properties": [
+    {
+      "name": "ActiveControl",
+      "offset": 46,
+      "type": 7,
+      "value": "btnHelp.WrapperbtnHelp"
+    },
+    {
+      "name": "Caption",
+      "offset": 78,
+      "type": 6,
+      "value": "frmStartGame"
+    },
+    {
+      "name": "PixelsPerInch",
+      "offset": 106,
+      "type": 2,
+      "value": 96
+    },
+    {
+      "name": "TextHeight",
+      "offset": 119,
+      "type": 2,
+      "value": 13
+    }
+  ],
+  "children": [
+    {
+      "offset": 122,
+      "endOffset": 155,
+      "class": "TGDIButton",
+      "name": "btnHelp",
+      "flags": 1,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "TabOrder",
+          "offset": 151,
+          "type": 2,
+          "value": 1
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 155,
+      "endOffset": 192,
+      "class": "TGDIButton",
+      "name": "BtnPrevious",
+      "flags": 1,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "TabOrder",
+          "offset": 188,
+          "type": 2,
+          "value": 4
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 192,
+      "endOffset": 225,
+      "class": "TGDIButton",
+      "name": "BtnNext",
+      "flags": 1,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "TabOrder",
+          "offset": 221,
+          "type": 2,
+          "value": 0
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 225,
+      "endOffset": 258,
+      "class": "TGDIButton",
+      "name": "BtnQuit",
+      "flags": 1,
+      "childPosition": null,
+      "properties": [
+        {
+          "name": "TabOrder",
+          "offset": 254,
+          "type": 2,
+          "value": 2
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 258,
+      "endOffset": 429,
+      "class": "TGDIButton",
+      "name": "AdvLevelBtn",
+      "flags": 2,
+      "childPosition": {
+        "offset": 259,
+        "type": 2,
+        "value": 8
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 289,
+          "type": 3,
+          "value": 168
+        },
+        {
+          "name": "Top",
+          "offset": 296,
+          "type": 3,
+          "value": 192
+        },
+        {
+          "name": "Width",
+          "offset": 305,
+          "type": 2,
+          "value": 120
+        },
+        {
+          "name": "Height",
+          "offset": 314,
+          "type": 2,
+          "value": 80
+        },
+        {
+          "name": "Cancel",
+          "offset": 323,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Default",
+          "offset": 332,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "ModalResult",
+          "offset": 345,
+          "type": 2,
+          "value": 0
+        },
+        {
+          "name": "Definition",
+          "offset": 358,
+          "type": 7,
+          "value": "Data.gdfCurLevel1"
+        },
+        {
+          "name": "MouseCheckDelay",
+          "offset": 393,
+          "type": 2,
+          "value": 60
+        },
+        {
+          "name": "TabOrder",
+          "offset": 404,
+          "type": 2,
+          "value": 5
+        },
+        {
+          "name": "Caption",
+          "offset": 414,
+          "type": 6,
+          "value": "AdvLevelBtn"
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 429,
+      "endOffset": 661,
+      "class": "TLabel",
+      "name": "lblPlayerNameText",
+      "flags": 2,
+      "childPosition": {
+        "offset": 430,
+        "type": 2,
+        "value": 9
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 462,
+          "type": 3,
+          "value": 170
+        },
+        {
+          "name": "Top",
+          "offset": 469,
+          "type": 3,
+          "value": 442
+        },
+        {
+          "name": "Width",
+          "offset": 478,
+          "type": 2,
+          "value": 95
+        },
+        {
+          "name": "Height",
+          "offset": 487,
+          "type": 2,
+          "value": 31
+        },
+        {
+          "name": "AutoSize",
+          "offset": 498,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Caption",
+          "offset": 507,
+          "type": 6,
+          "value": "lblPlayerInfo"
+        },
+        {
+          "name": "Font.Charset",
+          "offset": 535,
+          "type": 7,
+          "value": "DEFAULT_CHARSET"
+        },
+        {
+          "name": "Font.Color",
+          "offset": 563,
+          "type": 7,
+          "value": "clWhite"
+        },
+        {
+          "name": "Font.Height",
+          "offset": 584,
+          "type": 2,
+          "value": -19
+        },
+        {
+          "name": "Font.Name",
+          "offset": 596,
+          "type": 6,
+          "value": "MS Sans Serif"
+        },
+        {
+          "name": "Font.Style",
+          "offset": 622,
+          "type": 11,
+          "value": []
+        },
+        {
+          "name": "ParentFont",
+          "offset": 635,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Transparent",
+          "offset": 648,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "WordWrap",
+          "offset": 658,
+          "type": 9,
+          "value": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 661,
+      "endOffset": 927,
+      "class": "TLabel",
+      "name": "lblPlayerScoreText",
+      "flags": 2,
+      "childPosition": {
+        "offset": 662,
+        "type": 2,
+        "value": 10
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 695,
+          "type": 3,
+          "value": 170
+        },
+        {
+          "name": "Top",
+          "offset": 702,
+          "type": 3,
+          "value": 466
+        },
+        {
+          "name": "Width",
+          "offset": 711,
+          "type": 2,
+          "value": 95
+        },
+        {
+          "name": "Height",
+          "offset": 720,
+          "type": 2,
+          "value": 31
+        },
+        {
+          "name": "AutoSize",
+          "offset": 731,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Caption",
+          "offset": 740,
+          "type": 6,
+          "value": "lblPlayerInfo"
+        },
+        {
+          "name": "Color",
+          "offset": 761,
+          "type": 7,
+          "value": "clBackground"
+        },
+        {
+          "name": "Font.Charset",
+          "offset": 788,
+          "type": 7,
+          "value": "DEFAULT_CHARSET"
+        },
+        {
+          "name": "Font.Color",
+          "offset": 816,
+          "type": 7,
+          "value": "clWhite"
+        },
+        {
+          "name": "Font.Height",
+          "offset": 837,
+          "type": 2,
+          "value": -19
+        },
+        {
+          "name": "Font.Name",
+          "offset": 849,
+          "type": 6,
+          "value": "Comic Sans MS"
+        },
+        {
+          "name": "Font.Style",
+          "offset": 875,
+          "type": 11,
+          "value": []
+        },
+        {
+          "name": "ParentColor",
+          "offset": 889,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "ParentFont",
+          "offset": 901,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Transparent",
+          "offset": 914,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "WordWrap",
+          "offset": 924,
+          "type": 9,
+          "value": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 927,
+      "endOffset": 1156,
+      "class": "TLabel",
+      "name": "lblPlayerInfo",
+      "flags": 2,
+      "childPosition": {
+        "offset": 928,
+        "type": 2,
+        "value": 11
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 956,
+          "type": 3,
+          "value": 274
+        },
+        {
+          "name": "Top",
+          "offset": 963,
+          "type": 3,
+          "value": 442
+        },
+        {
+          "name": "Width",
+          "offset": 972,
+          "type": 3,
+          "value": 191
+        },
+        {
+          "name": "Height",
+          "offset": 982,
+          "type": 2,
+          "value": 31
+        },
+        {
+          "name": "AutoSize",
+          "offset": 993,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Caption",
+          "offset": 1002,
+          "type": 6,
+          "value": "lblPlayerName"
+        },
+        {
+          "name": "Font.Charset",
+          "offset": 1030,
+          "type": 7,
+          "value": "DEFAULT_CHARSET"
+        },
+        {
+          "name": "Font.Color",
+          "offset": 1058,
+          "type": 7,
+          "value": "clWhite"
+        },
+        {
+          "name": "Font.Height",
+          "offset": 1079,
+          "type": 2,
+          "value": -19
+        },
+        {
+          "name": "Font.Name",
+          "offset": 1091,
+          "type": 6,
+          "value": "MS Sans Serif"
+        },
+        {
+          "name": "Font.Style",
+          "offset": 1117,
+          "type": 11,
+          "value": []
+        },
+        {
+          "name": "ParentFont",
+          "offset": 1130,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Transparent",
+          "offset": 1143,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "WordWrap",
+          "offset": 1153,
+          "type": 9,
+          "value": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 1156,
+      "endOffset": 1408,
+      "class": "TLabel",
+      "name": "lblScore",
+      "flags": 2,
+      "childPosition": {
+        "offset": 1157,
+        "type": 2,
+        "value": 12
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 1180,
+          "type": 3,
+          "value": 274
+        },
+        {
+          "name": "Top",
+          "offset": 1187,
+          "type": 3,
+          "value": 466
+        },
+        {
+          "name": "Width",
+          "offset": 1196,
+          "type": 3,
+          "value": 191
+        },
+        {
+          "name": "Height",
+          "offset": 1206,
+          "type": 2,
+          "value": 31
+        },
+        {
+          "name": "AutoSize",
+          "offset": 1217,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Caption",
+          "offset": 1226,
+          "type": 6,
+          "value": "lblScore"
+        },
+        {
+          "name": "Color",
+          "offset": 1242,
+          "type": 7,
+          "value": "clBackground"
+        },
+        {
+          "name": "Font.Charset",
+          "offset": 1269,
+          "type": 7,
+          "value": "DEFAULT_CHARSET"
+        },
+        {
+          "name": "Font.Color",
+          "offset": 1297,
+          "type": 7,
+          "value": "clWhite"
+        },
+        {
+          "name": "Font.Height",
+          "offset": 1318,
+          "type": 2,
+          "value": -19
+        },
+        {
+          "name": "Font.Name",
+          "offset": 1330,
+          "type": 6,
+          "value": "Comic Sans MS"
+        },
+        {
+          "name": "Font.Style",
+          "offset": 1356,
+          "type": 11,
+          "value": []
+        },
+        {
+          "name": "ParentColor",
+          "offset": 1370,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "ParentFont",
+          "offset": 1382,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Transparent",
+          "offset": 1395,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "WordWrap",
+          "offset": 1405,
+          "type": 9,
+          "value": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 1408,
+      "endOffset": 1576,
+      "class": "TGDIButton",
+      "name": "btnControl",
+      "flags": 2,
+      "childPosition": {
+        "offset": 1409,
+        "type": 2,
+        "value": 13
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 1438,
+          "type": 3,
+          "value": 488
+        },
+        {
+          "name": "Top",
+          "offset": 1445,
+          "type": 3,
+          "value": 192
+        },
+        {
+          "name": "Width",
+          "offset": 1454,
+          "type": 2,
+          "value": 100
+        },
+        {
+          "name": "Height",
+          "offset": 1463,
+          "type": 2,
+          "value": 50
+        },
+        {
+          "name": "Cancel",
+          "offset": 1472,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Default",
+          "offset": 1481,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "ModalResult",
+          "offset": 1494,
+          "type": 2,
+          "value": 0
+        },
+        {
+          "name": "Definition",
+          "offset": 1507,
+          "type": 7,
+          "value": "Data.gdfJoyStick"
+        },
+        {
+          "name": "MouseCheckDelay",
+          "offset": 1541,
+          "type": 2,
+          "value": 60
+        },
+        {
+          "name": "TabOrder",
+          "offset": 1552,
+          "type": 2,
+          "value": 6
+        },
+        {
+          "name": "Caption",
+          "offset": 1562,
+          "type": 6,
+          "value": "btnControl"
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 1576,
+      "endOffset": 1808,
+      "class": "TLabel",
+      "name": "lblDifficultyText",
+      "flags": 2,
+      "childPosition": {
+        "offset": 1577,
+        "type": 2,
+        "value": 14
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 1609,
+          "type": 3,
+          "value": 170
+        },
+        {
+          "name": "Top",
+          "offset": 1616,
+          "type": 3,
+          "value": 490
+        },
+        {
+          "name": "Width",
+          "offset": 1625,
+          "type": 2,
+          "value": 95
+        },
+        {
+          "name": "Height",
+          "offset": 1634,
+          "type": 2,
+          "value": 31
+        },
+        {
+          "name": "AutoSize",
+          "offset": 1645,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Caption",
+          "offset": 1654,
+          "type": 6,
+          "value": "lblPlayerInfo"
+        },
+        {
+          "name": "Font.Charset",
+          "offset": 1682,
+          "type": 7,
+          "value": "DEFAULT_CHARSET"
+        },
+        {
+          "name": "Font.Color",
+          "offset": 1710,
+          "type": 7,
+          "value": "clWhite"
+        },
+        {
+          "name": "Font.Height",
+          "offset": 1731,
+          "type": 2,
+          "value": -19
+        },
+        {
+          "name": "Font.Name",
+          "offset": 1743,
+          "type": 6,
+          "value": "MS Sans Serif"
+        },
+        {
+          "name": "Font.Style",
+          "offset": 1769,
+          "type": 11,
+          "value": []
+        },
+        {
+          "name": "ParentFont",
+          "offset": 1782,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Transparent",
+          "offset": 1795,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "WordWrap",
+          "offset": 1805,
+          "type": 9,
+          "value": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 1808,
+      "endOffset": 2070,
+      "class": "TLabel",
+      "name": "lblDifficulty",
+      "flags": 2,
+      "childPosition": {
+        "offset": 1809,
+        "type": 2,
+        "value": 15
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 1837,
+          "type": 3,
+          "value": 274
+        },
+        {
+          "name": "Top",
+          "offset": 1844,
+          "type": 3,
+          "value": 490
+        },
+        {
+          "name": "Width",
+          "offset": 1853,
+          "type": 3,
+          "value": 191
+        },
+        {
+          "name": "Height",
+          "offset": 1863,
+          "type": 2,
+          "value": 31
+        },
+        {
+          "name": "AutoSize",
+          "offset": 1874,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Caption",
+          "offset": 1883,
+          "type": 6,
+          "value": "lblDifficulty"
+        },
+        {
+          "name": "Color",
+          "offset": 1904,
+          "type": 7,
+          "value": "clBackground"
+        },
+        {
+          "name": "Font.Charset",
+          "offset": 1931,
+          "type": 7,
+          "value": "DEFAULT_CHARSET"
+        },
+        {
+          "name": "Font.Color",
+          "offset": 1959,
+          "type": 7,
+          "value": "clWhite"
+        },
+        {
+          "name": "Font.Height",
+          "offset": 1980,
+          "type": 2,
+          "value": -19
+        },
+        {
+          "name": "Font.Name",
+          "offset": 1992,
+          "type": 6,
+          "value": "Comic Sans MS"
+        },
+        {
+          "name": "Font.Style",
+          "offset": 2018,
+          "type": 11,
+          "value": []
+        },
+        {
+          "name": "ParentColor",
+          "offset": 2032,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "ParentFont",
+          "offset": 2044,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Transparent",
+          "offset": 2057,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "WordWrap",
+          "offset": 2067,
+          "type": 9,
+          "value": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 2070,
+      "endOffset": 2352,
+      "class": "TLabel",
+      "name": "lblLevelTitle",
+      "flags": 2,
+      "childPosition": {
+        "offset": 2071,
+        "type": 2,
+        "value": 16
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 2099,
+          "type": 3,
+          "value": 178
+        },
+        {
+          "name": "Top",
+          "offset": 2106,
+          "type": 3,
+          "value": 162
+        },
+        {
+          "name": "Width",
+          "offset": 2115,
+          "type": 3,
+          "value": 191
+        },
+        {
+          "name": "Height",
+          "offset": 2125,
+          "type": 2,
+          "value": 31
+        },
+        {
+          "name": "Alignment",
+          "offset": 2137,
+          "type": 7,
+          "value": "taCenter"
+        },
+        {
+          "name": "AutoSize",
+          "offset": 2156,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Caption",
+          "offset": 2165,
+          "type": 6,
+          "value": "lblLevelTitle"
+        },
+        {
+          "name": "Color",
+          "offset": 2186,
+          "type": 7,
+          "value": "clBackground"
+        },
+        {
+          "name": "Font.Charset",
+          "offset": 2213,
+          "type": 7,
+          "value": "DEFAULT_CHARSET"
+        },
+        {
+          "name": "Font.Color",
+          "offset": 2241,
+          "type": 7,
+          "value": "clWhite"
+        },
+        {
+          "name": "Font.Height",
+          "offset": 2262,
+          "type": 2,
+          "value": -19
+        },
+        {
+          "name": "Font.Name",
+          "offset": 2274,
+          "type": 6,
+          "value": "Comic Sans MS"
+        },
+        {
+          "name": "Font.Style",
+          "offset": 2300,
+          "type": 11,
+          "value": []
+        },
+        {
+          "name": "ParentColor",
+          "offset": 2314,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "ParentFont",
+          "offset": 2326,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Transparent",
+          "offset": 2339,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "WordWrap",
+          "offset": 2349,
+          "type": 9,
+          "value": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 2352,
+      "endOffset": 2638,
+      "class": "TLabel",
+      "name": "lblControlTitle",
+      "flags": 2,
+      "childPosition": {
+        "offset": 2353,
+        "type": 2,
+        "value": 17
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 2383,
+          "type": 3,
+          "value": 490
+        },
+        {
+          "name": "Top",
+          "offset": 2390,
+          "type": 3,
+          "value": 162
+        },
+        {
+          "name": "Width",
+          "offset": 2399,
+          "type": 3,
+          "value": 191
+        },
+        {
+          "name": "Height",
+          "offset": 2409,
+          "type": 2,
+          "value": 31
+        },
+        {
+          "name": "Alignment",
+          "offset": 2421,
+          "type": 7,
+          "value": "taCenter"
+        },
+        {
+          "name": "AutoSize",
+          "offset": 2440,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Caption",
+          "offset": 2449,
+          "type": 6,
+          "value": "lblControlTitle"
+        },
+        {
+          "name": "Color",
+          "offset": 2472,
+          "type": 7,
+          "value": "clBackground"
+        },
+        {
+          "name": "Font.Charset",
+          "offset": 2499,
+          "type": 7,
+          "value": "DEFAULT_CHARSET"
+        },
+        {
+          "name": "Font.Color",
+          "offset": 2527,
+          "type": 7,
+          "value": "clWhite"
+        },
+        {
+          "name": "Font.Height",
+          "offset": 2548,
+          "type": 2,
+          "value": -19
+        },
+        {
+          "name": "Font.Name",
+          "offset": 2560,
+          "type": 6,
+          "value": "Comic Sans MS"
+        },
+        {
+          "name": "Font.Style",
+          "offset": 2586,
+          "type": 11,
+          "value": []
+        },
+        {
+          "name": "ParentColor",
+          "offset": 2600,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "ParentFont",
+          "offset": 2612,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Transparent",
+          "offset": 2625,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "WordWrap",
+          "offset": 2635,
+          "type": 9,
+          "value": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 2638,
+      "endOffset": 2918,
+      "class": "TLabel",
+      "name": "lblLevelName",
+      "flags": 2,
+      "childPosition": {
+        "offset": 2639,
+        "type": 2,
+        "value": 18
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 2666,
+          "type": 3,
+          "value": 170
+        },
+        {
+          "name": "Top",
+          "offset": 2673,
+          "type": 3,
+          "value": 402
+        },
+        {
+          "name": "Width",
+          "offset": 2682,
+          "type": 3,
+          "value": 191
+        },
+        {
+          "name": "Height",
+          "offset": 2692,
+          "type": 2,
+          "value": 31
+        },
+        {
+          "name": "Alignment",
+          "offset": 2704,
+          "type": 7,
+          "value": "taCenter"
+        },
+        {
+          "name": "AutoSize",
+          "offset": 2723,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Caption",
+          "offset": 2732,
+          "type": 6,
+          "value": "lblLevelName"
+        },
+        {
+          "name": "Color",
+          "offset": 2752,
+          "type": 7,
+          "value": "clBackground"
+        },
+        {
+          "name": "Font.Charset",
+          "offset": 2779,
+          "type": 7,
+          "value": "DEFAULT_CHARSET"
+        },
+        {
+          "name": "Font.Color",
+          "offset": 2807,
+          "type": 7,
+          "value": "clWhite"
+        },
+        {
+          "name": "Font.Height",
+          "offset": 2828,
+          "type": 2,
+          "value": -19
+        },
+        {
+          "name": "Font.Name",
+          "offset": 2840,
+          "type": 6,
+          "value": "Comic Sans MS"
+        },
+        {
+          "name": "Font.Style",
+          "offset": 2866,
+          "type": 11,
+          "value": []
+        },
+        {
+          "name": "ParentColor",
+          "offset": 2880,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "ParentFont",
+          "offset": 2892,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Transparent",
+          "offset": 2905,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "WordWrap",
+          "offset": 2915,
+          "type": 9,
+          "value": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "offset": 2918,
+      "endOffset": 3143,
+      "class": "TLabel",
+      "name": "lblTextBlock",
+      "flags": 2,
+      "childPosition": {
+        "offset": 2919,
+        "type": 2,
+        "value": 19
+      },
+      "properties": [
+        {
+          "name": "Left",
+          "offset": 2946,
+          "type": 2,
+          "value": 100
+        },
+        {
+          "name": "Top",
+          "offset": 2952,
+          "type": 2,
+          "value": 100
+        },
+        {
+          "name": "Width",
+          "offset": 2960,
+          "type": 3,
+          "value": 567
+        },
+        {
+          "name": "Height",
+          "offset": 2970,
+          "type": 2,
+          "value": 53
+        },
+        {
+          "name": "AutoSize",
+          "offset": 2981,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Caption",
+          "offset": 2990,
+          "type": 6,
+          "value": "lblTextBlock"
+        },
+        {
+          "name": "Font.Charset",
+          "offset": 3017,
+          "type": 7,
+          "value": "DEFAULT_CHARSET"
+        },
+        {
+          "name": "Font.Color",
+          "offset": 3045,
+          "type": 7,
+          "value": "clWhite"
+        },
+        {
+          "name": "Font.Height",
+          "offset": 3066,
+          "type": 2,
+          "value": -23
+        },
+        {
+          "name": "Font.Name",
+          "offset": 3078,
+          "type": 6,
+          "value": "Comic Sans MS"
+        },
+        {
+          "name": "Font.Style",
+          "offset": 3104,
+          "type": 11,
+          "value": []
+        },
+        {
+          "name": "ParentFont",
+          "offset": 3117,
+          "type": 8,
+          "value": false
+        },
+        {
+          "name": "Transparent",
+          "offset": 3130,
+          "type": 9,
+          "value": true
+        },
+        {
+          "name": "WordWrap",
+          "offset": 3140,
+          "type": 9,
+          "value": true
+        }
+      ],
+      "children": []
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+// Recovered from resources/RcHcMenu.dat/10/TGAMEMENUSCREEN/0.bin; binary values and original offsets retained in companion JSON.
+object GameMenuScreen: TGameMenuScreen
+  Left = 0
+  Top = 0
+  ActiveControl = "BtnQuit.WrapperBtnQuit"
+  BorderStyle = "bsNone"
+  ClientHeight = 741
+  ClientWidth = 956
+  Color = "clTeal"
+  Font.Charset = "DEFAULT_CHARSET"
+  Font.Color = "clWhite"
+  Font.Height = -11
+  Font.Name = "MS Sans Serif"
+  Font.Style = []
+  OldCreateOrder = true
+  Scaled = false
+  OnCreate = "FormCreate"
+  OnDestroy = "FormDestroy"
+  OnShow = "FormShow"
+  PixelsPerInch = 96
+  TextHeight = 13
+  object imgBackGround: TImage
+    Left = 0
+    Top = 0
+    Width = 956
+    Height = 741
+    Align = "alClient"
+  end
+  object btnHelp: TGDIButton
+    Left = 448
+    Top = 0
+    Width = 175
+    Height = 67
+    Cancel = false
+    Default = false
+    ModalResult = 0
+    Definition = "Data.gdfHelpBtn"
+    MouseCheckDelay = 60
+    TabOrder = 0
+    TabStop = true
+    Caption = "btnHelp"
+    OnClick = "btnHelpClick"
+  end
+  object BtnPrevious: TGDIButton
+    Left = 448
+    Top = 536
+    Width = 175
+    Height = 67
+    Cancel = false
+    Default = false
+    ModalResult = 0
+    Definition = "Data.gdfPreviousBtn"
+    MouseCheckDelay = 60
+    TabOrder = 1
+    TabStop = true
+    Caption = "BtnPrevious"
+    OnClick = "BtnPreviousClick"
+  end
+  object BtnNext: TGDIButton
+    Left = 624
+    Top = 536
+    Width = 175
+    Height = 67
+    Cancel = false
+    Default = false
+    ModalResult = 0
+    Definition = "Data.gdfNextBtn"
+    MouseCheckDelay = 60
+    TabOrder = 2
+    TabStop = true
+    Caption = "BtnNext"
+    OnClick = "BtnNextClick"
+  end
+  object BtnQuit: TGDIButton
+    Left = 624
+    Top = 0
+    Width = 175
+    Height = 67
+    Cancel = false
+    Default = false
+    ModalResult = 0
+    Definition = "Data.gdfCancelBtn"
+    MouseCheckDelay = 60
+    TabOrder = 3
+    TabStop = true
+    Caption = "BtnQuit"
+    OnClick = "BtnQuitClick"
+  end
+  object gdfAppTile: TGDIGraphic
+    Left = 8
+    Top = 8
+    Width = 128
+    Height = 60
+    LinkedGraphic.Storage = "SL_EXTERNAL"
+    LinkedGraphic.GraphicName = ".\\MenuGfx\\00030000.tga"
+    TransparentColor = "clBlack"
+    Transparent = false
+    TransparentMode = "tmAuto"
+    Translucent = true
+    TranslucencyFactor = 255
+  end
+  object imgBlack: TGDIGraphic
+    Left = 136
+    Top = 8
+    Width = 100
+    Height = 50
+    LinkedGraphic.Storage = "SL_EXTERNAL"
+    LinkedGraphic.GraphicName = ""
+    TransparentColor = "clBlack"
+    Transparent = false
+    TransparentMode = "tmAuto"
+    Translucent = true
+    TranslucencyFactor = 100
+  end
+  object lblTitle: TLabel
+    Left = 8
+    Top = 72
+    Width = 55
+    Height = 22
+    Caption = "lblTitle"
+    Font.Charset = "DEFAULT_CHARSET"
+    Font.Color = "clWhite"
+    Font.Height = -19
+    Font.Name = "Com"
+    Font.Style = []
+    ParentFont = false
+    Transparent = true
+  end
+  object ContextHelp: TDaviContextHelp
+    Left = 488
+    Top = 48
+    Width = 0
+    Height = 0
+  end
+  object pnlAgent: TTransparentControl
+    Left = 12
+    Top = 104
+    Width = 44
+    Height = 66
+  end
+end

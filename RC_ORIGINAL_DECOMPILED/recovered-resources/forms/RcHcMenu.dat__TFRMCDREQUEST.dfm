@@ -1,0 +1,173 @@
+// Recovered from resources/RcHcMenu.dat/10/TFRMCDREQUEST/0.bin; binary values and original offsets retained in companion JSON.
+object frmCDRequest: TfrmCDRequest
+  Left = 394
+  Top = 234
+  ActiveControl = "btnReqOk.WrapperbtnReqOk"
+  Caption = "frmCDRequest"
+  ClientHeight = 275
+  ClientWidth = 436
+  OldCreateOrder = true
+  PixelsPerInch = 96
+  TextHeight = 13
+  object btnNo: TGDIButton
+    Left = 160
+    Top = 208
+    Width = 100
+    Height = 50
+    Cancel = false
+    Default = false
+    ModalResult = 7
+    Definition = "gdfBtnNo"
+    MouseCheckDelay = 60
+    TabOrder = 3
+    Caption = "btnNo"
+  end
+  object btnIgnore: TGDIButton
+    Left = 240
+    Top = 208
+    Width = 100
+    Height = 50
+    Cancel = false
+    Default = false
+    ModalResult = 5
+    Definition = "gdfBtnIgnore"
+    MouseCheckDelay = 60
+    TabOrder = 0
+    Caption = "btnIgnore"
+  end
+  object btnReqHelp: TGDIButton
+    TabOrder = 2
+  end
+  object btnReqCancel: TGDIButton
+    TabOrder = 4
+  end
+  object btnReqOk: TGDIButton
+    TabOrder = 1
+  end
+  object gdfBtnIgnore: TGDIButtonDefinition
+    UpLink.Storage = "SL_EXTERNAL"
+    UpLink.GraphicName = ""
+    DownLink.Storage = "SL_EXTERNAL"
+    DownLink.GraphicName = ""
+    FocusedLink.Storage = "SL_EXTERNAL"
+    FocusedLink.GraphicName = ""
+    HoveredLink.Storage = "SL_EXTERNAL"
+    HoveredLink.GraphicName = ""
+    DisabledLink.Storage = "SL_EXTERNAL"
+    DisabledLink.GraphicName = ""
+    HintLink.Storage = "SL_EXTERNAL"
+    HintLink.GraphicName = ""
+    ClickRegionLink.Storage = "SL_EXTERNAL"
+    ClickRegionLink.GraphicName = ""
+    Width = 100
+    Height = 50
+    CaptionRect.Left = 0
+    CaptionRect.Top = 0
+    CaptionRect.Right = 0
+    CaptionRect.Bottom = 0
+    WordWrap = false
+    Layout = "tlCenter"
+    Alignment = "taCenter"
+    Font.Charset = "DEFAULT_CHARSET"
+    Font.Color = "clWindowText"
+    Font.Height = -11
+    Font.Name = "MS Sans Serif"
+    Font.Style = []
+    HintFont.Charset = "DEFAULT_CHARSET"
+    HintFont.Color = "clWindowText"
+    HintFont.Height = -11
+    HintFont.Name = "MS Sans Serif"
+    HintFont.Style = []
+    Transparent = false
+    TransparentMode = "tmAuto"
+    TransparentColor = "clBlack"
+    Translucent = true
+    TranslucencyFactor = 255
+    Left = 296
+    Top = 128
+  end
+  object gdfBtnNo: TGDIButtonDefinition
+    UpLink.Storage = "SL_EXTERNAL"
+    UpLink.GraphicName = ""
+    DownLink.Storage = "SL_EXTERNAL"
+    DownLink.GraphicName = ""
+    FocusedLink.Storage = "SL_EXTERNAL"
+    FocusedLink.GraphicName = ""
+    HoveredLink.Storage = "SL_EXTERNAL"
+    HoveredLink.GraphicName = ""
+    DisabledLink.Storage = "SL_EXTERNAL"
+    DisabledLink.GraphicName = ""
+    HintLink.Storage = "SL_EXTERNAL"
+    HintLink.GraphicName = ""
+    ClickRegionLink.Storage = "SL_EXTERNAL"
+    ClickRegionLink.GraphicName = ""
+    Width = 100
+    Height = 50
+    CaptionRect.Left = 0
+    CaptionRect.Top = 0
+    CaptionRect.Right = 0
+    CaptionRect.Bottom = 0
+    WordWrap = false
+    Layout = "tlCenter"
+    Alignment = "taCenter"
+    Font.Charset = "DEFAULT_CHARSET"
+    Font.Color = "clWindowText"
+    Font.Height = -11
+    Font.Name = "MS Sans Serif"
+    Font.Style = []
+    HintFont.Charset = "DEFAULT_CHARSET"
+    HintFont.Color = "clWindowText"
+    HintFont.Height = -11
+    HintFont.Name = "MS Sans Serif"
+    HintFont.Style = []
+    Transparent = false
+    TransparentMode = "tmAuto"
+    TransparentColor = "clBlack"
+    Translucent = true
+    TranslucencyFactor = 255
+    Left = 176
+    Top = 128
+  end
+  object gdfBtnYes: TGDIButtonDefinition
+    UpLink.Storage = "SL_EXTERNAL"
+    UpLink.GraphicName = ""
+    DownLink.Storage = "SL_EXTERNAL"
+    DownLink.GraphicName = ""
+    FocusedLink.Storage = "SL_EXTERNAL"
+    FocusedLink.GraphicName = ""
+    HoveredLink.Storage = "SL_EXTERNAL"
+    HoveredLink.GraphicName = ""
+    DisabledLink.Storage = "SL_EXTERNAL"
+    DisabledLink.GraphicName = ""
+    HintLink.Storage = "SL_EXTERNAL"
+    HintLink.GraphicName = ""
+    ClickRegionLink.Storage = "SL_EXTERNAL"
+    ClickRegionLink.GraphicName = ""
+    Width = 100
+    Height = 50
+    CaptionRect.Left = 0
+    CaptionRect.Top = 0
+    CaptionRect.Right = 0
+    CaptionRect.Bottom = 0
+    WordWrap = false
+    Layout = "tlCenter"
+    Alignment = "taCenter"
+    Font.Charset = "DEFAULT_CHARSET"
+    Font.Color = "clWindowText"
+    Font.Height = -11
+    Font.Name = "MS Sans Serif"
+    Font.Style = []
+    HintFont.Charset = "DEFAULT_CHARSET"
+    HintFont.Color = "clWindowText"
+    HintFont.Height = -11
+    HintFont.Name = "MS Sans Serif"
+    HintFont.Style = []
+    Transparent = false
+    TransparentMode = "tmAuto"
+    TransparentColor = "clBlack"
+    Translucent = true
+    TranslucencyFactor = 255
+    Left = 64
+    Top = 128
+  end
+end

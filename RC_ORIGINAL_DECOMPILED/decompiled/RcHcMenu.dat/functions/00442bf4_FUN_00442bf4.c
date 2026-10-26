@@ -1,0 +1,25 @@
+/*
+ * FUN_00442bf4 at 00442bf4
+ * undefined __register FUN_00442bf4(void)
+ * Address ranges: 00442bf4-00442c3c
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ */
+
+void FUN_00442bf4(void)
+
+{
+  BOOL BVar1;
+  int in_stack_00000004;
+  undefined4 local_158 [38];
+  undefined4 local_c0;
+  undefined4 local_bc;
+  
+  local_158[0] = 0x154;
+  BVar1 = SystemParametersInfoA(0x29,0,local_158,0);
+  if (BVar1 != 0) {
+    **(undefined4 **)(in_stack_00000004 + -4) = local_c0;
+    **(undefined4 **)(in_stack_00000004 + 8) = local_bc;
+  }
+  return;
+}
+

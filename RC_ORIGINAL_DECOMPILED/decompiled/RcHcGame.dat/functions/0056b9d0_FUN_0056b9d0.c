@@ -1,0 +1,138 @@
+/*
+ * FUN_0056b9d0 at 0056b9d0
+ * undefined FUN_0056b9d0(void)
+ * Address ranges: 0056b9d0-0056bce4
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ */
+
+undefined4 * FUN_0056b9d0(undefined4 *param_1,int param_2)
+
+{
+  char cVar1;
+  int iVar2;
+  int iVar3;
+  code *pcVar4;
+  int *piVar5;
+  uint uVar6;
+  char *pcVar7;
+  undefined1 local_25;
+  int local_24;
+  undefined4 local_20;
+  undefined1 local_1c [16];
+  void *pvStack_c;
+  undefined1 *puStack_8;
+  int local_4;
+  
+  local_4 = 0xffffffff;
+  puStack_8 = &LAB_006408ff;
+  pvStack_c = ExceptionList;
+  local_20 = 0;
+  local_24 = 0;
+  ExceptionList = &pvStack_c;
+  FUN_005844b0();
+  local_4 = 1;
+  iVar3 = DAT_006b915c;
+  if (DAT_006b915c == 0) {
+    iVar3 = FUN_004bc480();
+  }
+  if (*(int *)(iVar3 + 0x3a4) == 0) {
+    FUN_00409810(&DAT_006b3f70,&local_25);
+    local_4._0_1_ = 2;
+    pcVar4 = (code *)FUN_005a07f0(s_m_Game_0068e584,s___AdamSource_AdamApplication_h_0068e58c,0x130,
+                                  local_1c);
+    (*pcVar4)();
+    local_4 = CONCAT31(local_4._1_3_,1);
+    FUN_004040a0(1);
+  }
+  iVar2 = param_2;
+  iVar3 = *(int *)(param_2 + 4);
+  if (((iVar3 == 0) || ((*(int *)(param_2 + 8) - iVar3) / 0x18 != 1)) || (*(int *)(iVar3 + 8) != 2))
+  {
+    local_1c[0] = (undefined1)param_2;
+    FUN_004040a0(0);
+    uVar6 = 0xffffffff;
+    pcVar7 = &DAT_006b3f70;
+    do {
+      if (uVar6 == 0) break;
+      uVar6 = uVar6 - 1;
+      cVar1 = *pcVar7;
+      pcVar7 = pcVar7 + 1;
+    } while (cVar1 != '\0');
+    FUN_004040f0(&DAT_006b3f70,~uVar6 - 1);
+    local_4._0_1_ = 3;
+    pcVar4 = (code *)FUN_005a07f0(s__args_size______1______args_0__I_006a4340,
+                                  s_D__Work_RCHorror_AdamSource_Adam_006a4280,0x163,local_1c);
+    (*pcVar4)();
+    local_4 = CONCAT31(local_4._1_3_,1);
+    FUN_004040a0(1);
+  }
+  piVar5 = (int *)FUN_00453d20(&param_2);
+  local_4._0_1_ = 4;
+  if (local_24 != *piVar5) {
+    if ((local_24 != 0) &&
+       (iVar3 = *(int *)(local_24 + 0x14) + -1, *(int *)(local_24 + 0x14) = iVar3, iVar3 == 0)) {
+      FUN_005abfc0(0);
+    }
+    local_24 = *piVar5;
+    FUN_005844b0();
+  }
+  local_4._0_1_ = 1;
+  FUN_0057d310();
+  if ((local_24 != 0) && (iVar3 = *(int *)(local_24 + 0x360), iVar3 != 0)) {
+    iVar2 = *(int *)(iVar2 + 4);
+    if (*(int *)(iVar2 + 8) != 2) {
+      FUN_00409810(&DAT_006b3f70,&param_2);
+      local_4._0_1_ = 6;
+      pcVar4 = (code *)FUN_005a07f0(s_IsInt___0069e134,s___Libs_daviscript_Include_Davi_S_00692284,
+                                    0x42,local_1c);
+      (*pcVar4)();
+      local_4._0_1_ = 1;
+      FUN_004040a0(1);
+    }
+    if (*(int *)(iVar2 + 0x10) == 0) {
+      if (*(int *)(iVar3 + 0x1f8) == 0) {
+        local_1c[0] = (undefined1)param_2;
+        FUN_004040a0(0);
+        uVar6 = 0xffffffff;
+        pcVar7 = &DAT_006b3f70;
+        do {
+          if (uVar6 == 0) break;
+          uVar6 = uVar6 - 1;
+          cVar1 = *pcVar7;
+          pcVar7 = pcVar7 + 1;
+        } while (cVar1 != '\0');
+        FUN_004040f0(&DAT_006b3f70,~uVar6 - 1);
+        local_4._0_1_ = 8;
+        pcVar4 = (code *)FUN_005a07f0(s_m_Communicator____0_006934bc,
+                                      s_D__Work_RCHorror_AdamSource_Adam_0069888c,0x167,local_1c);
+        (*pcVar4)();
+        local_4._0_1_ = 1;
+        FUN_004040a0(1);
+      }
+      *(undefined1 *)(*(int *)(iVar3 + 0x1f8) + 0x170) = 0;
+    }
+    else {
+      if (*(int *)(iVar3 + 0x1f8) == 0) {
+        FUN_00409810(&DAT_006b3f70,&param_2);
+        local_4._0_1_ = 7;
+        pcVar4 = (code *)FUN_005a07f0(s_m_Communicator____0_006934bc,
+                                      s_D__Work_RCHorror_AdamSource_Adam_0069888c,0x167,local_1c);
+        (*pcVar4)();
+        local_4._0_1_ = 1;
+        FUN_004040a0(1);
+      }
+      *(undefined1 *)(*(int *)(iVar3 + 0x1f8) + 0x170) = 1;
+    }
+  }
+  local_20 = 1;
+  *param_1 = &PTR_FUN_0064f00c;
+  param_1[2] = 0;
+  local_4 = (uint)local_4._1_3_ << 8;
+  if ((local_24 != 0) &&
+     (iVar3 = *(int *)(local_24 + 0x14) + -1, *(int *)(local_24 + 0x14) = iVar3, iVar3 == 0)) {
+    FUN_005abfc0(0);
+  }
+  ExceptionList = pvStack_c;
+  return param_1;
+}
+

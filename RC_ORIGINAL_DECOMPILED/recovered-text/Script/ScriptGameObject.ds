@@ -1,0 +1,157 @@
+// Script header file
+
+Class CAdamScriptGameObject
+
+	// The procedures that can be called from script
+	Procedure AddCode( String code ) ;
+	Procedure AddDefaultCommand( String command, String argument, Int talkScheme ) ;
+	Procedure AddFrequency( Double freq ) ;
+	Procedure AddMissionCommand( String command, String argument, Int talkScheme ) ;
+	Procedure Close() ;
+	Procedure Destroy() ;
+	Procedure Disable() ;
+	Procedure DisableShadow() ;
+	Procedure Drop() ;
+	Procedure Enable() ;
+	Procedure EnableShadow() ;
+	Procedure Fire( Double nr ) ;
+	Function CAdamScriptGameObject GetOne() ;
+	Procedure Hide() ;
+	Procedure Lock() ;
+	Procedure MoveTo( Double targetTime ) ;
+	Procedure SetTo( Double targetTime ) ;
+	Procedure MultiplyMotionSpeed( Double nr ) ;
+	Procedure MultiplyVolume( Double nr ) ;
+	Procedure Open() ;
+	Procedure PlayAction() ;
+	Procedure PlayAmbient() ;
+	Procedure PlayCareful() ;
+	Procedure PlayEerie() ;
+	Procedure PlayShock() ;
+	Procedure PlayShockAction() ;
+	Procedure PlaySpecial() ;
+	Procedure PlayVictory() ;
+	Procedure PlayVictoryAmbient() ;
+	Procedure PlayVictoryCareful() ;
+	Procedure PlayVictoryEerie() ;
+	Procedure PlayVictoryNone() ;
+	Procedure RemoveAllPlanetoids( Double fadetime ) ;
+	Procedure RemovePlanetoid( Double fadetime ) ;
+	Procedure ResetCode( String code ) ;
+	Procedure Reset() ;
+	Procedure RotateX( Double angle ) ;
+	Procedure RotateY( Double angle ) ;
+    Procedure RotateZ( Double angle ) ;
+	Procedure SetFollowDaviName( String daviname ) ;
+	Procedure SetFollowOffset( Double offsetX, Double offsetY, Double offsetZ ) ;
+	Procedure SetFriction( Double seconds ) ;
+	Procedure SetMotionSpeed( Double timefactor ) ;
+	Procedure SetRadius( Double radius ) ;
+	Procedure SetRadiusTime( Double time ) ;
+	Procedure Show() ;
+	Procedure StartMission() ;
+	Procedure StopPlaying() ;
+	Procedure switch() ;
+	Procedure SwitchOff() ;
+	Procedure SwitchOn() ;
+	Procedure Trigger() ;
+	Procedure Unlock() ;
+
+	Event AfterDestroyCommand() ;
+	Event AfterFlashCommand() ;
+	Event AfterSwitchOffCommand() ;
+	Event AfterSwitchOnCommand() ;
+	Event CommandOnEnter() ;
+	Event CommandOnLeave() ;
+	Event DoorAfterCloseCommand() ;
+	Event DoorAfterOpenCommand() ;
+	Event DoorBeforeCloseCommand() ;
+	Event DoorBeforeOpenCommand() ;
+	Event DoorIsLockedCommand() ;
+	Event MotionCommand( string a_Description, double a_Time ) ;
+	Event OnFlashCommand() ;
+	Event OnHitCommand( double a_Damage, int a_Weapon ) ;
+	Event OnInitCommand() ;
+	Event OnTouchCommand() ;
+	Event OnPlayerRespawnCommand() ;
+	Event PickupCommand() ;
+	Event RepeatCommand() ;
+	Event RepeatCommand2() ;
+	Event RepeatCommand3() ;
+	Event RotateCommands() ;
+	Event StartCommand() ;
+	Event StopCommand() ;
+	Event SwitchOffCommand() ;
+	Event SwitchOnCommand() ;
+
+End class
+
+
+// The portrait animation types.
+// CPAT_NONE is no animation (just the first frame)
+// CPAT_LOOPING is a looping animation
+// CPAT_ONCE goes through the animation sequence only once
+// CPAT_PINGPONG goes back and forth through the animation sequence
+Enum CPAT_NONE, CPAT_LOOPING, CPAT_ONCE, CPAT_PINGPONG ;
+
+
+// Extern RedCat procedures.
+Extern Procedure StartCutScene(Double a_Time);
+Extern Procedure StopCutScene (Double a_Time);
+Extern Procedure CutSceneSay  ( String a_Text ) ;
+Extern Procedure RcHide ( );
+Extern Procedure RcShow ( );
+Extern Procedure FreezeEnemies 	( );
+Extern Procedure UnFreezeEnemies 	( );
+Extern Procedure RcShowAtSpawnPoint	( string a_RespawnPointName, Int a_Angle );
+Extern Procedure RcSetSavePoint		( string a_RespawnPointName, Int a_Angle );
+Extern Procedure RcHintMotion		( Int a_Motion );
+Extern Procedure PlayWavSound		( String a_WavFileName );
+
+Extern Function Int RcHasAllPotions (Int a_Skill);
+Extern Function Int RcEnableSkill (Int a_Skill);
+Extern Function Int GetGameType ( );
+
+// Extern Mission procedures.
+Extern Procedure AddMission( Int a_MissionNr, String a_TextID, String a_Portrait, Int a_SoundNr ) ;
+Extern Procedure CompleteMission( Int a_MissionNr ) ;
+Extern Procedure ShowMission( Int a_MissionNr ) ;
+Extern Procedure ShowMissions( ) ;
+
+// Extern Communicator procedures.
+Extern Procedure CommunicatorEnable( Int a_Enable ) ;
+Extern Procedure CommunicatorSay( String a_TextID, String a_Portrait, Int a_SoundNr ) ;
+Extern Procedure Say( String a_Text ) ;
+Extern Procedure DebugMessage( String a_Message ) ;
+
+// Extern Communicator initialization procedures.
+Extern Procedure LoadCommPortrait( String a_Name, Int a_NrOfImages ) ;
+Extern Procedure LoadCommSounds( Int a_From, Int a_Till ) ;
+Extern Procedure SetCommPortraitAnim( String a_Name, Int a_IsStatic, Int a_AnimType, Double a_FrameTimeSeconds ) ;
+
+// Extern Player visibility procedure.
+Extern Procedure PlayerVisible( Int a_Visible ) ;
+
+// Extern "kill the player" procedure. >:O)
+Extern Procedure KillPlayer( ) ;
+
+// Extern Player respawn procedure
+Extern Procedure RespawnPlayer( string a_RespawnPointName );
+
+// Extern key item functions/procedures
+Extern Procedure GivePlayerKeyItem(    string a_KeyItemName );
+Extern Function  int PlayerHasKeyItem( string a_KeyItemName );
+
+// Extern Weapons enable/disable procedure
+Extern Procedure EnableWeapons( Int a_Enable );
+
+// Extern procedure takes all the player's weapon away
+Extern Procedure LooseAllWeapons( );
+
+// This procedure exists for the sole reason to bypass the "enum not used" warnings.
+// This procedure should not be called.
+procedure BypassEnumWarnings()
+	if 0 then
+		IntToDbl( CPAT_NONE + CPAT_LOOPING + CPAT_ONCE + CPAT_PINGPONG ) ;
+	End if
+End procedure

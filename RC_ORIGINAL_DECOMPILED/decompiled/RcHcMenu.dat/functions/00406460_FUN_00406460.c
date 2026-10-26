@@ -1,0 +1,34 @@
+/*
+ * FUN_00406460 at 00406460
+ * int * __register FUN_00406460(int * param_1, int param_2)
+ * Address ranges: 00406460-00406499
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ */
+
+int * FUN_00406460(int *param_1,int param_2)
+
+{
+  int *piVar1;
+  undefined4 *puVar2;
+  int iVar3;
+  VARIANTARG *pVVar4;
+  
+  pVVar4 = (VARIANTARG *)*param_1;
+  if (pVVar4 != (VARIANTARG *)0x0) {
+    *param_1 = 0;
+    LOCK();
+    piVar1 = (int *)((int)&pVVar4[-1].n1 + 8);
+    *piVar1 = *piVar1 + -1;
+    UNLOCK();
+    if (*piVar1 == 0) {
+      puVar2 = *(undefined4 **)(param_2 + 6 + (uint)*(byte *)(param_2 + 1));
+      if ((puVar2 != (undefined4 *)0x0) && (iVar3 = *(int *)((int)&pVVar4[-1].n1 + 0xc), iVar3 != 0)
+         ) {
+        pVVar4 = FUN_00404878(pVVar4,(char *)*puVar2,iVar3);
+      }
+      FUN_00402800((int)((int)&pVVar4[-1].n1 + 8));
+    }
+  }
+  return param_1;
+}
+

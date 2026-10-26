@@ -1,0 +1,90 @@
+MANDATORY FOR EVERY RELEASE: retain the full original decompilation.
+See docs/original-decompiled-publication.md. From the project root, before
+committing/tagging the release, run (replace VERSION with the release version):
+python3 tools/prepare-original-decompiled.py --version VERSION
+git add -f -- RC_ORIGINAL_DECOMPILED/
+Include that folder in the release source commit and push to BOTH remotes.
+Upload all three dist/original-decompiled/RC_ORIGINAL_DECOMPILED-VERSION.*
+files as release assets on GitHub and GitLab, and verify their hashes.
+Do not omit originals, saved Ghidra projects, research logs or any other files.
+
+The commands below are historical 0.9.9 examples: substitute the current
+project location, version and release notes. Current project location:
+/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/
+
+Create builds for all platforms using docs/building.md then:
+cd /mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/dist
+zip -r RedCat-Spookkasteel-0.9.9-linux-x64.zip linux-unpacked/
+zip -r RedCat-Spookkasteel-0.9.9-linux-arm64.zip linux-arm64-unpacked/
+zip -r RedCat-Spookkasteel-0.9.9-windows-arm64.zip win-arm64-unpacked/
+zip -r RedCat-Spookkasteel-0.9.9-windows-x64.zip win-unpacked/
+zip -r RedCat-Spookkasteel-0.9.9-mac-arm64.zip mac-arm64/
+zip -r RedCat-Spookkasteel-0.9.9-mac-x64.zip mac/
+
+Generate checksums:
+sha256sum \
+RedCat-Spookkasteel-0.9.9-linux-x64.zip \
+RedCat-Spookkasteel-0.9.9-linux-arm64.zip \
+RedCat-Spookkasteel-0.9.9-windows-arm64.zip \
+RedCat-Spookkasteel-0.9.9-windows-x64.zip \
+RedCat-Spookkasteel-0.9.9-mac-arm64.zip \
+RedCat-Spookkasteel-0.9.9-mac-x64.zip \
+> SHA256SUMS.txt
+
+New release on GitHUb
+
+cd /mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/
+
+git status
+git remote -v
+git fetch origin
+
+git add -A -- \
+.gitignore \
+README.md \
+index.html \
+package.json \
+package-lock.json \
+Start-RedCat.sh \
+Start-RedCat.bat \
+src/ electron/ tools/ tests/ docs/ assets/ data/ artifacts/
+
+Check exactly what will be uploaded:
+git status
+git diff --cached --stat
+git diff --cached
+
+Then commit it:
+git commit -m "Release 0.9.9"
+
+Sync against GitHub before pushing:
+git pull (if there were any changes on GitHub only)
+git rebase origin/main
+
+Then push:
+git push -u origin main
+
+Create an annotated tag for the commit you just pushed:
+git tag -a v0.9.9 -m "RedCat Spookkasteel 0.9.9"
+git push origin v0.9.9
+
+Then create the release and upload both binaries plus the checksums:
+gh release create v0.9.9 \
+  dist/RedCat-Spookkasteel-0.9.9-windows-x64.zip \
+  dist/RedCat-Spookkasteel-0.9.9-linux-x64.zip \
+  dist/RedCat-Spookkasteel-0.9.9-linux-arm64.zip \
+  dist/RedCat-Spookkasteel-0.9.9-windows-arm64.zip \
+  dist/RedCat-Spookkasteel-0.9.9-mac-arm64.zip \
+  dist/RedCat-Spookkasteel-0.9.9-mac-x64.zip \
+  dist/SHA256SUMS.txt \
+  --repo NostalgiaRealm/RedCat-Spookkasteel \
+  --title "RedCat Spookkasteel 0.9.9" \
+  --generate-notes \
+  --notes-file ./RELEASE_NOTES
+
+Release on Gitlab
+
+git fetch gitlab
+git push gitlab main
+git push gitlab --tags
+glab release create v0.9.9 \

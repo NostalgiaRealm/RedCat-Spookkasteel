@@ -1,0 +1,70 @@
+/*
+ * FUN_005669d0 at 005669d0
+ * undefined FUN_005669d0(void)
+ * Address ranges: 005669d0-00566ac1
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ */
+
+void FUN_005669d0(int param_1)
+
+{
+  char cVar1;
+  code *pcVar2;
+  int iVar3;
+  uint uVar4;
+  char *pcVar5;
+  undefined1 local_1c [4];
+  int local_18;
+  undefined4 local_14;
+  undefined4 local_10;
+  void *pvStack_c;
+  undefined1 *puStack_8;
+  int local_4;
+  
+  puStack_8 = &LAB_006400c0;
+  pvStack_c = ExceptionList;
+  local_4 = 0;
+  ExceptionList = &pvStack_c;
+  if (param_1 == 0) {
+    local_1c[0] = 0;
+    uVar4 = 0xffffffff;
+    pcVar5 = &DAT_006b3f70;
+    do {
+      if (uVar4 == 0) break;
+      uVar4 = uVar4 - 1;
+      cVar1 = *pcVar5;
+      pcVar5 = pcVar5 + 1;
+    } while (cVar1 != '\0');
+    local_18 = 0;
+    local_14 = 0;
+    local_10 = 0;
+    ExceptionList = &pvStack_c;
+    FUN_004040f0(&DAT_006b3f70,~uVar4 - 1);
+    local_4._0_1_ = 1;
+    pcVar2 = (code *)FUN_005a07f0(s_m_Pointer_0068d62c,s___AdamSource_DaviRC_h_0068d638,0xb6,
+                                  local_1c);
+    (*pcVar2)();
+    local_4 = (uint)local_4._1_3_ << 8;
+    if (local_18 != 0) {
+      cVar1 = *(char *)(local_18 + -1);
+      if ((cVar1 == '\0') || (cVar1 == -1)) {
+        FUN_005fe5f0((char *)(local_18 + -1));
+      }
+      else {
+        *(char *)(local_18 + -1) = cVar1 + -1;
+      }
+    }
+    local_18 = 0;
+    local_14 = 0;
+    local_10 = 0;
+  }
+  FUN_004f5750(&DAT_006c8de8);
+  local_4 = 0xffffffff;
+  if ((param_1 != 0) &&
+     (iVar3 = *(int *)(param_1 + 0x14) + -1, *(int *)(param_1 + 0x14) = iVar3, iVar3 == 0)) {
+    FUN_005abfc0(0);
+  }
+  ExceptionList = pvStack_c;
+  return;
+}
+

@@ -1,0 +1,214 @@
+Picked up JAVA_TOOL_OPTIONS: -Djava.io.tmpdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.tempdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.cachedir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work"
+Picked up JAVA_TOOL_OPTIONS: -Djava.io.tmpdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.tempdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.cachedir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work"
+Picked up JAVA_TOOL_OPTIONS: -Djava.io.tmpdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.tempdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.cachedir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work"
+Picked up JAVA_TOOL_OPTIONS: -Djava.io.tmpdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.tempdir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work" -Dapplication.cachedir="/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/temp_work"
+openjdk version "25.0.4.1" 2026-08-18
+OpenJDK Runtime Environment (Red_Hat-25.0.4.1.1-1) (build 25.0.4.1+1)
+OpenJDK 64-Bit Server VM (Red_Hat-25.0.4.1.1-1) (build 25.0.4.1+1, mixed mode)
+INFO  Using log config file: jar:file:/home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Framework/Generic/lib/Generic.jar!/generic.log4j.xml (LoggingInitialization)  
+INFO  Using log file: /home/rick/.config/ghidra/ghidra_12.1.4_PUBLIC/application.log (LoggingInitialization)  
+INFO  Loading user preferences: /home/rick/.config/ghidra/ghidra_12.1.4_PUBLIC/preferences (Preferences)  
+INFO  Searching for classes... (ClassSearcher)  
+INFO  Class search complete (759 ms) (ClassSearcher)  
+INFO  Initializing SSL Context (DefaultSSLContextInitializer)  
+INFO  Initializing Random Number Generator... (SecureRandomFactory)  
+INFO  Random Number Generator initialization complete: NativePRNGNonBlocking (SecureRandomFactory)  
+INFO  Trust manager disabled, cacerts have not been set (DefaultTrustManagerFactory)  
+INFO  Headless startup complete (1506 ms) (AnalyzeHeadless)  
+INFO  Class searcher loaded 59 extension points (20 false positives) (ClassSearcher)  
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::staticFieldOffset has been called by org.apache.felix.framework.util.SecureAction (file:/home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/Base/lib/org.apache.felix.framework-7.0.5.jar)
+WARNING: Please consider reporting this to the maintainers of class org.apache.felix.framework.util.SecureAction
+WARNING: sun.misc.Unsafe::staticFieldOffset will be removed in a future release
+INFO  HEADLESS Script Paths:
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/SwiftDemangler/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/Base/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/WildcardAssembler/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/DecompilerDependent/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/VersionTracking/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/GnuDemangler/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/DATA/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/JVM/ghidra_scripts
+    /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/8051/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/SystemEmulation/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/Atmel/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Debug/Debugger-rmi-trace/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/FileFormats/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/MicrosoftCodeAnalyzer/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/PyGhidra/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/BSim/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Debug/Debugger/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/PDB/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/PIC/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/Decompiler/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/BytePatterns/ghidra_scripts
+    /home/rick/Documents/dgVoodoo2_87_5_Decompiled/tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/FunctionID/ghidra_scripts (HeadlessAnalyzer)  
+INFO  HEADLESS: execution starts (HeadlessAnalyzer)  
+INFO  Opening existing project: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/analysis-projects/D3DDrvRGB.dll/analysis (HeadlessAnalyzer)  
+INFO  Opening project: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/analysis-projects/D3DDrvRGB.dll/analysis (HeadlessProject)  
+INFO  REPORT: Processing project file: /D3DDrvRGB.dll (HeadlessAnalyzer)  
+INFO  REPORT: Execute script: RepairDecompilerFailure.java '10008989'  (HeadlessAnalyzer)  
+INFO  SCRIPT: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/scripts/RepairDecompilerFailure.java (HeadlessAnalyzer)  
+INFO  RepairDecompilerFailure.java> REPAIR method=0 success=true message= (GhidraScript)  
+INFO  RepairDecompilerFailure.java> 
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+undefined1  [10] __thiscall
+FUN_10008989(void *param_1,int param_2,uint param_3,int param_4,uint param_5_00)
+
+{
+  uint uVar1;
+  uint uVar2;
+  uint uVar3;
+  char extraout_CL;
+  byte extraout_CL_00;
+  char extraout_CL_01;
+  uint extraout_ECX;
+  int extraout_ECX_00;
+  int iVar4;
+  int extraout_ECX_01;
+  bool bVar5;
+  short in_FPUControlWord;
+  float10 extraout_ST0;
+  undefined1 auVar6 [10];
+  float10 extraout_ST0_00;
+  float10 extraout_ST0_01;
+  float10 fVar7;
+  float10 extraout_ST1;
+  float10 extraout_ST1_00;
+  float10 extraout_ST1_01;
+  float10 fVar8;
+  unkbyte10 in_ST7;
+  undefined4 unaff_retaddr;
+  byte bStack0000000b;
+  undefined2 param_5;
+  byte bStack00000012;
+  undefined1 uStack00000013;
+  double *pdVar9;
+  double local_78 [2];
+  undefined4 uStack_64;
+  undefined1 auStack_e [10];
+  
+  uVar1 = _param_5;
+  uStack00000013 = (undefined1)(_param_5 >> 0x18);
+  bStack00000012 = (byte)(uVar1 >> 0x10);
+  param_5 = (undefined2)uVar1;
+  uVar2 = __fload_withFB(param_1,(int)&stack0x0000000c);
+  uVar3 = uVar2;
+  if (in_FPUControlWord != 0x27f) {
+    auStack_e._6_4_ = 0x100089a6;
+    uVar2 = FUN_1000ad45();
+    uVar3 = extraout_ECX;
+  }
+  bVar5 = (uVar3 & 0x7ff00000) == 0x7ff00000;
+  if (bVar5) {
+    if ((uVar2 & 0xfffff) == 0 && param_4 == 0) {
+      auStack_e._6_4_ = 0x10008a6f;
+      __fload_withFB(0,(int)&stack0x00000004);
+      iVar4 = extraout_ECX_01;
+      fVar7 = extraout_ST0_01;
+      fVar8 = extraout_ST1_01;
+      goto LAB_10008a6f;
+    }
+    auStack_e._6_4_ = 0x10008a32;
+    __fload_withFB(0,(int)&stack0x00000004);
+    fVar7 = extraout_ST0_00;
+    fVar8 = extraout_ST1_00;
+    if ((bStack00000012 & 8) == 0) {
+      iVar4 = extraout_ECX_00 + 1;
+      goto LAB_10008a6f;
+    }
+LAB_10008a3c:
+    auVar6 = (undefined1  [10])(fVar7 + fVar8);
+  }
+  else {
+    auStack_e._6_4_ = 0x100089c1;
+    uVar3 = __fload_withFB(uVar3 & 0x7ff00000,(int)&stack0x00000004);
+    if (!bVar5) {
+      if (((uVar3 & 0x7ff00000) != 0) || ((param_3 & 0xfffff) != 0 || param_2 != 0)) {
+        fVar7 = extraout_ST0;
+        if ((param_3 & 0x80000000) != 0) {
+          auStack_e._6_4_ = 0x10008b47;
+          fVar7 = (float10)FUN_10008b65();
+          fVar7 = -fVar7;
+          auVar6 = _DAT_10018ff0;
+          if (extraout_CL_01 == '\0') goto LAB_10008a0a;
+        }
+        log2(fVar7);
+        auStack_e._6_4_ = 0x100089e6;
+        auVar6 = FUN_1000ad30();
+        if (extraout_CL == '\x01') {
+          auVar6 = (undefined1  [10])-(float10)auVar6;
+        }
+        if (DAT_100ec134 != 0) {
+          return auVar6;
+        }
+        auVar6 = (undefined1  [10])
+                 FUN_1000ae19(&DAT_10018cd8,0x1d,unaff_retaddr,param_2,param_3,param_4,
+                              CONCAT13(uStack00000013,CONCAT12(bStack00000012,param_5)));
+        return auVar6;
+      }
+      if ((CONCAT13(uStack00000013,CONCAT12(bStack00000012,param_5)) & 0x7ff00000) == 0) {
+        if ((CONCAT12(bStack00000012,param_5) & 0xfffff) != 0 || param_4 != 0) {
+          auVar6 = (undefined1  [10])FUN_1000adce();
+          return auVar6;
+        }
+        auVar6 = (undefined1  [10])FUN_1000adce();
+        return auVar6;
+      }
+      auStack_e._6_4_ = 0x10008aed;
+      FUN_10008b65();
+      if ((uVar1 & 0x80000000) == 0) {
+        if ((bStack0000000b >> 7 & extraout_CL_00) == 0) {
+          return (undefined1  [10])(float10)0;
+        }
+        auVar6 = (undefined1  [10])FUN_1000adce();
+        return auVar6;
+      }
+      auVar6 = _DAT_10018f90;
+      if ((bStack0000000b >> 7 & extraout_CL_00) != 0) {
+        auVar6 = (undefined1  [10])-(float10)_DAT_10018f90;
+      }
+      goto LAB_10008a0a;
+    }
+    iVar4 = 0;
+    fVar7 = extraout_ST0;
+    fVar8 = extraout_ST1;
+LAB_10008a6f:
+    if (((param_3 & 0x7ff00000) == 0x7ff00000) && ((param_3 & 0xfffff) != 0 || param_2 != 0)) {
+      if ((param_3 & 0x80000) != 0) goto LAB_10008a3c;
+    }
+    else if (iVar4 == 0) {
+      pdVar9 = local_78;
+      uStack_64 = 0x10008a9d;
+      auStack_e = (undefined1  [10])in_ST7;
+      iVar4 = FUN_1000aebc(SUB84((double)fVar7,0),(int)((ulonglong)(double)fVar7 >> 0x20),
+                           (double)fVar8,local_78);
+      auVar6 = (undefined1  [10])(float10)*pdVar9;
+      if (iVar4 == 0) {
+        return (undefined1  [10])(float10)*pdVar9;
+      }
+      goto LAB_10008a0a;
+    }
+    auVar6 = (undefined1  [10])(fVar7 + fVar8);
+  }
+LAB_10008a0a:
+  if (DAT_100ec134 != 0) {
+    return auVar6;
+  }
+  auStack_e._6_4_ = 0x10008a27;
+  auVar6 = (undefined1  [10])
+           FUN_1000acd0(&DAT_10018cd8,0x1d,in_FPUControlWord,unaff_retaddr,param_2,param_3,param_4,
+                        CONCAT13(uStack00000013,CONCAT12(bStack00000012,param_5)));
+  return auVar6;
+}
+
+ (GhidraScript)  
+INFO  REPORT: Execute script: ExportAll.java '/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/decompiled/D3DDrvRGB.dll'  (HeadlessAnalyzer)  
+INFO  SCRIPT: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/scripts/ExportAll.java (HeadlessAnalyzer)  
+INFO  ExportAll.java> Exported 100 functions; decompiled=100, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 200 functions; decompiled=200, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> Exported 300 functions; decompiled=300, fallback=0 (GhidraScript)  
+INFO  ExportAll.java> EXPORT COMPLETE: functions=372 decompiled=372 fallback=0 output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RC_ORIGINAL_DECOMPILED/decompiled/D3DDrvRGB.dll (GhidraScript)  
+INFO  REPORT: Save succeeded for processed file: /D3DDrvRGB.dll (HeadlessAnalyzer)  

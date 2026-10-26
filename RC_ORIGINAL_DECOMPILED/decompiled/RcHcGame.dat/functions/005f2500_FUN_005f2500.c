@@ -1,0 +1,46 @@
+/*
+ * FUN_005f2500 at 005f2500
+ * undefined FUN_005f2500(void)
+ * Address ranges: 005f2500-005f25c1
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ */
+
+undefined4 * __fastcall FUN_005f2500(int param_1)
+
+{
+  undefined4 *puVar1;
+  void *local_c;
+  undefined1 *puStack_8;
+  undefined4 local_4;
+  
+  local_4 = 0xffffffff;
+  puStack_8 = &LAB_00647c4b;
+  local_c = ExceptionList;
+  ExceptionList = &local_c;
+  puVar1 = operator_new(0x38);
+  local_4 = 0;
+  if (puVar1 != (undefined4 *)0x0) {
+    puVar1[1] = *(undefined4 *)(param_1 + 4);
+    puVar1[2] = *(undefined4 *)(param_1 + 8);
+    *(undefined1 *)(puVar1 + 3) = *(undefined1 *)(param_1 + 0xc);
+    puVar1[4] = 0;
+    puVar1[5] = 0;
+    puVar1[6] = 0;
+    FUN_0040cc00((undefined1 *)(param_1 + 0xc),0,0xffffffff);
+    puVar1[7] = *(undefined4 *)(param_1 + 0x1c);
+    puVar1[8] = *(undefined4 *)(param_1 + 0x20);
+    *(undefined2 *)(puVar1 + 9) = *(undefined2 *)(param_1 + 0x24);
+    *(undefined1 *)(puVar1 + 10) = 0;
+    *(undefined1 *)((int)puVar1 + 0x29) = 0;
+    *puVar1 = &PTR_FUN_00650f54;
+    puVar1[0xb] = *(undefined4 *)(param_1 + 0x2c);
+    puVar1[0xc] = *(undefined4 *)(param_1 + 0x30);
+    *(undefined1 *)(puVar1 + 0xd) = *(undefined1 *)(param_1 + 0x34);
+    *puVar1 = &PTR_FUN_00650efc;
+    ExceptionList = local_c;
+    return puVar1;
+  }
+  ExceptionList = local_c;
+  return (undefined4 *)0x0;
+}
+

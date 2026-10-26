@@ -1,0 +1,1738 @@
+// Complete address-preserving Davi-Script v27 listing.
+// Recovered representation, not the original high-level source.
+// Stack/cast/operator IDs remain explicit; JSON IR is the lossless authority.
+// Input lvl00a.dso SHA256 467e9d49f12dfb282eb3e490a6592079575cfa4b435113ff35e05a49572a25f3
+
+class void CAdamScriptGameObject; // id=42:0 bytes=0xc..0x2838
+method void AddCode(string code, object @self); // id=42:0/3c:0 bytes=0x2e..0x5c
+parameter string code; // id=42:0/3c:0/35:0 bytes=0x3e..0x4b
+parameter object @self; // id=42:0/3c:0/35:1 bytes=0x4b..0x5c
+method void AddDefaultCommand(string command, string argument, int talkScheme, object @self); // id=42:0/3c:1 bytes=0x5c..0xbb
+parameter string command; // id=42:0/3c:1/35:0 bytes=0x76..0x86
+parameter string argument; // id=42:0/3c:1/35:1 bytes=0x86..0x97
+parameter int talkScheme; // id=42:0/3c:1/35:2 bytes=0x97..0xaa
+parameter object @self; // id=42:0/3c:1/35:3 bytes=0xaa..0xbb
+method void AddFrequency(double freq, object @self); // id=42:0/3c:2 bytes=0xbb..0xee
+parameter double freq; // id=42:0/3c:2/35:0 bytes=0xd0..0xdd
+parameter object @self; // id=42:0/3c:2/35:1 bytes=0xdd..0xee
+method void AddMissionCommand(string command, string argument, int talkScheme, object @self); // id=42:0/3c:3 bytes=0xee..0x14d
+parameter string command; // id=42:0/3c:3/35:0 bytes=0x108..0x118
+parameter string argument; // id=42:0/3c:3/35:1 bytes=0x118..0x129
+parameter int talkScheme; // id=42:0/3c:3/35:2 bytes=0x129..0x13c
+parameter object @self; // id=42:0/3c:3/35:3 bytes=0x13c..0x14d
+method void Close(object @self); // id=42:0/3c:4 bytes=0x14d..0x16c
+parameter object @self; // id=42:0/3c:4/35:0 bytes=0x15b..0x16c
+method void Destroy(object @self); // id=42:0/3c:5 bytes=0x16c..0x18d
+parameter object @self; // id=42:0/3c:5/35:0 bytes=0x17c..0x18d
+method void Disable(object @self); // id=42:0/3c:6 bytes=0x18d..0x1ae
+parameter object @self; // id=42:0/3c:6/35:0 bytes=0x19d..0x1ae
+method void DisableShadow(object @self); // id=42:0/3c:7 bytes=0x1ae..0x1d5
+parameter object @self; // id=42:0/3c:7/35:0 bytes=0x1c4..0x1d5
+method void Drop(object @self); // id=42:0/3c:8 bytes=0x1d5..0x1f3
+parameter object @self; // id=42:0/3c:8/35:0 bytes=0x1e2..0x1f3
+method void Enable(object @self); // id=42:0/3c:9 bytes=0x1f3..0x213
+parameter object @self; // id=42:0/3c:9/35:0 bytes=0x202..0x213
+method void EnableShadow(object @self); // id=42:0/3c:10 bytes=0x213..0x239
+parameter object @self; // id=42:0/3c:10/35:0 bytes=0x228..0x239
+method void Fire(double nr, object @self); // id=42:0/3c:11 bytes=0x239..0x262
+parameter double nr; // id=42:0/3c:11/35:0 bytes=0x246..0x251
+parameter object @self; // id=42:0/3c:11/35:1 bytes=0x251..0x262
+method object GetOne(object @self); // id=42:0/3c:12 bytes=0x262..0x285
+parameter object @self; // id=42:0/3c:12/35:0 bytes=0x274..0x285
+method void Hide(object @self); // id=42:0/3c:13 bytes=0x285..0x2a3
+parameter object @self; // id=42:0/3c:13/35:0 bytes=0x292..0x2a3
+method void Lock(object @self); // id=42:0/3c:14 bytes=0x2a3..0x2c1
+parameter object @self; // id=42:0/3c:14/35:0 bytes=0x2b0..0x2c1
+method void MoveTo(double targetTime, object @self); // id=42:0/3c:15 bytes=0x2c1..0x2f4
+parameter double targetTime; // id=42:0/3c:15/35:0 bytes=0x2d0..0x2e3
+parameter object @self; // id=42:0/3c:15/35:1 bytes=0x2e3..0x2f4
+method void SetTo(double targetTime, object @self); // id=42:0/3c:16 bytes=0x2f4..0x326
+parameter double targetTime; // id=42:0/3c:16/35:0 bytes=0x302..0x315
+parameter object @self; // id=42:0/3c:16/35:1 bytes=0x315..0x326
+method void MultiplyMotionSpeed(double nr, object @self); // id=42:0/3c:17 bytes=0x326..0x35e
+parameter double nr; // id=42:0/3c:17/35:0 bytes=0x342..0x34d
+parameter object @self; // id=42:0/3c:17/35:1 bytes=0x34d..0x35e
+method void MultiplyVolume(double nr, object @self); // id=42:0/3c:18 bytes=0x35e..0x391
+parameter double nr; // id=42:0/3c:18/35:0 bytes=0x375..0x380
+parameter object @self; // id=42:0/3c:18/35:1 bytes=0x380..0x391
+method void Open(object @self); // id=42:0/3c:19 bytes=0x391..0x3af
+parameter object @self; // id=42:0/3c:19/35:0 bytes=0x39e..0x3af
+method void PlayAction(object @self); // id=42:0/3c:20 bytes=0x3af..0x3d3
+parameter object @self; // id=42:0/3c:20/35:0 bytes=0x3c2..0x3d3
+method void PlayAmbient(object @self); // id=42:0/3c:21 bytes=0x3d3..0x3f8
+parameter object @self; // id=42:0/3c:21/35:0 bytes=0x3e7..0x3f8
+method void PlayCareful(object @self); // id=42:0/3c:22 bytes=0x3f8..0x41d
+parameter object @self; // id=42:0/3c:22/35:0 bytes=0x40c..0x41d
+method void PlayEerie(object @self); // id=42:0/3c:23 bytes=0x41d..0x440
+parameter object @self; // id=42:0/3c:23/35:0 bytes=0x42f..0x440
+method void PlayShock(object @self); // id=42:0/3c:24 bytes=0x440..0x463
+parameter object @self; // id=42:0/3c:24/35:0 bytes=0x452..0x463
+method void PlayShockAction(object @self); // id=42:0/3c:25 bytes=0x463..0x48c
+parameter object @self; // id=42:0/3c:25/35:0 bytes=0x47b..0x48c
+method void PlaySpecial(object @self); // id=42:0/3c:26 bytes=0x48c..0x4b1
+parameter object @self; // id=42:0/3c:26/35:0 bytes=0x4a0..0x4b1
+method void PlayVictory(object @self); // id=42:0/3c:27 bytes=0x4b1..0x4d6
+parameter object @self; // id=42:0/3c:27/35:0 bytes=0x4c5..0x4d6
+method void PlayVictoryAmbient(object @self); // id=42:0/3c:28 bytes=0x4d6..0x502
+parameter object @self; // id=42:0/3c:28/35:0 bytes=0x4f1..0x502
+method void PlayVictoryCareful(object @self); // id=42:0/3c:29 bytes=0x502..0x52e
+parameter object @self; // id=42:0/3c:29/35:0 bytes=0x51d..0x52e
+method void PlayVictoryEerie(object @self); // id=42:0/3c:30 bytes=0x52e..0x558
+parameter object @self; // id=42:0/3c:30/35:0 bytes=0x547..0x558
+method void PlayVictoryNone(object @self); // id=42:0/3c:31 bytes=0x558..0x581
+parameter object @self; // id=42:0/3c:31/35:0 bytes=0x570..0x581
+method void RemoveAllPlanetoids(double fadetime, object @self); // id=42:0/3c:32 bytes=0x581..0x5bf
+parameter double fadetime; // id=42:0/3c:32/35:0 bytes=0x59d..0x5ae
+parameter object @self; // id=42:0/3c:32/35:1 bytes=0x5ae..0x5bf
+method void RemovePlanetoid(double fadetime, object @self); // id=42:0/3c:33 bytes=0x5bf..0x5f9
+parameter double fadetime; // id=42:0/3c:33/35:0 bytes=0x5d7..0x5e8
+parameter object @self; // id=42:0/3c:33/35:1 bytes=0x5e8..0x5f9
+method void ResetCode(string code, object @self); // id=42:0/3c:34 bytes=0x5f9..0x629
+parameter string code; // id=42:0/3c:34/35:0 bytes=0x60b..0x618
+parameter object @self; // id=42:0/3c:34/35:1 bytes=0x618..0x629
+method void Reset(object @self); // id=42:0/3c:35 bytes=0x629..0x648
+parameter object @self; // id=42:0/3c:35/35:0 bytes=0x637..0x648
+method void RotateX(double angle, object @self); // id=42:0/3c:36 bytes=0x648..0x677
+parameter double angle; // id=42:0/3c:36/35:0 bytes=0x658..0x666
+parameter object @self; // id=42:0/3c:36/35:1 bytes=0x666..0x677
+method void RotateY(double angle, object @self); // id=42:0/3c:37 bytes=0x677..0x6a6
+parameter double angle; // id=42:0/3c:37/35:0 bytes=0x687..0x695
+parameter object @self; // id=42:0/3c:37/35:1 bytes=0x695..0x6a6
+method void RotateZ(double angle, object @self); // id=42:0/3c:38 bytes=0x6a6..0x6d5
+parameter double angle; // id=42:0/3c:38/35:0 bytes=0x6b6..0x6c4
+parameter object @self; // id=42:0/3c:38/35:1 bytes=0x6c4..0x6d5
+method void SetFollowDaviName(string daviname, object @self); // id=42:0/3c:39 bytes=0x6d5..0x711
+parameter string daviname; // id=42:0/3c:39/35:0 bytes=0x6ef..0x700
+parameter object @self; // id=42:0/3c:39/35:1 bytes=0x700..0x711
+method void SetFollowOffset(double offsetX, double offsetY, double offsetZ, object @self); // id=42:0/3c:40 bytes=0x711..0x76a
+parameter double offsetX; // id=42:0/3c:40/35:0 bytes=0x729..0x739
+parameter double offsetY; // id=42:0/3c:40/35:1 bytes=0x739..0x749
+parameter double offsetZ; // id=42:0/3c:40/35:2 bytes=0x749..0x759
+parameter object @self; // id=42:0/3c:40/35:3 bytes=0x759..0x76a
+method void SetFriction(double seconds, object @self); // id=42:0/3c:41 bytes=0x76a..0x79f
+parameter double seconds; // id=42:0/3c:41/35:0 bytes=0x77e..0x78e
+parameter object @self; // id=42:0/3c:41/35:1 bytes=0x78e..0x79f
+method void SetMotionSpeed(double timefactor, object @self); // id=42:0/3c:42 bytes=0x79f..0x7da
+parameter double timefactor; // id=42:0/3c:42/35:0 bytes=0x7b6..0x7c9
+parameter object @self; // id=42:0/3c:42/35:1 bytes=0x7c9..0x7da
+method void SetRadius(double radius, object @self); // id=42:0/3c:43 bytes=0x7da..0x80c
+parameter double radius; // id=42:0/3c:43/35:0 bytes=0x7ec..0x7fb
+parameter object @self; // id=42:0/3c:43/35:1 bytes=0x7fb..0x80c
+method void SetRadiusTime(double time, object @self); // id=42:0/3c:44 bytes=0x80c..0x840
+parameter double time; // id=42:0/3c:44/35:0 bytes=0x822..0x82f
+parameter object @self; // id=42:0/3c:44/35:1 bytes=0x82f..0x840
+method void Show(object @self); // id=42:0/3c:45 bytes=0x840..0x85e
+parameter object @self; // id=42:0/3c:45/35:0 bytes=0x84d..0x85e
+method void StartMission(object @self); // id=42:0/3c:46 bytes=0x85e..0x884
+parameter object @self; // id=42:0/3c:46/35:0 bytes=0x873..0x884
+method void StopPlaying(object @self); // id=42:0/3c:47 bytes=0x884..0x8a9
+parameter object @self; // id=42:0/3c:47/35:0 bytes=0x898..0x8a9
+method void switch(object @self); // id=42:0/3c:48 bytes=0x8a9..0x8c9
+parameter object @self; // id=42:0/3c:48/35:0 bytes=0x8b8..0x8c9
+method void SwitchOff(object @self); // id=42:0/3c:49 bytes=0x8c9..0x8ec
+parameter object @self; // id=42:0/3c:49/35:0 bytes=0x8db..0x8ec
+method void SwitchOn(object @self); // id=42:0/3c:50 bytes=0x8ec..0x90e
+parameter object @self; // id=42:0/3c:50/35:0 bytes=0x8fd..0x90e
+method void Trigger(object @self); // id=42:0/3c:51 bytes=0x90e..0x92f
+parameter object @self; // id=42:0/3c:51/35:0 bytes=0x91e..0x92f
+method void Unlock(object @self); // id=42:0/3c:52 bytes=0x92f..0x94f
+parameter object @self; // id=42:0/3c:52/35:0 bytes=0x93e..0x94f
+event void AfterDestroyCommand(object @self); // id=42:0/3d:53 bytes=0x94f..0x9d9
+{
+}
+parameter object @self; // id=42:0/3d:53/35:0 bytes=0x96b..0x97c
+handler void AfterDestroyCommand(object @self); // id=42:0/3d:53/3e:0 bytes=0x986..0x9d9
+  // Owner: brutus[36:97]
+{
+  L0: POP<4>() := csmc12[36:114]; // byte 0x9b9
+  L1: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x9c1
+  L2: GOTO RETURN; // byte 0x9cc
+}
+parameter object @self; // id=42:0/3d:53/3e:0/35:0 bytes=0x9a2..0x9b3
+event void AfterFlashCommand(object @self); // id=42:0/3d:54 bytes=0x9d9..0xa0e
+{
+}
+parameter object @self; // id=42:0/3d:54/35:0 bytes=0x9f3..0xa04
+event void AfterSwitchOffCommand(object @self); // id=42:0/3d:55 bytes=0xa0e..0xaaf
+{
+}
+parameter object @self; // id=42:0/3d:55/35:0 bytes=0xa2c..0xa3d
+handler void AfterSwitchOffCommand(object @self); // id=42:0/3d:55/3e:0 bytes=0xa47..0xaaf
+  // Owner: knop_mc[36:70]
+{
+  L0: POP<4>() := knop_groen[36:69]; // byte 0xa7c
+  L1: SELF := CALL Disable[42:0/3c:6](stack; flag=1); // byte 0xa84
+  L2: POP<4>() := knop_rood[36:68]; // byte 0xa8f
+  L3: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0xa97
+  L4: GOTO RETURN; // byte 0xaa2
+}
+parameter object @self; // id=42:0/3d:55/3e:0/35:0 bytes=0xa65..0xa76
+event void AfterSwitchOnCommand(object @self); // id=42:0/3d:56 bytes=0xaaf..0xc14
+{
+}
+parameter object @self; // id=42:0/3d:56/35:0 bytes=0xacc..0xadd
+handler void AfterSwitchOnCommand(object @self); // id=42:0/3d:56/3e:0 bytes=0xae7..0xb87
+  // Owner: knop_mc[36:70]
+{
+  L0: POP<4>() := knop_rood[36:68]; // byte 0xb1b
+  L1: SELF := CALL Disable[42:0/3c:6](stack; flag=1); // byte 0xb23
+  L2: POP<4>() := knop_groen[36:69]; // byte 0xb2e
+  L3: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0xb36
+  L4: POP<4>() := camera12[36:77]; // byte 0xb41
+  L5: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0xb49
+  L6: POP<4>() := knopdeur_l_mc[36:71]; // byte 0xb54
+  L7: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0xb5c
+  L8: POP<4>() := knopdeur_r_mc[36:72]; // byte 0xb67
+  L9: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0xb6f
+  L10: GOTO RETURN; // byte 0xb7a
+}
+parameter object @self; // id=42:0/3d:56/3e:0/35:0 bytes=0xb04..0xb15
+handler void AfterSwitchOnCommand(object @self); // id=42:0/3d:56/3e:1 bytes=0xb87..0xc14
+  // Owner: schietknop_mc[36:87]
+{
+  L0: POP<4>() := schietknop_rood[36:85]; // byte 0xbbb
+  L1: SELF := CALL Disable[42:0/3c:6](stack; flag=1); // byte 0xbc3
+  L2: POP<4>() := schietknop_groen[36:86]; // byte 0xbce
+  L3: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0xbd6
+  L4: POP<4>() := stoneani_mc[36:91]; // byte 0xbe1
+  L5: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0xbe9
+  L6: POP<4>() := Blockrise[36:126]; // byte 0xbf4
+  L7: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0xbfc
+  L8: GOTO RETURN; // byte 0xc07
+}
+parameter object @self; // id=42:0/3d:56/3e:1/35:0 bytes=0xba4..0xbb5
+event void CommandOnEnter(object @self); // id=42:0/3d:57 bytes=0xc14..0x1a90
+{
+}
+parameter object @self; // id=42:0/3d:57/35:0 bytes=0xc2b..0xc3c
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:0 bytes=0xc46..0xc94
+  // Owner: triggerbrush1_mc[36:3]
+{
+  L0: POP<4>() := deur2_mc[36:1]; // byte 0xc74
+  L1: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0xc7c
+  L2: GOTO RETURN; // byte 0xc87
+}
+parameter object @self; // id=42:0/3d:57/3e:0/35:0 bytes=0xc5d..0xc6e
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:1 bytes=0xc94..0xce2
+  // Owner: triggerbrush2_mc[36:4]
+{
+  L0: POP<4>() := deur2_mc[36:1]; // byte 0xcc2
+  L1: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0xcca
+  L2: GOTO RETURN; // byte 0xcd5
+}
+parameter object @self; // id=42:0/3d:57/3e:1/35:0 bytes=0xcab..0xcbc
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:2 bytes=0xce2..0xd43
+  // Owner: triggerbrush3_mc[36:5]
+{
+  L0: POP<4>() := deur3_mc[36:2]; // byte 0xd10
+  L1: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0xd18
+  L2: POP<4>() := deur1_mc[36:0]; // byte 0xd23
+  L3: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0xd2b
+  L4: GOTO RETURN; // byte 0xd36
+}
+parameter object @self; // id=42:0/3d:57/3e:2/35:0 bytes=0xcf9..0xd0a
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:3 bytes=0xd43..0xda4
+  // Owner: triggerbrush4_mc[36:6]
+{
+  L0: POP<4>() := deur3_mc[36:2]; // byte 0xd71
+  L1: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0xd79
+  L2: POP<4>() := deur1_mc[36:0]; // byte 0xd84
+  L3: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0xd8c
+  L4: GOTO RETURN; // byte 0xd97
+}
+parameter object @self; // id=42:0/3d:57/3e:3/35:0 bytes=0xd5a..0xd6b
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:4 bytes=0xda4..0xe05
+  // Owner: triggerbrush5_mc[36:16]
+{
+  L0: POP<4>() := deur2_mc[36:1]; // byte 0xdd2
+  L1: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0xdda
+  L2: POP<4>() := deur4_mc[36:7]; // byte 0xde5
+  L3: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0xded
+  L4: GOTO RETURN; // byte 0xdf8
+}
+parameter object @self; // id=42:0/3d:57/3e:4/35:0 bytes=0xdbb..0xdcc
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:5 bytes=0xe05..0xe66
+  // Owner: triggerbrush6_mc[36:17]
+{
+  L0: POP<4>() := deur2_mc[36:1]; // byte 0xe33
+  L1: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0xe3b
+  L2: POP<4>() := deur4_mc[36:7]; // byte 0xe46
+  L3: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0xe4e
+  L4: GOTO RETURN; // byte 0xe59
+}
+parameter object @self; // id=42:0/3d:57/3e:5/35:0 bytes=0xe1c..0xe2d
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:6 bytes=0xe66..0xec7
+  // Owner: triggerbrush7_mc[36:18]
+{
+  L0: POP<4>() := deur3_mc[36:2]; // byte 0xe94
+  L1: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0xe9c
+  L2: POP<4>() := deur5_mc[36:8]; // byte 0xea7
+  L3: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0xeaf
+  L4: GOTO RETURN; // byte 0xeba
+}
+parameter object @self; // id=42:0/3d:57/3e:6/35:0 bytes=0xe7d..0xe8e
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:7 bytes=0xec7..0xf28
+  // Owner: triggerbrush8_mc[36:19]
+{
+  L0: POP<4>() := deur3_mc[36:2]; // byte 0xef5
+  L1: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0xefd
+  L2: POP<4>() := deur5_mc[36:8]; // byte 0xf08
+  L3: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0xf10
+  L4: GOTO RETURN; // byte 0xf1b
+}
+parameter object @self; // id=42:0/3d:57/3e:7/35:0 bytes=0xede..0xeef
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:8 bytes=0xf28..0xf89
+  // Owner: triggerbrush9_mc[36:20]
+{
+  L0: POP<4>() := deur4_mc[36:7]; // byte 0xf56
+  L1: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0xf5e
+  L2: POP<4>() := deur6_mc[36:9]; // byte 0xf69
+  L3: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0xf71
+  L4: GOTO RETURN; // byte 0xf7c
+}
+parameter object @self; // id=42:0/3d:57/3e:8/35:0 bytes=0xf3f..0xf50
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:9 bytes=0xf89..0xfea
+  // Owner: triggerbrush10_mc[36:21]
+{
+  L0: POP<4>() := deur4_mc[36:7]; // byte 0xfb7
+  L1: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0xfbf
+  L2: POP<4>() := deur6_mc[36:9]; // byte 0xfca
+  L3: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0xfd2
+  L4: GOTO RETURN; // byte 0xfdd
+}
+parameter object @self; // id=42:0/3d:57/3e:9/35:0 bytes=0xfa0..0xfb1
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:10 bytes=0xfea..0x104b
+  // Owner: triggerbrush11_mc[36:22]
+{
+  L0: POP<4>() := deur5_mc[36:8]; // byte 0x1018
+  L1: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0x1020
+  L2: POP<4>() := deur7_mc[36:10]; // byte 0x102b
+  L3: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x1033
+  L4: GOTO RETURN; // byte 0x103e
+}
+parameter object @self; // id=42:0/3d:57/3e:10/35:0 bytes=0x1001..0x1012
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:11 bytes=0x104b..0x10ac
+  // Owner: triggerbrush12_mc[36:23]
+{
+  L0: POP<4>() := deur5_mc[36:8]; // byte 0x1079
+  L1: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x1081
+  L2: POP<4>() := deur7_mc[36:10]; // byte 0x108c
+  L3: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0x1094
+  L4: GOTO RETURN; // byte 0x109f
+}
+parameter object @self; // id=42:0/3d:57/3e:11/35:0 bytes=0x1062..0x1073
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:12 bytes=0x10ac..0x110d
+  // Owner: triggerbrush13_mc[36:24]
+{
+  L0: POP<4>() := deur6_mc[36:9]; // byte 0x10da
+  L1: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0x10e2
+  L2: POP<4>() := deur8_mc[36:11]; // byte 0x10ed
+  L3: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x10f5
+  L4: GOTO RETURN; // byte 0x1100
+}
+parameter object @self; // id=42:0/3d:57/3e:12/35:0 bytes=0x10c3..0x10d4
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:13 bytes=0x110d..0x116e
+  // Owner: triggerbrush14_mc[36:25]
+{
+  L0: POP<4>() := deur8_mc[36:11]; // byte 0x113b
+  L1: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0x1143
+  L2: POP<4>() := deur6_mc[36:9]; // byte 0x114e
+  L3: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x1156
+  L4: GOTO RETURN; // byte 0x1161
+}
+parameter object @self; // id=42:0/3d:57/3e:13/35:0 bytes=0x1124..0x1135
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:14 bytes=0x116e..0x11cf
+  // Owner: triggerbrush15_mc[36:26]
+{
+  L0: POP<4>() := deur7_mc[36:10]; // byte 0x119c
+  L1: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0x11a4
+  L2: POP<4>() := deur9_mc[36:12]; // byte 0x11af
+  L3: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x11b7
+  L4: GOTO RETURN; // byte 0x11c2
+}
+parameter object @self; // id=42:0/3d:57/3e:14/35:0 bytes=0x1185..0x1196
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:15 bytes=0x11cf..0x1230
+  // Owner: triggerbrush16_mc[36:27]
+{
+  L0: POP<4>() := deur9_mc[36:12]; // byte 0x11fd
+  L1: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0x1205
+  L2: POP<4>() := deur7_mc[36:10]; // byte 0x1210
+  L3: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x1218
+  L4: GOTO RETURN; // byte 0x1223
+}
+parameter object @self; // id=42:0/3d:57/3e:15/35:0 bytes=0x11e6..0x11f7
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:16 bytes=0x1230..0x1291
+  // Owner: triggerbrush17_mc[36:28]
+{
+  L0: POP<4>() := deur8_mc[36:11]; // byte 0x125e
+  L1: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0x1266
+  L2: POP<4>() := deur10_mc[36:13]; // byte 0x1271
+  L3: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x1279
+  L4: GOTO RETURN; // byte 0x1284
+}
+parameter object @self; // id=42:0/3d:57/3e:16/35:0 bytes=0x1247..0x1258
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:17 bytes=0x1291..0x12f2
+  // Owner: triggerbrush18_mc[36:29]
+{
+  L0: POP<4>() := deur10_mc[36:13]; // byte 0x12bf
+  L1: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0x12c7
+  L2: POP<4>() := deur8_mc[36:11]; // byte 0x12d2
+  L3: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x12da
+  L4: GOTO RETURN; // byte 0x12e5
+}
+parameter object @self; // id=42:0/3d:57/3e:17/35:0 bytes=0x12a8..0x12b9
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:18 bytes=0x12f2..0x1353
+  // Owner: triggerbrush19_mc[36:30]
+{
+  L0: POP<4>() := deur9_mc[36:12]; // byte 0x1320
+  L1: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0x1328
+  L2: POP<4>() := deur11_mc[36:14]; // byte 0x1333
+  L3: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x133b
+  L4: GOTO RETURN; // byte 0x1346
+}
+parameter object @self; // id=42:0/3d:57/3e:18/35:0 bytes=0x1309..0x131a
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:19 bytes=0x1353..0x13b4
+  // Owner: triggerbrush20_mc[36:31]
+{
+  L0: POP<4>() := deur11_mc[36:14]; // byte 0x1381
+  L1: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0x1389
+  L2: POP<4>() := deur9_mc[36:12]; // byte 0x1394
+  L3: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x139c
+  L4: GOTO RETURN; // byte 0x13a7
+}
+parameter object @self; // id=42:0/3d:57/3e:19/35:0 bytes=0x136a..0x137b
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:20 bytes=0x13b4..0x1415
+  // Owner: triggerbrush21_mc[36:32]
+{
+  L0: POP<4>() := deur10_mc[36:13]; // byte 0x13e2
+  L1: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0x13ea
+  L2: POP<4>() := deur12_mc[36:15]; // byte 0x13f5
+  L3: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x13fd
+  L4: GOTO RETURN; // byte 0x1408
+}
+parameter object @self; // id=42:0/3d:57/3e:20/35:0 bytes=0x13cb..0x13dc
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:21 bytes=0x1415..0x1476
+  // Owner: triggerbrush22_mc[36:33]
+{
+  L0: POP<4>() := deur12_mc[36:15]; // byte 0x1443
+  L1: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0x144b
+  L2: POP<4>() := deur10_mc[36:13]; // byte 0x1456
+  L3: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x145e
+  L4: GOTO RETURN; // byte 0x1469
+}
+parameter object @self; // id=42:0/3d:57/3e:21/35:0 bytes=0x142c..0x143d
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:22 bytes=0x1476..0x14c4
+  // Owner: triggerbrush23_mc[36:34]
+{
+  L0: POP<4>() := deur11_mc[36:14]; // byte 0x14a4
+  L1: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0x14ac
+  L2: GOTO RETURN; // byte 0x14b7
+}
+parameter object @self; // id=42:0/3d:57/3e:22/35:0 bytes=0x148d..0x149e
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:23 bytes=0x14c4..0x1512
+  // Owner: triggerbrush24_mc[36:35]
+{
+  L0: POP<4>() := deur11_mc[36:14]; // byte 0x14f2
+  L1: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x14fa
+  L2: GOTO RETURN; // byte 0x1505
+}
+parameter object @self; // id=42:0/3d:57/3e:23/35:0 bytes=0x14db..0x14ec
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:24 bytes=0x1512..0x1560
+  // Owner: csmc01_tr[36:40]
+{
+  L0: POP<4>() := csmc01[36:41]; // byte 0x1540
+  L1: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x1548
+  L2: GOTO RETURN; // byte 0x1553
+}
+parameter object @self; // id=42:0/3d:57/3e:24/35:0 bytes=0x1529..0x153a
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:25 bytes=0x1560..0x15ae
+  // Owner: csmc02_tr[36:43]
+{
+  L0: POP<4>() := csmc02[36:44]; // byte 0x158e
+  L1: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x1596
+  L2: GOTO RETURN; // byte 0x15a1
+}
+parameter object @self; // id=42:0/3d:57/3e:25/35:0 bytes=0x1577..0x1588
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:26 bytes=0x15ae..0x15fc
+  // Owner: csmc03_tr[36:46]
+{
+  L0: POP<4>() := csmc03[36:47]; // byte 0x15dc
+  L1: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x15e4
+  L2: GOTO RETURN; // byte 0x15ef
+}
+parameter object @self; // id=42:0/3d:57/3e:26/35:0 bytes=0x15c5..0x15d6
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:27 bytes=0x15fc..0x164a
+  // Owner: csmc04_tr[36:52]
+{
+  L0: POP<4>() := csmc04[36:53]; // byte 0x162a
+  L1: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x1632
+  L2: GOTO RETURN; // byte 0x163d
+}
+parameter object @self; // id=42:0/3d:57/3e:27/35:0 bytes=0x1613..0x1624
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:28 bytes=0x164a..0x1698
+  // Owner: csmc05_tr[36:57]
+{
+  L0: POP<4>() := csmc05[36:58]; // byte 0x1678
+  L1: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x1680
+  L2: GOTO RETURN; // byte 0x168b
+}
+parameter object @self; // id=42:0/3d:57/3e:28/35:0 bytes=0x1661..0x1672
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:29 bytes=0x1698..0x1757
+  // Owner: csmc06_tr[36:63]
+{
+  L0: POP<2>() := 0; // byte 0x16d5
+  L1: enough[42:0/3d:57/3e:29/37:0] := CALL RcHasAllPotions[41:23](stack; flag=1); // byte 0x16de
+  L2: IF NOT 1 == enough[42:0/3d:57/3e:29/37:0] THEN L8; // byte 0x16f3
+  L3: POP<4>() := csmc06[36:64]; // byte 0x170e
+  L4: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x1716
+  L5: POP<2>() := 0; // byte 0x1721
+  L6: SELF := CALL RcEnableSkill[41:24](stack; flag=1); // byte 0x172a
+  L7: GOTO RETURN; // byte 0x1732
+  L8: POP<4>() := csmc11[36:105]; // byte 0x1737
+  L9: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x173f
+  L10: GOTO RETURN; // byte 0x174a
+}
+parameter object @self; // id=42:0/3d:57/3e:29/35:0 bytes=0x16af..0x16c0
+local int enough; // id=42:0/3d:57/3e:29/37:0 bytes=0x16c4..0x16d3
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:30 bytes=0x1757..0x17a5
+  // Owner: csmc07_tr[36:73]
+{
+  L0: POP<4>() := csmc07[36:74]; // byte 0x1785
+  L1: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x178d
+  L2: GOTO RETURN; // byte 0x1798
+}
+parameter object @self; // id=42:0/3d:57/3e:30/35:0 bytes=0x176e..0x177f
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:31 bytes=0x17a5..0x17f3
+  // Owner: csmc08_tr[36:78]
+{
+  L0: POP<4>() := csmc08[36:79]; // byte 0x17d3
+  L1: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x17db
+  L2: GOTO RETURN; // byte 0x17e6
+}
+parameter object @self; // id=42:0/3d:57/3e:31/35:0 bytes=0x17bc..0x17cd
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:32 bytes=0x17f3..0x1841
+  // Owner: csmc09_tr[36:92]
+{
+  L0: POP<4>() := csmc09[36:93]; // byte 0x1821
+  L1: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x1829
+  L2: GOTO RETURN; // byte 0x1834
+}
+parameter object @self; // id=42:0/3d:57/3e:32/35:0 bytes=0x180a..0x181b
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:33 bytes=0x1841..0x188f
+  // Owner: csmc10_tr[36:98]
+{
+  L0: POP<4>() := csmc10[36:99]; // byte 0x186f
+  L1: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x1877
+  L2: GOTO RETURN; // byte 0x1882
+}
+parameter object @self; // id=42:0/3d:57/3e:33/35:0 bytes=0x1858..0x1869
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:34 bytes=0x188f..0x18fe
+  // Owner: savepoint_tr[36:112]
+{
+  L0: POP<3>() := "savepoint"; // byte 0x18bd
+  L1: POP<2>() := 12; // byte 0x18cd
+  L2: SELF := CALL RcSetSavePoint[41:20](stack; flag=1); // byte 0x18d6
+  L3: POP<4>() := savepoint_fx[36:115]; // byte 0x18de
+  L4: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x18e6
+  L5: GOTO RETURN; // byte 0x18f1
+}
+parameter object @self; // id=42:0/3d:57/3e:34/35:0 bytes=0x18a6..0x18b7
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:35 bytes=0x18fe..0x1941
+  // Owner: deurreset_tr[36:116]
+{
+  L0: SELF := CALL DeurReset1[3b:58](stack; flag=1); // byte 0x192c
+  L1: GOTO RETURN; // byte 0x1934
+}
+parameter object @self; // id=42:0/3d:57/3e:35/35:0 bytes=0x1915..0x1926
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:36 bytes=0x1941..0x1984
+  // Owner: deurreset2_tr[36:117]
+{
+  L0: SELF := CALL DeurReset2[3b:59](stack; flag=1); // byte 0x196f
+  L1: GOTO RETURN; // byte 0x1977
+}
+parameter object @self; // id=42:0/3d:57/3e:36/35:0 bytes=0x1958..0x1969
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:37 bytes=0x1984..0x19d2
+  // Owner: UFO_uit[36:127]
+{
+  L0: POP<4>() := UFO_sound[36:125]; // byte 0x19b2
+  L1: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x19ba
+  L2: GOTO RETURN; // byte 0x19c5
+}
+parameter object @self; // id=42:0/3d:57/3e:37/35:0 bytes=0x199b..0x19ac
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:38 bytes=0x19d2..0x1a20
+  // Owner: UFO_aan[36:128]
+{
+  L0: POP<4>() := UFO_sound[36:125]; // byte 0x1a00
+  L1: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x1a08
+  L2: GOTO RETURN; // byte 0x1a13
+}
+parameter object @self; // id=42:0/3d:57/3e:38/35:0 bytes=0x19e9..0x19fa
+handler void CommandOnEnter(object @self); // id=42:0/3d:57/3e:39 bytes=0x1a20..0x1a90
+  // Owner: savepoint2_tr[36:131]
+{
+  L0: POP<3>() := "savepoint2"; // byte 0x1a4e
+  L1: POP<2>() := 3; // byte 0x1a5f
+  L2: SELF := CALL RcSetSavePoint[41:20](stack; flag=1); // byte 0x1a68
+  L3: POP<4>() := savepoint2_fx[36:132]; // byte 0x1a70
+  L4: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x1a78
+  L5: GOTO RETURN; // byte 0x1a83
+}
+parameter object @self; // id=42:0/3d:57/3e:39/35:0 bytes=0x1a37..0x1a48
+event void CommandOnLeave(object @self); // id=42:0/3d:58 bytes=0x1a90..0x1ac2
+{
+}
+parameter object @self; // id=42:0/3d:58/35:0 bytes=0x1aa7..0x1ab8
+event void DoorAfterCloseCommand(object @self); // id=42:0/3d:59 bytes=0x1ac2..0x1afb
+{
+}
+parameter object @self; // id=42:0/3d:59/35:0 bytes=0x1ae0..0x1af1
+event void DoorAfterOpenCommand(object @self); // id=42:0/3d:60 bytes=0x1afb..0x1b89
+{
+}
+parameter object @self; // id=42:0/3d:60/35:0 bytes=0x1b18..0x1b29
+handler void DoorAfterOpenCommand(object @self); // id=42:0/3d:60/3e:0 bytes=0x1b33..0x1b89
+  // Owner: knopdeur_l_mc[36:71]
+{
+  L0: POP<1>() := 0.1; // byte 0x1b67
+  L1: SELF := CALL StopCutScene[41:13](stack; flag=1); // byte 0x1b74
+  L2: GOTO RETURN; // byte 0x1b7c
+}
+parameter object @self; // id=42:0/3d:60/3e:0/35:0 bytes=0x1b50..0x1b61
+event void DoorBeforeCloseCommand(object @self); // id=42:0/3d:61 bytes=0x1b89..0x1bc3
+{
+}
+parameter object @self; // id=42:0/3d:61/35:0 bytes=0x1ba8..0x1bb9
+event void DoorBeforeOpenCommand(object @self); // id=42:0/3d:62 bytes=0x1bc3..0x1c53
+{
+}
+parameter object @self; // id=42:0/3d:62/35:0 bytes=0x1be1..0x1bf2
+handler void DoorBeforeOpenCommand(object @self); // id=42:0/3d:62/3e:0 bytes=0x1bfc..0x1c53
+  // Owner: knopdeur_l_mc[36:71]
+{
+  L0: POP<1>() := 0.1; // byte 0x1c31
+  L1: SELF := CALL StartCutScene[41:12](stack; flag=1); // byte 0x1c3e
+  L2: GOTO RETURN; // byte 0x1c46
+}
+parameter object @self; // id=42:0/3d:62/3e:0/35:0 bytes=0x1c1a..0x1c2b
+event void DoorIsLockedCommand(object @self); // id=42:0/3d:63 bytes=0x1c53..0x1c8a
+{
+}
+parameter object @self; // id=42:0/3d:63/35:0 bytes=0x1c6f..0x1c80
+event void MotionCommand(string a_Description, double a_Time, object @self); // id=42:0/3d:64 bytes=0x1c8a..0x24ca
+{
+}
+parameter string a_Description; // id=42:0/3d:64/35:0 bytes=0x1ca0..0x1cb6
+parameter double a_Time; // id=42:0/3d:64/35:1 bytes=0x1cb6..0x1cc5
+parameter object @self; // id=42:0/3d:64/35:2 bytes=0x1cc5..0x1cd6
+handler void MotionCommand(string a_Description, double a_Time, object @self); // id=42:0/3d:64/3e:0 bytes=0x1ce0..0x1d69
+  // Owner: csmc00[36:38]
+{
+  L0: POP<3>() := a_Description[42:0/3d:64/3e:0/35:0]; // byte 0x1d32
+  L1: POP<1>() := a_Time[42:0/3d:64/3e:0/35:1]; // byte 0x1d43
+  L2: SELF := CALL CSL000_MotionCommand[3b:45](stack; flag=1); // byte 0x1d54
+  L3: GOTO RETURN; // byte 0x1d5c
+}
+parameter string a_Description; // id=42:0/3d:64/3e:0/35:0 bytes=0x1cf6..0x1d0c
+parameter double a_Time; // id=42:0/3d:64/3e:0/35:1 bytes=0x1d0c..0x1d1b
+parameter object @self; // id=42:0/3d:64/3e:0/35:2 bytes=0x1d1b..0x1d2c
+handler void MotionCommand(string a_Description, double a_Time, object @self); // id=42:0/3d:64/3e:1 bytes=0x1d69..0x1df2
+  // Owner: csmc01[36:41]
+{
+  L0: POP<3>() := a_Description[42:0/3d:64/3e:1/35:0]; // byte 0x1dbb
+  L1: POP<1>() := a_Time[42:0/3d:64/3e:1/35:1]; // byte 0x1dcc
+  L2: SELF := CALL CSL001_MotionCommand[3b:46](stack; flag=1); // byte 0x1ddd
+  L3: GOTO RETURN; // byte 0x1de5
+}
+parameter string a_Description; // id=42:0/3d:64/3e:1/35:0 bytes=0x1d7f..0x1d95
+parameter double a_Time; // id=42:0/3d:64/3e:1/35:1 bytes=0x1d95..0x1da4
+parameter object @self; // id=42:0/3d:64/3e:1/35:2 bytes=0x1da4..0x1db5
+handler void MotionCommand(string a_Description, double a_Time, object @self); // id=42:0/3d:64/3e:2 bytes=0x1df2..0x1e7b
+  // Owner: csmc02[36:44]
+{
+  L0: POP<3>() := a_Description[42:0/3d:64/3e:2/35:0]; // byte 0x1e44
+  L1: POP<1>() := a_Time[42:0/3d:64/3e:2/35:1]; // byte 0x1e55
+  L2: SELF := CALL CSL002_MotionCommand[3b:47](stack; flag=1); // byte 0x1e66
+  L3: GOTO RETURN; // byte 0x1e6e
+}
+parameter string a_Description; // id=42:0/3d:64/3e:2/35:0 bytes=0x1e08..0x1e1e
+parameter double a_Time; // id=42:0/3d:64/3e:2/35:1 bytes=0x1e1e..0x1e2d
+parameter object @self; // id=42:0/3d:64/3e:2/35:2 bytes=0x1e2d..0x1e3e
+handler void MotionCommand(string a_Description, double a_Time, object @self); // id=42:0/3d:64/3e:3 bytes=0x1e7b..0x1f04
+  // Owner: csmc03[36:47]
+{
+  L0: POP<3>() := a_Description[42:0/3d:64/3e:3/35:0]; // byte 0x1ecd
+  L1: POP<1>() := a_Time[42:0/3d:64/3e:3/35:1]; // byte 0x1ede
+  L2: SELF := CALL CSL003_MotionCommand[3b:48](stack; flag=1); // byte 0x1eef
+  L3: GOTO RETURN; // byte 0x1ef7
+}
+parameter string a_Description; // id=42:0/3d:64/3e:3/35:0 bytes=0x1e91..0x1ea7
+parameter double a_Time; // id=42:0/3d:64/3e:3/35:1 bytes=0x1ea7..0x1eb6
+parameter object @self; // id=42:0/3d:64/3e:3/35:2 bytes=0x1eb6..0x1ec7
+handler void MotionCommand(string a_Description, double a_Time, object @self); // id=42:0/3d:64/3e:4 bytes=0x1f04..0x1f8d
+  // Owner: csmc04[36:53]
+{
+  L0: POP<3>() := a_Description[42:0/3d:64/3e:4/35:0]; // byte 0x1f56
+  L1: POP<1>() := a_Time[42:0/3d:64/3e:4/35:1]; // byte 0x1f67
+  L2: SELF := CALL CSL004_MotionCommand[3b:49](stack; flag=1); // byte 0x1f78
+  L3: GOTO RETURN; // byte 0x1f80
+}
+parameter string a_Description; // id=42:0/3d:64/3e:4/35:0 bytes=0x1f1a..0x1f30
+parameter double a_Time; // id=42:0/3d:64/3e:4/35:1 bytes=0x1f30..0x1f3f
+parameter object @self; // id=42:0/3d:64/3e:4/35:2 bytes=0x1f3f..0x1f50
+handler void MotionCommand(string a_Description, double a_Time, object @self); // id=42:0/3d:64/3e:5 bytes=0x1f8d..0x2016
+  // Owner: csmc05[36:58]
+{
+  L0: POP<3>() := a_Description[42:0/3d:64/3e:5/35:0]; // byte 0x1fdf
+  L1: POP<1>() := a_Time[42:0/3d:64/3e:5/35:1]; // byte 0x1ff0
+  L2: SELF := CALL CSL005_MotionCommand[3b:50](stack; flag=1); // byte 0x2001
+  L3: GOTO RETURN; // byte 0x2009
+}
+parameter string a_Description; // id=42:0/3d:64/3e:5/35:0 bytes=0x1fa3..0x1fb9
+parameter double a_Time; // id=42:0/3d:64/3e:5/35:1 bytes=0x1fb9..0x1fc8
+parameter object @self; // id=42:0/3d:64/3e:5/35:2 bytes=0x1fc8..0x1fd9
+handler void MotionCommand(string a_Description, double a_Time, object @self); // id=42:0/3d:64/3e:6 bytes=0x2016..0x209f
+  // Owner: csmc06[36:64]
+{
+  L0: POP<3>() := a_Description[42:0/3d:64/3e:6/35:0]; // byte 0x2068
+  L1: POP<1>() := a_Time[42:0/3d:64/3e:6/35:1]; // byte 0x2079
+  L2: SELF := CALL CSL006_MotionCommand[3b:51](stack; flag=1); // byte 0x208a
+  L3: GOTO RETURN; // byte 0x2092
+}
+parameter string a_Description; // id=42:0/3d:64/3e:6/35:0 bytes=0x202c..0x2042
+parameter double a_Time; // id=42:0/3d:64/3e:6/35:1 bytes=0x2042..0x2051
+parameter object @self; // id=42:0/3d:64/3e:6/35:2 bytes=0x2051..0x2062
+handler void MotionCommand(string a_Description, double a_Time, object @self); // id=42:0/3d:64/3e:7 bytes=0x209f..0x2128
+  // Owner: csmc07[36:74]
+{
+  L0: POP<3>() := a_Description[42:0/3d:64/3e:7/35:0]; // byte 0x20f1
+  L1: POP<1>() := a_Time[42:0/3d:64/3e:7/35:1]; // byte 0x2102
+  L2: SELF := CALL CSL008_MotionCommand[3b:53](stack; flag=1); // byte 0x2113
+  L3: GOTO RETURN; // byte 0x211b
+}
+parameter string a_Description; // id=42:0/3d:64/3e:7/35:0 bytes=0x20b5..0x20cb
+parameter double a_Time; // id=42:0/3d:64/3e:7/35:1 bytes=0x20cb..0x20da
+parameter object @self; // id=42:0/3d:64/3e:7/35:2 bytes=0x20da..0x20eb
+handler void MotionCommand(string a_Description, double a_Time, object @self); // id=42:0/3d:64/3e:8 bytes=0x2128..0x21b1
+  // Owner: csmc08[36:79]
+{
+  L0: POP<3>() := a_Description[42:0/3d:64/3e:8/35:0]; // byte 0x217a
+  L1: POP<1>() := a_Time[42:0/3d:64/3e:8/35:1]; // byte 0x218b
+  L2: SELF := CALL CSL009_MotionCommand[3b:54](stack; flag=1); // byte 0x219c
+  L3: GOTO RETURN; // byte 0x21a4
+}
+parameter string a_Description; // id=42:0/3d:64/3e:8/35:0 bytes=0x213e..0x2154
+parameter double a_Time; // id=42:0/3d:64/3e:8/35:1 bytes=0x2154..0x2163
+parameter object @self; // id=42:0/3d:64/3e:8/35:2 bytes=0x2163..0x2174
+handler void MotionCommand(string a_Description, double a_Time, object @self); // id=42:0/3d:64/3e:9 bytes=0x21b1..0x22a6
+  // Owner: stoneani_mc[36:91]
+{
+  L0: IF NOT "stone1" == a_Description[42:0/3d:64/3e:9/35:0] THEN L3; // byte 0x2203
+  L1: POP<4>() := stone1_mc[36:88]; // byte 0x2222
+  L2: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x222a
+  L3: IF NOT "stone2" == a_Description[42:0/3d:64/3e:9/35:0] THEN L6; // byte 0x2235
+  L4: POP<4>() := stone2_mc[36:89]; // byte 0x2254
+  L5: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x225c
+  L6: IF NOT "stone3" == a_Description[42:0/3d:64/3e:9/35:0] THEN RETURN; // byte 0x2267
+  L7: POP<4>() := stone3_mc[36:90]; // byte 0x2286
+  L8: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x228e
+  L9: GOTO RETURN; // byte 0x2299
+}
+parameter string a_Description; // id=42:0/3d:64/3e:9/35:0 bytes=0x21c7..0x21dd
+parameter double a_Time; // id=42:0/3d:64/3e:9/35:1 bytes=0x21dd..0x21ec
+parameter object @self; // id=42:0/3d:64/3e:9/35:2 bytes=0x21ec..0x21fd
+handler void MotionCommand(string a_Description, double a_Time, object @self); // id=42:0/3d:64/3e:10 bytes=0x22a6..0x232f
+  // Owner: csmc09[36:93]
+{
+  L0: POP<3>() := a_Description[42:0/3d:64/3e:10/35:0]; // byte 0x22f8
+  L1: POP<1>() := a_Time[42:0/3d:64/3e:10/35:1]; // byte 0x2309
+  L2: SELF := CALL CSL010_MotionCommand[3b:55](stack; flag=1); // byte 0x231a
+  L3: GOTO RETURN; // byte 0x2322
+}
+parameter string a_Description; // id=42:0/3d:64/3e:10/35:0 bytes=0x22bc..0x22d2
+parameter double a_Time; // id=42:0/3d:64/3e:10/35:1 bytes=0x22d2..0x22e1
+parameter object @self; // id=42:0/3d:64/3e:10/35:2 bytes=0x22e1..0x22f2
+handler void MotionCommand(string a_Description, double a_Time, object @self); // id=42:0/3d:64/3e:11 bytes=0x232f..0x23b8
+  // Owner: csmc10[36:99]
+{
+  L0: POP<3>() := a_Description[42:0/3d:64/3e:11/35:0]; // byte 0x2381
+  L1: POP<1>() := a_Time[42:0/3d:64/3e:11/35:1]; // byte 0x2392
+  L2: SELF := CALL CSL011_MotionCommand[3b:56](stack; flag=1); // byte 0x23a3
+  L3: GOTO RETURN; // byte 0x23ab
+}
+parameter string a_Description; // id=42:0/3d:64/3e:11/35:0 bytes=0x2345..0x235b
+parameter double a_Time; // id=42:0/3d:64/3e:11/35:1 bytes=0x235b..0x236a
+parameter object @self; // id=42:0/3d:64/3e:11/35:2 bytes=0x236a..0x237b
+handler void MotionCommand(string a_Description, double a_Time, object @self); // id=42:0/3d:64/3e:12 bytes=0x23b8..0x2441
+  // Owner: csmc11[36:105]
+{
+  L0: POP<3>() := a_Description[42:0/3d:64/3e:12/35:0]; // byte 0x240a
+  L1: POP<1>() := a_Time[42:0/3d:64/3e:12/35:1]; // byte 0x241b
+  L2: SELF := CALL CSL007_MotionCommand[3b:52](stack; flag=1); // byte 0x242c
+  L3: GOTO RETURN; // byte 0x2434
+}
+parameter string a_Description; // id=42:0/3d:64/3e:12/35:0 bytes=0x23ce..0x23e4
+parameter double a_Time; // id=42:0/3d:64/3e:12/35:1 bytes=0x23e4..0x23f3
+parameter object @self; // id=42:0/3d:64/3e:12/35:2 bytes=0x23f3..0x2404
+handler void MotionCommand(string a_Description, double a_Time, object @self); // id=42:0/3d:64/3e:13 bytes=0x2441..0x24ca
+  // Owner: csmc12[36:114]
+{
+  L0: POP<3>() := a_Description[42:0/3d:64/3e:13/35:0]; // byte 0x2493
+  L1: POP<1>() := a_Time[42:0/3d:64/3e:13/35:1]; // byte 0x24a4
+  L2: SELF := CALL CSL012_MotionCommand[3b:57](stack; flag=1); // byte 0x24b5
+  L3: GOTO RETURN; // byte 0x24bd
+}
+parameter string a_Description; // id=42:0/3d:64/3e:13/35:0 bytes=0x2457..0x246d
+parameter double a_Time; // id=42:0/3d:64/3e:13/35:1 bytes=0x246d..0x247c
+parameter object @self; // id=42:0/3d:64/3e:13/35:2 bytes=0x247c..0x248d
+event void OnFlashCommand(object @self); // id=42:0/3d:65 bytes=0x24ca..0x24fc
+{
+}
+parameter object @self; // id=42:0/3d:65/35:0 bytes=0x24e1..0x24f2
+event void OnHitCommand(double a_Damage, int a_Weapon, object @self); // id=42:0/3d:66 bytes=0x24fc..0x254e
+{
+}
+parameter double a_Damage; // id=42:0/3d:66/35:0 bytes=0x2511..0x2522
+parameter int a_Weapon; // id=42:0/3d:66/35:1 bytes=0x2522..0x2533
+parameter object @self; // id=42:0/3d:66/35:2 bytes=0x2533..0x2544
+event void OnInitCommand(object @self); // id=42:0/3d:67 bytes=0x254e..0x25c1
+{
+}
+parameter object @self; // id=42:0/3d:67/35:0 bytes=0x2564..0x2575
+handler void OnInitCommand(object @self); // id=42:0/3d:67/3e:0 bytes=0x257f..0x25c1
+  // Owner: world[36:37]
+{
+  L0: SELF := CALL CheckGameState[3b:60](stack; flag=1); // byte 0x25ac
+  L1: GOTO RETURN; // byte 0x25b4
+}
+parameter object @self; // id=42:0/3d:67/3e:0/35:0 bytes=0x2595..0x25a6
+event void OnTouchCommand(object @self); // id=42:0/3d:68 bytes=0x25c1..0x25f3
+{
+}
+parameter object @self; // id=42:0/3d:68/35:0 bytes=0x25d8..0x25e9
+event void OnPlayerRespawnCommand(object @self); // id=42:0/3d:69 bytes=0x25f3..0x262d
+{
+}
+parameter object @self; // id=42:0/3d:69/35:0 bytes=0x2612..0x2623
+event void PickupCommand(object @self); // id=42:0/3d:70 bytes=0x262d..0x26ab
+{
+}
+parameter object @self; // id=42:0/3d:70/35:0 bytes=0x2643..0x2654
+handler void PickupCommand(object @self); // id=42:0/3d:70/3e:0 bytes=0x265e..0x26ab
+  // Owner: mirror[36:118]
+{
+  L0: POP<4>() := endleveltrigger[36:113]; // byte 0x268b
+  L1: SELF := CALL Trigger[42:0/3c:51](stack; flag=1); // byte 0x2693
+  L2: GOTO RETURN; // byte 0x269e
+}
+parameter object @self; // id=42:0/3d:70/3e:0/35:0 bytes=0x2674..0x2685
+event void RepeatCommand(object @self); // id=42:0/3d:71 bytes=0x26ab..0x26dc
+{
+}
+parameter object @self; // id=42:0/3d:71/35:0 bytes=0x26c1..0x26d2
+event void RepeatCommand2(object @self); // id=42:0/3d:72 bytes=0x26dc..0x270e
+{
+}
+parameter object @self; // id=42:0/3d:72/35:0 bytes=0x26f3..0x2704
+event void RepeatCommand3(object @self); // id=42:0/3d:73 bytes=0x270e..0x2740
+{
+}
+parameter object @self; // id=42:0/3d:73/35:0 bytes=0x2725..0x2736
+event void RotateCommands(object @self); // id=42:0/3d:74 bytes=0x2740..0x2772
+{
+}
+parameter object @self; // id=42:0/3d:74/35:0 bytes=0x2757..0x2768
+event void StartCommand(object @self); // id=42:0/3d:75 bytes=0x2772..0x27a2
+{
+}
+parameter object @self; // id=42:0/3d:75/35:0 bytes=0x2787..0x2798
+event void StopCommand(object @self); // id=42:0/3d:76 bytes=0x27a2..0x27d1
+{
+}
+parameter object @self; // id=42:0/3d:76/35:0 bytes=0x27b6..0x27c7
+event void SwitchOffCommand(object @self); // id=42:0/3d:77 bytes=0x27d1..0x2805
+{
+}
+parameter object @self; // id=42:0/3d:77/35:0 bytes=0x27ea..0x27fb
+event void SwitchOnCommand(object @self); // id=42:0/3d:78 bytes=0x2805..0x2838
+{
+}
+parameter object @self; // id=42:0/3d:78/35:0 bytes=0x281d..0x282e
+object object deur1_mc; // id=36:0 bytes=0x2844..0x2854
+object object deur2_mc; // id=36:1 bytes=0x2854..0x2864
+object object deur3_mc; // id=36:2 bytes=0x2864..0x2874
+object object triggerbrush1_mc; // id=36:3 bytes=0x2874..0x288c
+object object triggerbrush2_mc; // id=36:4 bytes=0x288c..0x28a4
+object object triggerbrush3_mc; // id=36:5 bytes=0x28a4..0x28bc
+object object triggerbrush4_mc; // id=36:6 bytes=0x28bc..0x28d4
+object object deur4_mc; // id=36:7 bytes=0x28d4..0x28e4
+object object deur5_mc; // id=36:8 bytes=0x28e4..0x28f4
+object object deur6_mc; // id=36:9 bytes=0x28f4..0x2904
+object object deur7_mc; // id=36:10 bytes=0x2904..0x2914
+object object deur8_mc; // id=36:11 bytes=0x2914..0x2924
+object object deur9_mc; // id=36:12 bytes=0x2924..0x2934
+object object deur10_mc; // id=36:13 bytes=0x2934..0x2945
+object object deur11_mc; // id=36:14 bytes=0x2945..0x2956
+object object deur12_mc; // id=36:15 bytes=0x2956..0x2967
+object object triggerbrush5_mc; // id=36:16 bytes=0x2967..0x297f
+object object triggerbrush6_mc; // id=36:17 bytes=0x297f..0x2997
+object object triggerbrush7_mc; // id=36:18 bytes=0x2997..0x29af
+object object triggerbrush8_mc; // id=36:19 bytes=0x29af..0x29c7
+object object triggerbrush9_mc; // id=36:20 bytes=0x29c7..0x29df
+object object triggerbrush10_mc; // id=36:21 bytes=0x29df..0x29f8
+object object triggerbrush11_mc; // id=36:22 bytes=0x29f8..0x2a11
+object object triggerbrush12_mc; // id=36:23 bytes=0x2a11..0x2a2a
+object object triggerbrush13_mc; // id=36:24 bytes=0x2a2a..0x2a43
+object object triggerbrush14_mc; // id=36:25 bytes=0x2a43..0x2a5c
+object object triggerbrush15_mc; // id=36:26 bytes=0x2a5c..0x2a75
+object object triggerbrush16_mc; // id=36:27 bytes=0x2a75..0x2a8e
+object object triggerbrush17_mc; // id=36:28 bytes=0x2a8e..0x2aa7
+object object triggerbrush18_mc; // id=36:29 bytes=0x2aa7..0x2ac0
+object object triggerbrush19_mc; // id=36:30 bytes=0x2ac0..0x2ad9
+object object triggerbrush20_mc; // id=36:31 bytes=0x2ad9..0x2af2
+object object triggerbrush21_mc; // id=36:32 bytes=0x2af2..0x2b0b
+object object triggerbrush22_mc; // id=36:33 bytes=0x2b0b..0x2b24
+object object triggerbrush23_mc; // id=36:34 bytes=0x2b24..0x2b3d
+object object triggerbrush24_mc; // id=36:35 bytes=0x2b3d..0x2b56
+object object ufo_rook; // id=36:36 bytes=0x2b56..0x2b66
+object object world; // id=36:37 bytes=0x2b66..0x2b73
+object object csmc00; // id=36:38 bytes=0x2b73..0x2b81
+object object camera1; // id=36:39 bytes=0x2b81..0x2b90
+object object csmc01_tr; // id=36:40 bytes=0x2b90..0x2ba1
+object object csmc01; // id=36:41 bytes=0x2ba1..0x2baf
+object object ufohole; // id=36:42 bytes=0x2baf..0x2bbe
+object object csmc02_tr; // id=36:43 bytes=0x2bbe..0x2bcf
+object object csmc02; // id=36:44 bytes=0x2bcf..0x2bdd
+object object camera2; // id=36:45 bytes=0x2bdd..0x2bec
+object object csmc03_tr; // id=36:46 bytes=0x2bec..0x2bfd
+object object csmc03; // id=36:47 bytes=0x2bfd..0x2c0b
+object object camera3; // id=36:48 bytes=0x2c0b..0x2c1a
+object object fairy3; // id=36:49 bytes=0x2c1a..0x2c28
+object object fairy2; // id=36:50 bytes=0x2c28..0x2c36
+object object wkrat_1; // id=36:51 bytes=0x2c36..0x2c45
+object object csmc04_tr; // id=36:52 bytes=0x2c45..0x2c56
+object object csmc04; // id=36:53 bytes=0x2c56..0x2c64
+object object camera5; // id=36:54 bytes=0x2c64..0x2c73
+object object camera4; // id=36:55 bytes=0x2c73..0x2c82
+object object fairy4; // id=36:56 bytes=0x2c82..0x2c90
+object object csmc05_tr; // id=36:57 bytes=0x2c90..0x2ca1
+object object csmc05; // id=36:58 bytes=0x2ca1..0x2caf
+object object fairy5; // id=36:59 bytes=0x2caf..0x2cbd
+object object camera6; // id=36:60 bytes=0x2cbd..0x2ccc
+object object camera7; // id=36:61 bytes=0x2ccc..0x2cdb
+object object camera8; // id=36:62 bytes=0x2cdb..0x2cea
+object object csmc06_tr; // id=36:63 bytes=0x2cea..0x2cfb
+object object csmc06; // id=36:64 bytes=0x2cfb..0x2d09
+object object fairy6; // id=36:65 bytes=0x2d09..0x2d17
+object object camera9; // id=36:66 bytes=0x2d17..0x2d26
+object object camera10; // id=36:67 bytes=0x2d26..0x2d36
+object object knop_rood; // id=36:68 bytes=0x2d36..0x2d47
+object object knop_groen; // id=36:69 bytes=0x2d47..0x2d59
+object object knop_mc; // id=36:70 bytes=0x2d59..0x2d68
+object object knopdeur_l_mc; // id=36:71 bytes=0x2d68..0x2d7d
+object object knopdeur_r_mc; // id=36:72 bytes=0x2d7d..0x2d92
+object object csmc07_tr; // id=36:73 bytes=0x2d92..0x2da3
+object object csmc07; // id=36:74 bytes=0x2da3..0x2db1
+object object fairy7; // id=36:75 bytes=0x2db1..0x2dbf
+object object camera11; // id=36:76 bytes=0x2dbf..0x2dcf
+object object camera12; // id=36:77 bytes=0x2dcf..0x2ddf
+object object csmc08_tr; // id=36:78 bytes=0x2ddf..0x2df0
+object object csmc08; // id=36:79 bytes=0x2df0..0x2dfe
+object object fairy8; // id=36:80 bytes=0x2dfe..0x2e0c
+object object camera13; // id=36:81 bytes=0x2e0c..0x2e1c
+object object plant_1; // id=36:82 bytes=0x2e1c..0x2e2b
+object object camera14; // id=36:83 bytes=0x2e2b..0x2e3b
+object object hidebox; // id=36:84 bytes=0x2e3b..0x2e4a
+object object schietknop_rood; // id=36:85 bytes=0x2e4a..0x2e61
+object object schietknop_groen; // id=36:86 bytes=0x2e61..0x2e79
+object object schietknop_mc; // id=36:87 bytes=0x2e79..0x2e8e
+object object stone1_mc; // id=36:88 bytes=0x2e8e..0x2e9f
+object object stone2_mc; // id=36:89 bytes=0x2e9f..0x2eb0
+object object stone3_mc; // id=36:90 bytes=0x2eb0..0x2ec1
+object object stoneani_mc; // id=36:91 bytes=0x2ec1..0x2ed4
+object object csmc09_tr; // id=36:92 bytes=0x2ed4..0x2ee5
+object object csmc09; // id=36:93 bytes=0x2ee5..0x2ef3
+object object fairy9; // id=36:94 bytes=0x2ef3..0x2f01
+object object camera15; // id=36:95 bytes=0x2f01..0x2f11
+object object camera16; // id=36:96 bytes=0x2f11..0x2f21
+object object brutus; // id=36:97 bytes=0x2f21..0x2f2f
+object object csmc10_tr; // id=36:98 bytes=0x2f2f..0x2f40
+object object csmc10; // id=36:99 bytes=0x2f40..0x2f4e
+object object muziek; // id=36:100 bytes=0x2f4e..0x2f5c
+object object lichtwater; // id=36:101 bytes=0x2f5c..0x2f6e
+object object lichtwater2; // id=36:102 bytes=0x2f6e..0x2f81
+object object heart; // id=36:103 bytes=0x2f81..0x2f8e
+object object potion; // id=36:104 bytes=0x2f8e..0x2f9c
+object object csmc11; // id=36:105 bytes=0x2f9c..0x2faa
+object object fairy10; // id=36:106 bytes=0x2faa..0x2fb9
+object object fairy11; // id=36:107 bytes=0x2fb9..0x2fc8
+object object camera17; // id=36:108 bytes=0x2fc8..0x2fd8
+object object camera18; // id=36:109 bytes=0x2fd8..0x2fe8
+object object camera19; // id=36:110 bytes=0x2fe8..0x2ff8
+object object coin; // id=36:111 bytes=0x2ff8..0x3004
+object object savepoint_tr; // id=36:112 bytes=0x3004..0x3018
+object object endleveltrigger; // id=36:113 bytes=0x3018..0x302f
+object object csmc12; // id=36:114 bytes=0x302f..0x303d
+object object savepoint_fx; // id=36:115 bytes=0x303d..0x3051
+object object deurreset_tr; // id=36:116 bytes=0x3051..0x3065
+object object deurreset2_tr; // id=36:117 bytes=0x3065..0x307a
+object object mirror; // id=36:118 bytes=0x307a..0x3088
+object object mirrormodel_mc; // id=36:119 bytes=0x3088..0x309e
+object object camera20; // id=36:120 bytes=0x309e..0x30ae
+object object camera21; // id=36:121 bytes=0x30ae..0x30be
+object object fairy12; // id=36:122 bytes=0x30be..0x30cd
+object object camera22; // id=36:123 bytes=0x30cd..0x30dd
+object object camera23; // id=36:124 bytes=0x30dd..0x30ed
+object object UFO_sound; // id=36:125 bytes=0x30ed..0x30fe
+object object Blockrise; // id=36:126 bytes=0x30fe..0x310f
+object object UFO_uit; // id=36:127 bytes=0x310f..0x311e
+object object UFO_aan; // id=36:128 bytes=0x311e..0x312d
+object object froga; // id=36:129 bytes=0x312d..0x313a
+object object frogb; // id=36:130 bytes=0x313a..0x3147
+object object savepoint2_tr; // id=36:131 bytes=0x3147..0x315c
+object object savepoint2_fx; // id=36:132 bytes=0x315c..0x3171
+builtin double rand(); // id=3f:0 bytes=0x3175..0x3182
+builtin int clock(); // id=3f:1 bytes=0x3182..0x3190
+builtin int kbhit(); // id=3f:2 bytes=0x3190..0x319e
+builtin int getch(); // id=3f:3 bytes=0x319e..0x31ac
+builtin int time(); // id=3f:4 bytes=0x31ac..0x31b9
+builtin void srand(int arg_0); // id=3f:5 bytes=0x31b9..0x31d5
+parameter int arg_0; // id=3f:5/35:0 bytes=0x31c7..0x31d5
+builtin int RandPerc(double arg_0); // id=3f:6 bytes=0x31d5..0x31f4
+parameter double arg_0; // id=3f:6/35:0 bytes=0x31e6..0x31f4
+builtin string StrLeft(string arg_0, int arg_1); // id=3f:7 bytes=0x31f4..0x3220
+parameter string arg_0; // id=3f:7/35:0 bytes=0x3204..0x3212
+parameter int arg_1; // id=3f:7/35:1 bytes=0x3212..0x3220
+builtin string StrRight(string arg_0, int arg_1); // id=3f:8 bytes=0x3220..0x324d
+parameter string arg_0; // id=3f:8/35:0 bytes=0x3231..0x323f
+parameter int arg_1; // id=3f:8/35:1 bytes=0x323f..0x324d
+builtin string StrMid(string arg_0, int arg_1, int arg_2); // id=3f:9 bytes=0x324d..0x3286
+parameter string arg_0; // id=3f:9/35:0 bytes=0x325c..0x326a
+parameter int arg_1; // id=3f:9/35:1 bytes=0x326a..0x3278
+parameter int arg_2; // id=3f:9/35:2 bytes=0x3278..0x3286
+builtin int StrFind(string arg_0, string arg_1); // id=3f:10 bytes=0x3286..0x32b2
+parameter string arg_0; // id=3f:10/35:0 bytes=0x3296..0x32a4
+parameter string arg_1; // id=3f:10/35:1 bytes=0x32a4..0x32b2
+builtin void puts(string arg_0); // id=3f:11 bytes=0x32b2..0x32cd
+parameter string arg_0; // id=3f:11/35:0 bytes=0x32bf..0x32cd
+external void StartCutScene(double a_Time); // id=41:12 bytes=0x32cd..0x32f2
+parameter double a_Time; // id=41:12/35:0 bytes=0x32e3..0x32f2
+external void StopCutScene(double a_Time); // id=41:13 bytes=0x32f2..0x3316
+parameter double a_Time; // id=41:13/35:0 bytes=0x3307..0x3316
+external void CutSceneSay(string a_Text); // id=41:14 bytes=0x3316..0x3339
+parameter string a_Text; // id=41:14/35:0 bytes=0x332a..0x3339
+external void RcHide(); // id=41:15 bytes=0x3339..0x3348
+external void RcShow(); // id=41:16 bytes=0x3348..0x3357
+external void FreezeEnemies(); // id=41:17 bytes=0x3357..0x336d
+external void UnFreezeEnemies(); // id=41:18 bytes=0x336d..0x3385
+external void RcShowAtSpawnPoint(string a_RespawnPointName, int a_Angle); // id=41:19 bytes=0x3385..0x33cb
+parameter string a_RespawnPointName; // id=41:19/35:0 bytes=0x33a0..0x33bb
+parameter int a_Angle; // id=41:19/35:1 bytes=0x33bb..0x33cb
+external void RcSetSavePoint(string a_RespawnPointName, int a_Angle); // id=41:20 bytes=0x33cb..0x340d
+parameter string a_RespawnPointName; // id=41:20/35:0 bytes=0x33e2..0x33fd
+parameter int a_Angle; // id=41:20/35:1 bytes=0x33fd..0x340d
+external void RcHintMotion(int a_Motion); // id=41:21 bytes=0x340d..0x3433
+parameter int a_Motion; // id=41:21/35:0 bytes=0x3422..0x3433
+external void PlayWavSound(string a_WavFileName); // id=41:22 bytes=0x3433..0x345e
+parameter string a_WavFileName; // id=41:22/35:0 bytes=0x3448..0x345e
+external int RcHasAllPotions(int a_Skill); // id=41:23 bytes=0x345e..0x3486
+parameter int a_Skill; // id=41:23/35:0 bytes=0x3476..0x3486
+external int RcEnableSkill(int a_Skill); // id=41:24 bytes=0x3486..0x34ac
+parameter int a_Skill; // id=41:24/35:0 bytes=0x349c..0x34ac
+external int GetGameType(); // id=41:25 bytes=0x34ac..0x34c0
+external void AddMission(int a_MissionNr, string a_TextID, string a_Portrait, int a_SoundNr); // id=41:26 bytes=0x34c0..0x351d
+parameter int a_MissionNr; // id=41:26/35:0 bytes=0x34d3..0x34e7
+parameter string a_TextID; // id=41:26/35:1 bytes=0x34e7..0x34f8
+parameter string a_Portrait; // id=41:26/35:2 bytes=0x34f8..0x350b
+parameter int a_SoundNr; // id=41:26/35:3 bytes=0x350b..0x351d
+external void CompleteMission(int a_MissionNr); // id=41:27 bytes=0x351d..0x3549
+parameter int a_MissionNr; // id=41:27/35:0 bytes=0x3535..0x3549
+external void ShowMission(int a_MissionNr); // id=41:28 bytes=0x3549..0x3571
+parameter int a_MissionNr; // id=41:28/35:0 bytes=0x355d..0x3571
+external void ShowMissions(); // id=41:29 bytes=0x3571..0x3586
+external void CommunicatorEnable(int a_Enable); // id=41:30 bytes=0x3586..0x35b2
+parameter int a_Enable; // id=41:30/35:0 bytes=0x35a1..0x35b2
+external void CommunicatorSay(string a_TextID, string a_Portrait, int a_SoundNr); // id=41:31 bytes=0x35b2..0x3600
+parameter string a_TextID; // id=41:31/35:0 bytes=0x35ca..0x35db
+parameter string a_Portrait; // id=41:31/35:1 bytes=0x35db..0x35ee
+parameter int a_SoundNr; // id=41:31/35:2 bytes=0x35ee..0x3600
+external void Say(string a_Text); // id=41:32 bytes=0x3600..0x361b
+parameter string a_Text; // id=41:32/35:0 bytes=0x360c..0x361b
+external void DebugMessage(string a_Message); // id=41:33 bytes=0x361b..0x3642
+parameter string a_Message; // id=41:33/35:0 bytes=0x3630..0x3642
+external void LoadCommPortrait(string a_Name, int a_NrOfImages); // id=41:34 bytes=0x3642..0x367f
+parameter string a_Name; // id=41:34/35:0 bytes=0x365b..0x366a
+parameter int a_NrOfImages; // id=41:34/35:1 bytes=0x366a..0x367f
+external void LoadCommSounds(int a_From, int a_Till); // id=41:35 bytes=0x367f..0x36b4
+parameter int a_From; // id=41:35/35:0 bytes=0x3696..0x36a5
+parameter int a_Till; // id=41:35/35:1 bytes=0x36a5..0x36b4
+external void SetCommPortraitAnim(string a_Name, int a_IsStatic, int a_AnimType, double a_FrameTimeSeconds); // id=41:36 bytes=0x36b4..0x3720
+parameter string a_Name; // id=41:36/35:0 bytes=0x36d0..0x36df
+parameter int a_IsStatic; // id=41:36/35:1 bytes=0x36df..0x36f2
+parameter int a_AnimType; // id=41:36/35:2 bytes=0x36f2..0x3705
+parameter double a_FrameTimeSeconds; // id=41:36/35:3 bytes=0x3705..0x3720
+external void PlayerVisible(int a_Visible); // id=41:37 bytes=0x3720..0x3748
+parameter int a_Visible; // id=41:37/35:0 bytes=0x3736..0x3748
+external void KillPlayer(); // id=41:38 bytes=0x3748..0x375b
+external void RespawnPlayer(string a_RespawnPointName); // id=41:39 bytes=0x375b..0x378c
+parameter string a_RespawnPointName; // id=41:39/35:0 bytes=0x3771..0x378c
+external void GivePlayerKeyItem(string a_KeyItemName); // id=41:40 bytes=0x378c..0x37bc
+parameter string a_KeyItemName; // id=41:40/35:0 bytes=0x37a6..0x37bc
+external int PlayerHasKeyItem(string a_KeyItemName); // id=41:41 bytes=0x37bc..0x37eb
+parameter string a_KeyItemName; // id=41:41/35:0 bytes=0x37d5..0x37eb
+external void EnableWeapons(int a_Enable); // id=41:42 bytes=0x37eb..0x3812
+parameter int a_Enable; // id=41:42/35:0 bytes=0x3801..0x3812
+external void LooseAllWeapons(); // id=41:43 bytes=0x3812..0x382a
+function void BypassEnumWarnings(); // id=3b:44 bytes=0x382a..0x3850
+{
+  L0: GOTO RETURN; // byte 0x384b
+}
+function void CSL000_MotionCommand(string a_Description, double a_Time); // id=3b:45 bytes=0x3850..0x3997
+{
+  L0: IF NOT "startcutscene" == a_Description[3b:45/35:0] THEN L3; // byte 0x3898
+  L1: POP<1>() := 0.001; // byte 0x38b8
+  L2: SELF := CALL StartCutScene[41:12](stack; flag=1); // byte 0x38c5
+  L3: IF NOT "stopcutscene" == a_Description[3b:45/35:0] THEN L6; // byte 0x38cd
+  L4: POP<1>() := 1.5; // byte 0x38ec
+  L5: SELF := CALL StopCutScene[41:13](stack; flag=1); // byte 0x38f9
+  L6: IF NOT "startcamera" == a_Description[3b:45/35:0] THEN L9; // byte 0x3901
+  L7: POP<4>() := camera1[36:39]; // byte 0x391f
+  L8: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x3927
+  L9: IF NOT "rcgen44" == a_Description[3b:45/35:0] THEN L12; // byte 0x3932
+  L10: POP<3>() := "rcgen44"; // byte 0x394c
+  L11: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x395a
+  L12: IF NOT "rcgen45" == a_Description[3b:45/35:0] THEN RETURN; // byte 0x3962
+  L13: POP<3>() := "rcgen45"; // byte 0x397c
+  L14: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x398a
+  L15: GOTO RETURN; // byte 0x3992
+}
+parameter string a_Description; // id=3b:45/35:0 bytes=0x386d..0x3883
+parameter double a_Time; // id=3b:45/35:1 bytes=0x3883..0x3892
+function void CSL001_MotionCommand(string a_Description, double a_Time); // id=3b:46 bytes=0x3997..0x3f15
+{
+  L0: IF NOT "rcshow" == a_Description[3b:46/35:0] THEN L4; // byte 0x39df
+  L1: POP<3>() := "rcpoint1"; // byte 0x39f8
+  L2: POP<2>() := 8; // byte 0x3a07
+  L3: SELF := CALL RcShowAtSpawnPoint[41:19](stack; flag=1); // byte 0x3a10
+  L4: IF NOT "startcutscene" == a_Description[3b:46/35:0] THEN L7; // byte 0x3a18
+  L5: POP<1>() := 1.0; // byte 0x3a38
+  L6: SELF := CALL StartCutScene[41:12](stack; flag=1); // byte 0x3a45
+  L7: IF NOT "stopcutscene" == a_Description[3b:46/35:0] THEN L10; // byte 0x3a4d
+  L8: POP<1>() := 1.0; // byte 0x3a6c
+  L9: SELF := CALL StopCutScene[41:13](stack; flag=1); // byte 0x3a79
+  L10: IF NOT "startcamera" == a_Description[3b:46/35:0] THEN L13; // byte 0x3a81
+  L11: POP<4>() := camera17[36:108]; // byte 0x3a9f
+  L12: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x3aa7
+  L13: IF NOT "startcamera1" == a_Description[3b:46/35:0] THEN L16; // byte 0x3ab2
+  L14: POP<4>() := camera18[36:109]; // byte 0x3ad1
+  L15: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x3ad9
+  L16: IF NOT "startcamera2" == a_Description[3b:46/35:0] THEN L19; // byte 0x3ae4
+  L17: POP<4>() := camera19[36:110]; // byte 0x3b03
+  L18: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x3b0b
+  L19: IF NOT "rcgen46" == a_Description[3b:46/35:0] THEN L22; // byte 0x3b16
+  L20: POP<3>() := "rcgen46"; // byte 0x3b30
+  L21: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x3b3e
+  L22: IF NOT "rcgen47" == a_Description[3b:46/35:0] THEN L25; // byte 0x3b46
+  L23: POP<3>() := "rcgen47"; // byte 0x3b60
+  L24: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x3b6e
+  L25: IF NOT "rcgen48" == a_Description[3b:46/35:0] THEN L28; // byte 0x3b76
+  L26: POP<3>() := "rcgen48"; // byte 0x3b90
+  L27: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x3b9e
+  L28: IF NOT "rcgen49" == a_Description[3b:46/35:0] THEN L31; // byte 0x3ba6
+  L29: POP<3>() := "rcgen49"; // byte 0x3bc0
+  L30: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x3bce
+  L31: IF NOT "rcgen50" == a_Description[3b:46/35:0] THEN L34; // byte 0x3bd6
+  L32: POP<3>() := "rcgen50"; // byte 0x3bf0
+  L33: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x3bfe
+  L34: IF NOT "rcgen51" == a_Description[3b:46/35:0] THEN L37; // byte 0x3c06
+  L35: POP<3>() := "rcgen51"; // byte 0x3c20
+  L36: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x3c2e
+  L37: IF NOT "rcgen52" == a_Description[3b:46/35:0] THEN L40; // byte 0x3c36
+  L38: POP<3>() := "rcgen52"; // byte 0x3c50
+  L39: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x3c5e
+  L40: IF NOT "rcgen53" == a_Description[3b:46/35:0] THEN L43; // byte 0x3c66
+  L41: POP<3>() := "rcgen53"; // byte 0x3c80
+  L42: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x3c8e
+  L43: IF NOT "rcgen54" == a_Description[3b:46/35:0] THEN L46; // byte 0x3c96
+  L44: POP<3>() := "rcgen54"; // byte 0x3cb0
+  L45: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x3cbe
+  L46: IF NOT "rcgen55" == a_Description[3b:46/35:0] THEN L49; // byte 0x3cc6
+  L47: POP<3>() := "rcgen55"; // byte 0x3ce0
+  L48: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x3cee
+  L49: IF NOT "rcgen56" == a_Description[3b:46/35:0] THEN L52; // byte 0x3cf6
+  L50: POP<3>() := "rcgen56"; // byte 0x3d10
+  L51: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x3d1e
+  L52: IF NOT "startfairy" == a_Description[3b:46/35:0] THEN L55; // byte 0x3d26
+  L53: POP<4>() := fairy11[36:107]; // byte 0x3d43
+  L54: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x3d4b
+  L55: IF NOT "flgen3" == a_Description[3b:46/35:0] THEN L58; // byte 0x3d56
+  L56: POP<3>() := "flgen3"; // byte 0x3d6f
+  L57: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x3d7c
+  L58: IF NOT "flgen4" == a_Description[3b:46/35:0] THEN L61; // byte 0x3d84
+  L59: POP<3>() := "flgen4"; // byte 0x3d9d
+  L60: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x3daa
+  L61: IF NOT "flgen5" == a_Description[3b:46/35:0] THEN L64; // byte 0x3db2
+  L62: POP<3>() := "flgen5"; // byte 0x3dcb
+  L63: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x3dd8
+  L64: IF NOT "flgen6" == a_Description[3b:46/35:0] THEN L67; // byte 0x3de0
+  L65: POP<3>() := "flgen6"; // byte 0x3df9
+  L66: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x3e06
+  L67: IF NOT "flgen7" == a_Description[3b:46/35:0] THEN L70; // byte 0x3e0e
+  L68: POP<3>() := "flgen7"; // byte 0x3e27
+  L69: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x3e34
+  L70: IF NOT "flgen8" == a_Description[3b:46/35:0] THEN L73; // byte 0x3e3c
+  L71: POP<3>() := "flgen8"; // byte 0x3e55
+  L72: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x3e62
+  L73: IF NOT "flgen9" == a_Description[3b:46/35:0] THEN L76; // byte 0x3e6a
+  L74: POP<3>() := "flgen9"; // byte 0x3e83
+  L75: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x3e90
+  L76: IF NOT "volumedown" == a_Description[3b:46/35:0] THEN L80; // byte 0x3e98
+  L77: POP<1>() := 0.5; // byte 0x3eb5
+  L78: POP<4>() := muziek[36:100]; // byte 0x3ec2
+  L79: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x3eca
+  L80: IF NOT "volumeup" == a_Description[3b:46/35:0] THEN RETURN; // byte 0x3ed5
+  L81: POP<1>() := 2.0; // byte 0x3ef0
+  L82: POP<4>() := muziek[36:100]; // byte 0x3efd
+  L83: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x3f05
+  L84: GOTO RETURN; // byte 0x3f10
+}
+parameter string a_Description; // id=3b:46/35:0 bytes=0x39b4..0x39ca
+parameter double a_Time; // id=3b:46/35:1 bytes=0x39ca..0x39d9
+function void CSL002_MotionCommand(string a_Description, double a_Time); // id=3b:47 bytes=0x3f15..0x410d
+{
+  L0: IF NOT "rcshow" == a_Description[3b:47/35:0] THEN L4; // byte 0x3f5d
+  L1: POP<3>() := "rcpoint2"; // byte 0x3f76
+  L2: POP<2>() := 12; // byte 0x3f85
+  L3: SELF := CALL RcShowAtSpawnPoint[41:19](stack; flag=1); // byte 0x3f8e
+  L4: IF NOT "startcutscene" == a_Description[3b:47/35:0] THEN L7; // byte 0x3f96
+  L5: POP<1>() := 1.0; // byte 0x3fb6
+  L6: SELF := CALL StartCutScene[41:12](stack; flag=1); // byte 0x3fc3
+  L7: IF NOT "stopcutscene" == a_Description[3b:47/35:0] THEN L10; // byte 0x3fcb
+  L8: POP<1>() := 1.0; // byte 0x3fea
+  L9: SELF := CALL StopCutScene[41:13](stack; flag=1); // byte 0x3ff7
+  L10: IF NOT "startcamera" == a_Description[3b:47/35:0] THEN L13; // byte 0x3fff
+  L11: POP<4>() := camera2[36:45]; // byte 0x401d
+  L12: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x4025
+  L13: IF NOT "startfairy" == a_Description[3b:47/35:0] THEN L16; // byte 0x4030
+  L14: POP<4>() := fairy2[36:50]; // byte 0x404d
+  L15: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x4055
+  L16: IF NOT "flgen10" == a_Description[3b:47/35:0] THEN L19; // byte 0x4060
+  L17: POP<3>() := "flgen10"; // byte 0x407a
+  L18: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x4088
+  L19: IF NOT "volumedown" == a_Description[3b:47/35:0] THEN L23; // byte 0x4090
+  L20: POP<1>() := 0.5; // byte 0x40ad
+  L21: POP<4>() := muziek[36:100]; // byte 0x40ba
+  L22: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x40c2
+  L23: IF NOT "volumeup" == a_Description[3b:47/35:0] THEN RETURN; // byte 0x40cd
+  L24: POP<1>() := 2.0; // byte 0x40e8
+  L25: POP<4>() := muziek[36:100]; // byte 0x40f5
+  L26: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x40fd
+  L27: GOTO RETURN; // byte 0x4108
+}
+parameter string a_Description; // id=3b:47/35:0 bytes=0x3f32..0x3f48
+parameter double a_Time; // id=3b:47/35:1 bytes=0x3f48..0x3f57
+function void CSL003_MotionCommand(string a_Description, double a_Time); // id=3b:48 bytes=0x410d..0x4305
+{
+  L0: IF NOT "rcshow" == a_Description[3b:48/35:0] THEN L4; // byte 0x4155
+  L1: POP<3>() := "rcpoint3"; // byte 0x416e
+  L2: POP<2>() := 3; // byte 0x417d
+  L3: SELF := CALL RcShowAtSpawnPoint[41:19](stack; flag=1); // byte 0x4186
+  L4: IF NOT "startcutscene" == a_Description[3b:48/35:0] THEN L7; // byte 0x418e
+  L5: POP<1>() := 1.0; // byte 0x41ae
+  L6: SELF := CALL StartCutScene[41:12](stack; flag=1); // byte 0x41bb
+  L7: IF NOT "stopcutscene" == a_Description[3b:48/35:0] THEN L10; // byte 0x41c3
+  L8: POP<1>() := 1.0; // byte 0x41e2
+  L9: SELF := CALL StopCutScene[41:13](stack; flag=1); // byte 0x41ef
+  L10: IF NOT "startcamera" == a_Description[3b:48/35:0] THEN L13; // byte 0x41f7
+  L11: POP<4>() := camera3[36:48]; // byte 0x4215
+  L12: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x421d
+  L13: IF NOT "startfairy" == a_Description[3b:48/35:0] THEN L16; // byte 0x4228
+  L14: POP<4>() := fairy3[36:49]; // byte 0x4245
+  L15: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x424d
+  L16: IF NOT "flgen11" == a_Description[3b:48/35:0] THEN L19; // byte 0x4258
+  L17: POP<3>() := "flgen11"; // byte 0x4272
+  L18: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x4280
+  L19: IF NOT "volumedown" == a_Description[3b:48/35:0] THEN L23; // byte 0x4288
+  L20: POP<1>() := 0.5; // byte 0x42a5
+  L21: POP<4>() := muziek[36:100]; // byte 0x42b2
+  L22: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x42ba
+  L23: IF NOT "volumeup" == a_Description[3b:48/35:0] THEN RETURN; // byte 0x42c5
+  L24: POP<1>() := 2.0; // byte 0x42e0
+  L25: POP<4>() := muziek[36:100]; // byte 0x42ed
+  L26: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x42f5
+  L27: GOTO RETURN; // byte 0x4300
+}
+parameter string a_Description; // id=3b:48/35:0 bytes=0x412a..0x4140
+parameter double a_Time; // id=3b:48/35:1 bytes=0x4140..0x414f
+function void CSL004_MotionCommand(string a_Description, double a_Time); // id=3b:49 bytes=0x4305..0x45bf
+{
+  L0: IF NOT "rcshow" == a_Description[3b:49/35:0] THEN L4; // byte 0x434d
+  L1: POP<3>() := "rcpoint4"; // byte 0x4366
+  L2: POP<2>() := 3; // byte 0x4375
+  L3: SELF := CALL RcShowAtSpawnPoint[41:19](stack; flag=1); // byte 0x437e
+  L4: IF NOT "startcutscene" == a_Description[3b:49/35:0] THEN L7; // byte 0x4386
+  L5: POP<1>() := 1.0; // byte 0x43a6
+  L6: SELF := CALL StartCutScene[41:12](stack; flag=1); // byte 0x43b3
+  L7: IF NOT "stopcutscene" == a_Description[3b:49/35:0] THEN L10; // byte 0x43bb
+  L8: POP<1>() := 1.0; // byte 0x43da
+  L9: SELF := CALL StopCutScene[41:13](stack; flag=1); // byte 0x43e7
+  L10: IF NOT "startcamera" == a_Description[3b:49/35:0] THEN L13; // byte 0x43ef
+  L11: POP<4>() := camera4[36:55]; // byte 0x440d
+  L12: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x4415
+  L13: IF NOT "startcamera1" == a_Description[3b:49/35:0] THEN L16; // byte 0x4420
+  L14: POP<4>() := camera5[36:54]; // byte 0x443f
+  L15: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x4447
+  L16: IF NOT "rcgen57" == a_Description[3b:49/35:0] THEN L19; // byte 0x4452
+  L17: POP<3>() := "rcgen57"; // byte 0x446c
+  L18: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x447a
+  L19: IF NOT "startfairy" == a_Description[3b:49/35:0] THEN L22; // byte 0x4482
+  L20: POP<4>() := fairy4[36:56]; // byte 0x449f
+  L21: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x44a7
+  L22: IF NOT "flgen12" == a_Description[3b:49/35:0] THEN L25; // byte 0x44b2
+  L23: POP<3>() := "flgen12"; // byte 0x44cc
+  L24: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x44da
+  L25: IF NOT "flgen13" == a_Description[3b:49/35:0] THEN L28; // byte 0x44e2
+  L26: POP<3>() := "flgen13"; // byte 0x44fc
+  L27: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x450a
+  L28: IF NOT "flgen14" == a_Description[3b:49/35:0] THEN L31; // byte 0x4512
+  L29: POP<3>() := "flgen14"; // byte 0x452c
+  L30: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x453a
+  L31: IF NOT "volumedown" == a_Description[3b:49/35:0] THEN L35; // byte 0x4542
+  L32: POP<1>() := 0.5; // byte 0x455f
+  L33: POP<4>() := muziek[36:100]; // byte 0x456c
+  L34: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x4574
+  L35: IF NOT "volumeup" == a_Description[3b:49/35:0] THEN RETURN; // byte 0x457f
+  L36: POP<1>() := 2.0; // byte 0x459a
+  L37: POP<4>() := muziek[36:100]; // byte 0x45a7
+  L38: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x45af
+  L39: GOTO RETURN; // byte 0x45ba
+}
+parameter string a_Description; // id=3b:49/35:0 bytes=0x4322..0x4338
+parameter double a_Time; // id=3b:49/35:1 bytes=0x4338..0x4347
+function void CSL005_MotionCommand(string a_Description, double a_Time); // id=3b:50 bytes=0x45bf..0x48db
+{
+  L0: IF NOT "rcshow" == a_Description[3b:50/35:0] THEN L4; // byte 0x4607
+  L1: POP<3>() := "rcpoint5"; // byte 0x4620
+  L2: POP<2>() := 2; // byte 0x462f
+  L3: SELF := CALL RcShowAtSpawnPoint[41:19](stack; flag=1); // byte 0x4638
+  L4: IF NOT "startcutscene" == a_Description[3b:50/35:0] THEN L7; // byte 0x4640
+  L5: POP<1>() := 1.0; // byte 0x4660
+  L6: SELF := CALL StartCutScene[41:12](stack; flag=1); // byte 0x466d
+  L7: IF NOT "stopcutscene" == a_Description[3b:50/35:0] THEN L10; // byte 0x4675
+  L8: POP<1>() := 1.0; // byte 0x4694
+  L9: SELF := CALL StopCutScene[41:13](stack; flag=1); // byte 0x46a1
+  L10: IF NOT "startcamera" == a_Description[3b:50/35:0] THEN L13; // byte 0x46a9
+  L11: POP<4>() := camera6[36:60]; // byte 0x46c7
+  L12: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x46cf
+  L13: IF NOT "startcamera1" == a_Description[3b:50/35:0] THEN L16; // byte 0x46da
+  L14: POP<4>() := camera7[36:61]; // byte 0x46f9
+  L15: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x4701
+  L16: IF NOT "startcamera2" == a_Description[3b:50/35:0] THEN L19; // byte 0x470c
+  L17: POP<4>() := camera8[36:62]; // byte 0x472b
+  L18: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x4733
+  L19: IF NOT "rcgen58" == a_Description[3b:50/35:0] THEN L22; // byte 0x473e
+  L20: POP<3>() := "rcgen58"; // byte 0x4758
+  L21: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x4766
+  L22: IF NOT "rcgen59" == a_Description[3b:50/35:0] THEN L25; // byte 0x476e
+  L23: POP<3>() := "rcgen59"; // byte 0x4788
+  L24: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x4796
+  L25: IF NOT "startfairy" == a_Description[3b:50/35:0] THEN L28; // byte 0x479e
+  L26: POP<4>() := fairy5[36:59]; // byte 0x47bb
+  L27: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x47c3
+  L28: IF NOT "flgen15" == a_Description[3b:50/35:0] THEN L31; // byte 0x47ce
+  L29: POP<3>() := "flgen15"; // byte 0x47e8
+  L30: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x47f6
+  L31: IF NOT "flgen16" == a_Description[3b:50/35:0] THEN L34; // byte 0x47fe
+  L32: POP<3>() := "flgen16"; // byte 0x4818
+  L33: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x4826
+  L34: IF NOT "flgen17" == a_Description[3b:50/35:0] THEN L37; // byte 0x482e
+  L35: POP<3>() := "flgen17"; // byte 0x4848
+  L36: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x4856
+  L37: IF NOT "volumedown" == a_Description[3b:50/35:0] THEN L41; // byte 0x485e
+  L38: POP<1>() := 0.5; // byte 0x487b
+  L39: POP<4>() := muziek[36:100]; // byte 0x4888
+  L40: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x4890
+  L41: IF NOT "volumeup" == a_Description[3b:50/35:0] THEN RETURN; // byte 0x489b
+  L42: POP<1>() := 2.0; // byte 0x48b6
+  L43: POP<4>() := muziek[36:100]; // byte 0x48c3
+  L44: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x48cb
+  L45: GOTO RETURN; // byte 0x48d6
+}
+parameter string a_Description; // id=3b:50/35:0 bytes=0x45dc..0x45f2
+parameter double a_Time; // id=3b:50/35:1 bytes=0x45f2..0x4601
+function void CSL006_MotionCommand(string a_Description, double a_Time); // id=3b:51 bytes=0x48db..0x4b78
+{
+  L0: IF NOT "rcshow" == a_Description[3b:51/35:0] THEN L4; // byte 0x4923
+  L1: POP<3>() := "rcpoint6"; // byte 0x493c
+  L2: POP<2>() := 2; // byte 0x494b
+  L3: SELF := CALL RcShowAtSpawnPoint[41:19](stack; flag=1); // byte 0x4954
+  L4: IF NOT "startcutscene" == a_Description[3b:51/35:0] THEN L7; // byte 0x495c
+  L5: POP<1>() := 1.0; // byte 0x497c
+  L6: SELF := CALL StartCutScene[41:12](stack; flag=1); // byte 0x4989
+  L7: IF NOT "stopcutscene" == a_Description[3b:51/35:0] THEN L12; // byte 0x4991
+  L8: POP<4>() := csmc06_tr[36:63]; // byte 0x49b0
+  L9: SELF := CALL Disable[42:0/3c:6](stack; flag=1); // byte 0x49b8
+  L10: POP<1>() := 1.0; // byte 0x49c3
+  L11: SELF := CALL StopCutScene[41:13](stack; flag=1); // byte 0x49d0
+  L12: IF NOT "startcamera" == a_Description[3b:51/35:0] THEN L15; // byte 0x49d8
+  L13: POP<4>() := camera9[36:66]; // byte 0x49f6
+  L14: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x49fe
+  L15: IF NOT "startcamera1" == a_Description[3b:51/35:0] THEN L18; // byte 0x4a09
+  L16: POP<4>() := camera10[36:67]; // byte 0x4a28
+  L17: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x4a30
+  L18: IF NOT "rcgen60" == a_Description[3b:51/35:0] THEN L21; // byte 0x4a3b
+  L19: POP<3>() := "rcgen60"; // byte 0x4a55
+  L20: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x4a63
+  L21: IF NOT "startfairy" == a_Description[3b:51/35:0] THEN L24; // byte 0x4a6b
+  L22: POP<4>() := fairy6[36:65]; // byte 0x4a88
+  L23: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x4a90
+  L24: IF NOT "flgen18" == a_Description[3b:51/35:0] THEN L27; // byte 0x4a9b
+  L25: POP<3>() := "flgen18"; // byte 0x4ab5
+  L26: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x4ac3
+  L27: IF NOT "flgen19" == a_Description[3b:51/35:0] THEN L30; // byte 0x4acb
+  L28: POP<3>() := "flgen19"; // byte 0x4ae5
+  L29: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x4af3
+  L30: IF NOT "volumedown" == a_Description[3b:51/35:0] THEN L34; // byte 0x4afb
+  L31: POP<1>() := 0.5; // byte 0x4b18
+  L32: POP<4>() := muziek[36:100]; // byte 0x4b25
+  L33: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x4b2d
+  L34: IF NOT "volumeup" == a_Description[3b:51/35:0] THEN RETURN; // byte 0x4b38
+  L35: POP<1>() := 2.0; // byte 0x4b53
+  L36: POP<4>() := muziek[36:100]; // byte 0x4b60
+  L37: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x4b68
+  L38: GOTO RETURN; // byte 0x4b73
+}
+parameter string a_Description; // id=3b:51/35:0 bytes=0x48f8..0x490e
+parameter double a_Time; // id=3b:51/35:1 bytes=0x490e..0x491d
+function void CSL007_MotionCommand(string a_Description, double a_Time); // id=3b:52 bytes=0x4b78..0x4d70
+{
+  L0: IF NOT "rcshow" == a_Description[3b:52/35:0] THEN L4; // byte 0x4bc0
+  L1: POP<3>() := "rcpoint6"; // byte 0x4bd9
+  L2: POP<2>() := 2; // byte 0x4be8
+  L3: SELF := CALL RcShowAtSpawnPoint[41:19](stack; flag=1); // byte 0x4bf1
+  L4: IF NOT "startcutscene" == a_Description[3b:52/35:0] THEN L7; // byte 0x4bf9
+  L5: POP<1>() := 1.0; // byte 0x4c19
+  L6: SELF := CALL StartCutScene[41:12](stack; flag=1); // byte 0x4c26
+  L7: IF NOT "stopcutscene" == a_Description[3b:52/35:0] THEN L12; // byte 0x4c2e
+  L8: POP<4>() := csmc11[36:105]; // byte 0x4c4d
+  L9: SELF := CALL Disable[42:0/3c:6](stack; flag=1); // byte 0x4c55
+  L10: POP<1>() := 1.0; // byte 0x4c60
+  L11: SELF := CALL StopCutScene[41:13](stack; flag=1); // byte 0x4c6d
+  L12: IF "startcamera" == a_Description[3b:52/35:0] THEN L13; // byte 0x4c75
+  L13: IF NOT "startfairy" == a_Description[3b:52/35:0] THEN L16; // byte 0x4c93
+  L14: POP<4>() := fairy10[36:106]; // byte 0x4cb0
+  L15: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x4cb8
+  L16: IF NOT "flgen20" == a_Description[3b:52/35:0] THEN L19; // byte 0x4cc3
+  L17: POP<3>() := "flgen20"; // byte 0x4cdd
+  L18: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x4ceb
+  L19: IF NOT "volumedown" == a_Description[3b:52/35:0] THEN L23; // byte 0x4cf3
+  L20: POP<1>() := 0.5; // byte 0x4d10
+  L21: POP<4>() := muziek[36:100]; // byte 0x4d1d
+  L22: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x4d25
+  L23: IF NOT "volumeup" == a_Description[3b:52/35:0] THEN RETURN; // byte 0x4d30
+  L24: POP<1>() := 2.0; // byte 0x4d4b
+  L25: POP<4>() := muziek[36:100]; // byte 0x4d58
+  L26: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x4d60
+  L27: GOTO RETURN; // byte 0x4d6b
+}
+parameter string a_Description; // id=3b:52/35:0 bytes=0x4b95..0x4bab
+parameter double a_Time; // id=3b:52/35:1 bytes=0x4bab..0x4bba
+function void CSL008_MotionCommand(string a_Description, double a_Time); // id=3b:53 bytes=0x4d70..0x4fc8
+{
+  L0: IF NOT "rcshow" == a_Description[3b:53/35:0] THEN L4; // byte 0x4db8
+  L1: POP<3>() := "rcpoint9"; // byte 0x4dd1
+  L2: POP<2>() := 12; // byte 0x4de0
+  L3: SELF := CALL RcShowAtSpawnPoint[41:19](stack; flag=1); // byte 0x4de9
+  L4: IF NOT "startcutscene" == a_Description[3b:53/35:0] THEN L7; // byte 0x4df1
+  L5: POP<1>() := 1.0; // byte 0x4e11
+  L6: SELF := CALL StartCutScene[41:12](stack; flag=1); // byte 0x4e1e
+  L7: IF NOT "stopcutscene" == a_Description[3b:53/35:0] THEN L10; // byte 0x4e26
+  L8: POP<1>() := 1.0; // byte 0x4e45
+  L9: SELF := CALL StopCutScene[41:13](stack; flag=1); // byte 0x4e52
+  L10: IF NOT "startcamera" == a_Description[3b:53/35:0] THEN L13; // byte 0x4e5a
+  L11: POP<4>() := camera11[36:76]; // byte 0x4e78
+  L12: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x4e80
+  L13: IF NOT "rcgen61" == a_Description[3b:53/35:0] THEN L16; // byte 0x4e8b
+  L14: POP<3>() := "rcgen61"; // byte 0x4ea5
+  L15: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x4eb3
+  L16: IF NOT "startfairy" == a_Description[3b:53/35:0] THEN L19; // byte 0x4ebb
+  L17: POP<4>() := fairy7[36:75]; // byte 0x4ed8
+  L18: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x4ee0
+  L19: IF NOT "flgen21" == a_Description[3b:53/35:0] THEN L22; // byte 0x4eeb
+  L20: POP<3>() := "flgen21"; // byte 0x4f05
+  L21: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x4f13
+  L22: IF NOT "flgen22" == a_Description[3b:53/35:0] THEN L25; // byte 0x4f1b
+  L23: POP<3>() := "flgen22"; // byte 0x4f35
+  L24: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x4f43
+  L25: IF NOT "volumedown" == a_Description[3b:53/35:0] THEN L29; // byte 0x4f4b
+  L26: POP<1>() := 0.5; // byte 0x4f68
+  L27: POP<4>() := muziek[36:100]; // byte 0x4f75
+  L28: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x4f7d
+  L29: IF NOT "volumeup" == a_Description[3b:53/35:0] THEN RETURN; // byte 0x4f88
+  L30: POP<1>() := 2.0; // byte 0x4fa3
+  L31: POP<4>() := muziek[36:100]; // byte 0x4fb0
+  L32: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x4fb8
+  L33: GOTO RETURN; // byte 0x4fc3
+}
+parameter string a_Description; // id=3b:53/35:0 bytes=0x4d8d..0x4da3
+parameter double a_Time; // id=3b:53/35:1 bytes=0x4da3..0x4db2
+function void CSL009_MotionCommand(string a_Description, double a_Time); // id=3b:54 bytes=0x4fc8..0x5222
+{
+  L0: IF NOT "rcshow" == a_Description[3b:54/35:0] THEN L4; // byte 0x5010
+  L1: POP<3>() := "rcpoint7"; // byte 0x5029
+  L2: POP<2>() := 1; // byte 0x5038
+  L3: SELF := CALL RcShowAtSpawnPoint[41:19](stack; flag=1); // byte 0x5041
+  L4: IF NOT "startcutscene" == a_Description[3b:54/35:0] THEN L7; // byte 0x5049
+  L5: POP<1>() := 1.0; // byte 0x5069
+  L6: SELF := CALL StartCutScene[41:12](stack; flag=1); // byte 0x5076
+  L7: IF NOT "stopcutscene" == a_Description[3b:54/35:0] THEN L10; // byte 0x507e
+  L8: POP<1>() := 1.0; // byte 0x509d
+  L9: SELF := CALL StopCutScene[41:13](stack; flag=1); // byte 0x50aa
+  L10: IF NOT "startcamera" == a_Description[3b:54/35:0] THEN L13; // byte 0x50b2
+  L11: POP<4>() := camera13[36:81]; // byte 0x50d0
+  L12: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x50d8
+  L13: IF NOT "startcamera1" == a_Description[3b:54/35:0] THEN L16; // byte 0x50e3
+  L14: POP<4>() := camera14[36:83]; // byte 0x5102
+  L15: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x510a
+  L16: IF NOT "rcgen62" == a_Description[3b:54/35:0] THEN L19; // byte 0x5115
+  L17: POP<3>() := "rcgen62"; // byte 0x512f
+  L18: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x513d
+  L19: IF NOT "startfairy" == a_Description[3b:54/35:0] THEN L22; // byte 0x5145
+  L20: POP<4>() := fairy8[36:80]; // byte 0x5162
+  L21: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x516a
+  L22: IF NOT "flgen23" == a_Description[3b:54/35:0] THEN L25; // byte 0x5175
+  L23: POP<3>() := "flgen23"; // byte 0x518f
+  L24: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x519d
+  L25: IF NOT "volumedown" == a_Description[3b:54/35:0] THEN L29; // byte 0x51a5
+  L26: POP<1>() := 0.5; // byte 0x51c2
+  L27: POP<4>() := muziek[36:100]; // byte 0x51cf
+  L28: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x51d7
+  L29: IF NOT "volumeup" == a_Description[3b:54/35:0] THEN RETURN; // byte 0x51e2
+  L30: POP<1>() := 2.0; // byte 0x51fd
+  L31: POP<4>() := muziek[36:100]; // byte 0x520a
+  L32: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x5212
+  L33: GOTO RETURN; // byte 0x521d
+}
+parameter string a_Description; // id=3b:54/35:0 bytes=0x4fe5..0x4ffb
+parameter double a_Time; // id=3b:54/35:1 bytes=0x4ffb..0x500a
+function void CSL010_MotionCommand(string a_Description, double a_Time); // id=3b:55 bytes=0x5222..0x54dc
+{
+  L0: IF NOT "rcshow" == a_Description[3b:55/35:0] THEN L4; // byte 0x526a
+  L1: POP<3>() := "rcpoint8"; // byte 0x5283
+  L2: POP<2>() := 3; // byte 0x5292
+  L3: SELF := CALL RcShowAtSpawnPoint[41:19](stack; flag=1); // byte 0x529b
+  L4: IF NOT "startcutscene" == a_Description[3b:55/35:0] THEN L7; // byte 0x52a3
+  L5: POP<1>() := 1.0; // byte 0x52c3
+  L6: SELF := CALL StartCutScene[41:12](stack; flag=1); // byte 0x52d0
+  L7: IF NOT "stopcutscene" == a_Description[3b:55/35:0] THEN L10; // byte 0x52d8
+  L8: POP<1>() := 1.0; // byte 0x52f7
+  L9: SELF := CALL StopCutScene[41:13](stack; flag=1); // byte 0x5304
+  L10: IF NOT "startcamera" == a_Description[3b:55/35:0] THEN L13; // byte 0x530c
+  L11: POP<4>() := camera15[36:95]; // byte 0x532a
+  L12: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x5332
+  L13: IF NOT "startcamera1" == a_Description[3b:55/35:0] THEN L16; // byte 0x533d
+  L14: POP<4>() := camera16[36:96]; // byte 0x535c
+  L15: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x5364
+  L16: IF NOT "rcgen63" == a_Description[3b:55/35:0] THEN L19; // byte 0x536f
+  L17: POP<3>() := "rcgen63"; // byte 0x5389
+  L18: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x5397
+  L19: IF NOT "rcgen64" == a_Description[3b:55/35:0] THEN L22; // byte 0x539f
+  L20: POP<3>() := "rcgen64"; // byte 0x53b9
+  L21: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x53c7
+  L22: IF NOT "startfairy" == a_Description[3b:55/35:0] THEN L25; // byte 0x53cf
+  L23: POP<4>() := fairy9[36:94]; // byte 0x53ec
+  L24: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x53f4
+  L25: IF NOT "flgen24" == a_Description[3b:55/35:0] THEN L28; // byte 0x53ff
+  L26: POP<3>() := "flgen24"; // byte 0x5419
+  L27: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x5427
+  L28: IF NOT "flgen25" == a_Description[3b:55/35:0] THEN L31; // byte 0x542f
+  L29: POP<3>() := "flgen25"; // byte 0x5449
+  L30: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x5457
+  L31: IF NOT "volumedown" == a_Description[3b:55/35:0] THEN L35; // byte 0x545f
+  L32: POP<1>() := 0.5; // byte 0x547c
+  L33: POP<4>() := muziek[36:100]; // byte 0x5489
+  L34: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x5491
+  L35: IF NOT "volumeup" == a_Description[3b:55/35:0] THEN RETURN; // byte 0x549c
+  L36: POP<1>() := 2.0; // byte 0x54b7
+  L37: POP<4>() := muziek[36:100]; // byte 0x54c4
+  L38: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x54cc
+  L39: GOTO RETURN; // byte 0x54d7
+}
+parameter string a_Description; // id=3b:55/35:0 bytes=0x523f..0x5255
+parameter double a_Time; // id=3b:55/35:1 bytes=0x5255..0x5264
+function void CSL011_MotionCommand(string a_Description, double a_Time); // id=3b:56 bytes=0x54dc..0x57e2
+{
+  L0: IF NOT "startcutscene" == a_Description[3b:56/35:0] THEN L3; // byte 0x5524
+  L1: POP<1>() := 1.0; // byte 0x5544
+  L2: SELF := CALL StartCutScene[41:12](stack; flag=1); // byte 0x5551
+  L3: IF NOT "stopcutscene" == a_Description[3b:56/35:0] THEN L6; // byte 0x5559
+  L4: POP<1>() := 1.0; // byte 0x5578
+  L5: SELF := CALL StopCutScene[41:13](stack; flag=1); // byte 0x5585
+  L6: IF NOT "startcamera" == a_Description[3b:56/35:0] THEN L9; // byte 0x558d
+  L7: POP<4>() := camera20[36:120]; // byte 0x55ab
+  L8: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x55b3
+  L9: IF NOT "startcamera1" == a_Description[3b:56/35:0] THEN L12; // byte 0x55be
+  L10: POP<4>() := camera21[36:121]; // byte 0x55dd
+  L11: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x55e5
+  L12: IF NOT "startbrutus" == a_Description[3b:56/35:0] THEN L15; // byte 0x55f0
+  L13: POP<4>() := brutus[36:97]; // byte 0x560e
+  L14: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x5616
+  L15: IF NOT "Brlvl1" == a_Description[3b:56/35:0] THEN L18; // byte 0x5621
+  L16: POP<3>() := "Brlvl1"; // byte 0x563a
+  L17: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x5647
+  L18: IF NOT "Brlvl2" == a_Description[3b:56/35:0] THEN L21; // byte 0x564f
+  L19: POP<3>() := "Brlvl2"; // byte 0x5668
+  L20: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x5675
+  L21: IF NOT "Brlvl3" == a_Description[3b:56/35:0] THEN L24; // byte 0x567d
+  L22: POP<3>() := "Brlvl3"; // byte 0x5696
+  L23: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x56a3
+  L24: IF NOT "Brlvl4" == a_Description[3b:56/35:0] THEN L27; // byte 0x56ab
+  L25: POP<3>() := "Brlvl4"; // byte 0x56c4
+  L26: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x56d1
+  L27: IF NOT "Brlvl5" == a_Description[3b:56/35:0] THEN L30; // byte 0x56d9
+  L28: POP<3>() := "Brlvl5"; // byte 0x56f2
+  L29: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x56ff
+  L30: IF NOT "Brlvl6" == a_Description[3b:56/35:0] THEN L33; // byte 0x5707
+  L31: POP<3>() := "Brlvl6"; // byte 0x5720
+  L32: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x572d
+  L33: IF NOT "startmusic" == a_Description[3b:56/35:0] THEN L36; // byte 0x5735
+  L34: POP<4>() := muziek[36:100]; // byte 0x5752
+  L35: SELF := CALL PlaySpecial[42:0/3c:26](stack; flag=1); // byte 0x575a
+  L36: IF NOT "volumedown" == a_Description[3b:56/35:0] THEN L40; // byte 0x5765
+  L37: POP<1>() := 0.5; // byte 0x5782
+  L38: POP<4>() := muziek[36:100]; // byte 0x578f
+  L39: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x5797
+  L40: IF NOT "volumeup" == a_Description[3b:56/35:0] THEN RETURN; // byte 0x57a2
+  L41: POP<1>() := 2.0; // byte 0x57bd
+  L42: POP<4>() := muziek[36:100]; // byte 0x57ca
+  L43: SELF := CALL MultiplyVolume[42:0/3c:18](stack; flag=1); // byte 0x57d2
+  L44: GOTO RETURN; // byte 0x57dd
+}
+parameter string a_Description; // id=3b:56/35:0 bytes=0x54f9..0x550f
+parameter double a_Time; // id=3b:56/35:1 bytes=0x550f..0x551e
+function void CSL012_MotionCommand(string a_Description, double a_Time); // id=3b:57 bytes=0x57e2..0x5ab0
+{
+  L0: IF NOT "startcutscene" == a_Description[3b:57/35:0] THEN L3; // byte 0x582a
+  L1: POP<1>() := 1.0; // byte 0x584a
+  L2: SELF := CALL StartCutScene[41:12](stack; flag=1); // byte 0x5857
+  L3: IF NOT "stopcutscene" == a_Description[3b:57/35:0] THEN L6; // byte 0x585f
+  L4: POP<1>() := 1.0; // byte 0x587e
+  L5: SELF := CALL StopCutScene[41:13](stack; flag=1); // byte 0x588b
+  L6: IF NOT "startcamera" == a_Description[3b:57/35:0] THEN L9; // byte 0x5893
+  L7: POP<4>() := camera22[36:123]; // byte 0x58b1
+  L8: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x58b9
+  L9: IF NOT "startcamera1" == a_Description[3b:57/35:0] THEN L12; // byte 0x58c4
+  L10: POP<4>() := camera23[36:124]; // byte 0x58e3
+  L11: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x58eb
+  L12: IF NOT "mirror" == a_Description[3b:57/35:0] THEN L15; // byte 0x58f6
+  L13: POP<4>() := mirrormodel_mc[36:119]; // byte 0x590f
+  L14: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x5917
+  L15: IF NOT "endshow" == a_Description[3b:57/35:0] THEN L19; // byte 0x5922
+  L16: POP<3>() := "endshow"; // byte 0x593c
+  L17: POP<2>() := 6; // byte 0x594a
+  L18: SELF := CALL RcShowAtSpawnPoint[41:19](stack; flag=1); // byte 0x5953
+  L19: IF NOT "rcgen65" == a_Description[3b:57/35:0] THEN L22; // byte 0x595b
+  L20: POP<3>() := "rcgen65"; // byte 0x5975
+  L21: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x5983
+  L22: IF NOT "rcgen66" == a_Description[3b:57/35:0] THEN L25; // byte 0x598b
+  L23: POP<3>() := "rcgen66"; // byte 0x59a5
+  L24: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x59b3
+  L25: IF NOT "rcgen17" == a_Description[3b:57/35:0] THEN L28; // byte 0x59bb
+  L26: POP<3>() := "rcgen17"; // byte 0x59d5
+  L27: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x59e3
+  L28: IF NOT "startfairy" == a_Description[3b:57/35:0] THEN L31; // byte 0x59eb
+  L29: POP<4>() := fairy12[36:122]; // byte 0x5a08
+  L30: SELF := CALL Enable[42:0/3c:9](stack; flag=1); // byte 0x5a10
+  L31: IF NOT "flgen26" == a_Description[3b:57/35:0] THEN L34; // byte 0x5a1b
+  L32: POP<3>() := "flgen26"; // byte 0x5a35
+  L33: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x5a43
+  L34: IF NOT "flgen27" == a_Description[3b:57/35:0] THEN L37; // byte 0x5a4b
+  L35: POP<3>() := "flgen27"; // byte 0x5a65
+  L36: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x5a73
+  L37: IF NOT "flgen28" == a_Description[3b:57/35:0] THEN RETURN; // byte 0x5a7b
+  L38: POP<3>() := "flgen28"; // byte 0x5a95
+  L39: SELF := CALL CutSceneSay[41:14](stack; flag=1); // byte 0x5aa3
+  L40: GOTO RETURN; // byte 0x5aab
+}
+parameter string a_Description; // id=3b:57/35:0 bytes=0x57ff..0x5815
+parameter double a_Time; // id=3b:57/35:1 bytes=0x5815..0x5824
+function void DeurReset1(); // id=3b:58 bytes=0x5ab0..0x5bb2
+{
+  L0: POP<4>() := deur1_mc[36:0]; // byte 0x5ac9
+  L1: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0x5ad1
+  L2: POP<4>() := deur2_mc[36:1]; // byte 0x5adc
+  L3: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5ae4
+  L4: POP<4>() := deur3_mc[36:2]; // byte 0x5aef
+  L5: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5af7
+  L6: POP<4>() := deur4_mc[36:7]; // byte 0x5b02
+  L7: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5b0a
+  L8: POP<4>() := deur5_mc[36:8]; // byte 0x5b15
+  L9: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5b1d
+  L10: POP<4>() := deur6_mc[36:9]; // byte 0x5b28
+  L11: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5b30
+  L12: POP<4>() := deur7_mc[36:10]; // byte 0x5b3b
+  L13: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5b43
+  L14: POP<4>() := deur8_mc[36:11]; // byte 0x5b4e
+  L15: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5b56
+  L16: POP<4>() := deur9_mc[36:12]; // byte 0x5b61
+  L17: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5b69
+  L18: POP<4>() := deur10_mc[36:13]; // byte 0x5b74
+  L19: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5b7c
+  L20: POP<4>() := deur11_mc[36:14]; // byte 0x5b87
+  L21: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5b8f
+  L22: POP<4>() := deur12_mc[36:15]; // byte 0x5b9a
+  L23: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5ba2
+  L24: GOTO RETURN; // byte 0x5bad
+}
+function void DeurReset2(); // id=3b:59 bytes=0x5bb2..0x5cb4
+{
+  L0: POP<4>() := deur1_mc[36:0]; // byte 0x5bcb
+  L1: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5bd3
+  L2: POP<4>() := deur2_mc[36:1]; // byte 0x5bde
+  L3: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5be6
+  L4: POP<4>() := deur3_mc[36:2]; // byte 0x5bf1
+  L5: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5bf9
+  L6: POP<4>() := deur4_mc[36:7]; // byte 0x5c04
+  L7: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5c0c
+  L8: POP<4>() := deur5_mc[36:8]; // byte 0x5c17
+  L9: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0x5c1f
+  L10: POP<4>() := deur6_mc[36:9]; // byte 0x5c2a
+  L11: SELF := CALL Open[42:0/3c:19](stack; flag=1); // byte 0x5c32
+  L12: POP<4>() := deur7_mc[36:10]; // byte 0x5c3d
+  L13: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5c45
+  L14: POP<4>() := deur8_mc[36:11]; // byte 0x5c50
+  L15: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5c58
+  L16: POP<4>() := deur9_mc[36:12]; // byte 0x5c63
+  L17: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5c6b
+  L18: POP<4>() := deur10_mc[36:13]; // byte 0x5c76
+  L19: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5c7e
+  L20: POP<4>() := deur11_mc[36:14]; // byte 0x5c89
+  L21: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5c91
+  L22: POP<4>() := deur12_mc[36:15]; // byte 0x5c9c
+  L23: SELF := CALL Close[42:0/3c:4](stack; flag=1); // byte 0x5ca4
+  L24: GOTO RETURN; // byte 0x5caf
+}
+function void CheckGameState(); // id=3b:60 bytes=0x5cb4..0x5d81
+{
+  L0: IF NOT 1 == CALL GetGameType[41:25](stack; flag=1) THEN RETURN; // byte 0x5cd1
+  L1: POP<4>() := csmc01_tr[36:40]; // byte 0x5ce4
+  L2: SELF := CALL Disable[42:0/3c:6](stack; flag=1); // byte 0x5cec
+  L3: POP<4>() := csmc02_tr[36:43]; // byte 0x5cf7
+  L4: SELF := CALL Disable[42:0/3c:6](stack; flag=1); // byte 0x5cff
+  L5: POP<4>() := csmc03_tr[36:46]; // byte 0x5d0a
+  L6: SELF := CALL Disable[42:0/3c:6](stack; flag=1); // byte 0x5d12
+  L7: POP<4>() := csmc04_tr[36:52]; // byte 0x5d1d
+  L8: SELF := CALL Disable[42:0/3c:6](stack; flag=1); // byte 0x5d25
+  L9: POP<4>() := csmc05_tr[36:57]; // byte 0x5d30
+  L10: SELF := CALL Disable[42:0/3c:6](stack; flag=1); // byte 0x5d38
+  L11: POP<4>() := csmc07_tr[36:73]; // byte 0x5d43
+  L12: SELF := CALL Disable[42:0/3c:6](stack; flag=1); // byte 0x5d4b
+  L13: POP<4>() := csmc08_tr[36:78]; // byte 0x5d56
+  L14: SELF := CALL Disable[42:0/3c:6](stack; flag=1); // byte 0x5d5e
+  L15: POP<4>() := csmc09_tr[36:92]; // byte 0x5d69
+  L16: SELF := CALL Disable[42:0/3c:6](stack; flag=1); // byte 0x5d71
+  L17: GOTO RETURN; // byte 0x5d7c
+}
+function void @init(); // id=3b:61 bytes=0x5d81..0x5d9a
+{
+  L0: GOTO RETURN; // byte 0x5d95
+}

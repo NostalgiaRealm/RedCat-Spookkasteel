@@ -1,0 +1,22 @@
+[OPTIONS]
+TITLE=Leesmij RedCat Spookkasteel
+CONTENTS=25R5_R1
+LCID=0x413 0x0 0x0
+COMPRESS=0
+
+[WINDOWS]
+main="",(501,0,522,992),29188,(255,255,224),(255,255,224)
+second="",(583,102,409,870),20736,(255,255,224),(255,255,224),f2
+
+[CONFIG]
+RR(`Inetwh32.dll',`INETWH_Initialize',`')
+RR(`Inetwh32.dll',`Internet',`S')
+RR(`Inetwh32.dll',`Inet',`S')
+INETWH_Initialize()
+
+[CONFIG:1]
+RR(`Inetwh32.dll',`INETWH_Initialize',`'):RR(`Inetwh32.dll',`Internet',`S'):RR(`Inetwh32.dll',`Inet',`S'):INETWH_Initialize()
+
+[FILES]
+leesmij.rtf
+
