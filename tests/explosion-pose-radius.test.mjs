@@ -2,10 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as THREE from 'three';
-import {ActorAnimator} from '../src/animation.js';
-import {CastleWorld} from '../src/world.js';
-import {Gameplay} from '../src/gameplay.js';
-import {explosionBoxDamage} from '../src/explosion-damage.js';
+import {ActorAnimator} from '../source/animation.js';
+import {CastleWorld} from '../source/world.js';
+import {Gameplay} from '../source/gameplay.js';
+import {explosionBoxDamage} from '../source/explosion-damage.js';
 
 const actors=new URL('../assets/actors/',import.meta.url);
 const load=name=>JSON.parse(fs.readFileSync(new URL(name+'.json',actors)));

@@ -1,6 +1,6 @@
 # Spelerlijst: original menu and separate adventures
 
-Implemented in the source, without generating new packages. Open **Spelerlijst**
+Open **Spelerlijst**
 beside **Instellingen** at the bottom left of the main menu. Choose a name and
 press **OK** to switch players. **Nieuw** adds a player; **Verwijderen** opens a
 Ja/Nee confirmation before removing that player's adventure.
@@ -60,7 +60,7 @@ The pre-existing **port** adventure is adopted as **Speler 1**. Its save,
 campaign progress and recovery database remain in place; migration never copies
 or discards them. This is not an importer for original Windows-game saves.
 
-`src/player-profiles.js` stores a versioned player list and selected ID under
+`source/player-profiles.js` stores a versioned player list and selected ID under
 `redcat.players.v1`. Names are display text; stable generated IDs own the data.
 
 | Data | Ownership |
@@ -111,5 +111,10 @@ players: different scores, abilities, difficulty and recovery points survive
 switching/reloading. It also checks the original voice sequences, canceled
 prompts, deletion isolation and desktop/mobile layouts. The lifecycle check
 delays a recovery write while switching, deletes the active player, and checks
-an eight-player list in short landscape and portrait windows. Evidence is retained in
-`temp_work/player-profiles/`. No original user saves are changed by these checks.
+an eight-player list in short landscape and portrait windows. These scene
+checks use the shared [current-menu navigation helper](../tests/scene-menu.mjs).
+Both passed again on 26 October 2026. Each run retains its report and captures
+in `temp_work/player-menu-scenes/run-<timestamp>/` or
+`temp_work/player-menu-lifecycle-scenes/run-<timestamp>/`; original feature
+evidence remains in `temp_work/player-profiles/`. No original user saves are
+changed by these checks.

@@ -63,7 +63,7 @@ advances the normalized direction (or copies the endpoint at `0x59c070`).
 Zombie.ini supplies Speed 50 on every difficulty. There is no evidence here
 for a separate timed rise animation; the normal walk motion continues.
 
-`src/zombie-grave-rise.js` now owns only the first, explicitly linked rising
+`source/zombie-grave-rise.js` now owns only the first, explicitly linked rising
 edge of an initially disabled zombie with `UnlinkStartPoint`. This selects
 `zombie1`–`zombie4` and `frogzom1`–`frogzom4`. The two flat plank entrances
 and initially active mausoleum zombies retain their ordinary movement.

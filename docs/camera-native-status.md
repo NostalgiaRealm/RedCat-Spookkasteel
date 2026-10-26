@@ -60,7 +60,7 @@ frame. All five authored mode-4 cameras have positive durations, so this edge
 case does not affect the supplied campaign.
 
 The earlier Catmull–Rom interpolation distributed over `CamTimeInMode` has been
-replaced. `src/script-camera.js` starts at the first waypoint, visits the points
+replaced. `source/script-camera.js` starts at the first waypoint, visits the points
 in order at the recovered speed and returns a position for the player-facing
 view; `ScriptHost` tracks its separate lifetime. The final-approach lookup is
 recovered and implemented (see the current-build details below).
@@ -106,7 +106,7 @@ That helper contains the following verified rules:
 - `0x45a53e..0x45a57a` clamps the result to 150..470. Consequently the effective
   speed is 150 below distance 59, changes in one-unit bands from 59 through 77,
   and is 470 at distance 78 or greater. The 19 unclamped float values are kept
-  exactly in `src/script-camera.js`; this is a lookup, not a generic easing curve.
+  exactly in `source/script-camera.js`; this is a lookup, not a generic easing curve.
 - Below five units, `0x45a4e4..0x45a4f3` skips the movement overwrite and retains
   the target position. The remake also snaps this final arrival distance.
 

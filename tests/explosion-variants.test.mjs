@@ -2,10 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,readdirSync} from 'node:fs';
 import * as THREE from 'three';
-import {DestructibleEffects} from '../src/destructible-effects.js';
-import {createNativeBlasts} from '../src/explosion-native.js';
+import {DestructibleEffects} from '../source/destructible-effects.js';
+import {createNativeBlasts} from '../source/explosion-native.js';
 import {NORMAL_EXPLOSION_TEXTURES,GREEN_EXPLOSION_TEXTURES,GREEN_EXPLOSION_WAVE_TEXTURE,
-  explosionFlashTexture,explosionTextureFilter,greenExplosionWave} from '../src/explosion-variants.js';
+  explosionFlashTexture,explosionTextureFilter,greenExplosionWave} from '../source/explosion-variants.js';
 
 const fixture={id:'variant',sourceId:'crate',birth:0,position:[0,2,0],settings:{explosion:{NrExplosions:1,SizePercentage:25,Green:true}}};
 const camera=[0,40,-100];

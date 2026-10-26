@@ -1,0 +1,2003 @@
+{
+  "out": "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/js-bundling-2026-10-26/browser-1793046424969",
+  "scope": "Isolated same-origin unbundled-to-bundled browser upgrade; frozen simulation for exact save checks; real render/input smoke; no full campaign playthrough.",
+  "fixture": {
+    "path": "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/web-cache-2026-10-20/run-1792491346214/seed-save.json",
+    "sha256": "3447497e2d369cbb62c3290ea66a207c531b4f80c6c1bdd1b80817795fe44b81",
+    "level": "lvl00a",
+    "unchanged": true
+  },
+  "checks": [
+    "Unbundled loader restores historical save and writes real profile-specific localStorage / IndexedDB recovery snapshots.",
+    "Same-origin bundle upgrade preserves exact save bytes, player metadata, puzzle variables and 2/5/10-minute recovery history without import.",
+    "Recovery UI loads a pre-upgrade checkpoint; second player remains independent and active selection survives reload.",
+    "All five actual levels load scripts, streamed geometry, original actors and render with the bundled runtime.",
+    "Bundled desktop gameplay processes real keyboard movement/shooting and active WebGL frames.",
+    "Mobile auto-detection, simultaneous touch movement/look and shooting/jump overlay input work through the bundled loader."
+  ],
+  "errors": [],
+  "base": "http://127.0.0.1:36043/redcatspookkasteel/",
+  "unbundledCold": {
+    "startupMs": 206.79999999701977,
+    "jsRequests": 141,
+    "jsDecodedBytes": 3235163,
+    "jsTransferredBytes": 3277463,
+    "js": [
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/main.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 70136,
+        "decodedBodySize": 69836,
+        "duration": 6.800000004470348
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/world.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 84351,
+        "decodedBodySize": 84051,
+        "duration": 9.700000002980232
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/script-host.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 30515,
+        "decodedBodySize": 30215,
+        "duration": 10.100000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/gameplay.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 79351,
+        "decodedBodySize": 79051,
+        "duration": 10.900000005960464
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/node_modules/three/build/three.module.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 663072,
+        "decodedBodySize": 662772,
+        "duration": 11.700000002980232
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/menu-audio.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3700,
+        "decodedBodySize": 3400,
+        "duration": 10
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/audio.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 25999,
+        "decodedBodySize": 25699,
+        "duration": 10.399999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/original-menu.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 9239,
+        "decodedBodySize": 8939,
+        "duration": 19.100000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/native-help.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 5246,
+        "decodedBodySize": 4946,
+        "duration": 19.100000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/menu-highscores.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2317,
+        "decodedBodySize": 2017,
+        "duration": 18.100000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/save-export.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3722,
+        "decodedBodySize": 3422,
+        "duration": 18.799999997019768
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/save-import-picker.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2346,
+        "decodedBodySize": 2046,
+        "duration": 18.899999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/save-import.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 13845,
+        "decodedBodySize": 13545,
+        "duration": 19.100000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/slider-audio.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 1874,
+        "decodedBodySize": 1574,
+        "duration": 22
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/quit-menu.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2005,
+        "decodedBodySize": 1705,
+        "duration": 22
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/control-bindings.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 6579,
+        "decodedBodySize": 6279,
+        "duration": 22
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/key-settings-menu.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 5560,
+        "decodedBodySize": 5260,
+        "duration": 22.100000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-profiles.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 10779,
+        "decodedBodySize": 10479,
+        "duration": 22.099999994039536
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-menu.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 12258,
+        "decodedBodySize": 11958,
+        "duration": 22.19999999552965
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/cheats.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2477,
+        "decodedBodySize": 2177,
+        "duration": 24.899999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/gameplay-audio.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 8714,
+        "decodedBodySize": 8414,
+        "duration": 25.099999994039536
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-placement.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3200,
+        "decodedBodySize": 2900,
+        "duration": 25.099999994039536
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/camera-control.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2440,
+        "decodedBodySize": 2140,
+        "duration": 25.100000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/hud.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 5745,
+        "decodedBodySize": 5445,
+        "duration": 25.200000002980232
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/debriefing.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 6893,
+        "decodedBodySize": 6593,
+        "duration": 25.200000002980232
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/cutscene-skip.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 823,
+        "decodedBodySize": 523,
+        "duration": 28.30000000447035
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/autosave.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 1057,
+        "decodedBodySize": 757,
+        "duration": 28.30000000447035
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/difficulty.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 960,
+        "decodedBodySize": 660,
+        "duration": 28.30000000447035
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/recovery-saves.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 8981,
+        "decodedBodySize": 8681,
+        "duration": 28.600000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/campaign-progress.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 4473,
+        "decodedBodySize": 4173,
+        "duration": 28.600000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/touch-controls.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 11326,
+        "decodedBodySize": 11026,
+        "duration": 28.700000002980232
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/intro-playback.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2607,
+        "decodedBodySize": 2307,
+        "duration": 30.5
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/touch-intro-hint.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 1949,
+        "decodedBodySize": 1649,
+        "duration": 30.899999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/fullscreen-preference.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3281,
+        "decodedBodySize": 2981,
+        "duration": 31.100000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/render-quality.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2200,
+        "decodedBodySize": 1900,
+        "duration": 31
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/gamepad-input.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 8355,
+        "decodedBodySize": 8055,
+        "duration": 31.19999999552965
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/gamepad-menu.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 5150,
+        "decodedBodySize": 4850,
+        "duration": 31.399999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/msaa-renderer.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 6390,
+        "decodedBodySize": 6090,
+        "duration": 33.400000005960464
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/loading-screen.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2534,
+        "decodedBodySize": 2234,
+        "duration": 33.600000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/android-host.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 5475,
+        "decodedBodySize": 5175,
+        "duration": 33.80000000447035
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/collision.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 27432,
+        "decodedBodySize": 27132,
+        "duration": 23.299999997019768
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/moving-solids.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 5461,
+        "decodedBodySize": 5161,
+        "duration": 23.100000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/animation.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 24155,
+        "decodedBodySize": 23855,
+        "duration": 23.19999999552965
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-geometry.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 1924,
+        "decodedBodySize": 1624,
+        "duration": 25.099999994039536
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/script-camera.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2535,
+        "decodedBodySize": 2235,
+        "duration": 25.30000000447035
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/third-person-camera.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 4036,
+        "decodedBodySize": 3736,
+        "duration": 25.5
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/liquids.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2796,
+        "decodedBodySize": 2496,
+        "duration": 25.5
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/projectile-visibility.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 1076,
+        "decodedBodySize": 776,
+        "duration": 25.5
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/projectile-hazards.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 7775,
+        "decodedBodySize": 7475,
+        "duration": 25.700000002980232
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/projectile-animation.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2340,
+        "decodedBodySize": 2040,
+        "duration": 26.899999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-collision-index.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 4161,
+        "decodedBodySize": 3861,
+        "duration": 27.299999997019768
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-collision.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 5461,
+        "decodedBodySize": 5161,
+        "duration": 27.399999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/world-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 49432,
+        "decodedBodySize": 49132,
+        "duration": 27.600000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/pickup-placement.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2387,
+        "decodedBodySize": 2087,
+        "duration": 27.299999997019768
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/targeting.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 5083,
+        "decodedBodySize": 4783,
+        "duration": 27.399999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-animation.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 4802,
+        "decodedBodySize": 4502,
+        "duration": 29.899999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-lifecycle.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 1695,
+        "decodedBodySize": 1395,
+        "duration": 29.600000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-materials.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 811,
+        "decodedBodySize": 511,
+        "duration": 29.700000002980232
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-projectiles.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 4496,
+        "decodedBodySize": 4196,
+        "duration": 29.900000005960464
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/ghost-materials.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 1358,
+        "decodedBodySize": 1058,
+        "duration": 29.700000002980232
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-ambush.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 15329,
+        "decodedBodySize": 15029,
+        "duration": 29.899999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-death-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 6336,
+        "decodedBodySize": 6036,
+        "duration": 31.399999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/debris-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 7362,
+        "decodedBodySize": 7062,
+        "duration": 31.700000002980232
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/debris-render-pool.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 12703,
+        "decodedBodySize": 12403,
+        "duration": 31.700000002980232
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/knight-debris.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3716,
+        "decodedBodySize": 3416,
+        "duration": 31.399999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-projectile-origins.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2898,
+        "decodedBodySize": 2598,
+        "duration": 31.5
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-lighting.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 6788,
+        "decodedBodySize": 6488,
+        "duration": 31.799999997019768
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-world-lighting.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 5480,
+        "decodedBodySize": 5180,
+        "duration": 32.79999999701977
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-light-visibility.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 9661,
+        "decodedBodySize": 9361,
+        "duration": 33.5
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-floor-lighting.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 18277,
+        "decodedBodySize": 17977,
+        "duration": 33.399999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/world-streaming.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 27792,
+        "decodedBodySize": 27492,
+        "duration": 34.399999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-texture-stream.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 10561,
+        "decodedBodySize": 10261,
+        "duration": 34.5
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-render-residency.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 14292,
+        "decodedBodySize": 13992,
+        "duration": 34.400000005960464
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/streaming-work.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2790,
+        "decodedBodySize": 2490,
+        "duration": 34.900000005960464
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/streaming-gpu-preparation.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3920,
+        "decodedBodySize": 3620,
+        "duration": 35.30000000447035
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-shadow.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3127,
+        "decodedBodySize": 2827,
+        "duration": 35.20000000298023
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/skybox.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3537,
+        "decodedBodySize": 3237,
+        "duration": 35.19999999552965
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/graveyard-maze.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 4822,
+        "decodedBodySize": 4522,
+        "duration": 34.899999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/davi-vm.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 22072,
+        "decodedBodySize": 21772,
+        "duration": 34.70000000298023
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/motions.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 11983,
+        "decodedBodySize": 11683,
+        "duration": 34.80000000447035
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/model-transforms.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2060,
+        "decodedBodySize": 1760,
+        "duration": 35.600000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/model-controller-target.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3617,
+        "decodedBodySize": 3317,
+        "duration": 36.399999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/button-controller-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3338,
+        "decodedBodySize": 3038,
+        "duration": 37.100000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/ambience-ranges.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2303,
+        "decodedBodySize": 2003,
+        "duration": 37.600000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/audio-settings.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 8891,
+        "decodedBodySize": 8591,
+        "duration": 37.600000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/spatial-audio.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 5030,
+        "decodedBodySize": 4730,
+        "duration": 37.69999999552965
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/music-fade.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 1245,
+        "decodedBodySize": 945,
+        "duration": 37.899999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/gameplay-settings.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 33174,
+        "decodedBodySize": 32874,
+        "duration": 38
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemies.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 5657,
+        "decodedBodySize": 5357,
+        "duration": 38.400000005960464
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/zombie-grave-rise.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3832,
+        "decodedBodySize": 3532,
+        "duration": 39
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-combat-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 1653,
+        "decodedBodySize": 1353,
+        "duration": 39.100000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-navigation.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 21276,
+        "decodedBodySize": 20976,
+        "duration": 39.20000000298023
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-projectiles.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 6048,
+        "decodedBodySize": 5748,
+        "duration": 39.5
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/boss-ai.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 16015,
+        "decodedBodySize": 15715,
+        "duration": 40.100000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-inventory.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 819,
+        "decodedBodySize": 519,
+        "duration": 40.899999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/teleporter-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 13099,
+        "decodedBodySize": 12799,
+        "duration": 41.399999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/beam-contacts.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3572,
+        "decodedBodySize": 3272,
+        "duration": 41.19999999552965
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-flight.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 6187,
+        "decodedBodySize": 5887,
+        "duration": 41.5
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-waypoint-steering.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 4363,
+        "decodedBodySize": 4063,
+        "duration": 41.79999999701977
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/environment-interactions.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2397,
+        "decodedBodySize": 2097,
+        "duration": 41.79999999701977
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/projectile-collision.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 817,
+        "decodedBodySize": 517,
+        "duration": 42.5
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/projectile-impacts.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 4400,
+        "decodedBodySize": 4100,
+        "duration": 43.100000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/reward-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3941,
+        "decodedBodySize": 3641,
+        "duration": 43.20000000298023
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/gargoyle-blast.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 4693,
+        "decodedBodySize": 4393,
+        "duration": 43.29999999701977
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/explosion-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 7187,
+        "decodedBodySize": 6887,
+        "duration": 43.599999994039536
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/explosion-damage.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 6845,
+        "decodedBodySize": 6545,
+        "duration": 43.599999994039536
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/spout-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 11010,
+        "decodedBodySize": 10710,
+        "duration": 44.099999994039536
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/destructible-damage.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 1543,
+        "decodedBodySize": 1243,
+        "duration": 45
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-animation-rules.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2006,
+        "decodedBodySize": 1706,
+        "duration": 45.100000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-hit-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2865,
+        "decodedBodySize": 2565,
+        "duration": 45.399999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-standing-shooter-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3014,
+        "decodedBodySize": 2714,
+        "duration": 45.5
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-shooter-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 8338,
+        "decodedBodySize": 8038,
+        "duration": 45.80000000447035
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-landing.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 1182,
+        "decodedBodySize": 882,
+        "duration": 45.70000000298023
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/trigger-contact-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 1430,
+        "decodedBodySize": 1130,
+        "duration": 46.399999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/node_modules/three/build/three.core.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 1458413,
+        "decodedBodySize": 1458113,
+        "duration": 54
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/locomotion-audio.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2020,
+        "decodedBodySize": 1720,
+        "duration": 37.899999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-movement.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 1483,
+        "decodedBodySize": 1183,
+        "duration": 38.20000000298023
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/door-audio.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 1742,
+        "decodedBodySize": 1442,
+        "duration": 38.70000000298023
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/movement-recovery.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 12516,
+        "decodedBodySize": 12216,
+        "duration": 29.30000000447035
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/projectile-lighting.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 1218,
+        "decodedBodySize": 918,
+        "duration": 24
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/destructible-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 11973,
+        "decodedBodySize": 11673,
+        "duration": 25.299999997019768
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-combat-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2254,
+        "decodedBodySize": 1954,
+        "duration": 26.19999999552965
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/fairy-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 16814,
+        "decodedBodySize": 16514,
+        "duration": 26.5
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/decal-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 5312,
+        "decodedBodySize": 5012,
+        "duration": 26.69999999552965
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/presentation-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2789,
+        "decodedBodySize": 2489,
+        "duration": 26.400000005960464
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/explosion-light-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3846,
+        "decodedBodySize": 3546,
+        "duration": 27.400000005960464
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-world-light.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 1685,
+        "decodedBodySize": 1385,
+        "duration": 29.400000005960464
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/world-lighting-material.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 5391,
+        "decodedBodySize": 5091,
+        "duration": 29.5
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/torch-flames.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 4931,
+        "decodedBodySize": 4631,
+        "duration": 29.80000000447035
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/explosion-variants.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2595,
+        "decodedBodySize": 2295,
+        "duration": 29.600000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/world-light-shadows.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 5125,
+        "decodedBodySize": 4825,
+        "duration": 29.80000000447035
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/electric-explosion-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 12647,
+        "decodedBodySize": 12347,
+        "duration": 32.80000000447035
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/particle-clock-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3362,
+        "decodedBodySize": 3062,
+        "duration": 29.299999997019768
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-light-sampling.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3689,
+        "decodedBodySize": 3389,
+        "duration": 28.80000000447035
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/bsp-visibility.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3806,
+        "decodedBodySize": 3506,
+        "duration": 27.19999999552965
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/world-lighting.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3016,
+        "decodedBodySize": 2716,
+        "duration": 27.19999999552965
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/room-visibility.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 14606,
+        "decodedBodySize": 14306,
+        "duration": 26.600000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/jester-teleport-timing.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3243,
+        "decodedBodySize": 2943,
+        "duration": 20.399999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/shockwave-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2013,
+        "decodedBodySize": 1713,
+        "duration": 16.899999998509884
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/prop-debris-state.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 2619,
+        "decodedBodySize": 2319,
+        "duration": 16.600000001490116
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/electric-explosion-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 3922,
+        "decodedBodySize": 3622,
+        "duration": 9.900000005960464
+      }
+    ],
+    "loader": "http://127.0.0.1:36043/redcatspookkasteel/src/main.js?v=9e4017aae4c3f723652324aa"
+  },
+  "baselineContinue": {
+    "mode": "playing",
+    "level": "lvl00a",
+    "position": [
+      -1332,
+      -160,
+      2280
+    ],
+    "score": 0,
+    "potions": 0,
+    "health": 10,
+    "scriptError": null,
+    "fatal": ""
+  },
+  "baselineSeed": {
+    "buttonId": "ButtonModel1",
+    "second": {
+      "id": "p_a4faf5df-f307-419e-bbac-c8e33761f0b2",
+      "name": "Tweede"
+    }
+  },
+  "beforeUpgrade": {
+    "active": "legacy",
+    "players": [
+      {
+        "id": "legacy",
+        "name": "Speler 1"
+      },
+      {
+        "id": "p_a4faf5df-f307-419e-bbac-c8e33761f0b2",
+        "name": "Tweede"
+      }
+    ],
+    "save": {
+      "sha256": "734aeb7ebcd813e126f42f5be3fdf03f41ec9e03400fff56924ee69849f152e5",
+      "bytes": 316025
+    },
+    "legacy": {
+      "sha256": "734aeb7ebcd813e126f42f5be3fdf03f41ec9e03400fff56924ee69849f152e5",
+      "bytes": 316025
+    },
+    "history": {
+      "clock": 720,
+      "anchor": 0,
+      "checkpoints": [
+        {
+          "at": 120,
+          "score": 200
+        },
+        {
+          "at": 180,
+          "score": 300
+        },
+        {
+          "at": 240,
+          "score": 400
+        },
+        {
+          "at": 300,
+          "score": 500
+        },
+        {
+          "at": 360,
+          "score": 600
+        },
+        {
+          "at": 420,
+          "score": 700
+        },
+        {
+          "at": 480,
+          "score": 800
+        },
+        {
+          "at": 540,
+          "score": 900
+        },
+        {
+          "at": 600,
+          "score": 1000
+        },
+        {
+          "at": 660,
+          "score": 1100
+        },
+        {
+          "at": 720,
+          "score": 1200
+        }
+      ]
+    },
+    "db": "redcat-recovery-saves",
+    "choices": [
+      {
+        "minutes": 2,
+        "score": 1000,
+        "age": 120
+      },
+      {
+        "minutes": 5,
+        "score": 700,
+        "age": 300
+      },
+      {
+        "minutes": 10,
+        "score": 200,
+        "age": 600
+      }
+    ],
+    "revision": null
+  },
+  "unbundledWarm": {
+    "startupMs": 131.5,
+    "jsRequests": 141,
+    "jsDecodedBytes": 3235163,
+    "jsTransferredBytes": 0,
+    "js": [
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/main.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 69836,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/node_modules/three/build/three.module.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 662772,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/world.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 84051,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/gameplay.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 79051,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/script-host.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 30215,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/audio.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 25699,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/menu-audio.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 3400,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/original-menu.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 8939,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/native-help.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 4946,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/menu-highscores.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2017,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/save-export.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 3422,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/save-import.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 13545,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/save-import-picker.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2046,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/control-bindings.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 6279,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/key-settings-menu.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 5260,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/slider-audio.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 1574,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/quit-menu.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 1705,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-profiles.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 10479,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-menu.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 11958,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/gameplay-audio.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 8414,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/cheats.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2177,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-placement.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2900,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/hud.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 5445,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/debriefing.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 6593,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/camera-control.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2140,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/cutscene-skip.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 523,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/autosave.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 757,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/recovery-saves.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 8681,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/difficulty.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 660,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/campaign-progress.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 4173,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/touch-controls.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 11026,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/intro-playback.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2307,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/touch-intro-hint.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 1649,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/fullscreen-preference.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2981,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/gamepad-input.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 8055,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/gamepad-menu.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 4850,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/render-quality.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 1900,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/msaa-renderer.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 6090,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/android-host.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 5175,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/loading-screen.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2234,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/node_modules/three/build/three.core.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 1458113,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/collision.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 27132,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/moving-solids.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 5161,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/animation.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 23855,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-geometry.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 1624,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/script-camera.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2235,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/third-person-camera.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 3736,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/liquids.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2496,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/projectile-hazards.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 7475,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/projectile-visibility.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 776,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/projectile-animation.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2040,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-collision.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 5161,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-collision-index.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 3861,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/world-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 49132,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/targeting.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 4783,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/pickup-placement.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2087,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-animation.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 4502,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-lifecycle.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 1395,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-projectiles.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 4196,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-materials.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 511,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-ambush.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 15029,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/ghost-materials.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 1058,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-death-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 6036,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/debris-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 7062,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/debris-render-pool.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 12403,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/knight-debris.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 3416,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-projectile-origins.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2598,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-lighting.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 6488,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-world-lighting.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 5180,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-floor-lighting.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 17977,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-light-visibility.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 9361,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/world-streaming.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 27492,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-render-residency.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 13992,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-texture-stream.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 10261,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/streaming-work.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2490,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/streaming-gpu-preparation.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 3620,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-shadow.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2827,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/skybox.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 3237,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/gameplay-settings.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 32874,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/motions.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 11683,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemies.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 5357,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/zombie-grave-rise.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 3532,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-navigation.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 20976,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-combat-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 1353,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-projectiles.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 5748,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/boss-ai.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 15715,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-inventory.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 519,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/teleporter-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 12799,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/beam-contacts.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 3272,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-flight.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 5887,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-waypoint-steering.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 4063,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/environment-interactions.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2097,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/projectile-collision.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 517,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/projectile-impacts.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 4100,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/gargoyle-blast.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 4393,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/reward-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 3641,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/explosion-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 6887,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/explosion-damage.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 6545,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/spout-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 10710,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/destructible-damage.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 1243,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/graveyard-maze.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 4522,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-animation-rules.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 1706,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-hit-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2565,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-shooter-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 8038,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-standing-shooter-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2714,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-landing.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 882,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/trigger-contact-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 1130,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/button-controller-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 3038,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/davi-vm.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 21772,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/model-transforms.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 1760,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/model-controller-target.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 3317,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/audio-settings.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 8591,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/ambience-ranges.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2003,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/spatial-audio.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 4730,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/music-fade.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 945,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/locomotion-audio.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 1720,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-movement.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 1183,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/door-audio.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 1442,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/movement-recovery.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 12216,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/projectile-lighting.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 918,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/destructible-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 11673,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/fairy-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 16514,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/enemy-combat-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 1954,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/decal-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 5012,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/presentation-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2489,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/explosion-light-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 3546,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/world-lighting-material.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 5091,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/player-world-light.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 1385,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/torch-flames.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 4631,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/world-light-shadows.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 4825,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/explosion-variants.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2295,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/electric-explosion-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 12347,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/particle-clock-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 3062,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/actor-light-sampling.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 3389,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/world-lighting.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2716,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/bsp-visibility.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 3506,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/room-visibility.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 14306,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/jester-teleport-timing.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2943,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/shockwave-native.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 1713,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/prop-debris-state.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 2319,
+        "duration": 0
+      },
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/electric-explosion-effects.js?v=9e4017aae4c3f723652324aa",
+        "transferSize": 0,
+        "decodedBodySize": 3622,
+        "duration": 0
+      }
+    ],
+    "loader": "http://127.0.0.1:36043/redcatspookkasteel/src/main.js?v=9e4017aae4c3f723652324aa"
+  },
+  "bundledCold": {
+    "startupMs": 162.30000000447035,
+    "jsRequests": 1,
+    "jsDecodedBytes": 1205774,
+    "jsTransferredBytes": 1206074,
+    "js": [
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/game.bundle.js?v=d3fc430850ee68140506e826",
+        "transferSize": 1206074,
+        "decodedBodySize": 1205774,
+        "duration": 12
+      }
+    ],
+    "loader": "http://127.0.0.1:36043/redcatspookkasteel/src/game.bundle.js?v=d3fc430850ee68140506e826"
+  },
+  "upgradeContinue": {
+    "mode": "playing",
+    "level": "lvl00a",
+    "position": [
+      -1332,
+      -160,
+      2280
+    ],
+    "score": 1200,
+    "potions": 12,
+    "health": 10,
+    "scriptError": null,
+    "fatal": ""
+  },
+  "bundledWarm": {
+    "startupMs": 114.20000000298023,
+    "jsRequests": 1,
+    "jsDecodedBytes": 1205774,
+    "jsTransferredBytes": 0,
+    "js": [
+      {
+        "url": "http://127.0.0.1:36043/redcatspookkasteel/src/game.bundle.js?v=d3fc430850ee68140506e826",
+        "transferSize": 0,
+        "decodedBodySize": 1205774,
+        "duration": 0
+      }
+    ],
+    "loader": "http://127.0.0.1:36043/redcatspookkasteel/src/game.bundle.js?v=d3fc430850ee68140506e826"
+  },
+  "secondaryContinue": {
+    "mode": "playing",
+    "level": "lvl00a",
+    "position": [
+      -1332,
+      -160,
+      2280
+    ],
+    "score": 9876,
+    "potions": 12,
+    "health": 10,
+    "scriptError": null,
+    "fatal": ""
+  },
+  "levels": [
+    {
+      "index": 0,
+      "ok": true,
+      "loadMs": 2744,
+      "mode": "paused",
+      "id": "lvl00a",
+      "actors": 236,
+      "models": 37,
+      "redcat": true,
+      "scriptError": null,
+      "drawCalls": 112,
+      "fatal": ""
+    },
+    {
+      "index": 1,
+      "ok": true,
+      "loadMs": 567.7000000029802,
+      "mode": "paused",
+      "id": "lvl01a",
+      "actors": 291,
+      "models": 86,
+      "redcat": true,
+      "scriptError": null,
+      "drawCalls": 127,
+      "fatal": ""
+    },
+    {
+      "index": 2,
+      "ok": true,
+      "loadMs": 963.5,
+      "mode": "paused",
+      "id": "lvl02a",
+      "actors": 383,
+      "models": 126,
+      "redcat": true,
+      "scriptError": null,
+      "drawCalls": 94,
+      "fatal": ""
+    },
+    {
+      "index": 3,
+      "ok": true,
+      "loadMs": 522.3000000044703,
+      "mode": "paused",
+      "id": "lvl03a",
+      "actors": 281,
+      "models": 193,
+      "redcat": true,
+      "scriptError": null,
+      "drawCalls": 16,
+      "fatal": ""
+    },
+    {
+      "index": 4,
+      "ok": true,
+      "loadMs": 358.5,
+      "mode": "paused",
+      "id": "lvl04a",
+      "actors": 118,
+      "models": 25,
+      "redcat": true,
+      "scriptError": null,
+      "drawCalls": 52,
+      "fatal": ""
+    }
+  ],
+  "desktopInput": {
+    "position": [
+      -1332,
+      -159.95,
+      2382.4280320000007
+    ],
+    "events": [
+      "attack"
+    ],
+    "mode": "playing",
+    "drawCalls": 109
+  },
+  "touch": {
+    "input": {
+      "forward": 1,
+      "right": 0,
+      "turn": 0,
+      "jump": false,
+      "descend": false,
+      "walk": false,
+      "attack": false,
+      "use": false
+    },
+    "position": [
+      -1366.777349001962,
+      -159.95,
+      2364.605116542846
+    ],
+    "yaw": -3.5315926535897932,
+    "mode": "playing"
+  },
+  "benchmark": {
+    "coldRequestReduction": 140,
+    "decodedReductionPercent": 62.72911133071193,
+    "note": "One cold and one warm local-loopback measurement per loader. Timings are observations, not a statistically controlled network benchmark or gameplay FPS claim."
+  },
+  "passed": true
+}

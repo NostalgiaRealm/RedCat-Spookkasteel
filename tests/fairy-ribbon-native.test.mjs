@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   NativeFairyEffect,FAIRY_STEP,FAIRY_RIBBON_WIDTH,FAIRY_RIBBON_DISTANCE,
   FAIRY_RIBBON_TEXTURE,fairyRibbonOpacity,
-} from '../src/fairy-effects.js';
+} from '../source/fairy-effects.js';
 
 const options={origin:[0,0,0],waypoints:[[0,0,0]],lifeTime:0,seed:712};
 const close=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-10,`${actual} != ${expected}`);

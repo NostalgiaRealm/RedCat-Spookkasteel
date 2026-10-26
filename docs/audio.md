@@ -4,8 +4,8 @@ The earlier runtime started every active EffectSound at the master volume,
 ignoring Volume.ini and Use3DSound. Forest level 1 has 17 simultaneous looping
 emitters, so distant forest sounds and the nearby UFO overwhelmed the voice.
 
-The portable mixer in `src/audio.js` now reads the original sound gains exported
-by `tools/import_audio_settings.py` to `src/audio-settings.js`. This importer is
+The portable mixer in `source/audio.js` now reads the original sound gains exported
+by `tools/import_audio_settings.py` to `source/audio-settings.js`. This importer is
 also part of the full asset import. It resolves filename paths and case, and
 keeps the first matching INI section/key as the original Windows lookup does.
 Per-file gains retain the original data and are clamped to 0–1 as the native
@@ -56,7 +56,7 @@ world. The same media elements retain their pause/resume position, replay
 delays and full-length dialogue sequencing.
 
 Preserved user choices include the local ambience ranges in
-`src/ambience-ranges.js`: Castle sources fade between 17.55 and 87.75 meters,
+`source/ambience-ranges.js`: Castle sources fade between 17.55 and 87.75 meters,
 Cave loops between 17.55 and 105.3 meters, and Tower fire between 10.53 and
 63.18 meters with a 0.65 gain multiplier. These replace the earlier, shorter
 local ranges. Fleurifee retains her threefold radius and player listener; her

@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {nativeStereoGains,BspAudioEnvironment} from '../src/spatial-audio.js';
-import {GameAudio,distanceGain,nativeGainToAmplitude} from '../src/audio.js';
-import {BspCollider} from '../src/collision.js';
+import {nativeStereoGains,BspAudioEnvironment} from '../source/spatial-audio.js';
+import {GameAudio,distanceGain,nativeGainToAmplitude} from '../source/audio.js';
+import {BspCollider} from '../source/collision.js';
+import {CAVE_AMBIENCE_RANGE} from '../source/ambience-ranges.js';
 
 const close=(a,b)=>assert.ok(Math.abs(a-b)<1e-10,`${a} != ${b}`);
 class Media {
@@ -24,7 +25,7 @@ test('blocked BSP path changes effective distance by 1.5 without changing stereo
   const audio=mixer();audio.environment={refreshPortals(){},query(){return {audible:true,blocked:true,distanceScale:1.5};}};
   const effect=audio.play({sound:'unknown.wav',position:[800,0,0],spatial:true});
   const voice=audio.play({channel:'voices',sound:'rcgen44.wav'}),music=audio.play({channel:'music',sound:'unknown.wav'});
-  close(effect.distanceGain,distanceGain([0,0,0],[1200,0,0]));close(effect.pan,.1);
+  close(effect.distanceGain,distanceGain([0,0,0],[1200,0,0],audio.spatial));close(effect.pan,.1);
   close(effect.element.volume,.6*nativeGainToAmplitude(effect.distanceGain));
   close(voice.element.volume,.6);close(music.element.volume,.6);
   audio.pause();audio.update(.2,[0,0,0]);assert.ok([...audio.sounds].every(r=>r.element.paused));
@@ -39,7 +40,7 @@ test('PVS suppression, shortened ambience and player-centered fairy exception ar
   const fairy=audio.play({sound:'idlefee1.wav',position:[100,0,0],spatial:true,loop:true});
   audio.update(.1,[20000,20000,20000]);assert.equal(waterfall.element.volume,0);assert.ok(fairy.element.volume>0);
   audio.environment=null;audio.update(.2,[0,0,0]);assert.ok(waterfall.element.volume>0);
-  audio.update(.2,[1200,0,0]);assert.equal(waterfall.element.volume,0,'30-meter cave boundary still silences ambience');
+  audio.update(.2,[100+CAVE_AMBIENCE_RANGE.farMeters*32+1,0,0]);assert.equal(waterfall.element.volume,0,'configured cave boundary still silences ambience');
   assert.ok(fairy.element.volume>0,'fairy range still uses player position');
 });
 

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {TouchControls,normalizeTouchPreference,isMobileWeb,touchControlsEnabled} from '../src/touch-controls.js';
+import {TouchControls,normalizeTouchPreference,isMobileWeb,touchControlsEnabled} from '../source/touch-controls.js';
 
 test('touch preference preserves explicit choices and migrates legacy booleans', () => {
   for (const value of [undefined,null,'auto','unknown',0,{}]) assert.equal(normalizeTouchPreference(value),'auto');
@@ -141,6 +141,11 @@ test('move, look, attack and jump can be held independently with multiple pointe
 
 test('repeated frame context preserves a hold; actual transitions clear it and update controls', () => withControls(({controls,element}) => {
   pointer(element('touch-jump'),'pointerdown',1);
+  const original=controls.context;
+  for(let i=0;i<600;i++)controls.setContext({playing:true,cutscene:false,noClip:false});
+  assert.equal(controls.context,original,'neutral context polls reuse the current state');
+  controls.setContext({});
+  assert.equal(controls.context,original,'partial updates retain omitted flags');
   controls.setContext({playing:true,cutscene:false,noClip:false});
   assert.equal(controls.readInput().jump,true);
   controls.setContext({noClip:true});

@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {PlayerCameraControl,canTogglePlayerCamera} from '../src/camera-control.js';
+import {PlayerCameraControl,canTogglePlayerCamera} from '../source/camera-control.js';
 const fixture=()=>({yaw:0,pitch:.16,settings:{sensitivity:1},targeting:{locked:false},gameplay:{scripts:{camera:null,cutscene:false}}});
 test('authored regional offset initializes viewing pitch, then accepts mouse pitch and restores free view',()=>{
  const world=fixture(),control=new PlayerCameraControl(),host=world.gameplay.scripts;

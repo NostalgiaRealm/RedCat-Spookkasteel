@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {MotionPlayer} from '../src/motions.js';
-import {queueControllerTarget,restoreControllerTarget,updateControllerTarget} from '../src/model-controller-target.js';
+import {MotionPlayer} from '../source/motions.js';
+import {queueControllerTarget,restoreControllerTarget,updateControllerTarget} from '../source/model-controller-target.js';
 const fixture=()=>{
   const object={enabled:true,motionSpeed:1},events=[],checks=[];
   const clip={startTime:0,endTime:2,paths:[],events:[{time:0,label:'start'},{time:.75,label:'a'},{time:1.25,label:'b'},{time:2,label:'end'}]};

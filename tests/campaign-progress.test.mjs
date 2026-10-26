@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {LEVEL_IDS,CHAPTER_ART_SIZE,validAdventureSave,readCampaignProgress,canStartCampaignLevel,completeCampaignLevel,chapterArtwork} from '../src/campaign-progress.js';
+import {Gameplay} from '../source/gameplay.js';
+import {LEVEL_IDS,CHAPTER_ART_SIZE,validAdventureSave,readCampaignProgress,canStartCampaignLevel,completeCampaignLevel,chapterArtwork} from '../source/campaign-progress.js';
 const save=(level,completed=false)=>({version:1,level,position:[0,10,20],yaw:0,pitch:.16,game:{version:1,level,completed,state:{health:10,mirror:5,potions:100,score:9000}}});
 
 test('fresh adventures expose only the forest and unlock one successor on earned completion',()=>{

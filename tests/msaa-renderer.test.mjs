@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {normalizeMsaa, supportedMsaaSamples, effectiveMsaa, MsaaRenderer} from '../src/msaa-renderer.js';
+import {normalizeMsaa, supportedMsaaSamples, effectiveMsaa, MsaaRenderer} from '../source/msaa-renderer.js';
 
 test('MSAA uses valid preferences and safely adapts a saved choice to another GPU', () => {
   for (const value of [0,2,4,8]) assert.equal(normalizeMsaa(value),value);

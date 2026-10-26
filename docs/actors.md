@@ -4,7 +4,7 @@
 
 `assets/actors/manifest.json` maps lowercase actor names to JSON geometry, materials, counts and settings. Each actor JSON contains bind-pose render vertices, normals, UVs, triangle indices, material groups, source-local vertex/normal coordinates, their bone indices, the bone hierarchy and exported animation tracks. The runtime applies the INI initial rotation and scale; actor geometry itself retains its original coordinates.
 
-`src/animation.js` samples the exported translation and quaternion tracks, composes parent × attachment × sampled motion transforms, and skins each rigid vertex and normal. Animated instances own their posed position/normal buffers and bounds, while immutable clip preparation and UV/index CPU arrays are shared. Source definitions and textures are cached. RedCat selects original clips from movement/jump/attack state. Environment animation clocks advance off-screen, with vertex sampling deferred until nearby; looking away no longer pauses their timeline.
+`source/animation.js` samples the exported translation and quaternion tracks, composes parent × attachment × sampled motion transforms, and skins each rigid vertex and normal. Animated instances own their posed position/normal buffers and bounds, while immutable clip preparation and UV/index CPU arrays are shared. Source definitions and textures are cached. RedCat selects original clips from movement/jump/attack state. Environment animation clocks advance off-screen, with vertex sampling deferred until nearby; looking away no longer pauses their timeline.
 
 Original motion-event dispatch and scripted camera timelines are implemented;
 see [motion playback](motions.md) and [camera recovery](camera-native-status.md).
@@ -39,7 +39,7 @@ The runtime now also shares exact duplicates exported under **different names**:
   The first matching definition loaded supplies the body; an otherwise-unused
   canonical actor JSON is not fetched. Image aliases share one decoded image,
   texture handle and GPU image allocation through the existing room loader.
-- Animated poses use `src/actor-geometry.js`. Their mutable positions/normals
+- Animated poses use `source/actor-geometry.js`. Their mutable positions/normals
   and posed bounds stay private. UV/index typed arrays share CPU storage but
   have **separate BufferAttribute wrappers/GPU handles**. Three removes an
   entire geometry's attribute handles when it is disposed; sharing the handles

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {MotionPlayer, samplePath, transformMotionPoint} from '../src/motions.js';
+import {MotionPlayer, samplePath, transformMotionPoint} from '../source/motions.js';
 
 const near = (actual, expected, epsilon = 1e-6) => assert.ok(Math.abs(actual - expected) < epsilon, `${actual} != ${expected}`);
 const nearVector = (actual, expected) => actual.forEach((v, i) => near(v, expected[i]));

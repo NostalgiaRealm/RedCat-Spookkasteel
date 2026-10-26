@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Vector3} from 'three';
-import {GameAudio} from '../src/audio.js';
-import {GameplayAudio} from '../src/gameplay-audio.js';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
-import {WorldEffects} from '../src/world-effects.js';
+import {GameAudio} from '../source/audio.js';
+import {GameplayAudio} from '../source/gameplay-audio.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
+import {WorldEffects} from '../source/world-effects.js';
 
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 class Media {

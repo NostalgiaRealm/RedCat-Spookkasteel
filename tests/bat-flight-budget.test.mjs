@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {EnemyNavigation} from '../src/enemy-navigation.js';
-import {batFlightTarget} from '../src/enemy-flight.js';
+import {EnemyNavigation} from '../source/enemy-navigation.js';
+import {batFlightTarget} from '../source/enemy-flight.js';
 
 const waypoint=(id,position,subsystem=0)=>({classname:'GrobberPathPoint','%name%':id,Origin:position.join(' '),SubSystemId:String(subsystem)});
 const largeMap=()=>new EnemyNavigation({entities:[waypoint('a',[0,0,0]),...Array.from({length:369},(_,i)=>waypoint(`detour${i}`,[20+i*.5,20,50]))]},{MaxConnectionDistance:0});

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {WorldLightShadows,worldLightmapPlacements} from '../src/world-light-shadows.js';
+import {WorldLightShadows,worldLightmapPlacements} from '../source/world-light-shadows.js';
 
 // Floor Y=0 with a solid wall beyond X=24. Another solid submodel must never
 // occlude the native world-only shadow ray.

@@ -1,0 +1,136 @@
+{
+  "date": "2026-10-26",
+  "scope": "Current full-application browser scene harnesses referring to obsolete flat-menu buttons, plus current menu/settings prerequisites. No game source or saved-data formats changed by this migration.",
+  "sharedHelper": "tests/scene-menu.mjs",
+  "activeHarnesses": [
+    {
+      "file": "tests/level-selection-menu-scenes.mjs",
+      "result": "passed",
+      "log": "temp_work/efficiency-2026-10-26/level-selection-menu-scenes.log",
+      "checks": [
+        "Unlocked chapter selection only selects/announces; Level Spelen opens confirmation; cancel preserves the save and focus.",
+        "Keyboard selection, Forest replay and Start opnieuw retain their separate actions.",
+        "Mobile layout fits; fresh-player flow unchanged; replay selection resets on player switch.",
+        "Confirm launches the last selected level; existing save remains intact while loading."
+      ],
+      "latestEvidenceDirectory": "temp_work/level-selection-menu/ (initial run before unique-output helper was added)"
+    },
+    {
+      "file": "tests/player-menu-scenes.mjs",
+      "result": "passed",
+      "log": "temp_work/efficiency-2026-10-26/player-menu-scenes.log",
+      "checks": [
+        "Player menu voices, real saves/recovery isolation, abilities, difficulty, deletion and responsive layout passed."
+      ],
+      "latestEvidenceDirectory": "temp_work/player-menu-scenes/run-1793048011956"
+    },
+    {
+      "file": "tests/player-menu-lifecycle-scenes.mjs",
+      "result": "passed",
+      "log": "temp_work/efficiency-2026-10-26/player-menu-lifecycle-scenes.log",
+      "checks": [
+        "Pending recovery switch, active deletion and eight-player short landscape/portrait layout passed."
+      ],
+      "latestEvidenceDirectory": "temp_work/player-menu-lifecycle-scenes/run-1793048008353"
+    },
+    {
+      "file": "tests/new-adventure-skills-scenes.mjs",
+      "result": "passed",
+      "log": "temp_work/efficiency-2026-10-26/new-adventure-skills-scenes.log",
+      "checks": [
+        "Continue retains learned shot upgrades and SUPERSKIPPIE",
+        "selecting the forest and confirming Level Spelen retains learned abilities",
+        "cancelling Start opnieuw preserves the save, learned abilities and recovery history",
+        "confirmed new adventure resets shots and jumping only after loading succeeds, while keeping chapter unlocks",
+        "reload and Continue cannot restore the discarded adventure abilities",
+        "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/new-adventure-skills-scenes/run-1793048008351"
+      ],
+      "latestEvidenceDirectory": "temp_work/new-adventure-skills-scenes/run-1793048008351"
+    },
+    {
+      "file": "tests/replayed-level-intros-scenes.mjs",
+      "result": "passed",
+      "log": "temp_work/efficiency-2026-10-26/replayed-level-intros-scenes.log",
+      "checks": [
+        "unlock-all cheat enables chapter access without marking any chapter played",
+        "first Forest visit keeps authored tutorial, ability and boss triggers; history is recorded without changing the current first-play session",
+        "Continue and two-minute recovery retain first-play mode despite Forest already being recorded as played",
+        "first visit to a cheat-unlocked Castle remains first-play",
+        "chapter-card replay takes native tutorial skip branch while retaining Forest ability and boss gates",
+        "replay mode survives browser reload, Continue and two-minute recovery",
+        "cancelling Start opnieuw preserves current save, played history and recovery snapshots",
+        "failed first Cave load does not record the level as played or replace saves",
+        "failed Start opnieuw does not clear played history or recovery snapshots",
+        "confirmed new adventure clears old played history only after successful load, restores first-play tutorials and retains unlocks",
+        "/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/replayed-level-intros-scenes/run-1793048026701"
+      ],
+      "latestEvidenceDirectory": "temp_work/replayed-level-intros-scenes/run-1793048026701"
+    },
+    {
+      "file": "tests/recovery-menu-scenes.mjs",
+      "result": "passed",
+      "log": "temp_work/efficiency-2026-10-26/recovery-menu-scenes.log",
+      "checks": [
+        "recovery menus on desktop/mobile; unavailable early slots; IndexedDB history survives reload; 2/5/10-minute restores include position, inventory and puzzle state; old saves pruned; paused time excluded; cancel preserves history and confirmed new adventure resets it."
+      ],
+      "latestEvidenceDirectory": "temp_work/recovery-menu-scenes/run-1793048079678"
+    },
+    {
+      "file": "tests/campaign-settings-scenes.mjs",
+      "result": "passed",
+      "log": "temp_work/efficiency-2026-10-26/campaign-settings-scenes.log",
+      "checks": [
+        "locked menu/native artwork, completion unlock and replay persistence, all difficulty choices/save compatibility, real frame-loop minute autosave and pause exclusion; no browser/HTTP errors."
+      ],
+      "latestEvidenceDirectory": "temp_work/campaign-settings-scenes/run-1793048058492"
+    },
+    {
+      "file": "tests/cheat-unlock-levels-scenes.mjs",
+      "result": "passed",
+      "log": "temp_work/efficiency-2026-10-26/cheat-unlock-levels-scenes.log",
+      "checks": [
+        "unlock-all-levels cheat from fresh menu and paused forest; persistence/reload and actual tower launch; current encounter/save unchanged; failed storage does not unlock and retry succeeds; no browser/HTTP errors."
+      ],
+      "latestEvidenceDirectory": "temp_work/cheat-unlock-levels-scenes/run-1793048070712"
+    },
+    {
+      "file": "tests/touch-scenes.mjs",
+      "result": "passed",
+      "log": "temp_work/efficiency-2026-10-26/touch-scenes.log",
+      "checks": [
+        "mobile automatically enables touch; help and original intro work by touch",
+        "settings scroll by touch and the Off override survives reload",
+        "touch Off hides the touch Menu, Auto restores it; real two-second touch hold skips the authored intro",
+        "touch jump executes grounded collision movement and emits the normal jump event",
+        "touch camera, slow-walk toggle and pause/settings/cheats navigation",
+        "four simultaneous fingers move/look/jump/fire and release independently",
+        "no-clip descend, pointercancel and authored fixed-camera look suppression",
+        "pause clears held controls; save/load work through visible touch menus",
+        "orientation and visibility loss clear input; landscape UI fits; touch never requests pointer lock",
+        "320px portrait controls fit and touch can cancel the new-adventure warning",
+        "desktop detection, persistent forced On and Electron auto suppression",
+        "11 focused touch integration groups; /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/touch-scenes/run-1793048319654/touch-scenes.json"
+      ],
+      "latestEvidenceDirectory": "temp_work/touch-scenes/run-1793048319654"
+    },
+    {
+      "file": "tests/web-subpath-scenes.mjs",
+      "result": "passed",
+      "log": "temp_work/efficiency-2026-10-26/web-subpath-scenes.log",
+      "checks": [
+        "local /redcatspookkasteel/ static-prefix fixture: query-preserving canonical redirect; versioned modules; Three core/addon importmap; original intro and audio; actual forest geometry/actors/scripts; media byte ranges; missing module404; no application requests escaped the prefix. Nginx itself was not run."
+      ],
+      "latestEvidenceDirectory": "temp_work/web-subpath-scenes/run-1793048244668"
+    }
+  ],
+  "historicalHarness": {
+    "file": "tests/new-adventure-warning-scenes.mjs",
+    "policy": "Keep flat-menu presentation assertions; fail immediately with valid current-suite pointers unless --historical-flat-menu deliberately requests the obsolete source snapshot. Temporary output path updated to temp_work.",
+    "failFastVerifiedSeconds": 0.24
+  },
+  "isolatedFixture": {
+    "file": "tests/pickup-audio-tail-scenes.mjs",
+    "policy": "Unchanged: its #start belongs to the fixture HTML, not the game menu."
+  },
+  "validationBoundary": "Headless source browser checks with software WebGL. Real menus, storage and input where asserted; isolated profiles, no original user saves. Not complete campaign, performance, package or physical touch-device validation. No builds."
+}

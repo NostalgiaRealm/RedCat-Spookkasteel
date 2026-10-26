@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {ModelTransformMap} from '../src/model-transforms.js';
+import {ModelTransformMap} from '../source/model-transforms.js';
 const pose=(x=0)=>({origin:[1,2,3],translation:[x,0,0],rotation:[0,0,0,1]});
 test('pose maps publish immutable snapshots and retain ordinary Map serialization and chaining',()=>{
   const source=pose(8),map=new ModelTransformMap([[4,source]]);

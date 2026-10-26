@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {jesterTeleportParticles} from '../src/enemy-combat-effects.js';
-import {JESTER_EFFECT_SECONDS} from '../src/jester-teleport-timing.js';
+import {jesterTeleportParticles} from '../source/enemy-combat-effects.js';
+import {JESTER_EFFECT_SECONDS} from '../source/jester-teleport-timing.js';
 
 const sample=(phase,age)=>jesterTeleportParticles({phase,age,position:[0,0,0]});
 const near=(actual,expected,epsilon=1e-5)=>assert.ok(Math.abs(actual-expected)<epsilon,`${actual} != ${expected}`);

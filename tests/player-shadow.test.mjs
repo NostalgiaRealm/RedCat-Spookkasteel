@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {Scene,Texture} from 'three';
-import {PlayerShadow,playerShadowVertices} from '../src/player-shadow.js';
-import {BspCollider} from '../src/collision.js';
+import {PlayerShadow,playerShadowVertices} from '../source/player-shadow.js';
+import {BspCollider} from '../source/collision.js';
 
 const near=(a,b)=>a.forEach((v,i)=>assert.ok(Math.abs(v-b[i])<1e-6,`${a} != ${b}`));
 const floor=(start,end)=>({fraction:start[1]/(start[1]-end[1]),end:[start[0],0,start[2]],normal:[0,1,0]});

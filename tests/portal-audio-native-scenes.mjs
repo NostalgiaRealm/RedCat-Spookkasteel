@@ -12,7 +12,7 @@ try {
   await page.goto('http://127.0.0.1:4293/?skipIntro');await page.waitForFunction(()=>window.__redcat);
   await page.locator('#open-help').click();await page.locator('#close-help').click();
   const result=await page.evaluate(async()=>{
-    const {GameAudio}=await import('./src/audio.js');
+    const {GameAudio}=await import('./source/audio.js');
     const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
     const rms=a=>{const data=new Float32Array(a.fftSize);a.getFloatTimeDomainData(data);return Math.sqrt(data.reduce((s,v)=>s+v*v,0)/data.length);};
     const spectrum=a=>{const data=new Float32Array(a.frequencyBinCount);a.getFloatFrequencyData(data);let best=1;for(let i=2;i<data.length;i++)if(data[i]>data[best])best=i;return best*a.context.sampleRate/a.fftSize;};

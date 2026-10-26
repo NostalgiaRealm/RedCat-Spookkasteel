@@ -56,7 +56,7 @@ their existing routing.
   and is unchanged.
 - Cave loops fade between 17.55 and 105.3 metres.
 
-These are the current `src/ambience-ranges.js` values after the requested
+These are the current `source/ambience-ranges.js` values after the requested
 hearing-range increases. They supersede the original local choices of 5–25 m,
 3–18 m and 5–30 m respectively. The normal five-level minimum distance is now
 175.5 m instead of the native 50 m; its maximum-distance factor remains 150.

@@ -30,7 +30,7 @@ than treating decompiled pseudocode as original source.
 
 ## Port implementation
 
-`src/music-fade.js` implements the constant-rate control ramp. `src/audio.js`
+`source/music-fade.js` implements the constant-rate control ramp. `source/audio.js`
 applies the fade inside the existing native gain conversion. Fades pause with
 the game; saved envelopes retain their current gain and elapsed progress.
 

@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as THREE from 'three';
-import {Gameplay} from '../src/gameplay.js';
-import {GameAudio} from '../src/audio.js';
-import {WorldEffects,saveBeaconGeometry,coronaRadius,lightFunction} from '../src/world-effects.js';
+import {Gameplay} from '../source/gameplay.js';
+import {GameAudio} from '../source/audio.js';
+import {WorldEffects,saveBeaconGeometry,coronaRadius,lightFunction} from '../source/world-effects.js';
 
 const manifest=JSON.parse(fs.readFileSync(new URL('../assets/effects/manifest.json',import.meta.url)));
 const levels=['lvl00a','lvl01a','lvl02a','lvl03a','lvl04a'].map(id=>JSON.parse(fs.readFileSync(new URL(`../data/levels/${id}/level.json`,import.meta.url))));

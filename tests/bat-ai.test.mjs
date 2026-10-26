@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as THREE from 'three';
-import { Gameplay } from '../src/gameplay.js';
-import {batOverlapsPlayer} from '../src/enemy-flight.js';
-import { GAMEPLAY_SETTINGS } from '../src/gameplay-settings.js';
-import { BspCollider } from '../src/collision.js';
-import { CastleWorld } from '../src/world.js';
+import { Gameplay } from '../source/gameplay.js';
+import {batOverlapsPlayer} from '../source/enemy-flight.js';
+import { GAMEPLAY_SETTINGS } from '../source/gameplay-settings.js';
+import { BspCollider } from '../source/collision.js';
+import { CastleWorld } from '../source/world.js';
 
 function fixture(variant=1,extra={}) {
   const level={id:'lvl01a',spawn:{position:[0,0,0],orientation:0},entities:[{

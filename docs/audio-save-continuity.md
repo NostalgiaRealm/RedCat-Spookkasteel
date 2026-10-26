@@ -1,7 +1,7 @@
 # Audio continuity when restoring an adventure
 
-Implemented 2026-10-15 in `src/audio.js` and the adventure save/load path in
-`src/main.js`. This extends the port's saves; it does not claim that the native
+Implemented 2026-10-15 in `source/audio.js` and the adventure save/load path in
+`source/main.js`. This extends the port's saves; it does not claim that the native
 save format preserved every active recording.
 
 ## Saved playback

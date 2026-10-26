@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createNativeBlasts,nativeBlastsForEffect,nativeSmokeState,restoreNativeExplosions} from '../src/explosion-native.js';
-import {createNativeExplosionDamage} from '../src/explosion-damage.js';
-import {DestructibleEffects} from '../src/destructible-effects.js';
+import {createNativeBlasts,nativeBlastsForEffect,nativeSmokeState,restoreNativeExplosions} from '../source/explosion-native.js';
+import {createNativeExplosionDamage} from '../source/explosion-damage.js';
+import {DestructibleEffects} from '../source/destructible-effects.js';
 
 const fixture=()=>({id:'crate:12',sourceId:'crate',birth:12,position:[100,200,300],bounds:{min:[-10,-20,-30],max:[10,20,30]},
   settings:{explosion:{NrExplosions:6,SizePercentage:25,DamagePercentage:25,SmokeOnly:0,Green:0}}});

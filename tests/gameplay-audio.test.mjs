@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {existsSync} from 'node:fs';
-import {GameAudio} from '../src/audio.js';
-import {GameplayAudio,PLAYER_SOUNDS,ENEMY_SOUND_PREFIXES} from '../src/gameplay-audio.js';
+import {GameAudio} from '../source/audio.js';
+import {GameplayAudio,PLAYER_SOUNDS,ENEMY_SOUND_PREFIXES} from '../source/gameplay-audio.js';
 
 const setup = () => {
   const audio=new GameAudio({createAudio:src=>({src,volume:1,paused:true,play(){this.paused=false;return Promise.resolve();},pause(){this.paused=true;}})});

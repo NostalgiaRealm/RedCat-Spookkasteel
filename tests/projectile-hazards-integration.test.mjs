@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Gameplay} from '../src/gameplay.js';
+import {Gameplay} from '../source/gameplay.js';
 
 const level={id:'lvl00a',spawn:{position:[1000,0,1000],orientation:0},entities:[]};
 const mushroom=(id='mushroom')=>({id,kind:'mushRoom',sourceId:'brutus',position:[0,25,0],velocity:[250,0,0],radius:2,life:5,damage:2,gravity:0,age:0});

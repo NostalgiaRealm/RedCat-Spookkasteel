@@ -97,7 +97,7 @@ RedCat uses the port’s regular movement, jump, camera, shooting and original H
 
 Use the pause panel to select any of the 26 exhibits. The controls are unchanged, including the 1–9 shortcuts for the first nine unused models. Choose a clip and press **Afspelen** to resume; uncheck **Animatie herhalen** to play it once and hold the final pose.
 
-Caches, profile, logs and verification artifacts are retained in `../temp_work/actor-test-2026-10-13/`. The headless browser test uses `../temp_work/actor-browser/` for Linux socket path limits. No campaign save or settings storage is loaded or written. `source-snapshot.json` records copied source/asset hashes. No main-game release package is created.
+New runtime caches, profiles, logs and verification artifacts are written to `../temp_work/actor-test-2026-10-13/`. The headless browser test uses `../temp_work/actor-browser/` for Linux socket path limits. Historical reports remain, but disposable profiles and screenshots from earlier runs were removed in the [22 October cleanup](../temp_work/cleanup-2026-10-22/README.md). No campaign save or settings storage is loaded or written. `source-snapshot.json` records copied source/asset hashes. No main-game release package is created.
 
 Focused checks (requires the parent project’s Playwright and Chrome):
 

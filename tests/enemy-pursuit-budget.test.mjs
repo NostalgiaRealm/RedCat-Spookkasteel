@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {EnemyNavigation} from '../src/enemy-navigation.js';
+import {EnemyNavigation} from '../source/enemy-navigation.js';
 
 const point=(id,x,z,links=[])=>({classname:'GrobberPathPoint','%name%':id,Origin:`${x} 0 ${z}`,...Object.fromEntries(links.map((name,i)=>[`WayPoint${i+1}`,name]))});
 const makeEnemy=(nav,id='enemy')=>{const o={id,entity:{StartPoint:'a'},position:[0,0,0]};nav.initialize(o);return o;};

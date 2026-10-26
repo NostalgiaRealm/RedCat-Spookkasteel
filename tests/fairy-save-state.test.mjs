@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Vector3} from 'three';
-import {NativeFairyEffect,FAIRY_STEP} from '../src/fairy-effects.js';
-import {WorldEffects} from '../src/world-effects.js';
-import {Gameplay} from '../src/gameplay.js';
+import {NativeFairyEffect,FAIRY_STEP} from '../source/fairy-effects.js';
+import {WorldEffects} from '../source/world-effects.js';
+import {Gameplay} from '../source/gameplay.js';
 
 const options={origin:[10,20,30],waypoints:[[20,45,30],[60,40,20]],lifeTime:0,seed:921};
 const json=value=>JSON.parse(JSON.stringify(value));

@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
 
 // Script integration scenarios, not a keyboard-controlled campaign run.
 // Inputs call ordinary button/pickup/trigger entry points at each fixture;

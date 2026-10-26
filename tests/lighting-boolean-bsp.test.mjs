@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {actorBspRayBlocked,traceActorFloorBsp,inverseModelTransform} from '../src/actor-floor-lighting.js';
+import {actorBspRayBlocked,traceActorFloorBsp,inverseModelTransform} from '../source/actor-floor-lighting.js';
 
 function compare(collision,start,end,root=collision.models[0].root) {
   const before={nodeVisits:0},after={nodeVisits:0};

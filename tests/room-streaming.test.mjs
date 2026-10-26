@@ -2,12 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {RoomVisibility} from '../src/room-visibility.js';
-import {WorldGeometryStream} from '../src/world-streaming.js';
-import {ActorRenderResidency} from '../src/actor-render-residency.js';
-import {ActorTextureStream} from '../src/actor-texture-stream.js';
-import {BillboardBatch,BeamBatch,WorldEffects} from '../src/world-effects.js';
-import {DestructibleEffects} from '../src/destructible-effects.js';
+import {RoomVisibility} from '../source/room-visibility.js';
+import {WorldGeometryStream} from '../source/world-streaming.js';
+import {ActorRenderResidency} from '../source/actor-render-residency.js';
+import {ActorTextureStream} from '../source/actor-texture-stream.js';
+import {BillboardBatch,BeamBatch,WorldEffects} from '../source/world-effects.js';
+import {DestructibleEffects} from '../source/destructible-effects.js';
 
 function fixture() {
   const box={min:[-400,-100,-300],max:[200,200,100]},collision={models:[{...box,root:0,firstLeaf:0,numLeaves:4},

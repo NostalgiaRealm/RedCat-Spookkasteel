@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {MenuAudio,LEVEL_MENU_VOICES} from '../src/menu-audio.js';
+import {MenuAudio,LEVEL_MENU_VOICES} from '../source/menu-audio.js';
 function setup(){
  const clips=[],calls=[];
  const music={keyed:new Map(),playMusic(options){calls.push(options);if(options.stop)this.keyed.clear();else this.keyed.set('music',options);},pause(){},resume(){},setMaster(){}};

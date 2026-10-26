@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {Gameplay} from '../src/gameplay.js';
-import {ActorAnimator,ActorStateAnimator} from '../src/animation.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ActorAnimator,ActorStateAnimator} from '../source/animation.js';
 const read=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-6,`${a} != ${b}`);
 function setup(type) {

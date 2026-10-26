@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {RenderQuality,normalizeRenderScale,scaledRenderSize} from '../src/render-quality.js';
+import {RenderQuality,normalizeRenderScale,scaledRenderSize} from '../source/render-quality.js';
 const run=(q,fps,seconds)=>{for(let i=0;i<fps*seconds;i++)q.sample(1/fps,true);};
 test('100% default and proportional dimensions',()=>{
  assert.equal(normalizeRenderScale(undefined),100);

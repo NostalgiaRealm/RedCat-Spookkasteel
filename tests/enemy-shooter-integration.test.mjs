@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {Gameplay} from '../src/gameplay.js';
+import {Gameplay} from '../source/gameplay.js';
 
 const near=[0,0,50],far=[0,0,5000];
 const waypoint=(id,z,other)=>({classname:'GrobberPathPoint','%name%':id,Origin:`0 0 ${z}`,SubSystemId:'0',...(other?{WayPoint1:other}:{})});

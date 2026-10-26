@@ -105,7 +105,7 @@ does not distinguish those causes.
 The change is justified as explicit resource lifecycle cleanup, with native
 destruction demonstrated above. It is not presented as a proven diagnosis or
 reproduction-based fix for the original outro failure. Menu voice playback
-has a separate pause-only cleanup path in `src/menu-audio.js`; it was reviewed
+has a separate pause-only cleanup path in `source/menu-audio.js`; it was reviewed
 but remains outside this change. The original generic movie error also suggests
 missing imported media even for this creation failure; that message was not
 changed here.

@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {CastleWorld} from '../src/world.js';
-import {BspCollider,PlayerController} from '../src/collision.js';
-import {ScriptHost} from '../src/script-host.js';
+import {CastleWorld} from '../source/world.js';
+import {BspCollider,PlayerController} from '../source/collision.js';
+import {ScriptHost} from '../source/script-host.js';
 function platform(teleport=false) {
   const data={planes:[[1,0,0,100],[-1,0,0,100],[0,1,0,10],[0,-1,0,10],[0,0,1,100],[0,0,-1,100]],nodes:[],
     leaves:[{contents:1,firstSide:0,numSides:6,min:[-100,-10,-100],max:[100,10,100]}],leafSides:Array.from({length:6},(_,i)=>[i,0]),models:[null,{root:-1}]};

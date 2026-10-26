@@ -19,7 +19,7 @@ the measured route, not every level or device.
 
 ## Preparation policy
 
-- `src/streaming-work.js` provides one shared queue for world textures, actor
+- `source/streaming-work.js` provides one shared queue for world textures, actor
   textures, world chunk construction and actor buffer preparation. Normal
   animation frames execute at most **three jobs** with a **1.5 ms time allowance**
   checked between jobs. A single upload/copy is indivisible and can exceed the

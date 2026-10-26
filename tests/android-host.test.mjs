@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {AndroidHost, androidRenderSize} from '../src/android-host.js';
+import {AndroidHost, androidRenderSize} from '../source/android-host.js';
 
 function nativeWindow() {
   const window = new EventTarget(), messages = [];

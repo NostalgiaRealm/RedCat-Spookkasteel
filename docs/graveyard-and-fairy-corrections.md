@@ -65,9 +65,9 @@ are in `artifacts/cave-door-artwork-scenes.json`,
 To play the updated source on Linux:
 
 ```sh
-cd /home/rick/RCSPOOK_NEW
+# Run from your project checkout root.
 npm start -- --ozone-platform=x11
 ```
 
-`Start-RedCat.sh` prefers the older prepared package. See [building.md](building.md)
-for source setup and instructions for making your own Linux or Windows packages.
+`Start-RedCat.sh` prefers an existing prepared package, which may lag behind
+source changes. See [building.md](building.md) for source setup and instructions for making your own Linux or Windows packages.

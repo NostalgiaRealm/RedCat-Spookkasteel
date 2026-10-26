@@ -33,7 +33,7 @@ The port now preserves that ordering. See [animation recovery](redcat-animations
 
 `ProjectileEasy.ini`, `ProjectileNormal.ini`, and `ProjectileHard.ini` contain
 the active per-projectile properties. These are already imported into
-`src/gameplay-settings.js`; the unrelated generic `WeaponsNormal.ini` is not
+`source/gameplay-settings.js`; the unrelated generic `WeaponsNormal.ini` is not
 used. Normal difficulty has:
 
 | Kind | Initial speed | Acceleration per second | Maximum speed | Damage | Life | Recharge |

@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {WorldEffects} from '../src/world-effects.js';
-import {Gameplay} from '../src/gameplay.js';
-import {FootstepClock} from '../src/locomotion-audio.js';
+import {WorldEffects} from '../source/world-effects.js';
+import {Gameplay} from '../source/gameplay.js';
+import {FootstepClock} from '../source/locomotion-audio.js';
 import {readFileSync} from 'node:fs';
 
 const CORONA='coreff.bmp|coreff_a.bmp',ENERGY='energybeam.bmp|energybeam_a.bmp';

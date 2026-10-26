@@ -226,7 +226,7 @@ particle is removed without one extra movement step.
 
 ## Portable implementation and verification
 
-`src/spout-effects.js` now owns the 15 reusable slots and their immutable launch,
+`source/spout-effects.js` now owns the 15 reusable slots and their immutable launch,
 spread, delay and lifetime templates. `WorldEffects.updateSpout` supplies current
 model/hand-tip positions and renders the pool in the existing artwork batches.
 No particle meshes, extra lights or collision traces are allocated per birth.

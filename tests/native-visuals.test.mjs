@@ -2,10 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Vector3,BufferGeometry,Float32BufferAttribute,MeshLambertMaterial,Texture} from 'three';
-import {CastleWorld} from '../src/world.js';
-import {WorldEffects} from '../src/world-effects.js';
-import {actorOverrideKey} from '../src/actor-materials.js';
-import {NativeFairyEffect,fairyGeometry,FAIRY_TEXTURES} from '../src/fairy-effects.js';
+import {CastleWorld} from '../source/world.js';
+import {WorldEffects} from '../source/world-effects.js';
+import {actorOverrideKey} from '../source/actor-materials.js';
+import {NativeFairyEffect,fairyGeometry,FAIRY_TEXTURES} from '../source/fairy-effects.js';
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 
 test('authored cobweb masks apply to every graveyard web without mutating actor templates',()=>{

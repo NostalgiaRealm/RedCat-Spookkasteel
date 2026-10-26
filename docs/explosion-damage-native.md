@@ -54,8 +54,8 @@ There is no separate explosion impulse in the hurt cell.
 
 ## Port behavior and limits
 
-`src/explosion-damage.js` creates damage cells once when the source is destroyed.
-`src/world.js` provides current posed actor bounds, active-state checks and
+`source/explosion-damage.js` creates damage cells once when the source is destroyed.
+`source/world.js` provides current posed actor bounds, active-state checks and
 brush-only LOS. A conservative radius check rejects distant targets before
 computing their full posed bounds. Enemy damage follows existing hurt/death and
 score handling; prop damage follows ordinary destruction and its authored
@@ -99,7 +99,7 @@ is rejected. The hurt receiver multiplies by the full supplied frame delta
 at `0x4af524` (RedCat) and `0x4afd9d` (actors). It does not clip that delta to
 the nominal interval or carry an unused remainder into an expired frame.
 
-`src/explosion-damage.js` now implements this ordering. A blast first processed
+`source/explosion-damage.js` now implements this ordering. A blast first processed
 at 100 ms is eligible at 100, 200, 300, 400 and 500 ms with 100 ms updates, and
 retires at 600 ms: five full doses. With a 70 ms update, the eligible times are
 70 through 420 ms; 490 ms is already beyond the 470 ms deadline and receives
@@ -146,7 +146,7 @@ tests the equality/less-than status bits together; exact equality takes the
 ordinary receives-damage branch. This is static original-code evidence, not a
 new observation of the running original game.
 
-Both projectile hits and explosion ticks now use `src/destructible-damage.js`.
+Both projectile hits and explosion ticks now use `source/destructible-damage.js`.
 For props, `health` retains the positive damage limit while `propDamage`
 accumulates doses. Thus a crate with limit 1 survives its first 1-point hit,
 remains visible, collidable and targetable, and breaks on the next positive
@@ -239,9 +239,9 @@ loading restores the original-age flash and smoke. Gate visibility/collision
 removal remains intact, and hiding only the explosion sprite changes 1,196
 rendered pixels. There are no script, browser-console or missing-resource errors.
 The passing [report](../temp_work/explosion-damage-2026-10-14/scenes-1791930166308/report.json)
-and [screenshot](../temp_work/explosion-damage-2026-10-14/scenes-1791930166308/crate-explosion.png)
-are retained. In this isolated fixture, 16 active `world.update` ticks had a
-8.80 ms median and 22.9 ms maximum; 12 later ticks had a 4.90 ms median and 6.4 ms
+is retained. The rendered screenshot was removed in the
+[22 October cleanup](../temp_work/cleanup-2026-10-22/README.md). In this isolated
+fixture, 16 active `world.update` ticks had an 8.80 ms median and 22.9 ms maximum; 12 later ticks had a 4.90 ms median and 6.4 ms
 maximum. These are whole-update samples, not a general performance benchmark.
 
 No package build or broad historical regression suite was run for this change.

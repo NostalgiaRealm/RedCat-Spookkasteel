@@ -54,8 +54,8 @@ paused game.
 
 ## Implementation and focused checks
 
-`src/touch-controls.js` provides device detection, pointer tracking and input
-state. `src/main.js` combines that state with the existing keyboard/mouse
+`source/touch-controls.js` provides device detection, pointer tracking and input
+state. `source/main.js` combines that state with the existing keyboard/mouse
 actions; the gameplay and physics systems receive the same inputs. Presentation
 is in `src/touch-controls.css`; no asset conversion or packaging is required.
 
@@ -71,7 +71,8 @@ events, plus cancellation and lifecycle checks. Physical iOS/Android devices
 still need performance, audio/video and browser compatibility validation. This
 change adds browser touch input; it does not produce an Android APK or iOS app.
 
-For an existing website, upload the updated `index.html` and `src/` directory
+For an existing website, run `npm run web:refresh` after editing the `source/`
+modules, then upload the matching `index.html` and runtime `src/` directory
 using the [hosting guide](nginx-hosting.md). No website staging directory is
 updated automatically.
 

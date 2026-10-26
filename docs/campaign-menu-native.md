@@ -34,7 +34,7 @@ exit handler. Access is recorded on that event before changing levels. Merely
 selecting a locked card, changing difficulty, granting cheat supplies or
 restarting an earlier chapter does not grant another chapter.
 
-The explicit portable cheat **Instellingen → Cheats → Alle levels vrijspelen**
+The explicit portable cheat **Instellingen → Meer instellingen → Cheats → Alle levels vrijspelen**
 unlocks all five chapters immediately. It writes campaign progress before
 updating the menu and remains unlocked after restart or loading an earlier
 checkpoint. It works before starting a game and during paused play, without
@@ -68,7 +68,7 @@ area. State 4 has a different source ratio and must not be stretched or cropped.
 
 ## Portable storage and migration
 
-`src/campaign-progress.js` contains pure helpers, with no DOM or storage writes:
+`source/campaign-progress.js` contains pure helpers, with no DOM or storage writes:
 
 - `readCampaignProgress(stored, legacySave)` returns
   `{version: 1, highestUnlocked: 0…4}` with optional `earnedSkills` and
@@ -107,9 +107,10 @@ validation. After the dimension check identified the smaller locked-hover
 resource, only that affected case was rerun. No packages were built.
 `node tests/campaign-settings-scenes.mjs` verifies the real menu locks, original
 hover/locked artwork, completion unlock, persistence after replay, existing-save
-migration, difficulty controls and one-minute autosave. Screenshots are saved in
-`artifacts/campaign-menu-{locked,unlocked}.png` and
-`artifacts/difficulty-settings.png`. No browser/HTTP errors occurred.
+migration, difficulty controls and one-minute autosave. It follows the current
+original-menu page flow. Each run retains its report and captures in
+`temp_work/campaign-settings-scenes/run-<timestamp>/`. The corresponding
+focused run passed again on 26 October 2026 without browser/HTTP errors.
 
 `node tests/cheat-unlock-levels-scenes.mjs` checks only the explicit unlock
 cheat, including main-menu/paused use, persistence, level access and storage
@@ -147,15 +148,20 @@ abilities; cancelling or a failed new-game load leaves ownership intact.
 The focused `node tests/new-adventure-skills-scenes.mjs` regression checks
 Continue and Forest replay with learned upgrades, cancellation, deferred reset
 while loading, the original Forest starting skill mask, and reload persistence.
-Evidence is retained in `temp_work/new-adventure-skills-2026-10-03/`.
+Original feature evidence is retained in
+`temp_work/new-adventure-skills-2026-10-03/`. Current-menu runs write to
+`temp_work/new-adventure-skills-scenes/run-<timestamp>/`; the 26 October 2026
+run passed using the restored menu controls.
 
-Historical flat-menu verification: `node tests/new-adventure-warning-scenes.mjs`. This checked
+Historical flat-menu verification: `tests/new-adventure-warning-scenes.mjs`. This checked
 fresh/invalid saves, desktop/portrait layout, primary button color, warning
 cancellation (including controller), Continue restoration, chapter replay and
 confirmed Forest restart with recovery reset. Evidence is retained in
 `temp_work/saved-adventure-menu-2026-10-03/`. No builds were created.
 Those historical selectors and primary-button colors predate the restored
-original menu. Current navigation, cancellation and save-preservation checks
+original menu. That script now stops immediately with directions to the current
+checks; its explicit `--historical-flat-menu` opt-in is only for an old source
+snapshot, not the present menu. Current navigation, cancellation and save-preservation checks
 are documented in [original-menu-native.md](original-menu-native.md); they
 cover the new page flow while retaining the same save safeguards.
 

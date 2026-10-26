@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { Gameplay } from '../src/gameplay.js';
-import { GAMEPLAY_SETTINGS } from '../src/gameplay-settings.js';
-import { sweepPlayer } from '../src/enemies.js';
+import { Gameplay } from '../source/gameplay.js';
+import { GAMEPLAY_SETTINGS } from '../source/gameplay-settings.js';
+import { sweepPlayer } from '../source/enemies.js';
 
 const enemy=(subtype=1,extra={})=>({classname:'MovingEnemy','%name%':'spider',DaviName:'spider',Type:'1',SubType:String(subtype),Origin:'0 0 0',StartOrientation:'6',...extra});
 const level=(entities=[])=>({id:'lvl01a',spawn:{position:[0,0,0],orientation:0},entities});

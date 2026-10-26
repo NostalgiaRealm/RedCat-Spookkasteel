@@ -35,7 +35,7 @@ excerpts are retained in
 
 ## Implementation and performance
 
-`src/world-light-shadows.js` reuses the imported floor-lighting face metadata,
+`source/world-light-shadows.js` reuses the imported floor-lighting face metadata,
 native point trace and endpoint helper. It reproduces the existing lightmap
 atlas packing without changing meshes or importing new assets. Each shadow
 lamp owns one obstruction bit in a nearest-sampled, single-channel byte atlas.
@@ -97,7 +97,7 @@ shadow-calculation error.
 | +X, -X | `sky00` | [`textures/027.png`](../data/levels/lvl04a/textures/027.png) | 128 x 128 |
 | +Y, -Y, +Z, -Z | `skyg` | [`textures/028.png`](../data/levels/lvl04a/textures/028.png) | 256 x 256 |
 
-Before the fix, [`CastleWorld.load()`](../src/world.js) passed these images
+Before the fix, [`CastleWorld.load()`](../source/world.js) passed these images
 directly to `new THREE.CubeTexture(faces)` and assigned it to
 `scene.background`, without making their dimensions equal. In the installed Three.js implementation,
 `uploadCubeTexture()` in
@@ -162,7 +162,7 @@ All five level manifests were checked against the actual PNG dimensions:
 | 4 — De Grotten (`lvl03a`) | No authored skybox; all six indices are -1 | No cubemap to upload |
 | 5 — De Kasteeltoren (`lvl04a`) | Two 128 x 128 and four 256 x 256 faces, as detailed above | **Yes** |
 
-[`normalizeSkyboxFaces()`](../src/skybox.js) now runs before cubemap creation.
+[`normalizeSkyboxFaces()`](../source/skybox.js) now runs before cubemap creation.
 It chooses the largest source dimension, capped by the GPU's maximum cubemap
 size, and makes every face that common square size. For the shipped campaign
 this is **256 x 256**. Only images that need resizing are copied, with smooth

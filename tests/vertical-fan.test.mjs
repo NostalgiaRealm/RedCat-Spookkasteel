@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {PlayerController} from '../src/collision.js';
+import {Gameplay} from '../source/gameplay.js';
+import {PlayerController} from '../source/collision.js';
 
 const level=JSON.parse(readFileSync(new URL('../data/levels/lvl03a/level.json',import.meta.url)));
 const idle={forward:0,right:0};

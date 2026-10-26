@@ -7,8 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
-import android.media.AudioAttributes
-import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
@@ -109,18 +107,15 @@ class MainActivity : ComponentActivity() {
         } else pendingImport = null
     }
     private lateinit var root: FrameLayout
-    private lateinit var audioManager: AudioManager
-    private lateinit var focusRequest: AudioFocusRequest
     private val handler = Handler(Looper.getMainLooper())
     private var webView: WebView? = null
     private val popups = mutableSetOf<WebView>()
     private var foreground = false
-    private var audioFocus = false
+    private var windowFocused = false
     private var pageReady = false
     private var fullscreen = true
     private var keepAwakeRequested = false
     private var noisyReceiverRegistered = false
-    private var focusOverlay: LinearLayout? = null
 
     private val noisyReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -145,17 +140,10 @@ class MainActivity : ComponentActivity() {
             view.setPadding(safe.left, safe.top, safe.right, safe.bottom)
             insets
         }
-        audioManager = getSystemService(AudioManager::class.java)
-        focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-            .setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME)
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build())
-            .setAcceptsDelayedFocusGain(true)
-            .setWillPauseWhenDucked(true)
-            .setOnAudioFocusChangeListener({ change ->
-                audioFocus = foreground && change == AudioManager.AUDIOFOCUS_GAIN
-                publishLifecycle()
-            }, handler)
-            .build()
+        // WebView owns the actual media players and their Android audio focus.
+        // A second Activity focus request competes with that same-app owner:
+        // menu WAVs can duck it and longer movies can permanently replace it,
+        // which used to pause the game while it was starting its own sound.
         ContextCompat.registerReceiver(this, noisyReceiver,
             IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY), ContextCompat.RECEIVER_NOT_EXPORTED)
         noisyReceiverRegistered = true
@@ -291,7 +279,6 @@ class MainActivity : ComponentActivity() {
         root.addView(view, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
         if (!foreground) view.onPause()
         view.loadUrl(GameUrls.ENTRY)
-        updateFocusOverlay()
     }
 
     private fun receiveMessage(data: String) {
@@ -444,56 +431,12 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun publishLifecycle() {
-        sendEvent(JSONObject().put("type", "lifecycle").put("active", foreground && audioFocus))
+        sendEvent(JSONObject().put("type", "lifecycle").put("active", foreground && windowFocused))
         updateKeepAwake()
-        updateFocusOverlay()
-    }
-
-    private fun requestGameAudioFocus() {
-        audioFocus = audioManager.requestAudioFocus(focusRequest) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
-        publishLifecycle()
-    }
-
-    private fun updateFocusOverlay() {
-        if (!foreground || audioFocus || webView == null) {
-            focusOverlay?.let(root::removeView)
-            focusOverlay = null
-            return
-        }
-        if (focusOverlay != null) return
-        val padding = (24 * resources.displayMetrics.density).toInt()
-        val panel = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER
-            setPadding(padding, padding, padding, padding)
-            setBackgroundColor(Color.rgb(16, 28, 34))
-            isClickable = true
-        }
-        panel.addView(TextView(this).apply {
-            setText(R.string.audio_paused_title)
-            textSize = 24f
-            setTextColor(Color.WHITE)
-        })
-        panel.addView(TextView(this).apply {
-            setText(R.string.audio_paused)
-            textSize = 16f
-            setTextColor(Color.WHITE)
-            setPadding(0, padding, 0, padding)
-        })
-        panel.addView(Button(this).apply {
-            setText(R.string.retry_audio)
-            setOnClickListener {
-                audioManager.abandonAudioFocusRequest(focusRequest)
-                requestGameAudioFocus()
-            }
-        })
-        panel.addView(Button(this).apply { setText(R.string.close); setOnClickListener { finish() } })
-        focusOverlay = panel
-        root.addView(panel, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
     }
 
     private fun updateKeepAwake() {
-        if (foreground && audioFocus && pageReady && keepAwakeRequested) {
+        if (foreground && windowFocused && pageReady && keepAwakeRequested) {
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         } else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
@@ -525,7 +468,6 @@ class MainActivity : ComponentActivity() {
         pageReady = false
         keepAwakeRequested = false
         updateKeepAwake()
-        updateFocusOverlay()
         if (old != null) {
             (old.parent as? ViewGroup)?.removeView(old)
             if (!rendererGone) {
@@ -566,25 +508,35 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Volume keys should still control game audio while a level is paused
+        // or the menu is temporarily silent.
+        volumeControlStream = AudioManager.STREAM_MUSIC
         foreground = true
         webView?.onResume()
-        requestGameAudioFocus()
+        windowFocused = window.decorView.hasWindowFocus()
+        publishLifecycle()
         applyDisplay()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        windowFocused = hasFocus
+        // Calls, system panels and external activities must still suspend the
+        // game independently of WebView's own media-focus implementation.
+        if (::root.isInitialized) publishLifecycle()
     }
 
     override fun onPause() {
         foreground = false
-        audioFocus = false
+        windowFocused = false
         publishLifecycle()
         webView?.onPause()
-        audioManager.abandonAudioFocusRequest(focusRequest)
         super.onPause()
     }
 
     override fun onDestroy() {
         handler.removeCallbacksAndMessages(null)
         if (noisyReceiverRegistered) unregisterReceiver(noisyReceiver)
-        audioManager.abandonAudioFocusRequest(focusRequest)
         disposeGameView()
         exportWriter.shutdown()
         super.onDestroy()

@@ -4,7 +4,7 @@ The source is the installed `RcHcGame.dat`, its x86 disassembly, and the origina
 
 ## Fairy distance
 
-`idlefee1.wav` keeps its existing authored gain and active/deactivated lifetime. Its entire distance curve is expanded by exactly three. After the later requested ambience-range increases, the current castle near/far 17.55/87.75 m becomes 52.65/263.25 m, and cave 17.55/105.3 m becomes 52.65/315.9 m. The other levels multiply the current configured minimum radius by three, also scaling the maximum. `src/ambience-ranges.js` contains these intentional mix adjustments; they are not claims about original native attenuation.
+`idlefee1.wav` keeps its existing authored gain and active/deactivated lifetime. Its entire distance curve is expanded by exactly three. After the later requested ambience-range increases, the current castle near/far 17.55/87.75 m becomes 52.65/263.25 m, and cave 17.55/105.3 m becomes 52.65/315.9 m. The other levels multiply the current configured minimum radius by three, also scaling the maximum. `source/ambience-ranges.js` contains these intentional mix adjustments; they are not claims about original native attenuation.
 
 Only this fairy loop uses RedCat's position as its listener. Scripted camera moves can no longer push its gain down while RedCat remains beside the activated lantern. Other effects keep their existing camera listener and ranges.
 

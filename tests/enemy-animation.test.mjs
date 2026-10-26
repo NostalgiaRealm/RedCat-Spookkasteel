@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {ActorAnimator,ActorStateAnimator} from '../src/animation.js';
-import {CastleWorld} from '../src/world.js';
-import {BspCollider,PlayerController} from '../src/collision.js';
+import {ActorAnimator,ActorStateAnimator} from '../source/animation.js';
+import {CastleWorld} from '../source/world.js';
+import {BspCollider,PlayerController} from '../source/collision.js';
 
 function actor(stem,stats={}) {
   const data=JSON.parse(readFileSync(new URL(`../assets/actors/${stem}.json`,import.meta.url)));

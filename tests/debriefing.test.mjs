@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {levelSummary,awardLevelSummary,restoreLevelSummary} from '../src/debriefing.js';
+import {Gameplay} from '../source/gameplay.js';
+import {levelSummary,awardLevelSummary,restoreLevelSummary} from '../source/debriefing.js';
 const original=id=>JSON.parse(readFileSync(new URL(`../data/levels/${id}/level.json`,import.meta.url)));
 test('original Dutch debriefing text, icon crops, timing and per-level totals are retained',()=>{
   const m=JSON.parse(readFileSync(new URL('../assets/debriefing/manifest.json',import.meta.url)));

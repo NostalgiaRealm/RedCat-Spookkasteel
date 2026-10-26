@@ -16,7 +16,7 @@ This guide covers running the source, making the existing Linux x64 and Windows 
 
 The development machine checked on 5 October 2026 uses Node 24.13.1 and npm 11.8.0. Use `npm ci` to install the exact dependencies in the lockfile. The first install and the first build for another platform need internet access to download tools and Electron. A running game needs WebGL 2 support and working graphics drivers.
 
-Keep `index.html`, `package.json`, `package-lock.json`, `src/`, `electron/`, `tools/`, `tests/`, `docs/`, `assets/` and `data/` together in the project directory. The current `.gitignore` does **not** exclude `assets/` or `data/`. Check that your checkout includes their complete contents; if they were omitted from the distribution, import or copy them from your own prepared project. Do not copy `node_modules` between operating systems; run `npm ci` on each development machine.
+Keep `index.html`, `package.json`, `package-lock.json`, `source/`, `src/`, `electron/`, `tools/`, `tests/`, `docs/`, `assets/` and `data/` together in the project directory. The current `.gitignore` does **not** exclude `assets/` or `data/`. Check that your checkout includes their complete contents; if they were omitted from the distribution, import or copy them from your own prepared project. Do not copy `node_modules` between operating systems; run `npm ci` on each development machine.
 
 ## 2. Install dependencies and run the source
 
@@ -40,7 +40,10 @@ npm ci
 npm start
 ```
 
-These commands run the source without generating packages. Substitute your own checkout path when needed. On Linux, selecting X11/XWayland before Electron starts avoids the blank-window problem seen with mismatched display backends. An explicit `npm start -- --ozone-platform=wayland` is also supported when your desktop/driver combination works with Wayland.
+These commands regenerate `src/game.bundle.js` from the editable modules in
+`source/`, then run that bundle without generating packages. The individual
+modules are not loaded directly by ordinary gameplay. Keep `source/` in a
+development checkout; generated runtime distributions do not need it. Substitute your own checkout path when needed. On Linux, selecting X11/XWayland before Electron starts avoids the blank-window problem seen with mismatched display backends. An explicit `npm start -- --ozone-platform=wayland` is also supported when your desktop/driver combination works with Wayland.
 
 **`Start-RedCat.sh` prefers the existing `dist/linux-unpacked` build.** If that directory exists, the launcher will not show your new source changes. Use the `npm start` command above while developing.
 
@@ -59,7 +62,7 @@ is needed for that deployment.
 
 ## 3. Import assets, if needed
 
-Skip this section if the project already has complete imported `assets/` and `data/` directories. Importing regenerates those directories and the generated `src/gameplay-settings.js` and `src/audio-settings.js` files from the original installation; it leaves the original installation and CD unchanged. Keep any manually edited generated files separately before reimporting.
+Skip this section if the project already has complete imported `assets/` and `data/` directories. Importing regenerates those directories and the generated `source/gameplay-settings.js` and `source/audio-settings.js` files from the original installation; it leaves the original installation and CD unchanged. Keep any manually edited generated files separately before reimporting.
 
 The original installation needs its `Levels`, `Actors`, `Settings`, `Sounds`, `VoiceNL` and other game data. Mount the CD/ISO for the original videos. No external Davitools installation is necessary: this project's importers include the required IMG handling.
 
@@ -118,12 +121,17 @@ Windows equivalent:
 & '.\.venv\Scripts\python.exe' -m unittest discover -s tests -p 'test_*.py'
 ```
 
-Browser integration tests start and stop their own local server:
+Current bundle and hosting browser checks start and stop their own local server:
 
 ```sh
-npm run test:smoke
-npm run test:scripts
+node tests/runtime-bundle-scenes.mjs
+node tests/web-subpath-scenes.mjs
 ```
+
+`npm run test:smoke` retains the earlier flat-menu assumptions and should not be
+used as a current release gate without migrating that harness. The focused
+checks above cover the prepared runtime and current menu. `npm run test:scripts`
+is a separate script-scene harness; it does not establish a full campaign run.
 
 Other focused checks are listed under `scripts` in `package.json`, including audio, enemies, bosses, effects, doors and cheats. Newer focused checks also run directly from `tests/*.mjs`; use the relevant feature document to choose them. They use isolated game state rather than your normal desktop saves. Older scripts write results under `artifacts/`; newer investigations retain reports, screenshots and isolated profiles in named folders under `temp_work/`.
 
@@ -134,17 +142,20 @@ short relative path under `temp_work/` from the project root; long absolute
 paths can exceed Chromium's Unix socket path limit. Follow the particular
 test's output/profile setup rather than reusing your running game's profile.
 
-The full smoke test explicitly plays the intro, so it requires converted media even if you chose `--skip-media` during import. It also checks HTTP errors: the menu currently requests `assets/menu/cover.jpg` even when optional cover art was omitted. For a clean full smoke pass, include that artwork with `--album-dir` during import. Running unit tests alone does not check either requirement.
+Media checks require converted intro/outro files even if you chose `--skip-media`
+during import. The restored original menu does not request the optional
+`assets/menu/cover.jpg`; omitting that cover scan is not a current menu failure.
+Unit tests alone do not establish browser media playback.
 
 Browser tests default to `/usr/bin/google-chrome`. Override the executable if necessary:
 
 ```sh
-CHROME_PATH=/path/to/chromium npm run test:smoke
+CHROME_PATH=/path/to/chromium node tests/runtime-bundle-scenes.mjs
 ```
 
 ```powershell
 $env:CHROME_PATH = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
-npm run test:smoke
+node tests/runtime-bundle-scenes.mjs
 ```
 
 In a Linux graphical session, run the broader native Electron check:
@@ -158,11 +169,11 @@ This launches Electron against the **source** and checks gameplay, resolution sw
 Resolve test failures before creating packages. Some original-file comparison tests require the original installation on the development machine and skip when it is absent.
 
 Keep source validation and package validation separate. An existing `dist/`
-package still contains the source and metadata from when it was generated:
-changing the Over dialog to **1.0.1** does not update a previously built **1.0.0**
-package. Record the executable/package version, source revision or file hashes,
-platform, inputs and checks for each release run. Source tests and older-package
-checks do not certify a new 1.0.1 release, and Linux browser/Electron checks
+package still contains the prepared runtime and metadata from when it was
+generated; editing the source or changing the Over version does not update it.
+Record the executable/package version, source revision or file hashes, platform,
+inputs and checks for each release run. Source tests and older-package checks
+do not certify a newly generated release, and Linux browser/Electron checks
 do not certify Windows, macOS or ARM hardware. The 1.0.0 cache-coherence release refresh is recorded in
 `temp_work/release-1.0.0-final-2026-10-20/`. The subsequent 1.0.1 release built
 all six targets and verified their archives and uploaded checksums; records
@@ -173,46 +184,43 @@ validation beyond Linux x64 remains pending.
 
 ## 5. Generate portable packages when ready
 
-**Only run this section when you intend to create new builds.** Close the game first. These commands update the corresponding directories under `dist/`; copy an older build elsewhere first if you want to preserve it. The current source displays **1.0.3** in **Over** and uses **1.0.3** in `package.json` and the root lockfile. The packaging helper still requires an explicit `REDCAT_PACKAGE_VERSION` for each packaging command; use `1.0.3` for this source version. It overrides the generated package metadata without modifying the source, lockfile or displayed version. Use three dot-separated integers chosen for your distribution; the helper has no default. Without this value, the packaging command stops before creating a build.
+**Only run this section when you intend to create new builds.** Close the game first. These commands update the corresponding directories under `dist/`; copy an older build elsewhere first if you want to preserve it. The current source displays **1.0.4** in **Over** and uses **1.0.4** in `package.json` and the root lockfile. The packaging helper still requires an explicit `REDCAT_PACKAGE_VERSION` for each packaging command; use `1.0.4` for this source version. It overrides the generated package metadata without modifying the source, lockfile or displayed version. Use three dot-separated integers chosen for your distribution; the helper has no default. Without this value, the packaging command stops before creating a build.
 
-For **1.0.3** packages, enter **1.0.3** at the version prompts below
-(or set `REDCAT_PACKAGE_VERSION=1.0.3` in Bash / `$env:REDCAT_PACKAGE_VERSION = '1.0.3'`
+For **1.0.4** packages, enter **1.0.4** at the version prompts below
+(or set `REDCAT_PACKAGE_VERSION=1.0.4` in Bash / `$env:REDCAT_PACKAGE_VERSION = '1.0.4'`
 in PowerShell). Use the same version for every desktop architecture. The current
-Over dialog displays **1.0.3**; the separate Android preview uses `versionName = "1.0.3"`
-and `versionCode = 5`. No new package is created by updating this documentation
+Over dialog displays **1.0.4**; the separate Android app uses `versionName = "1.0.4"`
+and `versionCode = 6`. No new package is created by updating this documentation
 or the display version.
 
 ### Available targets and current limits
 
 As checked on 20 October 2026, the lockfile pins Electron **44.3.0** and electron-builder **26.15.3**. The installed Electron checksum manifest includes Linux, Windows and macOS binaries for both x64 and ARM64. The game's only production npm dependency is Three.js; it has no architecture-specific native game addons. The same imported assets and level data can be packaged for each target. These architectures are also listed in [electron-builder's version 26 documentation](https://www.electron.build/v26/docs/architecture/).
 
-| Target | Build host for the instructions below | Last packaged status (1.0.1) | Output under `dist/` |
-| --- | --- | --- | --- |
-| Linux x64 | Linux | 1.0.1 portable package; local packaged-runtime check | `linux-unpacked/` |
-| Windows x64 | Windows or Linux | Unsigned 1.0.1 cross-package; Windows runtime validation pending | `win-unpacked/` |
-| Linux ARM64 | Linux, including an x64 build host | 1.0.1 cross-package; ARM hardware runtime validation pending | `linux-arm64-unpacked/` |
-| Windows ARM64 | Windows or Linux | Unsigned 1.0.1 cross-package; Windows ARM runtime validation pending | `win-arm64-unpacked/` |
-| macOS Intel (x64) | macOS for signing/testing; Linux for unsigned bundles | Unsigned 1.0.1 bundle; Intel Mac runtime validation pending | `mac/RedCat Spookkasteel.app` |
-| macOS Apple Silicon (ARM64) | macOS for signing/testing; Linux for unsigned bundles | Unsigned 1.0.1 bundle; Apple Silicon runtime validation pending | `mac-arm64/RedCat Spookkasteel.app` |
+| Target | Build host for the instructions below | Output under `dist/` |
+| --- | --- | --- |
+| Linux x64 | Linux | `linux-unpacked/` |
+| Windows x64 | Windows or Linux | `win-unpacked/` |
+| Linux ARM64 | Linux, including an x64 build host | `linux-arm64-unpacked/` |
+| Windows ARM64 | Windows or Linux | `win-arm64-unpacked/` |
+| macOS Intel (x64) | macOS for signing/testing; Linux for unsigned bundles | `mac/RedCat Spookkasteel.app` |
+| macOS Apple Silicon (ARM64) | macOS for signing/testing; Linux for unsigned bundles | `mac-arm64/RedCat Spookkasteel.app` |
 
-All six desktop targets were built and published for 1.0.1. The
-[release record](../temp_work/release-1.0.1-2026-10-20/release-verification.json)
-records matching source inputs, architecture/metadata inspection, archive
-integrity and publication checksums. Packaging and inspecting an archive do not
-establish that graphics, audio, controls and saves work on the corresponding
-hardware. Only Linux x64 has local packaged-runtime coverage; its 1.0.1 smoke
-check used software rendering, not a new hardware-performance pass. Other native
-platforms remain unvalidated. The Windows and Linux portable directories are
-unsigned, and Mac bundles generated on Linux are unsigned and not notarized.
+All six desktop targets were built and published for **1.0.3**. Package tests
+were deliberately skipped for that release; successful builds and verified
+upload hashes are not runtime validation. See [platform support and validation](portability.md)
+for the release evidence, earlier Linux runtime coverage, signing/notarization
+status and outstanding Windows/macOS/ARM hardware checks.
 
 `npm run build:linux` and `npm run build:windows` currently hardcode **x64**, even on an ARM machine. Appending `-- --arm64` to either script does not change that. There is no `build:mac` script. The additional recipes below call the locally installed electron-builder directly, retaining the project's file list and asset packaging configuration. `--publish never` prevents uploading artifacts; `dir` creates an unpacked directory or app bundle, not an installer.
 
 For these direct calls, pass `-c.extraMetadata.version` explicitly: setting `REDCAT_PACKAGE_VERSION` alone only works with the project's helper. Use the same three-part numeric metadata version described above, with each part between 0 and 65535. `npx --no-install` uses the builder installed by `npm ci`; do not replace it with an unpinned download. The CLI syntax is documented in the [version 26 CLI reference](https://www.electron.build/v26/docs/cli/).
 
 Before using the direct `npx --no-install electron-builder` recipes below, run
-`npm run web:refresh` once after your final source edits. This updates the HTML
-import map's cache keys so browsers cannot combine new game code with older
-cached dependencies. `npm start`, `npm run serve`, `npm run build:linux`,
+`npm run web:refresh` once after your final source edits. This generates the
+optimized `src/game.bundle.js` runtime and updates the HTML, source-map and
+import-map cache keys. Keep the generated bundle with the matching HTML.
+See [JavaScript bundling](javascript-bundling.md). `npm start`, `npm run serve`, `npm run build:linux`,
 `npm run build:windows`, and `npm run android:prepare` already do this automatically.
 The refresh itself creates no release package.
 
@@ -311,7 +319,7 @@ Copy the **whole** `dist/win-arm64-unpacked/` directory to Windows on ARM. Launc
 
 ### macOS Intel and Apple Silicon
 
-Use a **Mac** for the signed development recipes and runtime checks below. Unsigned app bundles for both architectures can also be cross-packaged on Linux, as done for 0.9.9 and repeated for 1.0.0. macOS code signing requires macOS; use a Mac or a macOS CI runner for a signed release. See the [cross-platform build restrictions](https://www.electron.build/v26/docs/features/multi-platform-build/).
+Use a **Mac** for the signed development recipes and runtime checks below. Unsigned app bundles for both architectures can also be cross-packaged on Linux, as recorded for all desktop targets in the [1.0.3 release](portability.md). macOS code signing requires macOS; use a Mac or a macOS CI runner for a signed release. See the [cross-platform build restrictions](https://www.electron.build/v26/docs/features/multi-platform-build/).
 
 Install Node.js 22.12+ for the Mac's own architecture: x64 on Intel, ARM64 on Apple Silicon. Copy the source and complete imported `assets/` and `data/`, then run these commands in Terminal, replacing the checkout path:
 
@@ -392,6 +400,6 @@ When validating a new platform, first check startup and visible gameplay, contro
 
 ## Android and remaining platform work
 
-An initial Kotlin/WebView Android project now exists in `android/`, targeting Android 16/API 36 with minimum API 29. See [Android setup and validation](../ANDROID.md) for the pinned JDK/SDK, `npm run android:prepare`, focused compile/check commands and later APK/AAB steps. Kotlin compilation and checks pass; no Android package has been generated or validated on a device yet.
+The Kotlin/WebView Android app in `android/` targets Android 16/API 36 with minimum API 29. `npm run build:android` builds a signed AAB for Google Play and a signed APK for direct installation, using a private external signing-properties file. It bundles the prepared current runtime and assets and writes versioned artifacts plus SHA-256 checksums under `dist/android/`. See [Android setup, signing and validation](../ANDROID.md) and [Google Play publication](android-google-play-release.md). Version 1.0.3 has successful builds, complete packaged-source hash checks and a focused debug APK run on an Android 16 emulator; physical-device validation and Play approval remain.
 
-The ARM64 recipes above are desktop packages. Electron's desktop wrapper cannot produce an Android APK/AAB. The separate Android shell now implements local content loading and lifecycle/audio integration; physical-device, save-recovery and release validation remain. Browser touch overlays and Gamepad API controls are already implemented. Linux/Windows ARM64, Windows x64 and both macOS architectures still need the native runtime validation described above; published cross-packages must retain that limitation. See [portability.md](portability.md) for the remaining steps.
+The ARM64 recipes above are desktop packages. Electron's desktop wrapper cannot produce an Android APK/AAB. The separate Android shell now implements local content loading, lifecycle/audio integration and signed APK/AAB packaging; physical-device persistence, document-provider and Play Console checks remain. Browser touch overlays and Gamepad API controls are already implemented. Linux/Windows ARM64, Windows x64 and both macOS architectures still need the native runtime validation described above; published cross-packages must retain that limitation. See [portability.md](portability.md) for the remaining steps.

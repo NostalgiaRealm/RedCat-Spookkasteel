@@ -13,7 +13,7 @@ Run the current source as described in
 | Reversed Brutus/knights | Correct native initial heading; combat updates facing during locked attack animation. Rendered actor fronts were checked against the player direction. |
 | Reversed introductory UFO | Native world-axis rotation composition replaces the incorrect local-axis order. |
 | Large-fall pose on ordinary jump descent | Normal jumps retain the original full jump clip through descent; long-drop selection uses the recovered floor-gap rule. |
-| New dialogue skip | Initially a three-second E hold, later changed to **two seconds** in `src/cutscene-skip.js`; “Overslaan” progress circle; original remaining callbacks complete and preserve outcomes. Touch/controller skip use the same duration. |
+| New dialogue skip | Initially a three-second E hold, later changed to **two seconds** in `source/cutscene-skip.js`; “Overslaan” progress circle; original remaining callbacks complete and preserve outcomes. Touch/controller skip use the same duration. |
 | Enemy targeting and lock | Original front-cone/range selection, visibility, target artwork and animation; firing locks camera and aims from the hand toward the enemy. |
 | Original HUD | Original icons/digits show health, lives, potions/level total, score and targeted-enemy health; widescreen and 4:3 positioning checked. |
 | `GRintro3` subtitle | Original empty text stays empty while laughter audio remains. |

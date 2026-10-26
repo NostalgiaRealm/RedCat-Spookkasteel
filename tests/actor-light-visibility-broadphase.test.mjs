@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {BspCollider} from '../src/collision.js';
-import {ModelTransformMap} from '../src/model-transforms.js';
-import {ActorLightVisibility} from '../src/actor-light-visibility.js';
+import {BspCollider} from '../source/collision.js';
+import {ModelTransformMap} from '../source/model-transforms.js';
+import {ActorLightVisibility} from '../source/actor-light-visibility.js';
 
 function pair(collision,tracked=true) {
   const physicalModels=Object.freeze(collision.models.map((_,i)=>i));

@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {BspCollider,PlayerController} from '../src/collision.js';
-import {Gameplay} from '../src/gameplay.js';
-import {visibleLiquidGroup,visibleLiquidGroups,surfaceAlphaTest,liquidDamageRate} from '../src/liquids.js';
+import {BspCollider,PlayerController} from '../source/collision.js';
+import {Gameplay} from '../source/gameplay.js';
+import {visibleLiquidGroup,visibleLiquidGroups,surfaceAlphaTest,liquidDamageRate} from '../source/liquids.js';
 
 const WATER=0x1000c,OOZE=0x2000c;
 const playerMins=[-11,0,-11],playerMaxs=[11,56,11];

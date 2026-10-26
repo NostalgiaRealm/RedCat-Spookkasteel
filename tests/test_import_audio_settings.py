@@ -75,7 +75,7 @@ MaxDistanceFactor=99
             self.assertEqual(parsed['spatial'], module.SPATIAL_DEFAULTS)
 
     def test_imported_original_forest_and_music_levels(self):
-        source = (ROOT / 'src/audio-settings.js').read_text()
+        source = (ROOT / 'source/audio-settings.js').read_text()
         imported = json.loads(source.split('export default ', 1)[1].rstrip(';\n'))
         for index in range(1, 6):
             self.assertEqual(imported['gains'][f'forest{index}.wav'], .45)

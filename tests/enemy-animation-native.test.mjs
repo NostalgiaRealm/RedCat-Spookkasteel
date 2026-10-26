@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {ActorAnimator,ActorStateAnimator} from '../src/animation.js';
-import {Gameplay} from '../src/gameplay.js';
-import {CastleWorld} from '../src/world.js';
+import {ActorAnimator,ActorStateAnimator} from '../source/animation.js';
+import {Gameplay} from '../source/gameplay.js';
+import {CastleWorld} from '../source/world.js';
 
 const close=(actual,expected,message='values agree',epsilon=1e-8)=>
   assert.ok(Math.abs(actual-expected)<epsilon,`${message}: ${actual} != ${expected}`);

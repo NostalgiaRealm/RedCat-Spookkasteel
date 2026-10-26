@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {PlayerController} from '../src/collision.js';
-import {playerInputVelocity} from '../src/player-movement.js';
+import {PlayerController} from '../source/collision.js';
+import {playerInputVelocity} from '../source/player-movement.js';
 
 const idle={forward:0,right:0,jump:false};
 const close=(a,b)=>assert.ok(Math.abs(a-b)<1e-7,`${a} != ${b}`);

@@ -1,3 +1,4 @@
+import {createSceneOutput, startAdventure, showAdventureExtras, showMoreSettings, showMainMenu} from './scene-menu.mjs';
 import {chromium, devices} from 'playwright';
 import {spawn} from 'node:child_process';
 import {mkdir, writeFile} from 'node:fs/promises';
@@ -8,8 +9,7 @@ import assert from 'node:assert/strict';
 // and the menus needed to operate it without a physical keyboard or mouse.
 const port = Number(process.env.TOUCH_TEST_PORT || 4197);
 const origin = `http://127.0.0.1:${port}`;
-process.env.TMPDIR = 'current_work';
-const artifacts = resolve(`current_work/touch-scenes-${Date.now()}`);
+const artifacts = createSceneOutput('touch-scenes');
 const report = {errors: [], checks: []};
 const server = spawn(process.execPath, ['tools/serve.mjs'], {
   env: {...process.env, PORT: String(port)}, stdio: ['ignore', 'pipe', 'inherit'],
@@ -74,7 +74,7 @@ async function neutral(page, label) {
 }
 async function setting(page, value, fromPause = false, touch = true) {
   const activate = selector => touch ? tap(page, selector) : page.locator(selector).click();
-  await activate(fromPause ? '#pause-settings' : '#open-settings');
+  await showMoreSettings(page,{paused:fromPause,touch});
   await page.locator('#touch-controls-setting').selectOption(value);
   await activate('#apply-settings');
   await page.locator('#settings').waitFor({state: 'hidden'});
@@ -126,7 +126,7 @@ try {
   await mkdir(artifacts, {recursive: true});
   const profile = await chromium.launchPersistentContext(resolve(artifacts, 'browser-profile'), {
     executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome', headless: true,
-    args: ['--use-angle=gl'],
+    args: [`--use-angle=${process.env.REDCAT_TEST_ANGLE || 'swiftshader'}`, '--enable-unsafe-swiftshader'],
   });
   browser = profile.browser();
   const context = await browser.newContext({
@@ -137,17 +137,17 @@ try {
   assert.equal(await page.evaluate(() => window.__redcat.touchEnabled), true);
   assert.equal(await page.evaluate(() => window.__redcat.settings.touchControls), 'auto');
   await page.screenshot({path: `${artifacts}/touch-menu-portrait.png`});
-  await tap(page, '#open-help');
+  await showMoreSettings(page,{touch:true});await tap(page, '#open-help');
   assert.equal(await page.locator('#help').isVisible(), true);
-  await tap(page, '#close-help');
-  await tap(page, '#play-intro');
+  await tap(page, '#close-help');await tap(page, '#close-settings');
+  await showAdventureExtras(page,{touch:true});await tap(page, '#play-intro');
   await page.waitForFunction(() => window.__redcat.mode === 'intro');
   await page.waitForFunction(() => !document.getElementById('intro-video').paused);
   await tap(page, '#skip-intro');
   await page.waitForFunction(() => window.__redcat.mode === 'menu');
   check('mobile automatically enables touch; help and original intro work by touch');
 
-  await tap(page, '#open-settings');
+  await showMoreSettings(page,{touch:true});
   const scrollBefore = await page.locator('#settings .panel').evaluate(el => el.scrollTop);
   await fingers.down(1, {x: 210, y: 680});
   for(let y = 620; y >= 220; y -= 80)await fingers.move(1, {x: 210, y});
@@ -166,11 +166,13 @@ try {
   assert.equal(await page.evaluate(() => window.__redcat.settings.touchControls), 'off');
   check('settings scroll by touch and the Off override survives reload');
 
-  await tap(page, '#start');
+  await startAdventure(page,{touch:true});
   await page.waitForFunction(() => window.__redcat.mode === 'playing', {}, {timeout: 90000});
   assert.equal(await page.locator('#touch-controls').isVisible(), false);
-  assert.equal(await page.locator('#game-menu').isVisible(), true);
-  await tap(page, '#game-menu');
+  assert.equal(await page.locator('#game-menu').isVisible(), false);
+  // Turning touch Off deliberately restores keyboard/controller controls.
+  // Use the normal pause key to enable Auto again, then keep all input touch-only.
+  await page.keyboard.press('Escape');
   await page.waitForFunction(() => window.__redcat.mode === 'paused');
   await setting(page, 'auto', true);
   await tap(page, '#resume');
@@ -194,7 +196,7 @@ try {
   await fingers.release();
   report.skipMilliseconds = await page.evaluate(() => window.__touchSkipMilliseconds);
   assert.ok(report.skipMilliseconds >= 1900 && report.skipMilliseconds < 3000, `touch skip took ${report.skipMilliseconds}ms`);
-  check('mobile menu remains available with controls Off; real two-second touch hold skips the authored intro');
+  check('touch Off hides the touch Menu, Auto restores it; real two-second touch hold skips the authored intro');
 
   // Keep this forest smoke deterministic: stop story timers and hazards after
   // verifying their real intro, then unlock the weapon through the existing API.
@@ -230,7 +232,7 @@ try {
   await fingers.release();
   check('touch jump executes grounded collision movement and emits the normal jump event');
 
-  await tap(page, '#game-menu'); await tap(page, '#pause-settings'); await tap(page, '#open-cheats');
+  await tap(page, '#game-menu'); await showMoreSettings(page,{paused:true,touch:true}); await tap(page, '#open-cheats');
   await tap(page, '#cheat-noclip');
   assert.equal(await page.locator('#cheat-noclip').isChecked(), true);
   const score = await page.evaluate(() => window.__redcat.gameplay.state.score);
@@ -306,7 +308,7 @@ try {
   await neutral(page, 'orientation resize clears input'); await fingers.release();
   await layout(page, 'landscape');
   await targetMeterScreenshot(page, 'landscape');
-  await tap(page, '#game-menu'); await tap(page, '#pause-settings');
+  await tap(page, '#game-menu'); await showMoreSettings(page,{paused:true,touch:true});
   await page.locator('#touch-controls-setting').scrollIntoViewIfNeeded();
   await page.screenshot({path: `${artifacts}/touch-settings-landscape.png`});
   await tap(page, '#apply-settings'); await tap(page, '#resume');
@@ -341,7 +343,7 @@ try {
   await layout(page, 'small-portrait');
   await tap(page, '#game-menu');
   await tap(page, '#return-menu');
-  await tap(page, '#start-over');
+  await showAdventureExtras(page,{touch:true});await tap(page, '#start-over');
   assert.equal(await page.locator('#new-adventure-warning').evaluate(element => element.open), true);
   await tap(page, '#cancel-new-adventure');
   assert.equal(await page.evaluate(() => window.__redcat.mode), 'menu');

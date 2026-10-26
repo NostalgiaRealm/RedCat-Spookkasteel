@@ -2,14 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
 import {Group,PerspectiveCamera} from 'three';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
-import {CastleWorld,actorVisible} from '../src/world.js';
-import {attachedActorVisible} from '../src/actor-placement.js';
-import {updateBoss} from '../src/boss-ai.js';
-import {enemyDeathOpacity,DEATH_SMOKE_TEXTURE} from '../src/enemy-death-effects.js';
-import {jesterTeleportParticles,EnemyCombatEffects} from '../src/enemy-combat-effects.js';
-import {JESTER_EFFECT_SECONDS} from '../src/jester-teleport-timing.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
+import {CastleWorld,actorVisible} from '../source/world.js';
+import {attachedActorVisible} from '../source/actor-placement.js';
+import {updateBoss} from '../source/boss-ai.js';
+import {enemyDeathOpacity,DEATH_SMOKE_TEXTURE} from '../source/enemy-death-effects.js';
+import {jesterTeleportParticles,EnemyCombatEffects} from '../source/enemy-combat-effects.js';
+import {JESTER_EFFECT_SECONDS} from '../source/jester-teleport-timing.js';
 
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 function scene(id,save=null) {

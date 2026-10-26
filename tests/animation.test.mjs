@@ -1,4 +1,4 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';import * as THREE from 'three';import {ActorAnimator} from '../src/animation.js';
+import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';import * as THREE from 'three';import {ActorAnimator} from '../source/animation.js';
 const data=JSON.parse(readFileSync(new URL('../assets/actors/redcat.json',import.meta.url)));
 function geometry(){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(data.positions,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(data.normals,3));return g;}
 test('all 16 original RedCat clips produce finite, bounded animated geometry',()=>{

@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as THREE from 'three';
-import {actorAmbientColor,actorDynamicLights,createActorLighting,updateActorLighting,applyActorLighting} from '../src/actor-lighting.js';
-import {projectileLight} from '../src/projectile-lighting.js';
-import {WorldEffects} from '../src/world-effects.js';
+import {actorAmbientColor,actorDynamicLights,createActorLighting,updateActorLighting,applyActorLighting} from '../source/actor-lighting.js';
+import {projectileLight} from '../source/projectile-lighting.js';
+import {WorldEffects} from '../source/world-effects.js';
 
 const actor=name=>JSON.parse(fs.readFileSync(new URL(`../assets/actors/${name}.json`,import.meta.url))).settings;
 

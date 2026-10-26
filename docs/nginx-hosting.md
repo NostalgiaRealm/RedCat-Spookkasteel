@@ -2,7 +2,7 @@
 
 Target address: **https://games.nostalgiarealm.com/redcatspookkasteel/**.
 
-The game runs directly as a static website. Upload its prepared source,
+The game runs directly as a static website. Upload its prepared runtime,
 imported game data and Three.js dependency. Nginx serves the files; visitors run
 the game in their browsers. No Electron package, build command, Node server,
 PHP or database is needed on the webhost. These are instructions for you to
@@ -20,7 +20,7 @@ The web directory should contain:
 ```text
 redcatspookkasteel/
 ├── index.html
-├── src/
+├── src/                     # game.bundle.js, source map and runtime CSS
 ├── assets/
 ├── data/
 └── node_modules/
@@ -53,15 +53,17 @@ du -sh "$REDCAT_STAGE/redcatspookkasteel"
 ```
 
 Continue only if the checks succeed. The current files need approximately
-180 MB of disk space. This is a file copy, not a desktop build. The published
-tree does not need the rest of `node_modules`, `electron/`, development tools,
+200 MB of disk space; measure the staged directory for the current total. This is a file copy, not a desktop build. The published
+tree does not need the editable `source/` directory, the rest of `node_modules`,
+`electron/`, development tools,
 tests, screenshots, logs, original Windows executables or the ISO.
 
-`npm run web:refresh` updates the content-based cache keys in `index.html` for
-the complete JavaScript module graph and its stylesheets. Run it after source
-edits and before copying the web files. It does not compile or package the game.
-The generated import map must travel with the matching `src/` and Three.js
-files; giving only `main.js` a version query does not refresh its dependencies.
+`npm run web:refresh` combines the JavaScript runtime into `src/game.bundle.js`
+and updates the content-based cache keys in `index.html`. Run it after source
+edits and before copying the web files. It creates no desktop/Android package.
+The refreshed HTML must travel with the matching complete `src/` directory,
+including `game.bundle.js` and its debugging source map, plus the existing
+Three.js files. See [JavaScript bundling](javascript-bundling.md).
 
 ## 2. Upload into the subdirectory
 
@@ -207,7 +209,7 @@ Then check the public URLs from your computer:
 ```sh
 curl -I 'https://games.nostalgiarealm.com/redcatspookkasteel?skipIntro'
 curl -I https://games.nostalgiarealm.com/redcatspookkasteel/
-curl -I https://games.nostalgiarealm.com/redcatspookkasteel/src/main.js
+curl -I https://games.nostalgiarealm.com/redcatspookkasteel/src/game.bundle.js
 curl -I https://games.nostalgiarealm.com/redcatspookkasteel/node_modules/three/build/three.core.js
 curl -I https://games.nostalgiarealm.com/redcatspookkasteel/data/levels/lvl00a/level.json
 curl -I https://games.nostalgiarealm.com/redcatspookkasteel/does-not-exist.js
@@ -280,6 +282,13 @@ The stylesheets and entry script receive that revision too. Unchanged source
 keeps the same URLs, so repeat visits can still reuse cached code. This changes
 no storage keys, saved progress, or asset-streaming behavior.
 
+Current preparation additionally bundles that graph into one revisioned
+`src/game.bundle.js` request. Old separately cached modules are therefore not
+part of ordinary gameplay startup. The individual import-map entries now point into `source/`, which is needed
+only in development checkouts for debugging and tools. A deployed site does
+not need that folder. Users do not need to clear their cache or
+import their saves when moving to the bundled runtime.
+
 Refresh these keys with `npm run web:refresh` before a manual website upload.
 Source startup, the local server, the desktop packaging helpers and Android
 asset preparation also refresh them automatically. Upload the refreshed
@@ -296,7 +305,7 @@ public response, rather than assuming a hosting-panel setting took effect:
 curl -sS -D - -o /dev/null \
   https://games.nostalgiarealm.com/redcatspookkasteel/
 curl -sS -D - -o /dev/null \
-  https://games.nostalgiarealm.com/redcatspookkasteel/src/actor-render-residency.js
+  https://games.nostalgiarealm.com/redcatspookkasteel/src/game.bundle.js
 ```
 
 If those responses lack `Cache-Control: no-cache`, check which Nginx location
@@ -344,7 +353,12 @@ This checks the `/redcatspookkasteel/` prefix with a temporary local HTTP fixtur
 It does not contact your domain, publish files, or replace `nginx -t` and browser
 verification on your actual host. No Nginx binary is available in the current
 development environment, so the actual server configuration has not been run
-here. The focused local check passed with 215 browser resource URLs remaining
-under the prefix, the menu, original forest, scripts, intro/effect/voice
-playback, redirect/query handling, missing-file 404s and media range responses.
-No release packages were generated for these instructions.
+here. The original hosting check recorded 215 browser resource URLs under the
+prefix. On 26 October 2026, the harness was updated for the restored original
+menu and the bundled runtime; its current-source run passed with all 240
+resource URLs under the prefix and no browser errors. It covered menu actions,
+the Forest, scripts, intro/effect/voice playback, redirect/query handling,
+missing-file 404s and media range responses. See the
+[retained report](../temp_work/web-subpath-scenes/run-1793048244668/web-subpath-scenes.json)
+and [efficiency review](efficiency-review-2026-10-26.md). No release packages
+were generated for these checks.

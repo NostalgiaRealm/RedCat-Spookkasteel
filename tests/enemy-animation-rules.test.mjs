@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {ActorAnimator,ActorStateAnimator} from '../src/animation.js';
-import {Gameplay} from '../src/gameplay.js';
-import {CastleWorld} from '../src/world.js';
-import {enemyRandom} from '../src/enemy-navigation.js';
-import {enemyMotionRate} from '../src/enemy-animation-rules.js';
+import {ActorAnimator,ActorStateAnimator} from '../source/animation.js';
+import {Gameplay} from '../source/gameplay.js';
+import {CastleWorld} from '../source/world.js';
+import {enemyRandom} from '../source/enemy-navigation.js';
+import {enemyMotionRate} from '../source/enemy-animation-rules.js';
 const json=file=>JSON.parse(readFileSync(new URL('../'+file,import.meta.url)));
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-8,`${a} != ${b}`);
 function fixture(type,classname='StandingEnemy',stem) {

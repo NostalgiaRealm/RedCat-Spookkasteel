@@ -96,7 +96,7 @@ between salvos.
 
 ## Runtime and verification
 
-`src/gargoyle-blast.js` owns the small saved particle state and native timer
+`source/gargoyle-blast.js` owns the small saved particle state and native timer
 rules. Gameplay advances it independently of projectile impacts and rendering.
 Pause/frozen enemies stop it; saves retain particle positions, velocities,
 ages, slot, random state and emission timer. Respawn clears it. Old saves

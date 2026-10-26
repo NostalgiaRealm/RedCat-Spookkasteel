@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {EnemyNavigation} from '../src/enemy-navigation.js';
+import {EnemyNavigation} from '../source/enemy-navigation.js';
 
 const waypoint=(id,position,links=[])=>({classname:'GrobberPathPoint','%name%':id,Origin:position.join(' '),...Object.fromEntries(links.map((name,i)=>[`WayPoint${i+1}`,name]))});
 const graph=()=>{const nav=new EnemyNavigation({entities:[waypoint('a',[0,0,0],['b']),waypoint('b',[100,0,0]),waypoint('c',[0,0,100],['b'])]},{MaxConnectionDistance:0});nav.build();return nav;};

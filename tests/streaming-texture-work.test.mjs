@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {ActorTextureStream} from '../src/actor-texture-stream.js';
-import {StreamingWorkQueue} from '../src/streaming-work.js';
+import {ActorTextureStream} from '../source/actor-texture-stream.js';
+import {StreamingWorkQueue} from '../source/streaming-work.js';
 
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 function fixture(options={}) {

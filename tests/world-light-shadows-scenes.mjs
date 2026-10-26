@@ -22,8 +22,8 @@ try{
  await page.addInitScript(()=>localStorage.setItem('redcat.progress.v1',JSON.stringify({version:1,highestUnlocked:4})));
  await page.goto(`http://127.0.0.1:${port}/?skipIntro`);await page.waitForFunction(()=>window.__redcat);
  const gpu=await page.evaluate(async()=>{
-  const THREE=await import('three'),{patchWorldLightShader}=await import('/src/world-lighting-material.js');
-  const {worldLightFrame,worldLightmapLuxel}=await import('/src/world-lighting.js');
+  const THREE=await import('three'),{patchWorldLightShader}=await import('/source/world-lighting-material.js');
+  const {worldLightFrame,worldLightmapLuxel}=await import('/source/world-lighting.js');
   const renderer=new THREE.WebGLRenderer(),scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-32,32,32,-32,1,100);
   const target=new THREE.WebGLRenderTarget(64,64);renderer.setRenderTarget(target);camera.position.set(0,0,50);camera.lookAt(0,0,0);
   const bytes=new Uint8Array(8*8*4);for(let i=0;i<bytes.length;i+=4)bytes.set([51,51,51,255],i);

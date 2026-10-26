@@ -36,7 +36,7 @@ try{
   {name:'dry-bank',position:[-1710,-136.95,1190],yaw:Math.PI,water:false},
  ]){
   const result=await page.evaluate(async f=>{
-   const a=__redcat,w=a.world,g=a.gameplay,{GameplayAudio}=await import('./src/gameplay-audio.js');
+   const a=__redcat,w=a.world,g=a.gameplay,{GameplayAudio}=await import('./source/gameplay-audio.js');
    const router=new GameplayAudio(a.audio),input={forward:1};
    a.audio.reset();a.audio.pause();g.state.health=10;g.footstepState={phase:0,side:0};
    w.player.position=[...f.position];w.player.grounded=true;w.player.noClip=false;w.player.resetVelocity();w.player.movementRecovery.reset();w.yaw=f.yaw;

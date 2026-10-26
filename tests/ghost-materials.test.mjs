@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {MeshLambertMaterial,Texture,DoubleSide,FrontSide} from 'three';
-import {ghostMaterials,isGhostEnemy} from '../src/ghost-materials.js';
+import {ghostMaterials,isGhostEnemy} from '../source/ghost-materials.js';
 
 test('ghost material replacement uses native variant tints and leaves shared material and fades independent',()=>{
   const skin=new Texture(),body=new MeshLambertMaterial({map:skin,color:0x778899,side:DoubleSide,opacity:.6,alphaTest:.3}),extra=new MeshLambertMaterial(),replacement=new Texture(),tracked=[];

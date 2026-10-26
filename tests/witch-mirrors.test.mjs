@@ -2,10 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Box3,BufferGeometry,Float32BufferAttribute,MeshBasicMaterial,Vector3} from 'three';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
-import {actorVisible,CastleWorld} from '../src/world.js';
-import {actorOrientation} from '../src/actor-placement.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
+import {actorVisible,CastleWorld} from '../source/world.js';
+import {actorOrientation} from '../source/actor-placement.js';
 const json=p=>JSON.parse(readFileSync(new URL('../'+p,import.meta.url)));
 const level=json('data/levels/lvl04a/level.json');
 function boot(save){

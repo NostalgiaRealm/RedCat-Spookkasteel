@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { Gameplay } from '../src/gameplay.js';
+import { Gameplay } from '../source/gameplay.js';
 
 const entity=(classname,name,extra={})=>({classname,'%name%':name,DaviName:name,Origin:'0 0 0',...extra});
 const fixture=(entities=[])=>({id:'lvl00a',spawn:{position:[0,0,0],orientation:0},entities,

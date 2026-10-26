@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {advanceMusicFade} from '../src/music-fade.js';
-import {GameAudio, nativeGainToAmplitude} from '../src/audio.js';
+import {advanceMusicFade} from '../source/music-fade.js';
+import {GameAudio, nativeGainToAmplitude} from '../source/audio.js';
 
 const near=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-10, `${actual} != ${expected}`);
 test('native fade ramps control volume at constant rate and clamps overshoot',()=>{

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {sampleActorDynamicLights,actorDynamicLightLimit,shadeActorVertexRaw} from '../src/actor-light-sampling.js';
+import {sampleActorDynamicLights,actorDynamicLightLimit,shadeActorVertexRaw} from '../source/actor-light-sampling.js';
 
 const lamp=(position,radius=100,color=[1,1,1])=>({position,radius,color});
 const close=(actual,expected)=>actual.forEach((value,i)=>assert.ok(Math.abs(value-expected[i])<1e-10,`${actual} != ${expected}`));

@@ -27,7 +27,7 @@ try{
   await page.goto('http://127.0.0.1:4372/?skipIntro');await page.waitForFunction(()=>window.__redcat);
   assert.equal(await page.evaluate(()=>window.__redcat.loadSave()),true);
   const result=await page.evaluate(async saved=>{
-    const {repairGraveyardMazeSave}=await import('./src/graveyard-maze.js');
+    const {repairGraveyardMazeSave}=await import('./source/graveyard-maze.js');
     const app=window.__redcat;app.pause();document.getElementById('pause').hidden=true;
     const w=app.world,g=app.gameplay,h=g.scripts;
     const maze=()=>({first:g.find('heg1_trigger_mc')[0].triggerCount,close:g.find('heg2_closetrigger_mc')[0].triggerCount,

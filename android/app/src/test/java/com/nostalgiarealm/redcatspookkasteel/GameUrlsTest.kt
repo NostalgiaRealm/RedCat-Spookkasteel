@@ -9,7 +9,7 @@ class GameUrlsTest {
             GameUrls.assetPath("${GameUrls.ORIGIN}/assets/www/assets/audio/level%203%20-%20the%20graveyard.wav"))
         assertEquals("www/index.html", GameUrls.assetPath("${GameUrls.ENTRY}?skipIntro#menu"))
         assertTrue(GameUrls.isGamePage(GameUrls.ENTRY))
-        assertFalse(GameUrls.isGamePage("${GameUrls.ORIGIN}/assets/www/src/main.js"))
+        assertFalse(GameUrls.isGamePage("${GameUrls.ORIGIN}/assets/www/src/game.bundle.js"))
     }
 
     @Test fun pathsCannotEscapeThePackagedGame() {

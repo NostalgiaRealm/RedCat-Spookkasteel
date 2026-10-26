@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {MovementRecovery} from '../src/movement-recovery.js';
-import {BspCollider,PlayerController} from '../src/collision.js';
-import {moveEnemy} from '../src/enemies.js';
+import {MovementRecovery} from '../source/movement-recovery.js';
+import {BspCollider,PlayerController} from '../source/collision.js';
+import {moveEnemy} from '../source/enemies.js';
 
 // Separate convex brush models exercise the real BSP hull sweeps, including
 // current transforms and disabled brushes, rather than a mock of the recovery.

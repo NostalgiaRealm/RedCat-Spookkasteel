@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {CastleWorld} from '../src/world.js';
+import {CastleWorld} from '../source/world.js';
 
 function fixture() {
   const actor=new THREE.Group(),geometry=new THREE.BoxGeometry(10,20,30),mesh=new THREE.Mesh(geometry,new THREE.MeshBasicMaterial());

@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {GameplayAudio} from '../src/gameplay-audio.js';
-import {BspCollider,PlayerController,PLAYER_JUMP} from '../src/collision.js';
-import {landingSound} from '../src/locomotion-audio.js';
+import {Gameplay} from '../source/gameplay.js';
+import {GameplayAudio} from '../source/gameplay-audio.js';
+import {BspCollider,PlayerController,PLAYER_JUMP} from '../source/collision.js';
+import {landingSound} from '../source/locomotion-audio.js';
 
 const level=id=>JSON.parse(readFileSync(new URL(`../data/levels/${id}/level.json`,import.meta.url)));
 function fixture(id='lvl00a',position=[-1810,-164.95,1250]) {

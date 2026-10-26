@@ -23,7 +23,7 @@ that every numeric detail matches the game's executable.
 
 ## Portable implementation
 
-`src/moving-solids.js` checks the original motion path before `MotionPlayer`
+`source/moving-solids.js` checks the original motion path before `MotionPlayer`
 commits each segment. It samples translation and hinge rotation, carries a
 grounded player with a supporting model, and pushes an intersected player hull
 out along the brush's collision plane. Every push is swept against the rest of

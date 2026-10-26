@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {Group,Mesh,BoxGeometry,MeshBasicMaterial} from 'three';
-import {Gameplay} from '../src/gameplay.js';
-import {CastleWorld,actorVisible} from '../src/world.js';
-import {targetableObject} from '../src/targeting.js';
-import {damageDestructible,restorePropDamage} from '../src/destructible-damage.js';
-import {advanceExplosionDamage} from '../src/explosion-damage.js';
+import {Gameplay} from '../source/gameplay.js';
+import {CastleWorld,actorVisible} from '../source/world.js';
+import {targetableObject} from '../source/targeting.js';
+import {damageDestructible,restorePropDamage} from '../source/destructible-damage.js';
+import {advanceExplosionDamage} from '../source/explosion-damage.js';
 
 const entity=(classname,name,extra={})=>({classname,'%name%':name,DaviName:name,Origin:'0 0 0',...extra});
 const level={id:'prop-threshold',entities:[

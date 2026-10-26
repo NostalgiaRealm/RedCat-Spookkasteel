@@ -1,9 +1,9 @@
 # Audio, targeting, camera and presentation follow-up
 
 These changes address the next reported issues after
-[the earlier source pass](source-fixes-2026-09-22.md). They change source and
-imported assets only; the existing Linux and Windows packages have not
-been rebuilt.
+[the earlier source pass](source-fixes-2026-09-22.md). This historical pass
+changed source and imported assets without rebuilding packages. It does not describe the contents
+of packages produced by later releases.
 
 | Report | Change |
 | --- | --- |
@@ -45,7 +45,7 @@ No release package build or version bump was performed.
 To play this source on Linux before making packages:
 
 ```sh
-cd /home/rick/RCSPOOK_NEW
+# Run from your project checkout root.
 npm start -- --ozone-platform=x11
 ```
 

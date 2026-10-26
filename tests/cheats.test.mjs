@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {grantCheatSupplies,safeFlightExit,setNoClip} from '../src/cheats.js';
-import {PlayerController,BspCollider} from '../src/collision.js';
-import {CastleWorld} from '../src/world.js';
-import {Gameplay} from '../src/gameplay.js';
+import {grantCheatSupplies,safeFlightExit,setNoClip} from '../source/cheats.js';
+import {PlayerController,BspCollider} from '../source/collision.js';
+import {CastleWorld} from '../source/world.js';
+import {Gameplay} from '../source/gameplay.js';
 
 const level={id:'lvl00a',spawn:{position:[50,0,0]},bounds:{min:[-100,-100,-100],max:[100,100,100]},entities:[
   {classname:'ItemMirror','%name%':'exit',Origin:'80 0 0',PickupCommand:'RcEndLevel()'}

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {GameAudio} from '../src/audio.js';
+import {GameAudio} from '../source/audio.js';
 
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-10,`${a} != ${b}`);
 const roundtrip=value=>JSON.parse(JSON.stringify(value));

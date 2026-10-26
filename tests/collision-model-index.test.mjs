@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {BspCollider} from '../src/collision.js';
+import {BspCollider} from '../source/collision.js';
 
 function fixture() {
   const data={planes:[],nodes:[],leaves:[{contents:0,numSides:0}],leafSides:[],models:[{root:-1}]};
@@ -58,7 +58,7 @@ test('mutable lists retain immediate edits and non-finite hull queries use the o
 });
 
 test('tracked pose snapshots refit translated brushes immediately, including temporary and restored poses',async()=>{
-  const {ModelTransformMap}=await import('../src/model-transforms.js');
+  const {ModelTransformMap}=await import('../source/model-transforms.js');
   const data=fixture(),c=new BspCollider(data),indices=frozen(data);c.modelTransforms=new ModelTransformMap();
   const check=(start=[-30,0,0],end=[30,0,0])=>compare(c,indices,start,end,[-2,-2,-2],[2,2,2]);
   check();
@@ -78,7 +78,7 @@ test('tracked pose snapshots refit translated brushes immediately, including tem
 });
 
 test('tracked refits preserve disabled invalid transforms and overlapping duplicate model ordering',async()=>{
-  const {ModelTransformMap}=await import('../src/model-transforms.js');
+  const {ModelTransformMap}=await import('../source/model-transforms.js');
   const data=fixture(),c=new BspCollider(data),indices=Object.freeze([...frozen(data),48,1]);c.modelTransforms=new ModelTransformMap();
   c.modelTransforms.set(48,pose(-4700));compare(c,indices,[0,0,0],[0,0,0],[-2,-2,-2],[2,2,2]);
   c.disabledModels.add(48);c.modelTransforms.set(48,{rotation:[0,0,0,0]});
@@ -88,7 +88,7 @@ test('tracked refits preserve disabled invalid transforms and overlapping duplic
 });
 
 test('indexed contents retain liquid cells without collision sides through pose changes and disabling',async()=>{
-  const {ModelTransformMap}=await import('../src/model-transforms.js');
+  const {ModelTransformMap}=await import('../source/model-transforms.js');
   const data=fixture();data.leaves[1].contents=0x1000c;data.leaves[1].numSides=0;
   const c=new BspCollider(data),indices=frozen(data);c.modelTransforms=new ModelTransformMap();
   const check=point=>assert.equal(c.contents(point,[-2,-2,-2],[2,2,2],indices),c.contents(point,[-2,-2,-2],[2,2,2],[...indices]));

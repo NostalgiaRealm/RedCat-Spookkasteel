@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {DestructibleEffects} from '../src/destructible-effects.js';
+import {DestructibleEffects} from '../source/destructible-effects.js';
 
 function prototype() {
   const mesh=new THREE.Mesh(new THREE.BoxGeometry(1,1,1),new THREE.MeshLambertMaterial({side:THREE.DoubleSide}));

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {pickSaveImport} from '../src/save-import-picker.js';
-import {MAX_SAVE_IMPORT_BYTES} from '../src/save-import.js';
+import {pickSaveImport} from '../source/save-import-picker.js';
+import {MAX_SAVE_IMPORT_BYTES} from '../source/save-import.js';
 
 function fixture() {
   const input = new EventTarget(), window = new EventTarget(), callbacks = [];

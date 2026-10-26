@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {DebrisRenderPool} from '../src/debris-render-pool.js';
-import {CastleWorld} from '../src/world.js';
+import {DebrisRenderPool} from '../source/debris-render-pool.js';
+import {CastleWorld} from '../source/world.js';
 
 function prototype() {
   const geometry=new THREE.BoxGeometry(1,2,3);geometry.clearGroups();geometry.addGroup(0,18,0);geometry.addGroup(18,18,1);

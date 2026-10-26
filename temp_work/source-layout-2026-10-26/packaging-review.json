@@ -1,0 +1,40 @@
+{
+  "kind": "source-layout-packaging-review",
+  "date": "2026-10-26",
+  "runtime_roots": [
+    "index.html",
+    "src",
+    "assets",
+    "data",
+    "node_modules/three"
+  ],
+  "editable_source_root": "source",
+  "desktop_runtime_src_files": [
+    "src/game.bundle.js",
+    "src/game.bundle.js.map",
+    "src/*.css"
+  ],
+  "android_source_is_build_input_only": true,
+  "unchanged_boundaries": [
+    "Android HTTPS origin and WebView entry URL",
+    "Electron entry and application identity",
+    "localStorage keys, save schemas and profile storage",
+    "runtime asset URL layout"
+  ],
+  "validation": {
+    "command": "node --test tests/android-assets.test.mjs tests/android-host.test.mjs tests/package-metadata.test.mjs",
+    "passed": 20,
+    "failed": 0,
+    "log": "packaging-tests.log"
+  },
+  "coverage": [
+    "Exact runtime bytes and deterministic manifest",
+    "Editable source excluded from staged Android payload",
+    "Required bundled JavaScript and all five CSS files",
+    "Source folder protected against staging replacement",
+    "Android bridge and save import/export behavior",
+    "Linux and Windows builder configuration validation only"
+  ],
+  "packages_built": false,
+  "native_device_tested": false
+}

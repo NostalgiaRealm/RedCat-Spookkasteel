@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {BspCollider} from '../src/collision.js';
+import {BspCollider} from '../source/collision.js';
 
 function boxes(...bounds) {
   const data={planes:[],nodes:[],leaves:[{contents:0,numSides:0}],leafSides:[],models:[{root:-1}]};

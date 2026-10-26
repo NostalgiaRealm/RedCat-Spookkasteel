@@ -23,19 +23,30 @@ export class BspAudioEnvironment {
   constructor(world,metadata,pvs) {
     this.world=world;this.visibility=new BspVisibility(world.level.collision,metadata,pvs);
     this.areaKey=null;this.areaCache=new Map();
+    // Directed area links can refer to the same physical door. Its current
+    // pose/material only needs checking once per update, not once per link.
+    this.portalModels=new Map();this.open=new Array(metadata.areaPortals.length);
+    for(let i=0;i<metadata.areaPortals.length;i++) {
+      const model=metadata.areaPortals[i][0];
+      if(!this.portalModels.has(model))this.portalModels.set(model,[]);
+      this.portalModels.get(model).push(i);
+    }
     this.doors=new Map((world.gameplay?.objects||[]).filter(o=>o.kind==='door').map(o=>[o.modelIndex,o]));
   }
   refreshPortals() {
     const {world}=this,game=world.gameplay;
-    const open=this.visibility.metadata.areaPortals.map(([model])=>{
+    let changed=this.areaKey===null;
+    for(const [model,indices] of this.portalModels) {
       const door=this.doors.get(model);
       const motion=game?.scripts?.players?.get(door?.id);
       const surfaces=world.modelMeshes?.get(model)||[];
       const visible=surfaces.some(mesh=>mesh.material?.opacity!==0);
-      return doorPortalOpen(door,motion,visible);
-    });
-    const key=open.map(Boolean).map(Number).join('');
-    if(this.areaKey!==key){this.areaKey=key;this.open=open;this.areaCache.clear();}
+      const open=Boolean(doorPortalOpen(door,motion,visible));
+      for(const index of indices)if(this.open[index]!==open){this.open[index]=open;changed=true;}
+    }
+    // Keep connectivity and its diagnostic key until an actual portal change.
+    // Camera movement still performs the same PVS and obstruction checks.
+    if(changed){this.areaKey=this.open.map(Number).join('');this.areaCache.clear();}
   }
   connected(area,target) {
     if(!this.areaCache.has(area)) {
@@ -79,7 +90,13 @@ export function createStereoRoute(context,element) {
   const splitter=context.createChannelSplitter(2),left=context.createGain(),right=context.createGain(),merger=context.createChannelMerger(2);
   source.connect(upmix);upmix.connect(splitter);splitter.connect(left,0);splitter.connect(right,1);
   left.connect(merger,0,0);right.connect(merger,0,1);merger.connect(context.destination);
+  let appliedLeft=null,appliedRight=null;
   return {source,upmix,splitter,left,right,merger,
-    apply(gains){left.gain.value=gains.left;right.gain.value=gains.right;},
+    // Unchanged AudioParam writes still cross into the audio renderer. Cache
+    // requested doubles (AudioParam getters may round them to float32).
+    apply(gains){
+      if(appliedLeft!==gains.left){left.gain.value=gains.left;appliedLeft=gains.left;}
+      if(appliedRight!==gains.right){right.gain.value=gains.right;appliedRight=gains.right;}
+    },
     disconnect(){for(const node of [source,upmix,splitter,left,right,merger])node.disconnect();}};
 }

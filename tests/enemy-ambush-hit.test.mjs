@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Gameplay} from '../src/gameplay.js';
+import {Gameplay} from '../source/gameplay.js';
 
 const far=[0,0,5000];
 const phases=['dormant','descending','returning','ascending'];

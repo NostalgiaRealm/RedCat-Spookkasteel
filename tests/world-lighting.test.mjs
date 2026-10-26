@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {worldLightFrame,worldLightLuxelStrength,worldLightmapLuxel} from '../src/world-lighting.js';
+import {worldLightFrame,worldLightLuxelStrength,worldLightmapLuxel} from '../source/world-lighting.js';
 
 const frame=worldLightFrame([1,0,0],[0,0,1]);
 const white={position:[0,20,0],radius:100,color:[195/255,195/255,195/255]};

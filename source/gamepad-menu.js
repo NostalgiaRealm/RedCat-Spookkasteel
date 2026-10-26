@@ -88,6 +88,13 @@ export class GamepadMenu {
       this.reset();
       this.root = root;
     }
+    // Neutral polls need only validate the focused control. Rebuilding every
+    // candidate and reading every ancestor's CSS at display refresh is wasteful
+    // on long settings panels. Real input, focus changes and hidden/removed or
+    // disabled controls still take the complete current-DOM selection path.
+    if (!switched && !actions.up && !actions.down && !actions.left && !actions.right && !actions.confirm &&
+        this.focused === root.ownerDocument.activeElement && root.contains(this.focused) &&
+        this.focused.matches(CONTROLS) && this.focused.classList.contains('gamepad-focus') && available(this.focused)) return;
     const controls = [...root.querySelectorAll(CONTROLS)].filter(available);
     if (root.matches(CONTROLS) && available(root)) controls.unshift(root);
     if (!controls.length) {

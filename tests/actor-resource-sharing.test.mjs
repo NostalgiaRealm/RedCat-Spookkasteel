@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
 import {WebGLGeometries} from '../node_modules/three/src/renderers/webgl/WebGLGeometries.js';
-import {CastleWorld} from '../src/world.js';
-import {cloneActorPoseGeometry} from '../src/actor-geometry.js';
-import {ActorRenderResidency} from '../src/actor-render-residency.js';
-import {updateActorLighting} from '../src/actor-lighting.js';
+import {CastleWorld} from '../source/world.js';
+import {cloneActorPoseGeometry} from '../source/actor-geometry.js';
+import {ActorRenderResidency} from '../source/actor-render-residency.js';
+import {updateActorLighting} from '../source/actor-lighting.js';
 
 const load=stem=>JSON.parse(readFileSync(new URL('../assets/actors/'+stem+'.json',import.meta.url)));
 

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {updateNativeShooter,usesNativeShooter,restoreNativeShooterState,nativeShooterWaitComplete} from '../src/enemy-shooter-native.js';
+import {updateNativeShooter,usesNativeShooter,restoreNativeShooterState,nativeShooterWaitComplete} from '../source/enemy-shooter-native.js';
 
 function fixture(type='frog',stats={}) {
   const calls={approach:0,retreat:0,walk:[],idle:0,shots:0,released:0,animations:[]};

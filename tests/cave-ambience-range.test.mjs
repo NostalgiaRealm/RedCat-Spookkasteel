@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {GameAudio, distanceGain, nativeGainToAmplitude} from '../src/audio.js';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
+import {GameAudio, distanceGain, nativeGainToAmplitude} from '../source/audio.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
 
 class FakeAudio {
   constructor() { this.paused=true; this.volume=1; }

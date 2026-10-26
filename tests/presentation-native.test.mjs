@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {nativeCoronaRadius,saveBeaconUv,CoronaVisibilityCache} from '../src/presentation-native.js';
-import {FootstepClock} from '../src/locomotion-audio.js';
-import {GameplayAudio} from '../src/gameplay-audio.js';
-import {playerMotion} from '../src/player-animation.js';
+import {nativeCoronaRadius,saveBeaconUv,CoronaVisibilityCache} from '../source/presentation-native.js';
+import {FootstepClock} from '../source/locomotion-audio.js';
+import {GameplayAudio} from '../source/gameplay-audio.js';
+import {playerMotion} from '../source/player-animation.js';
 
 test('native corona fades radius with a fixed maximum-radius rate and clamps to distance target',()=>{
   const e={RadiusMin:'2',RadiusMax:'10',RadiusDistanceMin:'100',RadiusDistanceMax:'1000',FadeTime:'.5'};

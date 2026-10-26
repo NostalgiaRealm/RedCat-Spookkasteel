@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {CastleWorld,actorVisible,triggerOnlyModels} from '../src/world.js';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
+import {CastleWorld,actorVisible,triggerOnlyModels} from '../source/world.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
 
 const json=path=>JSON.parse(readFileSync(new URL(path,import.meta.url)));
 function forest(save=null) {

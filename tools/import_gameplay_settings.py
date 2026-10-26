@@ -16,7 +16,7 @@ FILES = ['items', 'frog', 'plant', 'knight', 'gargoyle', 'zombie', 'Skeleton', '
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source', type=Path, default=DEFAULT)
-    parser.add_argument('--output', type=Path, default=ROOT / 'src' / 'gameplay-settings.js')
+    parser.add_argument('--output', type=Path, default=ROOT / 'source' / 'gameplay-settings.js')
     args = parser.parse_args()
     result = {}
     for name in FILES:

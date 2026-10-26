@@ -153,7 +153,7 @@ The one-unit distance floor affects both direction and attenuation. Actor
 lighting does not trace dynamic lights through walls in this path. These values
 are shared across the actor's vertices; recomputing direction and attenuation
 from every fragment produces different highlights and oversized bright regions.
-`src/actor-light-sampling.js` implements this preparation and a CPU vertex-color
+`source/actor-light-sampling.js` implements this preparation and a CPU vertex-color
 reference. Its incoming light colors are already normalized raw RGB.
 
 ## Vertex colors and texture modulation

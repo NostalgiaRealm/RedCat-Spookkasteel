@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Gameplay} from '../src/gameplay.js';
-import {ENEMY_PROJECTILE_STEP,restoreEnemyProjectileFlight} from '../src/enemy-projectiles.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ENEMY_PROJECTILE_STEP,restoreEnemyProjectileFlight} from '../source/enemy-projectiles.js';
 const level={id:'enemy-flight-native',entities:[]},target=[0,97,1000],far=[10000,97,0];
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-8,`${a} != ${b}`);
 const gameWith=type=>{

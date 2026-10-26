@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {beamTouchesPlayer,beamEndpoints} from '../src/beam-contacts.js';
+import {Gameplay} from '../source/gameplay.js';
+import {beamTouchesPlayer,beamEndpoints} from '../source/beam-contacts.js';
 
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 const caves=json('data/levels/lvl03a/level.json');

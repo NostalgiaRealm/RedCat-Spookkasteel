@@ -6,7 +6,7 @@ no-clip. Normal movement, jumping and authored patrol destinations are retained.
 
 ## Behavior
 
-`src/movement-recovery.js` is shared by the player and enemy controllers. It:
+`source/movement-recovery.js` is shared by the player and enemy controllers. It:
 
 - Detects sustained blocked movement or a shallow body overlap. Ordinary player
   movement against a wall or closed door does not trigger a nudge if another

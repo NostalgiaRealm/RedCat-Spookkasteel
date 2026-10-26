@@ -4,7 +4,7 @@ The settings menu offers **Makkelijk**, **Normaal** and **Moeilijk**, matching `
 
 The original `RcHcGame.dat` difficulty dispatch at `0x4256b4` selects ID **0 → Easy**, **1 → Normal**, **2 → Hard**. Its branches return the section strings at `0x42582a`, `0x4257ef` and `0x4257b0`. The projectile configuration path at `0x44b675` uses the same mapping. The player profile reads `DifficultyLevel` at `0x5232cd`. This is a choice of authored INI sections and projectile files, rather than a universal damage or speed multiplier.
 
-`src/difficulty.js` exposes the native IDs, canonical values, Dutch labels and validated normalization. `Gameplay` selects the original imported tables when constructing a level. Existing AI and boss phases consume those tables, including health, melee damage, movement and spider descent speeds, perception/memory, shot spread, salvo sizes, attack waits and boss timing. Projectile damage, speed, gravity and lifetime come from the matching `ProjectileEasy.ini`, `ProjectileNormal.ini` or `ProjectileHard.ini`.
+`source/difficulty.js` exposes the native IDs, canonical values, Dutch labels and validated normalization. `Gameplay` selects the original imported tables when constructing a level. Existing AI and boss phases consume those tables, including health, melee damage, movement and spider descent speeds, perception/memory, shot spread, salvo sizes, attack waits and boss timing. Projectile damage, speed, gravity and lifetime come from the matching `ProjectileEasy.ini`, `ProjectileNormal.ini` or `ProjectileHard.ini`.
 
 Examples from the original files:
 

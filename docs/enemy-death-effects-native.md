@@ -27,8 +27,8 @@ and calls the same `AddActorParticle` at `0x4a7360` used by destructible props.
 There is no separate knight-specific gravity or spin law to reproduce. The
 previous portable path bypassed that shared system, using fixed part heights,
 a golden-angle burst, gravity 160, constant spin, a 3.5-second expiry and a
-final fade for every piece. It now uses `src/knight-debris.js` and the existing
-`src/debris-native.js` implementation.
+final fade for every piece. It now uses `source/knight-debris.js` and the existing
+`source/debris-native.js` implementation.
 
 | Evidence | Reproduced behaviour |
 | --- | --- |

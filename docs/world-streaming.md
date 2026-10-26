@@ -36,7 +36,7 @@ not change the loading distances or rebuild releases.
 
 ## Residency and visibility
 
-`src/world-streaming.js` partitions stationary scenery into 768-unit cells,
+`source/world-streaming.js` partitions stationary scenery into 768-unit cells,
 grouped by authored room ownership and original material. An authored face is never cut into pieces.
 Each section has independent vertex, UV and lightmap-frame buffers, so evicting
 it actually frees its GPU allocation. World textures are requested as sections
@@ -103,7 +103,7 @@ The graveyard's depth-only sky boundaries are
 retained, independently of static-face PVS. Liquid flags, lightmaps, alpha
 masks and face winding remain unchanged.
 
-`src/actor-render-residency.js` separately manages actor graphics. Nearby actors
+`source/actor-render-residency.js` separately manages actor graphics. Nearby actors
 are prepared, while only frustum/PVS-visible actors within the same 2048-unit
 range are drawn and lit. Whole
 assemblies use conservative transformed bounds. Room ownership uses the

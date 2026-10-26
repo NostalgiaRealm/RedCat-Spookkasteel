@@ -1,8 +1,9 @@
 # Automatic saves and recovery points
 
 The game keeps the latest complete adventure in `redcat.save.v1` in local
-application/browser storage. **Verder spelen**, **Opgeslagen avontuur laden**,
-and F9 still load that current save. Automatic saving runs every 60 seconds of
+application/browser storage. In the original menu, choose **Avontuur →
+Volgende → Start!** to continue it. **Opgeslagen avontuur laden** in the pause
+menu and F9 also load that current save. Automatic saving runs every 60 seconds of
 active play; manual saves, checkpoints, pause, completion, and exit also save
 while RedCat has positive health.
 
@@ -21,7 +22,9 @@ delete these older files.
 
 ## Recover from a deadlock
 
-Choose **Eerder opgeslagen avontuur laden** from the main menu or pause menu.
+From the main menu, choose **Avontuur → Volgende → Meer opties → Eerder
+opgeslagen avontuur laden** (a new player also passes through Moeilijkheid).
+The pause menu offers **Eerder opgeslagen avontuur laden** directly.
 The menu offers **2 minuten geleden**, **5 minuten geleden**, and **10 minuten
 geleden**. These are approximate minutes of **playing time**. Menus, pauses,
 loading and time while the game is closed do not age the history. In-game
@@ -94,7 +97,10 @@ node tests/death-save-scenes.mjs
 
 The unit tests cover retention, minute selection, missing history, repeated
 manual saves, saved-state isolation, restart persistence, dead snapshots,
-failed writes, and new-adventure resets. The browser check uses real IndexedDB
+failed writes, and new-adventure resets. The recovery browser check follows the current original-menu flow through
+[shared navigation helpers](../tests/scene-menu.mjs), writing evidence to
+`temp_work/recovery-menu-scenes/run-<timestamp>/`. It passed again on
+26 October 2026. It uses real IndexedDB
 and menu controls to restore complete snapshots, checks paused/offline history,
 and checks the dialog at desktop and mobile sizes.
 

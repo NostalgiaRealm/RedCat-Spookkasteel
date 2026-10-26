@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {normalizeSkyboxFaces,nativeSkyboxFaces} from '../src/skybox.js';
+import {normalizeSkyboxFaces,nativeSkyboxFaces} from '../source/skybox.js';
 
 function canvasFactory() {
   const calls=[],canvases=[];

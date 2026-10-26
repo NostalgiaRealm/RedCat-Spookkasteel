@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {BeamBatch,nearestWorldLights} from '../src/world-effects.js';
-import {CastleWorld} from '../src/world.js';
-import {createActorLighting} from '../src/actor-lighting.js';
+import {BeamBatch,nearestWorldLights} from '../source/world-effects.js';
+import {CastleWorld} from '../source/world.js';
+import {createActorLighting} from '../source/actor-lighting.js';
 
 function batch(capacity=32) {
   return new BeamBatch({scene:new THREE.Scene(),track:resource=>resource},null,capacity);

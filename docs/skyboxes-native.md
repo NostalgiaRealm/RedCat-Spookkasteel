@@ -35,7 +35,7 @@ order and its ordinary background-cube shader negates the lookup X component.
 This put ceiling artwork on a side, side artwork overhead/underfoot, and
 exchanged front and back.
 
-[`nativeSkyboxFaces()`](../src/skybox.js) now supplies native slots
+[`nativeSkyboxFaces()`](../source/skybox.js) now supplies native slots
 **`[2, 3, 0, 1, 5, 4]`** to Three, with a **180-degree turn of top and bottom**.
 The side UVs need no further transformation. Missing faces no longer borrow
 another face's artwork; they are blank black. Native skips these faces rather

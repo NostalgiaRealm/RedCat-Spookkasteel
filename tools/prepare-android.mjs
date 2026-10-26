@@ -1,6 +1,8 @@
 import path from 'node:path';
 import {createHash} from 'node:crypto';
-import {constants} from 'node:fs';
+import {constants, createWriteStream} from 'node:fs';
+import {Transform} from 'node:stream';
+import {pipeline} from 'node:stream/promises';
 import {lstat, mkdir, mkdtemp, open, readdir, readFile, rename, rm, writeFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {refreshWebCache} from './refresh-web-cache.mjs';
@@ -12,7 +14,8 @@ const ownerFile = '.redcat-android-assets.json';
 const ownerFormat = 'redcat-android-assets-v1';
 const levels = ['lvl00a', 'lvl01a', 'lvl02a', 'lvl03a', 'lvl04a'];
 const requiredFiles = [
-  'index.html', 'src/main.js', 'src/style.css', 'src/touch-controls.js', 'src/touch-controls.css',
+  'index.html', 'src/game.bundle.js', 'src/style.css', 'src/touch-controls.css',
+  'src/loading-screen.css', 'src/original-menu.css', 'src/native-help.css',
   'node_modules/three/LICENSE', 'node_modules/three/package.json',
   'node_modules/three/build/three.module.js', 'node_modules/three/build/three.core.js',
   ...levels.map(level => `data/levels/${level}/level.json`),
@@ -46,6 +49,10 @@ async function inventory(source, relative, files) {
   if (stat.isSymbolicLink()) throw new Error(`Symlinks are not allowed: ${absolute}`);
   if (stat.isDirectory()) {
     for (const name of (await readdir(absolute)).sort()) {
+      // Hidden editor, credential and workstation files have no runtime role.
+      // Fail before replacing a known-good snapshot rather than silently shipping
+      // something the developer did not intend to distribute.
+      if (name.startsWith('.')) throw new Error(`Hidden files cannot be packaged: ${path.join(absolute, name)}`);
       await inventory(source, `${relative}/${name}`, files);
     }
   } else if (stat.isFile()) {
@@ -59,7 +66,7 @@ async function validateOutput(source, output) {
   if (output === source || !within(source, output)) {
     throw new Error('Unsafe output: choose a directory strictly inside the project.');
   }
-  for (const relative of ['index.html', 'src', 'assets', 'data', 'node_modules', '.git']) {
+  for (const relative of ['index.html', 'src', 'source', 'assets', 'data', 'node_modules', '.git']) {
     const protectedPath = path.join(source, relative);
     if (within(protectedPath, output) || within(output, protectedPath)) {
       throw new Error(`Unsafe output: overlaps protected source ${relative}.`);
@@ -83,7 +90,10 @@ async function validateOutput(source, output) {
     throw new Error('Unsafe output: ownership marker does not match this project and output.');
   }
   // Refuse symlinked stale content as well; never traverse a link during cleanup.
-  await inventory(output, '.', []);
+  for (const entry of entries) {
+    // The one generated ownership marker is intentionally hidden and never ships.
+    if (entry !== ownerFile) await inventory(output, entry, []);
+  }
   return true;
 }
 
@@ -95,6 +105,12 @@ export async function prepareAndroidAssets({sourceDir = projectDirectory, output
   const output = path.resolve(source, outputDir);
   await rejectSymlinkComponents(source);
   await validateOutput(source, output);
+
+  await rejectSymlinkComponents(path.join(source, 'package.json'));
+  const packageMetadata = JSON.parse(await readFile(path.join(source, 'package.json'), 'utf8'));
+  if (typeof packageMetadata.version !== 'string' || !/^\d+\.\d+\.\d+$/.test(packageMetadata.version)) {
+    throw new Error('package.json must contain a three-part release version.');
+  }
 
   // Complete preflight before creating output or a staging directory.
   for (const relative of requiredFiles) {
@@ -114,19 +130,30 @@ export async function prepareAndroidAssets({sourceDir = projectDirectory, output
   let staging = await mkdtemp(path.join(path.dirname(output), `.${path.basename(output)}-staging-`));
   let previous = null;
   try {
-    const entries = [];
+    const entries = [], directories = new Set();
     for (const relative of files) {
       // O_NOFOLLOW also refuses a file replaced by a symlink after preflight.
       const handle = await open(path.join(source, relative), constants.O_RDONLY | constants.O_NOFOLLOW);
-      let contents;
-      try { contents = await handle.readFile(); } finally { await handle.close(); }
       const target = path.join(staging, 'www', relative);
-      await mkdir(path.dirname(target), {recursive: true});
-      await writeFile(target, contents);
-      entries.push({path: relative, bytes: contents.length, sha256: createHash('sha256').update(contents).digest('hex')});
+      const directory = path.dirname(target), hash = createHash('sha256');
+      let bytes = 0;
+      try {
+        if (!directories.has(directory)) {
+          await mkdir(directory, {recursive: true});
+          directories.add(directory);
+        }
+        // Hash precisely the chunks being copied, without retaining a complete
+        // movie/model in memory or reading it a second time for the manifest.
+        const digest = new Transform({transform(chunk, encoding, done) {
+          bytes += chunk.length; hash.update(chunk); done(null, chunk);
+        }});
+        await pipeline(handle.createReadStream({autoClose:false}), digest, createWriteStream(target));
+      } finally { await handle.close(); }
+      entries.push({path: relative, bytes, sha256: hash.digest('hex')});
     }
     const manifest = {
       format: ownerFormat,
+      packageVersion: packageMetadata.version,
       roots: ANDROID_RUNTIME_ROOTS,
       fileCount: entries.length,
       totalBytes: entries.reduce((total, entry) => total + entry.bytes, 0),

@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {GameAudio,nativeGainToAmplitude,distanceGain} from '../src/audio.js';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
+import {GameAudio,nativeGainToAmplitude,distanceGain} from '../source/audio.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 const makeAudio=()=>new GameAudio({createAudio:()=>({volume:1,paused:true,play(){this.paused=false;return Promise.resolve();},pause(){this.paused=true;}})});
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-10,`${a} != ${b}`);

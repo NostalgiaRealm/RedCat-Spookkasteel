@@ -1,6 +1,6 @@
 # Original world effects
 
-`src/world-effects.js` renders the original flame/smoke spouts, coronas, beam entities, dynamic lights, activated save beacons and teleport effects. `tools/import_world_effects.py` imports eleven original color/alpha pairs into `assets/effects`; its manifest records SHA-256 hashes and original image dimensions. No replacement art is generated.
+`source/world-effects.js` renders the original flame/smoke spouts, coronas, beam entities, dynamic lights, activated save beacons and teleport effects. `tools/import_world_effects.py` imports eleven original color/alpha pairs into `assets/effects`; its manifest records SHA-256 hashes and original image dimensions. No replacement art is generated.
 
 ## Save beacon evidence
 
@@ -27,7 +27,7 @@ Dynamic light function characters map `a` through `z` to normalized values, usin
 
 ## Beam contact and puzzle gates
 
-`src/beam-contacts.js` makes the visible `EffectBeamEntity` line segment damage the player's swept collision box. It uses the same authored/model-transformed endpoints and optional nearest-wall trace as the renderer. It clips the segment against the moving box, rather than treating the entire diagonal segment's enclosing box as a hazard. This avoids empty-corner hits and missed fast crossings.
+`source/beam-contacts.js` makes the visible `EffectBeamEntity` line segment damage the player's swept collision box. It uses the same authored/model-transformed endpoints and optional nearest-wall trace as the renderer. It clips the segment against the moving box, rather than treating the entire diagonal segment's enclosing box as a hazard. This avoids empty-corner hits and missed fast crossings.
 
 Native `RcHcGame.dat` evidence:
 

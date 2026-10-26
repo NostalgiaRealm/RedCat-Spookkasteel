@@ -14,7 +14,7 @@ try {
   // A real gesture grants audio; this test does not bypass browser autoplay.
   await page.locator('#open-help').click();await page.locator('#close-help').click();
   const result=await page.evaluate(async()=>{
-    const {GameAudio}=await import('./src/audio.js');
+    const {GameAudio}=await import('./source/audio.js');
     // Steady mono WAV measures actual split/upmix/centibel channel output,
     // rather than checking only the metadata values assigned to nodes.
     const rate=16000,frames=rate*3,bytes=new ArrayBuffer(44+frames*2),view=new DataView(bytes);

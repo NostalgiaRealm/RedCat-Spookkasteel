@@ -2,10 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {ActorAnimator} from '../src/animation.js';
-import {CastleWorld} from '../src/world.js';
-import {traceActors} from '../src/actor-collision.js';
-import {ActorRenderResidency} from '../src/actor-render-residency.js';
+import {ActorAnimator} from '../source/animation.js';
+import {CastleWorld} from '../source/world.js';
+import {traceActors} from '../source/actor-collision.js';
+import {ActorRenderResidency} from '../source/actor-render-residency.js';
 
 const flags={blocksPlayer:true,canBeShot:true,blocksLOS:false};
 function fixture(file,deferred){

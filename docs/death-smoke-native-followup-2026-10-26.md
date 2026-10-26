@@ -24,7 +24,7 @@ view-direction billboard were approximations. They have been replaced with:
   XY template-quad offsets. Each particle faces its vector to the camera;
   camera roll does not replace that native basis.
 
-`src/enemy-death-effects.js` computes the common upward motion, size and alpha
+`source/enemy-death-effects.js` computes the common upward motion, size and alpha
 table once. Existing launch anchors/velocities and saved age select a sample.
 This has constant bounded work and adds no historical replay, per-enemy clock
 allocation, draw calls or collision queries. Native launch anchors are still
@@ -42,7 +42,7 @@ The same review found that the old analytic Jester spiral had a reversed orbit
 direction, a radial transition twice as long as the original, immediate alpha
 interpolation, and emission that bypassed the native timer rearming order.
 
-`src/jester-teleport-timing.js` now records both finite fifteen-slot sequences
+`source/jester-teleport-timing.js` now records both finite fifteen-slot sequences
 once. The radial timer is **500 ms**, independently of the 1000 ms lifetime.
 Particles use the native 100 ms delay before their 1000 ms alpha fade; alpha
 starts at byte 63 for departure and byte 254 for arrival. Emission checks its

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {RecoverySaves, IndexedDBRecoveryStorage} from '../src/recovery-saves.js';
+import {RecoverySaves, IndexedDBRecoveryStorage} from '../source/recovery-saves.js';
 
 const copy = value => structuredClone(value);
 function adventure(number, level = 'lvl00a') {

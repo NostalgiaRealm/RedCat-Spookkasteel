@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Gameplay} from '../src/gameplay.js';
-import {CastleWorld} from '../src/world.js';
-import {PlayerController} from '../src/collision.js';
-import {ScriptHost} from '../src/script-host.js';
-import {setNoClip} from '../src/cheats.js';
-import {readCampaignProgress,earnCampaignSkill,campaignSkills,completeCampaignLevel} from '../src/campaign-progress.js';
+import {Gameplay} from '../source/gameplay.js';
+import {CastleWorld} from '../source/world.js';
+import {PlayerController} from '../source/collision.js';
+import {ScriptHost} from '../source/script-host.js';
+import {setNoClip} from '../source/cheats.js';
+import {readCampaignProgress,earnCampaignSkill,campaignSkills,completeCampaignLevel} from '../source/campaign-progress.js';
 
 const level={id:'lvl00a',entities:[],spawn:{position:[0,0,0]},bounds:{min:[-100,-100,-100],max:[100,100,100]}};
 async function setup(save=null){

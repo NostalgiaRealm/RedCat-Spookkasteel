@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,readdirSync} from 'node:fs';
 import {BufferGeometry,Float32BufferAttribute} from 'three';
-import {ActorAnimator} from '../src/animation.js';
+import {ActorAnimator} from '../source/animation.js';
 
 function geometry(data) {
   const g=new BufferGeometry();

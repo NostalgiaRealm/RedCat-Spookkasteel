@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {ActorCollisionIndex} from '../src/actor-collision-index.js';
-import {traceActors,triangleCollider} from '../src/actor-collision.js';
+import {ActorCollisionIndex} from '../source/actor-collision-index.js';
+import {traceActors,triangleCollider} from '../source/actor-collision.js';
 
 const result=()=>({fraction:1,startSolid:false,normal:[0,1,0],modelIndex:null});
 function place(record,x,y=0,z=0){record.min=[x,y-20,z-20];record.max=[x,y+20,z+20];record.triangles=[triangleCollider([[x,y-20,z-20],[x,y+20,z-20],[x,y+20,z+20]]),triangleCollider([[x,y-20,z-20],[x,y+20,z+20],[x,y-20,z+20]])];return record;}

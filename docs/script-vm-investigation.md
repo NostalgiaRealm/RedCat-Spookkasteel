@@ -4,7 +4,7 @@ Historical research note, written before the interpreter was implemented.
 **Current status (5 October 2026):** the complete format-27 parser, portable
 interpreter, original event dispatch and brush motion playback are implemented.
 `tools/import_scripts.py` consumes all five DSO files into `data/davi/`;
-`src/davi-vm.js` and `src/script-host.js` execute them. The research below is
+`source/davi-vm.js` and `source/script-host.js` execute them. The research below is
 retained as provenance, with the earlier plan explicitly labelled historical.
 For current implementation coverage and remaining work, see
 [gameplay status](gameplay-reconstruction.md) and the
@@ -123,8 +123,8 @@ The tool bounds-checks candidate lengths and validates declaration type/paramete
 ## Historical implementation plan
 
 Items 1–6 below describe the original research plan and were subsequently
-implemented by `tools/import_scripts.py`, `src/davi-vm.js`, `src/script-host.js`,
-`tools/import_motions.py` and `src/motions.js`. They are retained to explain the
+implemented by `tools/import_scripts.py`, `source/davi-vm.js`, `source/script-host.js`,
+`tools/import_motions.py` and `source/motions.js`. They are retained to explain the
 research sequence, not as an outstanding-work checklist. Item 7 subsequently
 received the [15–18 October earned campaign validation](campaign-validation-2026-10-18.md):
 all five levels, required puzzles, upgrades, bosses and ending completed through

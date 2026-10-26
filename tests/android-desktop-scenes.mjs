@@ -7,7 +7,7 @@ import {fileURLToPath} from 'node:url';
 import {_electron as electron} from 'playwright';
 
 const root=fileURLToPath(new URL('../',import.meta.url));
-const scratch=path.join(root,'current_work/android-initial-2026-10-06');
+const scratch=path.join(root,'temp_work/android-release-1.0.3-2026-10-26/assets');
 await mkdir(scratch,{recursive:true});
 const evidence=await mkdtemp(path.join(scratch,'desktop-scenes-'));
 const errors=[];let app;
@@ -28,13 +28,16 @@ try {
   await page.evaluate(()=>window.__redcat.pause());
   assert.equal(await page.evaluate(()=>window.__redcat.mode),'paused');
   await page.locator('#pause-settings').click();
+  await page.locator('#open-advanced-settings').click();
   await page.locator('#resolution').selectOption('1280x720');
+  await page.locator('#open-more-settings').click();
   await page.locator('#fullscreen').check();
   await page.locator('#apply-settings').click();
   await page.waitForFunction(()=>document.querySelector('#settings').hidden,null,{timeout:10000});
   assert.equal(await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows()[0].isFullScreen()),true);
   assert.deepEqual(await page.locator('#game').evaluate(canvas=>[canvas.width,canvas.height]),[1280,720]);
   await page.locator('#pause-settings').click();
+  await page.locator('#open-more-settings').click();
   await page.locator('#fullscreen').uncheck();
   await page.locator('#apply-settings').click();
   await page.waitForFunction(()=>document.querySelector('#settings').hidden,null,{timeout:10000});

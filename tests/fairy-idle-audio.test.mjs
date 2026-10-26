@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {GameAudio,nativeGainToAmplitude} from '../src/audio.js';
+import {GameAudio,nativeGainToAmplitude} from '../source/audio.js';
 
 const settle=()=>new Promise(resolve=>setImmediate(resolve));
 const duration=89836/44100;

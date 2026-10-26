@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {ActorRenderResidency} from '../src/actor-render-residency.js';
+import {ActorRenderResidency} from '../source/actor-render-residency.js';
 
 function actor({geometry=new THREE.BoxGeometry(20,40,20),texture=new THREE.Texture(),position=[0,0,-2000],transparent=false}={}) {
   geometry.computeBoundingBox();

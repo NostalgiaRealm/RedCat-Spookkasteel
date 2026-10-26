@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {rotateNativeDebris} from '../src/debris-native.js';
+import {rotateNativeDebris} from '../source/debris-native.js';
 
 // Retained pre-optimization arithmetic. Compare bits, including signed zero
 // and NaN, rather than tolerances that could hide a changed rotation order.

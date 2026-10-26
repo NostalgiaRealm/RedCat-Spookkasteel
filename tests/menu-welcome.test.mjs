@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {MenuAudio} from '../src/menu-audio.js';
+import {MenuAudio} from '../source/menu-audio.js';
 const tick=()=>new Promise(r=>setImmediate(r));
 function setup(blocked=false){
  const clips=[];const music={keyed:new Map(),playMusic(o){if(!o.stop)this.keyed.set('music',o);else this.keyed.clear();},resume(){},pause(){}};

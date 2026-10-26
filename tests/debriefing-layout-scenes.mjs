@@ -20,7 +20,7 @@ try{
   await page.goto(`http://127.0.0.1:${port}/?skipIntro`);
   await page.waitForFunction(()=>window.__redcat);
   await page.evaluate(async()=>{
-    const {OriginalDebriefing}=await import('./src/debriefing.js');
+    const {OriginalDebriefing}=await import('./source/debriefing.js');
     const d=window.layoutDebriefing=new OriginalDebriefing(document.querySelector('#debriefing'),()=>{},{mobile:true});
     await d.ready;
     // Desktop browser without orientation information exercises viewport fallback.

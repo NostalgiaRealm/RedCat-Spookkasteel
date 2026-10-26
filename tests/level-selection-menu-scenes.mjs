@@ -1,11 +1,12 @@
+import {createSceneOutput, showAdventureStart, showMainMenu, showQuickplay, finishLevelSelection, showLevelStart, showAdventureExtras} from './scene-menu.mjs';
 import {chromium} from 'playwright';
 import {spawn} from 'node:child_process';
 import {mkdir, writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import assert from 'node:assert/strict';
 
-const output = 'temp_work/level-selection-menu';
-await mkdir(output, {recursive: true}); process.env.TMPDIR = output;
+const output = createSceneOutput('level-selection-menu-scenes');
+await mkdir(output, {recursive: true});
 const server = spawn(process.execPath, ['tools/serve.mjs'], {env: {...process.env, PORT: '4295'}, stdio: ['ignore', 'pipe', 'inherit']});
 await new Promise((ok, fail) => {server.stdout.once('data', ok); server.once('error', fail);});
 let context; const report = {checks: [], errors: []};
@@ -31,13 +32,14 @@ try {
   const stored = await page.evaluate(() => localStorage.getItem('redcat.save.v1'));
   const unchanged = async () => assert.equal(await page.evaluate(() => localStorage.getItem('redcat.save.v1')), stored);
   assert.equal(await page.locator('#play-level').isVisible(), false);
-  assert.equal(await page.locator('#continue').isVisible(), true);
+  await showAdventureStart(page);assert.equal(await page.locator('#native-start').isVisible(), true);
   assert.equal(await page.locator('.level-card:disabled').count(), 2);
 
+  await showQuickplay(page);await page.evaluate(() => {menuVoices.length = 0;});
   for (const level of ['lvl00a', 'lvl01a', 'lvl02a']) {
     await page.locator(`[data-level="${level}"]`).click();
     assert.equal(await page.locator('#new-adventure-warning').evaluate(d => d.open), false);
-    assert.equal(await page.locator('#play-level').isVisible(), true);
+    assert.equal(await page.locator('#play-level').isVisible(), false, 'selection waits for Startinfo');
     assert.equal(await page.locator(`[data-level="${level}"]`).getAttribute('aria-pressed'), 'true');
     assert.equal(await page.evaluate(() => document.activeElement.dataset.level), level);
     assert.equal(await page.evaluate(() => __redcat.mode), 'menu'); await unchanged();
@@ -45,25 +47,25 @@ try {
   assert.deepEqual(await page.evaluate(() => menuVoices), [
     ['rcmn33.wav', 'rcmn38.wav'], ['rcmn34.wav', 'rcmn39.wav'], ['rcmn35.wav', 'rcmn40.wav'],
   ]);
-  await page.locator('#play-level').click();
+  await finishLevelSelection(page);await page.locator('#play-level').click();
   await page.locator('#new-adventure-warning').waitFor({state: 'visible'});
   assert.equal(await page.locator('#confirm-new-adventure').textContent(), 'Het Kerkhof starten');
   await page.locator('#cancel-new-adventure').click();
   assert.equal(await page.evaluate(() => document.activeElement.id), 'play-level'); await unchanged();
   report.checks.push('Unlocked chapter selection only selects/announces; Level Spelen opens confirmation; cancel preserves the save and focus.');
 
-  await page.locator('[data-level="lvl00a"]').focus(); await page.keyboard.press('Enter');
+  await showQuickplay(page);await page.locator('[data-level="lvl00a"]').focus(); await page.keyboard.press('Enter');
   assert.equal(await page.locator('#new-adventure-warning').evaluate(d => d.open), false);
-  await page.locator('#play-level').click();
+  await finishLevelSelection(page);await page.locator('#play-level').click();
   assert.equal(await page.locator('#confirm-new-adventure').textContent(), 'Het Bos starten');
   await page.keyboard.press('Escape');
-  await page.locator('#start-over').click();
+  await showAdventureExtras(page);await page.locator('#start-over').click();
   assert.equal(await page.locator('#confirm-new-adventure').textContent(), 'Nieuw avontuur starten');
   await page.keyboard.press('Escape'); await unchanged();
   report.checks.push('Keyboard selection, Forest replay and Start opnieuw retain their separate actions.');
 
   await page.setViewportSize({width: 390, height: 844});
-  await page.locator('[data-level="lvl01a"]').click();
+  await showLevelStart(page,'lvl01a');
   await page.locator('#play-level').scrollIntoViewIfNeeded();
   await page.screenshot({path: `${output}/mobile-level-spelen.png`});
   const box = await page.locator('#play-level').boundingBox();
@@ -74,19 +76,19 @@ try {
 
   const fresh = await page.evaluate(() => __redcat.profiles.create('Nieuw'));
   const choose = async id => {
-    await page.locator('#open-players').click(); await page.locator(`[data-player-id="${id}"]`).click();
+    await showMainMenu(page);await page.locator('#open-players').click(); await page.locator(`[data-player-id="${id}"]`).click();
     await page.locator('#player-select').click();
     await page.waitForFunction(id => __redcat.profiles.activeId === id && !document.querySelector('#player-list').open, id);
   };
   await choose(fresh.id);
   assert.equal(await page.locator('#play-level').isVisible(), false);
-  await page.locator('[data-level="lvl00a"]').click();
+  await showLevelStart(page,'lvl00a');
   assert.equal(await page.locator('#play-level').isVisible(), false);
-  assert.equal(await page.locator('#start').isVisible(), true);
+  assert.equal(await page.locator('#native-start').isVisible(), true);
   assert.equal(await page.locator('#new-adventure-warning').evaluate(d => d.open), false);
   await choose('legacy');
   assert.equal(await page.locator('#play-level').isVisible(), false);
-  assert.equal(await page.locator('#continue').isVisible(), true); await unchanged();
+  await showAdventureStart(page);assert.equal(await page.locator('#native-start').isVisible(), true); await unchanged();
   report.checks.push('Mobile layout fits; fresh-player flow unchanged; replay selection resets on player switch.');
 
   // Verify confirmed launch targets the last chosen chapter, without loading an
@@ -94,8 +96,8 @@ try {
   let requested;
   const levelRequest = new Promise(resolve => {requested = resolve;});
   await page.route('**/data/levels/*/level.json', route => {requested(route.request().url()); return new Promise(() => {});});
-  await page.locator('[data-level="lvl00a"]').click();
-  await page.locator('[data-level="lvl01a"]').click(); await page.locator('#play-level').click();
+  await showQuickplay(page);await page.locator('[data-level="lvl00a"]').click();
+  await page.locator('[data-level="lvl01a"]').click();await finishLevelSelection(page);await page.locator('#play-level').click();
   await page.locator('#confirm-new-adventure').click();
   const requestedUrl = await levelRequest;
   assert(requestedUrl.endsWith('/data/levels/lvl01a/level.json'));

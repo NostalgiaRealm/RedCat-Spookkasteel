@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {CastleWorld} from '../src/world.js';
-import {Gameplay} from '../src/gameplay.js';
-import {debrisParticles} from '../src/destructible-effects.js';
+import {CastleWorld} from '../source/world.js';
+import {Gameplay} from '../source/gameplay.js';
+import {debrisParticles} from '../source/destructible-effects.js';
 
 test('destroying a rotated and scaled prop passes its rendered world bounds to fragment spawning',()=>{
   const game=new Gameplay({id:'bounds',entities:[{classname:'AdamAnyActor','%name%':'crate',Origin:'100 20 200',ActorFileName:'brcrate.act'}]},{deferInit:true});

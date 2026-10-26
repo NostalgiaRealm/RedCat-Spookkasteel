@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {GameAudio} from '../src/audio.js';
+import {GameAudio} from '../source/audio.js';
 
 const settle=()=>new Promise(resolve=>setImmediate(resolve));
 function harness({pending=false}={}) {

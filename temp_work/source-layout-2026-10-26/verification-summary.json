@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-26",
+  "scope": "Separate editable source from bundled runtime; project documentation audit; source/preparation checks only",
+  "layout": {
+    "editableModules": "source/",
+    "runtime": "src/",
+    "individualModuleCount": 139,
+    "sourceReadme": "source/README.md",
+    "runtimeReadme": "src/README.md",
+    "moveVerified": "source-move-verification.json",
+    "sourceBytesUnchanged": true,
+    "runtimeCodeIdenticalExceptMapReference": "bundle-code-comparison.json"
+  },
+  "bundle": {
+    "revision": "3b12d5ca3acff7f25baeb7f8",
+    "sourceModulesIncludingThree": 141,
+    "bytes": 1207041
+  },
+  "focusedTests": {
+    "bundleAndCache": {
+      "passed": 10,
+      "log": "bundle-tests.log"
+    },
+    "androidAssetsHostAndPackageConfiguration": {
+      "passed": 20,
+      "log": "packaging-tests.log"
+    },
+    "legacyCacheAndSaveBrowser": {
+      "passed": true,
+      "log": "cache-scenes.log",
+      "reportDirectory": "../web-cache-2026-10-26/run-1793050010069"
+    },
+    "runtimeWithoutSource": {
+      "passed": true,
+      "report": "browser-1793049972136/report.json",
+      "distinctLevels": 5,
+      "javascriptRequests": [
+        "/src/game.bundle.js"
+      ],
+      "sourceUrlStatus": 404,
+      "storedSaveUnchangedOnRestore": true
+    },
+    "unbundledToBundledContinuity": {
+      "passed": true,
+      "log": "bundle-scenes.log",
+      "coverage": "Exact save bytes, puzzle variables, separate players,2/5/10-minute recovery,desktop movement/shooting and mobile simultaneous movement/look/jump/shoot"
+    }
+  },
+  "assetStaging": "android-staging-verification.json",
+  "referenceMigration": "test-tool-reference-migration.json",
+  "referenceValidation": "test-tool-reference-validation.json",
+  "additionalFixtureRouteCheck": "explicit-module-fixture-route-review.json",
+  "independentCodeReview": "independent-bundle-layout-review.json",
+  "rootSyntax": "root-syntax-verification.json",
+  "documentation": "documentation-audit.json",
+  "boundaries": [
+    "No release packages built or published",
+    "Original installations and protected website unchanged",
+    "Existing user saves/profiles untouched",
+    "Source files remain necessary for editing, tests and automatic preparation before development launches",
+    "Prepared runtime requires no source folder",
+    "Browser verification used headless software WebGL, not native device performance testing",
+    "Historical research and independent lab snapshots preserved"
+  ],
+  "documentationSummary": "documentation-summary.json"
+}

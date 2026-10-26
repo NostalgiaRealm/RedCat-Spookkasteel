@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
-import {BspCollider,PlayerController} from '../src/collision.js';
+import {BspCollider,PlayerController} from '../source/collision.js';
 const box={planes:[[1,0,0,10],[-1,0,0,10],[0,1,0,10],[0,-1,0,10],[0,0,1,10],[0,0,-1,10]],nodes:[],leaves:[{contents:1,firstSide:0,numSides:6,min:[-10,-10,-10],max:[10,10,10]}],leafSides:Array.from({length:6},(_,i)=>[i,0]),models:[{root:-1}]};
 test('swept hull stops at an expanded solid wall, with outward normal',()=>{const c=new BspCollider(box);const h=c.trace([30,0,0],[-30,0,0],[-2,-2,-2],[2,2,2]);assert.ok(Math.abs(h.end[0]-12.05)<0.001);assert.deepEqual(h.normal,[1,0,0]);assert.equal(h.startSolid,false);});
 test('parallel movement outside a solid leaves full motion available',()=>{const c=new BspCollider(box);assert.equal(c.trace([30,-30,0],[30,30,0],[-2,-2,-2],[2,2,2]).fraction,1);});

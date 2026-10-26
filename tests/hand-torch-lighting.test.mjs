@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {createActorFloorLighting} from '../src/actor-floor-lighting.js';
+import {createActorFloorLighting} from '../source/actor-floor-lighting.js';
 
 const collision={models:[{root:0}],nodes:[[-1,-2,0]],planes:[[0,1,0,0]],leaves:[{contents:0},{contents:1}]};
 const face=[0,0,0,64,0,64,1,0,0,0,0,1,-112,-112,0,0,5,5,0,0,0,0];

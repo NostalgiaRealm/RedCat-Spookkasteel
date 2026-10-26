@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {GameAudio} from '../src/audio.js';
-import {GameplayAudio} from '../src/gameplay-audio.js';
-import {Gameplay} from '../src/gameplay.js';
+import {GameAudio} from '../source/audio.js';
+import {GameplayAudio} from '../source/gameplay-audio.js';
+import {Gameplay} from '../source/gameplay.js';
 
 class Media {
   constructor(src){this.src=src;this.paused=true;this.currentTime=0;}

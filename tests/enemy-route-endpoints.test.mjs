@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {EnemyNavigation} from '../src/enemy-navigation.js';
+import {EnemyNavigation} from '../source/enemy-navigation.js';
 
 const waypoint=(id,x)=>({classname:'GrobberPathPoint','%name%':id,Origin:`${x} 0 0`});
 const blockedMap=()=>new EnemyNavigation({entities:[waypoint('a',0),...Array.from({length:369},(_,i)=>waypoint(`far${i}`,1000+i*100))]},{MaxConnectionDistance:0});

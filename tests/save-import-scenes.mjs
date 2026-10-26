@@ -25,7 +25,7 @@ try {
   await page.evaluate(() => {__redcat.playerMenu.audio.say = async () => true;});
   await page.evaluate(async () => {await __redcat.startLevel(0); __redcat.pause();});
   const exported = await page.evaluate(async () => {
-    const {createSaveExport} = await import('./src/save-export.js');
+    const {createSaveExport} = await import('./source/save-export.js');
     __redcat.gameplay.state.score = 111;
     __redcat.saveGame(true); await __redcat.recovery.flush();
     return createSaveExport({playerName: 'Backup', save: JSON.parse(localStorage.getItem('redcat.save.v1')),

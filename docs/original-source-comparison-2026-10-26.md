@@ -58,7 +58,7 @@ lifetime truncation, while retaining the intentionally saved per-enemy RNG.
 Already flying saved projectiles retain their velocity and lifetime.
 
 Evidence: CRT `0x60a4a0`, lifetime `0x442e30` / `0x4432e0`, moving/standing/turret
-release paths. Implementation: `src/enemy-projectiles.js` and
+release paths. Implementation: `source/enemy-projectiles.js` and
 `Gameplay.enemyProjectile`. [Detailed findings](../temp_work/original-source-parity-2026-10-26/gameplay/findings.md#g-1-projectile-random-distribution-corrected).
 
 ### 2. Plant and gargoyle salvo waits
@@ -73,7 +73,7 @@ appropriate state.
 
 Evidence: standing parent `0x40a200`, wait construction `0x403ed0`, first-check
 and strict-expiry update `0x404020`, plant override `0x406ce0` / `0x406d20`.
-Implementation: `src/enemy-standing-shooter-native.js` with the existing ambush,
+Implementation: `source/enemy-standing-shooter-native.js` with the existing ambush,
 hit and gameplay paths. [Detailed findings](../temp_work/original-source-parity-2026-10-26/gameplay/findings.md#g-2-plantgargoyle-post-salvo-controller-corrected).
 
 ### 3. Fleurifee stars and portal particle fades
@@ -86,8 +86,8 @@ replaying positions, velocities or emission history.
 
 Evidence: shared `CParticle` at `0x47dd60`, Start/Restart at `0x47e710` /
 `0x47e780`, and the original fairy/portal initializers. Implementation:
-`src/particle-clock-native.js`, `src/fairy-effects.js`,
-`src/teleporter-effects.js`. The original fixed visual step, local RNG, sound
+`source/particle-clock-native.js`, `source/fairy-effects.js`,
+`source/teleporter-effects.js`. The original fixed visual step, local RNG, sound
 scheduling and portal relocation policy remain intact.
 [Full presentation comparison](presentation-source-parity-2026-10-26.md).
 
@@ -114,7 +114,7 @@ self as the source: its health call at `0x433bc7–0x433be0` receives the negati
 damage amount. This confirms an active RedCat path, not merely unused generic
 engine functionality. The dry resource at `0x6b5708` resolves to `rcland1.wav`.
 
-Implementation: `src/player-landing.js`, `Gameplay.land`, the existing world
+Implementation: `source/player-landing.js`, `Gameplay.land`, the existing world
 landing transition and locomotion audio. Contact emits once, with no replay on
 load or movement recovery. Existing no-clip, cutscene, respawn and completed-level
 protections still apply. Portable collision/impact sampling remains a documented

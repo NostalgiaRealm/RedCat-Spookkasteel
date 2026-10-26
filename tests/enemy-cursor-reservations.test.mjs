@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Gameplay} from '../src/gameplay.js';
-import {EnemyNavigation} from '../src/enemy-navigation.js';
+import {Gameplay} from '../source/gameplay.js';
+import {EnemyNavigation} from '../source/enemy-navigation.js';
 
 const waypoint=(id,x,links=[])=>({classname:'GrobberPathPoint','%name%':id,Origin:`${x} 0 0`,...Object.fromEntries(links.map((value,index)=>[`WayPoint${index+1}`,value]))});
 const points=[waypoint('a',0,['b']),waypoint('b',100),waypoint('c',200,['b'])];

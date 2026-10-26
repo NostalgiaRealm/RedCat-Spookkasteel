@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {traceActors,triangleCollider} from '../src/actor-collision.js';
+import {traceActors,triangleCollider} from '../source/actor-collision.js';
 
 const result=()=>({fraction:1,normal:[0,1,0],startSolid:false,modelIndex:null});
 const wall=()=>({id:'wall',supportModelIndex:7,blocksPlayer:true,canBeShot:true,blocksLOS:false,

@@ -284,7 +284,7 @@ Primary formal dossiers:
 
 ## Port changes and deliberately retained adaptations
 
-[World streaming implementation](../src/world-streaming.js):
+[World streaming implementation](../source/world-streaming.js):
 
 - Resident static world chunks now build a compact draw index containing only
   PVS-accepted faces. The existing chunk test still decides which sections to

@@ -6,18 +6,19 @@ import {fileURLToPath} from 'node:url';
 import {chromium} from 'playwright';
 
 // Browser integration with a simulated native endpoint; this is not a device test.
-// Keep profiles, screenshots and reports as evidence under current_work.
+// Keep profiles, screenshots and reports as evidence under temp_work.
 const root = fileURLToPath(new URL('../', import.meta.url));
-const evidence = path.join(root, 'current_work/android-initial-2026-10-06');
+const evidence = path.join(root, 'temp_work/android-release-1.0.3-2026-10-26/assets');
 await mkdir(evidence, {recursive: true});
 const output = await mkdtemp(path.join(evidence, 'host-scenes-'));
 // Chromium's Unix socket path limit requires a short, relative temp path.
 process.chdir(root);
-process.env.TMPDIR = 'current_work';
-process.env.TMP = 'current_work';
-process.env.TEMP = 'current_work';
+process.env.TMPDIR = 'temp_work';
+process.env.TMP = 'temp_work';
+process.env.TEMP = 'temp_work';
 const nativeOnly = process.env.ANDROID_TEST_SCOPE === 'native';
-const report = {kind: 'browser-simulated-android-host', scope: nativeOnly ? 'native' : 'all', checks: [], errors: [], samples: {}};
+const browserOnly = process.env.ANDROID_TEST_SCOPE === 'browser';
+const report = {kind: 'browser-simulated-android-host', scope: nativeOnly ? 'native' : browserOnly ? 'browser' : 'all', checks: [], errors: [], samples: {}};
 const check = name => { report.checks.push(name); console.log(`PASS ${name}`); };
 const server = spawn(process.execPath, ['tools/serve.mjs'], {
   cwd: root, env: {...process.env, PORT: process.env.ANDROID_TEST_PORT || '0'}, stdio: ['ignore', 'pipe', 'pipe'],
@@ -59,6 +60,7 @@ const sampleGame = page => page.evaluate(() => {
 });
 
 try {
+  if (!browserOnly) {
   context = await openContext('android', true);
   const page = await context.newPage();
   page.setDefaultTimeout(20000);
@@ -116,7 +118,8 @@ try {
   assert.equal(report.samples.handshake.resolution, 'native');
   assert.ok(report.samples.handshake.canvas.width * report.samples.handshake.canvas.height <= 1280 * 720);
   assert.deepEqual(report.samples.handshake.fullscreen, [{type: 'fullscreen', enabled: true}]);
-  check('native ready handshake gates startup; automatic touch and Android pixel budget remain active');
+  assert.equal(await page.locator('#android-privacy').evaluate(element=>element.hidden), false);
+  check('native ready handshake gates startup; automatic touch, offline privacy policy and Android pixel budget remain active');
 
   await lifecycle(page, false);
   const suspendedIntro = await videoState(page);
@@ -152,11 +155,13 @@ try {
   await page.locator('#skip-intro').click();
 
   await page.locator('#open-settings').click();
+  await page.locator('#open-more-settings').click();
   await page.locator('#fullscreen').uncheck();
   await page.locator('#apply-settings').click();
   assert.deepEqual(await page.evaluate(() => window.__androidHarness.messages.filter(message => message.type === 'fullscreen').at(-1)),
     {type: 'fullscreen', enabled: false});
   await page.locator('#open-settings').click();
+  await page.locator('#open-more-settings').click();
   await page.locator('#fullscreen').check();
   await page.locator('#apply-settings').click();
   assert.deepEqual(await page.evaluate(() => window.__androidHarness.messages.filter(message => message.type === 'fullscreen').at(-1)),
@@ -294,7 +299,8 @@ try {
     };
     app.recovery.advance(60);
   });
-  await back(page);
+  await page.locator('#open-quit').click();
+  await page.locator('#quit-yes').click();
   await page.waitForFunction(() => window.__androidHarness.events.some(event => event.type === 'recovery-write-start'));
   await page.waitForTimeout(150);
   assert.equal(await page.evaluate(() => window.__androidHarness.messages.some(message => message.type === 'quit')), false);
@@ -308,6 +314,7 @@ try {
   assert.equal(await page.locator('#fatal').isVisible(), false);
   check('native quit waits for the latest real recovery write; keep-awake follows activity');
   await context.close(); context = null;
+  }
 
   for (const mobile of nativeOnly ? [] : [false, true]) {
     const label = mobile ? 'mobile-browser' : 'desktop-browser';
@@ -327,6 +334,7 @@ try {
     await browserPage.goto(address);
     await browserPage.waitForFunction(() => window.__redcat && document.getElementById('intro-video').currentTime > .2);
     assert.equal(await browserPage.evaluate(() => 'RedCatAndroid' in window), false);
+    assert.equal(await browserPage.locator('#android-privacy').evaluate(element=>element.hidden), true);
     assert.equal(await browserPage.evaluate(() => window.__redcat.touchEnabled), mobile);
     assert.equal(await browserPage.evaluate(() => document.fullscreenElement), null);
     await browserPage.locator('#intro-play').click();
@@ -334,6 +342,7 @@ try {
     assert.ok(await browserPage.evaluate(() => window.__browserFullscreenCalls > 0));
     await browserPage.locator('#skip-intro').click();
     await browserPage.locator('#open-settings').click();
+    await browserPage.locator('#open-more-settings').click();
     await browserPage.locator('#fullscreen').uncheck();
     await browserPage.locator('#auto-intro').uncheck();
     await browserPage.locator('#apply-settings').click();
@@ -342,6 +351,7 @@ try {
 
     for (const preference of ['off', 'on', 'auto']) {
       await browserPage.locator('#open-settings').click();
+    await browserPage.locator('#open-more-settings').click();
       await browserPage.locator('#touch-controls-setting').selectOption(preference);
       await browserPage.locator('#apply-settings').click();
       assert.equal(await browserPage.evaluate(() => window.__redcat.touchEnabled), preference === 'on' || preference === 'auto' && mobile);
@@ -359,7 +369,9 @@ try {
     assert.ok(browser.width * browser.height > 1280 * 720, 'browser keeps its existing native resolution branch');
     check(`${label}: touch settings and uncapped native DPR resolution remain unchanged`);
 
-    await browserPage.locator('#start').click();
+    await browserPage.locator('#native-next').click();
+    await browserPage.locator('#native-next').click();
+    await browserPage.locator('#native-start').click();
     await browserPage.waitForFunction(() => window.__redcat.mode === 'playing' && window.__redcat.world.geometryStream.readyForView,
       null, {timeout: 45000});
     await browserPage.keyboard.press('KeyP');
@@ -393,7 +405,8 @@ try {
     assert.equal(persisted.recovery.level, 'lvl00a');
     assert.equal(new Map(persisted.latest.game.variables).get('android-host-browser-regression'), label);
     assert.equal(new Map(persisted.recovery.game.variables).get('android-host-browser-regression'), label);
-    await browserPage.locator('#continue').click();
+    await browserPage.locator('#native-next').click();
+    await browserPage.locator('#native-start').click();
     await browserPage.waitForFunction(() => window.__redcat.mode === 'playing', null, {timeout: 45000});
     assert.equal(await browserPage.evaluate(() => window.__redcat.gameplay.variables.get('android-host-browser-regression')), label);
     assert.equal(await browserPage.locator('#fatal').isVisible(), false);

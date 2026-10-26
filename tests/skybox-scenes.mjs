@@ -25,7 +25,7 @@ try {
   const reports=[];
   for(let level=-1;level<5;level++) {
     const report=await page.evaluate(async level=>{
-      const THREE=await import('three'),{nativeSkyboxFaces}=await import('/src/skybox.js'),app=window.__redcat;
+      const THREE=await import('three'),{nativeSkyboxFaces}=await import('/source/skybox.js'),app=window.__redcat;
       const renderer=new THREE.WebGLRenderer({preserveDrawingBuffer:true});renderer.setSize(256,256);renderer.setPixelRatio(1);
       const target=new THREE.WebGLRenderTarget(256,256);target.texture.colorSpace=THREE.SRGBColorSpace;
       const actualScene=new THREE.Scene(),referenceScene=new THREE.Scene();referenceScene.background=new THREE.Color(0);

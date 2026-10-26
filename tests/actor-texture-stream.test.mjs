@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {ActorTextureStream} from '../src/actor-texture-stream.js';
-import {ActorRenderResidency} from '../src/actor-render-residency.js';
-import {DebrisRenderPool} from '../src/debris-render-pool.js';
-import {CastleWorld} from '../src/world.js';
+import {ActorTextureStream} from '../source/actor-texture-stream.js';
+import {ActorRenderResidency} from '../source/actor-render-residency.js';
+import {DebrisRenderPool} from '../source/debris-render-pool.js';
+import {CastleWorld} from '../source/world.js';
 
 const camera=()=>{const camera=new THREE.PerspectiveCamera(60,1,1,20000);camera.lookAt(0,0,-1);return camera;};
 const actor=(map,position=[0,0,-100])=>{

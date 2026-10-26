@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {ActorWorldLighting} from '../src/actor-world-lighting.js';
-import {sampleActorDynamicLights} from '../src/actor-light-sampling.js';
+import {ActorWorldLighting} from '../source/actor-world-lighting.js';
+import {sampleActorDynamicLights} from '../source/actor-light-sampling.js';
 
 const sun=(name,position,radius,type=2,light=100)=>({classname:'Sun','%name%':name,Origin:position.join(' '),Color:'255 255 255',Light:String(light),FallOffType:String(type),FallOffRadiusInTexels:String(radius)});
 

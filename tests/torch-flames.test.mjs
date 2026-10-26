@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {ActorAnimator} from '../src/animation.js';
-import {TorchFlames,handTorchTip} from '../src/torch-flames.js';
-import {WorldEffects} from '../src/world-effects.js';
+import {ActorAnimator} from '../source/animation.js';
+import {TorchFlames,handTorchTip} from '../source/torch-flames.js';
+import {WorldEffects} from '../source/world-effects.js';
 
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 const data=json('assets/actors/htorch.json'),manifest=json('assets/effects/manifest.json');

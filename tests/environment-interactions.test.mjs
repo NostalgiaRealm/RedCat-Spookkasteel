@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {PlayerController} from '../src/collision.js';
-import {buttonTouched} from '../src/environment-interactions.js';
-import {debrisParticles,explosionFrame} from '../src/destructible-effects.js';
-import {CastleWorld} from '../src/world.js';
+import {Gameplay} from '../source/gameplay.js';
+import {PlayerController} from '../source/collision.js';
+import {buttonTouched} from '../source/environment-interactions.js';
+import {debrisParticles,explosionFrame} from '../source/destructible-effects.js';
+import {CastleWorld} from '../source/world.js';
 import {Group} from 'three';
 
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));

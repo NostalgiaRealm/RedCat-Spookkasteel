@@ -8,7 +8,7 @@ shared patrol and Bone Brutus work.
 
 ## Implemented behavior
 
-`src/boss-ai.js` supplies specialized machines to `Gameplay.updateEnemy`.
+`source/boss-ai.js` supplies specialized machines to `Gameplay.updateEnemy`.
 Elapsed phase time, shot-release state, the turret animation clock, teleport
 state and chosen flight waypoint are saved. Disabling an enemy, a cutscene, or
 FreezeEnemies suspends the machine. Terminal hits pass through the existing

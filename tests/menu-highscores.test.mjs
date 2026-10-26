@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readHighscores,recordHighscore} from '../src/menu-highscores.js';
+import {readHighscores,recordHighscore} from '../source/menu-highscores.js';
 const save=(score,level='lvl01a')=>({version:1,level,position:[0,0,0],yaw:0,pitch:0,game:{version:1,level,state:{health:5,score}}});
 test('original ten names and scores survive an empty or malformed store',()=>{
   const expected=readHighscores(null);

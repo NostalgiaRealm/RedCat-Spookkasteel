@@ -17,7 +17,7 @@ try {
   await page.route('**/controller-fixture.html',route=>route.fulfill({contentType:'text/html',body:`<style>[hidden]{display:none}#scope{height:120px;overflow:auto}button{display:block}</style><div id="scope"><button id="first">First</button><button disabled>Disabled</button><div hidden><button>Hidden</button></div><button style="visibility:hidden">Invisible</button><select id="select"><option>A</option><option disabled>B</option><option>C</option></select><input id="range" type="range" min="0" max="1" step=".1" value=".5"><input id="toggle" type="checkbox"><button id="last">Last</button><div style="height:1000px"></div></div><dialog id="dialog"><button autofocus id="cancel">Cancel</button><button id="confirm">Confirm</button></dialog>`}));
   await page.goto(`http://127.0.0.1:${port}/controller-fixture.html`);
   await page.evaluate(async()=>{
-    const {GamepadMenu}=await import('/src/gamepad-menu.js'),menu=new GamepadMenu(),root=document.getElementById('scope');
+    const {GamepadMenu}=await import('/source/gamepad-menu.js'),menu=new GamepadMenu(),root=document.getElementById('scope');
     const expect=(value,message)=>{if(!value)throw new Error(message);};
     const id=()=>document.activeElement.id;let clicks=0,changes=0;
     document.getElementById('first').onclick=()=>clicks++;

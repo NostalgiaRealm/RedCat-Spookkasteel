@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {PLAYER_REACTIONS,playerReactionMotion} from '../src/player-lifecycle.js';
+import {Gameplay} from '../source/gameplay.js';
+import {PLAYER_REACTIONS,playerReactionMotion} from '../source/player-lifecycle.js';
 const level={id:'lvl00a',entities:[],spawn:{position:[100,20,300],orientation:3}};
 const boot=save=>{const events=[],game=new Gameplay(level,{save,onEvent:e=>events.push(e)});return {game,events};};
 const advance=(game,seconds)=>{while(seconds>1e-8){const dt=Math.min(.02,seconds);game.update(dt,[0,0,0]);seconds-=dt;}};

@@ -1,0 +1,1 @@
+Full independent reconstruction of RedCat Spookkasteel (2000), built with JavaScript, Three.js/WebGL, with Electron for desktop. Runs on Linux, Windows and browsers, preserving the original levels, puzzles & story with widescreen, touch and controller support. GPT-6 Astra (Ultra) was used to decompile and reimplement original game behaviour.

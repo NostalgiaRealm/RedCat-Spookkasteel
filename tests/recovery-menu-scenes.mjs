@@ -1,16 +1,18 @@
+import {createSceneOutput, showAdventureExtras} from './scene-menu.mjs';
 import {chromium} from 'playwright';
 import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+const output = createSceneOutput('recovery-menu-scenes');
 const port=4279;
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:String(port)},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 const report={},errors=[];
 try {
-  await mkdir('artifacts',{recursive:true});
-  browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
+  await mkdir(output,{recursive:true});
+  browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:[`--use-angle=${process.env.REDCAT_TEST_ANGLE || 'swiftshader'}`, '--enable-unsafe-swiftshader','--autoplay-policy=no-user-gesture-required']});
   const context=await browser.newContext({viewport:{width:1280,height:800}});
   const page=await context.newPage();
   page.on('pageerror',error=>errors.push(error.stack));
@@ -18,7 +20,7 @@ try {
   await page.addInitScript(()=>localStorage.setItem('redcat.settings.v1',JSON.stringify({touchControls:'on',autoIntro:false})));
   await page.goto(`http://127.0.0.1:${port}/?skipIntro`);
   await page.waitForFunction(()=>window.__redcat);
-  await page.locator('#open-recovery').click();
+  await showAdventureExtras(page);await page.locator('#open-recovery').click();
   await page.waitForFunction(()=>document.querySelectorAll('[data-recovery-minutes]').length===3);
   assert.deepEqual(await page.locator('[data-recovery-minutes]').evaluateAll(buttons=>buttons.map(button=>({minutes:Number(button.dataset.recoveryMinutes),disabled:button.disabled}))),[{minutes:2,disabled:true},{minutes:5,disabled:true},{minutes:10,disabled:true}]);
   await page.keyboard.press('Escape');
@@ -68,23 +70,23 @@ try {
   await page.reload();await page.waitForFunction(()=>window.__redcat);
   report.reopened=await page.evaluate(async()=>{await window.__redcat.recovery.ready;return window.__redcat.recovery.choices().map(choice=>({minutes:choice.minutes,score:choice.save?.game.state.score,age:choice.ageSeconds}));});
   assert.deepEqual(report.reopened,report.seed.choices);
-  await page.locator('#open-recovery').click();
+  await showAdventureExtras(page);await page.locator('#open-recovery').click();
   await page.waitForFunction(()=>document.querySelectorAll('[data-recovery-minutes]:enabled').length===3);
   const desktopRect=await page.locator('#recovery-saves').boundingBox();
   assert.ok(desktopRect.x>=0&&desktopRect.y>=0&&desktopRect.x+desktopRect.width<=1280&&desktopRect.y+desktopRect.height<=800);
-  await page.screenshot({path:'artifacts/recovery-menu-desktop.png'});
+  await page.screenshot({path:`${output}/recovery-menu-desktop.png`});
   await page.setViewportSize({width:390,height:844});
   const phoneRect=await page.locator('#recovery-saves').boundingBox();
   assert.ok(phoneRect.x>=0&&phoneRect.y>=0&&phoneRect.x+phoneRect.width<=390&&phoneRect.y+phoneRect.height<=844,JSON.stringify(phoneRect));
   for(const minutes of [2,5,10])assert.equal(await page.locator(`[data-recovery-minutes="${minutes}"]`).isEnabled(),true);
-  await page.screenshot({path:'artifacts/recovery-menu-phone.png'});
+  await page.screenshot({path:`${output}/recovery-menu-phone.png`});
   report.layout={desktop:desktopRect,phone:phoneRect};
   await page.locator('#close-recovery').click();await page.setViewportSize({width:1280,height:800});
   assert.equal(await page.locator('#menu').innerText().then(text=>/0\.9\.2|versie\s+\d|version\s+\d/i.test(text)),false,'menu has no release version badge');
 
   report.loads=[];
   for(const [minutes,score]of [[2,10],[5,7],[10,2]]) {
-    await page.locator('#open-recovery').click();
+    await showAdventureExtras(page);await page.locator('#open-recovery').click();
     await page.locator(`[data-recovery-minutes="${minutes}"]`).click();
     await page.waitForFunction(()=>window.__redcat.world&&['playing','paused'].includes(window.__redcat.mode),{},{timeout:60000});
     const restored=await page.evaluate(async({buttonId})=>{
@@ -102,15 +104,15 @@ try {
 
   // A canceled new adventure preserves recovery; a successful confirmed start
   // begins a fresh timeline, so another adventure cannot leak into its menu.
-  await page.locator('#start-over').click();
+  await showAdventureExtras(page);await page.locator('#start-over').click();
   assert.equal(await page.evaluate(()=>document.getElementById('new-adventure-warning').open),true);
   await page.locator('#cancel-new-adventure').click();
   assert.deepEqual(await page.evaluate(()=>window.__redcat.recovery.state.checkpoints.map(entry=>entry.save.game.state.score)),report.seed.retained);
-  await page.locator('#start-over').click();await page.locator('#confirm-new-adventure').click();
+  await showAdventureExtras(page);await page.locator('#start-over').click();await page.locator('#confirm-new-adventure').click();
   await page.waitForFunction(()=>window.__redcat.world&&['playing','paused'].includes(window.__redcat.mode),{},{timeout:60000});
   report.reset=await page.evaluate(async()=>{const app=window.__redcat;app.pause();await app.recovery.flush();return {score:app.gameplay.state.score,retained:app.recovery.state.checkpoints.length,choices:app.recovery.choices().map(choice=>!!choice.save)};});
   assert.deepEqual(report.reset,{score:0,retained:1,choices:[false,false,false]});
   assert.deepEqual(errors,[]);
-  await writeFile('artifacts/recovery-menu-scenes.json',JSON.stringify({report,errors},null,2)+'\n');
+  await writeFile(`${output}/recovery-menu-scenes.json`,JSON.stringify({report,errors},null,2)+'\n');
   console.log('PASS recovery menus on desktop/mobile; unavailable early slots; IndexedDB history survives reload; 2/5/10-minute restores include position, inventory and puzzle state; old saves pruned; paused time excluded; cancel preserves history and confirmed new adventure resets it.');
 } finally {await browser?.close();server.kill();}

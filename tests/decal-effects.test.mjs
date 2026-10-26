@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {Gameplay} from '../src/gameplay.js';
-import {placeDecal,decalGeometry,DecalEffects,decalTextureKey} from '../src/decal-effects.js';
+import {Gameplay} from '../source/gameplay.js';
+import {placeDecal,decalGeometry,DecalEffects,decalTextureKey} from '../source/decal-effects.js';
 
 const level=JSON.parse(readFileSync(new URL('../data/levels/lvl00a/level.json',import.meta.url)));
 const ufo=level.entities.find(e=>e.DaviName==='ufohole');

@@ -10,7 +10,7 @@ Previously, respawn cleared trigger contact flags but retained the consumed
 trigger counts and moved hedges. Returning from the save pillar could therefore
 trap RedCat in the entrance pocket with both routes closed.
 
-`src/graveyard-maze.js` resets the progression triggers to their authored enabled
+`source/graveyard-maze.js` resets the progression triggers to their authored enabled
 states, clears their counters/contact flags, and restores the hedge timelines
 and door pose. It applies the restored pose to the shared rendering/collision
 transform map immediately. Motion reset uses stop/seek, with no movement events

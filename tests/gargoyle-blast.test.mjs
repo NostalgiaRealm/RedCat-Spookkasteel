@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {CastleWorld} from '../src/world.js';
-import {createGargoyleBlast,advanceGargoyleBlasts,restoreGargoyleBlasts,gargoyleBlastQuads,GARGOYLE_BLAST_TEXTURE} from '../src/gargoyle-blast.js';
+import {Gameplay} from '../source/gameplay.js';
+import {CastleWorld} from '../source/world.js';
+import {createGargoyleBlast,advanceGargoyleBlasts,restoreGargoyleBlasts,gargoyleBlastQuads,GARGOYLE_BLAST_TEXTURE} from '../source/gargoyle-blast.js';
 import {PerspectiveCamera,Scene} from 'three';
 const json=p=>JSON.parse(readFileSync(new URL('../'+p,import.meta.url)));
 const tower=json('data/levels/lvl04a/level.json'),entity=tower.entities.find(e=>e.classname==='StandingEnemy'&&e.Type==='3');

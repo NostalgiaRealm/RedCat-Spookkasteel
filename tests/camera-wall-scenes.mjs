@@ -31,7 +31,7 @@ try {
   for(const object of g.objects)if(object.kind==='enemy'||object.kind==='trigger')object.enabled=false;
   w.targeting.clear();w.settings.camera='third';w.player.noClip=false;
   w.syncModels();w.syncActors(0);
-  const {cameraInsidePlayer}=await import('/src/third-person-camera.js');
+  const {cameraInsidePlayer}=await import('/source/third-person-camera.js');
   const {Vector3,Box3}=await import('three');
   const trace=(a,b)=>w.collider.trace(a,b,[-4,-4,-4],[4,4,4],w.physicalModels);
   const frame=()=>{

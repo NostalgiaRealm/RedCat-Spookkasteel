@@ -16,8 +16,8 @@ try {
   await page.goto('http://127.0.0.1:4295/?skipIntro');await page.waitForFunction(()=>window.__redcat);
   const gpu=process.argv.includes('--impacts-only')?[]:await page.evaluate(async()=>{
     const THREE=await import('three');
-    const {patchWorldLightShader}=await import('/src/world-lighting-material.js');
-    const {worldLightFrame,worldLightmapLuxel}=await import('/src/world-lighting.js');
+    const {patchWorldLightShader}=await import('/source/world-lighting-material.js');
+    const {worldLightFrame,worldLightmapLuxel}=await import('/source/world-lighting.js');
     const renderer=new THREE.WebGLRenderer(),scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-16,16,16,-16,1,100);
     const target=new THREE.WebGLRenderTarget(32,32);renderer.setRenderTarget(target);
     const bytes=new Uint8Array(8*8*4);for(let i=0;i<bytes.length;i+=4)bytes.set([51,51,51,255],i);
@@ -70,7 +70,7 @@ try {
     const app=window.__redcat;await app.startLevel(2);app.pause();
     const world=app.world,game=app.gameplay;for(const p of game.scripts.players.values())p.stop();
     game.scripts.cutscene=false;game.scripts.camera=null;
-    const {projectileImpactSprite,impactLight}=await import('/src/projectile-impacts.js');
+    const {projectileImpactSprite,impactLight}=await import('/source/projectile-impacts.js');
     const origin=[...world.player.position];origin[1]+=100;
     game.projectileImpacts=['shot','powerShot','superShot'].map((kind,i)=>({id:'impact-'+i,kind,birth:game.time,position:[origin[0]+(i-1)*100,origin[1],origin[2]]}));
     world.camera.position.set(origin[0],origin[1]+30,origin[2]+330);world.camera.lookAt(...origin);

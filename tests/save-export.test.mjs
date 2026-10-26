@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createSaveExport, downloadSaveExport} from '../src/save-export.js';
-import {PlayerMenu} from '../src/player-menu.js';
+import {createSaveExport, downloadSaveExport} from '../source/save-export.js';
+import {PlayerMenu} from '../source/player-menu.js';
 
 function fixture() {
   return {

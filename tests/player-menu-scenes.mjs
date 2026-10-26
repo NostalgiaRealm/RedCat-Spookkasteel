@@ -1,3 +1,4 @@
+import {createSceneOutput, startAdventure, showAdventureExtras} from './scene-menu.mjs';
 // Isolated storage only; screenshots/logs are retained in the project workspace.
 import {chromium} from 'playwright';
 import {spawn} from 'node:child_process';
@@ -5,9 +6,8 @@ import {mkdir, writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import assert from 'node:assert/strict';
 
-const output = 'temp_work/player-profiles';
+const output = createSceneOutput('player-menu-scenes');
 await mkdir(output, {recursive: true});
-process.env.TMPDIR = output; // Relative path avoids Linux's Unix-socket length limit.
 const server = spawn(process.execPath, ['tools/serve.mjs'], {env: {...process.env, PORT: '4293'}, stdio: ['ignore', 'pipe', 'inherit']});
 await new Promise((ok, fail) => {server.stdout.once('data', ok); server.once('error', fail);});
 let browser;
@@ -93,7 +93,7 @@ try {
   assert.equal(await page.evaluate(() => __redcat.world), null);
   assert.equal(await page.evaluate(() => __redcat.saveGame(true)), false, 'retired world cannot save into another player');
   assert.equal(await page.locator('.level-card:disabled').count(), 4);
-  assert.equal(await page.locator('#continue').isVisible(), false);
+  assert.equal(await page.evaluate(() => __redcat.originalMenu.getState().hasSave), false);
   assert.deepEqual(await page.evaluate(() => ({difficulty: __redcat.settings.difficulty, noClip: __redcat.settings.noClip,
     hints: localStorage.getItem(__redcat.profiles.key('redcat.touch-intro-hint.v1')), history: __redcat.recovery.choices().map(c => !!c.save)})),
   {difficulty: 'Normal', noClip: false, hints: null, history: [false, false, false]});
@@ -105,7 +105,7 @@ try {
   assert.equal(await page.evaluate(() => __redcat.settings.difficulty), 'Hard');
   assert.equal(await page.evaluate(() => __redcat.settings.noClip), true);
   assert.equal(await page.evaluate(() => __redcat.recovery.choices()[0].save.game.state.score), 111);
-  await page.locator('#open-recovery').click(); await page.locator('[data-recovery-minutes="2"]').click();
+  await showAdventureExtras(page);await page.locator('#open-recovery').click(); await page.locator('[data-recovery-minutes="2"]').click();
   await page.waitForFunction(() => ['playing', 'paused'].includes(__redcat.mode), null, {timeout: 90000});
   await page.evaluate(() => __redcat.pause());
   assert.equal(await page.evaluate(() => __redcat.gameplay.state.score), 111);
@@ -113,7 +113,7 @@ try {
   await backToMenu(); await openPlayers(); await choose(rick);
   await page.reload(); await page.waitForFunction(() => window.__redcat);
   assert.equal(await page.evaluate(() => __redcat.profiles.activeId), rick);
-  await page.locator('#continue').click();
+  await startAdventure(page);
   await page.waitForFunction(() => ['playing', 'paused'].includes(__redcat.mode), null, {timeout: 90000});
   await page.evaluate(() => __redcat.pause());
   assert.equal(await page.evaluate(() => __redcat.gameplay.state.score), 888);

@@ -1,11 +1,12 @@
+import {createSceneOutput} from './scene-menu.mjs';
 import {chromium} from 'playwright';
 import {spawn} from 'node:child_process';
 import {mkdir, writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import assert from 'node:assert/strict';
 
-const out = 'temp_work/player-profiles';
-await mkdir(out, {recursive: true}); process.env.TMPDIR = out;
+const out = createSceneOutput('player-menu-lifecycle-scenes');
+await mkdir(out, {recursive: true});
 const server = spawn(process.execPath, ['tools/serve.mjs'], {env: {...process.env, PORT: '4294'}, stdio: ['ignore', 'pipe', 'inherit']});
 await new Promise((ok, fail) => {server.stdout.once('data', ok); server.once('error', fail);});
 let context; const errors = [];
@@ -52,7 +53,7 @@ try {
   await page.waitForFunction(() => !document.querySelector('#player-delete-dialog').open);
   assert.equal(await page.evaluate(() => __redcat.profiles.activeId), 'legacy');
   assert.equal(await page.evaluate(() => __redcat.recovery.state.checkpoints.at(-1).save.game.state.score), 4321);
-  assert.equal(await page.locator('#continue').isVisible(), true);
+  assert.equal(await page.evaluate(() => __redcat.originalMenu.getState().hasSave), true);
   const names = await page.evaluate(async () => (await indexedDB.databases()).map(db => db.name));
   assert(!names.includes(`redcat-recovery-saves-${next.id}`));
 

@@ -25,7 +25,7 @@ try {
   const report=await page.evaluate(async()=>{
     const app=window.__redcat;if(!await app.startLevel(0))throw new Error('Forest load failed');app.pause();
     const w=app.world,g=app.gameplay,THREE=await import('three');
-    const {SCORE_TEXTURES,PICKUP_TEXTURE}=await import('./src/reward-effects.js');
+    const {SCORE_TEXTURES,PICKUP_TEXTURE}=await import('./source/reward-effects.js');
     for(const motion of g.scripts.players.values())motion.stop();g.scripts.camera=null;g.scripts.cutscene=false;
     const target=new THREE.WebGLRenderTarget(640,360);target.texture.colorSpace=THREE.SRGBColorSpace;
     const renderer=w.renderer,old=renderer.getRenderTarget(),images={};

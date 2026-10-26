@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {ActorWorldLighting,actorSunReference,nativeSunFalloff} from '../src/actor-world-lighting.js';
+import {ActorWorldLighting,actorSunReference,nativeSunFalloff} from '../source/actor-world-lighting.js';
 
 const sun=(name,origin,color,light=100,extra={})=>({classname:'Sun','%name%':name,Origin:origin.join(' '),Color:color.join(' '),Light:String(light),FallOffType:'0',...extra});
 const close=(a,b)=>assert.ok(Math.abs(a-b)<1e-9,`${a} != ${b}`);

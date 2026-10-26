@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {PlayerWorldLight} from '../src/player-world-light.js';
-import {WorldEffects} from '../src/world-effects.js';
-import {worldLightFrame,worldLightmapLuxel} from '../src/world-lighting.js';
+import {PlayerWorldLight} from '../source/player-world-light.js';
+import {WorldEffects} from '../source/world-effects.js';
+import {worldLightFrame,worldLightmapLuxel} from '../source/world-lighting.js';
 
 function fixture(){
   const geometry=new THREE.BoxGeometry(20,20,40);geometry.translate(0,0,20);geometry.computeBoundingBox();

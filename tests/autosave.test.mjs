@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {AutosaveClock} from '../src/autosave.js';
+import {AutosaveClock} from '../source/autosave.js';
 
 test('autosave waits one minute of active wall time, including slow frames',()=>{
   const clock=new AutosaveClock();let writes=0;const save=()=>{writes++;return true;};

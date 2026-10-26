@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
-import {GameAudio} from '../src/audio.js';
-import {GameplayAudio} from '../src/gameplay-audio.js';
-import {FootstepClock,footstepSound} from '../src/locomotion-audio.js';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
+import {GameAudio} from '../source/audio.js';
+import {GameplayAudio} from '../source/gameplay-audio.js';
+import {FootstepClock,footstepSound} from '../source/locomotion-audio.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 function mixer(){return new GameAudio({createAudio:src=>({src,volume:1,currentTime:0,play(){this.paused=false;return Promise.resolve();},pause(){this.paused=true;}})});}
 function boot(index){const id=`lvl0${index}a`,events=[],game=new Gameplay(json(`data/levels/${id}/level.json`),{deferInit:true,onEvent:e=>events.push(e)}),host=new ScriptHost(game,json(`data/davi/${id}.json`));for(const o of game.objects)if(o.kind==='enemy')o.enabled=false;return {game,host,events,music:game.objects.find(o=>o.entity.classname==='EffectMusic')};}

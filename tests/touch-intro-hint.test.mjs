@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {TouchIntroHint,TOUCH_INTRO_HINT_TEXT} from '../src/touch-intro-hint.js';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
+import {TouchIntroHint,TOUCH_INTRO_HINT_TEXT} from '../source/touch-intro-hint.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
 
 const idle={playing:true,touch:true,cutscene:false,camera:null};
 function fixture(seen=false) {
@@ -52,7 +52,7 @@ test('the original forest opening script delays the hint until its real camera s
 });
 
 test('desktop hint follows the same opening-only timing, lifetime and persisted opt-out',async()=>{
-  const {OpeningHint,DESKTOP_INTRO_HINT_TEXT}=await import('../src/touch-intro-hint.js');
+  const {OpeningHint,DESKTOP_INTRO_HINT_TEXT}=await import('../source/touch-intro-hint.js');
   const shown=[];let remembered=0;
   const hint=new OpeningHint({show:(...args)=>shown.push(args),remember:()=>remembered++});
   const ready={playing:true,enabled:true,cutscene:false,camera:null};

@@ -57,7 +57,7 @@ retains the damage evidence, including
 
 ## Port implementation
 
-`src/enemy-ambush.js` now owns saved dormant/waking/awake/retracting phases for
+`source/enemy-ambush.js` now owns saved dormant/waking/awake/retracting phases for
 stone enemies and skeletons. Knights wait for their 1.7-speed start motion;
 after losing memory they retract at −1.7. Skeleton wake speed uses the native
 `0.8 + (rand() % 10000) * 0.00004` distribution, and the same chosen rate drives

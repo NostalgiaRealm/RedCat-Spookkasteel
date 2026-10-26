@@ -15,7 +15,7 @@ try {
   await page.goto('http://127.0.0.1:4263/?skipIntro');await page.waitForFunction(()=>window.__redcat);
   const result=await page.evaluate(async()=>{
     const app=window.__redcat;await app.startLevel(1);app.pause();
-    const w=app.world,g=app.gameplay,h=g.scripts,THREE=await import('three'),{DEATH_SMOKE_TEXTURE}=await import('./src/enemy-death-effects.js');
+    const w=app.world,g=app.gameplay,h=g.scripts,THREE=await import('three'),{DEATH_SMOKE_TEXTURE}=await import('./source/enemy-death-effects.js');
     for(const p of h.players.values())p.stop();h.cutscene=false;h.enemiesFrozen=false;h.camera=null;
     const boss=g.objects.find(o=>o.enemyType==='maxj');boss.enabled=true;boss.position=[0,0,0];boss.yaw=0;boss.boss.hidden=false;g.time=100;
     const actor=w.actorInstances.get(boss.id),scene=new THREE.Scene();scene.background=new THREE.Color(0x183448);scene.add(actor,new THREE.AmbientLight(0xffffff,2));

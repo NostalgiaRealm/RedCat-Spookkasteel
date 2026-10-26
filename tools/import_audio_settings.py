@@ -99,7 +99,7 @@ def load_settings(source):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source', type=Path, default=DEFAULT, help='Original Settings directory')
-    parser.add_argument('--output', type=Path, default=ROOT / 'src/audio-settings.js')
+    parser.add_argument('--output', type=Path, default=ROOT / 'source/audio-settings.js')
     args = parser.parse_args()
     result = load_settings(args.source)
     args.output.parent.mkdir(parents=True, exist_ok=True)

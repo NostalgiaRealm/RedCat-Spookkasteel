@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {PerspectiveCamera,Texture} from 'three';
-import {CastleWorld} from '../src/world.js';
-import {projectileVisibilityScale,PROJECTILE_VISIBILITY} from '../src/projectile-visibility.js';
+import {CastleWorld} from '../source/world.js';
+import {projectileVisibilityScale,PROJECTILE_VISIBILITY} from '../source/projectile-visibility.js';
 
 test('readability grows small distant shots without shrinking close sprites or unbounded growth',()=>{
   const projection=1/Math.tan(60*Math.PI/360);

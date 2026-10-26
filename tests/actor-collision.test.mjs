@@ -2,10 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {BspCollider,PlayerController} from '../src/collision.js';
-import {triangleCollider} from '../src/actor-collision.js';
-import {CastleWorld} from '../src/world.js';
-import {ActorAnimator,ActorStateAnimator} from '../src/animation.js';
+import {BspCollider,PlayerController} from '../source/collision.js';
+import {triangleCollider} from '../source/actor-collision.js';
+import {CastleWorld} from '../source/world.js';
+import {ActorAnimator,ActorStateAnimator} from '../source/animation.js';
 const empty=()=>new BspCollider({planes:[],nodes:[],leaves:[],leafSides:[],models:[]});
 function plane(collider) {
   collider.actors.push({id:'wall',blocksPlayer:true,canBeShot:true,blocksLOS:false,min:[0,-100,-100],max:[0,100,100],triangles:[
@@ -70,7 +70,7 @@ test('a dormant graveyard zombie reuses its triangle collision until its pose or
 
 const dungeon=JSON.parse(readFileSync(new URL('../data/levels/lvl03a/level.json',import.meta.url)));
 async function dungeonMachine() {
-  const {Gameplay}=await import('../src/gameplay.js');
+  const {Gameplay}=await import('../source/gameplay.js');
   const entity=dungeon.entities.find(e=>e.classname==='StandingEnemy'&&e.Type==='5');
   const game=new Gameplay({...dungeon,entities:[{...entity,IsInitiallyEnabled:'1'}]},{deferInit:true});
   game.objects[0].yaw=0;

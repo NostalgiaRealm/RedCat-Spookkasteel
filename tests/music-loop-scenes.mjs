@@ -42,7 +42,7 @@ try {
   }
   const errors=[];page.on('pageerror',e=>errors.push(e.stack));
   const report=await page.evaluate(async tracks=>{
-    const {GameAudio}=await import('./src/audio.js');const results=[];
+    const {GameAudio}=await import('./source/audio.js');const results=[];
     for(const track of tracks)for(const renderRate of [22050,44100,48000]){
       const outputFrames=Math.floor(track.frames*renderRate/track.rate);
       const offline=new OfflineAudioContext(track.channels,outputFrames*2+256,renderRate);

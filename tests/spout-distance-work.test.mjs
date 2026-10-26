@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {NativeSpoutEffect,SPOUT_STEP} from '../src/spout-effects.js';
-import {WorldEffects,BillboardBatch} from '../src/world-effects.js';
+import {NativeSpoutEffect,SPOUT_STEP} from '../source/spout-effects.js';
+import {WorldEffects,BillboardBatch} from '../source/world-effects.js';
 
 // Reference update before the empty-slot optimization. The recovered step,
 // random templates and snapshot encoder remain the production implementation.

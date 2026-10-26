@@ -1,14 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
-import {GameAudio,distanceGain} from '../src/audio.js';
-import {GameplayAudio} from '../src/gameplay-audio.js';
-import {doorMovementSound} from '../src/door-audio.js';
-import {nearbyAmbienceGain,CASTLE_AMBIENCE_RANGE,CAVE_AMBIENCE_RANGE} from '../src/ambience-ranges.js';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
-import {TELEPORT_EFFECT_SECONDS} from '../src/teleporter-effects.js';
-import {BspCollider} from '../src/collision.js';
+import {GameAudio,distanceGain} from '../source/audio.js';
+import {GameplayAudio} from '../source/gameplay-audio.js';
+import {doorMovementSound} from '../source/door-audio.js';
+import {nearbyAmbienceGain,CASTLE_AMBIENCE_RANGE,CAVE_AMBIENCE_RANGE} from '../source/ambience-ranges.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
+import {TELEPORT_EFFECT_SECONDS} from '../source/teleporter-effects.js';
+import {BspCollider} from '../source/collision.js';
 
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 class Media {play(){this.paused=false;return Promise.resolve();}pause(){this.paused=true;}}

@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {DestructibleEffects} from '../src/destructible-effects.js';
-import {nativeBlastsForEffect,restoreNativeExplosions} from '../src/explosion-native.js';
-import {ELECTRIC_PATH_TEXTURES,ELECTRIC_SPARK_TEXTURE} from '../src/electric-explosion-native.js';
-import {explosionTextureFilter} from '../src/explosion-variants.js';
-import {GameplayAudio} from '../src/gameplay-audio.js';
+import {DestructibleEffects} from '../source/destructible-effects.js';
+import {nativeBlastsForEffect,restoreNativeExplosions} from '../source/explosion-native.js';
+import {ELECTRIC_PATH_TEXTURES,ELECTRIC_SPARK_TEXTURE} from '../source/electric-explosion-native.js';
+import {explosionTextureFilter} from '../source/explosion-variants.js';
+import {GameplayAudio} from '../source/gameplay-audio.js';
 
 const fixture=(extra={})=>({id:'electric-fixture',sourceId:'unused-actor',birth:0,position:[0,2,0],settings:{explosion:{NrExplosions:1,SizePercentage:25,Electric:true,...extra}}});
 function harness(effect=fixture(),quality=3,time=0) {

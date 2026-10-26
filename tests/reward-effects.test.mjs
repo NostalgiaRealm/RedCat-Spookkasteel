@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Gameplay} from '../src/gameplay.js';
-import {createRewardEffect,retainRewardEffects,restoreRewardEffects,rewardScoreQuad,pickupTrailQuads,pickupColor,PICKUP_TEXTURE,SCORE_VALUES,SCORE_TEXTURES} from '../src/reward-effects.js';
+import {Gameplay} from '../source/gameplay.js';
+import {createRewardEffect,retainRewardEffects,restoreRewardEffects,rewardScoreQuad,pickupTrailQuads,pickupColor,PICKUP_TEXTURE,SCORE_VALUES,SCORE_TEXTURES} from '../source/reward-effects.js';
 
 const entity=(classname,properties={})=>({classname,'%name%':'reward',Origin:'10 20 30',...properties});
 const make=(entities=[],options={})=>new Gameplay({id:'reward-fixture',spawn:{position:[0,0,0]},entities},{deferInit:true,...options});

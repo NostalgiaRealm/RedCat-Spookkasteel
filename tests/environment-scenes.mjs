@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 export async function verifyEnvironmentScenes(page) {
   await mkdir('artifacts',{recursive:true});
   await page.evaluate(async()=>{
-    const THREE=await import('three'),{BspCollider}=await import('./src/collision.js');
+    const THREE=await import('three'),{BspCollider}=await import('./source/collision.js');
     window.__environmentFixture={
       async start(index) {
         const app=window.__redcat;await app.startLevel(index);app.pause();document.getElementById('pause').hidden=true;

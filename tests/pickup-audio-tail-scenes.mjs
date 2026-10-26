@@ -17,7 +17,7 @@ const server=createServer(async(req,res)=>{try{
   const url=new URL(req.url,'http://localhost');
   if(url.pathname==='/'){res.setHeader('Content-Type','text/html');res.end('<button id="start">Test pickup audio</button>');return;}
   if(url.pathname==='/capture.js'){res.setHeader('Content-Type','text/javascript');res.end(worklet);return;}
-  if(!/^\/(src\/[^/]+\.js|assets\/audio\/icoin[sml]\.wav)$/.test(url.pathname))throw Error('Only audio test resources allowed');
+  if(!/^\/(source\/[^/]+\.js|assets\/audio\/icoin[sml]\.wav)$/.test(url.pathname))throw Error('Only audio test resources allowed');
   res.setHeader('Content-Type',url.pathname.endsWith('.js')?'text/javascript':'audio/wav');res.end(await readFile(path.join(root,url.pathname)));
 }catch{res.writeHead(404).end();}});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
@@ -34,7 +34,7 @@ try{
   }
   const errors=[];page.on('pageerror',e=>errors.push(e.stack));page.on('response',r=>{if(r.status()>=400)errors.push(r.url());});await page.click('#start');
   const results=await page.evaluate(async()=>{
-    const {GameAudio}=await import('/src/audio.js'),{GameplayAudio}=await import('/src/gameplay-audio.js');
+    const {GameAudio}=await import('/source/audio.js'),{GameplayAudio}=await import('/source/gameplay-audio.js');
     const context=new AudioContext({sampleRate:44100});await context.audioWorklet.addModule('/capture.js');await context.resume();
     const audio=new GameAudio({master:1,createContext:()=>context}),router=new GameplayAudio(audio),results=[];
     const wait=ms=>new Promise(r=>setTimeout(r,ms));

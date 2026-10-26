@@ -45,7 +45,7 @@ hosting the prepared game; the existing packaging rules already include it.
 
 ## Runtime and responsive behavior
 
-`src/loading-screen.js` prepares all five small illustrations in advance so a
+`source/loading-screen.js` prepares all five small illustrations in advance so a
 new load does not briefly display the previous level's artwork.
 `src/loading-screen.css` reproduces the 4:3 placement and expands the background
 to cover the window. The logo stays in the window's upper-left corner.

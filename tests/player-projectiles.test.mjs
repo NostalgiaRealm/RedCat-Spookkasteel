@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {PLAYER_SHOOT_MOTION,advancePlayerProjectile} from '../src/player-projectiles.js';
-import {PLAYER_REACTIONS} from '../src/player-lifecycle.js';
+import {Gameplay} from '../source/gameplay.js';
+import {PLAYER_SHOOT_MOTION,advancePlayerProjectile} from '../source/player-projectiles.js';
+import {PLAYER_REACTIONS} from '../source/player-lifecycle.js';
 
 const clear=(start,end)=>({fraction:1,end});
 const make=()=>{const events=[];const game=new Gameplay({id:'lvl00a',spawn:{position:[0,0,0]},entities:[]},{onEvent:e=>events.push({...e,time:game.time})});return {game,events};};

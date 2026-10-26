@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { Gameplay } from '../src/gameplay.js';
-import { EnemyNavigation } from '../src/enemy-navigation.js';
+import { Gameplay } from '../source/gameplay.js';
+import { EnemyNavigation } from '../source/enemy-navigation.js';
 
 const waypoint=(name,position,extra={})=>({classname:'GrobberPathPoint','%name%':name,Origin:position.join(' '),SubSystemId:'0',...extra});
 const enemy=(extra={})=>({classname:'MovingEnemy','%name%':'guard',DaviName:'guard',Origin:'0 0 0',Type:'10',StartPoint:'a',StartOrientation:'6',...extra});

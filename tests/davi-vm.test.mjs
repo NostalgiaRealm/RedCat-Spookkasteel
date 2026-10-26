@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { DaviVM, DaviRuntimeError, daviBinary, daviUnary } from '../src/davi-vm.js';
+import { DaviVM, DaviRuntimeError, daviBinary, daviUnary } from '../source/davi-vm.js';
 
 const programs = Array.from({ length: 5 }, (_, i) => JSON.parse(readFileSync(new URL(`../data/davi/lvl0${i}a.json`, import.meta.url))));
 function harness(level, overrides = {}) {

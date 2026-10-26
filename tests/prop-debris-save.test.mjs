@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {DestructibleEffects} from '../src/destructible-effects.js';
-import {restoreNativeExplosions} from '../src/explosion-native.js';
-import {restorePropDebrisState} from '../src/prop-debris-state.js';
+import {DestructibleEffects} from '../source/destructible-effects.js';
+import {restoreNativeExplosions} from '../source/explosion-native.js';
+import {restorePropDebrisState} from '../source/prop-debris-state.js';
 
 const copy=value=>JSON.parse(JSON.stringify(value));
 const physics={MinLifeTimeSeconds:3,MaxLifeTimeSeconds:3,Gravity:2,TestCollision:1,MustRotate:1,MustFade:1};

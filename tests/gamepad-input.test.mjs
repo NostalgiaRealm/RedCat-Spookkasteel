@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {GamepadInput} from '../src/gamepad-input.js';
+import {GamepadInput} from '../source/gamepad-input.js';
 
 const idle={forward:0,right:0,jump:false,descend:false,walk:false,attack:false,use:false};
 function pad(index=0,id=`Controller ${index}`) {

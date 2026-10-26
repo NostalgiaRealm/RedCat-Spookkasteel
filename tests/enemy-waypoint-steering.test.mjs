@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {EnemyNavigation} from '../src/enemy-navigation.js';
-import {Gameplay} from '../src/gameplay.js';
-import {GAMEPLAY_SETTINGS} from '../src/gameplay-settings.js';
-import {selectTouchWaypoint,touchWaypointTarget} from '../src/enemy-waypoint-steering.js';
+import {EnemyNavigation} from '../source/enemy-navigation.js';
+import {Gameplay} from '../source/gameplay.js';
+import {GAMEPLAY_SETTINGS} from '../source/gameplay-settings.js';
+import {selectTouchWaypoint,touchWaypointTarget} from '../source/enemy-waypoint-steering.js';
 
 const wp=(id,position,links=[])=>({classname:'GrobberPathPoint','%name%':id,Origin:position.join(' '),SubSystemId:'0',...Object.fromEntries(links.map((p,i)=>['WayPoint'+(i+1),p]))});
 const mode=(name='closer',direction=-1)=>({version:2,started:false,wait:0,remaining:name==='circle'?2:0,mode:name,direction});

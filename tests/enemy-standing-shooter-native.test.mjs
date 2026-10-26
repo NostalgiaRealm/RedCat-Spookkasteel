@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Gameplay} from '../src/gameplay.js';
-import {restoreNativeStandingShooter,updateNativeStandingShooter} from '../src/enemy-standing-shooter-native.js';
+import {Gameplay} from '../source/gameplay.js';
+import {restoreNativeStandingShooter,updateNativeStandingShooter} from '../source/enemy-standing-shooter-native.js';
 
 function controller(wait=.25){
   const object={enemyType:'plant',stats:{AttackRange:100,DrawMotionPart:.5,WaitTimeAfterSalvo:wait},salvoSize:2,alerted:true};

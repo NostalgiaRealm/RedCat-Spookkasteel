@@ -1,14 +1,16 @@
+import {createSceneOutput, startAdventure, showQuickplay, showMoreSettings} from './scene-menu.mjs';
 import {chromium} from 'playwright';
 import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+const output = createSceneOutput('campaign-settings-scenes');
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4232'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try {
-  await mkdir('artifacts',{recursive:true});
-  browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl']});
+  await mkdir(output,{recursive:true});
+  browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:[`--use-angle=${process.env.REDCAT_TEST_ANGLE || 'swiftshader'}`, '--enable-unsafe-swiftshader']});
   const page=await browser.newPage({viewport:{width:1280,height:900}}),errors=[];
   page.on('pageerror',e=>errors.push(e.stack));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
   await page.addInitScript(()=>{
@@ -29,14 +31,14 @@ try {
   assert.ok((await page.locator('[data-level="lvl01a"] img').getAttribute('src')).endsWith('04010003.png'));
   assert.equal(await page.evaluate(()=>window.__redcat.startLevel(3)),false);
   assert.equal(await page.evaluate(()=>window.__redcat.world),null);
-  await page.screenshot({path:'artifacts/campaign-menu-locked.png'});
+  await page.screenshot({path:`${output}/campaign-menu-locked.png`});
 
-  await page.locator('#open-settings').click();
+  await showMoreSettings(page);
   assert.deepEqual(await page.locator('#difficulty option').allTextContents(),['Makkelijk','Normaal','Moeilijk']);
   await page.locator('#difficulty').selectOption('Hard');await page.locator('#apply-settings').click();
-  await page.locator('#open-settings').click();assert.equal(await page.locator('#difficulty').inputValue(),'Hard');
-  await page.screenshot({path:'artifacts/difficulty-settings.png'});
-  await page.locator('#close-settings').click();await page.locator('#start').click();
+  await showMoreSettings(page);assert.equal(await page.locator('#difficulty').inputValue(),'Hard');
+  await page.screenshot({path:`${output}/difficulty-settings.png`});
+  await page.locator('#close-settings').click();await startAdventure(page);
   await page.waitForFunction(()=>window.__redcat.mode==='playing',null,{polling:100});
   assert.equal(await page.evaluate(()=>window.__redcat.gameplay.difficulty),'Hard');
 
@@ -53,7 +55,7 @@ try {
   assert.equal(autosave.saved.game.state.score,1234);assert.equal(autosave.saved.game.difficulty,'Hard');
   assert.equal(autosave.afterPause,autosave.paused,'paused time makes no periodic writes');
 
-  await page.locator('#pause-settings').click();await page.locator('#difficulty').selectOption('Easy');
+  await showMoreSettings(page,{paused:true});await page.locator('#difficulty').selectOption('Easy');
   await page.locator('#apply-settings').click();
   assert.equal(await page.evaluate(()=>window.__redcat.gameplay.difficulty),'Hard','settings do not retune a live encounter');
   await page.evaluate(async()=>{await window.__redcat.loadSave();window.__redcat.pause();});
@@ -66,9 +68,9 @@ try {
   assert.equal(progress.highestUnlocked,1);
   await page.locator('#return-menu').click();
   assert.deepEqual(await page.locator('.level-card').evaluateAll(cards=>cards.map(b=>b.disabled)),[false,false,true,true,true]);
-  await page.locator('[data-level="lvl01a"]').hover();
+  await showQuickplay(page);await page.locator('[data-level="lvl01a"]').hover();
   assert.ok((await page.locator('[data-level="lvl01a"] img').getAttribute('src')).endsWith('04010001.png'));
-  await page.screenshot({path:'artifacts/campaign-menu-unlocked.png'});
+  await page.screenshot({path:`${output}/campaign-menu-unlocked.png`});
   // An earlier replay cannot erase the campaign milestone or grant a later one.
   await page.evaluate(async()=>{const app=window.__redcat;await app.startLevel(0);app.pause();});
   await page.reload();await ready();
@@ -78,7 +80,7 @@ try {
   // explicit progress and difficulty metadata. The next launch migrates it.
   await page.evaluate(async()=>{
     const save=JSON.parse(localStorage.getItem('redcat.save.v1'));
-    const {Gameplay}=await import('/src/gameplay.js');
+    const {Gameplay}=await import('/source/gameplay.js');
     const level=await (await fetch('/data/levels/lvl03a/level.json')).json();
     save.level=level.id;save.position=[...level.spawn.position];save.lastSafe=[...save.position];
     save.game=new Gameplay(level,{deferInit:true}).snapshot();delete save.game.difficulty;
@@ -86,12 +88,12 @@ try {
   });
   await page.reload();await ready();
   assert.deepEqual(await page.locator('.level-card').evaluateAll(cards=>cards.map(b=>b.disabled)),[false,false,false,false,true]);
-  await page.locator('#continue').click();await page.waitForFunction(()=>window.__redcat.mode==='playing',null,{polling:100});
+  await startAdventure(page);await page.waitForFunction(()=>window.__redcat.mode==='playing',null,{polling:100});
   assert.equal(await page.evaluate(()=>window.__redcat.world.id),'lvl03a');
   assert.equal(await page.evaluate(()=>window.__redcat.gameplay.difficulty),'Normal','legacy encounter keeps historical Normal');
   await page.evaluate(()=>window.__redcat.pause());
   assert.equal((await read()).game.difficulty,'Normal');
   assert.deepEqual(errors,[]);
-  await writeFile('artifacts/campaign-settings-scenes.json',JSON.stringify({autosave,progress,errors},null,2)+'\n');
+  await writeFile(`${output}/campaign-settings-scenes.json`,JSON.stringify({autosave,progress,errors},null,2)+'\n');
   console.log('PASS: locked menu/native artwork, completion unlock and replay persistence, all difficulty choices/save compatibility, real frame-loop minute autosave and pause exclusion; no browser/HTTP errors.');
 } finally {await browser?.close();server.kill();}

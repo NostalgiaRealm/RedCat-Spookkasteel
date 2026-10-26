@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Gameplay} from '../src/gameplay.js';
+import {Gameplay} from '../source/gameplay.js';
 
 const player=[0,0,0];
 const families=[[1,'spider'],[2,'bat'],[3,'ghost'],[4,'zombie'],[10,'guardian']];

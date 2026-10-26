@@ -2,12 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Group} from 'three';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
-import {actorVisible,CastleWorld} from '../src/world.js';
-import {targetableEnemy} from '../src/targeting.js';
-import {BspCollider} from '../src/collision.js';
-import {resolveZombieSpawn} from '../src/enemies.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
+import {actorVisible,CastleWorld} from '../source/world.js';
+import {targetableEnemy} from '../source/targeting.js';
+import {BspCollider} from '../source/collision.js';
+import {resolveZombieSpawn} from '../source/enemies.js';
 
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 const level=json('data/levels/lvl02a/level.json');

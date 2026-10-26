@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Gameplay} from '../src/gameplay.js';
+import {Gameplay} from '../source/gameplay.js';
 
 function fixture(type=4,standing=false){
   const events=[],level={id:'hits',entities:[{classname:standing?'StandingEnemy':'MovingEnemy','%name%':'enemy',Type:String(type),Origin:'0 0 0',StartOrientation:'6'}]};

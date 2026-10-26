@@ -10,8 +10,8 @@ import {mkdir, readFile, stat, writeFile} from 'node:fs/promises';
 import http from 'node:http';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {Gameplay} from '../src/gameplay.js';
-import {validAdventureSave} from '../src/campaign-progress.js';
+import {Gameplay} from '../source/gameplay.js';
+import {validAdventureSave} from '../source/campaign-progress.js';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const out=path.join(root,'temp_work',`web-cache-${new Date().toISOString().slice(0,10)}`,`run-${Date.now()}`);
@@ -24,7 +24,7 @@ await mkdir(temporary,{recursive:true});
 process.chdir(root);
 process.env.TMPDIR=path.relative(root,temporary);
 const prefix='/redcatspookkasteel/';
-const actorPath='src/actor-render-residency.js';
+const actorPath='src/actor-render-residency.js',currentActorPath='source/actor-render-residency.js';
 const sha256=value=>createHash('sha256').update(value).digest('hex');
 const requests=[],browserRequests=[],errors=[];
 const report={out,scope:'Isolated loopback HTTP-cache fixture; no live browser, deployment, or campaign-completion test.',checks:[]};
@@ -33,14 +33,14 @@ let sourceSavePath,sourceSaveBytes;
 
 try {
   const oldActor=execFileSync('git',['show',`v0.9.9:${actorPath}`],{cwd:root});
-  const currentActor=await readFile(path.join(root,actorPath));
+  const currentActor=await readFile(path.join(root,currentActorPath));
   assert.notEqual(sha256(oldActor),sha256(currentActor),'fixture requires distinct v0.9.9 and current actor modules');
   const index=await readFile(path.join(root,'index.html'),'utf8');
   const importMapMatch=index.match(/<script\b[^>]*\bid=["']game-importmap["'][^>]*>([\s\S]*?)<\/script>/i);
   assert.ok(importMapMatch,'Regenerate index.html with npm run web:refresh before running this regression.');
   const imports=JSON.parse(importMapMatch[1]).imports;
-  const actorMapping=imports[`./${actorPath}`];
-  assert.ok(actorMapping,`generated import map covers ${actorPath}`);
+  const actorMapping=imports[`./${currentActorPath}`];
+  assert.ok(actorMapping,`generated import map covers ${currentActorPath}`);
   const revision=new URL(actorMapping,'http://fixture.invalid/').searchParams.get('v');
   assert.ok(revision,'generated actor import uses a content revision');
   report.revision=revision;
@@ -78,7 +78,7 @@ try {
     window.__cacheWarm={settleType:typeof ActorRenderResidency.prototype.settle};
   `);
   const mixedPage=probePage(`
-    import {CastleWorld} from './src/world.js';
+    import {CastleWorld} from './source/world.js';
     import {ActorRenderResidency} from './${actorPath}';
     const actorResidency=new ActorRenderResidency();
     const receiver={actorResidency,actorTextures:{settle:async()=>{}},
@@ -109,7 +109,7 @@ try {
         send(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'},
           relative==='__cache-warm.html'?warmPage:mixedPage);return;
       }
-      if(!/^(index\.html|src\/|assets\/|data\/|node_modules\/three\/)/.test(relative)||
+      if(!/^(index\.html|src\/|source\/|assets\/|data\/|node_modules\/three\/)/.test(relative)||
           relative.split('/').some(part=>part.startsWith('.'))){send(404);return;}
       const filename=path.resolve(root,relative);
       if(!filename.startsWith(root+path.sep)){send(404);return;}
@@ -149,7 +149,7 @@ try {
   context=await chromium.launchPersistentContext(path.join(out,'profile'),{
     executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,
     env:{...process.env},viewport:{width:1280,height:720},
-    args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']
+    args:[`--use-angle=${process.env.REDCAT_TEST_ANGLE||'swiftshader'}`,'--enable-unsafe-swiftshader','--autoplay-policy=no-user-gesture-required']
   });
   context.on('request',request=>browserRequests.push({phase,url:request.url(),type:request.resourceType()}));
   const page=await context.newPage();
@@ -190,7 +190,7 @@ try {
   assert.equal(report.mixed.settleType,'undefined');
   assert.equal(report.mixed.error?.name,'TypeError');
   assert.match(report.mixed.error.message,/actorResidency.*settle is not a function/);
-  assert.ok(requests.some(request=>request.phase==='mixed'&&request.url===prefix+'src/world.js'),
+  assert.ok(requests.some(request=>request.phase==='mixed'&&request.url===prefix+'source/world.js'),
     'mixed page fetches the current world module from the real HTTP server');
   assert.equal(unversionedActorRequests().length,1,'second document reuses the stale HTTP-cache actor without contacting the server');
   report.mixed.unversionedActorRequests=unversionedActorRequests().length;
@@ -200,7 +200,7 @@ try {
   await page.goto(base+'?skipIntro&cache-regression=fixed');
   await page.waitForFunction(()=>window.__redcat,null,{polling:100,timeout:30000});
   report.fixedMenu=await page.evaluate(()=>({
-    mode:__redcat.mode,continueVisible:!document.getElementById('continue').hidden,
+    mode:__redcat.mode,continueVisible:__redcat.originalMenu.getState().hasSave,
     fatalVisible:!document.getElementById('fatal').hidden,
     save:localStorage.getItem('redcat.save.v1'),
     entry:document.querySelector('script[type="module"][src]').src,
@@ -215,21 +215,13 @@ try {
     assert.equal(new URL(url).searchParams.get('v'),revision,`entry and style use the current revision: ${url}`);
   await page.screenshot({path:path.join(out,'fixed-menu.png')});
   await page.evaluate(async()=>{
-    const {ActorRenderResidency}=await import('./src/actor-render-residency.js');
-    window.__cacheSettleCalls=0;
-    const settle=ActorRenderResidency.prototype.settle;
-    window.__cacheSettleType=typeof settle;
-    ActorRenderResidency.prototype.settle=async function(...args){
-      __cacheSettleCalls++;return settle.apply(this,args);
-    };
     // Call the installed DOM handler, with the original Continue implementation.
     // Capture the stored string before pause(), which intentionally autosaves.
-    const button=document.getElementById('continue'),continueHandler=button.onclick;
-    button.onclick=async function(event){
+    const menu=__redcat.originalMenu,continueHandler=menu.launch;
+    menu.launch=async function(options){
       try{
-        const loaded=await continueHandler.call(this,event),app=__redcat;
-        const result={loaded,modeBeforePause:app.mode,settleType:__cacheSettleType,
-          settleCalls:__cacheSettleCalls,sameActorClass:app.world?.actorResidency instanceof ActorRenderResidency,
+        const loaded=await continueHandler.call(this,options),app=__redcat;
+        const result={loaded,modeBeforePause:app.mode,settleType:typeof app.world?.actorResidency?.settle,
           saveBeforePause:localStorage.getItem('redcat.save.v1'),level:app.world?.id,
           position:app.world?[...app.world.player.position]:null,
           health:app.gameplay?.state.health,scriptError:app.gameplay?.scripts.vm.lastError,
@@ -241,7 +233,7 @@ try {
         window.__cacheContinue=result;
       }catch(error){window.__cacheContinue={error:String(error)};}
     };
-    button.click();
+    menu.home();menu.next();document.getElementById('native-start').click();
   });
   await page.waitForFunction(()=>window.__cacheContinue,null,{polling:100,timeout:120000});
   const continued=await page.evaluate(()=>window.__cacheContinue);
@@ -250,8 +242,6 @@ try {
   assert.equal(continued.modeBeforePause,'playing');
   assert.equal(continued.modeAfterPause,'paused');
   assert.equal(continued.settleType,'function');
-  assert.ok(continued.settleCalls>=1,'Continue invokes the actual current ActorRenderResidency.settle implementation');
-  assert.equal(continued.sameActorClass,true,'world uses the versioned actor class imported by the generated map');
   assert.equal(continued.level,saved.level);
   assert.deepEqual(continued.position,saved.position,'save position restores without a gameplay tick');
   assert.equal(continued.health,saved.game.state.health);
@@ -262,8 +252,9 @@ try {
     savedBytesUnchangedBeforePause:true,savedSha256BeforePause:sha256(continued.saveBeforePause),
     normalPauseAutosaveChangedBytes:continued.saveAfterPause!==continued.saveBeforePause};
   const servedCurrentActor=requests.filter(request=>request.phase==='fixed'&&request.url===prefix+actorMapping.replace(/^\.\//,''));
-  assert.equal(servedCurrentActor.length,1,'fixed page makes one new versioned actor request');
-  assert.equal(servedCurrentActor[0].sourceSha256,report.actorSources.currentSha256);
+  assert.equal(servedCurrentActor.length,0,'fixed page contains the current actor in its bundle, without a separate actor request');
+  assert.equal(requests.filter(request=>request.phase==='fixed'&&request.url===`${prefix}src/game.bundle.js?v=${revision}`).length,1,
+    'fixed page fetches the complete current bundle despite the cached old individual modules');
   assert.equal(unversionedActorRequests().length,1,'fixed page never requests the stale unversioned actor URL');
   await page.screenshot({path:path.join(out,'continued-save-paused.png')});
   await page.evaluate(()=>{document.getElementById('pause').hidden=true;__redcat.world.render();});
@@ -277,7 +268,7 @@ try {
   await page.waitForFunction(()=>window.__redcat,null,{polling:100,timeout:30000});
   report.mobile=await page.evaluate(()=>({
     viewport:{width:innerWidth,height:innerHeight},mode:__redcat.mode,
-    continueVisible:!document.getElementById('continue').hidden,
+    continueVisible:__redcat.originalMenu.getState().hasSave,
     fatalVisible:!document.getElementById('fatal').hidden
   }));
   assert.equal(report.mobile.mode,'menu');assert.equal(report.mobile.continueVisible,true);
@@ -285,7 +276,8 @@ try {
   await page.screenshot({path:path.join(out,'mobile-menu.png')});
   const fixedRequests=browserRequests.filter(request=>['fixed','mobile'].includes(request.phase));
   const jsRequests=fixedRequests.filter(request=>/\.m?js$/.test(new URL(request.url).pathname));
-  assert.ok(jsRequests.length>30,'exercise the real transitive game module graph');
+  assert.equal(jsRequests.length,2,'desktop and narrow-viewport documents each request one runtime bundle');
+  assert.equal(new Set(jsRequests.map(request=>request.url)).size,1,'both documents use the same complete bundle');
   for(const request of jsRequests){
     assert.ok(request.url.startsWith(base),'all JavaScript remains under the deployment prefix');
     assert.equal(new URL(request.url).searchParams.get('v'),revision,`every transitive JavaScript request uses the revision: ${request.url}`);
@@ -313,4 +305,4 @@ try {
     await writeFile(path.join(out,'requests.json'),JSON.stringify({server:requests,browser:browserRequests},null,2)+'\n');
   }
 }
-console.log(`PASS real stale-module HTTP cache reproduction, revisioned transitive graph, Continue save restoration and narrow-viewport reload. Evidence: ${out}`);
+console.log(`PASS real stale-module HTTP cache reproduction, revisioned bundle, Continue save restoration and narrow-viewport reload. Evidence: ${out}`);

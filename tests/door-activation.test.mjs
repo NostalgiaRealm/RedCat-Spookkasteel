@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
-import {BspCollider,PlayerController} from '../src/collision.js';
-import {moveSolidPlayer} from '../src/moving-solids.js';
-import {withinTriggerRadius} from '../src/environment-interactions.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
+import {BspCollider,PlayerController} from '../source/collision.js';
+import {moveSolidPlayer} from '../source/moving-solids.js';
+import {withinTriggerRadius} from '../source/environment-interactions.js';
 
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 function boot(id,names) {

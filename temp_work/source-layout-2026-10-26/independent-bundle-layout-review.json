@@ -1,0 +1,21 @@
+{
+  "scope": "Read-only review of bundler/cache migration, both focused unit fixtures, legacy HTTP-cache browser harness and tracked executable/release metadata outside evidence and snapshots.",
+  "reviewed": [
+    "tools/runtime-bundle.mjs",
+    "tools/refresh-web-cache.mjs",
+    "tests/runtime-bundle.test.mjs",
+    "tests/web-cache.test.mjs",
+    "tests/web-cache-scenes.mjs"
+  ],
+  "conclusions": [
+    "Editable module discovery, entry validation, dependency allowance and refreshed import-map URLs consistently use source/.",
+    "Generated bundle/source-map and CSS remain in src/. Bundler consumes the same validated immutable buffers used for revision hashes.",
+    "Legacy web-cache harness deliberately keeps src/actor-render-residency.js for git v0.9.9 and stale HTTP cache reproduction; currentActorPath is source/actor-render-residency.js.",
+    "Unit fixtures, direct source/save imports and source-copy graph roots use source/; output and data-source assertions distinguish src/ output from source/ input.",
+    "No .github workflow directory exists in this checkout. No missed active src module imports found in inspected automation/config.",
+    "PUBLISH_CURRENT_BUILD explicit git-add list omitted source/ at review time; reported to root for documentation owner to correct."
+  ],
+  "trackedAutomationFilesScanned": 37,
+  "remainingSrcModuleMatches": [],
+  "validation": "No tests or source mutation performed in this review."
+}

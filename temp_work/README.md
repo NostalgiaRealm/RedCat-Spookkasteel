@@ -6,6 +6,20 @@ Browser test profiles, copied saves, screenshots, generated caches and redundant
 
 See the [cleanup and research index](cleanup-2026-10-22/README.md) for the retained directories, verification and a lookup from removed duplicate files to their canonical copies. Historical references to discarded screenshots and test profiles are expected.
 
+## Historical paths and findings
+
+These records describe the checkout and test run at the date they were written.
+They are evidence, not current setup instructions or an outstanding-task list.
+The main game's editable modules moved from `src/` to `source/` on 26 October
+2026; old module paths, source manifests and source hashes in retained records
+refer to that earlier layout and are deliberately preserved. The new `src/`
+contains the generated runtime bundle, source map and CSS. Standalone labs
+retain their independent `src/` trees. Use [the main README](../README.md),
+[build guide](../docs/building.md), [bundling guide](../docs/javascript-bundling.md)
+and [current implementation audit](../docs/native-parity-audit.md) for current
+workflow and status. Retained upstream/license documents keep their original
+wording and provenance.
+
 ## Repository copies
 
 The GitHub/GitLab archive contains the retained research and diagnostic logs. The installed Android JDK and its downloaded distribution archive remain local; reproduce that installation using [ANDROID.md](../ANDROID.md#optional-reproduce-the-local-jdk-installation). Original release/checksum metadata remains in the research directory.

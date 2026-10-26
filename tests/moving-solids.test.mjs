@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {BspCollider,PlayerController} from '../src/collision.js';
-import {MotionPlayer} from '../src/motions.js';
-import {moveSolidPlayer} from '../src/moving-solids.js';
-import {triangleCollider} from '../src/actor-collision.js';
-import {CastleWorld} from '../src/world.js';
+import {BspCollider,PlayerController} from '../source/collision.js';
+import {MotionPlayer} from '../source/motions.js';
+import {moveSolidPlayer} from '../source/moving-solids.js';
+import {triangleCollider} from '../source/actor-collision.js';
+import {CastleWorld} from '../source/world.js';
 
 const pose=(translation=[0,0,0],angle=0)=>({origin:[0,0,0],translation,rotation:[0,Math.sin(angle/2),0,Math.cos(angle/2)]});
 function boxes(...bounds) {

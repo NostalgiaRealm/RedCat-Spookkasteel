@@ -17,11 +17,11 @@ async function fixture() {
     'index.html': `<!doctype html><html><head>
 <link rel="stylesheet" href="src/style.css">
 <script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
-</head><body><script type="module" src="src/main.js"></script></body></html>`,
-    'src/main.js': `import './world.js'; import * as THREE from 'three';`,
-    'src/world.js': `import {ActorRenderResidency} from './actor-render-residency.js'; export {ActorRenderResidency};`,
-    'src/actor-render-residency.js': `export class ActorRenderResidency { settle() {} }`,
-    'src/lazy.mjs': `export const lazy = true;`,
+</head><body><script type="module" src="source/main.js"></script></body></html>`,
+    'source/main.js': `import './world.js'; import * as THREE from 'three';`,
+    'source/world.js': `import {ActorRenderResidency} from './actor-render-residency.js'; export {ActorRenderResidency};`,
+    'source/actor-render-residency.js': `export class ActorRenderResidency { settle() {} }`,
+    'source/lazy.mjs': `export const lazy = true;`,
     'src/style.css': `body { color: white; }`,
     'node_modules/three/build/three.module.js': `export {Vector3} from './three.core.js';`,
     'node_modules/three/build/three.core.js': `export class Vector3 {}`,
@@ -63,9 +63,10 @@ test('one deterministic version covers entry, CSS, every source module and trans
   const root = await fixture(), first = await refreshWebCache({projectDir:root});
   assert.equal(first.changed, true);
   const {html, imports} = await readMap(root);
-  assert.match(html, new RegExp(`src="\\./src/main\\.js\\?v=${first.version}"`));
+  assert.match(html, new RegExp(`src="\\./src/game\\.bundle\\.js\\?v=${first.version}"`));
+  assert.match(html, /data-source="\.\/source\/main\.js"/);
   assert.match(html, new RegExp(`href="\\./src/style\\.css\\?v=${first.version}"`));
-  for (const relative of ['src/main.js', 'src/world.js', 'src/actor-render-residency.js', 'src/lazy.mjs', 'node_modules/three/build/three.module.js', 'node_modules/three/build/three.core.js']) {
+  for (const relative of ['source/main.js', 'source/world.js', 'source/actor-render-residency.js', 'source/lazy.mjs', 'node_modules/three/build/three.module.js', 'node_modules/three/build/three.core.js']) {
     assert.equal(imports[`./${relative}`], `./${relative}?v=${first.version}`);
   }
   assert.equal(imports.three, `./node_modules/three/build/three.module.js?v=${first.version}`);
@@ -77,18 +78,18 @@ test('one deterministic version covers entry, CSS, every source module and trans
 
 test('editing a leaf dependency changes every module URL even when the release version is unchanged', async () => {
   const root = await fixture(), before = await refreshWebCache({projectDir:root});
-  await put(root, 'src/actor-render-residency.js', 'export class ActorRenderResidency { async settle() { return true; } }');
+  await put(root, 'source/actor-render-residency.js', 'export class ActorRenderResidency { async settle() { return true; } }');
   const after = await refreshWebCache({projectDir:root}), {imports} = await readMap(root);
   assert.notEqual(after.version, before.version);
-  assert.equal(imports['./src/world.js'], `./src/world.js?v=${after.version}`);
-  assert.equal(imports['./src/actor-render-residency.js'], `./src/actor-render-residency.js?v=${after.version}`);
+  assert.equal(imports['./source/world.js'], `./source/world.js?v=${after.version}`);
+  assert.equal(imports['./source/actor-render-residency.js'], `./source/actor-render-residency.js?v=${after.version}`);
   await put(root, 'src/style.css', 'body { color: red; }');
   assert.notEqual((await refreshWebCache({projectDir:root})).version, after.version);
 });
 
 test('addon aliases and their relative imports point directly to the same version', async () => {
   const root = await fixture();
-  await put(root, 'src/addon.js', `export async function loader() { return import('three/addons/loaders/TestLoader.js'); }`);
+  await put(root, 'source/addon.js', `export async function loader() { return import('three/addons/loaders/TestLoader.js'); }`);
   const first = await refreshWebCache({projectDir:root}), {imports} = await readMap(root);
   assert.equal(imports['three/addons/loaders/TestLoader.js'], `./node_modules/three/examples/jsm/loaders/TestLoader.js?v=${first.version}`);
   assert.equal(imports['./node_modules/three/examples/jsm/utils/TestUtils.js'], `./node_modules/three/examples/jsm/utils/TestUtils.js?v=${first.version}`);
@@ -100,7 +101,7 @@ test('addon aliases and their relative imports point directly to the same versio
 test('unsafe or incomplete module graphs fail before modifying index.html', async () => {
   for (const dependency of ["import './missing.js';", "import '../../outside.js';", "import 'https://example.com/module.js';", 'import(variable);']) {
     const root = await fixture(), before = await readFile(path.join(root, 'index.html'), 'utf8');
-    await put(root, 'src/main.js', dependency);
+    await put(root, 'source/main.js', dependency);
     await assert.rejects(refreshWebCache({projectDir:root}));
     assert.equal(await readFile(path.join(root, 'index.html'), 'utf8'), before);
   }

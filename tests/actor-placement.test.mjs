@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {BufferGeometry,Float32BufferAttribute,Group,Mesh,MeshBasicMaterial,Vector3} from 'three';
-import {actorOrientation,attachedActorVisible} from '../src/actor-placement.js';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
-import {CastleWorld} from '../src/world.js';
-import {BspCollider} from '../src/collision.js';
+import {actorOrientation,attachedActorVisible} from '../source/actor-placement.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
+import {CastleWorld} from '../source/world.js';
+import {BspCollider} from '../source/collision.js';
 
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 const near=(actual,expected)=>actual.forEach((value,index)=>assert.ok(Math.abs(value-expected[index])<1e-7,`${actual} != ${expected}`));

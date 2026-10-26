@@ -165,8 +165,11 @@ Evidence:
 - [Earned Fire roundtrip evidence](../temp_work/caves-fire-input-2026-10-18/earned-fire-completion-2026-10-18.md)
 - [Earned Caves finale, Tower and every ending/recovery boundary](../temp_work/campaign-finale-2026-10-18/earned-finale-report.md)
 - [Earned final outro events and completed state](../temp_work/campaign-validation-2026-10-15/playthrough-1792088801065/earned-outro-complete-2026-10-18.json)
-- [Completed campaign save](../temp_work/campaign-validation-2026-10-15/playthrough-1792088801065/earned-campaign-completed-save-2026-10-18.json)
-- [Menu after the complete outro](../temp_work/campaign-validation-2026-10-15/playthrough-1792088801065/earned-campaign-menu-2026-10-18.png)
+
+The completed save and post-outro screenshot were generated during that run,
+then intentionally removed in the [22 October cleanup](../temp_work/cleanup-2026-10-22/README.md).
+The retained finale and outro-event reports above preserve the observations;
+they are not loadable substitutes for the deleted save.
 
 ## Graveyard chapter traversal
 
@@ -370,7 +373,7 @@ was conclusively caused by a player limit. See [audio lifetime evidence](audio-m
 This small audio change followed the completed campaign and received those
 focused checks; the campaign was not rerun afterward. The retained
 [final file/evidence summary](../temp_work/campaign-validation-2026-10-15/final-validation-summary-2026-10-18.json)
-compares 115 source files with the campaign manifest and identifies `src/audio.js`
+compares 115 source files with the campaign manifest and identifies historical `src/audio.js` (now `source/audio.js`)
 as the sole subsequent source change at that point on 18 October. Later streaming,
 menu and graphics changes are outside that manifest comparison. No build was
 created during this campaign pass.

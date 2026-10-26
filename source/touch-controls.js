@@ -137,13 +137,15 @@ export class TouchControls {
 
   setContext(context = {}) {
     if (this.disposed) return;
-    const next = {...this.context};
-    for (const name of ['playing','cutscene','noClip']) {
-      if (name in context) next[name] = !!context[name];
-    }
-    if (Object.keys(next).every(name => next[name] === this.context[name])) return;
+    const current = this.context;
+    const playing = 'playing' in context ? !!context.playing : current.playing;
+    const cutscene = 'cutscene' in context ? !!context.cutscene : current.cutscene;
+    const noClip = 'noClip' in context ? !!context.noClip : current.noClip;
+    // Called before and after simulation. An unchanged frame must preserve
+    // pointer ownership without allocating a new context and key arrays.
+    if (playing === current.playing && cutscene === current.cutscene && noClip === current.noClip) return;
     this.reset();
-    this.context = next;
+    this.context = {playing,cutscene,noClip};
     this.renderContext();
   }
 

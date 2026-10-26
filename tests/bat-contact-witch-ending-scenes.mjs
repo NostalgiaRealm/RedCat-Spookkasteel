@@ -10,7 +10,7 @@ try{
   page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
   await page.goto('http://127.0.0.1:4197/?skipIntro');await page.waitForFunction(()=>window.__redcat);await mkdir('artifacts',{recursive:true});
   const bats=await page.evaluate(async()=>{
-    const {batOverlapsPlayer}=await import('/src/enemy-flight.js'),app=window.__redcat;await app.startLevel(1);if(!app.gameplay)throw Error(document.body.innerText);app.pause();document.getElementById('pause').hidden=true;
+    const {batOverlapsPlayer}=await import('/source/enemy-flight.js'),app=window.__redcat;await app.startLevel(1);if(!app.gameplay)throw Error(document.body.innerText);app.pause();document.getElementById('pause').hidden=true;
     const world=app.world,game=app.gameplay,host=game.scripts;
     for(const p of host.players.values())p.stop();host.cutscene=false;host.camera=null;host.enemiesFrozen=false;host.update=()=>{};
     for(const o of game.objects)if(o.kind==='enemy'||o.kind==='trigger')o.enabled=false;

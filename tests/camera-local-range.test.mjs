@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {WorldGeometryStream,WORLD_STREAMING} from '../src/world-streaming.js';
-import {ActorRenderResidency} from '../src/actor-render-residency.js';
+import {WorldGeometryStream,WORLD_STREAMING} from '../source/world-streaming.js';
+import {ActorRenderResidency} from '../source/actor-render-residency.js';
 
 function fixture(triangles) {
   const vertices=new Float32Array(triangles.length*33),groups=[],faceSpans=[];

@@ -4,7 +4,7 @@ A modern reconstruction of **RedCat Spookkasteel**, Davilex's 2000 Windows game.
 
 The project brings the original levels, artwork, animation, Dutch dialogue and game scripts to **Linux, Windows and web browsers**, with widescreen resolutions, modern controls and improved saving. It uses a new JavaScript game engine built with **Three.js/WebGL 2**, packaged for desktop with **Electron**.
 
-**Status:** all five levels and their original scripts are playable. Development focuses on matching the original behavior, fixing regressions and keeping performance practical. Some details still differ; see [current status and remaining work](docs/native-parity-audit.md). Apple Silicon macOS still needs hardware validation. An initial Android wrapper is implemented and compiles, but device validation remains; mobile browser touch controls already work.
+**Status:** all five levels and their original scripts are playable. Development focuses on matching the original behavior, fixing regressions and keeping performance practical. Some details still differ; see [current status and remaining work](docs/native-parity-audit.md). Apple Silicon macOS still needs hardware validation. The Android app has signed APK/AAB builds and an offline Android 16 emulator check; physical-device testing and Play Console review remain. Mobile browser touch controls already work.
 
 [Run the game](#run-the-game) · [Work completed](#work-completed) · [Controls](#controls) · [Build guide](docs/building.md) · [Technical documentation](#technical-documentation)
 
@@ -22,7 +22,8 @@ This preserves the original content while allowing a different renderer, operati
 | --- | --- |
 | Game logic | JavaScript ES modules and typed arrays for gameplay, the Davi-Script interpreter, collision, animation and save state. |
 | Graphics | Three.js and WebGL 2 for 3D rendering, custom lighting shaders, animated models, particles and graphics-resource streaming. |
-| Desktop application | Electron supplies the desktop window, Chromium renderer and operating-system display controls. Electron-builder creates Linux and Windows portable directories. |
+| Desktop application | Electron supplies the desktop window, Chromium renderer and operating-system display controls. Electron-builder creates Linux/Windows portable directories and macOS app bundles. |
+| Android application | Kotlin and AndroidX WebView package the same game for offline play; Electron is not used on Android. |
 | Menus and input | HTML/CSS, keyboard and pointer events, touch overlays and the browser Gamepad API. |
 | Sound and movies | Web Audio and HTML media for positional sound, dialogue, looping music and converted intro/outro videos. |
 | Saving | Browser localStorage for the latest save, settings and campaign progress; IndexedDB for recovery history. |
@@ -143,6 +144,7 @@ See [actor lighting](docs/actor-lighting-native.md), [world-light shadows](docs/
 - A two-second hold skips dialogue while retaining its script outcomes. Settings also include difficulty, audio, camera, display, touch preferences and cheats.
 - World and actor graphics stream in sections according to camera visibility, with nearby resources prepared ahead of time. Large visible areas remain complete. Collision, scripts and cached CPU data stay available; this does not unload every part of the level from system memory.
 - Navigation searches have bounded work budgets, and rendering caches reduce repeated uploads and updates. These changes address graveyard pursuit hitches and pauses when turning or revisiting an area; they do not guarantee a particular frame rate on every device.
+- Startup uses one generated JavaScript bundle: 141 modules combine into a runtime about 63% smaller before HTTP compression. The editable modules are kept separately in `source/`; only the generated bundle runs during ordinary gameplay. Existing saves/profiles keep their original format and storage. See [JavaScript bundling](docs/javascript-bundling.md).
 
 See [autosaves](docs/autosave.md), [world streaming](docs/world-streaming.md), [navigation performance](docs/graveyard-performance-regression.md), [movement recovery](docs/movement-recovery.md) and [torch enhancements](docs/torch-flames.md).
 
@@ -193,7 +195,8 @@ The [build guide](docs/building.md) covers prerequisites, Linux/Windows instruct
 
 | Path | Contents |
 | --- | --- |
-| `src/` | Game systems, renderer, UI, audio, input and portable script interpreter. |
+| `source/` | Editable game modules; input to bundling and focused tests, **not loaded directly by ordinary gameplay**. See [source instructions](source/README.md). |
+| `src/` | Generated `game.bundle.js`, debugging source map and runtime CSS. See [runtime files](src/README.md). |
 | `electron/` | Desktop application and display/quit bridge. |
 | `assets/` | Imported artwork, actors, sounds, voices and movies. |
 | `data/` | Imported levels, scripts and associated structured game data. |
@@ -217,7 +220,7 @@ Keep temporary profiles, research and diagnostic output in a named `temp_work/` 
 
 ### Creating desktop packages
 
-Packaging bundles this implementation and its resources with Electron; it does not compile the original Genesis3D game. The npm helpers create Linux x64 and Windows x64 portable directories. The build guide also covers direct-CLI packaging for Linux/Windows ARM64 and macOS x64/ARM64; version 1.0.3 provides all six desktop variants.
+Packaging bundles this implementation and its resources with Electron; it does not compile the original Genesis3D game. The npm helpers create Linux x64 and Windows x64 portable directories. The build guide also covers direct-CLI packaging for Linux/Windows ARM64 and macOS x64/ARM64; version 1.0.4 provides all six desktop variants, plus signed Android APK/AAB downloads.
 
 The packaging helper requires **`REDCAT_PACKAGE_VERSION`** containing three dot-separated integers. This is generated-package metadata, separate from the game's About display. Follow the [packaging instructions](docs/building.md#5-generate-portable-packages-when-ready) when running `npm run build:linux` or `npm run build:windows`. A Windows package can be generated on Linux, but that does not replace testing it on Windows.
 
@@ -244,11 +247,11 @@ The browser game is served as static files and does not require an Electron pack
 
 The desktop/browser campaign is feature-complete in practical terms: the current source review found no clearly missing level, puzzle, boss or major original-game system. This does not mean every behavior is identical or every device is validated.
 
-The [15–18 October source validation](docs/campaign-validation-2026-10-18.md) completed a fresh Normal campaign through all five levels, earned upgrades, bosses and the complete ending without cheats. All 13 authored secret routes were also checked across that campaign and separate continuations; this was not a single 100% save. The instrumented run used ordinary saves/recovery, found and fixed a Castle fall-pocket and a dead-save overwrite, and needed a browser reload after one outro startup failure. A subsequent browser-audio cleanup fix passed focused tests. That full campaign predates the later room-streaming, original-menu and MSAA changes. [Version 1.0.1](RELEASE_NOTES_1.0.1) has focused browser/graphics checks and a packaged Linux x64 startup/save check, plus archive and publication verification for all six desktop variants. [Version 1.0.2](RELEASE_NOTES_1.0.2) adds save-backup import with focused source/browser checks. Its release packages were built and archived without package tests, as requested. [Version 1.0.3](RELEASE_NOTES_1.0.3) adds native combat, script/controller and effect corrections with focused original-code comparisons; packages follow the same build-only policy. A fresh complete campaign/long-session media run on the release and actual Windows, macOS, ARM and low-end hardware validation remain separate work.
+The [15–18 October source campaign](docs/campaign-validation-2026-10-18.md) completed all five levels, earned upgrades, required puzzles, bosses and the full ending without cheats. All 13 secret routes were checked across that campaign and separate continuations; this was not a single 100% save. That instrumented run predates later source changes. A new complete campaign and long-session media run on the current release remain useful; focused checks do not replace them. See [current platform validation](docs/portability.md) for the published packages, Android emulator coverage, signing limits and outstanding hardware checks.
 
 Known differences include camera/collision behavior, bounded arbitrary-position enemy pursuit, whole-engine attack-dispatch timing, particle integration and random sequences, and bounded lighting/query budgets. Native animation blending, skeleton/stone-enemy lifecycles and knight-armour particle rules are implemented, with documented portable limits. Spelerlijst exports and imports JSON backups; see [save backups](docs/save-export.md). Original RCR save import is absent and is a separate optional migration feature. The [implementation audit](docs/native-parity-audit.md) distinguishes these from features already completed; historical research notes should not be read as current task lists.
 
-**macOS Intel/Apple Silicon and Linux/Windows ARM64** packages are provided for 1.0.3; native target-hardware testing is still needed. Windows packages are unsigned, and macOS packages are unsigned and not notarized. **Packaged Android** has an initial Kotlin/WebView shell, offline asset preparation and lifecycle/audio integration targeting API 36 with minimum API 29. Compilation and focused desktop/browser compatibility checks pass; generating an APK/AAB, Android device testing, signing and release validation remain. Electron does not run on Android. See [Android setup and remaining work](ANDROID.md) and [platform architecture](docs/portability.md).
+Build instructions are separate from validation claims: [desktop packaging](docs/building.md), [Android APK/AAB building](ANDROID.md) and [Google Play publication](docs/android-google-play-release.md). Keep a consistent app identity, origin and signing key when updating so existing saves remain accessible.
 
 ## Technical documentation
 
@@ -259,7 +262,7 @@ Known differences include camera/collision behavior, bounded arbitrary-position 
 | Original file formats | [BSP world data](docs/asset-formats.md), [actor models](docs/actors.md), [menu/media archives](docs/menu-media.md) |
 | Script execution | [Davi-Script format](docs/davi-format.md), [VM opcodes](docs/davi-vm-opcodes.md), [motion timelines](docs/motions.md) |
 | Rendering and effects | [Actor lighting](docs/actor-lighting-native.md), [world-light falloff](docs/world-light-falloff-research.md), [portal effects](docs/portal-native-recovery.md), [destruction debris](docs/debris-native-recovery.md) |
-| Performance work | [World streaming](docs/world-streaming.md), [enemy navigation](docs/enemy-waypoint-movement.md), [refresh-rate investigation](docs/native-refresh-performance.md) |
-| Setup and deployment | [Building](docs/building.md), [Nginx hosting](docs/nginx-hosting.md), [Android setup and validation](ANDROID.md), [future platforms](docs/portability.md) |
+| Performance work | [World streaming](docs/world-streaming.md), [enemy navigation](docs/enemy-waypoint-movement.md), [refresh-rate investigation](docs/native-refresh-performance.md), [code and documentation efficiency review](docs/efficiency-review-2026-10-26.md), [source layout and documentation audit](docs/source-layout-and-documentation-review.md) |
+| Setup and deployment | [Building](docs/building.md), [Nginx hosting](docs/nginx-hosting.md), [Android setup and validation](ANDROID.md), [platform support and validation](docs/portability.md) |
 
 The format research used the [Genesis3D reference source](https://github.com/RealityFactory/Genesis3D), and menu archive layout was checked against [Davitools](https://github.com/Gymnasiast/Davitools/blob/master/src/RCS/EntryTable.php). The repository's importers and runtime are independent implementations. Research notes record original-file evidence, implementation decisions and focused verification so later work can be checked against the same findings.

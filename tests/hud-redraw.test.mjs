@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {runInNewContext} from 'node:vm';
-import {OriginalHud} from '../src/hud.js';
+import {OriginalHud} from '../source/hud.js';
 
 const manifest=JSON.parse(readFileSync(new URL('../assets/hud/manifest.json',import.meta.url)));
 class LoadedHud extends OriginalHud {
@@ -121,7 +121,7 @@ test('a failed draw cannot retain the signature of an earlier cleared image',t=>
 });
 
 test('main HUD counter updates write only changed text and keep checking canvas layout',()=>{
-  const source=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../source/main.js',import.meta.url),'utf8');
   const start=source.indexOf('function renderHud(){'),end=source.indexOf('\nfunction updateSkipIndicator',start);
   assert.ok(start>=0&&end>start);
   const writes=[],nodes=new Map();

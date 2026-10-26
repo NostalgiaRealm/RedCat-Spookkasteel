@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {EnemyTargeting,targetAimPoint,targetableEnemy,targetMarkerPose} from '../src/targeting.js';
-import {Gameplay} from '../src/gameplay.js';
+import {EnemyTargeting,targetAimPoint,targetableEnemy,targetMarkerPose} from '../source/targeting.js';
+import {Gameplay} from '../source/gameplay.js';
 const enemy=(id,position)=>({id,position,kind:'enemy',health:6,enabled:true});
 const tick=(system,objects,extra={})=>system.update({time:0,position:[0,0,0],yaw:0,objects,...extra});
 test('original front hemisphere/range/nearest visibility selects the ring target',()=>{

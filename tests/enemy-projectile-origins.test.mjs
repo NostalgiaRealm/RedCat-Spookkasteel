@@ -2,10 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {ActorAnimator,ActorStateAnimator} from '../src/animation.js';
-import {Gameplay} from '../src/gameplay.js';
-import {CastleWorld} from '../src/world.js';
-import {enemyMuzzleBones,posedEnemyProjectileOrigins,enemyProjectileOrigins} from '../src/enemy-projectile-origins.js';
+import {ActorAnimator,ActorStateAnimator} from '../source/animation.js';
+import {Gameplay} from '../source/gameplay.js';
+import {CastleWorld} from '../source/world.js';
+import {enemyMuzzleBones,posedEnemyProjectileOrigins,enemyProjectileOrigins} from '../source/enemy-projectile-origins.js';
 
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 const close=(a,b)=>assert.ok(a.every((v,i)=>Math.abs(v-b[i])<1e-8),`${a} != ${b}`);

@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {advanceProjectileAnimation,projectileAnimationFrame,PROJECTILE_FRAME_COUNTS} from '../src/projectile-animation.js';
+import {Gameplay} from '../source/gameplay.js';
+import {advanceProjectileAnimation,projectileAnimationFrame,PROJECTILE_FRAME_COUNTS} from '../source/projectile-animation.js';
 
 const clear=(start,end)=>({fraction:1,end});
 const make=()=>new Gameplay({id:'lvl00a',spawn:{position:[0,0,0]},entities:[]});

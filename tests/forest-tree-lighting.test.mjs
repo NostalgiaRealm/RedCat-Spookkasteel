@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as THREE from 'three';
-import {createActorFloorLighting} from '../src/actor-floor-lighting.js';
+import {createActorFloorLighting} from '../source/actor-floor-lighting.js';
 
 // A decorative prop overlaps the wall at X >= 0; the exposed side has a
 // lightmapped floor. Recovery must stay inside the supplied prop bounds.

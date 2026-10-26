@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {GameAudio, distanceGain, nativeGainToAmplitude} from '../src/audio.js';
-import settings from '../src/audio-settings.js';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
+import {GameAudio, distanceGain, nativeGainToAmplitude} from '../source/audio.js';
+import settings from '../source/audio-settings.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
 
 class FakeAudio {
   constructor(url) { this.src=url; this.paused=true; this.volume=1; this.currentTime=0; this.plays=0; }
@@ -46,11 +46,12 @@ test('native distance model uses 32 units/meter and logarithmic control-to-ampli
 
 test('level override controls spatial effects while music and voices remain independent of camera distance', () => {
   const audio=makeAudio(); audio.setLevel('lvl00a');
-  assert.deepEqual(audio.spatial,{minDistanceMeters:50,maxDistanceFactor:150});
-  const sound=audio.play({sound:'forest3.WAV',spatial:true,position:[2000,0,0]});
+  assert.deepEqual(audio.spatial,{minDistanceMeters:175.5,maxDistanceFactor:150});
+  const position=[audio.spatial.minDistanceMeters*32*1.25,0,0];
+  const sound=audio.play({sound:'forest3.WAV',spatial:true,position});
   const voice=audio.play({sound:'rcgen44.wav',channel:'voices'});
   assert.ok(sound.element.volume<.16 && sound.element.volume>.05);
-  audio.update(0,[2000,0,0]); near(sound.element.volume,.6*nativeGainToAmplitude(.45)); near(voice.element.volume,.6);
+  audio.update(0,position); near(sound.element.volume,.6*nativeGainToAmplitude(.45)); near(voice.element.volume,.6);
   audio.update(0,[-100000,0,0]); assert.ok(sound.element.volume<.001); near(voice.element.volume,.6);
   audio.setLevel('missing'); assert.deepEqual(audio.spatial,settings.spatial);
 });
@@ -116,5 +117,8 @@ test('original forest host emits spatial metadata and restores only enabled repe
   assert.equal(restored.audio.snapshot().filter(e=>e.channel==='effects').length,17);
   assert.ok(!restored.events.some(e=>e.type==='scriptSound'&&e.sound==='OpenDoorSecret.wav'));
   const forest=restored.audio.snapshot().filter(e=>e.sound.startsWith('forest'));
-  assert.equal(forest.length,16); assert.ok(forest.every(e=>e.volume<.16)); assert.ok(forest.some(e=>e.volume<.04));
+  assert.equal(forest.length,16); assert.ok(forest.every(e=>e.volume<.16));
+  for(const entry of forest)near(entry.volume,.6*nativeGainToAmplitude(entry.authoredGain*entry.scriptVolume*distanceGain(level.spawn.position,entry.position,restored.audio.spatial)));
+  restored.audio.update(0,[-100000,0,0]);
+  assert.ok(restored.audio.snapshot().filter(e=>e.sound.startsWith('forest')).every(e=>e.volume<.04),'forest ambience still attenuates beyond the intentionally expanded hearing range');
 });

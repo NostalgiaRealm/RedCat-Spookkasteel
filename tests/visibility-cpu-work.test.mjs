@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {WorldGeometryStream} from '../src/world-streaming.js';
-import {ActorRenderResidency} from '../src/actor-render-residency.js';
+import {WorldGeometryStream} from '../source/world-streaming.js';
+import {ActorRenderResidency} from '../source/actor-render-residency.js';
 
 function actor(geometry,texture,z=-100) {
   geometry??=new THREE.BoxGeometry(8,10,8);texture??=new THREE.Texture();geometry.computeBoundingBox();

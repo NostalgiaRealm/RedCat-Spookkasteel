@@ -2,12 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Vector3,Quaternion} from 'three';
-import {nativePlayerYaw,clockFaceActorYaw,actorOrientation} from '../src/actor-placement.js';
-import {playerMotion} from '../src/player-animation.js';
-import {fairyGeometry,FAIRY_TEXTURES} from '../src/fairy-effects.js';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
-import {WorldEffects} from '../src/world-effects.js';
+import {nativePlayerYaw,clockFaceActorYaw,actorOrientation} from '../source/actor-placement.js';
+import {playerMotion} from '../source/player-animation.js';
+import {fairyGeometry,FAIRY_TEXTURES} from '../source/fairy-effects.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
+import {WorldEffects} from '../source/world-effects.js';
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 const near=(a,b)=>assert.ok(a.every((v,i)=>Math.abs(v-b[i])<1e-7),`${a} != ${b}`);
 

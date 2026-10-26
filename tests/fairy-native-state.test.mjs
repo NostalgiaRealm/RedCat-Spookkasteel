@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {Vector3} from 'three';
-import {NativeFairyEffect,FAIRY_STEP,stepFairyCentre,FAIRY_TEXTURES} from '../src/fairy-effects.js';
-import {WorldEffects} from '../src/world-effects.js';
+import {NativeFairyEffect,FAIRY_STEP,stepFairyCentre,FAIRY_TEXTURES} from '../source/fairy-effects.js';
+import {WorldEffects} from '../source/world-effects.js';
 const options={origin:[0,0,0],waypoints:[[0,0,0]],lifeTime:20,seed:1};
 const close=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-8,`${actual} != ${expected}`);
 const centre=(position=[0,0,0],velocity=[0,0,0])=>({position,velocity,waypoint:0,seeking:true});

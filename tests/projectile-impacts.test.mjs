@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
+import {Gameplay} from '../source/gameplay.js';
 import * as THREE from 'three';
-import {DestructibleEffects} from '../src/destructible-effects.js';
-import {createProjectileImpact, projectileImpactSprite, projectileImpactWave, IMPACT_WAVE_TEXTURE, impactLight, restoreProjectileImpacts, retainProjectileImpacts} from '../src/projectile-impacts.js';
+import {DestructibleEffects} from '../source/destructible-effects.js';
+import {createProjectileImpact, projectileImpactSprite, projectileImpactWave, IMPACT_WAVE_TEXTURE, impactLight, restoreProjectileImpacts, retainProjectileImpacts} from '../source/projectile-impacts.js';
 
 const level = {id:'lvl00a', entities:[], spawn:{position:[0,0,0]}};
 const pellet = kind => ({id:'pellet', kind, owner:'player', position:[10,20,30], velocity:[300,400,0], age:0, life:2, gravity:0, radius:.032, damage:1});

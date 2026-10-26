@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {PlayerProfiles, PLAYER_PROFILES_KEY, PROFILE_STORAGE_KEYS, MAX_PLAYERS} from '../src/player-profiles.js';
+import {PlayerProfiles, PLAYER_PROFILES_KEY, PROFILE_STORAGE_KEYS, MAX_PLAYERS} from '../source/player-profiles.js';
 
 class MemoryStorage {
   constructor(entries = {}) {this.items = new Map(Object.entries(entries));}

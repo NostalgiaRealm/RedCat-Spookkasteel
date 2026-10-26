@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { daviUnary, daviBinary } from '../src/davi-vm.js';
+import { daviUnary, daviBinary } from '../source/davi-vm.js';
 
 // Expected results were executed from the original e30781fc machine code in
 // temp_work/native-behavior-followup-2026-10-26/vm/native_vm_probe.py.

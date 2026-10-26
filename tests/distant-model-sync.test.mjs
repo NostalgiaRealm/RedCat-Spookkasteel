@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {CastleWorld} from '../src/world.js';
-import {ModelTransformMap} from '../src/model-transforms.js';
-import {Gameplay} from '../src/gameplay.js';
+import {CastleWorld} from '../source/world.js';
+import {ModelTransformMap} from '../source/model-transforms.js';
+import {Gameplay} from '../source/gameplay.js';
 
 const pose=(x=0)=>({origin:[10,20,30],translation:[x,2,3],rotation:new THREE.Quaternion().setFromEuler(new THREE.Euler(.2,.4,.1)).toArray()});
 function fixture(poses=new ModelTransformMap([[1,pose()],[2,pose(50)]])) {

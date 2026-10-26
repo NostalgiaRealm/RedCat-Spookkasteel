@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {ActorRenderResidency} from '../src/actor-render-residency.js';
+import {ActorRenderResidency} from '../source/actor-render-residency.js';
 
 function fixture({position=[0,0,3000],parent,extra}={}) {
   const scene=new THREE.Scene(),ancestor=new THREE.Group();ancestor.add(scene);

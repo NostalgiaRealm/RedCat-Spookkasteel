@@ -157,11 +157,11 @@ chapter already present in `campaign.playedLevels` supplies `GetGameType() == 1`
 to the original scripts. The connected World initialization then performs only
 the ten native tutorial disables listed above. First visits supply zero.
 
-`src/campaign-progress.js` keeps visited chapter IDs separate from
+`source/campaign-progress.js` keeps visited chapter IDs separate from
 `highestUnlocked`. A completed chapter records itself as played while unlocking
 its successor; the successor has not yet been played. The unlock-all cheat does
 not add played IDs. Merely selecting a card, cancelling its warning or failing
-to load the chapter does not record a visit. `src/main.js` chooses the replay
+to load the chapter does not record a visit. `source/main.js` chooses the replay
 policy before loading and commits the visit only after successful initialization.
 
 The checkpoint stores `game.scripts.replayLevel`. Continue and recovery saves

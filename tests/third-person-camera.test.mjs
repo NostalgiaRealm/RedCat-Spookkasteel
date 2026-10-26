@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {BspCollider} from '../src/collision.js';
-import {resolveThirdPersonCamera,cameraInsidePlayer} from '../src/third-person-camera.js';
+import {BspCollider} from '../source/collision.js';
+import {resolveThirdPersonCamera,cameraInsidePlayer} from '../source/third-person-camera.js';
 // Real convex BSP sweeps, including start-solid and camera-hull clearance.
 function collider(boxes){
   const planes=[],leaves=[],leafSides=[],models=[];

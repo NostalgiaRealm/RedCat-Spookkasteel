@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Gameplay} from '../src/gameplay.js';
-import {NATIVE_PROJECTILE_RADIUS,restoreProjectileCollision} from '../src/projectile-collision.js';
-import {sweepActor} from '../src/player-projectiles.js';
+import {Gameplay} from '../source/gameplay.js';
+import {NATIVE_PROJECTILE_RADIUS,restoreProjectileCollision} from '../source/projectile-collision.js';
+import {sweepActor} from '../source/player-projectiles.js';
 const level={id:'lvl00a',entities:[],spawn:{position:[0,0,0]}};
 
 test('native thin projectile sweep hits the body but no longer catches empty space next to it',()=>{

@@ -30,7 +30,7 @@ invalid model references and non-finite values fail the import.
 | Total | 437 | 806 | 2,346 |
 
 Every original brush path uses Hermite translation and quaternion SLERP.
-`src/motions.js` also supports linear translation, zero-derivative Hermite
+`source/motions.js` also supports linear translation, zero-derivative Hermite
 easing, normalized linear quaternion interpolation and SQUAD. Hermite tangent
 weights follow Genesis3D's incoming/outgoing chord calculation. The runtime is
 plain JavaScript with no Node, browser, Windows or Three.js dependency.

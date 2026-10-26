@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
-import {CastleWorld,triggerOnlyModels} from '../src/world.js';
-import {BspCollider} from '../src/collision.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
+import {CastleWorld,triggerOnlyModels} from '../source/world.js';
+import {BspCollider} from '../source/collision.js';
 
 const json=p=>JSON.parse(readFileSync(new URL('../'+p,import.meta.url)));
 const level=json('data/levels/lvl03a/level.json');

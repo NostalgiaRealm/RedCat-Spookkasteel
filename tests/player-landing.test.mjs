@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Gameplay} from '../src/gameplay.js';
-import {playerLandingImpact} from '../src/player-landing.js';
-import {landingSound} from '../src/locomotion-audio.js';
-import {GAMEPLAY_SETTINGS} from '../src/gameplay-settings.js';
+import {Gameplay} from '../source/gameplay.js';
+import {playerLandingImpact} from '../source/player-landing.js';
+import {landingSound} from '../source/locomotion-audio.js';
+import {GAMEPLAY_SETTINGS} from '../source/gameplay-settings.js';
 
 const settings=GAMEPLAY_SETTINGS.game;
 const jumpSpeed=Math.sqrt(2*settings.Player.Gravitation*settings.Player.JumpHeight)*32;

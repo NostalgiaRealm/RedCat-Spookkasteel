@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {WorldGeometryStream} from '../src/world-streaming.js';
+import {WorldGeometryStream} from '../source/world-streaming.js';
 
 function fixture() {
   const camera=new THREE.PerspectiveCamera(65,1,1,30000);camera.position.set(0,50,200);camera.lookAt(0,20,0);

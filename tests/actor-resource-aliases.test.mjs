@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {CastleWorld} from '../src/world.js';
-import {ActorTextureStream} from '../src/actor-texture-stream.js';
-import {Gameplay} from '../src/gameplay.js';
+import {CastleWorld} from '../source/world.js';
+import {ActorTextureStream} from '../source/actor-texture-stream.js';
+import {Gameplay} from '../source/gameplay.js';
 
 const read=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 const bags=['imoneys','imoneym','imoneyl'];

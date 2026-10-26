@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createParticleClock,advanceParticleClock,validParticleClock,particleMilliseconds} from '../src/particle-clock-native.js';
-import {NativeFairyEffect,FAIRY_STEP} from '../src/fairy-effects.js';
-import {NativeTeleporterEffect,TELEPORT_STEP} from '../src/teleporter-effects.js';
+import {createParticleClock,advanceParticleClock,validParticleClock,particleMilliseconds} from '../source/particle-clock-native.js';
+import {NativeFairyEffect,FAIRY_STEP} from '../source/fairy-effects.js';
+import {NativeTeleporterEffect,TELEPORT_STEP} from '../source/teleporter-effects.js';
 
 test('CParticle arms lifetime/delay independently, fades on the following update, and keeps integer alpha',()=>{
   const clock=createParticleClock(4,1,3);

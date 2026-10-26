@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {Gameplay} from '../src/gameplay.js';
-import {DestructibleEffects} from '../src/destructible-effects.js';
-import {createNativeExplosionDamage,advanceExplosionDamage} from '../src/explosion-damage.js';
-import {createNativeDebris,stepNativeDebris} from '../src/debris-native.js';
+import {Gameplay} from '../source/gameplay.js';
+import {DestructibleEffects} from '../source/destructible-effects.js';
+import {createNativeExplosionDamage,advanceExplosionDamage} from '../source/explosion-damage.js';
+import {createNativeDebris,stepNativeDebris} from '../source/debris-native.js';
 
 test('saving after damage expires retains the visible smoke tail without restarting damage or sound',()=>{
   const level={id:'explosion-tail-save',entities:[]},game=new Gameplay(level),events=[];

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {FullscreenPreference,normalizeFullscreenPreference} from '../src/fullscreen-preference.js';
+import {FullscreenPreference,normalizeFullscreenPreference} from '../source/fullscreen-preference.js';
 
 function eventTarget() {
   const listeners=new Map();

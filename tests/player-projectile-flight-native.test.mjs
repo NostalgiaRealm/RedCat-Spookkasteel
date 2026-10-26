@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {advancePlayerProjectile,PLAYER_PROJECTILE_STEP,restorePlayerProjectileFlight} from '../src/player-projectiles.js';
-import {Gameplay} from '../src/gameplay.js';
+import {advancePlayerProjectile,PLAYER_PROJECTILE_STEP,restorePlayerProjectileFlight} from '../source/player-projectiles.js';
+import {Gameplay} from '../source/gameplay.js';
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-8,`${a} != ${b}`);
 const projectile=()=>({owner:'player',position:[0,0,0],velocity:[0,0,300],acceleration:160,maximumSpeed:1000,playerFlightPhase:0});
 const advance=(p,dt)=>{p.position=advancePlayerProjectile(p,dt);};

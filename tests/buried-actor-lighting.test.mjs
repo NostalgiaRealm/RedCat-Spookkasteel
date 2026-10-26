@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as THREE from 'three';
-import {CastleWorld,triggerOnlyModels} from '../src/world.js';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
-import {BspCollider} from '../src/collision.js';
-import {createActorFloorLighting,traceActorFloorBsp} from '../src/actor-floor-lighting.js';
+import {CastleWorld,triggerOnlyModels} from '../source/world.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
+import {BspCollider} from '../source/collision.js';
+import {createActorFloorLighting,traceActorFloorBsp} from '../source/actor-floor-lighting.js';
 
 const json=path=>JSON.parse(fs.readFileSync(new URL('../'+path,import.meta.url)));
 const newAssets=new Set(['kandela.act','cross5.act','pbench.act']);

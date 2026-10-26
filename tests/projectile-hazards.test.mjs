@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {GAMEPLAY_SETTINGS} from '../src/gameplay-settings.js';
-import {ProjectileHazards, mushroomTrailDefinition, trailOpacity} from '../src/projectile-hazards.js';
+import {Gameplay} from '../source/gameplay.js';
+import {GAMEPLAY_SETTINGS} from '../source/gameplay-settings.js';
+import {ProjectileHazards, mushroomTrailDefinition, trailOpacity} from '../source/projectile-hazards.js';
 
 const mushroom = {id: 'enemy-projectile-1', sourceId: 'brutus', kind: 'mushRoom'};
 const make = () => new ProjectileHazards(GAMEPLAY_SETTINGS, 'Normal');

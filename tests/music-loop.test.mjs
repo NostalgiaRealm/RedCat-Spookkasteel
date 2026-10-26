@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {GameAudio, soundName} from '../src/audio.js';
+import {GameAudio, soundName} from '../source/audio.js';
 
 const tracks=[
   'level 1 - the forest.wav',

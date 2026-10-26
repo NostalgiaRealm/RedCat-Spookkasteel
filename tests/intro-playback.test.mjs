@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {IntroPlayback} from '../src/intro-playback.js';
+import {IntroPlayback} from '../source/intro-playback.js';
 
 const mediaError=name=>Object.assign(new Error(name),{name});
 function pendingPlay() {

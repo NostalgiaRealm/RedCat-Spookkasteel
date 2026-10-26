@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {QuitMenu} from '../src/quit-menu.js';
+import {QuitMenu} from '../source/quit-menu.js';
 const element=()=>({open:false,disabled:false,textContent:'',addEventListener(){},showModal(){this.open=true;},close(){this.open=false;},focus(){}});
 function setup(){
  const calls=[];let ended,closes=0;

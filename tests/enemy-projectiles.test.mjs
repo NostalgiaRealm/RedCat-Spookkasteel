@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Gameplay} from '../src/gameplay.js';
-import {GAMEPLAY_SETTINGS} from '../src/gameplay-settings.js';
-import {enemyProjectileDeviation,enemyProjectileLifetime,enemyProjectileSample} from '../src/enemy-projectiles.js';
-import {enemyRandom} from '../src/enemy-navigation.js';
+import {Gameplay} from '../source/gameplay.js';
+import {GAMEPLAY_SETTINGS} from '../source/gameplay-settings.js';
+import {enemyProjectileDeviation,enemyProjectileLifetime,enemyProjectileSample} from '../source/enemy-projectiles.js';
+import {enemyRandom} from '../source/enemy-navigation.js';
 
 const level={id:'projectile-flight-fixture',entities:[]};
 const farPlayer=[10000,97,0];

@@ -76,7 +76,7 @@ native ordinary-jump input/support momentum is outside this narrow fan repair.
 Returning from native collision-free movement clears the ballistic vector at
 `0x4d8b7f..0x4d8b8b`.
 
-The runtime repair in `src/collision.js` retains the authored trigger values,
+The runtime repair in `source/collision.js` retains the authored trigger values,
 refreshes positive wind launches each tick, retains wind carry after leaving,
 and uses the native half-gravity displacement integration. Its
 `launchVelocityXZ` stores only wind launch momentum; ordinary horizontal input

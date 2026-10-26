@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {CastleWorld} from '../src/world.js';
-import {ActorRenderResidency} from '../src/actor-render-residency.js';
-import {createActorLighting} from '../src/actor-lighting.js';
+import {CastleWorld} from '../source/world.js';
+import {ActorRenderResidency} from '../source/actor-render-residency.js';
+import {createActorLighting} from '../source/actor-lighting.js';
 
 function actor() {
   const root=new THREE.Group(),mount=new THREE.Group(),mesh=new THREE.Mesh(new THREE.BoxGeometry(2,4,6),new THREE.MeshLambertMaterial());

@@ -14,7 +14,7 @@ try {
   await page.goto('http://127.0.0.1:4257/?skipIntro');await page.waitForFunction(()=>window.__redcat);
   const result=await page.evaluate(async()=>{
     const app=window.__redcat;await app.startLevel(2);app.pause();document.getElementById('pause').hidden=true;
-    const w=app.world,g=app.gameplay,h=g.scripts,THREE=await import('three'),{DEATH_SMOKE_TEXTURE}=await import('./src/enemy-death-effects.js');
+    const w=app.world,g=app.gameplay,h=g.scripts,THREE=await import('three'),{DEATH_SMOKE_TEXTURE}=await import('./source/enemy-death-effects.js');
     for(const p of h.players.values())p.stop();h.cutscene=false;h.camera=null;h.enemiesFrozen=false;
     const names=['zombie1','zombie6','spider1'],objects=names.map(n=>g.find(n)[0]),actors=objects.map(o=>w.actorInstances.get(o.id));
     const livingGhost=g.find('mazeghost1')[0],livingGhostMaterial=w.actorInstances.get(livingGhost.id).userData.mesh.material[0],livingBefore={opacity:livingGhostMaterial.opacity,map:livingGhostMaterial.map.uuid};

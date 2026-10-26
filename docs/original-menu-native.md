@@ -222,5 +222,45 @@ menu source pass built no packages. The subsequent
 [1.0.1 release verification](../temp_work/release-1.0.1-2026-10-20/release-verification.json)
 records six desktop packages and a Linux packaged startup/save/export check.
 That check supplied the desktop save-dialog destination: interacting with the
-real OS dialog and an Android device/document provider still needs platform
-validation.
+real desktop OS dialog and a physical Android device/document provider still
+need target-device validation. Later Android debug-emulator checks and release
+artifact boundaries are listed in [platform status](portability.md); they are
+not a claim of physical-device provider verification.
+
+
+## Maintaining current menu scene checks
+
+The menu was restored after several earlier browser tests were written. Active
+scene checks now share [tests/scene-menu.mjs](../tests/scene-menu.mjs), which
+navigates the visible Hoofdmenu, Snelspel, Moeilijkheid, Startinfo, Meer opties
+and Meer instellingen controls using normal clicks or touch taps. It does not
+change game storage or bypass menu handlers. Avoid reintroducing the removed
+flat-menu `#start`/`#continue` controls just to satisfy an old test.
+
+Choose only the check for the changed feature:
+
+| Concern | Current scene check |
+| --- | --- |
+| Chapter selection and delayed overwrite warning | `node tests/level-selection-menu-scenes.mjs` |
+| Player separation, voices, switching and deletion | `node tests/player-menu-scenes.mjs`, `node tests/player-menu-lifecycle-scenes.mjs` |
+| New-adventure ability reset and cancellation | `node tests/new-adventure-skills-scenes.mjs` |
+| Tutorial suppression for replayed chapters | `node tests/replayed-level-intros-scenes.mjs` |
+| Recovery-save loading and timeline retention | `node tests/recovery-menu-scenes.mjs` |
+| Chapter unlocks, difficulty and automatic saving | `node tests/campaign-settings-scenes.mjs` |
+| Explicit unlock cheat | `node tests/cheat-unlock-levels-scenes.mjs` |
+| Actual touch input and menu navigation | `node tests/touch-scenes.mjs` |
+| Browser hosting beneath a URL prefix | `node tests/web-subpath-scenes.mjs` |
+
+These scripts keep each run's browser profile, reports and captures in
+`temp_work/<test-name>/run-<timestamp>/`. They default to a software WebGL
+renderer for reproducible headless functional checks; `REDCAT_TEST_ANGLE`
+selects another backend when appropriate. Their timings are not hardware
+performance measurements, and these tests do not validate packaged releases.
+
+`tests/new-adventure-warning-scenes.mjs` preserves the old flat-menu
+presentation assertions as historical evidence. Running it normally now fails
+immediately with current-check pointers instead of launching a browser and
+waiting for controls that no longer exist. Its explicit historical opt-in is
+only for an old source snapshot. The `#start` in
+`tests/pickup-audio-tail-scenes.mjs` is a button in that test's deliberately
+isolated audio fixture and remains valid; it is not the removed game menu.

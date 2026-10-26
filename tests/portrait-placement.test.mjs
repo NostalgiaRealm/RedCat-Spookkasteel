@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Box3,BufferGeometry,Float32BufferAttribute,MeshBasicMaterial,Vector3} from 'three';
-import {CastleWorld} from '../src/world.js';
-import {actorOrientation} from '../src/actor-placement.js';
+import {CastleWorld} from '../source/world.js';
+import {actorOrientation} from '../source/actor-placement.js';
 
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 const stems=['paintbr','paintsl','paintrc','paintwk','paintmx'];

@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import {readFileSync} from 'node:fs';
-import {nativeExplosionLight,advanceNativeLight,tickNativeLight,restoreNativeLightState,snapshotNativeLight} from '../src/explosion-light-native.js';
-import {createNativeBlasts,nativeBlastsForEffect,restoreNativeExplosions} from '../src/explosion-native.js';
-import {WorldEffects} from '../src/world-effects.js';
+import {nativeExplosionLight,advanceNativeLight,tickNativeLight,restoreNativeLightState,snapshotNativeLight} from '../source/explosion-light-native.js';
+import {createNativeBlasts,nativeBlastsForEffect,restoreNativeExplosions} from '../source/explosion-native.js';
+import {WorldEffects} from '../source/world-effects.js';
 
 const effect=(extra={})=>({id:'crate:blast',sourceId:'crate',birth:10,position:[12,34,56],
   settings:{explosion:{NrExplosions:1,SizePercentage:25,...extra}}});

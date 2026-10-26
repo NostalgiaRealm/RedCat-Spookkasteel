@@ -38,6 +38,11 @@ export function restoreLevelSummary(value,level) {
 export class OriginalDebriefing {
   constructor(element,onContinue,{mobile=false}={}){
     this.element=element;this.canvas=element.querySelector('canvas');
+    this.lastDraw=null;
+    this.canvas.addEventListener('contextlost',()=>this.invalidate());
+    this.canvas.addEventListener('contextrestored',()=>this.invalidate());
+    // Late web-font loading can change glyphs without changing the viewport.
+    element.ownerDocument?.fonts?.addEventListener('loadingdone',()=>this.invalidate());
     this.mobile=mobile;
     this.button=element.querySelector('button');this.button.onclick=onContinue;
     this.canvas.onclick=onContinue;
@@ -51,13 +56,15 @@ export class OriginalDebriefing {
     [this.background,this.logo,this.icons]=await Promise.all(['assets/debriefing/background.png','assets/debriefing/logo.png','assets/hud/icons.png'].map(async src=>{const image=new Image();image.src=src;await image.decode();return image;}));
   }
   show(summary){
+    this.invalidate();
     this.summary=summary;this.elapsed=0;this.element.hidden=false;this.button.disabled=true;
     const t=this.manifest.text;
     this.button.textContent='KLIK/TIK hier om verder te gaan';
     this.element.querySelector('[role="status"]').textContent=[t.DebriefTXT,...summary.rows.map(r=>`${t[r.kind+'TXT']}: ${r.found} / ${r.total}`),`${t.TotalScoreTXT}: ${summary.bonus}`,`${t.NewTotalScoreTXT}: ${summary.newScore}`].join('. ');
     this.render();
   }
-  hide(){this.element.hidden=true;this.summary=null;}
+  invalidate(){this.lastDraw=null;}
+  hide(){this.element.hidden=true;this.summary=null;this.invalidate();}
   canContinue(){return !!this.summary&&this.elapsed>=Number(this.manifest.layout.StartDelay);}
   update(dt){
     this.elapsed+=dt;
@@ -68,8 +75,16 @@ export class OriginalDebriefing {
     if(!this.summary||!this.background)return;
     const canvas=this.canvas,rect=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
     const width=Math.max(1,Math.round(rect.width*dpr)),height=Math.max(1,Math.round(rect.height*dpr));
-    if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}
-    const c=canvas.getContext('2d'),{layout:l,text:t}=this.manifest,s=this.summary;
+    if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;this.invalidate();}
+    const {layout:l,text:t}=this.manifest,s=this.summary;
+    const alpha=Math.min(1,this.elapsed/Number(l.FadeInTime));
+    const draw=[width,height,rect.width,rect.height,dpr,alpha,this.manifest,this.icons,this.logo,
+      s.level,s.oldScore,s.bonus,s.newScore,...s.rows.flatMap(row=>[row.kind,row.found,row.total,row.bonus])];
+    if(this.lastDraw&&draw.length===this.lastDraw.length&&draw.every((value,index)=>Object.is(value,this.lastDraw[index])))return;
+    // Like the HUD, keep completed pixels until their values/layout change.
+    // Do not cache a failed or context-lost drawing.
+    this.invalidate();
+    const c=canvas.getContext('2d');
     // The background fills the entire window in CSS, including safe areas.
     // Spread authored positions over the available space, but never stretch
     // letters or sprites. Viewport proportions also handle portrait windows
@@ -80,7 +95,7 @@ export class OriginalDebriefing {
     this.button.style.fontSize=`${16*scale}px`;
     c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,width,height);
     c.setTransform(dpr,0,0,dpr,0,0);
-    c.globalAlpha=Math.min(1,this.elapsed/Number(l.FadeInTime));
+    c.globalAlpha=alpha;
     c.textBaseline='top';c.fillStyle='white';c.shadowColor='#001b4d';c.shadowBlur=2;
     const label=(text,x,y,size=16,align='left')=>{c.font=`${size*scale}px "Comic Sans MS", "Comic Neue", cursive`;c.textAlign=align;c.fillText(text,px(x),py(y));};
     label(t.DebriefTXT,320,Math.max(4,Number(l['Title.Y'])),Number(l['Title.Size']),'center');
@@ -99,5 +114,6 @@ export class OriginalDebriefing {
     [[t.OldTotalScoreTXT,s.oldScore],[t.TotalScoreTXT,s.bonus],[t.NewTotalScoreTXT,s.newScore]].forEach(([text,value],i)=>{label(text,portrait?96:120,292+i*29);label(String(value),portrait?612:540,292+i*29,16,'right');});
     c.drawImage(this.logo,0,0,256,42,px(12),Math.min(py(428),rect.height-48*scale),102*scale,48*scale);
     c.globalAlpha=1;
+    this.lastDraw=draw;
   }
 }

@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {createNativeDebris,debrisCollisionBounds,reflectDebrisVelocity,stepNativeDebris,rotateNativeDebris} from '../src/debris-native.js';
-import {DestructibleEffects} from '../src/destructible-effects.js';
+import {createNativeDebris,debrisCollisionBounds,reflectDebrisVelocity,stepNativeDebris,rotateNativeDebris} from '../source/debris-native.js';
+import {DestructibleEffects} from '../source/destructible-effects.js';
 
 const base={Gravity:9.8,MustFade:1,TestCollision:1,MustRotate:1,RotationSpeed:100,SizeX:15,SizeY:15,SizeZ:15,FloorOffset:5,MinLifeTimeSeconds:3,MaxLifeTimeSeconds:4,Elasticity:1.6,Friction:.8,AirFriction:1};
 const effect={id:'native-fragments',position:[100,50,200],bounds:{min:[-20,-10,-30],max:[20,10,30]},settings:{debris:{...base,types:[{actor:'BROK1.ACT',MinNr:40,MaxNr:40,MinVelocity:200,MaxVelocity:250}]}}};

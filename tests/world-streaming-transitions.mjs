@@ -29,7 +29,7 @@ try {
     for(const player of h.players.values())player.stop();h.cutscene=false;h.camera=null;h.enemiesFrozen=true;
     w.redcat.visible=false;
     const T=await import('three'),stream=w.geometryStream;
-    const {WORLD_STREAMING}=await import('./src/world-streaming.js');
+    const {WORLD_STREAMING}=await import('./source/world-streaming.js');
     const doors=['door_left_to_mainlab','door_right_to_mainlab'].map(name=>g.find(name)[0]);
     const doorChunks=stream.chunks.filter(chunk=>doors.some(door=>door.modelIndex===chunk.group.model));
     const roots=()=>[...w.actorInstances.values(),...Array.from(w.bossMachines.values(),machine=>machine.root)];

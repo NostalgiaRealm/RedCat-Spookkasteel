@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {sampleCameraRoute,cameraFinalApproachSpeed} from '../src/script-camera.js';
+import {sampleCameraRoute,cameraFinalApproachSpeed} from '../source/script-camera.js';
 test('scripted route follows authored points, skips zero-length edges and holds the final point',()=>{
   const route=[[0,0,0],[0,0,0],[150,0,0],[150,300,0]];
   assert.deepEqual(sampleCameraRoute(route,0),[0,0,0]);

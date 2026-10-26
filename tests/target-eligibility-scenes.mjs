@@ -15,7 +15,7 @@ try {
   await page.goto('http://127.0.0.1:4213/?skipIntro');await page.waitForFunction(()=>window.__redcat);
   await page.evaluate(async()=>{const app=window.__redcat;await app.startLevel(1);app.pause();document.getElementById('pause').hidden=true;});
   const castle=await page.evaluate(async()=>{
-    const {targetAimPoint,targetableObject}=await import('/src/targeting.js');
+    const {targetAimPoint,targetableObject}=await import('/source/targeting.js');
     const app=window.__redcat,w=app.world,g=app.gameplay,h=g.scripts;
     // Keep the original initializer's skill and bridge pose. Only prevent
     // nearby encounters from interrupting this deterministic shot fixture.
@@ -43,7 +43,7 @@ try {
   await page.screenshot({path:'artifacts/castle-drawbridge-lowered.png'});
   await page.evaluate(async()=>{const app=window.__redcat;await app.startLevel(2);app.pause();document.getElementById('pause').hidden=true;});
   const graveyard=await page.evaluate(async()=>{
-    const {targetAimPoint,targetableObject}=await import('/src/targeting.js');
+    const {targetAimPoint,targetableObject}=await import('/source/targeting.js');
     const app=window.__redcat,w=app.world,g=app.gameplay,h=g.scripts;
     for(const player of h.players.values())player.stop();h.cutscene=false;h.camera=null;h.enemiesFrozen=true;
     for(const object of g.objects)if(object.kind==='trigger')object.enabled=false;
@@ -62,7 +62,7 @@ try {
   });
   await writeFile('artifacts/graveyard-authored-crate-targeting.png',Buffer.from(graveyard.image.split(',')[1],'base64'));delete graveyard.image;
   graveyard.lamp=await page.evaluate(async()=>{
-    const {targetAimPoint}=await import('/src/targeting.js'),w=window.__redcat.world,g=w.gameplay;
+    const {targetAimPoint}=await import('/source/targeting.js'),w=window.__redcat.world,g=w.gameplay;
     const lamp=g.objects.find(o=>o.id==='AdamAnyActor12');
     w.player.position=[966,-63.95,2260];w.player.velocityY=0;w.yaw=Math.PI;w.pitch=-.2;
     w.syncPlayer(0,{});w.targeting.clear();w.updateTargeting(.05,{attack:true});w.updateCamera(1,true);w.syncTargetMarker();w.render();

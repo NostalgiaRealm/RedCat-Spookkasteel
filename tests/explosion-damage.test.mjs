@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {Gameplay} from '../src/gameplay.js';
-import {CastleWorld} from '../src/world.js';
-import {createNativeBlasts} from '../src/explosion-native.js';
-import {DestructibleEffects} from '../src/destructible-effects.js';
-import {createNativeExplosionDamage,explosionBoxDamage,advanceExplosionDamage,restoreExplosionDamage} from '../src/explosion-damage.js';
+import {Gameplay} from '../source/gameplay.js';
+import {CastleWorld} from '../source/world.js';
+import {createNativeBlasts} from '../source/explosion-native.js';
+import {DestructibleEffects} from '../source/destructible-effects.js';
+import {createNativeExplosionDamage,explosionBoxDamage,advanceExplosionDamage,restoreExplosionDamage} from '../source/explosion-damage.js';
 
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-8,`${a} != ${b}`);
 const settings=name=>JSON.parse(readFileSync(new URL(`../assets/actors/${name}.json`,import.meta.url))).settings;

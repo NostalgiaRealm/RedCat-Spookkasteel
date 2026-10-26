@@ -1,0 +1,30 @@
+# Initial Git import only; this existing checkout already has its remotes.
+# Do not rerun git init or remote add for a normal update. Use PUBLISH_CURRENT_BUILD.
+cd '/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW'
+
+git init -b main
+git config user.name "NostalgiaRealm"
+git config user.email "info@Nostalgiarealm.com"
+git remote add origin https://github.com/NostalgiaRealm/RedCat-Spookkasteel.git
+git remote add gitlab https://gitlab.com/Nostalgia_Realm/RedCat-Spookkasteel.git
+
+# assets/ and data/ are no longer ignored. Include editable modules and runtime.
+git add -A -- \
+  .gitignore README.md DESCRIPTION.md ANDROID.md index.html \
+  package.json package-lock.json Start-RedCat.sh Start-RedCat.bat \
+  source/ src/ electron/ android/ tools/ tests/ docs/ assets/ data/ \
+  RC_ACTOR_TEST/ RC_COIN_TEST/ RC_SHOVE_TEST/ \
+  PUBLISH_CURRENT_BUILD INITIAL_IMPORT_SOURCE_GITHUB LOCAL_LLM_INSTRUCTIONS
+
+# The full original research is mandatory, including logs normally ignored.
+git add -f -- RC_ORIGINAL_DECOMPILED/
+
+# Select any additional retained research/release notes after reviewing it.
+# Never stage local signing keys/passwords, browser profiles or build outputs.
+git diff --cached --stat
+git status --short
+git diff --cached
+
+# Review the staged changes, then commit/push the same source to both remotes.
+# Release tags/builds/assets follow PUBLISH_CURRENT_BUILD; these commands alone
+# do not create a release or upload prebuilt packages.

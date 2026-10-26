@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { Gameplay } from '../src/gameplay.js';
-import { initializeBoss,updateBoss,bossCanTakeDamage,bossHitResult,bossWasHit,snapshotBossState,restoreBossState } from '../src/boss-ai.js';
-import { ActorAnimator, ActorStateAnimator } from '../src/animation.js';
+import { Gameplay } from '../source/gameplay.js';
+import { initializeBoss,updateBoss,bossCanTakeDamage,bossHitResult,bossWasHit,snapshotBossState,restoreBossState } from '../source/boss-ai.js';
+import { ActorAnimator, ActorStateAnimator } from '../source/animation.js';
 import * as THREE from 'three';
-import {enemyRandom} from '../src/enemy-navigation.js';
+import {enemyRandom} from '../source/enemy-navigation.js';
 
 const data=async file=>JSON.parse(await readFile(new URL('../'+file,import.meta.url),'utf8'));
 const levels=await Promise.all(['lvl01a','lvl03a','lvl04a'].map(id=>data('data/levels/'+id+'/level.json')));

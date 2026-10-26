@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {SliderAudio,SLIDER_VOICES} from '../src/slider-audio.js';
+import {SliderAudio,SLIDER_VOICES} from '../source/slider-audio.js';
 const tick=()=>new Promise(r=>setImmediate(r));
 function setup(values){const calls=[],ends=[];const feedback=new SliderAudio({say(files){calls.push(files[0]);return new Promise(r=>ends.push(r));}});feedback.reset(values);return {feedback,calls,ends};}
 test('all settings sliders choose the requested original WAV by direction',async()=>{

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {NativeSpoutEffect,SPOUT_STEP,SPOUT_POOL_SIZE} from '../src/spout-effects.js';
+import {NativeSpoutEffect,SPOUT_STEP,SPOUT_POOL_SIZE} from '../source/spout-effects.js';
 
 const base={DelaySecondsMin:.1,DelaySecondsMax:.1,LifeSecondsMin:2,LifeSecondsMax:2,
   SpeedMin:8,SpeedMax:8,AngleMin:0,AngleMax:0,Gravity:2,StartRadius:0,Scale:2,

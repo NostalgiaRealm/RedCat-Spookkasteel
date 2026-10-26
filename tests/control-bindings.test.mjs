@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   DEFAULT_CONTROL_BINDINGS, normalizeControlBindings, validateControlBindings,
   assignControlBinding, readKeyboardInput, bindingPressed, controlBindingLabel,
-} from '../src/control-bindings.js';
+} from '../source/control-bindings.js';
 
 test('default keyboard actions preserve WASD strafing and arrow turning', () => {
   assert.deepEqual(readKeyboardInput(new Set(['KeyW', 'KeyD', 'ArrowLeft'])), {

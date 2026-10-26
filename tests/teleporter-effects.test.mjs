@@ -2,10 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
 import * as THREE from 'three';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
-import {WorldEffects} from '../src/world-effects.js';
-import {showTeleporter,teleporterGeometry,TELEPORT_EFFECT_SECONDS} from '../src/teleporter-effects.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
+import {WorldEffects} from '../source/world-effects.js';
+import {showTeleporter,teleporterGeometry,TELEPORT_EFFECT_SECONDS} from '../source/teleporter-effects.js';
 
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 const manifest=json('assets/effects/manifest.json'),level=json('data/levels/lvl04a/level.json');

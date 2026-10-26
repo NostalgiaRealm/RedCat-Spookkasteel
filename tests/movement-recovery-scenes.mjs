@@ -17,7 +17,7 @@ try {
   await page.goto('http://127.0.0.1:4303/?skipIntro');await page.waitForFunction(()=>window.__redcat);
   await page.evaluate(()=>document.getElementById('cheat-unlock-levels').click());
   const result=await page.evaluate(async()=>{
-    const app=window.__redcat,{moveEnemy}=await import('./src/enemies.js'),idle={forward:0,right:0,jump:false};
+    const app=window.__redcat,{moveEnemy}=await import('./source/enemies.js'),idle={forward:0,right:0,jump:false};
     const prepare=async index=>{
       if(!await app.startLevel(index))throw new Error('Level load failed');app.pause();
       const w=app.world,h=app.gameplay.scripts;for(const p of h.players.values())p.stop();h.cutscene=false;h.camera=null;

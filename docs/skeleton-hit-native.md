@@ -54,10 +54,10 @@ entry path. No such path was established for the shipped damage receiver.
 
 ## Port changes
 
-- `src/enemy-hit-native.js` discards skeleton dormant/wake/retract bookkeeping
+- `source/enemy-hit-native.js` discards skeleton dormant/wake/retract bookkeeping
   when a selected hit replaces it. The actor keeps the ordinary hurt motion,
   playback rate, deadline and sound, then uses its active alert behavior.
-- `src/enemy-ambush.js` migrates older snapshots that retain those replaced
+- `source/enemy-ambush.js` migrates older snapshots that retain those replaced
   states during hurt. Animation progress and the original hurt deadline stay
   intact; loading does not add another wake.
 - Sound-only random responses still apply damage and preserve the existing

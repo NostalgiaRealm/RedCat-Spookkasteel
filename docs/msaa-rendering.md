@@ -42,7 +42,7 @@ can trigger the same protection again.
 
 ## Rendering and resource lifetime
 
-`src/msaa-renderer.js` handles the final world draw. `CastleWorld.render()` still
+`source/msaa-renderer.js` handles the final world draw. `CastleWorld.render()` still
 waits for visible geometry, actors and textures before calling it. Streaming GPU
 preparation continues using its independent tiny targets. HTML menus and the HUD
 remain at window resolution. The existing manual and automatic render-scale

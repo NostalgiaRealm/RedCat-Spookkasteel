@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {StreamingWorkQueue} from '../src/streaming-work.js';
-import {StreamingGpuPreparation} from '../src/streaming-gpu-preparation.js';
+import {StreamingWorkQueue} from '../source/streaming-work.js';
+import {StreamingGpuPreparation} from '../source/streaming-gpu-preparation.js';
 
 test('streaming preparation shares one frame budget, prioritizes visible work and cancels obsolete rooms',async()=>{
   let time=0,valid=true;const ran=[],work=new StreamingWorkQueue({clock:()=>time,budgetMs:1,maxJobs:3});

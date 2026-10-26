@@ -1,8 +1,9 @@
 # Shootable objects and regional camera recovery
 
-This follow-up updates source only. Existing Linux and Windows packages are
-unchanged. Run `npm start -- --ozone-platform=x11` on Linux to try the source;
-the packaged launcher still uses the older executable resources.
+This historical follow-up changed source without rebuilding packages. Run
+`npm start -- --ozone-platform=x11` on Linux to try current source. The launcher
+prefers an existing package, which may lag behind source changes; this note
+does not describe packages produced by later releases.
 
 ## Shootable buttons and crates
 

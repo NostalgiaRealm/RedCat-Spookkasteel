@@ -52,7 +52,7 @@ remote `shoot1` melee strike.
 
 ## Shooting and interruption boundaries
 
-`src/enemy-shooter-native.js` owns the ordinary frog, ranged spider/bat/ghost
+`source/enemy-shooter-native.js` owns the ordinary frog, ranged spider/bat/ghost
 and skeleton parent phases, plus Mushroom Brutus's ordinary shooter and Bone
 Brutus's charge/ammunition wrapper. Max and Witch retain their own controllers;
 see the [15 October boss follow-up](boss-interruptions-native.md).
@@ -106,7 +106,7 @@ resume the interrupted salvo.
 
 ## Damage and reactions
 
-`src/enemy-hit-native.js` separates health damage from the random reaction.
+`source/enemy-hit-native.js` separates health damage from the random reaction.
 Actor constructors and damage vtable slots establish these policies:
 
 | Receiver | Health and reaction policy |
@@ -233,9 +233,10 @@ After the supplemental retreat correction, a separate
 verified rendered `walkbw`, stable animation serial, final-pose holding and
 freeze continuity. Across 172 frames, update median/p95/maximum were
 3.8/5.7/20.5 ms, with no update over 50 ms and no route-search traces.
-The [rendered pose](../temp_work/enemy-pursuit-interruptions-2026-10-14/skeleton-retreat-1791931788105/skeleton-walkbw.png)
-was inspected. Both browser checks had no JavaScript, resource or script errors
-and used isolated profiles without altering player saves.
+The rendered pose was inspected during that run; its screenshot was later
+removed in the [22 October cleanup](../temp_work/cleanup-2026-10-22/README.md).
+The linked report retains the observations. Both browser checks had no
+JavaScript, resource or script errors and used isolated profiles without altering player saves.
 
 These are targeted whole-update samples on the test machine, not a low-end
 hardware benchmark or a complete native-runtime playthrough. Older measurements

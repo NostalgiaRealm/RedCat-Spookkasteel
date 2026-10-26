@@ -38,7 +38,7 @@ The importer preserves every original RGB and alpha sample.
 
 ## Portable implementation
 
-`src/ghost-materials.js` clones material zero for each actual ghost enemy.
+`source/ghost-materials.js` clones material zero for each actual ghost enemy.
 Other material slots, shared actor templates, ordinary actor props and existing
 opacity multipliers remain unchanged. The classification uses `enemyType`,
 because graveyard object names are misleading: `ghost1` is a zombie, while

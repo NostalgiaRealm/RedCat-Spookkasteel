@@ -18,7 +18,7 @@ try {
   const page=await browser.newPage(),errors=[];page.on('pageerror',error=>errors.push(error.stack));
   await page.goto(url+'/'+path.relative(process.cwd(),out)+'/harness.html');
   const results=await page.evaluate(async()=>{
-    const {GameAudio,nativeGainToAmplitude}=await import('/src/audio.js');const results=[];
+    const {GameAudio,nativeGainToAmplitude}=await import('/source/audio.js');const results=[];
     for(const rate of [44100,48000]){
       const frames=Math.floor(89836*rate/44100),offline=new OfflineAudioContext(2,frames*4+256,rate),sources=[];
       const context={state:'running',get currentTime(){return offline.currentTime;},destination:offline.destination,

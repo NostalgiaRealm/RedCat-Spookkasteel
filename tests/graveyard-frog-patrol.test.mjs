@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {BspCollider} from '../src/collision.js';
-import {moveEnemy} from '../src/enemies.js';
-import {triggerOnlyModels} from '../src/world.js';
+import {Gameplay} from '../source/gameplay.js';
+import {BspCollider} from '../source/collision.js';
+import {moveEnemy} from '../source/enemies.js';
+import {triggerOnlyModels} from '../source/world.js';
 const level=JSON.parse(readFileSync(new URL('../data/levels/lvl02a/level.json',import.meta.url)));
 const far=[5000,1000,5000];
 function fixture(save) {

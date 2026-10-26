@@ -1,10 +1,17 @@
+// Historical flat-menu presentation check (before 20 October 2026).
+// Its removed buttons/yellow primary styling are preserved as historical
+// assertions, not a runnable current-menu regression. Current coverage lives
+// in level-selection-menu-scenes.mjs, player-menu-scenes.mjs and
+// new-adventure-skills-scenes.mjs. Fail explicitly before starting a server.
+if (!process.argv.includes('--historical-flat-menu')) throw new Error('Historical flat-menu harness: run tests/level-selection-menu-scenes.mjs, tests/player-menu-scenes.mjs or tests/new-adventure-skills-scenes.mjs against current source.');
+
 import {chromium} from 'playwright';
 import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import assert from 'node:assert/strict';
-process.env.TMPDIR='current_work';
-const output=resolve(`current_work/saved-adventure-menu-2026-10-03/scenes-${Date.now()}`);
+process.env.TMPDIR='temp_work';
+const output=resolve(`temp_work/saved-adventure-menu-2026-10-03/scenes-${Date.now()}`);
 await mkdir(output,{recursive:true});
 const report={checks:[],errors:[]},check=name=>{report.checks.push(name);console.log(`PASS ${name}`);};
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4265'},stdio:['ignore','pipe','inherit']});

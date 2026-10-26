@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Gameplay} from '../src/gameplay.js';
-import {EnemyNavigation} from '../src/enemy-navigation.js';
-import {enemySalvoSize,chooseTouchPursuit} from '../src/enemy-combat-native.js';
-import {updateEnemyAmbush} from '../src/enemy-ambush.js';
+import {Gameplay} from '../source/gameplay.js';
+import {EnemyNavigation} from '../source/enemy-navigation.js';
+import {enemySalvoSize,chooseTouchPursuit} from '../source/enemy-combat-native.js';
+import {updateEnemyAmbush} from '../source/enemy-ambush.js';
 const wp=(id,x,z,links=[])=>({classname:'GrobberPathPoint','%name%':id,Origin:`${x} 0 ${z}`,SubSystemId:'0',...Object.fromEntries(links.map((p,i)=>[`WayPoint${i+1}`,p]))});
 const level=entities=>({id:'lvl00a',spawn:{position:[5000,0,0],orientation:0},entities});
 const enemy=(Type,extra={})=>({classname:'MovingEnemy','%name%':'test',Type:String(Type),StartPoint:'',StartOrientation:'6',Origin:'0 0 0',...extra});

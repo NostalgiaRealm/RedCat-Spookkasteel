@@ -5,6 +5,9 @@ Initial audit: 23 September 2026. Documentation status reviewed against source:
 15 October, with source-runtime validation status updated 18 October 2026.
 Gameplay fidelity boundaries and the later 1.0.1 release records were reviewed
 on 22 October; that review added no tests, builds or new campaign run.
+Platform references were reconciled on 26 October with the 1.0.3 release and
+Android evidence; [portability](portability.md) is the current platform-status
+reference. The earlier verification records below retain their original scope.
 
 On **26 October 2026**, a separate full-binary decompilation and a fresh,
 scoped native-code comparison corrected projectile sampling, stationary-shooter
@@ -47,7 +50,8 @@ controls and saves/recovery in an isolated browser profile, with controlled
 game-frame advancement and read-only route planning. It was not deathless and
 did not use a save import or inventory/health/puzzle-state grants in the earned
 route. This run predates the later room-streaming, original-menu and MSAA
-changes; it is evidence of campaign completion, not a fresh 1.0.1 playthrough.
+changes; it is evidence of campaign completion, not a fresh current-release
+playthrough.
 
 All 13 authored secret objects now have physical ordinary-input route checks
 across the earned run and explicitly separate continuations/fixtures. Tower's
@@ -86,14 +90,14 @@ and fidelity polish:
    preceded this small cleanup change. Its successful normal reload retry
    establishes a working outro asset, but not the cause of the initial error.
    Keep the failure and separate secret/fixture setup scopes visible.
-2. **Extend current-release coverage on actual devices.** The six 1.0.1 desktop
-   archives are already built and published. Check the current release through
-   a complete campaign and the deployed browser experience, including controls,
+2. **Extend current-release coverage on actual devices.** Six 1.0.3 desktop
+   archives and signed Android APK/AAB files have been produced. Build success,
+   upload verification and the focused Android emulator run do not establish a
+   full current-release campaign on physical hardware. Check controls,
    fullscreen/resolution, audio/video, persistence and sustained performance.
-   The earlier Normal campaign and focused release checks do not establish a
-   single 100% collection run, every difficulty, mobile browser/device behavior
-   or performance on the user's 2019 i3. Windows/macOS/ARM native runtime checks
-   remain; existing Linux/source checks should not be described as absent.
+   See [platform validation and remaining checks](portability.md) for the exact
+   desktop, browser and Android boundaries. The earlier Normal campaign does
+   not establish a single 100% collection run or every difficulty.
 3. **Optional exact-fidelity investigation.** Remaining boundaries are native
    global RNG/dispatcher ordering, collision tolerances and a full native-runtime
    battle comparison. The recovered behavior described next is already
@@ -212,7 +216,7 @@ See [automatic replay introductions](replayed-level-intros-native.md).
   mouse/touch controls, immediate jump2 selection and the BSP hull/step/slide
   solver remain portable adaptations. Moving-brush side pushes and blocked-move
   rejection are already implemented. See
-  [player collider](../src/collision.js) and
+  [player collider](../source/collision.js) and
   [moving collision limits](moving-solid-collision.md).
 - **Portal and destruction effects:** recovered portal trajectories, emission,
   beam/flash geometry and sound frequencies now replace the earlier approximations.
@@ -296,24 +300,16 @@ See [automatic replay introductions](replayed-level-intros-native.md).
    human real-time combat difficulty, exact native animation fidelity or target
    package/hardware behavior. Compare remaining fidelity questions with native
    footage and run focused regressions for resulting fixes.
-2. **Build generation and publication are complete for 1.0.1; hardware QA is
-   still bounded.** All six desktop variants have archive/version/input checks
-   and recorded GitHub/GitLab publication verification. The Linux x64 packaged
-   startup/save smoke is a software-rendered check, separate from the earlier
-   native Linux and hardware-rendered source checks. Actual Windows/macOS/ARM,
-   mobile-browser, low-end performance and full current-release campaign/media
-   checks remain. See [the release record](../temp_work/release-1.0.1-2026-10-20/release-verification.json).
-3. **Additional platforms still need device validation.** Android now has a
-   Kotlin/WebView shell, offline asset preparation, lifecycle/audio-focus
-   integration, Back/fullscreen handling and renderer retry. Compilation,
-   focused JVM tests and simulated host checks passed, but no APK/AAB or actual
-   Android device run was performed. The next milestone is offline Level 1 on
-   hardware with working touch, media and save/resume; then campaign,
-   interruption/process-death, performance and signed-release validation. See
-   [Android setup and remaining work](../ANDROID.md). Linux/Windows ARM64 and
-   Intel/Apple Silicon macOS packages exist. Windows packages are unsigned;
-   macOS packages are unsigned and not notarized. Signing/notarization are
-   separate distribution work. See [portability](portability.md).
+2. **Platform validation is tracked in one place.** See
+   [platform support and validation](portability.md) for the six published
+   1.0.3 desktop variants, historical Linux runtime coverage, signed Android
+   APK/AAB and offline Android 16 debug-emulator checks. It distinguishes
+   build/archive inspection from runtime tests, physical-device checks and
+   Play review. No 1.0.3 desktop or Android release artifact was launch-tested.
+3. **Current-source checks do not refresh historical campaign results.**
+   Focused browser/desktop preparation and compatibility checks are recorded
+   with the changed systems. They preserve the earlier campaign’s evidence
+   rather than implying it was rerun after every change.
 4. **Original RCR import remains optional migration work.** The remake has its
    own full-state saves, autosaves and 2/5/10-minute recovery history. Its exported
    JSON backups can now be restored through Spelerlijst. Original Windows RCR

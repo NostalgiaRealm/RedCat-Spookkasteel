@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {actorFloorLuxel,actorFloorShadowPoint,createActorFloorLighting,traceActorFloorBsp} from '../src/actor-floor-lighting.js';
+import {actorFloorLuxel,actorFloorShadowPoint,createActorFloorLighting,traceActorFloorBsp} from '../source/actor-floor-lighting.js';
 
 const collision={models:[{root:0}],nodes:[[-1,-2,0]],planes:[[0,1,0,0]],leaves:[{contents:0},{contents:1}]};
 // bounds, raw U/V, shifts, minUV, dimensions, light offset, flags, plane, side

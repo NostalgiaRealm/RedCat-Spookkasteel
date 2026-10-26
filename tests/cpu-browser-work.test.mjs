@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {CastleWorld} from '../src/world.js';
-import {ActorAnimator} from '../src/animation.js';
-import {triangleCollider,traceActors} from '../src/actor-collision.js';
-import {BeamBatch,BillboardBatch} from '../src/world-effects.js';
-import {actorOrientation} from '../src/actor-placement.js';
+import {CastleWorld} from '../source/world.js';
+import {ActorAnimator} from '../source/animation.js';
+import {triangleCollider,traceActors} from '../source/actor-collision.js';
+import {BeamBatch,BillboardBatch} from '../source/world-effects.js';
+import {actorOrientation} from '../source/actor-placement.js';
 
 function eagerRecord(mesh){
   mesh.updateWorldMatrix(true,false);

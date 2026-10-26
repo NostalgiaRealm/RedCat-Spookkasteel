@@ -35,10 +35,11 @@ import { GamepadInput } from './gamepad-input.js';
 import { GamepadMenu } from './gamepad-menu.js';
 import { RenderQuality, normalizeRenderScale, scaledRenderSize } from './render-quality.js';
 import { MsaaRenderer, normalizeMsaa, effectiveMsaa } from './msaa-renderer.js';
-import { AndroidHost } from './android-host.js';
+import { AndroidHost, androidRenderSize } from './android-host.js';
 import { OriginalLoadingScreen } from './loading-screen.js';
 const androidHost=new AndroidHost();
 const $=id=>document.getElementById(id);
+if(androidHost.enabled)$('android-privacy').hidden=false;
 const LEVELS=[{id:'lvl00a',name:'Het Bos',subtitle:'Waar het avontuur begint'},{id:'lvl01a',name:'Het Kasteel',subtitle:'Achter de kasteeldeur'},{id:'lvl02a',name:'Het Kerkhof',subtitle:'Tussen de oude graven'},{id:'lvl03a',name:'De Grotten',subtitle:'Diep onder het kasteel'},{id:'lvl04a',name:'De Toren',subtitle:'Het geheim van de heks'}];
 const DEFAULTS={resolution:'native',renderScale:100,msaa:4,showFps:false,fullscreen:true,fov:65,sensitivity:1,volume:0.6,effectsVolume:1,musicVolume:1,autoIntro:true,camera:'third',noClip:false,difficulty:'Normal',touchControls:'auto'};
 const SETTINGS_KEY='redcat.settings.v1',SAVE_KEY='redcat.save.v1',PROGRESS_KEY='redcat.progress.v1';
@@ -251,7 +252,7 @@ function scriptedSound(event){
 }
 function stopAudio(){chapterTransition=null;audio.reset();}
 function startMusic(){const object=gameplay.objects.find(o=>o.enabled&&o.entity.classname==='EffectMusic'&&o.entity.MusicAmbient);if(object){if(gameplay.scripts){if(!gameplay.scripts.musicState)gameplay.scripts.selectMusic(object,'ambient');}else audio.play({key:'music',sourceId:object.id,channel:'music',sound:object.entity.MusicAmbient,volume:object.volume??1,loop:true});}}
-function resolutionSize(){if(settings.resolution==='native')return [Math.min(7680,Math.round(innerWidth*devicePixelRatio)),Math.min(4320,Math.round(innerHeight*devicePixelRatio))];return settings.resolution.split('x').map(Number);}
+function resolutionSize(){if(settings.resolution==='native')return androidHost.enabled?androidRenderSize(innerWidth,innerHeight,devicePixelRatio):[Math.min(7680,Math.round(innerWidth*devicePixelRatio)),Math.min(4320,Math.round(innerHeight*devicePixelRatio))];return settings.resolution.split('x').map(Number);}
 function resize(){if(!renderer)return;worldRenderDirty=true;const [baseW,baseH]=resolutionSize();const [w,h]=scaledRenderSize(baseW,baseH,renderQuality.scale(settings.renderScale));renderer.setSize(w,h,false);msaaRenderer?.setSize(renderer.domElement.width,renderer.domElement.height);if(world){world.camera.aspect=baseW/baseH;world.camera.fov=settings.fov;world.camera.updateProjectionMatrix();}$('render-info').textContent=`${w} × ${h} · ${settings.camera==='third'?'Derde persoon':'Eerste persoon'}`;}
 function renderChapters(){
   if(!canStartCampaignLevel(campaign,selected)){selected=0;levelReplaySelected=false;}
@@ -577,7 +578,7 @@ function androidBack(){
 }
 if(androidHost.enabled){
   $('intro-play').onclick=()=>{if(!androidSuspended())introPlayback.activate();};
-  // Native lifecycle messages cover audio focus; visibility covers the brief
+  // Native lifecycle messages cover window focus; visibility covers the brief
   // interval before Android delivers its pause callback.
   document.addEventListener('visibilitychange',()=>{
     if(document.hidden)suspendForAndroid();

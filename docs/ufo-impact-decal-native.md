@@ -47,8 +47,8 @@ Verified in the installed `RcHcGame.dat`, SHA-256
 
 `tools/import_world_effects.py` now includes authored decal color/alpha pairs.
 Only six new PNGs and the effect manifest changed; existing effect image bytes
-were unchanged. `src/decal-effects.js` implements surface placement and native
-quad construction, and `src/world-effects.js` creates and updates those effects.
+were unchanged. `source/decal-effects.js` implements surface placement and native
+quad construction, and `source/world-effects.js` creates and updates those effects.
 Enable/disable and show/hide remain controlled by the ordinary script objects.
 
 Placement traces use rendered BSP faces, including original water surfaces for

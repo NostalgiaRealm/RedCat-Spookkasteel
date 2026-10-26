@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {updateZombieGraveRise,zombieGraveEdge} from '../src/zombie-grave-rise.js';
+import {Gameplay} from '../source/gameplay.js';
+import {updateZombieGraveRise,zombieGraveEdge} from '../source/zombie-grave-rise.js';
 
 const level=JSON.parse(readFileSync(new URL('../data/levels/lvl02a/level.json',import.meta.url)));
 const boot=save=>new Gameplay(level,{deferInit:true,save});

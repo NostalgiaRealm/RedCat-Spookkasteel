@@ -40,7 +40,7 @@ right shift (floor), whereas the initial light UV projection truncates toward
 zero. Radius gain is absolute, rather than normalized by radius. This BSP path
 has neither the actor path's normal-dot factor nor spherical Euclidean falloff.
 
-`src/world-lighting.js` implements this arithmetic and provides shader helpers.
+`source/world-lighting.js` implements this arithmetic and provides shader helpers.
 Normalized RGB inputs are intensity values: applying sRGB decoding to a light
 color before this computation would change the original channel gains. Baked and
 dynamic light must be combined and clamped before multiplying the surface

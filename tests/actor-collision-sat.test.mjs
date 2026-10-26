@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {ActorAnimator} from '../src/animation.js';
-import {triangleCollider,traceActors} from '../src/actor-collision.js';
+import {ActorAnimator} from '../source/animation.js';
+import {triangleCollider,traceActors} from '../source/actor-collision.js';
 
 // Keep the former allocating algorithm as an independent compatibility oracle:
 // changing SAT axis order or deduplication can change which contact wins a tie.

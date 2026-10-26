@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {BspCollider} from '../src/collision.js';
+import {BspCollider} from '../source/collision.js';
 
 function fixture() {
   const min=[-10,-4,-2],max=[10,4,2];

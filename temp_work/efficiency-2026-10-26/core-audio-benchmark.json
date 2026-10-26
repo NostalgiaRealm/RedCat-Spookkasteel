@@ -1,0 +1,59 @@
+{
+  "scope": "Isolated source-level operation-count comparison, not game FPS or physical audio-device benchmark",
+  "voices": 40,
+  "updates": 600,
+  "rate": 120,
+  "saveAndAudioSnapshotEqual": true,
+  "before": {
+    "writes": {
+      "media": 24040,
+      "stereo": 48080
+    },
+    "elapsedMs": 30.066501999999996
+  },
+  "after": {
+    "writes": {
+      "media": 40,
+      "stereo": 80
+    },
+    "elapsedMs": 19.347105999999997
+  },
+  "avoidedGainAssignments": 72000,
+  "portalGraphs": [
+    {
+      "level": "lvl00a",
+      "directedLinks": 20,
+      "physicalModels": 10,
+      "beforeMaterialReads": 12000,
+      "afterMaterialReads": 6000
+    },
+    {
+      "level": "lvl01a",
+      "directedLinks": 62,
+      "physicalModels": 31,
+      "beforeMaterialReads": 37200,
+      "afterMaterialReads": 18600
+    },
+    {
+      "level": "lvl02a",
+      "directedLinks": 38,
+      "physicalModels": 19,
+      "beforeMaterialReads": 22800,
+      "afterMaterialReads": 11400
+    },
+    {
+      "level": "lvl03a",
+      "directedLinks": 102,
+      "physicalModels": 51,
+      "beforeMaterialReads": 61200,
+      "afterMaterialReads": 30600
+    },
+    {
+      "level": "lvl04a",
+      "directedLinks": 4,
+      "physicalModels": 2,
+      "beforeMaterialReads": 2400,
+      "afterMaterialReads": 1200
+    }
+  ]
+}

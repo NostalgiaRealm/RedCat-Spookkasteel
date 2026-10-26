@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {BillboardBatch,BeamBatch} from '../src/world-effects.js';
+import {BillboardBatch,BeamBatch} from '../source/world-effects.js';
 
 const makeWorld=range=>({scene:new THREE.Scene(),camera:new THREE.PerspectiveCamera(65,1,.1,15000),geometryStream:range===undefined?undefined:{viewRadius:range},track:x=>x});
 const free=b=>{b.geometry.dispose();b.mesh.material.dispose();};

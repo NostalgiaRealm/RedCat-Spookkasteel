@@ -10,7 +10,7 @@ not establish complete native AI parity.
 
 ## Implemented behavior
 
-`src/enemy-navigation.js` builds a graph from `GrobberPathPoint` entities. Enemies
+`source/enemy-navigation.js` builds a graph from `GrobberPathPoint` entities. Enemies
 start at their authored `StartPoint`, respect `SubSystemId`, follow explicit
 `WayPoint1`–`WayPoint4` connections and otherwise use nearby walkable points.
 The graph permits eight connections per point and uses the original defaults

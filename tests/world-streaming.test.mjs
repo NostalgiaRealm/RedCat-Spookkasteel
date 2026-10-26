@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {partitionWorld,WorldGeometryStream,WORLD_STREAMING} from '../src/world-streaming.js';
+import {partitionWorld,WorldGeometryStream,WORLD_STREAMING} from '../source/world-streaming.js';
 
 const read=name=>JSON.parse(readFileSync(new URL('../'+name,import.meta.url)));
 test('chunk partition preserves every authored face and material in all five levels',()=>{

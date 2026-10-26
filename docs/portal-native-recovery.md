@@ -1,7 +1,7 @@
 # Native portal particle recovery
 
 This replaces the earlier analytic teleport sparkle streams with the recovered
-`CRTeleporterFx`/`CParticle` state machine in `src/teleporter-effects.js`.
+`CRTeleporterFx`/`CParticle` state machine in `source/teleporter-effects.js`.
 The source of evidence is the installed `RcHcGame.dat`, SHA-256
 `e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5`.
 Addresses below are virtual addresses in that executable. No replacement

@@ -22,7 +22,7 @@ added to stationary fixtures.
 
 ## Attachment and lifecycle
 
-`src/torch-flames.js` reads the centre of the original `htorch.act` wick cap
+`source/torch-flames.js` reads the centre of the original `htorch.act` wick cap
 (vertices 51–53, attached to BONE03). The cached bone-local centre is transformed
 by the current rendered animation pose, actor scale and orientation. Both the
 flame emitter and light follow this point, with a three-unit vertical lift so

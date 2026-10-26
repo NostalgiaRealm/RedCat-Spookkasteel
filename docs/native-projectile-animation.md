@@ -56,7 +56,7 @@ bitmap update at `0x44cbbb`–`0x44cc98` does the following:
    That update does not advance another frame, even after a long stall.
 
 Actual native animation rate therefore depends on the update cadence; it is
-not exactly 20 displayed frames per second. `src/projectile-animation.js`
+not exactly 20 displayed frames per second. `source/projectile-animation.js`
 preserves the strict deadline, separate rearm update, and single advancement.
 Gameplay drives this state once for each active projectile update. Rendering
 reads the resulting index without changing it. Pauses, cutscenes, and enemy

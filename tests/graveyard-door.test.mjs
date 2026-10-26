@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
-import {BspCollider} from '../src/collision.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
+import {BspCollider} from '../source/collision.js';
 
 const json=name=>JSON.parse(readFileSync(new URL('../'+name,import.meta.url)));
 const level=json('data/levels/lvl02a/level.json'),program=json('data/davi/lvl02a.json'),motions=json('data/motions/lvl02a.json');

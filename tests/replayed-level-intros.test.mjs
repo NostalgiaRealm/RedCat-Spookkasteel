@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
-import {LEVEL_IDS,readCampaignProgress,completeCampaignLevel,recordPlayedCampaignLevel,isCampaignLevelReplay} from '../src/campaign-progress.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
+import {LEVEL_IDS,readCampaignProgress,completeCampaignLevel,recordPlayedCampaignLevel,isCampaignLevelReplay} from '../source/campaign-progress.js';
 
 const json=p=>JSON.parse(readFileSync(new URL('../'+p,import.meta.url)));
 const levels=LEVEL_IDS.map(id=>json(`data/levels/${id}/level.json`)),programs=LEVEL_IDS.map(id=>json(`data/davi/${id}.json`));

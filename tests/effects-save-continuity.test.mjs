@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {NativeSpoutEffect,restoreSpoutSnapshots} from '../src/spout-effects.js';
-import {KNIGHT_PARTS,restoreKnightDebrisState,snapshotKnightDebrisState} from '../src/knight-debris.js';
-import {stepNativeDebris} from '../src/debris-native.js';
-import {CastleWorld} from '../src/world.js';
-import {WorldEffects} from '../src/world-effects.js';
+import {NativeSpoutEffect,restoreSpoutSnapshots} from '../source/spout-effects.js';
+import {KNIGHT_PARTS,restoreKnightDebrisState,snapshotKnightDebrisState} from '../source/knight-debris.js';
+import {stepNativeDebris} from '../source/debris-native.js';
+import {CastleWorld} from '../source/world.js';
+import {WorldEffects} from '../source/world-effects.js';
 
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 const roundtrip=value=>JSON.parse(JSON.stringify(value));

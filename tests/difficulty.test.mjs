@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {GAMEPLAY_SETTINGS} from '../src/gameplay-settings.js';
-import {DIFFICULTIES,normalizeDifficulty} from '../src/difficulty.js';
-import {playerShotDefinition} from '../src/player-projectiles.js';
+import {Gameplay} from '../source/gameplay.js';
+import {GAMEPLAY_SETTINGS} from '../source/gameplay-settings.js';
+import {DIFFICULTIES,normalizeDifficulty} from '../source/difficulty.js';
+import {playerShotDefinition} from '../source/player-projectiles.js';
 
 const enemy=(classname,Type,SubType='1',name='enemy')=>({classname,Type,SubType,DaviName:name,'%name%':name,Origin:'0 0 0',IsInitiallyEnabled:'1'});
 const level=entities=>({id:'difficulty-test',spawn:{position:[0,0,0],orientation:0},entities});

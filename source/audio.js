@@ -146,7 +146,7 @@ export class GameAudio {
     this.dialogueQueue.length = 0; this.dialogueActive = null; this.stop('voice');
   }
   get dialoguePending() { return !!this.dialogueActive || this.dialogueQueue.length > 0; }
-  get pickupsPending() { return [...this.sounds].some(record=>record.group==='pickup'); }
+  get pickupsPending() { for(const record of this.sounds)if(record.group==='pickup')return true;return false; }
   playMusic({sound,id=null,volume=1,stop=false,crossFade=false,fadeInTimeSeconds=0,fadeOutTimeSeconds=0}={}) {
     const current=this.keyed.get('music'),name=soundName(sound);
     if(stop||!name){for(const record of this.sounds)if(record.channel==='music')this.release(record);this.musicPositions.clear();return null;}
@@ -289,7 +289,10 @@ export class GameAudio {
     }
     record.distanceGain = positioned ? (record.obstruction.audible?
       (range ? nearbyAmbienceGain(listener, position, range) : distanceGain(listener, position, spatial)):0) : 1;
-    record.element.volume = clamp(this.master * nativeGainToAmplitude((this.channels[record.channel] ?? 1) * clamp(record.authoredGain) * record.volume * (fairy?FAIRY_IDLE_BASE_GAIN:1) * record.distanceGain*(record.fadeGain??1)));
+    const volume = clamp(this.master * nativeGainToAmplitude((this.channels[record.channel] ?? 1) * clamp(record.authoredGain) * record.volume * (fairy?FAIRY_IDLE_BASE_GAIN:1) * record.distanceGain*(record.fadeGain??1)));
+    // Both media volume and buffered gains reach the browser's audio backend.
+    // Retain full-rate calculation/fades, but do not resend an identical gain.
+    if(record.element.volume!==volume)record.element.volume=volume;
   }
   update(dt, listener = this.listener) {
     this.listener = [...listener];

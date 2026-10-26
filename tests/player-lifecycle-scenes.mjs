@@ -21,7 +21,7 @@ try {
     const animator=world.redcat.userData.animator;
     const capture=()=>({phase:game.playerReaction?.phase,clip:animator.name,time:animator.time,position:[...world.player.position],health:game.state.health,lives:game.state.lives});
     const advance=seconds=>{while(seconds>1e-8){const dt=Math.min(.02,seconds);world.update(dt,{forward:0,right:0,turn:0,jump:false,attack:false,use:false});seconds-=dt;}};
-    const {PLAYER_REACTIONS}=await import('./src/player-lifecycle.js');
+    const {PLAYER_REACTIONS}=await import('./source/player-lifecycle.js');
     world.player.position[1]+=50;world.player.grounded=false;
     game.damage(1);advance(.2);const hurt=capture();
     const hurtFell=world.player.position[1]<origin[1]+50;

@@ -45,7 +45,7 @@ try {
     // ensure sampling the hand origin at dt=0 never changes the blend clock.
     w.player.grounded=true;w.player.jumpKind=null;g.playerCharge={age:1};w.syncPlayer(.02,{});
     const charge={name:b.name,time:b.time,rate:b.timeScale};
-    const {PLAYER_SHOOT_MOTION:s}=await import('./src/player-projectiles.js');
+    const {PLAYER_SHOOT_MOTION:s}=await import('./source/player-projectiles.js');
     g.playerCharge=null;g.playerAttackSerial++;g.playerAttackUntil=g.time+s.duration/s.rate;
     w.syncPlayer(.02,{forward:1});const beforeQuery=b.snapshot();
     for(let i=0;i<50;i++)w.syncPlayer(0,{forward:1});const afterQuery=b.snapshot();

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createElectricExplosion,stepElectricExplosion,snapshotElectricExplosion,restoreElectricExplosion,
-  stepElectricSpark,electricSparkQuad,ELECTRIC_SPARK_UVS} from '../src/electric-explosion-native.js';
+  stepElectricSpark,electricSparkQuad,ELECTRIC_SPARK_UVS} from '../source/electric-explosion-native.js';
 const blast={id:'electric-test',electric:true,birth:10,position:[5,20,30]};
 const run=(s,to,fps=60)=>{for(let i=0;i<=Math.round(to*fps);i++)stepElectricExplosion(s,blast.birth+i/fps);return s;};
 const comparable=s=>({...snapshotElectricExplosion(s),quietUntil:0,sounds:[]});

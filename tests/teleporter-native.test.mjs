@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {NativeTeleporterEffect,teleporterSpecialPosition,teleporterGeometry,TELEPORT_STEP,TELEPORT_EFFECT_SECONDS} from '../src/teleporter-effects.js';
+import {NativeTeleporterEffect,teleporterSpecialPosition,teleporterGeometry,TELEPORT_STEP,TELEPORT_EFFECT_SECONDS} from '../source/teleporter-effects.js';
 
 const options={origin:[100,30,200],floorY:0,ceilingY:200,waypoints:[[60,0,160],[60,0,240],[140,0,240],[140,0,160]]};
 const close=(actual,expected,epsilon=1e-8)=>assert.ok(Math.abs(actual-expected)<epsilon,`${actual} != ${expected}`);

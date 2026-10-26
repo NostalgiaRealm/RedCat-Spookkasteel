@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {GameAudio,nativeGainToAmplitude} from '../src/audio.js';
+import {Gameplay} from '../source/gameplay.js';
+import {GameAudio,nativeGainToAmplitude} from '../source/audio.js';
 
 class Media {
   constructor(src){this.src=src;this.paused=true;this.currentTime=0;}

@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {BspVisibility} from '../src/bsp-visibility.js';
-import {WorldGeometryStream} from '../src/world-streaming.js';
+import {BspVisibility} from '../source/bsp-visibility.js';
+import {WorldGeometryStream} from '../source/world-streaming.js';
 
 function fixture(withBounds=true) {
   const camera=new THREE.PerspectiveCamera(65,16/9,1,5000);

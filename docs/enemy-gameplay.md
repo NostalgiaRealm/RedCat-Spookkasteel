@@ -8,7 +8,7 @@ advanced their initial idle clip while their positions moved toward the player.
 
 ## Action sounds
 
-`src/gameplay-audio.js` now routes actual gameplay events through the existing
+`source/gameplay-audio.js` now routes actual gameplay events through the existing
 portable mixer at their authored gain:
 
 - Shot: `rcshoot1.wav`. Actual enemy/brush impact: `rcshoot4.wav`.

@@ -25,7 +25,7 @@ try {
   for(const fixture of cases.filter(f=>!process.env.ZOMBIE_CASE||process.env.ZOMBIE_CASE===f.name)) {
     await page.evaluate(async fixture=>{
       const app=window.__redcat;await app.startLevel(2);app.pause();document.getElementById('pause').hidden=true;
-      const w=app.world,g=app.gameplay,h=g.scripts,{targetableObject}=await import('/src/targeting.js');
+      const w=app.world,g=app.gameplay,h=g.scripts,{targetableObject}=await import('/source/targeting.js');
       for(const player of h.players.values())player.stop();h.cutscene=false;h.camera=null;h.enemiesFrozen=false;
       // Keep only the relevant original spatial trigger and chained counter.
       // Suppress unrelated camera tours while recording this one encounter.

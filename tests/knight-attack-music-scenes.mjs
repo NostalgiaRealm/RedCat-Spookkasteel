@@ -15,7 +15,7 @@ try {
   await page.goto('http://127.0.0.1:4214/?skipIntro');await page.waitForFunction(()=>window.__redcat);
   await page.evaluate(async()=>{const app=window.__redcat;await app.startLevel(1);app.pause();document.getElementById('pause').hidden=true;});
   const result=await page.evaluate(async()=>{
-    const {targetAimPoint}=await import('/src/targeting.js');
+    const {targetAimPoint}=await import('/source/targeting.js');
     const app=window.__redcat,w=app.world,g=app.gameplay,h=g.scripts;
     // Run the original level initializer (including the basic shot unlock),
     // then isolate one authored castle knight from unrelated encounters.

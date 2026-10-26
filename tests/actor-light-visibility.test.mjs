@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {ActorLightVisibility} from '../src/actor-light-visibility.js';
+import {ActorLightVisibility} from '../source/actor-light-visibility.js';
 
 function fixture({clusters=[0,1],bits=[3,3],leafClusters=[0,1],separateAreas=false}={}) {
   const collision={models:[{root:0,min:[-10,-10,-10],max:[10,10,10]}],nodes:[[-1,-2,0]],planes:[[1,0,0,0]],leaves:[{contents:0},{contents:0}]};

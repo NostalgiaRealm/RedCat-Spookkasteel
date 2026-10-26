@@ -18,11 +18,11 @@ native comparison. This summary was checked for stale implementation claims on
 resolves symbol references and validates branches. It produces `data/davi/*.json`:
 5,134 instructions, 444 instance event handlers, 76 script functions, and their
 native API declarations. No event handler is replaced with a hand-written puzzle
-solution. `src/davi-vm.js` implements typed operands, parameters, temporaries,
+solution. `source/davi-vm.js` implements typed operands, parameters, temporaries,
 locals/globals, calls, conditional branches, arithmetic, comparisons and returns.
 Step/depth budgets stop runaway scripts, and errors include instruction context.
 
-`src/script-host.js` binds script names to original entities and groups and routes
+`source/script-host.js` binds script names to original entities and groups and routes
 native commands back into `Gameplay`. Every native function/method actually called
 by these five compiled programs has an implementation. Unused original native
 APIs are not all implemented; unknown calls fail explicitly.
@@ -47,7 +47,7 @@ fixtures without a compiled program. Shipped levels use the DSO interpreter.
 ## Motions and presentation
 
 `tools/import_motions.py` decodes 437 brush motions, 806 original event labels and
-2,346 keyframes. `src/motions.js` supports translation interpolation, quaternion
+2,346 keyframes. `source/motions.js` supports translation interpolation, quaternion
 rotation, once/loop/ping-pong playback, pause/resume and reentrant event callbacks.
 Five graveyard end markers are authored at 8.01 seconds on 8-second paths. The
 portable playback interval explicitly extends to the final marker while retaining

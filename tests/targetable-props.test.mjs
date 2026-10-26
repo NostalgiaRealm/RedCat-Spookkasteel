@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {EnemyTargeting,targetableObject,targetAimPoint,transformedTargetBounds,targetMarkerPose} from '../src/targeting.js';
-import {CastleWorld} from '../src/world.js';
+import {EnemyTargeting,targetableObject,targetAimPoint,transformedTargetBounds,targetMarkerPose} from '../source/targeting.js';
+import {CastleWorld} from '../source/world.js';
 const button=(extra={})=>({id:'bridge',kind:'button',position:[0,0,-100],health:1,entity:{ShootToSwitch:'1',MaxSwitchTimes:'1'},switchCount:0,...extra});
 test('only enemies, shootable buttons and explicitly targetable shootable props participate',()=>{
  const b=button();assert.ok(targetableObject(b));b.switchCount=1;assert.equal(targetableObject(b),false);

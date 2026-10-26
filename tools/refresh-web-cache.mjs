@@ -1,7 +1,8 @@
 import path from 'node:path';
 import {createHash} from 'node:crypto';
-import {readFile, readdir, writeFile} from 'node:fs/promises';
+import {mkdir, readFile, readdir, writeFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
+import {createRuntimeBundle, runtimeBundleIdentity, RUNTIME_BUNDLE, RUNTIME_BUNDLE_MAP} from './runtime-bundle.mjs';
 
 const defaultProject = fileURLToPath(new URL('../', import.meta.url));
 const siteBase = 'https://redcat.invalid/';
@@ -173,21 +174,21 @@ function localPath(value, parent = 'index.html') {
 }
 
 function permittedModule(relative) {
-  return moduleExtension.test(relative) && (relative.startsWith('src/') || relative.startsWith('node_modules/three/'));
+  return moduleExtension.test(relative) && (relative.startsWith('source/') || relative.startsWith('node_modules/three/'));
 }
 
-async function sourceModules(projectDir, relative = 'src') {
+async function sourceModules(projectDir, relative = 'source') {
   const paths = [];
   for (const entry of (await readdir(path.join(projectDir, relative), {withFileTypes:true})).sort((a,b) => a.name.localeCompare(b.name, 'en'))) {
     const name = `${relative}/${entry.name}`;
     if (entry.isSymbolicLink()) throw new Error(`Runtime source symlinks are not supported: ${name}`);
     if (entry.isDirectory()) paths.push(...await sourceModules(projectDir, name));
-    else if (entry.isFile() && moduleExtension.test(name)) paths.push(name);
+    else if (entry.isFile() && moduleExtension.test(name) && name !== RUNTIME_BUNDLE) paths.push(name);
   }
   return paths;
 }
 
-export async function refreshWebCache({projectDir = defaultProject} = {}) {
+export async function refreshWebCache({projectDir = defaultProject, bundle = true} = {}) {
   projectDir = path.resolve(projectDir);
   const indexPath = path.join(projectDir, 'index.html');
   const original = await readFile(indexPath, 'utf8');
@@ -201,7 +202,7 @@ export async function refreshWebCache({projectDir = defaultProject} = {}) {
   for (const [name, target] of Object.entries(config.imports)) {
     if (typeof target !== 'string') throw new Error(`Invalid import-map target: ${name}`);
     // Recreate generated URL entries and exact addon aliases from current files.
-    if (name.startsWith('./src/') || name.startsWith('./node_modules/three/') ||
+    if (name.startsWith('./source/') || name.startsWith('./src/') || name.startsWith('./node_modules/three/') ||
         (name.startsWith('three/addons/') && name !== 'three/addons/')) continue;
     aliases[name] = withoutVersion(target);
   }
@@ -214,7 +215,7 @@ export async function refreshWebCache({projectDir = defaultProject} = {}) {
       base = 'index.html';
     }
     const resolved = localPath(target, base);
-    if (!permittedModule(resolved)) throw new Error(`${parent}: module outside src/ or Three.js: ${specifier}`);
+    if (!permittedModule(resolved)) throw new Error(`${parent}: module outside source/ or Three.js: ${specifier}`);
     return resolved;
   };
   const files = new Map(), usedAliases = new Map();
@@ -242,11 +243,28 @@ export async function refreshWebCache({projectDir = defaultProject} = {}) {
   }
   const scripts = [...original.matchAll(/<script\b[^>]*>/gi)].map(match => match[0]).filter(tag => attribute(tag, 'type') === 'module' && attribute(tag, 'src'));
   if (scripts.length !== 1) throw new Error('index.html must contain exactly one external module entry script.');
-  const entry = localPath(withoutVersion(attribute(scripts[0], 'src')));
-  if (!files.has(entry)) throw new Error(`Entry module is not in src/: ${entry}`);
+  const entry = localPath(withoutVersion(attribute(scripts[0], 'data-source') || attribute(scripts[0], 'src')));
+  if (!entry.startsWith('source/') || !files.has(entry)) throw new Error(`Entry module is not in source/: ${entry}`);
   const hash = createHash('sha256').update(JSON.stringify(Object.entries(aliases).sort()));
+  if (bundle) hash.update(JSON.stringify(runtimeBundleIdentity));
   for (const [relative, bytes] of [...files].sort(([a],[b]) => a < b ? -1 : a > b ? 1 : 0)) hash.update(relative).update('\0').update(bytes).update('\0');
   const version = hash.digest('hex').slice(0, 24);
+  // Generate from the same immutable buffers used for the revision. Publish
+  // HTML last so a failed build cannot point it at a missing/partial bundle.
+  const built = bundle ? await createRuntimeBundle({projectDir,entry,files,resolveImport,revision:version}) : null;
+  let bundleChanged = false;
+  if (built) {
+    for (const [relative,bytes] of [[RUNTIME_BUNDLE,built.code],[RUNTIME_BUNDLE_MAP,built.sourceMap]]) {
+      let previous;
+      try { previous = await readFile(path.join(projectDir,relative)); }
+      catch (error) { if (error.code !== 'ENOENT') throw error; }
+      if (!previous?.equals(bytes)) {
+        await mkdir(path.dirname(path.join(projectDir,relative)), {recursive:true});
+        await writeFile(path.join(projectDir,relative),bytes);
+        bundleChanged = true;
+      }
+    }
+  }
   const versioned = relative => `./${relative}?v=${version}`;
   const imports = {...aliases};
   for (const relative of [...files.keys()].filter(name => moduleExtension.test(name)).sort()) imports[`./${relative}`] = versioned(relative);
@@ -256,15 +274,19 @@ export async function refreshWebCache({projectDir = defaultProject} = {}) {
   const mapTag = `<script type="importmap" id="game-importmap">\n${JSON.stringify(map, null, 2)}\n</script>`;
   let updated = original.replace(oldMapTag, mapTag);
   for (const tag of styles) updated = updated.replace(tag, replaceAttribute(tag, 'href', versioned(localPath(withoutVersion(attribute(tag, 'href'))))));
-  updated = updated.replace(scripts[0], replaceAttribute(scripts[0], 'src', versioned(entry)));
+  let entryTag = replaceAttribute(scripts[0], 'src', versioned(bundle ? RUNTIME_BUNDLE : entry));
+  if (!attribute(entryTag,'data-source')) entryTag = entryTag.replace(/>$/,` data-source="./${entry}">`);
+  updated = updated.replace(scripts[0],entryTag);
   if (updated !== original) await writeFile(indexPath, updated);
-  return {version, changed:updated !== original, modules:[...files.keys()].filter(name => moduleExtension.test(name)).sort(), stylesheets:styles.length};
+  return {version, changed:updated !== original || bundleChanged, modules:[...files.keys()].filter(name => moduleExtension.test(name)).sort(), stylesheets:styles.length,
+    ...(built ? {bundle:{path:RUNTIME_BUNDLE, modules:built.modules.length,inputBytes:built.inputBytes,bytes:built.bytes}} : {})};
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
     const result = await refreshWebCache();
     console.log(`Web cache ${result.version}: ${result.modules.length} modules, ${result.stylesheets} stylesheets${result.changed ? ' updated' : ' unchanged'}.`);
+    if (result.bundle) console.log(`Runtime bundle: ${result.bundle.modules} modules → 1 request, ${result.bundle.inputBytes} → ${result.bundle.bytes} bytes.`);
   } catch (error) {
     console.error(`Web cache refresh failed: ${error.message}`);
     process.exitCode = 1;

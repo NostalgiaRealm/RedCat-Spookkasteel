@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {GameplayAudio} from '../src/gameplay-audio.js';
-import {hudCommands} from '../src/hud.js';
+import {Gameplay} from '../source/gameplay.js';
+import {GameplayAudio} from '../source/gameplay-audio.js';
+import {hudCommands} from '../source/hud.js';
 const manifest=JSON.parse(readFileSync(new URL('../assets/hud/manifest.json',import.meta.url)));
 const entity=(classname,name,Type='1')=>({classname,'%name%':name,Origin:'0 0 0',Type});
 const level={id:'lvl00a',spawn:{position:[0,0,0]},entities:[entity('ItemHart','container'),entity('ItemHealth','small'),entity('ItemHealth','medium','2'),entity('ItemHealth','large','3')]};

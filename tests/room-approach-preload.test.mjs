@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {WorldGeometryStream} from '../src/world-streaming.js';
-import {ActorRenderResidency} from '../src/actor-render-residency.js';
-import {ActorTextureStream} from '../src/actor-texture-stream.js';
-import {StreamingWorkQueue} from '../src/streaming-work.js';
-import {StreamingGpuPreparation} from '../src/streaming-gpu-preparation.js';
+import {WorldGeometryStream} from '../source/world-streaming.js';
+import {ActorRenderResidency} from '../source/actor-render-residency.js';
+import {ActorTextureStream} from '../source/actor-texture-stream.js';
+import {StreamingWorkQueue} from '../source/streaming-work.js';
+import {StreamingGpuPreparation} from '../source/streaming-gpu-preparation.js';
 
 const yieldTurn=()=>new Promise(resolve=>setTimeout(resolve,0));
 

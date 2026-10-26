@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {BspCollider} from '../src/collision.js';
-import {ModelTransformMap} from '../src/model-transforms.js';
-import {createActorFloorLighting,inverseModelTransform} from '../src/actor-floor-lighting.js';
+import {BspCollider} from '../source/collision.js';
+import {ModelTransformMap} from '../source/model-transforms.js';
+import {createActorFloorLighting,inverseModelTransform} from '../source/actor-floor-lighting.js';
 
 function pair(collision,metadata,bytes,tracked=true) {
   const optimized=new BspCollider(collision),reference=new BspCollider(collision);

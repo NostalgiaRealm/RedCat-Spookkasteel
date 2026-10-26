@@ -23,7 +23,7 @@ and turbine sources still wait for their original scripts to enable them.
 
 ## Chosen portable range
 
-`src/ambience-ranges.js` now limits **every spatial effect loop** in the caves
+`source/ambience-ranges.js` now limits **every spatial effect loop** in the caves
 (`lvl03a`), including delayed replay. The initial five-file list missed lava
 (`LV4snd15`), torches (`torch1`), corridor noises (`Gen6`), energy beams/platforms
 (`LV4snd21`), moving rocks, the altar machinery and unlock effects (`LV2snd5`).

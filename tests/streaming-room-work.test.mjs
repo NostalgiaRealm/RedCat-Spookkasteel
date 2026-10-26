@@ -2,10 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {WorldGeometryStream} from '../src/world-streaming.js';
-import {ActorRenderResidency} from '../src/actor-render-residency.js';
-import {StreamingWorkQueue} from '../src/streaming-work.js';
-import {StreamingGpuPreparation} from '../src/streaming-gpu-preparation.js';
+import {WorldGeometryStream} from '../source/world-streaming.js';
+import {ActorRenderResidency} from '../source/actor-render-residency.js';
+import {StreamingWorkQueue} from '../source/streaming-work.js';
+import {StreamingGpuPreparation} from '../source/streaming-gpu-preparation.js';
 
 function fixture() {
   const camera=new THREE.PerspectiveCamera(65,1,1,30000);camera.position.set(0,40,200);camera.lookAt(0,20,0);

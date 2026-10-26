@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createNativeBlasts,nativeSmokeState} from '../src/explosion-native.js';
-import {DestructibleEffects,explosionFrame} from '../src/destructible-effects.js';
+import {createNativeBlasts,nativeSmokeState} from '../source/explosion-native.js';
+import {DestructibleEffects,explosionFrame} from '../source/destructible-effects.js';
 
 const fixture={id:'blast',birth:5,position:[100,20,300],bounds:{min:[-100,-10,-20],max:[100,10,20]},settings:{explosion:{NrExplosions:3,SizePercentage:25}}};
 const close=(a,b)=>assert.ok(Math.abs(a-b)<1e-8,`${a} != ${b}`);

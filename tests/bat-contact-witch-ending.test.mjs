@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Gameplay} from '../src/gameplay.js';
-import {EnemyNavigation} from '../src/enemy-navigation.js';
-import {ScriptHost} from '../src/script-host.js';
-import {actorVisible} from '../src/world.js';
-import {batOverlapsPlayer,clipBatPlayerContact} from '../src/enemy-flight.js';
+import {Gameplay} from '../source/gameplay.js';
+import {EnemyNavigation} from '../source/enemy-navigation.js';
+import {ScriptHost} from '../source/script-host.js';
+import {actorVisible} from '../source/world.js';
+import {batOverlapsPlayer,clipBatPlayerContact} from '../source/enemy-flight.js';
 const json=p=>JSON.parse(readFileSync(new URL('../'+p,import.meta.url)));
 const clear=(a,b)=>({fraction:1,end:[...b],normal:[0,0,0],startSolid:false});
 const fixture=()=>{const game=new Gameplay(json('data/levels/lvl01a/level.json'),{deferInit:true}),bat=game.find('Bat01')[0];bat.position=[80,0,0];bat.entity={...bat.entity,StartPoint:'a'};game.navigation=new EnemyNavigation({entities:[{classname:'GrobberPathPoint','%name%':'a',Origin:'80 0 0',WayPoint1:'b'},{classname:'GrobberPathPoint','%name%':'b',Origin:'-80 0 0'}]},{MaxConnectionDistance:0});game.navigation.initialize(bat);bat.yaw=-Math.PI/2;bat.enabled=true;bat.collisionMins=[-7.19,5.3,-8.44];bat.collisionMaxs=[8.56,36.28,7.47];for(const o of game.objects)if(o!==bat)o.enabled=false;return{game,bat};};

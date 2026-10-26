@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
-import {createSaveExport} from '../src/save-export.js';
+import {createSaveExport} from '../source/save-export.js';
 const {validateExportPayload, trustedExportSender, createSaveExporter, MAX_SAVE_EXPORT_BYTES} =
   createRequire(import.meta.url)('../electron/save-export.cjs');
 

@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {createSaveExport} from '../src/save-export.js';
-import {parseSaveImport, validateSaveImport, MAX_SAVE_IMPORT_BYTES} from '../src/save-import.js';
-import {PlayerProfiles, PLAYER_PROFILES_KEY} from '../src/player-profiles.js';
-import {Gameplay} from '../src/gameplay.js';
-import {ScriptHost} from '../src/script-host.js';
-import {NativeFairyEffect} from '../src/fairy-effects.js';
+import {createSaveExport} from '../source/save-export.js';
+import {parseSaveImport, validateSaveImport, MAX_SAVE_IMPORT_BYTES} from '../source/save-import.js';
+import {PlayerProfiles, PLAYER_PROFILES_KEY} from '../source/player-profiles.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ScriptHost} from '../source/script-host.js';
+import {NativeFairyEffect} from '../source/fairy-effects.js';
 
 const json = path => JSON.parse(readFileSync(new URL(path, import.meta.url)));
 const clone = value => structuredClone(value);

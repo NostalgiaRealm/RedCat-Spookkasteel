@@ -24,7 +24,7 @@ try{
   const button=g.find('knopbridge')[0],bridge=g.find('ophaalbrug01_mc')[0],bridgeMotion=h.players.get(bridge.id);g.state.skill|=1;bridgeMotion.seek(bridgeMotion.motion.endTime);h.applyMotion(bridge,bridgeMotion);bridge.open=true;
   w.player.position=[-350,-50,1260];w.yaw=0;w.pitch=0;w.syncModels();w.syncActors(0);w.syncPlayer(0,{});
   w.targeting.clear();w.updateTargeting(.05,{attack:true});w.updateCamera(1,true);w.syncTargetMarker();w.render();
-  const {targetAimPoint}=await import('/src/targeting.js'),{hudCommands}=await import('/src/hud.js');
+  const {targetAimPoint}=await import('/source/targeting.js'),{hudCommands}=await import('/source/hud.js');
   const manifest=await(await fetch('/assets/hud/manifest.json')).json();
   const selected=w.targeting.target,aim=targetAimPoint(button),eye=w.player.position.map((v,i)=>v+(i===1?45:0));
   const hit=w.collider.trace(eye,aim,[0,0,0],[0,0,0],w.physicalModels,'blocksLOS');

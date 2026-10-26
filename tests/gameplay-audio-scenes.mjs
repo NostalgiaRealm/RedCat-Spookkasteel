@@ -44,7 +44,7 @@ export async function verifyGameplayAudio(page) {
   for(const action of ['alert','attack','hurt','death']) {
     const cues=await page.evaluate(async action=>{
       const app=window.__redcat;app.audio.reset();app.audio.pause();
-      const {Gameplay}=await import('./src/gameplay.js'),position=app.world.camera.position.toArray();
+      const {Gameplay}=await import('./source/gameplay.js'),position=app.world.camera.position.toArray();
       const entities=[['spiderg','MovingEnemy',1,1],['spidery','MovingEnemy',1,2],['spiderr','MovingEnemy',1,3],
         ['knight','StandingEnemy',2,1],['guardian','MovingEnemy',10,1],['zombie','MovingEnemy',4,1]]
         .map(([name,classname,Type,SubType])=>({classname,Type,SubType,Origin:position.join(' '),'%name%':`sound-test-${name}`}));

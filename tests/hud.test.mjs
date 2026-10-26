@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import{readFileSync}from'node:fs';
-import {hudCommands,enemyPortrait,hudViewport} from '../src/hud.js';
+import {hudCommands,enemyPortrait,hudViewport} from '../source/hud.js';
 const manifest=JSON.parse(readFileSync(new URL('../assets/hud/manifest.json',import.meta.url)));
 const state={health:7,maxHealth:10,lives:3,potions:4,score:9000};
 test('original HUD atlas uses full/half/empty hearts, life, potion level total and score',()=>{

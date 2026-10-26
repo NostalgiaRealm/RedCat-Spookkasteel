@@ -1,8 +1,8 @@
-# Android app: setup, implementation and remaining work
+# Android app: build and Google Play release
 
-Updated **22 October 2026**; initial implementation **6 October 2026**. An initial **Kotlin/Android WebView wrapper now exists**. It runs the shared JavaScript/Three.js game with bundled assets, targeting **Android 16 / API 36** and allowing installation on **Android 10 / API 29 or newer**.
+Updated **26 October 2026**; initial implementation **6 October 2026**. The **Kotlin/Android WebView app** bundles the prepared game runtime and original assets. It runs the shared JavaScript/Three.js game with bundled assets, targeting **Android 16 / API 36** and allowing installation on **Android 10 / API 29 or newer**.
 
-The Kotlin code compiles and focused checks pass. **No APK/AAB has been generated or run on an Android device yet.** This document gives repeatable setup and validation commands, followed by the remaining work before a supported release.
+The current release configuration builds version **1.0.4**, Android `versionCode = 6`. Version 1.0.4 is built and published without new tests or build checks at the owner's request; the validation below describes the earlier 1.0.3 work. The procedures below cover offline asset staging, debug validation, private upload-key signing, and a Google Play AAB plus a directly installable APK. See the final validation section for what was actually checked, and [the Google Play guide](docs/android-google-play-release.md) for owner-account publication steps.
 
 ## 1. Understand what is implemented
 
@@ -12,11 +12,11 @@ The Kotlin code compiles and focused checks pass. **No APK/AAB has been generate
 | Launcher icon | Original `RcHcGame.dat` icon, enlarged without smoothing and padded for adaptive launcher masks; themed icons use its transparency mask. |
 | Offline files | `tools/prepare-android.mjs` stages the runtime and records file hashes; Gradle runs it before compilation. |
 | Local origin | `https://appassets.androidplatform.net/assets/www/index.html`, served from packaged assets with AndroidX WebViewAssetLoader. |
-| Native adapter | `src/android-host.js` uses the origin-restricted `RedCatAndroid` message endpoint. It does not impersonate Electron's `window.desktop`. |
+| Native adapter | `source/android-host.js` uses the origin-restricted `RedCatAndroid` message endpoint. It does not impersonate Electron's `window.desktop`. |
 | Display and input | Native fullscreen preference, system-bar/cutout insets, Back-button routing and existing touch/controller UI. |
-| Interruptions | Lifecycle/audio-focus messages suspend gameplay, audio, intro/outro video and background rendering, clear held input, and keep gameplay paused on return. |
+| Interruptions | Activity/window-focus messages suspend gameplay, audio, intro/outro video and background rendering, clear held input, and keep gameplay paused on return. |
 | Saves | Per-player localStorage latest save and IndexedDB recovery history; Android quit waits for pending recovery capture. Spelerlijst exports a selected player through the document picker. |
-| Failure handling | Readable startup/old-WebView errors, renderer retry, and an audio-focus retry overlay that preserves the current WebView. |
+| Failure handling | Readable startup/old-WebView errors and renderer retry without clearing local progress. |
 
 Android-specific behavior requires the native bridge. Ordinary desktop and mobile browsers keep their existing resolution, fullscreen, touch detection and audio behavior. Electron source and packaging recipes are unchanged. The intentional music looping/scheduling changes remain intact.
 
@@ -107,17 +107,17 @@ android/app/build/generated/gameAssets/
 ├── .redcat-android-assets.json    # Ownership marker, excluded from Android assets
 └── www/
     ├── index.html
-    ├── src/
+    ├── src/                    # Generated bundle, source map and runtime CSS
     ├── assets/
     ├── data/
     └── node_modules/three/       # Whole installed package, including LICENSE/addons
 ```
 
-The tool checks all five level metadata files, intro/outro MP4 and WebM files, and required Three.js files before replacing generated output. It preserves relative paths and filename case, rejects symlinks/unsafe output locations, and removes stale generated files only from output it owns. It does not include Electron, development dependencies other than Three.js, tests, original executables, the ISO or `temp_work/`.
+The tool checks all five level metadata files, intro/outro MP4 and WebM files, and required Three.js files before replacing generated output. It preserves relative paths and filename case, rejects symlinks/unsafe output locations, and removes stale generated files only from output it owns. It does not include the editable `source/` modules, Electron, development dependencies other than Three.js, tests, original executables, the ISO or `temp_work/`. Preparation first reads `source/` to regenerate the bundle; the installed app runs `src/game.bundle.js` without individual module requests.
 
 The initial 6 October staging contained **2,993 files / 195,051,239 bytes**, about **186 MiB** before APK compression; these historical measurements are not the size of the current source or a future APK. `asset-manifest.json` records deterministic per-file hashes and the combined content hash. The ownership marker contains local paths and is explicitly excluded by Gradle. Source changes cause Gradle to restage the assets; manual preparation is useful for inspection, but is not a required extra step before each Gradle compile.
 
-Do not edit staged files. Edit the shared source/assets instead. An advanced `--output` option is available for an owned output directory inside the project, but Gradle always uses the default directory above.
+Do not edit staged files or the generated bundle. Edit the shared `source/` modules or assets instead. An advanced `--output` option is available for an owned output directory inside the project, but Gradle always uses the default directory above.
 
 ## 5. Understand native behavior and storage
 
@@ -131,7 +131,9 @@ The native message endpoint is restricted to the main frame at that origin using
 
 Android fullscreen follows the saved setting and is on by default. Native insets keep controls away from system bars, cutouts and mandatory gesture edges. The existing touch on/off/auto preference remains available. Automatic Android render resolution preserves aspect ratio, limits the short edge to 720 pixels and limits total pixels to 1280 × 720; explicit resolution selections remain available. Ordinary browser/Electron automatic resolution is unchanged. This is an initial phone budget, not a measured performance guarantee.
 
-Back closes a submenu or pauses gameplay; from the pause menu it returns to the main menu, and from the main menu it saves and exits. Loading ignores game Back navigation until it finishes. Foreground state and audio focus control availability. When focus is denied/lost, a native retry panel covers the existing WebView without discarding it. Headphone removal also pauses playback.
+Back closes a submenu or pauses gameplay; from the pause menu it returns to the main menu, and from the main menu it saves and exits. Loading ignores game Back navigation until it finishes. Foreground and native window focus control availability. Headphone removal also pauses playback. WebView is the sole Android media-focus owner; the Activity does not make a competing audio-focus request. The first emulator run exposed a self-deadlock: WebView starting the game’s own menu WAV ducked the Activity request, which then paused that WAV and blocked level loading. Removing that second focus owner fixes both short announcements and longer media. The physical volume buttons control the media/game stream.
+
+WebView handles its media-focus duck/suspend/resume behavior. Background, window interruptions and headphone events additionally suspend the JavaScript game. A focus-only interruption from another app that leaves this window focused is provider/device dependent, especially for ambient or one-shot WebAudio; a blanket AudioContext-state hook would not reliably detect it. Check those cases on target hardware rather than claiming that every external interruption was verified.
 
 Backgrounding pauses game audio and its AudioContext, freezes rendering/simulation/save clocks, clears held input and suspends video without rewinding. Gameplay remains paused after returning; suspended video offers **Verder kijken**. A level that finishes loading while hidden also stays paused and silent. This does not change sound/music scheduling. See [Android audio focus](https://developer.android.com/media/optimize/audio-focus) and [activity lifecycle](https://developer.android.com/guide/components/activities/activity-lifecycle).
 
@@ -139,7 +141,7 @@ Backgrounding pauses game audio and its AudioContext, freezes rendering/simulati
 
 The stable app ID and HTTPS origin retain localStorage settings/latest save and IndexedDB 2/5/10-minute recovery history. Normal autosave continues, leaving gameplay captures a save, and Android Back from the main menu waits for recovery capture before asking Android to finish. The restored menu also provides **Stoppen**, with confirmation and the same save-before-quit handling. Debug uses `com.nostalgiarealm.redcatspookkasteel.debug`; release uses `com.nostalgiarealm.redcatspookkasteel`. These have separate saves, also separate from browser and Electron saves.
 
-Cloud backup/device transfer are explicitly disabled for this initial app. Uninstalling or clearing app data deletes its saves. Spelerlijst exports and imports one player’s latest save, campaign progress and per-player options through Android’s document picker; see [save backups](docs/save-export.md). Import validates the selected file and requires confirmation before replacing the selected player’s data. An automatic atomic app-private backup is not implemented. The Android document adapters have source checks, but still need a real document-provider/device pass. Do not promise survival of an arbitrary process kill from JavaScript checks alone: validate actual process-death and app-update persistence on Android before release.
+Cloud backup/device transfer are explicitly disabled for this initial app. Uninstalling or clearing app data deletes its saves. Spelerlijst exports and imports one player’s latest save, campaign progress and per-player options through Android’s document picker; see [save backups](docs/save-export.md). Import validates the selected file and requires confirmation before replacing the selected player’s data. An automatic atomic app-private backup is not implemented. The Android document adapters have source checks and a Downloads-provider pass in the recorded Android 16 emulator; physical-device/provider coverage remains. Do not promise survival of an arbitrary process kill from JavaScript checks alone: validate actual process-death and app-update persistence on Android before release.
 
 Renderer termination shows a retry screen; after reopening, use **Verder spelen** to restore the latest stored save. Missing bridge support or startup failure shows a readable error. A tested minimum WebView version and complete WebGL context-loss recovery still need device validation.
 
@@ -175,9 +177,9 @@ Gradle tasks above compile Kotlin/resources, run JVM tests, merge assets and lin
 
 Evidence is under `temp_work/android-initial-2026-10-06/`: `validation-summary.json`, `host-unit-tests.log`, `native-validation-summary.json`, `native-final-validation-02.log`, `native-lint-final.txt`, `staged-assets-check.json`, and retained scene reports. The cleanup removed scene profiles and screenshots; retained reports describe their checks. Initial failed setup/check attempts are retained too; the summary identifies the final successful runs. Windows desktop execution and actual Android execution were not tested during this work.
 
-## 7. Build a debug APK later, when ready for device testing
+## 7. Build and install a debug APK
 
-These are available commands, **not commands run during this initial implementation**:
+From the prepared shell above:
 
 ```sh
 cd android
@@ -196,17 +198,118 @@ adb logcat -d > temp_work/android-local-validation/device-logcat.txt
 adb shell dumpsys webviewupdate > temp_work/android-local-validation/device-webview.txt
 ```
 
-Do not call the Android version supported until the device checks below pass.
+The debug APK has a separate app ID and storage. Emulator results do not establish performance or compatibility on every physical Android device.
 
-## 8. Complete device validation and release work
+## 8. Sign and build the Google Play release
 
-1. **Offline launch and media:** test cold launch in airplane mode, menu, both intro/outro formats, media seeking, textures, binary level data and WAV audio. Record WebView provider/version and establish its minimum; check ES modules/import maps, WebGL 2, Web Audio and IndexedDB.
-2. **OS/device matrix:** test the API-36 target on Android 16, an API-29 emulator and physical Android 10 hardware, plus a low-end ARM64 device. Check portrait/landscape, rotation, cutouts, multi-window and system-edge gestures.
-3. **Interruptions and saves:** test Home, lock/unlock, calls/audio focus, headphones, process death, app relaunch and updates. Verify latest and older recovery saves, plus document-picker export/import, cancellation, invalid files and error handling. Add an acknowledged atomic app-private backup if WebView persistence proves insufficient. The implemented JSON import is a manual recovery/transfer option, not an automatic backup.
-4. **Controls and campaign:** test simultaneous movement/look/jump/shoot, charged shots, SuperSkippie, skipping, settings, cheats, debriefing and real USB/Bluetooth controllers. Then make one deliberate five-level campaign pass including bosses, portals and complete audio loops.
-5. **Performance/recovery:** measure long-session frame times, RAM, GPU resources, texture/audio memory and heat, especially the Graveyard. Preserve existing streaming and bounded AI; distant scripts/collision still need to run. Validate renderer termination and WebGL context loss without silently discarding progress.
-6. **Distribution:** measure APK download/install size. Bundled assets are the initial design; use [Play Asset Delivery](https://developer.android.com/guide/playcore/asset-delivery) only if needed. Configure and securely retain release signing credentials outside source control, then test the signed build itself.
+Use an existing upload key if this application already exists in Play Console. For a new app, create an upload key once and keep it for future releases. Do not regenerate it for each build. Keep both the keystore and passwords outside the repository; the signed AAB does not contain the private key.
 
-Release signing is **not configured**. After adding a release signing configuration, the standard tasks are `:app:assembleRelease` for an APK and `:app:bundleRelease` for an AAB. An AAB is a publishing artifact, not directly installable with `adb install`. Increase `versionCode` for updates and retain the signing identity. No native game libraries are bundled, but if plugins/native dependencies are introduced, check ABIs and [16 KB page-size compatibility](https://developer.android.com/guide/practices/page-sizes).
+Select JDK 21 and the SDK as in section 3. To generate a new key yourself, use an absolute private path outside the project, for example:
 
-The next milestone is an offline Level 1 run on real Android hardware with reliable touch, audio and save/resume. Compilation and browser emulation do not establish that milestone by themselves.
+```sh
+mkdir -p "$HOME/.local/share/redcat-spookkasteel/android-signing"
+chmod 700 "$HOME/.local/share/redcat-spookkasteel/android-signing"
+keytool -genkeypair -storetype PKCS12 \
+  -keystore "$HOME/.local/share/redcat-spookkasteel/android-signing/upload-key.p12" \
+  -alias redcat-upload -keyalg RSA -keysize 4096 -validity 10000 \
+  -dname "CN=NostalgiaRealm Android Upload"
+```
+
+The command prompts for a password. In that private directory, create `signing.properties` with these four Java-properties entries. Replace the placeholders with the real absolute filename, alias and passwords. With PKCS12, use the same store and key password. Escape backslashes on Windows paths, or use forward slashes. Do not put this file in Git or a release archive.
+
+```properties
+storeFile=/absolute/private/path/upload-key.p12
+storePassword=YOUR_STORE_PASSWORD
+keyAlias=redcat-upload
+keyPassword=YOUR_KEY_PASSWORD
+```
+
+Restrict permissions and build from the project root:
+
+```sh
+chmod 600 "$HOME/.local/share/redcat-spookkasteel/android-signing/"*
+export REDCAT_ANDROID_SIGNING_PROPERTIES="$HOME/.local/share/redcat-spookkasteel/android-signing/signing.properties"
+npm run build:android
+```
+
+`tools/build-android.mjs` checks version agreement, runs `:app:assembleRelease` and `:app:bundleRelease`, and copies the signed outputs plus content manifest/checksums to:
+
+```text
+dist/android/1.0.4/
+  RedCat-Spookkasteel-1.0.4-android.aab
+  RedCat-Spookkasteel-1.0.4-android.apk
+  asset-manifest.json
+  SHA256SUMS.txt
+```
+
+Release tasks fail if signing credentials are absent instead of presenting an unsigned artifact as ready. Debug tasks do not require release credentials. `REDCAT_ANDROID_SIGNING_PROPERTIES` is read at Gradle configuration time; it is not embedded in the app. The helper keeps temporary build work under `temp_work/`. It does not launch or test the release APK.
+
+Upload the **AAB** to Google Play's internal testing track first. The **APK** is for direct installation outside Play. With Play App Signing, Google may use a different app-signing certificate from this upload key, so the direct APK and Play installation may not update each other. Export saves before switching incompatible installations. Back up the private signing directory separately and securely.
+
+### Inspect the release artifacts
+
+Google's [bundletool](https://developer.android.com/tools/bundletool) validates the AAB and estimates Play delivery size. This pass uses official `bundletool-all-1.18.3.jar`, SHA-256 `a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29`, downloaded from [Google's release](https://github.com/google/bundletool/releases/tag/1.18.3). The digest matches GitHub's published asset digest.
+
+```sh
+export REDCAT_BUNDLETOOL="$PWD/temp_work/android-release-1.0.3-2026-10-26/toolchain/bundletool-all-1.18.3.jar"
+java -jar "$REDCAT_BUNDLETOOL" validate \
+  --bundle=dist/android/1.0.3/RedCat-Spookkasteel-1.0.3-android.aab
+jarsigner -verify dist/android/1.0.3/RedCat-Spookkasteel-1.0.3-android.aab
+"$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs \
+  dist/android/1.0.3/RedCat-Spookkasteel-1.0.3-android.apk
+"$ANDROID_HOME/build-tools/36.0.0/zipalign" -c -P 16 -v 4 \
+  dist/android/1.0.3/RedCat-Spookkasteel-1.0.3-android.apk
+(cd dist/android/1.0.3 && sha256sum -c SHA256SUMS.txt)
+```
+
+Self-signed upload certificates are expected for Android and do not need a public CA. An AAB is a signed ZIP publishing format; `apksigner` checks APKs, while `jarsigner` checks AABs. Preserve the public certificate separately when configuring or resetting an upload key. Do not publish the private keystore/password files.
+
+## 9. Validation scope and remaining device checks
+
+### Completed on 26 October 2026
+
+Both signed release tasks completed successfully from the source snapshot recorded
+in `temp_work/android-release-1.0.3-2026-10-26/`. These artifacts predate the
+later JavaScript bundling, efficiency and source-folder changes; they are not
+a build of the latest working tree. Rebuild before publishing those later
+changes. The file sizes and checks below belong to that recorded build:
+
+| Artifact | Size | Use |
+| --- | ---: | --- |
+| `dist/android/1.0.3/RedCat-Spookkasteel-1.0.3-android.aab` | 109,625,032 bytes | Google Play upload |
+| `dist/android/1.0.3/RedCat-Spookkasteel-1.0.3-android.apk` | 156,720,185 bytes | Direct installation |
+
+Checksums, the runtime manifest, `release-verification.json`, public `upload-certificate.pem` and `PLAY-STORE-README.md` accompany them. Bundletool generated Play-style APKs and estimated a download of **108,196,436–108,197,556 bytes**; Play Console calculates the final size.
+
+- **3,086 runtime files / 196,129,990 source bytes** matched between that source snapshot, staging, AAB and APK, including all five levels and version 1.0.3 metadata.
+- Bundle structure, AAB signature, APK v2 signature and ZIP alignment pass. Both packages match the upload certificate. No native `.so` libraries, private signing files or workstation staging marker are packaged. Debugging is disabled; target/minimum are 36/29; there is no INTERNET or broad-storage permission. AndroidX's app-specific signature permission for non-exported receivers is present.
+- **10 JVM tests, 16 staging/host source tests, 9 simulated Android-host scenes and 6 desktop/mobile-browser scenes** pass. Lint has **0 errors**; remaining warnings concern newer tools/dependencies, an API-33 attribute and an empty obsolete resource-folder qualifier.
+- An isolated **Android 16/API 36 x86_64 emulator**, WebView **133.0.6943.137**, ran the debug APK offline: intro/unmuted media, original menu, Level 1, simultaneous movement/look, jump/shoot input, cutscene skip, Back/Home pause/resume, rotation, local save, force-stop and in-place APK update persistence, and actual Downloads-provider export/import/cancel. Offline media returns correct byte-range **206** responses.
+- Runtime evidence uses the **debug APK**. The release artifacts were inspected without launching them. Physical Android 10/ARM64 devices, a complete Android campaign and Play Console approval remain unverified.
+
+`jarsigner` verifies the AAB. Self-signed/no-timestamp warnings are normal for an Android upload key. It also reports AGP ZIP manifest ordering for streaming `JarInputStream`; the random-access signature verification and bundletool validation/generation pass. This does not indicate an unsigned bundle.
+
+A new upload key was prepared for this first completed Android build at `/home/rick/.local/share/redcat-spookkasteel/android-signing/`. The private keystore, password and `signing.properties` are permission-restricted, outside the repository, and unpublished. **Back up that directory securely.** Certificate SHA-256: `3f5151f0a41503ef65e27e72eb4d2e90c6384a31d91c05452e8f7f58bf22d22a`. If an existing Play app uses another registered upload key, rebuild with that existing key.
+
+The consolidated evidence is `temp_work/android-release-1.0.3-2026-10-26/android-release-result.json`; `verification/`, `emulator/`, `assets/` and `native/` retain detailed reports. Initial fixture failures are distinguished from the real audio-focus and rendering-budget bugs fixed before release packaging.
+
+To repeat signature and complete current-source payload verification after rebuilding:
+
+```sh
+python3 tools/verify-android-release.py \
+  --bundletool "$REDCAT_BUNDLETOOL" \
+  --output temp_work/android-release-verification
+```
+
+
+The current evidence is retained under `temp_work/android-release-1.0.3-2026-10-26/`. Android source changes are isolated to the native host and Android-only rendering/privacy branches. Focused source checks cover staging privacy/content, native bridge/lifecycle, and ordinary desktop/mobile-browser behavior. Historical results in section 6 remain historical rather than current-device claims.
+
+Before production rollout, perform the account/device checks in [the Play release guide](docs/android-google-play-release.md):
+
+1. Install through Play's test track and exercise a physical Android 10 device and a recent Android 16 device. Record WebView versions, portrait/landscape, cutouts, multi-window and system gestures.
+2. Test calls/audio interruptions, headphones, lock/unlock, process termination and updates. Check save/recovery persistence and document import/export with the providers you use.
+3. Exercise simultaneous movement/look/jump/shoot, charged shots, SuperSkippie, skipping, settings, debriefing and USB/Bluetooth controllers, then a complete five-level campaign on Android.
+4. Measure sustained frame times, RAM and heat on low-end ARM64 hardware, especially the Graveyard. An emulator on a desktop GPU cannot establish phone performance.
+5. Publish the supplied privacy policy, complete truthful Play Console declarations/store assets, inspect the pre-launch report and satisfy any account-specific testing requirements.
+
+No Play Console upload or approval is implied by compilation. The stable app ID, local content origin and signing key must be retained for updates; increment `versionCode` for each new Play upload. There are no native game libraries in the current design; recheck ABI and [16 KB page-size compatibility](https://developer.android.com/guide/practices/page-sizes) if native libraries are added later.

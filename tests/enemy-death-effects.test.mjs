@@ -2,12 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Group,Mesh,BoxGeometry,MeshBasicMaterial,Texture} from 'three';
-import {Gameplay} from '../src/gameplay.js';
-import {ghostMaterials} from '../src/ghost-materials.js';
-import {enemyDeathOpacity,applyEnemyDeathOpacity,EnemyDeathEffects,initializeDeathSmoke,deathSmokeParticle,DEATH_SMOKE_TEXTURE,DEATH_SMOKE_COLOR} from '../src/enemy-death-effects.js';
-import {CastleWorld} from '../src/world.js';
-import {KNIGHT_PARTS,createKnightDebrisParticles,knightDebrisLifetime} from '../src/knight-debris.js';
-import {stepNativeDebris} from '../src/debris-native.js';
+import {Gameplay} from '../source/gameplay.js';
+import {ghostMaterials} from '../source/ghost-materials.js';
+import {enemyDeathOpacity,applyEnemyDeathOpacity,EnemyDeathEffects,initializeDeathSmoke,deathSmokeParticle,DEATH_SMOKE_TEXTURE,DEATH_SMOKE_COLOR} from '../source/enemy-death-effects.js';
+import {CastleWorld} from '../source/world.js';
+import {KNIGHT_PARTS,createKnightDebrisParticles,knightDebrisLifetime} from '../source/knight-debris.js';
+import {stepNativeDebris} from '../source/debris-native.js';
 
 const level={id:'death-fixture',spawn:{position:[0,0,0],orientation:0},entities:[{classname:'MovingEnemy','%name%':'zombie',DaviName:'zombie',Type:'4',SubType:'1',Origin:'0 0 0'}]};
 function fixture(){const game=new Gameplay(level),object=game.objects[0];object.animationDurations={death:1.6};return {game,object};}

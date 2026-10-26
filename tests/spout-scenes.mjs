@@ -66,7 +66,7 @@ try{
   await writeFile(path.join(out,`${fixture.name}.png`),Buffer.from(result.image,'base64'));delete result.image;results.push(result);
  }
  const hands=process.env.SPOUT_HANDS==='0'?null:await page.evaluate(async()=>{
-  const app=window.__redcat,{handTorchTip}=await import('/src/torch-flames.js');await app.startLevel(2);app.pause();document.getElementById('pause').hidden=true;
+  const app=window.__redcat,{handTorchTip}=await import('/source/torch-flames.js');await app.startLevel(2);app.pause();document.getElementById('pause').hidden=true;
   const w=app.world,g=app.gameplay,fx=w.effects;for(const p of g.scripts.players.values())p.stop();g.scripts.cutscene=false;g.scripts.camera=null;
   const record=fx.torches.records[0];if(!record)throw new Error('Original hand torch missing');
   const state=fx.entries.get(record.emitter.id),origin=record.position;w.camera.position.set(origin[0]+80,origin[1]+35,origin[2]+100);w.camera.lookAt(...origin);w.updateRenderResidency();await w.geometryStream.settle();

@@ -70,13 +70,14 @@ performance on a low-end device or eliminate every possible hitch elsewhere.
 
 ## Retained evidence and reproducibility
 
-All harnesses, profiles, captures, source hashes and reports are retained in
+Retained harnesses, source hashes and reports are in
 [`temp_work/release-housekeeping-2026-10-15`](../temp_work/release-housekeeping-2026-10-15/).
 The compact [source validation report](../temp_work/release-housekeeping-2026-10-15/source-validation-summary.json)
-links the results by check and distinguishes their scope. Main captures/reports:
+links the results by check and distinguishes their scope. Disposable profiles
+and captures were removed in the [22 October cleanup](../temp_work/cleanup-2026-10-22/README.md);
+the historical observations remain in these reports:
 
-- [Native desktop/profile run](../temp_work/release-housekeeping-2026-10-15/platform-1792090299506/report.json)
-  and [actual window capture](../temp_work/release-housekeeping-2026-10-15/platform-1792090299506/native-window.png).
+- [Native desktop/profile run](../temp_work/release-housekeeping-2026-10-15/platform-1792090299506/report.json), including the recorded actual-window check.
 - [Controller run](../temp_work/release-housekeeping-2026-10-15/controller-scenes-1792090080978/report.json).
 - [Touch-only follow-up](../temp_work/release-housekeeping-2026-10-15/platform-1792090382460/report.json).
 - [Circling measurements](../temp_work/release-housekeeping-2026-10-15/circling-verification-1792090130094/report.json).

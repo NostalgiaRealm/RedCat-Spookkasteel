@@ -14,8 +14,8 @@ opacity directly from their age. That skipped three independent timer states
 in the shared native `CParticle` implementation: lifetime, fade delay and fade
 duration. It also skipped the original integer alpha conversion.
 
-`src/particle-clock-native.js` now implements the recovered clocks, used by
-`src/fairy-effects.js` and `src/teleporter-effects.js`:
+`source/particle-clock-native.js` now implements the recovered clocks, used by
+`source/fairy-effects.js` and `source/teleporter-effects.js`:
 
 - The first particle update arms lifetime and fade-delay deadlines. Expiration
   uses `now > deadline`; a particle still lives and moves at exact equality.
@@ -96,7 +96,7 @@ are preserved.
 
 ## Reviewed areas that did not require changes
 
-- **Menu actions and voices:** `src/original-menu.js` and `src/menu-audio.js`
+- **Menu actions and voices:** `source/original-menu.js` and `source/menu-audio.js`
   were compared with the retained menu handlers and
   [menu recovery findings](../temp_work/native-menu-restoration-2026-10-20/behavior/findings.md).
   Native home choice handlers `0x56114c`, `0x5611a0`, `0x5611f4`, home-show

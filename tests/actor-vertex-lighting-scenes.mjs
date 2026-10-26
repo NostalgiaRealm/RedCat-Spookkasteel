@@ -13,8 +13,8 @@ try {
   await page.goto('http://127.0.0.1:4297/?skipIntro');await page.waitForFunction(()=>window.__redcat);
   const reports=await page.evaluate(async()=>{
     const THREE=await import('three');
-    const {createActorLighting,updateActorLighting,applyActorLighting}=await import('/src/actor-lighting.js');
-    const {sampleActorDynamicLights,shadeActorVertexRaw}=await import('/src/actor-light-sampling.js');
+    const {createActorLighting,updateActorLighting,applyActorLighting}=await import('/source/actor-lighting.js');
+    const {sampleActorDynamicLights,shadeActorVertexRaw}=await import('/source/actor-light-sampling.js');
     const renderer=new THREE.WebGLRenderer({antialias:false,preserveDrawingBuffer:true});renderer.setSize(64,32,false);
     renderer.outputColorSpace=THREE.SRGBColorSpace;
     const reports=[];
