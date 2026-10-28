@@ -81,24 +81,13 @@ runtime behavior or sustained performance on a low-end machine. The original
 menu, all 38 mapped Help topics and save export are implemented, as described in
 the [1.0.1 notes](../RELEASE_NOTES_1.0.1).
 
-The remaining work falls into validation, test maintenance, optional additions
-and fidelity polish:
+The remaining work is optional fidelity research and polish. Play in real
+browsers and on devices, launching the packages, full campaign playthroughs
+and side-by-side comparison with the original are the owner's own checks (see
+[owner's manual checks](claude-native-parity-review.md#owner-checks)); they are
+not listed here.
 
-1. **Validate long-session media on the intended runtime.** Audio release now
-   explicitly destroys the browser player; focused checks observed 66 matching
-   creations/destructions and successful outro startup. The complete campaign
-   preceded this small cleanup change. Its successful normal reload retry
-   establishes a working outro asset, but not the cause of the initial error.
-   Keep the failure and separate secret/fixture setup scopes visible.
-2. **Extend current-release coverage on actual devices.** Six 1.0.3 desktop
-   archives and signed Android APK/AAB files have been produced. Build success,
-   upload verification and the focused Android emulator run do not establish a
-   full current-release campaign on physical hardware. Check controls,
-   fullscreen/resolution, audio/video, persistence and sustained performance.
-   See [platform validation and remaining checks](portability.md) for the exact
-   desktop, browser and Android boundaries. The earlier Normal campaign does
-   not establish a single 100% collection run or every difficulty.
-3. **Optional exact-fidelity investigation.** Remaining boundaries are native
+1. **Optional exact-fidelity investigation.** Remaining boundaries are native
    global RNG/dispatcher ordering, collision tolerances and a full native-runtime
    battle comparison. The recovered behavior described next is already
    implemented, not an outstanding feature list: ordinary authored chase uses
@@ -129,8 +118,10 @@ and fidelity polish:
    positions, velocities and spin; bounded saved-age replay remains only for
    older saves. Portable collision tolerances still differ. See
    [armour recovery](enemy-death-effects-native.md) and [effect continuity](effects-save-continuity.md).
-4. **Treat small presentation differences as polish.** Camera collision and
-   compensation retain documented portability boundaries. Generic smoke/flame
+2. **Treat small presentation differences as polish.** The follow camera and
+   steering follow the original since 28 October ([native camera](native-camera.md));
+   the wall lift, low-ceiling fallback, direct look and first person are
+   requested additions. Generic smoke/flame
    particle pools, knight fragments and audio playback now survive new saves;
    older saves without those fields cannot recover their lost state. New
    breakable-prop saves also retain live fragment poses, velocity, spin, contacts
@@ -141,24 +132,18 @@ and fidelity polish:
    Preserve the requested overhead camera protection near walls,
    anti-stuck recovery, bounded lighting/navigation work and deliberate audio
    changes; they are not missing features to undo.
-5. **Backup restoration is now implemented.** Spelerlijst exports and imports
+3. **Backup restoration is now implemented.** Spelerlijst exports and imports
    the selected player’s JSON backup, with validation and replacement
    confirmation. Other players, shared settings and existing recovery points
    remain intact. This is a portable convenience feature; original RCR files
    are still unsupported. See [the format and limits](save-export.md).
-6. **Refresh older test fixtures.** The 18 October CPU pass recorded six failures
-   in older actor-collision, destructible-threshold and enemy-animation fixtures,
-   reproduced on its pre-edit baseline. The current fixtures still contain the
-   assumptions identified then: collision stability before a blend settles,
-   incomplete turret/player initialization, discarded explosion visuals after
-   restore and a minimal gameplay fake for a full frame update. They need
-   focused maintenance and reruns; this audit did not rerun or certify the
-   broader test suite. The 49 passing release checks do not cover these old
-   failures. See [the recorded fixture limitations](browser-cpu-performance-followup.md#correctness-and-scope).
+4. **Older test fixtures: resolved.** The fixture assumptions recorded on
+   18 October were repaired or the obsolete tests removed during the parity
+   review; since 28 October the full unit suite (1630 tests) and all 111
+   browser scenes pass. See [the parity review validation](claude-native-parity-review.md#validation).
 
-Android device readiness and Mac/ARM hardware validation are separate platform
-milestones. Original RCR save import is optional migration functionality. Neither
-should be confused with a missing level, puzzle or boss system in the existing
+Original RCR save import is optional migration functionality. It should not be
+confused with a missing level, puzzle or boss system in the existing
 desktop/web game. There is no defensible completion percentage from a source
 audit alone.
 
@@ -170,8 +155,13 @@ events, voices, door audio, cutscene endings, scripted cameras, FlashEffect,
 pickups, hearts, the player box, jumping and music gain with the original
 executable. The approved corrections are recorded, one entry per issue, in
 [the parity review](claude-native-parity-review.md), together with its
-coverage table and the items left documented only (D4, D6, D7, D10). Where a
-row below conflicts with that review, the review is current.
+coverage table. D4, D6, D7 and D10, first documented only, were implemented on
+28 October with the other open issues (entry L7): the original retry screen,
+the enemy think gate and 500 ms sight cadence, the guardian Easy defaults and
+the script APIs, besides the camera and steering rebuilt from the original
+(entries L1–L4). Released as 1.0.6 with 1630/1630 unit tests and all 111
+browser scenes passing. Where a row below conflicts with that review, the
+review is current.
 
 ## Follow-up implementation and corrected findings
 

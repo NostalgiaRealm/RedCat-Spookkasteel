@@ -137,8 +137,8 @@ tick, and `tests/native-parity-review.test.mjs` checks this case.
   that both the game-over retry and the pause menu's restart restore the entry
   state (health, maximum health, lives, score, mirror parts, abilities), with
   potions back at 0.
-- **Limitations:** the native “Opnieuw proberen? Ja/Nee” screen is not
-  restored (D6).
+- **Later:** the native “Opnieuw proberen? Ja/Nee” screen (D6) was added on
+  28 October; see [L7](#l7). Ja uses this entry-state restore.
 
 <a id="4"></a>
 ## 4. Finishing the adventure closes it out
@@ -157,8 +157,9 @@ tick, and `tests/native-parity-review.test.mjs` checks this case.
   in the browser app: debriefing, outro and back to the menu. It checks that
   the final score is in the highscore table and that the original menu no
   longer offers the completed adventure to continue.
-- **Limitations:** the native redirect of the next Avontuur to the difficulty
-  page uses the port's existing new-adventure flow.
+- **Next Avontuur:** with the completed adventure no longer offered to
+  continue, **Avontuur** opens the difficulty page, as the original's menu
+  does (`source/original-menu.js`). No difference remains here.
 
 <a id="5"></a>
 ## 5. Chapter starting abilities only for quick play
@@ -195,8 +196,11 @@ tick, and `tests/native-parity-review.test.mjs` checks this case.
 - **Files:** `source/enemy-perception-native.js`, `source/gameplay.js`, `source/world.js`.
 - **Validation:** `tests/enemy-committed-attacks.test.mjs` and the enemy
   suites pass.
-- **Limitations:** the fallback segment is an approximation used only without
-  artwork.
+- **Later (28 October, [L7](#l7)):** the rendered segment gained the
+  original's `[1,1,1]` scale-vector offset, and `source/knight-pose-native.js`
+  poses the knight skeleton without geometry, matching the rendered result.
+  Gameplay uses it when given the knight data. The frontal AttackRange segment
+  remains only for a knight with neither artwork nor skeleton data.
 
 <a id="7"></a>
 ## 7. Enemy sight and facing
@@ -343,12 +347,13 @@ tick, and `tests/native-parity-review.test.mjs` checks this case.
   - The bat idle loops at 0.4.
   - Walk cues are removed.
   - Lethal hits emit hurt before destroy.
-  - `unawareChatter` runs for the five families within the 1600-unit think radius, every 0.25 s.
+  - `unawareChatter` runs for the five families within the 1600-unit think radius.
 - **Files:** `source/gameplay-audio.js`, `source/gameplay.js`, `source/enemy-perception-native.js`.
 - **Validation:** `tests/gameplay-audio.test.mjs` (new cases for bosses, the
   drop rule and bat loops).
-- **Limitations:** natively the idle cadence is 4–5 ms (back to back). The
-  port polls every 0.25 s, so a cue starts at most 0.25 s after the previous one ends.
+- **Later (28 October, [L7](#l7)):** the idle chatter uses the native 4–5 ms
+  arm-and-request timer, so it runs back to back as in the original; the
+  former 0.25 s poll is gone.
 
 <a id="13"></a>
 ## 13. Door lock sounds, ErrorSound and the BIG BENG charge (with D3)
@@ -438,7 +443,8 @@ tick, and `tests/native-parity-review.test.mjs` checks this case.
   (`FLOOR_NORMAL_Y` in `source/collision.js`). Movement recovery keeps its own 0.65.
 - **Validation:** `tests/door-activation.test.mjs` (native box edges) and
   `tests/native-parity-review.test.mjs` (pickup box).
-- **Limitations:** the slope change has no dedicated sloped-brush test.
+- **Later (28 October, [L7](#l7)):** a real sloped BSP brush now tests the 0.7
+  limit (`tests/native-parity-review.test.mjs`).
 
 <a id="d1"></a>
 ## D1. Native player box
@@ -655,7 +661,8 @@ with its approval; the details are in the linked documents.
   int 500 at `0x68f7f0`, in `0x422fb0`). Between tests the cached result
   stands, and a cached sighting keeps refreshing the last-seen time. Memory
   now ends when the elapsed time reaches TimeToRememberVisual (`0x422f30`,
-  strict less-than). Traced in the follow-up (`research-r4/`) and now
+  strict less-than). Traced in the follow-up (a read-only research pass
+  whose findings are recorded here; it kept no files) and now
   reproduced:
   - **Think gate.** Each enemy recomputes its think-radius flag on every
     14th update (`+0xe0 > 13`); counter and flag start at zero in the actor

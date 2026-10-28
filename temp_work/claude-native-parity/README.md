@@ -75,5 +75,6 @@ Added for the open-issues pass (28 October 2026, review entry L7):
 - `tools/move-older-run-outputs.py`: the same move for untracked run folders
   of any date (`logs/moved-older-run-outputs.txt`, 58 folders). It skips this
   folder and any run folder a document cites.
-- `research-r4/` (enemy sight clock) and `research-r5/` (retry screen timing):
-  notes from the follow-up passes.
+- `research-r5/` (retry screen timing): notes and scripts from the follow-up
+  pass. The enemy sight-clock pass kept no files; its findings are recorded
+  under D10 in the parity review.
