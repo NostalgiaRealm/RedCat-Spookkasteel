@@ -4,8 +4,10 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
 export async function verifyEffectScenes(page) {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   await page.evaluate(async()=>{
     const app=window.__redcat;await app.startLevel(2);app.pause();document.getElementById('pause').hidden=true;
     const world=app.world,game=app.gameplay,host=game.scripts,THREE=await import('three');
@@ -27,7 +29,7 @@ export async function verifyEffectScenes(page) {
   const flames=await page.evaluate(()=>{
     const world=window.__redcat.world,effects=world.effects;
     for(let i=0;i<60;i++)world.update(.025,{forward:0,right:0});
-    world.camera.position.set(1504,105,2040);world.camera.lookAt(1504,94,2184);effects.update(0);
+    world.camera.position.set(1504,105,2040);world.camera.lookAt(1504,94,2184);world.camera.updateMatrixWorld(true);effects.update(0);
     const state=effects.entries.get('EffectSpoutEntity1'),batch=effects.batches.get('flame03.bmp|a_flame.bmp');
     const pixels=window.__effectsFixture.pixels(()=>batch.mesh.visible=false,()=>batch.mesh.visible=true);
     const before=[...batch.positions.array.slice(0,batch.count*3)];world.update(.1,{forward:0,right:0});
@@ -35,17 +37,25 @@ export async function verifyEffectScenes(page) {
     return {emitters:[...effects.entries.values()].filter(e=>e.object.entity.classname==='EffectSpoutEntity').length,
       count:batch.count,localParticles:state.particles.length,pixels,age:state.age,movedCoordinates,originalTexture:batch.mesh.material.uniforms.map.value.image.src};
   });
-  assert.equal(flames.emitters,29);assert.ok(flames.count>29);assert.ok(flames.localParticles>0);assert.ok(flames.pixels>10,JSON.stringify(flames));
-  assert.match(flames.originalTexture,/assets\/effects\//);assert.ok(flames.movedCoordinates>29);
-  await page.screenshot({path:'artifacts/graveyard-original-flame.png'});
-  const lighting=await page.evaluate(()=>{
+  // 29 authored spouts plus the 8 hand-torch flames added in the graveyard (docs/torch-flames.md).
+  // Flame billboards are culled to the view frustum and range each frame
+  // (docs/gpu-effect-buffer-residency.md): the batch holds at least the viewed spout's particles.
+  assert.equal(flames.emitters,37);assert.ok(flames.count>0&&flames.count>=flames.localParticles,JSON.stringify(flames));assert.ok(flames.localParticles>0);assert.ok(flames.pixels>10,JSON.stringify(flames));
+  assert.match(flames.originalTexture,/assets\/effects\//);
+  // With view culling, compare against the visible particles: most of their coordinates must move in 0.1 s.
+  assert.ok(flames.movedCoordinates>=flames.count*3*2/3,JSON.stringify(flames));
+  await page.screenshot({path:sceneOutput('artifacts/graveyard-original-flame.png')});
+  const lighting=await page.evaluate(async()=>{
     const world=window.__redcat.world,game=world.gameplay,effects=world.effects,light=game.find('seclight1')[0];
-    world.camera.position.set(-3060,650,-2350);world.camera.lookAt(-3192,610,-2488);game.command(light,'enable');effects.update(0);
+    world.camera.position.set(-3060,650,-2350);world.camera.lookAt(-3192,610,-2488);
+    // Residency and geometry streaming follow the camera: settle them for this hand-placed view.
+    world.camera.updateMatrixWorld(true);world.updateRenderResidency();await world.geometryStream.settle();await world.settleActorTextures();
+    game.command(light,'enable');effects.update(0);
     const pixels=window.__effectsFixture.pixels(()=>{game.command(light,'disable');effects.update(0);},()=>{game.command(light,'enable');effects.update(0);});
     return {pixels,active:effects.entries.get(light.id).active,lights:effects.lights.length,patchedMaterials:effects.patchedMaterials.length};
   });
   assert.ok(lighting.pixels>100,JSON.stringify(lighting));assert.equal(lighting.active,true);assert.ok(lighting.lights>0);assert.ok(lighting.patchedMaterials>0);
-  await page.screenshot({path:'artifacts/graveyard-dynamic-light.png'});
+  await page.screenshot({path:sceneOutput('artifacts/graveyard-dynamic-light.png')});
   const activation=await page.evaluate(()=>{
     const world=window.__redcat.world,game=world.gameplay,effects=world.effects,trigger=game.find('savepoint_1_tr')[0],beacon=game.find('savepoint1_fx')[0];
     const before=beacon.enabled;trigger.enabled=true;world.player.position=[1359.5,-63.95,-162];world.player.velocityY=0;world.player.grounded=true;
@@ -65,14 +75,14 @@ export async function verifyEffectScenes(page) {
     return {frames,pixels,vertical,age:state.age};
   });
   assert.deepEqual(stages.frames.map(frame=>frame.count),[1,6,7]);assert.ok(stages.pixels>10,JSON.stringify(stages));assert.ok(stages.vertical);
-  await page.screenshot({path:'artifacts/graveyard-save-beacon.png'});
+  await page.screenshot({path:sceneOutput('artifacts/graveyard-save-beacon.png')});
   const restored=await page.evaluate(async()=>{
     const app=window.__redcat,id=window.__effectsFixture.beaconId;
     const age=app.world.effects.entries.get(id).age;app.saveGame(true);await app.loadSave();app.pause();
     const entry=app.world.effects.entries.get(id);return {age,beforeReload:age,afterReload:entry.age,enabled:entry.object.enabled,rays:app.world.effects.beams.length};
   });
   assert.ok(Math.abs(restored.afterReload-restored.beforeReload)<.2);assert.equal(restored.enabled,true);assert.equal(restored.rays,7);
-  await writeFile('artifacts/effects-scenes.json',JSON.stringify({flames,lighting,activation,stages,restored},null,2)+'\n');
+  await writeFile(sceneOutput('artifacts/effects-scenes.json'),JSON.stringify({flames,lighting,activation,stages,restored},null,2)+'\n');
   console.log('PASS original graveyard flame pixels, authored dynamic light contribution, checkpoint-triggered six-spoke/upward beacon and save restoration.');
 }
 
@@ -82,6 +92,7 @@ if(import.meta.url===pathToFileURL(process.argv[1]).href) {
   try {
     browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
     const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+    await unlockChapters(page);
     page.on('pageerror',error=>errors.push(error.stack));page.on('console',message=>{if(message.type()==='error')errors.push(message.text());});
     page.on('response',response=>{if(response.status()>=400)errors.push(`${response.status()} ${response.url()}`);});
     await page.goto('http://127.0.0.1:4187/?skipIntro');await page.waitForFunction(()=>window.__redcat);

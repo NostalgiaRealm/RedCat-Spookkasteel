@@ -32,12 +32,19 @@ indices are bats 0–2, ghosts 3–5, spiders 6–8, both Brutus variants 9,
 Jester Max 10, Dungeon Max 11, skeleton 12, zombie 13, knight 14,
 guardian 15, witch 16, gargoyle 17, frog 18 and plant 19.
 
+Despite its name, `CRcHudIconAnimation` (vtable `0x64d2d0`) only selects a
+frame; it has no timer, so neither portrait is animated. The enemy bar clamps
+its maximum to 20 (`0x4515c0`) and the current value to that maximum
+(`0x4515a0`); the port does the same since 28 October.
+
 `RCTargetList` at `0x42c280`/`0x42cb60` caches selection for 500 ms,
 checks distance and half the caller's cone, sorts candidates by distance and
 checks visibility. The player caller at `0x4368d0` supplies a PI-wide cone
 and Player.DetectionRange (480). The portable selector follows these rules,
-immediately dropping dead, hidden, disabled or out-of-range enemies. Dormant
-ambush enemies remain concealed. Firing maintains a valid current target.
+immediately dropping dead, hidden, disabled or out-of-range enemies. Since
+28 October, dormant ambush enemies (a stone knight, a bone pile) can be
+targeted, as in the original, which adds every enemy to the target list when
+it spawns (`0x42aa20`/`0x427ab0` → `0x42d130`). Firing maintains a valid current target.
 Player lock state at `0x4332c7` and camera setup at `0x434900` engage the
 attack camera and enemy HUD; releasing the attack releases the view. Pellets
 aim from the animated right-hand release point at 80% of the target hull's

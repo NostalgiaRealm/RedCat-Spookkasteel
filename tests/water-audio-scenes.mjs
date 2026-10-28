@@ -4,9 +4,10 @@ import {readFile,mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 
-const out=path.resolve('temp_work/water-contact-2026-10-11/scenes-'+Date.now());
+import {sceneOutput} from './support/scene-output.mjs';
+const out=path.resolve(sceneOutput('temp_work/water-contact-2026-10-11/scenes-')+Date.now());
 await mkdir(out,{recursive:true});
-const env={...process.env,TMPDIR:'temp_work'};
+const env={...process.env,TMPDIR:sceneOutput('temp_work')};
 const savePath=process.env.REDCAT_WATER_SAVE;
 const save=savePath?JSON.parse(await readFile(savePath,'utf8')):null;
 const transitionsOnly=process.argv.includes('--transitions-only');
@@ -33,7 +34,8 @@ try{
  for(const fixture of transitionsOnly?[]:[
   {name:'saved-moat',position:[-1810,-164.95,1190],yaw:Math.PI,water:true},
   {name:'second-forest-pool',position:[-1220,-183.95,1460],yaw:-Math.PI/2,water:true},
-  {name:'dry-bank',position:[-1710,-136.95,1190],yaw:Math.PI,water:false},
+  // The native player box (D1, half-width 12.48) is embedded at x=-1710; 16 units west is clear dry bank.
+  {name:'dry-bank',position:[-1726,-136.95,1190],yaw:Math.PI,water:false},
  ]){
   const result=await page.evaluate(async f=>{
    const a=__redcat,w=a.world,g=a.gameplay,{GameplayAudio}=await import('./source/gameplay-audio.js');

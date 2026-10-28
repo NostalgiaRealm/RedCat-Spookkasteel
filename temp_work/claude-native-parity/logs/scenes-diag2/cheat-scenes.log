@@ -1,0 +1,17 @@
+DBG {"before":[3643.000244140625,-802,4497.882080078125],"position":[3643.000244140625,-802,4497.882080078125],"lastSafe":[-1332,-160,2280],"health":10,"afterHealth":10,"camera":[3643.000244140625,-804.8383264958741,4595.0443638756005]}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: third-person camera remains outside the level with RedCat
+    at verifyCheatScenes (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/cheat-scenes.mjs:87:10)
+    at async file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/cheat-scenes.mjs:120:5 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

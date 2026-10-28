@@ -1,5 +1,5 @@
 import { chromium } from 'playwright';
-const browser=await chromium.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--no-sandbox','--use-angle=gl']});
+const browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--no-sandbox','--use-angle=gl']});
 const page=await browser.newPage({viewport:{width:1440,height:900}});
 page.on('response',r=>{if(r.status()>=400)console.log('HTTP ERROR',r.status(),r.url());});
 page.on('pageerror',e=>console.log('PAGE ERROR',e.stack));page.on('console',e=>{if(e.type()==='error')console.log('CONSOLE',e.text());});

@@ -6,12 +6,14 @@ import {Gameplay} from '../source/gameplay.js';
 import {ScriptHost} from '../source/script-host.js';
 import {BspCollider} from '../source/collision.js';
 import {placeSpider} from '../source/enemy-ambush.js';
+import {thinkingOnFirstUpdate} from './support/enemy-thinking.mjs';
 
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 const level=json('data/levels/lvl02a/level.json'),motions=json('data/motions/lvl02a.json'),program=json('data/davi/lvl02a.json');
 const names=['mspina','mspinb','mspinc'];
 function boot(save=null) {
-  const events=[],game=new Gameplay(level,{deferInit:true,save,onEvent:e=>events.push(e)});
+  // Mid-encounter fixture: enemies are already thinking (gameplay.js updateEnemy).
+  const events=[],game=thinkingOnFirstUpdate(new Gameplay(level,{deferInit:true,save,onEvent:e=>events.push(e)}));
   const host=new ScriptHost(game,program,{motions});host.initialize(save?.scripts);
   if(!save)for(const p of host.players.values())p.stop();
   const collider=new BspCollider(level.collision);collider.modelTransforms=host.modelTransforms;

@@ -13,7 +13,16 @@ export const CONTROL_ACTIONS = Object.freeze([
   ['walk', 'Rustig lopen / dalen'],
   ['use', 'Gebruiken / overslaan'],
   ['camera', 'Camera wisselen'],
-].map(([id, label]) => Object.freeze({id, label})));
+  // The original Weapon1/2/3 keys pick the follow camera's distance row
+  // (0x458e40). These actions are newer than stored bindings, so they may be
+  // left without a key when an older set already uses 1, 2 or 3.
+  ['cameraNear', 'Camera dichtbij', true],
+  ['cameraFar', 'Camera verder weg', true],
+  ['cameraHigh', 'Camera hoog', true],
+].map(([id, label, optional = false]) => Object.freeze({id, label, optional})));
+
+/** Follow-camera distance row selected by each camera distance action. */
+export const CAMERA_DISTANCE_ACTIONS = Object.freeze(['cameraNear', 'cameraFar', 'cameraHigh']);
 
 export const DEFAULT_CONTROL_BINDINGS = Object.freeze(Object.fromEntries(Object.entries({
   forward: ['KeyW', 'ArrowUp'],
@@ -27,6 +36,9 @@ export const DEFAULT_CONTROL_BINDINGS = Object.freeze(Object.fromEntries(Object.
   walk: ['Shift'],
   use: ['KeyE'],
   camera: ['KeyV'],
+  cameraNear: ['Digit1'],
+  cameraFar: ['Digit2'],
+  cameraHigh: ['Digit3'],
 }).map(([action, keys]) => [action, Object.freeze(keys)])));
 
 const MODIFIERS = {Shift: ['ShiftLeft', 'ShiftRight'], Control: ['ControlLeft', 'ControlRight'], Alt: ['AltLeft', 'AltRight']};
@@ -59,7 +71,7 @@ export function controlKeyLabel(code) {
 }
 
 export function controlBindingLabel(bindings, action) {
-  return (bindings?.[action] || DEFAULT_CONTROL_BINDINGS[action] || []).map(controlKeyLabel).join(' / ');
+  return (bindings?.[action] || DEFAULT_CONTROL_BINDINGS[action] || []).map(controlKeyLabel).join(' / ') || 'Geen toets';
 }
 
 function keyAllowed(code) {
@@ -73,9 +85,9 @@ function copyBindings(bindings = DEFAULT_CONTROL_BINDINGS) {
 /** Return the original-style validation error, or null when all keys are valid. */
 export function validateControlBindings(bindings) {
   const used = new Map();
-  for (const {id: action} of CONTROL_ACTIONS) {
+  for (const {id: action, optional} of CONTROL_ACTIONS) {
     const keys = bindings?.[action];
-    if (!Array.isArray(keys) || !keys.length || keys.length > 4) {
+    if (!Array.isArray(keys) || (!keys.length && !optional) || keys.length > 4) {
       return {code: 'invalid', action, message: 'Je hebt een ongeldige toets gekozen.'};
     }
     for (const rawKey of keys) {
@@ -98,11 +110,16 @@ export function validateControlBindings(bindings) {
 // repairing only one action can accidentally create a second duplicate.
 export function normalizeControlBindings(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return copyBindings();
-  const candidate = {};
-  for (const {id} of CONTROL_ACTIONS) {
+  const candidate = {}, added = [];
+  for (const {id, optional} of CONTROL_ACTIONS) {
+    if (optional && !Object.hasOwn(value, id)) {added.push(id); continue;}
     const keys = Object.hasOwn(value, id) ? value[id] : DEFAULT_CONTROL_BINDINGS[id];
     candidate[id] = Array.isArray(keys) ? keys.map(canonicalKeyCode) : keys;
   }
+  // An action added after the set was stored gets its default key only when
+  // that key is still free, so an older custom set is never discarded.
+  const used = new Set(Object.values(candidate).flat());
+  for (const id of added) candidate[id] = DEFAULT_CONTROL_BINDINGS[id].filter(key => !used.has(key));
   return validateControlBindings(candidate) ? copyBindings() : copyBindings(candidate);
 }
 

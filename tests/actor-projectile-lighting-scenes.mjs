@@ -3,11 +3,12 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4295'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
   page.on('pageerror',error=>errors.push(error.stack));
@@ -39,7 +40,7 @@ try {
   assert.ok(report.shot.count>100,JSON.stringify(report));assert.equal(report.radius,200);
   assert.equal(report.removed.count,0,JSON.stringify(report));assert.ok(report.pulse.count>50,JSON.stringify(report));
   assert.deepEqual(report.actorAmbient,[1,1,1]);assert.equal(report.spriteColor,0xffffff);assert.deepEqual(errors,[]);
-  await page.screenshot({path:'artifacts/actor-projectile-lighting.png'});
-  await writeFile('artifacts/actor-projectile-lighting-scenes.json',JSON.stringify(report,null,2)+'\n');
+  await page.screenshot({path:sceneOutput('artifacts/actor-projectile-lighting.png')});
+  await writeFile(sceneOutput('artifacts/actor-projectile-lighting-scenes.json'),JSON.stringify(report,null,2)+'\n');
   console.log('PASS original forest renders projectile illumination, removes it with the projectile, animates original heart ambient, and compiles actor shaders.');
 }finally{await browser?.close();server.kill();}

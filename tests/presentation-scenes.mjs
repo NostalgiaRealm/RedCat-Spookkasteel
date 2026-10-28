@@ -3,12 +3,15 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
-await mkdir('artifacts',{recursive:true});
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
+await mkdir(sceneOutput('artifacts'),{recursive:true});
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4196'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});let browser;
 try {
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+  await unlockChapters(page);
   page.on('pageerror',e=>errors.push(e.stack));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
   await page.goto('http://127.0.0.1:4196/?skipIntro');await page.waitForFunction(()=>window.__redcat);
   const fairy=await page.evaluate(async()=>{
@@ -24,34 +27,41 @@ try {
     const renderer=world.renderer,target=new THREE.WebGLRenderTarget(640,360),original=renderer.getRenderTarget();
     const before=new Uint8Array(640*360*4),after=new Uint8Array(before.length);
     renderer.setRenderTarget(target);renderer.render(world.scene,world.camera);renderer.readRenderTargetPixels(target,0,0,640,360,before);
-    object.visible=false;effects.update(0);renderer.render(world.scene,world.camera);renderer.readRenderTargetPixels(target,0,0,640,360,after);
-    object.visible=true;state.age=1.6;effects.update(0);renderer.setRenderTarget(original);target.dispose();world.render();
+    // update(0) only refreshes draw buffers (world-effects.js), so hiding the
+    // entity no longer removes a running fairy; detach its effect for the comparison frame.
+    const fairyEffect=state.fairy;state.fairy=null;effects.update(0);renderer.render(world.scene,world.camera);renderer.readRenderTargetPixels(target,0,0,640,360,after);
+    state.fairy=fairyEffect;state.age=1.6;effects.update(0);renderer.setRenderTarget(original);target.dispose();world.render();
     let pixels=0;for(let i=0;i<before.length;i+=4)if(Math.abs(before[i]-after[i])+Math.abs(before[i+1]-after[i+1])+Math.abs(before[i+2]-after[i+2])>3)pixels++;
     const delta=object.position.map((v,i)=>v-position[i]),front=[-Math.sin(yaw),0,-Math.cos(yaw)];
     return {pixels,yaw,position,sprites:state.fairyGeometry.sprites.length,rays:state.fairyGeometry.rays.length,
       facing:(front[0]*delta[0]+front[2]*delta[2])/Math.hypot(delta[0],delta[2]),error:host.vm.lastError};
   });
-  assert.ok(fairy.pixels>100,JSON.stringify(fairy));assert.equal(fairy.sprites,9);assert.ok(fairy.facing>.99);assert.equal(fairy.error,null);
-  await page.screenshot({path:'artifacts/fleurifee-original-effects-facing.png'});
+  // The native fairy particle pool (fairy-effects.js, release 1.0.4) adds its live
+  // star particles: 15 sprites at this seeded 1.6 s state, not the old 9.
+  assert.ok(fairy.pixels>100,JSON.stringify(fairy));assert.equal(fairy.sprites,15);assert.ok(fairy.facing>.99);assert.equal(fairy.error,null);
+  await page.screenshot({path:sceneOutput('artifacts/fleurifee-original-effects-facing.png')});
   await page.evaluate(()=>{
     const {world,gameplay:game}=window.__redcat,host=game.scripts;
     host.vm.invoke(host.vm.program.functions.find(f=>f.name==='CSL001_MotionCommand'),['startcamera1',0]);world.updateCamera(1,true);world.render();
   });
-  await page.screenshot({path:'artifacts/fleurifee-redcat-closeup-facing.png'});
+  await page.screenshot({path:sceneOutput('artifacts/fleurifee-redcat-closeup-facing.png')});
   const ufo=await page.evaluate(()=>{
     const world=window.__redcat.world,game=world.gameplay,host=game.scripts;host.cutscene=false;host.camera=null;
     const object=game.objects.find(o=>/ufo\.act/i.test(o.entity.ActorFileName||'')),actor=world.actorInstances.get(object.id);
     world.camera.position.set(-1170,-65,2460);world.camera.lookAt(-1202,-120,2224);world.redcat.visible=false;world.render();
     return {position:actor.position.toArray(),quaternion:actor.quaternion.toArray(),entity:object.entity,visible:actor.visible};
   });
-  assert.equal(ufo.visible,true);await page.screenshot({path:'artifacts/ufo-native-world-rotation.png'});
+  assert.equal(ufo.visible,true);await page.screenshot({path:sceneOutput('artifacts/ufo-native-world-rotation.png')});
   const jump=await page.evaluate(()=>{
-    const world=window.__redcat.world;world.player.position=[-1872,-120,3480];world.player.grounded=false;world.player.velocityY=200;
+    // The native jump animation follows an actual launch (jumpKind/jumpSerial,
+    // player-animation.js), not a raw upward velocity.
+    const world=window.__redcat.world;world.player.position=[-1872,-120,3480];world.player.grounded=false;world.player.velocityY=200;world.player.jumpKind='normal';world.player.jumpSerial++;
     world.redcat.userData.motionState={};world.syncPlayer(.1,{});const ascent=world.redcat.userData.animator.name;
     world.player.velocityY=-100;world.syncPlayer(.3,{});const animator=world.redcat.userData.animator;
     return {ascent,descent:animator.name,time:animator.time,speed:animator.timeScale,loop:animator.loop};
   });
-  assert.equal(jump.ascent,'jump1');assert.equal(jump.descent,'jump1');assert.equal(jump.speed,1.4);assert.equal(jump.loop,false);assert.ok(jump.time>.5);
+  assert.equal(jump.ascent,'jump1');assert.equal(jump.descent,'jump1');assert.equal(jump.speed,1.4);assert.equal(jump.loop,true); // state 6 keeps jump1 until landing (player-animation.js)
+  assert.ok(jump.time>.5);
   const facing=[];
   for(const [level,type] of [[0,'brutusm'],[1,'knight']]) {
     const pose=await page.evaluate(async({level,type})=>{
@@ -63,6 +73,8 @@ try {
       // Keep the enemy in its attack clip to cover the old early-return bug.
       enemy.animationState='attack';enemy.animationUntil=game.time+20;enemy.pendingAttack=null;enemy.stats.SenseRange=1000;
       const player=[enemy.position[0],enemy.position[1],enemy.position[2]+80];world.player.position=player;world.player.grounded=true;world.yaw=0;
+      // An enemy first thinks on its 14th update (think gate, 0x422fb0): start this one thinking, with its last sight test run.
+      enemy.think={count:0,inRadius:true};game.testEnemySight(enemy,player,()=>true);
       for(let i=0;i<40;i++)game.updateEnemy(enemy,.05,player,()=>true);
       world.syncActors(0);world.syncPlayer(0,{});world.camera.position.set(player[0]+50,player[1]+65,player[2]+75);world.camera.lookAt(enemy.position[0],enemy.position[1]+42,enemy.position[2]);world.render();
       if(type==='knight') {
@@ -77,8 +89,8 @@ try {
       return {type,yaw:enemy.yaw,front:front.toArray(),aim:aim.toArray(),alignment:front.dot(aim),state:enemy.animationState,visible:actor.visible};
     },{level,type});
     assert.equal(pose.visible,true);assert.ok(pose.alignment>.8,JSON.stringify(pose));facing.push(pose);
-    await page.screenshot({path:`artifacts/${type}-facing-redcat.png`});
+    await page.screenshot({path:sceneOutput(`artifacts/${type}-facing-redcat.png`)});
   }
-  assert.deepEqual(errors,[]);await writeFile('artifacts/presentation-scenes.json',JSON.stringify({fairy,ufo,jump,facing},null,2)+'\n');
+  assert.deepEqual(errors,[]);await writeFile(sceneOutput('artifacts/presentation-scenes.json'),JSON.stringify({fairy,ufo,jump,facing},null,2)+'\n');
   console.log('PASS original fairy dialogue facing, rendered original effect layers and trails, native UFO orientation, continuous normal-jump descent.');
 } finally {await browser?.close();server.kill();}

@@ -3,10 +3,12 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Gameplay} from '../source/gameplay.js';
 import {ScriptHost} from '../source/script-host.js';
+import {thinkingOnFirstUpdate} from './support/enemy-thinking.mjs';
 
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 function boot(save=null){
-  const events=[],game=new Gameplay(json('data/levels/lvl01a/level.json'),{deferInit:true,save,onEvent:e=>events.push(e)});
+  // Mid-encounter fixture: enemies are already thinking (gameplay.js updateEnemy).
+  const events=[],game=thinkingOnFirstUpdate(new Gameplay(json('data/levels/lvl01a/level.json'),{deferInit:true,save,onEvent:e=>events.push(e)}));
   const host=new ScriptHost(game,json('data/davi/lvl01a.json'));
   const knight=game.objects.find(o=>o.enemyType==='knight'),music=game.objects.find(o=>o.entity.classname==='EffectMusic');
   if(!save){for(const o of game.objects)o.enabled=o===knight||o===music;host.selectMusic(music,'ambient');}

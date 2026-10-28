@@ -4,8 +4,10 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
 export async function verifyBatScenes(page) {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   const results=[];
   for(const id of ['MovingEnemy16','MovingEnemy18']) {
     const result=await page.evaluate(async id=>{
@@ -26,20 +28,36 @@ export async function verifyBatScenes(page) {
         if(sight.fraction>.98&&!path.startSolid&&(bat.variant===2||path.fraction>.98))candidates.push(floor.end);
         else {if(sight.fraction<=.98)rejected.sight++;if(path.startSolid||path.fraction<=.98){rejected.path++;if(paths.length<5)paths.push({end:floor.end,path,sight:sight.fraction});}}
       }
+      // A green (touch) bat with an authored route only flies between
+      // neighbouring waypoints (selectors 0x5997e0/0x599c80), so contact needs
+      // RedCat on that route: stand him under a linked waypoint that hangs
+      // within his reach, nearest first.
+      if(bat.variant===1&&bat.patrol) {
+        const nav=game.navigation,seen=new Set([bat.patrol.start]),queue=[bat.patrol.start],route=[];
+        nav.build((a,b)=>world.collider.trace(a,b,[0,0,0],[0,0,0],world.physicalModels,'blocksLOS').fraction>0.98);
+        while(queue.length){const node=nav.find(queue.shift());if(!node)continue;route.push(node);for(const next of nav.links.get(node.id)||[])if(!seen.has(next)){seen.add(next);queue.push(next);}}
+        const reachable=route.map(node=>{
+          const floor=world.collider.trace(node.position,[node.position[0],node.position[1]-240,node.position[2]],world.player.mins,world.player.maxs,world.physicalModels);
+          return !floor.startSolid&&floor.fraction<1&&node.position[1]-floor.end[1]<45&&Math.hypot(node.position[0]-start[0],node.position[2]-start[2])>60?floor.end:null;
+        }).filter(Boolean).sort((a,b)=>Math.hypot(...a.map((v,i)=>v-start[i]))-Math.hypot(...b.map((v,i)=>v-start[i])));
+        candidates.unshift(...reachable);
+      }
       if(!candidates.length)throw new Error('No original castle floor approach for '+id+': '+JSON.stringify({start,mins:bat.collisionMins,maxs:bat.collisionMaxs,rejected,paths}));
       const target=candidates[0];world.player.position=[...target];world.player.grounded=true;world.player.velocityY=0;
       bat.yaw=Math.atan2(target[0]-start[0],target[2]-start[2]);game.state.health=20;game.state.maxHealth=20;game.hitCooldown=0;
       const actor=world.actorInstances.get(id),events=[],previous=game.onEvent;
       game.onEvent=event=>{events.push({...event,time:game.time,batPosition:[...bat.position],player:[...world.player.position]});previous(event);};
       const originalVertices=[...actor.userData.mesh.geometry.attributes.position.array],states=new Set(),positions=[];
-      let minimumDistance=Infinity,firstAttackTime=null;
+      let minimumDistance=Infinity,firstAttackTime=null,attackRate=1;
       for(let tick=0;tick<160;tick++) {
         world.update(.025,{forward:0,right:0});states.add(actor.userData.animator.name);
         const distance=Math.hypot(...bat.position.map((v,i)=>v-world.player.position[i]));minimumDistance=Math.min(minimumDistance,distance);
         if(tick%20===0)positions.push([...bat.position]);
-        if(bat.animationState==='attack'&&firstAttackTime===null)firstAttackTime=game.time;
+        if(bat.animationState==='attack'&&firstAttackTime===null){firstAttackTime=game.time;attackRate=bat.animationRate||1;}
         if(bat.variant===2&&events.some(event=>event.type==='enemyProjectile'))break;
       }
+      // Offscreen actors defer their vertex update (render residency); flush it to read the pose.
+      actor.userData.animator.flushGeometry?.();
       const changed=actor.userData.mesh.geometry.attributes.position.array.filter((value,index)=>Math.abs(value-originalVertices[index])>.05).length;
       const focus=bat.position.map((v,i)=>v+(i===1?20:0));
       // View along the collision/LOS-checked approach, not through chamber walls.
@@ -48,12 +66,15 @@ export async function verifyBatScenes(page) {
       world.redcat.visible=false;
       world.camera.position.set(...eye);world.camera.lookAt(...focus);world.render();
       return {id,variant:bat.variant,start,target,position:[...bat.position],states:[...states],positions,minimumDistance,changed,firstAttackTime,
-        damage:events.filter(event=>event.type==='damage'),projectiles:events.filter(event=>event.type==='enemyProjectile'),attackDuration:bat.animationDurations.attack,drawFraction:bat.stats.DrawMotionPart};
+        damage:events.filter(event=>event.type==='damage'),projectiles:events.filter(event=>event.type==='enemyProjectile'),attackDuration:bat.animationDurations.attack,attackRate,drawFraction:bat.stats.DrawMotionPart};
     },id);
     assert.ok(result.changed>30);
     if(result.variant===1) {
       assert.ok(result.positions.some(position=>Math.hypot(...position.map((value,index)=>value-result.start[index]))>40));
-      assert.ok(result.states.includes('walkfw'));assert.ok(!result.states.includes('shoot1'));assert.ok(result.minimumDistance<35);
+      assert.ok(result.states.includes('walkfw'));assert.ok(!result.states.includes('shoot1'));
+      // RedCat stands under a route waypoint, so the bat meets his head from
+      // about 29 units above: origins stay within the 45-unit contact bound.
+      assert.ok(result.minimumDistance<45,`closest approach ${result.minimumDistance}`);
       assert.ok(result.states.includes('idle2'));assert.ok(!result.states.includes('idle1'),'contact must preserve the native airborne idle');
       assert.ok(result.damage.length>0);assert.equal(result.projectiles.length,0);
       for(let index=1;index<result.damage.length;index++)assert.ok(result.damage[index].time-result.damage[index-1].time>=1-1e-8);
@@ -61,11 +82,12 @@ export async function verifyBatScenes(page) {
     } else {
       assert.ok(result.states.includes('shoot1'));assert.equal(result.projectiles[0].kind,'enemyShot');
       const delay=result.projectiles[0].time-result.firstAttackTime;
-      assert.ok(Math.abs(delay-result.attackDuration*result.drawFraction)<.03);
+      // Each attack samples the native motion rate (enemyMotionRate); the clip and its release scale with it.
+      assert.ok(Math.abs(delay-result.attackDuration/result.attackRate*result.drawFraction)<.03,`release after ${delay}`);
     }
-    await page.screenshot({path:`artifacts/castle-bat-${result.variant}.png`});results.push(result);
+    await page.screenshot({path:sceneOutput(`artifacts/castle-bat-${result.variant}.png`)});results.push(result);
   }
-  await writeFile('artifacts/bat-scenes.json',JSON.stringify(results,null,2)+'\n');
+  await writeFile(sceneOutput('artifacts/bat-scenes.json'),JSON.stringify(results,null,2)+'\n');
   console.log('PASS original castle green bat reaches contact with flight animation; yellow bat releases its timed original shot from its authored chamber.');
 }
 
@@ -75,6 +97,7 @@ if(import.meta.url===pathToFileURL(process.argv[1]).href) {
   try {
     browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
     const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+    await unlockChapters(page);
     page.on('pageerror',error=>errors.push(error.stack));page.on('response',response=>{if(response.status()>=400)errors.push(`${response.status()} ${response.url()}`);});
     await page.goto('http://127.0.0.1:4186/?skipIntro');await page.waitForFunction(()=>window.__redcat);
     await verifyBatScenes(page);assert.deepEqual(errors,[]);

@@ -23,6 +23,15 @@ export function usesNativeShooter(object) {
     ['spider','bat','ghost'].includes(object.enemyType)&&object.ranged===true;
 }
 
+/**
+ * Every shipped moving shooter has an authored path, which selects the native
+ * state machine. Without one (incomplete custom levels, old synthetic saves)
+ * the port's separate fallback AI runs instead and keeps its own fields.
+ */
+export function nativeShooterActive(game,object) {
+  return usesNativeShooter(object)&&!!object.patrol&&!!game.navigation.find(object.patrol.start);
+}
+
 export function restoreNativeShooterState(value) {
   if(!value||value.version!==1||!PHASES.has(value.phase)||!Number.isInteger(value.remaining)||value.remaining<0||value.remaining>1024||
     !(value.waitUntil===null||Number.isFinite(value.waitUntil)))return null;
@@ -35,10 +44,7 @@ export function restoreNativeShooterState(value) {
 // inherits the ordinary shooter parent; Max and Witch retain separate states.
 // The caller releases pending shots and handles locked animations first.
 export function updateNativeShooter(game,object,dt,{playerPosition,visible,distance,walk,moveIdle,lineOfSight}) {
-  if(!usesNativeShooter(object))return false;
-  // Every shipped moving shooter has an authored path. Preserve the port's
-  // separate fallback for incomplete custom levels and old synthetic saves.
-  if(!object.patrol||!game.navigation.find(object.patrol.start))return false;
+  if(!nativeShooterActive(game,object))return false;
   const remembers=()=>visible||object.alerted===true;
   let state=object.nativeShooter;
   const brutus=['brutusm','brutusb'].includes(object.enemyType);

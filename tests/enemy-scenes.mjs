@@ -4,14 +4,19 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
 export async function verifyEnemyScenes(page) {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   const walking=await page.evaluate(async()=>{
     const app=window.__redcat;await app.startLevel(3);app.pause();document.getElementById('pause').hidden=true;
     const world=app.world,game=app.gameplay,enemy=game.objects.find(o=>o.actorFile==='spiderr');
     for(const object of game.objects)if(object.kind==='enemy'||object.kind==='trigger')object.enabled=false;
     enemy.enabled=true;game.scripts.update=()=>{};game.scripts.cutscene=false;game.scripts.enemiesFrozen=false;game.scripts.camera=null;
     const floor=(position,mins,maxs)=>world.collider.trace([position[0],position[1]+64,position[2]],[position[0],position[1]-256,position[2]],mins,maxs,world.physicalModels);
+    // Cave spiders hang dormant at their roof anchor until they wake (native
+    // spider setup, enemy-ambush.js); start this one awake at its own floor anchor.
+    if(enemy.ambush?.lower){enemy.position=[...enemy.ambush.lower];enemy.ambush.phase='awake';}
     const ground=floor(enemy.position,enemy.collisionMins,enemy.collisionMaxs);
     if(ground.startSolid||ground.fraction===1)throw new Error('No original cave floor under test spider');
     enemy.position=ground.end;
@@ -26,6 +31,8 @@ export async function verifyEnemyScenes(page) {
     }
     if(!player)throw new Error('No unobstructed approach across original cave floor');
     world.player.position=[...player];world.player.grounded=true;world.player.velocityY=0;game.hitCooldown=0;game.state.health=10;
+    // An enemy first thinks on its 14th update (think gate, 0x422fb0): start this one thinking, with its last sight test run.
+    enemy.think={count:0,inRadius:true};game.testEnemySight(enemy,player,(a,b)=>world.collider.trace(a,b,[0,0,0],[0,0,0],world.physicalModels,'blocksLOS').fraction>=1);
     const cameraDirection=player.map((v,i)=>v-enemy.position[i]),cameraLength=Math.hypot(cameraDirection[0],cameraDirection[2]);
     world.updateCamera=function(){
       const focus=enemy.position.map((v,i)=>v+(i===1?18:0));
@@ -42,7 +49,7 @@ export async function verifyEnemyScenes(page) {
   });
   assert.equal(walking.state,'walk');assert.equal(walking.clip,'walkfw');assert.ok(walking.changed>60);
   assert.ok(Math.hypot(walking.position[0]-walking.before[0],walking.position[2]-walking.before[2])>10);assert.ok(walking.groundGap<.2);
-  await page.screenshot({path:'artifacts/enemy-spider-walk.png'});
+  await page.screenshot({path:sceneOutput('artifacts/enemy-spider-walk.png')});
   const shooting=await page.evaluate(()=>{
     const app=window.__redcat,world=app.world,game=app.gameplay,{enemy,actor}=window.__enemyFixture;
     const direction=world.player.position.map((v,i)=>v-enemy.position[i]),length=Math.hypot(direction[0],direction[2]);
@@ -53,7 +60,7 @@ export async function verifyEnemyScenes(page) {
   });
   assert.equal(shooting.state,'attack');assert.equal(shooting.clip,'shoot1');assert.equal(shooting.projectile?.kind,'enemyShot');
   assert.ok(Math.abs(shooting.projectile.speed-400)<1e-8);assert.equal(shooting.visible,true);assert.equal(shooting.sprite,true);assert.equal(shooting.frames,4);assert.equal(shooting.fps,20);
-  await page.screenshot({path:'artifacts/enemy-spider-shot.png'});
+  await page.screenshot({path:sceneOutput('artifacts/enemy-spider-shot.png')});
   const outcome=await page.evaluate(()=>{
     const world=window.__redcat.world,game=world.gameplay,{enemy,actor}=window.__enemyFixture;
     const initialHealth=game.state.health;
@@ -65,7 +72,7 @@ export async function verifyEnemyScenes(page) {
   });
   assert.ok(outcome.damage>0);assert.equal(outcome.remaining,0);assert.equal(outcome.hurt.clip,'hit');assert.ok(outcome.hurt.time>0);
   assert.equal(outcome.death.clip,'death');assert.equal(outcome.death.visible,true);assert.ok(outcome.death.time>0);
-  await page.screenshot({path:'artifacts/enemy-spider-death.png'});
+  await page.screenshot({path:sceneOutput('artifacts/enemy-spider-death.png')});
   const knight=await page.evaluate(async()=>{
     const app=window.__redcat;await app.startLevel(1);app.pause();document.getElementById('pause').hidden=true;
     const world=app.world,game=app.gameplay,enemy=game.objects.find(o=>o.actorFile==='knight');
@@ -86,8 +93,8 @@ export async function verifyEnemyScenes(page) {
     return {bodyVisible:body.visible,parts:debris.parts.map(p=>({source:p.actor.userData.template.data.source,position:p.actor.position.toArray(),visible:p.actor.visible})),age:debris.age};
   });
   assert.equal(knight.bodyVisible,false);assert.equal(knight.parts.length,9);assert.ok(knight.parts.every(p=>p.visible&&p.position.every(Number.isFinite)));
-  await page.screenshot({path:'artifacts/enemy-knight-breakup.png'});
-  await writeFile('artifacts/enemy-scenes.json',JSON.stringify({walking,shooting,outcome,knight},null,2)+'\n');
+  await page.screenshot({path:sceneOutput('artifacts/enemy-knight-breakup.png')});
+  await writeFile(sceneOutput('artifacts/enemy-scenes.json'),JSON.stringify({walking,shooting,outcome,knight},null,2)+'\n');
   console.log('PASS original cave spider walk/hit/death clips, grounded motion, original projectile sprites, live projectile damage and nine original knight breakup actors.');
 }
 
@@ -98,6 +105,7 @@ if(import.meta.url===pathToFileURL(process.argv[1]).href) {
   try {
     browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl']});
     const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+    await unlockChapters(page);
     page.on('pageerror',error=>errors.push(error.stack));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
     await page.goto('http://127.0.0.1:4179/?skipIntro');await page.waitForFunction(()=>window.__redcat);
     await verifyEnemyScenes(page);assert.deepEqual(errors,[]);

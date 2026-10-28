@@ -19,7 +19,7 @@ import {TorchFlames} from './torch-flames.js';
 import {WorldLightShadows} from './world-light-shadows.js';
 import {NativeSpoutEffect,restoreSpoutSnapshots} from './spout-effects.js';
 import {explosionTextureFilter} from './explosion-variants.js';
-import {FLASH_TEXTURE,flashRays} from './flash-effect-native.js';
+import {FLASH_TEXTURE,FLASH_TRIANGLE,FLASH_UVS,flashRays} from './flash-effect-native.js';
 import {ELECTRIC_SPARK_TEXTURE} from './electric-explosion-native.js';
 
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
@@ -245,6 +245,46 @@ function uploadEffectRange(attribute,count) {
 
 const BEAM_U=[0,1,0,1,1,0],BEAM_V_END=[false,false,true,false,true,true];
 
+/**
+ * FlashEffect rays as the original draws them (0x465220): per ray one
+ * kaboom2 triangle with per-vertex colour and alpha, in a plane facing the
+ * camera. Ten triangles per FlashEffect; the buffers change only while a
+ * flash runs.
+ */
+export class FlashRays {
+  constructor(world,map,flashes) {
+    const vertices=Math.max(1,flashes)*30;
+    this.geometry=world.track(new THREE.BufferGeometry());
+    this.positions=new THREE.BufferAttribute(new Float32Array(vertices*3),3).setUsage(THREE.DynamicDrawUsage);
+    this.colors=new THREE.BufferAttribute(new Float32Array(vertices*4),4).setUsage(THREE.DynamicDrawUsage);
+    this.uvs=new THREE.BufferAttribute(new Float32Array(vertices*2),2).setUsage(THREE.DynamicDrawUsage);
+    this.geometry.setAttribute('position',this.positions);this.geometry.setAttribute('color',this.colors);this.geometry.setAttribute('uv',this.uvs);
+    this.geometry.setDrawRange(0,0);this.count=0;this.capacity=vertices;
+    this.right=new THREE.Vector3();this.up=new THREE.Vector3();
+    this.mesh=new THREE.Mesh(this.geometry,world.track(new THREE.MeshBasicMaterial({map,vertexColors:true,transparent:true,depthWrite:false,side:THREE.DoubleSide})));
+    this.mesh.frustumCulled=false;this.mesh.renderOrder=2;this.mesh.visible=false;world.scene.add(this.mesh);
+  }
+  begin(camera) {
+    this.count=0;camera.updateMatrixWorld?.();
+    this.right.setFromMatrixColumn(camera.matrixWorld,0).normalize();this.up.setFromMatrixColumn(camera.matrixWorld,1).normalize();
+  }
+  add(origin,ray) {
+    if(this.count+3>this.capacity||!(ray.size>0))return;
+    const c=Math.cos(ray.rotation),s=Math.sin(ray.rotation);
+    FLASH_TRIANGLE.forEach(([tx,ty],corner)=>{
+      const x=(c*tx-s*ty)*ray.size,y=(s*tx+c*ty)*ray.size,i=this.count++,colour=corner===2?ray.tip:ray.outer;
+      this.positions.setXYZ(i,origin[0]+this.right.x*x+this.up.x*y,origin[1]+this.right.y*x+this.up.y*y,origin[2]+this.right.z*x+this.up.z*y);
+      // The map uploads with flipY, so Genesis's top-left v becomes 1 - v.
+      this.uvs.setXY(i,FLASH_UVS[corner][0],1-FLASH_UVS[corner][1]);this.colors.setXYZW(i,...colour);
+    });
+  }
+  flush() {
+    const drawn=this.count>0;this.mesh.visible=drawn;this.geometry.setDrawRange(0,this.count);
+    if(!drawn)return;
+    for(const attribute of [this.positions,this.colors,this.uvs]){attribute.clearUpdateRanges?.();attribute.needsUpdate=true;}
+  }
+}
+
 export class BeamBatch {
   constructor(world,map,capacity=512) {
     this.world=world;this.count=0;this.capacity=capacity;
@@ -353,6 +393,8 @@ export class WorldEffects {
       // their separate depth-tested CORONA batch.
       if(key===CORONA)effects.coronaBatch=new BillboardBatch(world,map,true,512,false);
     }
+    const flashCount=gameplay.objects.filter(object=>object.entity.classname==='FlashEffect').length,flashMap=flashCount&&textures.find(([key])=>key===FLASH_TEXTURE)?.[1];
+    if(flashMap)effects.flashRays=new FlashRays(world,flashMap,flashCount);
     // CFairy draws L7 twice, then L8, then its white core. Keeping manifest
     // alphabetical order covered the white centre with the coloured rays.
     [FAIRY_TEXTURES.rays,FAIRY_TEXTURES.halo,FAIRY_TEXTURES.core,FAIRY_TEXTURES.star].forEach((key,i)=>{const batch=effects.batches.get(key);if(batch)batch.mesh.renderOrder=3+i;});
@@ -445,12 +487,14 @@ export class WorldEffects {
     for(const batch of this.beamBatches.values())if(batch.beginView)batch.beginView(cullSprites?this.spriteFrustum:null);else batch.frustum=cullSprites?this.spriteFrustum:null;
     if(this.coronaBatch)if(this.coronaBatch.beginView)this.coronaBatch.beginView(cullSprites?this.spriteFrustum:null);else this.coronaBatch.frustum=cullSprites?this.spriteFrustum:null;
     this.torches.update(eye);
-    const flashBatch=this.flashes.length?this.batches.get(FLASH_TEXTURE):null;
-    if(flashBatch)for(const object of this.flashes) {
-      if(!Number.isFinite(object.flashStartedAt))continue;
-      const rays=flashRays(this.gameplay.time-object.flashStartedAt),origin=this.position(object);
-      for(const ray of rays)flashBatch.add(origin,ray.size,ray.size,[1,1,1],ray.opacity,ray.rotation);
-      if(!rays.length)delete object.flashStartedAt;
+    if(this.flashRays) {
+      this.flashRays.begin(this.world.camera);
+      for(const object of this.flashes) {
+        if(!Number.isFinite(object.flashStartedAt))continue;
+        const origin=this.position(object);
+        for(const ray of flashRays(this.gameplay.time-object.flashStartedAt))this.flashRays.add(origin,ray);
+      }
+      this.flashRays.flush();
     }
     for(const state of this.entries.values())if(state.object.entity.classname==='EffectCoronaEntity') {
       const {object}=state,origin=this.position(object);
@@ -714,6 +758,7 @@ export class WorldEffects {
     this.shadowTexture?.dispose();
     for(const {material,previous,cacheKey}of this.patchedMaterials||[]){material.onBeforeCompile=previous;material.customProgramCacheKey=cacheKey;material.needsUpdate=true;}
     for(const batch of [...this.batches.values(),...this.beamBatches.values()])batch.mesh.removeFromParent();
+    this.flashRays?.mesh.removeFromParent();
     this.coronaBatch?.mesh.removeFromParent();
     for(const light of this.pointLights||[])light.removeFromParent();
     this.entries.clear();this.batches.clear();this.beamBatches.clear();this.beams=[];this.lights=[];

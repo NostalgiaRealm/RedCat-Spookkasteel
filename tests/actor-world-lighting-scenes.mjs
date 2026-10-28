@@ -3,11 +3,12 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4298'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[],reports=[];
   page.on('pageerror',e=>errors.push(e.stack));page.on('console',m=>{if(m.type()==='error'&&/shader|WebGLProgram|VALIDATE_STATUS/i.test(m.text()))errors.push(m.text());});
@@ -24,7 +25,17 @@ try {
       for(const motion of g.scripts.players.values())motion.stop();g.scripts.camera=null;g.scripts.cutscene=false;
       const enemy=g.objects.find(o=>o.kind==='enemy'&&o.enemyType===['frog','knight','zombie','skeleton','witch'][index]);
       if(!enemy)throw new Error('Missing enemy: '+JSON.stringify(g.objects.filter(o=>o.kind==='enemy').map(o=>o.enemyType)));
-      enemy.enabled=true;enemy.visible=true;w.syncModels();w.syncActors(0);w.syncPlayer(0,{});w.syncActorLighting([]);
+      enemy.enabled=true;enemy.visible=true;w.syncModels();w.syncActors(0);w.syncPlayer(0,{});
+      // Actor lighting is refreshed only for actors render residency draws:
+      // view the enemy along its clearest line and settle residency first.
+      {const focus=[enemy.position[0],enemy.position[1]+40,enemy.position[2]];
+        const view=[[0,0,170],[0,0,-170],[170,0,0],[-170,0,0],[120,70,120],[-120,70,-120]].map(offset=>{
+          const hit=w.collider.trace(focus,focus.map((v,i)=>v+offset[i]),[-2,-2,-2],[2,2,2],w.physicalModels,null);
+          return {position:focus.map((v,i)=>v+offset[i]*hit.fraction*.9),clear:hit.startSolid?0:hit.fraction};
+        }).sort((a,b)=>b.clear-a.clear)[0];
+        w.camera.position.fromArray(view.position);w.camera.lookAt(...focus);w.camera.updateMatrixWorld(true);
+        w.updateRenderResidency();await w.geometryStream.settle();await w.settleActorTextures();}
+      w.syncActorLighting([]);
       const root=w.actorInstances.get(enemy.id),state=root.userData.mesh.userData.actorLighting;
       const settings=state.settings.lighting,position=root.position.toArray();
       const sample={position,ambient:state.uniforms.actorAmbient.value.toArray(),fill:state.uniforms.actorFillColor.value.toArray(),normal:state.uniforms.actorFillNormal.value.toArray(),settings};
@@ -75,10 +86,10 @@ try {
     assert.deepEqual(report.cache,{sunTraces:0,floorQueries:0});
     if(report.brushCache)assert.equal(report.brushCache.traces,0);
     assert.equal(report.poseTraces,0);assert.deepEqual(report.oldBounds,report.currentBounds);
-    await page.screenshot({path:`artifacts/actor-lighting-${report.level}.png`});reports.push(report);
+    await page.screenshot({path:sceneOutput(`artifacts/actor-lighting-${report.level}.png`)});reports.push(report);
     console.log(JSON.stringify({level:report.level,cache:report.cache,cached:report.cachedMilliseconds,moving:report.movingMilliseconds}));
   }
   assert.deepEqual(errors,[]);
-  await writeFile(`artifacts/actor-world-lighting-scenes${selected?'-'+selected.split('=')[1]:''}.json`,JSON.stringify({reports,errors},null,2)+'\n');
+  await writeFile(sceneOutput(`artifacts/actor-world-lighting-scenes${selected?'-'+selected.split('=')[1]:''}.json`),JSON.stringify({reports,errors},null,2)+'\n');
   console.log('PASS source actors use original Sun/floor lighting; stationary and pose-only updates reuse visibility and floor samples.');
 }finally{await browser?.close();server.kill();}

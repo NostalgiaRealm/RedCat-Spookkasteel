@@ -7,10 +7,12 @@ import {Gameplay} from '../source/gameplay.js';
 import {CastleWorld} from '../source/world.js';
 import {enemyRandom} from '../source/enemy-navigation.js';
 import {enemyMotionRate} from '../source/enemy-animation-rules.js';
+import {thinkingOnFirstUpdate} from './support/enemy-thinking.mjs';
 const json=file=>JSON.parse(readFileSync(new URL('../'+file,import.meta.url)));
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-8,`${a} != ${b}`);
 function fixture(type,classname='StandingEnemy',stem) {
-  const game=new Gameplay({id:'animation-rules',spawn:{position:[0,0,60]},entities:[{classname,'%name%':'enemy',Type:String(type),Origin:'0 0 0',IsInitiallyEnabled:'1'}]});
+  // Mid-encounter fixture: enemies are already thinking (gameplay.js updateEnemy).
+  const game=thinkingOnFirstUpdate(new Gameplay({id:'animation-rules',spawn:{position:[0,0,60]},entities:[{classname,'%name%':'enemy',Type:String(type),Origin:'0 0 0',IsInitiallyEnabled:'1'}]}));
   const object=game.objects[0],data=json(`assets/actors/${stem||object.actorFile}.json`),geometry=new THREE.BufferGeometry();
   geometry.setAttribute('position',new THREE.Float32BufferAttribute(data.positions,3));
   const animator=new ActorAnimator(data,geometry),states=new ActorStateAnimator(animator,object.stats);

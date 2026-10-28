@@ -6,11 +6,12 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {chromium,_electron} from 'playwright';
 
+import {sceneOutput,sceneTemp} from './support/scene-output.mjs';
 const root=fileURLToPath(new URL('../',import.meta.url));
-const evidence=path.join(root,'temp_work/icoinl-tail-2026-10-13');
+const evidence=path.join(root,sceneOutput('temp_work/icoinl-tail-2026-10-13'));
 const electron=process.argv.includes('--electron');
 process.chdir(root);await mkdir(path.join(evidence,'browser-tmp'),{recursive:true});
-const tmp='/proc/self/cwd/temp_work/icoinl-tail-2026-10-13/browser-tmp';
+const tmp=`/proc/self/cwd/${sceneTemp()}`;
 const env={...process.env,TMPDIR:tmp,TMP:tmp,TEMP:tmp};
 const worklet=`class Capture extends AudioWorkletProcessor {process(inputs,outputs){const a=inputs[0]?.[0];if(a){outputs[0][0].set(a);this.port.postMessage(a);}return true;}}registerProcessor('capture',Capture);`;
 const server=createServer(async(req,res)=>{try{

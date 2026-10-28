@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {Gameplay} from '../source/gameplay.js';
 import {restoreNativeStandingShooter,updateNativeStandingShooter} from '../source/enemy-standing-shooter-native.js';
+import {thinkingOnFirstUpdate} from './support/enemy-thinking.mjs';
 
 function controller(wait=.25){
   const object={enemyType:'plant',stats:{AttackRange:100,DrawMotionPart:.5,WaitTimeAfterSalvo:wait},salvoSize:2,alerted:true};
@@ -36,10 +37,13 @@ test('standing parent retains the wait through memory loss and uses remembered t
   f.game.time=4.351;f.update();assert.equal(f.object.nativeStandingShooter,null,'unremembered completed salvo exits without another wait');
 });
 
-const near=[0,0,100],far=[0,0,10000];
+// `far` is out of sight range but inside the native 1600-unit think radius
+// (0x422fb0), so the enemy keeps thinking while RedCat is away.
+const near=[0,0,100],far=[0,0,1500];
 function world(type=1,save){
   const level={id:'lvl00a',spawn:{position:near,orientation:0},entities:[{classname:'StandingEnemy','%name%':'enemy',Type:String(type),Origin:'0 0 0',StartOrientation:'6'}]};
-  const g=new Gameplay(level,{save}),o=g.objects[0];
+  // Mid-encounter fixture: enemies are already thinking (gameplay.js updateEnemy).
+  const g=thinkingOnFirstUpdate(new Gameplay(level,{save})),o=g.objects[0];
   o.animationDurations={attack:.2,hurt:.3,idle:1};o.salvoSize=1;
   o.stats={...o.stats,WaitTimeAfterSalvo:.5,TimeToRememberVisual:1};
   return {g,o};

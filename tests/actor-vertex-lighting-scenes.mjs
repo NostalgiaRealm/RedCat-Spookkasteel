@@ -3,6 +3,7 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4297'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
@@ -51,6 +52,6 @@ try {
   });
   assert.deepEqual(errors,[]);
   for(const report of reports)for(const sample of report.samples)assert.ok(sample.error<1.2,JSON.stringify(report));
-  await mkdir('artifacts',{recursive:true});await writeFile('artifacts/actor-vertex-lighting-scenes.json',JSON.stringify(reports,null,2)+'\n');
+  await mkdir(sceneOutput('artifacts'),{recursive:true});await writeFile(sceneOutput('artifacts/actor-vertex-lighting-scenes.json'),JSON.stringify(reports,null,2)+'\n');
   console.log('PASS native per-vertex clamp/interpolation and transformed actor normals match GPU pixels.');
 }finally{await browser?.close();server.kill();}

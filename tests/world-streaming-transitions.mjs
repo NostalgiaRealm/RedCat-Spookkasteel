@@ -13,7 +13,7 @@ let browser;
 const report={errors:[]};
 try {
   await new Promise((done,fail)=>{server.stdout.once('data',done);server.once('error',fail);});
-  browser=await chromium.launchPersistentContext(resolve(output,'browser-profile'),{executablePath:'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl'],viewport:{width:960,height:540}});
+  browser=await chromium.launchPersistentContext(resolve(output,'browser-profile'),{executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl'],viewport:{width:960,height:540}});
   const page=await browser.newPage();
   page.on('pageerror',error=>report.errors.push(error.stack));
   page.on('response',response=>{if(response.status()>=400)report.errors.push(`${response.status()} ${response.url()}`);});

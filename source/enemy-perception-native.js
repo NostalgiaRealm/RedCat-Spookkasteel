@@ -13,6 +13,15 @@ export const ENEMY_VISUAL_RANGE_DEFAULT=250;
 export const ENEMY_THINK_RADIUS=1600;
 // Families whose unaware Default state requests idle Sound(0) (0x4059d0).
 export const UNAWARE_CHATTER=new Set(['frog','zombie','guardian','ghost','bat']);
+// D10: the sight test repeats every 500 ms (int 500 at 0x68f7f0). Its check
+// time starts at -1 on the original's never-reset process clock, so the first
+// test runs on the enemy's first thinking update.
+export const ENEMY_SIGHT_INTERVAL=.5;
+export const newEnemySight=()=>({lastCheck:-Infinity,seen:false});
+// The think-radius flag is recomputed every 14th update (+0xe0 > 13); both
+// start at zero in the actor constructor (0x501cb0) and survive Enable.
+export const ENEMY_THINK_INTERVAL=14;
+export const newEnemyThink=()=>({count:0,inRadius:false});
 
 /** Eye: own position plus 0.8 of the enemy's own box height (0x4229e0). */
 export function enemySightEye(object) {

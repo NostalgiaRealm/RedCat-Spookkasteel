@@ -4,8 +4,9 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {chromium,_electron as electron} from 'playwright';
 
-process.env.TMPDIR='current_work';
-const output=resolve(`current_work/startup-ui-2026-10-03/scenes-${Date.now()}`);
+import {sceneOutput} from './support/scene-output.mjs';
+process.env.TMPDIR=sceneOutput('current_work');
+const output=resolve(sceneOutput(`current_work/startup-ui-2026-10-03/scenes-${Date.now()}`));
 await mkdir(output,{recursive:true});
 const report={checks:[],errors:[]},port=Number(process.env.STARTUP_TEST_PORT||4327);
 const check=name=>{report.checks.push(name);console.log(`PASS ${name}`);};
@@ -27,12 +28,13 @@ try {
   await page.waitForFunction(()=>!!document.fullscreenElement&&!document.getElementById('intro-video').muted);
   check('fresh browser defaults to fullscreen and the sound gesture enables both sound and fullscreen');
   await page.locator('#skip-intro').tap();
-  await page.locator('#open-settings').click();await page.locator('#fullscreen').uncheck();await page.locator('#auto-intro').uncheck();
+  // Since the original-menu rework these controls sit under Meer instellingen.
+  await page.locator('#open-settings').click();await page.locator('#open-more-settings').click();await page.locator('#fullscreen').uncheck();await page.locator('#auto-intro').uncheck();
   await page.locator('#volume').fill('0');await page.locator('#apply-settings').click();
   await page.waitForFunction(()=>!document.fullscreenElement&&window.__redcat.settings.fullscreen===false);
   await page.reload();await page.waitForFunction(()=>window.__redcat);
   assert.equal(await page.evaluate(()=>window.__redcat.settings.fullscreen),false);
-  await page.locator('#open-settings').click();assert.equal(await page.locator('#fullscreen').isChecked(),false);await page.locator('#close-settings').click();
+  await page.locator('#open-settings').click();await page.locator('#open-more-settings').click();assert.equal(await page.locator('#fullscreen').isChecked(),false);await page.locator('#close-settings').click();
   assert.equal(await page.evaluate(()=>!!document.fullscreenElement),false);
   check('disabling fullscreen in settings persists across reload and later clicks');
   assert.equal(await page.evaluate(()=>window.__redcat.touchEnabled),true);
@@ -65,14 +67,14 @@ try {
   await context.close();context=null;
 
   // Native shell can enter fullscreen immediately, without browser activation.
-  const env={...process.env,TMPDIR:'current_work'};delete env.LD_PRELOAD;delete env.MANGOHUD;
+  const env={...process.env,TMPDIR:sceneOutput('current_work')};delete env.LD_PRELOAD;delete env.MANGOHUD;
   app=await electron.launch({args:['.','--ozone-platform=x11',`--user-data-dir=${resolve(output,'electron-profile')}`],cwd:process.cwd(),env});
   const desktop=await app.firstWindow();desktop.on('pageerror',e=>report.errors.push(String(e)));
   await desktop.waitForFunction(()=>window.__redcat);
   for(let i=0;i<30&&!await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows()[0].isFullScreen());i++)await desktop.waitForTimeout(100);
   assert.equal(await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows()[0].isFullScreen()),true);
   await desktop.waitForFunction(()=>document.getElementById('intro-video').currentTime>.2);
-  await desktop.locator('#skip-intro').click();await desktop.locator('#open-settings').click();
+  await desktop.locator('#skip-intro').click();await desktop.locator('#open-settings').click();await desktop.locator('#open-more-settings').click();
   await desktop.locator('#fullscreen').uncheck();await desktop.locator('#auto-intro').uncheck();await desktop.locator('#apply-settings').click();
   await desktop.waitForFunction(()=>document.getElementById('settings').hidden);
   assert.equal(await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows()[0].isFullScreen()),false);

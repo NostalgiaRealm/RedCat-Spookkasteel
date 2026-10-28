@@ -2,6 +2,7 @@ import {chromium} from 'playwright';
 import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
+import {sceneOutput} from './support/scene-output.mjs';
 const cameraOnly=process.argv.includes('--camera-only');
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4197'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
@@ -88,7 +89,7 @@ try{
  assert.equal(camera.held.duration,5);assert.ok(Math.abs(camera.held.elapsed-4.95)<1e-8);assert.equal(camera.held.keptFrames,99);assert.equal(camera.held.stableFrames,99);assert.equal(camera.held.shots,0,'fixed overview cameras hold attacks natively (parity review item 14)');
  assert.equal(camera.held.yaw,camera.yaw);assert.equal(camera.held.pitch,camera.pitch);assert.equal(camera.expired,true);assert.ok(camera.afterLook.yaw<camera.beforeLook.yaw);assert.ok(camera.afterLook.pitch<camera.beforeLook.pitch);
  assert.equal(camera.persistentHeld,true);assert.equal(camera.recovered,true);/* The native offset camera (mode 6) applies CamOffset's pitch itself instead of overwriting the shared pitch. */assert.ok(camera.adjusted<camera.initial);assert.notDeepEqual(camera.forward,camera.after);assert.ok(camera.aimDot>.9999);assert.equal(camera.error,null);
- await mkdir('artifacts',{recursive:true});await writeFile('artifacts/camera-fixed-preview.png',Buffer.from(await page.evaluate(()=>window.__fixedPreviewScreenshot),'base64'));
+ await mkdir(sceneOutput('artifacts'),{recursive:true});await writeFile(sceneOutput('artifacts/camera-fixed-preview.png'),Buffer.from(await page.evaluate(()=>window.__fixedPreviewScreenshot),'base64'));
  const timed=await page.evaluate(async()=>{
   let app=window.__redcat,w=app.world,g=app.gameplay,h=g.scripts;
   const overview=g.find('cam_waterlab01')[0];w.targeting.clear();h.activateCamera(overview);w.updateCamera(1,true);
@@ -129,6 +130,6 @@ try{
  // The former offset-camera pitch recovery for old saves (manualPitch/returnPitch)
  // was removed with the native camera rebuild; offset regions no longer write the shared pitch.
  const legacy=null;
- assert.deepEqual(errors,[]);await mkdir('artifacts',{recursive:true});await writeFile(cameraOnly?'artifacts/camera-recovery-scenes.json':'artifacts/prop-camera-scenes.json',JSON.stringify({props,camera,timed,sequence,legacy,errors},null,2)+'\n');
+ assert.deepEqual(errors,[]);await mkdir(sceneOutput('artifacts'),{recursive:true});await writeFile(cameraOnly?sceneOutput('artifacts/camera-recovery-scenes.json'):sceneOutput('artifacts/prop-camera-scenes.json'),JSON.stringify({props,camera,timed,sequence,legacy,errors},null,2)+'\n');
  console.log(cameraOnly?'PASS authored 5/8-second camera previews resist sustained mouse/fire, saved previews retain remaining time, zero-duration camera waits for script handoff, regional mouse control and legacy-save recovery remain correct.':'PASS authored castle drawbridge control; caves overview expiry, regional mouse control, visible weapon aim and old-save recovery.');
 }finally{await browser?.close();server.kill();}

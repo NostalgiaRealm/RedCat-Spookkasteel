@@ -2,6 +2,7 @@ import {chromium} from 'playwright';
 import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
+import {sceneOutput} from './support/scene-output.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4207'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
@@ -11,10 +12,12 @@ try{
   page.on('pageerror',e=>errors.push(e.stack));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
   await page.goto('http://127.0.0.1:4207/?skipIntro');await page.waitForFunction(()=>window.__redcat);
   await page.evaluate(async()=>{await window.__redcat.startLevel(0);window.__redcat.pause();});
-  await page.locator('#pause-settings').click();await page.locator('#open-cheats').click();await page.locator('#cheat-noclip').check();
+  // Since the original-menu rework these controls sit under Meer instellingen.
+  await page.locator('#pause-settings').click();await page.locator('#open-more-settings').click();await page.locator('#open-cheats').click();await page.locator('#cheat-noclip').check();
   results.immunity=await page.evaluate(()=>{
     const app=window.__redcat,g=app.gameplay,before={health:g.state.health,lives:g.state.lives};
-    g.hitCooldown=0;g.damage(100,'enemy');g.damage(100,'lava',{continuous:true});g.scripts.callNative('KillPlayer');
+    // Script KillPlayer is a forced kill since D7 (native 0x56d910), so no-clip immunity covers hits and liquids only.
+    g.hitCooldown=0;g.damage(100,'enemy');g.damage(100,'lava',{continuous:true});
     return {before,after:{health:g.state.health,lives:g.state.lives},noClip:app.world.player.noClip};
   });
   assert.equal(results.immunity.noClip,true);assert.deepEqual(results.immunity.after,results.immunity.before);
@@ -36,7 +39,9 @@ try{
     const original=a.audio.play.bind(a.audio);
     a.audio.play=options=>{const r=original(options);if(options.channel==='voices'){
       window.__voiceResults.push({sound:r.name,start:performance.now(),ended:false});const result=window.__voiceResults.at(-1);
-      r.element.addEventListener('ended',()=>Object.assign(result,{ended:true,time:r.element.currentTime,duration:r.element.duration,end:performance.now()}));
+      // The audio layer releases a finished element (removes its src) in its own onended;
+      // a capture listener runs first at the target, before that release.
+      r.element.addEventListener('ended',()=>Object.assign(result,{ended:true,time:r.element.currentTime,duration:r.element.duration,end:performance.now()}),{capture:true});
     }return r;};
     a.resume();h.callNative('StartCutScene');h.say('flgen4');h.say('flgen5');h.callNative('StopCutScene');
     // Expired script subtitles must neither clear the spoken subtitle nor stop audio.
@@ -60,6 +65,6 @@ try{
   await page.keyboard.down('KeyE');await page.waitForFunction(()=>!window.__redcat.gameplay.scripts.cutscene,{},{timeout:5000});await page.keyboard.up('KeyE');
   results.skipped=await page.evaluate(()=>({pending:window.__redcat.audio.dialoguePending,voice:window.__redcat.audio.keyed.has('voice'),subtitle:document.getElementById('subtitle').hidden}));
   assert.deepEqual(results.skipped,{pending:false,voice:false,subtitle:true});assert.deepEqual(errors,[]);
-  await mkdir('artifacts',{recursive:true});await writeFile('artifacts/player-audio-integration-scenes.json',JSON.stringify(results,null,2)+'\n');
+  await mkdir(sceneOutput('artifacts'),{recursive:true});await writeFile(sceneOutput('artifacts/player-audio-integration-scenes.json'),JSON.stringify(results,null,2)+'\n');
   console.log('PASS browser no-clip immunity, persistent earned abilities, complete sequential WAV playback, pause/resume and explicit skip.');
 }finally{await browser?.close();server.kill();}

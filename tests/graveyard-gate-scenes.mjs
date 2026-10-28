@@ -4,16 +4,17 @@ import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 // Optional save is copied into this isolated browser, never the live game.
 const save=process.argv[2]?JSON.parse(await readFile(process.argv[2],'utf8')):null;
-const out=path.resolve(`current_work/graveyard-gate-2026-10-04/scenes-${Date.now()}`);
+const out=path.resolve(sceneOutput(`current_work/graveyard-gate-2026-10-04/scenes-${Date.now()}`));
 await mkdir(out,{recursive:true});
-const env={...process.env,TMPDIR:'current_work'};
+const env={...process.env,TMPDIR:sceneOutput('current_work')};
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...env,PORT:'4338'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let context;
 try {
-  context=await chromium.launchPersistentContext(path.join(out,'profile'),{executablePath:'/usr/bin/google-chrome',headless:true,env,
+  context=await chromium.launchPersistentContext(path.join(out,'profile'),{executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,env,
     viewport:{width:1280,height:720},args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
   const page=await context.newPage(),errors=[];
   page.on('pageerror',error=>errors.push(error.stack));
@@ -62,7 +63,9 @@ try {
     const collision=w.collider.actors.find(a=>a.id===gate.id),blockedBefore=collision.active();
     const initialHealth={gate:gate.health,crate:crate.health};
     // Exercise the real projectile-hit handler and compiled crate command.
-    g.playerProjectileHit(crate,{damage:1,type:0});w.syncActors(0);w.effects.update(.025);
+    // RcAnyActor::ReceiveDamage (0x49da40) destroys only once accumulated damage
+    // exceeds the maximum: the 1-health crate breaks on the second pellet.
+    g.playerProjectileHit(crate,{damage:1,type:0});g.playerProjectileHit(crate,{damage:1,type:0});w.syncActors(0);w.effects.update(.025);
     const fragments=w.effects.destructibles.particles.filter(p=>p.actor==='hekdoor_s1');
     const destroyed={gate:gate.health,crate:crate.health,visible:root.visible,blocks:collision.active(),
       explosions:g.explosions.filter(e=>[gate.id,crate.id].includes(e.sourceId)).length,

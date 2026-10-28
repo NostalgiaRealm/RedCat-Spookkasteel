@@ -1,0 +1,168 @@
+PERF {"round":0,"index":0,"total":22.80000001937151,"trace":23.69999999552965}
+PERF {"round":0,"index":10,"total":174.99999997764826,"trace":92.59999998658895}
+PERF {"round":0,"index":20,"total":308.3999999910593,"pursuit":0.5999999865889549,"trace":231.00000000745058}
+PERF {"round":0,"index":30,"total":436.2000000104308,"pursuit":0.5999999865889549,"trace":357.6000000089407}
+PERF {"round":0,"index":40,"total":554.5000000074506,"pursuit":0.5999999865889549,"trace":405.5000000298023}
+PERF {"round":1,"index":0,"total":576.6999999806285,"pursuit":0.5999999865889549,"trace":424.40000004321337}
+PERF {"round":1,"index":10,"total":693.5999999642372,"pursuit":0.5999999865889549,"trace":493.2000000998378}
+PERF {"round":1,"index":20,"total":810.0999999567866,"pursuit":0.699999988079071,"trace":630.3000001236796}
+PERF {"round":1,"index":30,"total":918.900000013411,"pursuit":1.1999999955296516,"trace":757.1000000610948}
+PERF {"round":1,"index":40,"total":1022.9000000357628,"pursuit":1.1999999955296516,"trace":802.3999999910593}
+PERF {"round":2,"index":0,"total":1044.8000000193715,"pursuit":1.1999999955296516,"trace":822.9000000283122}
+PERF {"round":2,"index":10,"total":1151.6000000163913,"pursuit":1.1999999955296516,"trace":890.1000000312924}
+PERF {"round":2,"index":20,"total":1250.2000000029802,"pursuit":1.1999999955296516,"trace":1025.6000001579523}
+PERF {"round":2,"index":30,"total":1353.2000000104308,"pursuit":1.1999999955296516,"trace":1152.300000116229}
+PERF {"round":2,"index":40,"total":1456.7000000551343,"pursuit":1.2999999895691872,"trace":1205.6000000983477}
+{
+  "points": 42,
+  "enemies": 41,
+  "rounds": [
+    {
+      "round": 0,
+      "frames": 630,
+      "median": 3.600000001490116,
+      "p95": 5.700000002980232,
+      "max": 21.600000001490116,
+      "total": 2417.300000011921,
+      "timings": {
+        "syncModelStates": 37.29999999701977,
+        "syncModels": 19.30000001937151,
+        "syncMountedActorCollisions": 9.899999976158142,
+        "updateEnemy": 456.19999995082617,
+        "trace": 408.80000004917383,
+        "gameplay": 565.9999999925494,
+        "syncActors": 316.19999999552965,
+        "syncPlayer": 26.199999943375587,
+        "updateCamera": 9.30000003427267,
+        "syncProjectiles": 3.1000000312924385,
+        "syncActorLighting": 54.900000013411045,
+        "effects": 537.3000001236796,
+        "audioQuery": 12.199999950826168,
+        "audio": 49.89999994635582,
+        "pursuitTarget": 0.5999999865889549
+      },
+      "calls": {
+        "syncModelStates": 1260,
+        "syncModels": 630,
+        "syncMountedActorCollisions": 630,
+        "updateEnemy": 25830,
+        "trace": 26054,
+        "gameplay": 630,
+        "syncActors": 630,
+        "syncPlayer": 630,
+        "updateCamera": 630,
+        "syncProjectiles": 630,
+        "syncActorLighting": 630,
+        "effects": 630,
+        "audioQuery": 7287,
+        "audio": 630,
+        "pursuitTarget": 50
+      },
+      "sounds": 37,
+      "resources": 1365,
+      "actors": 383,
+      "projectiles": 1,
+      "sceneChildren": 114,
+      "programs": 26,
+      "particles": 69
+    },
+    {
+      "round": 1,
+      "frames": 630,
+      "median": 3,
+      "p95": 4.399999998509884,
+      "max": 6.4000000059604645,
+      "total": 2017.4999999925494,
+      "timings": {
+        "syncModelStates": 33.59999996423721,
+        "syncModels": 19.30000003427267,
+        "syncMountedActorCollisions": 8.500000022351742,
+        "updateEnemy": 364.7000000551343,
+        "trace": 397.5999999642372,
+        "gameplay": 467.90000004321337,
+        "syncActors": 261.8000001087785,
+        "syncPlayer": 20.199999943375587,
+        "updateCamera": 5.199999995529652,
+        "syncProjectiles": 3.6000000089406967,
+        "syncActorLighting": 43.399999998509884,
+        "effects": 459.79999992996454,
+        "audioQuery": 8.899999983608723,
+        "audio": 41.80000004172325,
+        "pursuitTarget": 0.6000000089406967
+      },
+      "calls": {
+        "syncModelStates": 1260,
+        "syncModels": 630,
+        "syncMountedActorCollisions": 630,
+        "updateEnemy": 25830,
+        "trace": 28756,
+        "gameplay": 630,
+        "syncActors": 630,
+        "syncPlayer": 630,
+        "updateCamera": 630,
+        "syncProjectiles": 630,
+        "syncActorLighting": 630,
+        "effects": 630,
+        "audioQuery": 8121,
+        "audio": 630,
+        "pursuitTarget": 44
+      },
+      "sounds": 37,
+      "resources": 1364,
+      "actors": 383,
+      "projectiles": 2,
+      "sceneChildren": 114,
+      "programs": 26,
+      "particles": 65
+    },
+    {
+      "round": 2,
+      "frames": 630,
+      "median": 3,
+      "p95": 4.4000000059604645,
+      "max": 6.600000001490116,
+      "total": 1970.8000000491738,
+      "timings": {
+        "syncModelStates": 34.49999991059303,
+        "syncModels": 18.499999932944775,
+        "syncMountedActorCollisions": 7.300000049173832,
+        "updateEnemy": 328.5000000447035,
+        "trace": 403.2000000625849,
+        "gameplay": 432.8000000268221,
+        "syncActors": 258.1999999061227,
+        "syncPlayer": 18.700000047683716,
+        "updateCamera": 4.799999952316284,
+        "syncProjectiles": 4.400000028312206,
+        "syncActorLighting": 37.70000001043081,
+        "effects": 459.7999999895692,
+        "audioQuery": 8.599999956786633,
+        "audio": 38.599999986588955,
+        "pursuitTarget": 0.09999999403953552
+      },
+      "calls": {
+        "syncModelStates": 1260,
+        "syncModels": 630,
+        "syncMountedActorCollisions": 630,
+        "updateEnemy": 25830,
+        "trace": 30391,
+        "gameplay": 630,
+        "syncActors": 630,
+        "syncPlayer": 630,
+        "updateCamera": 630,
+        "syncProjectiles": 630,
+        "syncActorLighting": 630,
+        "effects": 630,
+        "audioQuery": 7350,
+        "audio": 630,
+        "pursuitTarget": 45
+      },
+      "sounds": 37,
+      "resources": 1363,
+      "actors": 383,
+      "projectiles": 1,
+      "sceneChildren": 112,
+      "programs": 26,
+      "particles": 71
+    }
+  ]
+}

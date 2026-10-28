@@ -4,8 +4,9 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 export async function verifyBossScenes(page) {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   const approach=await page.evaluate(async()=>{
     const app=window.__redcat;await app.startLevel(0);app.pause();document.getElementById('pause').hidden=true;
     const world=app.world,game=app.gameplay,host=game.scripts;
@@ -18,7 +19,7 @@ export async function verifyBossScenes(page) {
     return {visible:world.actorInstances.get(boss.id).visible,enabled:boss.enabled,position:[...boss.position]};
   });
   assert.equal(approach.visible,true);assert.equal(approach.enabled,false);
-  await page.screenshot({path:'artifacts/brutus-before-intro.png'});
+  await page.screenshot({path:sceneOutput('artifacts/brutus-before-intro.png')});
   const intro=await page.evaluate(()=>{
     const {world,gameplay:game}=window.__redcat;
     const trigger=game.find('csmc10_tr')[0];trigger.enabled=true;game.trigger(trigger);trigger.enabled=false;
@@ -26,10 +27,11 @@ export async function verifyBossScenes(page) {
     return {cutscene:game.scripts.cutscene,visible:world.actorInstances.get(window.__bossFixture.boss.id).visible,subtitle:document.getElementById('subtitle').textContent};
   });
   assert.equal(intro.cutscene,true);assert.equal(intro.visible,true);assert.ok(intro.subtitle);
-  await page.screenshot({path:'artifacts/brutus-during-intro.png'});
+  await page.screenshot({path:sceneOutput('artifacts/brutus-during-intro.png')});
   const shot=await page.evaluate(()=>{
     const app=window.__redcat,world=app.world,game=app.gameplay,{boss}=window.__bossFixture;
-    for(let i=0;i<410;i++)world.update(.05,{forward:0,right:0});
+    // StopCutScene waits for spoken dialogue (release 1.0.4); audio is paused here, so each line ends at once.
+    for(let i=0;i<410;i++){app.audio.stopDialogue();world.update(.05,{forward:0,right:0});}
     const enabled=boss.enabled,music=app.audio.snapshot().find(r=>r.key==='music')?.sound;
     world.player.position=[boss.position[0],boss.position[1]+1,boss.position[2]+250];
     for(let i=0;i<240&&!game.projectiles.some(p=>p.sourceId===boss.id);i++)world.update(.025,{forward:0,right:0});
@@ -59,21 +61,31 @@ export async function verifyBossScenes(page) {
     const app=window.__redcat,game=app.gameplay,world=app.world,{boss}=window.__bossFixture;
     game.hurtEnemy(boss,boss.health);
     const musicAfterDeath=app.audio.snapshot().find(r=>r.key==='music')?.sound;
-    for(let i=0;i<490;i++)world.update(.05,{forward:0,right:0});
+    // StopCutScene waits for spoken dialogue (release 1.0.4); audio is paused here, so each line ends at once.
+    // The defeat script starts when the death clip ends (review item 11), about 2 s later than before.
+    for(let i=0;i<600&&(i<490||game.scripts.cutscene);i++){app.audio.stopDialogue();world.update(.05,{forward:0,right:0});}
     const mirror=game.find('mirror')[0],position=game.objectPosition(mirror),actor=world.actorInstances.get(mirror.id);
     world.player.position=[position[0],position[1],position[2]+100];world.yaw=0;world.pitch=.08;
     world.syncPlayer(0,{});world.camera.position.set(position[0]-90,position[1]+65,position[2]+60);world.camera.lookAt(position[0],position[1]+18,position[2]);world.render();
     return {musicAfterDeath,cutscene:game.scripts.cutscene,position,visible:actor.visible,actorPosition:actor.position.toArray(),platformIncluded:world.physicalModels.includes(mirror.modelIndex),scriptError:game.scripts.vm.lastError};
   });
   assert.ok(!/endboss/i.test(victory.musicAfterDeath));assert.equal(victory.cutscene,false);assert.equal(victory.visible,true);
-  assert.deepEqual(victory.position,[2340,-154,-1158]);assert.equal(victory.platformIncluded,true);assert.equal(victory.scriptError,null);
-  await page.screenshot({path:'artifacts/brutus-defeated-mirror.png'});
+  // The raised platform pose plus the native item offset of 18 (docs/item-placement-native.md).
+  assert.deepEqual(victory.position,[2340,-136,-1158]);assert.equal(victory.platformIncluded,true);assert.equal(victory.scriptError,null);
+  await page.screenshot({path:sceneOutput('artifacts/brutus-defeated-mirror.png')});
   const exit=await page.evaluate(async()=>{
     const app=window.__redcat,game=app.gameplay,world=app.world,mirror=game.find('mirror')[0];
     world.player.position=[...game.objectPosition(mirror)];world.update(.025,{forward:0,right:0});
     const result={collected:mirror.collected,completed:game.completed,events:window.__bossFixture.events.filter(e=>e.type==='levelComplete')};
     app.saveGame(true);await app.loadSave();app.pause();return {...result,loadedLevel:app.world.id};
   });
+  // Loading a completed chapter shows its debriefing first (native debriefing flow);
+  // continuing from it loads the next chapter.
+  await page.waitForFunction(()=>window.__redcat.mode==='debriefing',null,{timeout:30000});
+  await page.waitForFunction(()=>!document.querySelector('#debriefing button').disabled,null,{timeout:30000});
+  await page.keyboard.press('ControlLeft');
+  await page.waitForFunction(()=>window.__redcat.world?.id==='lvl01a'&&window.__redcat.gameplay?.level.id==='lvl01a'&&window.__redcat.mode!=='loading',null,{timeout:60000});
+  exit.loadedLevel=await page.evaluate(()=>{const app=window.__redcat;if(app.mode==='playing')app.pause();return app.world.id;});
   assert.equal(exit.collected,true);assert.equal(exit.completed,true);assert.equal(exit.events.length,1);assert.equal(exit.events[0].target,'lvl01a');assert.equal(exit.loadedLevel,'lvl01a');
   const castle=await page.evaluate(()=>{
     const app=window.__redcat,game=app.gameplay,world=app.world,host=game.scripts;
@@ -88,8 +100,8 @@ export async function verifyBossScenes(page) {
   });
   assert.equal(castle.cutscene,true);assert.match(castle.subtitle,/Help, RedCat, hellup/);
   assert.equal(castle.position[0],castle.expected[0]);assert.equal(castle.position[2],castle.expected[2]);assert.ok(Math.abs(castle.position[1]-castle.expected[1])<2);
-  await page.screenshot({path:'artifacts/castle-whizkitty-position.png'});
-  await writeFile('artifacts/boss-scenes.json',JSON.stringify({approach,intro,shot,victory,exit,castle},null,2)+'\n');
+  await page.screenshot({path:sceneOutput('artifacts/castle-whizkitty-position.png')});
+  await writeFile(sceneOutput('artifacts/boss-scenes.json'),JSON.stringify({approach,intro,shot,victory,exit,castle},null,2)+'\n');
   console.log('PASS Brutus visible before/during intro, timed animated pellet and damage, boss music ends, mirror rises/collects/advances, castle cutscene endpoint.');
 }
 

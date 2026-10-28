@@ -3,6 +3,7 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 const baseline=process.argv.includes('--baseline');
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4296'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
@@ -46,7 +47,7 @@ try {
   });
   assert.deepEqual(errors,[]);
   if(!baseline)for(const report of reports)assert.ok(report.maximumError<1.2,JSON.stringify(report));
-  await mkdir('artifacts',{recursive:true});
-  await writeFile(`artifacts/actor-lighting-${baseline?'before':'native'}-gpu.json`,JSON.stringify({reports,errors},null,2)+'\n');
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
+  await writeFile(sceneOutput(`artifacts/actor-lighting-${baseline?'before':'native'}-gpu.json`),JSON.stringify({reports,errors},null,2)+'\n');
   console.log(baseline?'Recorded existing actor shader deviations from native reference.':'PASS actor GPU samples match native root lighting, raw RGB accumulation/clamp and texture modulation.');
 }finally{await browser?.close();server.kill();}

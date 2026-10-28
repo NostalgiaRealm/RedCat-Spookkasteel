@@ -4,6 +4,7 @@ import {writeFile, mkdir} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 export async function verifyForestAudio(page) {
   await page.evaluate(async()=>{
     const app=window.__redcat; await app.startLevel(0); app.pause();
@@ -18,7 +19,8 @@ export async function verifyForestAudio(page) {
   const forest=before.filter(r=>r.sound.startsWith('forest'));
   assert.equal(forest.length,16); assert.ok(forest.every(r=>r.volume<.16)); assert.ok(forest.some(r=>r.volume<.04));
   assert.ok(before.every(r=>r.paused),'All sound must pause, including dialogue emitted while paused');
-  await page.locator('#pause-settings').click();
+  // Since the original-menu rework these controls sit under Meer instellingen.
+  await page.locator('#pause-settings').click();await page.locator('#open-more-settings').click();
   await page.locator('#volume').fill('0.3'); await page.locator('#apply-settings').click();
   await page.locator('#settings').waitFor({state:'hidden'});
   const quieter=await page.evaluate(()=>window.__redcat.audio.snapshot());
@@ -37,7 +39,9 @@ export async function verifyForestAudio(page) {
   await page.waitForFunction(()=>window.__redcat.audio.snapshot().every(r=>r.readyState>=2));
   const restored=await page.evaluate(()=>window.__redcat.audio.snapshot());
   assert.equal(restored.filter(r=>r.spatial).length,17,'All enabled ambient loops return after loading');
-  assert.equal(restored.find(r=>r.channel==='music').sound,'endbosses.wav','Script-selected boss music survives loading');
+  // Music changes crossfade (native fade, music-fade-native): the outgoing track stays
+  // listed while it fades, with its key cleared; the playing track keeps key 'music'.
+  assert.equal(restored.find(r=>r.channel==='music'&&r.key==='music').sound,'endbosses.wav','Script-selected boss music survives loading');
   for(const old of beforeSave) {
     // Patrol can emit a footstep before the introductory timeline freezes AI.
     // Save restoration resumes loops/current dialogue, not completed actions.
@@ -61,22 +65,23 @@ export async function verifyForestAudio(page) {
   await page.evaluate(()=>window.__redcat.pause());
   await page.locator('#return-menu').click();
   assert.equal(await page.evaluate(()=>window.__redcat.audio.snapshot().length),0,'Returning to menu stops every source');
-  await page.locator('#open-settings').click(); await page.locator('#volume').fill('0.6');
+  await page.locator('#open-settings').click();await page.locator('#open-more-settings').click(); await page.locator('#volume').fill('0.6');
   await page.locator('#apply-settings').click(); await page.locator('#settings').waitFor({state:'hidden'});
-  await mkdir('artifacts',{recursive:true});
-  await writeFile('artifacts/audio-forest.json',JSON.stringify({before,quieter,restored,playing},null,2)+'\n');
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
+  await writeFile(sceneOutput('artifacts/audio-forest.json'),JSON.stringify({before,quieter,restored,playing},null,2)+'\n');
   console.log('PASS decoded forest/UFO/dialogue playback, original gains, camera distance, master volume, pause/resume and save/load.');
 }
 
 if(import.meta.url===pathToFileURL(process.argv[1]).href) {
-  const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4176'},stdio:['ignore','pipe','inherit']});
+  // 4176 collided with another local dev server; this scene has its own port.
+  const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4476'},stdio:['ignore','pipe','inherit']});
   await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
   let browser;
   try {
     browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
     const page=await browser.newPage(),errors=[],badRequests=[];
     page.on('pageerror',error=>errors.push(error.stack)); page.on('response',r=>{if(r.status()>=400)badRequests.push(r.url());});
-    await page.goto('http://127.0.0.1:4176/?skipIntro');await page.waitForFunction(()=>window.__redcat);
+    await page.goto('http://127.0.0.1:4476/?skipIntro');await page.waitForFunction(()=>window.__redcat);
     await verifyForestAudio(page);
     assert.deepEqual(errors,[]); assert.deepEqual(badRequests,[]);
   }finally{await browser?.close();server.kill();}

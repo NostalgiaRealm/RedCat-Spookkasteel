@@ -1,6 +1,7 @@
 import {mkdirSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {sceneOutput} from './support/scene-output.mjs';
 
 // Shared navigation for current full-application scene checks. Use the public
 // menu controls, including touch taps, rather than calling its controller or
@@ -70,17 +71,18 @@ export async function showMoreSettings(page, {paused = false, ...options} = {}) 
   await activateMenuControl(page, '#open-more-settings', options);
 }
 
-// Keep disposable browser state and retained reports in the designated project
-// workspace. The short Linux alias avoids Chromium's Unix-socket path limit.
+// Keep disposable browser state and reports in the scene output folder
+// (support/scene-output.mjs). The short Linux alias avoids Chromium's
+// Unix-socket path limit.
 export function createSceneOutput(name) {
   if (!/^[a-z0-9-]+$/.test(name)) throw new Error('Invalid scene output name');
   const root = fileURLToPath(new URL('../', import.meta.url));
-  const output = path.join(root, 'temp_work', name, `run-${Date.now()}`);
-  const scratch = path.join(root, 'temp_work', 'scene-tmp');
+  const output = path.resolve(sceneOutput('temp_work', name, `run-${Date.now()}`));
+  const scratch = sceneOutput('temp_work', 'scene-tmp');
   mkdirSync(output, {recursive: true});
   mkdirSync(scratch, {recursive: true});
   const temporary = process.platform === 'linux' && path.resolve(process.cwd()) === path.resolve(root)
-    ? '/proc/self/cwd/temp_work/scene-tmp' : scratch;
+    ? `/proc/self/cwd/${scratch}` : path.resolve(scratch);
   process.env.TMPDIR = temporary;
   process.env.TMP = temporary;
   process.env.TEMP = temporary;

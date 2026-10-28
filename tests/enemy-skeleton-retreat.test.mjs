@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
 import {Gameplay} from '../source/gameplay.js';
 import {ActorAnimator,ActorStateAnimator} from '../source/animation.js';
+import {thinkingEnemy} from './support/enemy-thinking.mjs';
 
 const data=JSON.parse(readFileSync(new URL('../assets/actors/skeleton.json',import.meta.url)));
 const close=(actual,expected,message='values agree')=>assert.ok(Math.abs(actual-expected)<1e-8,`${message}: ${actual} != ${expected}`);
@@ -16,7 +17,9 @@ function fixture(t,factor=1,save=null) {
   const game=new Gameplay(level,{save}),object=game.objects.find(value=>value.kind==='enemy');
   object.stats={...object.stats,WalkMotionFactor:factor,AttackRange:100,MinPlayerDistance:30,Speed:40,
     SenseRange:1000,VisualRange:1000,TimeToRememberVisual:.02,WaitTimeAfterSalvo:.25};
-  if(!save){object.salvoSize=1;object.ambush.phase='awake';object.animationState='idle';object.yaw=0;}
+  if(!save){object.salvoSize=1;object.ambush.phase='awake';object.animationState='idle';object.yaw=0;
+    // Mid-encounter: already thinking, with a sight test of RedCat at the default tick position.
+    thinkingEnemy(game,object,[0,0,10],()=>true);}
   const geometry=new THREE.BufferGeometry();
   geometry.setAttribute('position',new THREE.Float32BufferAttribute(data.positions,3));
   geometry.setAttribute('normal',new THREE.Float32BufferAttribute(data.normals,3));

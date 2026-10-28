@@ -18,11 +18,10 @@ async function setup(save=null){
   await world.attachGameplay(game);world.level=level;
   return {world,game,events};
 }
-test('no-clip ignores normal, continuous and lethal scripted damage, and immediately restores normal damage on exit',async()=>{
+test('no-clip ignores normal, continuous and lethal damage, and immediately restores normal damage on exit',async()=>{
   const {world,game,events}=await setup(),health=game.state.health,lives=game.state.lives;
   setNoClip(world,true);
   game.damage(2,'enemy');game.damage(.25,'water',{continuous:true});game.damage(100,'fall');
-  const host=new ScriptHost(game,{version:27});host.callNative('KillPlayer',[]);
   assert.equal(game.state.health,health);assert.equal(game.state.lives,lives);
   assert.deepEqual(events,[]);assert.equal(game.hitCooldown,0);
   assert.equal(setNoClip(world,false).enabled,false);

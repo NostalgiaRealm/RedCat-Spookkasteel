@@ -4,11 +4,12 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 
+import {sceneOutput,sceneTemp} from './support/scene-output.mjs';
 // Isolated renderer checks only: never open the desktop profile or its saves.
-const work='current_work/world-light-shadows-2026-10-05';
+const work=sceneOutput('current_work/world-light-shadows-2026-10-05');
 const out=path.resolve(`${work}/scenes-${Date.now()}`),temp=`${work}/t`;
 await mkdir(out,{recursive:true});await mkdir(temp,{recursive:true});
-const env={...process.env,TMPDIR:temp},port=process.env.SHADOW_PORT||'4392';
+const env={...process.env,TMPDIR:sceneTemp()},port=process.env.SHADOW_PORT||'4392';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...env,PORT:port},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let context;

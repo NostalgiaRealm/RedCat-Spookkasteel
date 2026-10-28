@@ -4,9 +4,10 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {chromium} from 'playwright';
 
+import {sceneOutput} from './support/scene-output.mjs';
 // Scoreboard layout only: no level simulation or unrelated control checks.
-process.env.TMPDIR='current_work';
-const output=`current_work/debriefing-layout-${Date.now()}`;
+process.env.TMPDIR=sceneOutput('current_work');
+const output=sceneOutput(`current_work/debriefing-layout-${Date.now()}`);
 await mkdir(output,{recursive:true});
 const port=Number(process.env.DEBRIEFING_TEST_PORT||4317);
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:String(port)},stdio:['ignore','pipe','inherit']});

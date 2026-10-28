@@ -4,8 +4,10 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
 export async function verifyGraveyardScenes(page) {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   const before=await page.evaluate(async()=>{
     const app=window.__redcat;await app.startLevel(2);app.pause();document.getElementById('pause').hidden=true;
     const world=app.world,game=app.gameplay,host=game.scripts;
@@ -18,9 +20,11 @@ export async function verifyGraveyardScenes(page) {
     return {doors:doors.map(door=>({id:door.id,enabled:door.enabled,open:door.open})),blocked:world.collider.trace([1660,-39,728],[1560,-39,728],world.player.mins,world.player.maxs,world.physicalModels).fraction<1};
   });
   assert.equal(before.blocked,true);assert.ok(before.doors.every(door=>!door.enabled&&!door.open));
-  await page.screenshot({path:'artifacts/graveyard-door-before.png'});
+  await page.screenshot({path:sceneOutput('artifacts/graveyard-door-before.png')});
   const buttons=[];
-  for(const [name,position,yaw] of [['dknopa',[2604,-39,176],0],['dknopb',[2220,-39,1416],Math.PI]]) {
+  // TouchToSwitch buttons need RedCat's native box (half-width 12.48, review item 17/D1) to touch
+  // the wall button brush; stand 0.05 units off its face, within the 0.1 contact tolerance.
+  for(const [name,position,yaw] of [['dknopa',[2604,-39,144+12.48+.05],0],['dknopb',[2220,-39,1448-12.48-.05],Math.PI]]) {
     const button=await page.evaluate(({name,position,yaw})=>{
       const world=window.__redcat.world,game=world.gameplay,object=game.find(name)[0];
       world.player.position=position;world.player.velocityY=0;world.player.grounded=true;world.yaw=yaw;
@@ -42,7 +46,7 @@ export async function verifyGraveyardScenes(page) {
   });
   assert.equal(after.fraction,1);assert.equal(after.error,null);
   assert.ok(after.doors.every(door=>door.open&&!door.enabled&&door.time===2));
-  await page.screenshot({path:'artifacts/graveyard-door-after.png'});
+  await page.screenshot({path:sceneOutput('artifacts/graveyard-door-after.png')});
   const crossing=await page.evaluate(()=>{
     const world=window.__redcat.world;world.player.position=[1670,-39,728];world.player.velocityY=0;world.player.grounded=true;world.yaw=Math.PI/2;
     for(let i=0;i<36;i++)world.update(.025,{forward:1,right:0});world.render();
@@ -76,7 +80,7 @@ export async function verifyGraveyardScenes(page) {
   // forward progress must stay blocked instead of crossing its 96-unit depth.
   assert.ok(statue.stopped[2]>3368,JSON.stringify(statue));assert.ok(statue.stable[2]>3368);
   assert.ok(Math.hypot(...statue.stopped.map((v,i)=>v-statue.stable[i]))<10,'Forward movement should be blocked at the pedestal: '+JSON.stringify(statue));
-  await page.screenshot({path:'artifacts/graveyard-statue-collision.png'});
+  await page.screenshot({path:sceneOutput('artifacts/graveyard-statue-collision.png')});
   const around=await page.evaluate(()=>{
     const world=window.__redcat.world;
     for(let i=0;i<30;i++)world.update(.025,{forward:0,right:-1});
@@ -84,7 +88,7 @@ export async function verifyGraveyardScenes(page) {
     return [...world.player.position];
   });
   assert.ok(around[2]<statue.bounds.min[2]-15,`Player cannot walk around the statue: ${around}`);
-  await writeFile('artifacts/graveyard-scenes.json',JSON.stringify({before,buttons,after,crossing,statue,around},null,2)+'\n');
+  await writeFile(sceneOutput('artifacts/graveyard-scenes.json'),JSON.stringify({before,buttons,after,crossing,statue,around},null,2)+'\n');
   console.log('PASS grave buttons open paired doors and permit passage; original entrance statue blocks walking/shots, preserves clear line of sight, and allows walking around.');
 }
 
@@ -95,6 +99,7 @@ if(import.meta.url===pathToFileURL(process.argv[1]).href) {
   try {
     browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
     const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+    await unlockChapters(page);
     page.on('pageerror',error=>errors.push(error.stack));page.on('response',response=>{if(response.status()>=400)errors.push(`${response.status()} ${response.url()}`);});
     await page.goto('http://127.0.0.1:4185/?skipIntro');await page.waitForFunction(()=>window.__redcat);
     await verifyGraveyardScenes(page);assert.deepEqual(errors,[]);

@@ -1,0 +1,56 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  {
++   blocks: true,
++   crate: 1,
++   explosions: 0,
++   fragmentSides: [],
++   fragments: 0,
++   gate: 100,
+-   blocks: false,
+-   crate: 0,
+-   explosions: 2,
+-   fragmentSides: [
+-     0,
+-     0
+-   ],
+-   fragments: 2,
+-   gate: 0,
+    scriptError: null,
++   visible: true
+-   visible: false
+  }
+
+    at file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/graveyard-gate-scenes.mjs:83:10 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: {
+    gate: 100,
+    crate: 1,
+    visible: true,
+    blocks: true,
+    explosions: 0,
+    fragments: 0,
+    fragmentSides: [],
+    scriptError: null
+  },
+  expected: {
+    gate: 0,
+    crate: 0,
+    visible: false,
+    blocks: false,
+    explosions: 2,
+    fragments: 2,
+    fragmentSides: [ 0, 0 ],
+    scriptError: null
+  },
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

@@ -3,6 +3,7 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4293'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
@@ -10,7 +11,9 @@ try {
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl']});
   const page=await browser.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.stack));
   await page.goto('http://127.0.0.1:4293/?skipIntro');await page.waitForFunction(()=>window.__redcat);
-  await page.locator('#open-help').click();await page.locator('#close-help').click();
+  // Help sits under Meer instellingen since the original-menu rework.
+  await page.locator('#open-settings').click();await page.locator('#open-more-settings').click();
+  await page.locator('#open-help').click();await page.locator('#close-help').click();await page.locator('#close-settings').click();
   const result=await page.evaluate(async()=>{
     const {GameAudio}=await import('./source/audio.js');
     const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -43,7 +46,7 @@ try {
     tone.reset();await tone.context.close();URL.revokeObjectURL(url);
     return {originalRms,originalRate,pausedAt,pausedEnd,resumedAt,right,left,frequency,mediaRms,mediaFrequency,mediaRate,toneState};
   });
-  await mkdir('artifacts',{recursive:true});await writeFile('artifacts/portal-audio-native-scenes.json',JSON.stringify(result,null,2)+'\n');
+  await mkdir(sceneOutput('artifacts'),{recursive:true});await writeFile(sceneOutput('artifacts/portal-audio-native-scenes.json'),JSON.stringify(result,null,2)+'\n');
   assert.ok(result.originalRms>.001,'original portal WAV is audible at .075x');assert.equal(result.originalRate,.075);
   assert.equal(result.pausedAt,result.pausedEnd);assert.ok(result.resumedAt>result.pausedEnd);
   assert.ok(result.right[1]>.1,'slow buffered mono effect remains audible');assert.ok(Math.abs(result.frequency-300)<10,'4000 Hz shifts to 300 Hz at .075x');

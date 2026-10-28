@@ -2,10 +2,11 @@ import {chromium} from 'playwright';
 import {spawn} from 'node:child_process';
 import {writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
+import {sceneOutput} from './support/scene-output.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4199'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});let browser;
 try {
-  browser=await chromium.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
+  browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
   page.on('pageerror',e=>errors.push(e.stack));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
   await page.goto('http://127.0.0.1:4199/?skipIntro');await page.waitForFunction(()=>window.__redcat);
@@ -36,7 +37,7 @@ try {
   },fairyId);
   assert.equal(after.enabled,false);assert.equal(after.active,false);assert.equal(after.sprites,0);assert.equal(after.rays,0);assert.equal(after.light,null);assert.deepEqual(after.audio,[]);
   assert.equal(after.plays.length,2);assert.equal(after.futureEnabled,false);assert.equal(after.scriptError,null);assert.deepEqual(errors,[]);
-  await page.screenshot({path:'artifacts/fairy-after-cutscene-skip.png'});
-  await writeFile('artifacts/fairy-skip-audio-scenes.json',JSON.stringify({before,after,errors},null,2)+'\n');
+  await page.screenshot({path:sceneOutput('artifacts/fairy-after-cutscene-skip.png')});
+  await writeFile(sceneOutput('artifacts/fairy-skip-audio-scenes.json'),JSON.stringify({before,after,errors},null,2)+'\n');
   console.log('PASS fairy appearance cue once, silent particle pulses, real 2-second E skip clears fairy visuals/audio, future encounter preserved.');
 } finally {await browser?.close();server.kill();}

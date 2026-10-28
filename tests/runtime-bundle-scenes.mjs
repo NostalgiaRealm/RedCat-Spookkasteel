@@ -13,11 +13,12 @@ import {chromium, devices} from 'playwright';
 import {Gameplay} from '../source/gameplay.js';
 import {validAdventureSave} from '../source/campaign-progress.js';
 
+import {sceneOutput,sceneTemp} from './support/scene-output.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const work=path.join(root,'temp_work/js-bundling-2026-10-26');
+const work=path.join(root,sceneOutput('temp_work/js-bundling-2026-10-26'));
 const out=path.join(work,`browser-${Date.now()}`),prefix='/redcatspookkasteel/';
 await mkdir(path.join(out,'tmp'),{recursive:true});
-process.chdir(root);process.env.TMPDIR=path.relative(root,path.join(out,'tmp'));
+process.chdir(root);process.env.TMPDIR=sceneTemp();
 const hash=value=>createHash('sha256').update(value).digest('hex');
 function unbundledEntry(html) {
   const tag=html.match(/<script\b[^>]*\bdata-source=["'][^"']+["'][^>]*>/i)?.[0];

@@ -6,6 +6,7 @@ import {cloneActorPoseGeometry} from './actor-geometry.js';
 import { sampleCameraRoute } from './script-camera.js';
 import { PlayerCameraControl } from './camera-control.js';
 import { CameraWallLift } from './third-person-camera.js';
+import { boneScalePoint, knightSegmentFromBone } from './knight-pose-native.js';
 import { NativeFollowCamera, nativeSteer, yawToward, CAMERA_HULL_HALF_SIZE } from './native-camera.js';
 import { PLAYER_HEIGHT, PLAYER_EYE_HEIGHT } from './player-hull.js';
 // The shared look/aim pitch's default; at this value the orbit adds nothing
@@ -764,10 +765,8 @@ export class CastleWorld {
     const index=animator.data.bones.findIndex(bone=>bone.name.toUpperCase()==='BONE01');
     const bone=animator.transforms[index];if(!bone)return null;
     mesh.updateWorldMatrix(true,false);
-    const tipBone=mesh.localToWorld(new THREE.Vector3(bone[9],bone[10],bone[11])).toArray();
-    const mins=object.collisionMins||[-18,0,-18],maxs=object.collisionMaxs||[18,50,18];
-    const centre=object.position.map((v,i)=>v+(mins[i]+maxs[i])/2);
-    return [tipBone.map((v,i)=>v+.3*(v-centre[i])),centre];
+    // The bone point carries the [1,1,1] scale-vector offset (knight-pose-native.js).
+    return knightSegmentFromBone(mesh.localToWorld(new THREE.Vector3(...boneScalePoint(bone))).toArray(),object);
   }
   syncBossMachine(object,machine,collision=true) {
     machine.root.position.fromArray(object.boss.home);machine.root.rotation.y=object.yaw||0;
@@ -1135,9 +1134,10 @@ export class CastleWorld {
       const lock=this.targeting.locked&&targetableObject(this.targeting.target)?targetAimPoint(this.targeting.target):null;
       // Callers without the separate fields use `right` as strafe and `turn` (left positive) as steering.
       const controls={forward:input.forward,strafe:input.strafe??input.right,steer:input.steer??-(input.turn||0)};
-      const steer=nativeSteer(controls,{heading:this.yaw,cameraYaw:this.followCamera.yaw,dt,lockYaw:lock?yawToward(this.player.position,lock):null});
+      const firing=!!input.attack&&!!this.gameplay?.state.skill;
+      const steer=nativeSteer(controls,{heading:this.yaw,cameraYaw:this.followCamera.yaw,dt,lockYaw:lock?yawToward(this.player.position,lock):null,firing});
       this.yaw=steer.heading;moveInput={...input,...steer.move};
-      this.cameraInput={hasInput:steer.hasInput,backpedal:steer.backpedal,steering:true};
+      this.cameraInput={hasInput:steer.hasInput,backpedal:steer.backpedal,steering:true,aiming:firing};
     } else {
       if(!steered&&input.turn&&!this.targeting.locked)this.yaw+=input.turn*dt*1.7;
       this.cameraInput={hasInput:false,backpedal:false,steering:!playerFrozen};
@@ -1220,7 +1220,7 @@ export class CastleWorld {
     const cutting=this.followCamera.cut;
     const half=CAMERA_HULL_HALF_SIZE,trace=(a,b,size)=>this.collider.trace(a,b,[-size,-size,-size],[size,size,size],this.physicalModels);
     const view=this.followCamera.update(dt,{feet,eye,height:PLAYER_HEIGHT,heading:this.yaw,
-      hasInput:this.cameraInput.hasInput,backpedal:this.cameraInput.backpedal,steering:this.cameraInput.steering,
+      hasInput:this.cameraInput.hasInput,backpedal:this.cameraInput.backpedal,steering:this.cameraInput.steering,aiming:!!this.cameraInput.aiming,
       offset:offsetMode?scripted.offset:null,lockTarget:locked?targetAimPoint(locked):null,
       orbitPitch:this.pitch-DEFAULT_PITCH,direct:!!this.player.noClip,
       ray:(a,b)=>trace(a,b,0),sweep:(a,b)=>trace(a,b,half)});

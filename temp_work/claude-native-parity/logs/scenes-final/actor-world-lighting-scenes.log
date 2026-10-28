@@ -1,0 +1,19 @@
+{"level":"lvl00a","cache":{"sunTraces":0,"floorQueries":0},"cached":{"median":0.10000000149011612,"p95":0.20000000298023224,"max":0.29999999701976776},"moving":{"median":0.10000000149011612,"p95":0.20000000298023224,"max":0.29999999701976776}}
+{"level":"lvl01a","cache":{"sunTraces":0,"floorQueries":0},"cached":{"median":0.10000000149011612,"p95":0.19999999552965164,"max":0.20000000298023224},"moving":{"median":0.10000000149011612,"p95":0.20000000298023224,"max":0.20000000298023224}}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: No native Sun selected: {"level":"lvl02a","suns":495,"enemy":"zombie","sample":{"position":[3876,-117,995],"ambient":[0,0,0],"fill":[0,0,0],"normal":[0,1,0],"settings":{"useSun":true,"useAmbient":true,"overrideAmbient":false,"useDefaultSun":false,"useDefaultSunOnly":false,"ambientColor":[155,155,155],"sunColor":[155,155,155],"sunNormal":[0,1,0],"sunIntensityFactor":1,"maxDynamicLights":2}},"redcatAmbient":[0.21568627450980393,0.21568627450980393,0.21568627450980393],"cache":{"sunTraces":0,"floorQueries":0},"brushCache":null,"poseTraces":0,"oldBounds":[-10.820584297180176,-16.94009780883789,-0.030797511339187622,10.820534706115723,8.213726997375488,52.27253341674805],"currentBounds":[-10.820584297180176,-16.94009780883789,-0.030797511339187622,10.820534706115723,8.213726997375488,52.27253341674805],"cachedMilliseconds":{"median":0.10000000149011612,"p95":0.20000000298023224,"max":0.20000000298023224},"movingMilliseconds":{"median":0.10000000149011612,"p95":0.10000000149011612,"max":0.19999999552965164},"floor":{"queries":249,"cacheHits":1230,"nodeVisits":7346,"faceChecks":686,"shadowTraces":0,"shadowCacheHits":0},"visibility":{"queries":390,"leafQueries":500,"leafCacheHits":280,"pvsRejected":29,"areaRejected":2,"traces":359}}
+    at file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-world-lighting-scenes.mjs:73:12
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at process.processImmediate (node:internal/timers:472:9) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

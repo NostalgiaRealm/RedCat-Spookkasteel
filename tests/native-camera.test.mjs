@@ -107,3 +107,22 @@ test('no-clip flight follows the heading directly without collision',()=>{
   const view=camera.update(1/60,frame({heading:2,direct:true,ray:blocked,sweep:blocked}));
   assert.equal(view.yaw,2);near(view.position[1],1.5*H,1e-9);
 });
+test('holding Fire with a skill keeps the steering turn but zeroes the move (0x437770)',()=>{
+  const controls={forward:1,steer:1},options={heading:0,cameraYaw:0,dt:1/60};
+  const walking=nativeSteer(controls,options),firing=nativeSteer(controls,{...options,firing:true});
+  assert.deepEqual(walking.move,{forward:1,right:0});
+  assert.deepEqual(firing.move,{forward:0,right:0});
+  assert.equal(firing.heading,walking.heading,'RedCat still turns toward the input');
+  assert.equal(firing.hasInput,true);
+  assert.deepEqual(nativeSteer({strafe:1},{...options,firing:true}).move,{forward:0,right:0},'a sidestep stops too');
+});
+test('while RedCat stands to shoot, the follow camera takes the idle row (0x4598e0, state 0xf)',()=>{
+  const traces={ray:(a,b)=>({fraction:1,end:[...b],normal:[0,1,0],startSolid:false}),sweep:(a,b)=>({fraction:1,end:[...b],normal:[0,1,0],startSolid:false})};
+  const frame=aiming=>{const camera=new NativeFollowCamera();let view;
+    for(let i=0;i<120;i++)view=camera.update(1/60,{feet:[0,0,0],eye:[0,54,0],height:57.92,heading:0,hasInput:true,aiming,...traces});
+    return {moving:camera.moving,distance:Math.hypot(view.position[0],view.position[2])};};
+  const walking=frame(false),aiming=frame(true);
+  assert.equal(walking.moving,true);assert.equal(aiming.moving,false);
+  assert.ok(Math.abs(aiming.distance-CAMERA_PRESETS[0].idle[1]*57.92)<1,`idle distance ${aiming.distance}`);
+  assert.ok(Math.abs(walking.distance-CAMERA_PRESETS[0].moving[1]*57.92)<1,`moving distance ${walking.distance}`);
+});

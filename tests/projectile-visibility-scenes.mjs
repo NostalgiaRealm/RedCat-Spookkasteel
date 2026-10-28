@@ -3,13 +3,14 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 // Focused source-only check: actual Brutus projectiles in the two original
 // arenas, plus their rendered footprint. Does not run the old boss campaign.
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4281'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl']});
   const page=await browser.newPage({viewport:{width:1440,height:900}}),errors=[];
   await page.addInitScript(()=>{
@@ -57,7 +58,7 @@ try {
       report.impactRetiresVisuals=g.projectiles.length===0&&g.hazards.segments.length===0&&w.projectileMeshes.size===0&&w.hazardMeshes.size===0;
       return report;
     },{level,enemyType,label});
-    await writeFile(`artifacts/projectile-${label}.png`,Buffer.from(result.screenshot,'base64'));delete result.screenshot;
+    await writeFile(sceneOutput(`artifacts/projectile-${label}.png`),Buffer.from(result.screenshot,'base64'));delete result.screenshot;
     assert.ok(!result.error,JSON.stringify(result));
     assert.ok(result.width>=result.nativeWidth-1e-8&&result.width<=result.nativeWidth*2.5+1e-8,JSON.stringify(result));
     assert.ok(result.screenPixelsAt1080>=24-1e-5||result.width===result.nativeWidth*2.5);
@@ -68,6 +69,6 @@ try {
     reports.push(result);
   }
   assert.deepEqual(errors,[]);
-  await writeFile('artifacts/projectile-visibility-scenes.json',JSON.stringify({reports,errors},null,2)+'\n');
+  await writeFile(sceneOutput('artifacts/projectile-visibility-scenes.json'),JSON.stringify({reports,errors},null,2)+'\n');
   console.log('PASS original forest/graveyard Brutus sprites, readable footprint, ribbon rendering/impact cleanup, pause and save restoration; no browser errors.');
 } finally {await browser?.close();server.kill();}

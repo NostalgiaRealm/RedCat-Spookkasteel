@@ -4,17 +4,18 @@ import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 // Optional copied save is loaded only in an isolated browser profile.
 const save=process.argv[2]?JSON.parse(await readFile(process.argv[2],'utf8')):null;
-const out=path.resolve(`temp_work/graveyard-wall-gap/scenes-${Date.now()}`);
+const out=path.resolve(sceneOutput(`temp_work/graveyard-wall-gap/scenes-${Date.now()}`));
 await mkdir(out,{recursive:true});
 // A relative TMPDIR keeps Chromium's Unix socket path below its length limit.
-const env={...process.env,TMPDIR:'temp_work'};
+const env={...process.env,TMPDIR:sceneOutput('temp_work')};
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...env,PORT:'0'},stdio:['ignore','pipe','inherit']});
 const base=await new Promise((resolve,reject)=>{server.stdout.once('data',s=>resolve(s.toString().match(/http:\/\/127.0.0.1:\d+/)[0]));server.once('error',reject);});
 let context;
 try {
-  context=await chromium.launchPersistentContext(path.join(out,'profile'),{executablePath:'/usr/bin/google-chrome',headless:true,env,
+  context=await chromium.launchPersistentContext(path.join(out,'profile'),{executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,env,
     viewport:{width:1280,height:800},args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
   const page=await context.newPage(),errors=[];
   page.on('pageerror',error=>errors.push(error.stack));

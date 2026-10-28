@@ -1,0 +1,32 @@
+PERF {"round":0,"index":0,"total":21.600000016391277,"trace":22.100000016391277}
+PERF {"round":0,"index":10,"total":162.00000000745058,"trace":88.50000002235174}
+PERF {"round":0,"index":20,"total":290.3999999463558,"pursuit":0.29999999701976776,"trace":223.79999992251396}
+PERF {"round":0,"index":30,"total":407.7999999895692,"pursuit":0.29999999701976776,"trace":341.6999998986721}
+PERF {"round":0,"index":40,"total":523.3000000268221,"pursuit":0.29999999701976776,"trace":391.4999999627471}
+PERF {"round":1,"index":0,"total":544.3000000417233,"pursuit":0.29999999701976776,"trace":409.7999999448657}
+PERF {"round":1,"index":10,"total":657.7000000178814,"pursuit":0.29999999701976776,"trace":478.1999999806285}
+PERF {"round":1,"index":20,"total":772.400000050664,"pursuit":0.5,"trace":609.4999999552965}
+PERF {"round":1,"index":30,"total":878.6999999806285,"pursuit":0.5999999940395355,"trace":728.0999998822808}
+PERF {"round":1,"index":40,"total":982.8999999463558,"pursuit":0.5999999940395355,"trace":775.1999998837709}
+PERF {"round":2,"index":0,"total":1003.8999999463558,"pursuit":0.5999999940395355,"trace":795.1999998986721}
+PERF {"round":2,"index":10,"total":1105.299999885261,"pursuit":0.5999999940395355,"trace":861.4999999552965}
+PERF {"round":2,"index":20,"total":1199.899999924004,"pursuit":0.5999999940395355,"trace":992.4999999478459}
+PERF {"round":2,"index":30,"total":1300.399999924004,"pursuit":0.8999999910593033,"trace":1112.6000000014901}
+PERF {"round":2,"index":40,"total":1399.4999999254942,"pursuit":0.8999999910593033,"trace":1161.900000065565}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: graphics resources remain bounded: 1364 > 1363
+    at file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/graveyard-performance-scenes.mjs:54:10
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at process.processImmediate (node:internal/timers:472:9) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

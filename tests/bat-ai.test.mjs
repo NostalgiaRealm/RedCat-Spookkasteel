@@ -9,12 +9,15 @@ import { GAMEPLAY_SETTINGS } from '../source/gameplay-settings.js';
 import { BspCollider } from '../source/collision.js';
 import { CastleWorld } from '../source/world.js';
 import {prepareBareWorld} from './support/bare-world.mjs';
+import {thinkingOnFirstUpdate} from './support/enemy-thinking.mjs';
 
 function fixture(variant=1,extra={}) {
   const level={id:'lvl01a',spawn:{position:[0,0,0],orientation:0},entities:[{
     classname:'MovingEnemy','%name%':'bat',Type:'2',SubType:String(variant),Origin:'0 60 0',StartOrientation:'6',...extra
   }]};
   const events=[],game=new Gameplay(level,{onEvent:event=>events.push(event)}),bat=game.objects[0];
+  // Mid-encounter: the bat is already thinking when the test's first update runs.
+  thinkingOnFirstUpdate(game);
   bat.animationDurations={attack:1.600008,hurt:1.866676,death:2.00001};
   bat.collisionMins=[-12,0,-12];bat.collisionMaxs=[12,20,12];
   return {game,bat,events};
@@ -98,7 +101,7 @@ test('old saved green bat melee attacks convert to contact pursuit without a rem
   const {game,bat}=fixture(1,{Origin:'0 0 0'});
   bat.animationState='attack';bat.animationUntil=10;bat.pendingAttack={at:0};bat.attackTimer=3;
   const restored=new Gameplay(game.level,{save:JSON.parse(JSON.stringify(game.snapshot()))}),copy=restored.objects[0];
-  restored.update(.1,[0,0,80]);
+  thinkingOnFirstUpdate(restored);restored.update(.1,[0,0,80]);
   assert.equal(copy.pendingAttack,null);assert.equal(copy.animationState,'walk');
   assert.ok(copy.position[2]>0);assert.equal(restored.state.health,10);
 });
@@ -122,7 +125,7 @@ test('original castle bat variants resolve to contact and ranged behavior withou
   const entities=original.entities.filter(e=>e.classname==='MovingEnemy'&&e.Type==='2');
   assert.equal(entities.length,4);
   for(const entity of entities) {
-    const game=new Gameplay({...original,entities:[entity]}),bat=game.objects[0];
+    const game=thinkingOnFirstUpdate(new Gameplay({...original,entities:[entity]})),bat=game.objects[0];
     assert.equal(bat.flying,true);
     assert.equal(bat.ranged,Number(entity.SubType)!==1);
     const player=[bat.position[0],bat.position[1],bat.position[2]+80];bat.yaw=0;

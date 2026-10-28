@@ -13,8 +13,9 @@ import {fileURLToPath} from 'node:url';
 import {Gameplay} from '../source/gameplay.js';
 import {validAdventureSave} from '../source/campaign-progress.js';
 
+import {sceneOutput,sceneTemp} from './support/scene-output.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const out=path.join(root,'temp_work',`web-cache-${new Date().toISOString().slice(0,10)}`,`run-${Date.now()}`);
+const out=path.join(root,sceneOutput('temp_work'),`web-cache-${new Date().toISOString().slice(0,10)}`,`run-${Date.now()}`);
 const temporary=path.join(out,'tmp');
 await mkdir(temporary,{recursive:true});
 // Playwright itself reads TMPDIR before launching Chromium. Also supply it in
@@ -22,7 +23,7 @@ await mkdir(temporary,{recursive:true});
 // A relative path avoids Linux's 108-byte Unix-socket path limit in this long
 // checkout path while keeping Chrome's singleton socket inside the evidence.
 process.chdir(root);
-process.env.TMPDIR=path.relative(root,temporary);
+process.env.TMPDIR=sceneTemp();
 const prefix='/redcatspookkasteel/';
 const actorPath='src/actor-render-residency.js',currentActorPath='source/actor-render-residency.js';
 const sha256=value=>createHash('sha256').update(value).digest('hex');

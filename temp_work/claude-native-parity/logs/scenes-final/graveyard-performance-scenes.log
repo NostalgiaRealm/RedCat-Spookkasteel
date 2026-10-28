@@ -1,0 +1,35 @@
+PERF {"round":0,"index":0,"total":23.700000002980232,"trace":26.599999994039536}
+PERF {"round":0,"index":10,"total":176.29999991506338,"trace":97.80000002682209}
+PERF {"round":0,"index":20,"total":310.3000000268221,"pursuit":0.6000000089406967,"trace":234.39999993145466}
+PERF {"round":0,"index":30,"total":434.5,"pursuit":0.6000000089406967,"trace":357.19999991357327}
+PERF {"round":0,"index":40,"total":555.5000000149012,"pursuit":0.7000000104308128,"trace":404.4999998956919}
+PERF {"round":1,"index":0,"total":578.3000000193715,"pursuit":0.7000000104308128,"trace":423.7999998703599}
+PERF {"round":1,"index":10,"total":700.3000000417233,"pursuit":0.7000000104308128,"trace":493.9999998509884}
+PERF {"round":1,"index":20,"total":829.8000000342727,"pursuit":0.7000000104308128,"trace":637.8999998271465}
+PERF {"round":1,"index":30,"total":943.8000000044703,"pursuit":0.8000000044703484,"trace":765.1999998018146}
+PERF {"round":1,"index":40,"total":1053.7000000327826,"pursuit":0.8000000044703484,"trace":814.4999997988343}
+PERF {"round":2,"index":0,"total":1077.6000000461936,"pursuit":0.8000000044703484,"trace":836.5999997705221}
+PERF {"round":2,"index":10,"total":1197.1000000461936,"pursuit":0.8000000044703484,"trace":908.199999794364}
+PERF {"round":2,"index":20,"total":1302.4000000730157,"pursuit":0.9000000059604645,"trace":1044.2999998629093}
+PERF {"round":2,"index":30,"total":1417.3000000864267,"pursuit":1.300000011920929,"trace":1177.5999998822808}
+PERF {"round":2,"index":40,"total":1520.7000000849366,"pursuit":1.300000011920929,"trace":1231.4999998509884}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: scene objects remain bounded
+
+117 !== 114
+
+    at file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/graveyard-performance-scenes.mjs:53:10
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at process.processImmediate (node:internal/timers:472:9) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 117,
+  expected: 114,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

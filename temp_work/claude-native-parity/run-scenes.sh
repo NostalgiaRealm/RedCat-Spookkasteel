@@ -1,6 +1,10 @@
 #!/bin/bash
 # Usage: run-scenes.sh <project-dir> <log-dir> [scene files...]
 # Runs each browser scene script sequentially with the Playwright Chromium.
+# Scene outputs go to $REDCAT_SCENE_OUTPUT (default temp_work/scene-output,
+# ignored); see tests/support/scene-output.mjs. Scenes that start locked
+# chapters seed their own progress (tests/support/scene-progress.mjs), so the
+# older UNLOCK_PRELOAD is no longer needed but still honoured.
 project="$1"; logs="$2"; shift 2
 [ -n "$UNLOCK_PRELOAD" ] && export NODE_OPTIONS="--import $UNLOCK_PRELOAD"
 export CHROME_PATH="$HOME/.local/share/ms-playwright/chromium-1208/chrome-linux64/chrome"

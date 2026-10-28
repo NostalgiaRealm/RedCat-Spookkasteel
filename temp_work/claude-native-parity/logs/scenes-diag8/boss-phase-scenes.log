@@ -1,0 +1,28 @@
+DBG 2 ["shoot","rise","look","lower"]
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  [
+    'magma',
+    'magma',
+    'magma',
++   'magma'
+  ]
+
+    at verifyBossPhaseScenes (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/boss-phase-scenes.mjs:91:92)
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at process.processImmediate (node:internal/timers:472:9)
+    at async file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/boss-phase-scenes.mjs:164:5 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [ 'magma', 'magma', 'magma', 'magma' ],
+  expected: [ 'magma', 'magma', 'magma' ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

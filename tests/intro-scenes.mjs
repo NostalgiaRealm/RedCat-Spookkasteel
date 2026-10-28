@@ -4,10 +4,12 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {chromium} from 'playwright';
 
+import {sceneOutput} from './support/scene-output.mjs';
+import {showAdventureExtras} from './scene-menu.mjs';
 // Real media playback with a fresh profile and audible autoplay blocked.
 // Do not use the permissive autoplay switch used by some other scene tests.
-process.env.TMPDIR='current_work';
-const output=resolve(`current_work/intro-autoplay-2026-10-02/browser-${Date.now()}`);
+process.env.TMPDIR=sceneOutput('current_work');
+const output=resolve(sceneOutput(`current_work/intro-autoplay-2026-10-02/browser-${Date.now()}`));
 await mkdir(output,{recursive:true});
 const report={checks:[],errors:[],samples:[]},port=Number(process.env.INTRO_TEST_PORT||4326);
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:String(port)},stdio:['ignore','pipe','inherit']});
@@ -56,7 +58,8 @@ try {
     check(`${label}: click/tap enables sound without rewinding or changing volume`);
     await page.locator('#skip-intro').click();
     const skipped=await state(page);assert.equal(skipped.mode,'menu');assert.equal(skipped.src,null);assert.equal(skipped.paused,true);assert.equal(skipped.actionHidden,true);
-    await page.locator('#play-intro').click();await advancing(page);
+    // The intro replay sits under the adventure start's Meer opties since the original-menu rework.
+    await showAdventureExtras(page);await page.locator('#play-intro').click();await advancing(page);
     const replay=await state(page);assert.equal(replay.muted,false);assert.equal(replay.actionHidden,true);
     check(`${label}: skip cleans playback and manual replay starts with sound`);
     // The local fixture server sends complete files, not byte ranges. Play to

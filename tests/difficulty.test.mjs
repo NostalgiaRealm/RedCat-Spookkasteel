@@ -5,10 +5,12 @@ import {Gameplay} from '../source/gameplay.js';
 import {GAMEPLAY_SETTINGS} from '../source/gameplay-settings.js';
 import {DIFFICULTIES,normalizeDifficulty} from '../source/difficulty.js';
 import {playerShotDefinition} from '../source/player-projectiles.js';
+import {thinkingOnFirstUpdate} from './support/enemy-thinking.mjs';
 
 const enemy=(classname,Type,SubType='1',name='enemy')=>({classname,Type,SubType,DaviName:name,'%name%':name,Origin:'0 0 0',IsInitiallyEnabled:'1'});
 const level=entities=>({id:'difficulty-test',spawn:{position:[0,0,0],orientation:0},entities});
-const fixture=(difficulty,entity=enemy('StandingEnemy','2'))=>new Gameplay(level([entity]),{difficulty,deferInit:true});
+// Mid-encounter fixture: enemies are already thinking (gameplay.js updateEnemy).
+const fixture=(difficulty,entity=enemy('StandingEnemy','2'))=>thinkingOnFirstUpdate(new Gameplay(level([entity]),{difficulty,deferInit:true}));
 
 test('original Dutch labels, native IDs and invalid-setting fallback select the three native sections',()=>{
   assert.deepEqual(DIFFICULTIES.map(({id,value,label})=>[id,value,label]),[[0,'Easy','Makkelijk'],[1,'Normal','Normaal'],[2,'Hard','Moeilijk']]);

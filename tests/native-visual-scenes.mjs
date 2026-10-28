@@ -2,12 +2,15 @@ import {chromium} from 'playwright';
 import {spawn} from 'node:child_process';
 import {writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
 const fairyOnly=process.argv.includes('--fairy-only');
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4198'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});let browser;
 try {
-  browser=await chromium.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl']});
+  browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+  await unlockChapters(page);
   page.on('pageerror',e=>errors.push(e.stack));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
   await page.goto('http://127.0.0.1:4198/?skipIntro');await page.waitForFunction(()=>window.__redcat);
   const pause=level=>page.evaluate(async level=>{const a=window.__redcat;await a.startLevel(level);a.pause();document.getElementById('pause').hidden=true;for(const p of a.gameplay.scripts.players.values())p.stop();a.gameplay.scripts.camera=null;a.gameplay.scripts.cutscene=false;},level);
@@ -23,12 +26,14 @@ try {
       w.scene.updateMatrixWorld(true);const box=new THREE.Box3().setFromObject(actor),center=box.getCenter(new THREE.Vector3());
       w.player.position=center.toArray();w.redcat.visible=false;
       const eye=center.clone().add(new THREE.Vector3(index?0:140,15,index?140:0));
-      w.camera.position.copy(eye);w.camera.lookAt(center);w.render();
+      w.camera.position.copy(eye);w.camera.lookAt(center);
+      // Residency/streaming follow the camera: settle them for this hand-placed view (as the newer scenes do).
+      w.camera.updateMatrixWorld(true);w.updateRenderResidency();await w.geometryStream.settle();await w.settleActorTextures();w.render();
       const materials=actor.userData.mesh.material;
       return {id:entities[index]['%name%'],bounds:[box.min.toArray(),box.max.toArray()],maps:materials.map(m=>m.map?.image?.src),transparent:materials.every(m=>m.transparent),range:[...w.modelMeshes.values()].flat().reduce((a,mesh)=>a+mesh.geometry.drawRange.count,0)};
     },index));
     assert.equal(webs[index].transparent,true);assert.ok(webs[index].maps.every(src=>src.includes('128white-web_a2.png')));assert.ok(webs[index].range>0);
-    await page.screenshot({path:`artifacts/cobweb-original-alpha-${index+1}.png`});
+    await page.screenshot({path:sceneOutput(`artifacts/cobweb-original-alpha-${index+1}.png`)});
   }
   }
   await pause(0);
@@ -41,12 +46,12 @@ try {
     for(let i=0;i<16;i++)w.effects.update(.25);w.render();
     const s=w.effects.entries.get(o.id);return {id:o.id,position:s.fairyGeometry.light.position,sprites:s.fairyGeometry.sprites.length,rays:s.fairyGeometry.rays.length,range:[...w.modelMeshes.values()].flat().reduce((a,mesh)=>a+mesh.geometry.drawRange.count,0)};
   });
-  assert.ok(fairy.sprites>9&&fairy.sprites<=59);assert.ok(fairy.rays>0&&fairy.range>0);await page.screenshot({path:'artifacts/fleurifee-native-orbits-halo.png'});
+  assert.ok(fairy.sprites>9&&fairy.sprites<=59);assert.ok(fairy.rays>0&&fairy.range>0);await page.screenshot({path:sceneOutput('artifacts/fleurifee-native-orbits-halo.png')});
   const departure=await page.evaluate(id=>{
     const w=window.__redcat.world,o=w.gameplay.objects.find(o=>o.id===id);o.enabled=false;w.effects.update(.2);w.render();
     const state=w.effects.entries.get(id);return {sprites:state.fairyGeometry.sprites.length,light:state.fairyGeometry.light,rays:state.fairyGeometry.rays.length};
   },fairy.id);
-  assert.ok(departure.sprites>20&&departure.sprites<=50);assert.equal(departure.light,null);await page.screenshot({path:'artifacts/fleurifee-native-departure.png'});
-  assert.deepEqual(errors,[]);await writeFile(fairyOnly?'artifacts/native-fairy-scenes.json':'artifacts/native-visual-scenes.json',JSON.stringify({webs,fairy,departure},null,2)+'\n');
+  assert.ok(departure.sprites>20&&departure.sprites<=50);assert.equal(departure.light,null);await page.screenshot({path:sceneOutput('artifacts/fleurifee-native-departure.png')});
+  assert.deepEqual(errors,[]);await writeFile(fairyOnly?sceneOutput('artifacts/native-fairy-scenes.json'):sceneOutput('artifacts/native-visual-scenes.json'),JSON.stringify({webs,fairy,departure},null,2)+'\n');
   console.log(fairyOnly?'PASS original fairy appearance, orbital layers and separate departure; no HTTP or browser errors.':'PASS both authored web alpha overrides, fairy halo/orbits and separate departure, no HTTP or browser errors.');
 } finally {await browser?.close();server.kill();}

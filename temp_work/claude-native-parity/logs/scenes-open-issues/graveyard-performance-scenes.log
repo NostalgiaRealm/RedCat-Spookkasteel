@@ -1,0 +1,33 @@
+PERF {"round":0,"index":0,"total":23.50000001490116,"trace":23.799999997019768}
+PERF {"round":0,"index":10,"total":172.2000000551343,"trace":97.89999996870756}
+PERF {"round":0,"index":20,"total":303.5000000745058,"pursuit":0.7000000029802322,"trace":235.79999992251396}
+PERF {"round":0,"index":30,"total":427.60000013560057,"pursuit":0.7000000029802322,"trace":361.39999993890524}
+PERF {"round":0,"index":40,"total":547.7000001519918,"pursuit":0.7000000029802322,"trace":410.4999999701977}
+PERF {"round":1,"index":0,"total":569.400000192225,"pursuit":0.7000000029802322,"trace":428.6999999731779}
+PERF {"round":1,"index":10,"total":685.3000002130866,"pursuit":0.7000000029802322,"trace":498.79999999701977}
+PERF {"round":1,"index":20,"total":805.4000001773238,"pursuit":1.0000000074505806,"trace":633.3000000193715}
+PERF {"round":1,"index":30,"total":915.7000001519918,"pursuit":1.300000011920929,"trace":757.6000000983477}
+PERF {"round":1,"index":40,"total":1022.8000002279878,"pursuit":1.400000013411045,"trace":805.6000000983477}
+PERF {"round":2,"index":0,"total":1044.6000002101064,"pursuit":1.400000013411045,"trace":825.5000000745058}
+PERF {"round":2,"index":10,"total":1150.4000001847744,"pursuit":1.400000013411045,"trace":891.6000001206994}
+PERF {"round":2,"index":20,"total":1250.1000002101064,"pursuit":1.7000000029802322,"trace":1027.3999999985099}
+PERF {"round":2,"index":30,"total":1353.8000002279878,"pursuit":1.7000000029802322,"trace":1151.300000064075}
+PERF {"round":2,"index":40,"total":1455.3000001683831,"pursuit":1.7000000029802322,"trace":1201.200000077486}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: graphics resources remain bounded
+
+1364 !== 1365
+
+    at file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/graveyard-performance-scenes.mjs:52:10 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1364,
+  expected: 1365,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

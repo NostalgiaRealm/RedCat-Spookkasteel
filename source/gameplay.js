@@ -36,13 +36,14 @@ import {cancelPendingGraveyardMazeExit,resetGraveyardMaze} from './graveyard-maz
 import {pickupPosition} from './pickup-placement.js';
 import {enemyMotionRate,nativeEnemyIdleCycle,enemyIdleClip} from './enemy-animation-rules.js';
 import {ordinaryEnemyHit,reactToEnemyHit} from './enemy-hit-native.js';
-import {usesNativeShooter,updateNativeShooter,restoreNativeShooterState} from './enemy-shooter-native.js';
+import {usesNativeShooter,nativeShooterActive,updateNativeShooter,restoreNativeShooterState} from './enemy-shooter-native.js';
 import {usesNativeStandingShooter,updateNativeStandingShooter,restoreNativeStandingShooter} from './enemy-standing-shooter-native.js';
 import {playerLandingImpact} from './player-landing.js';
 import {restoreTriggerPhase,updateTriggerContact} from './trigger-contact-native.js';
 import {buttonSettled} from './button-controller-native.js';
 import {PLAYER_MINS,PLAYER_MAXS,PLAYER_HEIGHT,PLAYER_CENTRE_HEIGHT} from './player-hull.js';
-import {enemySightEye,enemySeesPlayer,KNIGHT_STRIKE_SEGMENT,knightStrikeHits,UNAWARE_CHATTER,ENEMY_THINK_RADIUS} from './enemy-perception-native.js';
+import {KnightPose} from './knight-pose-native.js';
+import {enemySightEye,enemySeesPlayer,KNIGHT_STRIKE_SEGMENT,knightStrikeHits,UNAWARE_CHATTER,ENEMY_THINK_RADIUS,ENEMY_THINK_INTERVAL,ENEMY_SIGHT_INTERVAL,newEnemySight,newEnemyThink} from './enemy-perception-native.js';
 
 const n = (value, fallback=0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
 const clamp = (value,min,max) => Math.max(min,Math.min(max,value));
@@ -62,9 +63,16 @@ function enemyDefinition(entity,settings,difficulty) {
   const [base,config]=(entity.classname==='StandingEnemy'?STANDING:MOVING)[n(entity.Type)]||['spider','spider'];
   const variant=clamp(n(entity.SubType,1),1,3);
   const colored=['spider','bat','ghost'].includes(base);
-  return {base,variant,actorFile:colored?base+['g','y','r'][variant-1]:base,
-    stats:withNativeEnemyDefaults(config,settings[config+(colored?variant:'')]?.[difficulty]||settings[config]?.[difficulty]||{})};
+  const section=config==='guardian'&&difficulty==='Easy'?GUARDIAN_EASY_NATIVE:
+    settings[config+(colored?variant:'')]?.[difficulty]||settings[config]?.[difficulty]||{};
+  return {base,variant,actorFile:colored?base+['g','y','r'][variant-1]:base,stats:withNativeEnemyDefaults(config,section)};
 }
+
+// D4: the shipped Guardian.ini opens its Easy block with "[Easy" and no ']'.
+// The original's INI parser (0x5a4c70) creates no section, so all 13 Easy keys
+// are dropped and Easy guardians keep the loaders' defaults (0x4258a0..0x426eb9).
+const GUARDIAN_EASY_NATIVE=Object.freeze({AttackRange:100,Health:5,HitMotionFactor:1,PlayerScore:0,RotationPerSec:3*Math.PI,
+  TimeToRememberVisual:2,VisualRange:250,SenseRange:50,MinPlayerDistance:0,ViewAngle:Math.PI,Speed:50,WalkMotionFactor:1,Damage:1});
 
 // CRcEnemy's constructor seeds the shooter fields before the INI section is
 // read, so Jester sections that omit them (Easy/Hard) keep these values.
@@ -98,9 +106,12 @@ function itemActor(e) {
  * Compiled level behavior is supplied by the isolated Davi-Script VM.
  */
 export class Gameplay {
-  constructor(level,{onEvent=()=>{},save=null,settings=GAMEPLAY_SETTINGS,difficulty='Normal',deferInit=false}={}) {
+  constructor(level,{onEvent=()=>{},save=null,settings=GAMEPLAY_SETTINGS,difficulty='Normal',deferInit=false,knightPose=null}={}) {
     difficulty=normalizeDifficulty(save?.version===1&&save.level===level.id?save.difficulty:difficulty);
     this.level=level;this.onEvent=onEvent;this.settings=settings;this.difficulty=difficulty;
+    // Optional knight skeleton (bones, animations, settings) for sword strikes
+    // without a rendered knight; a rendered one supplies its own pose.
+    this.knightPose=knightPose?new KnightPose(knightPose):null;
     this.time=0;this.hitCooldown=0;this.respawnProtection=0;this.hurtSoundUntil=0;this.entryState=null;this.attackCooldown=0;this.previousUse=false;this.completed=false;
     this.projectiles=[];this.gargoyleBlasts=[];this.nextProjectileId=1;this.projectileImpacts=[];
     this.rewardEffects=[];this.explosions=[];this.explosionDamage=[];
@@ -139,10 +150,11 @@ export class Gameplay {
         object.enemyType=def.base;object.variant=def.variant;object.alerted=false;object.flying=['bat','ghost','witch'].includes(def.base);
         this.navigation.initialize(object);
         object.ranged=n(def.stats.AverageShotsPerSalvo)>0||def.base==='maxj';object.animationState='idle';object.animationSerial=0;
-        object.animationUntil=0;object.salvoRemaining=0;object.nextIdleAt=2+(i%11)*.63;
+        object.animationUntil=0;object.salvoRemaining=0;object.sight=newEnemySight();object.think=newEnemyThink();
         initializeEnemySalvo(object);
         initializeBoss(this,object);
         initializeEnemyAmbush(object);
+        if(object.enemyType==='knight'&&this.knightPose)object.knightStrikeSegment=()=>this.knightPose.segment(object,this.time);
       }
       if(kind==='actor') {object.actorFile=e.ActorFileName;object.health=n(e.Targetable)?3:1;}
       if(kind==='fairy')object.actorFile=null;
@@ -322,12 +334,14 @@ export class Gameplay {
     this.checkpoint={position:v3(position),orientation};this.emit('savepoint',{id,position:[...this.checkpoint.position],snapshot:this.snapshot()});
   }
 
-  damage(amount,source=null,{continuous=false}={}) {
+  damage(amount,source=null,{continuous=false,force=false}={}) {
     // CRCPlayer slot 7 (0x433820) applies every hit; it refuses only a dead
     // player and the 5 s post-respawn protection byte (+0x23c). There is no
     // per-hit immunity window. Port protections (no-clip, cutscenes, a
-    // completed level) remain intentional.
-    if(this.completed||this.isPlayerInvulnerable?.()||this.scripts?.cutscene||this.respawnProtection>0||this.state.health<=0||!(amount>0))return;
+    // completed level) remain intentional. A forced change (the script
+    // KillPlayer) passes every protection, as 0x439bf0 with force=1 does.
+    if(this.completed||this.state.health<=0||!(amount>0))return;
+    if(!force&&(this.isPlayerInvulnerable?.()||this.scripts?.cutscene||this.respawnProtection>0))return;
     this.state.health=Math.max(0,this.state.health-amount);
     // The hurt sound is gated by a random 1.0-1.5 s timer (0x433ef5-0x433f8d)
     // and by the previous hurt sound still playing (checked by the mixer).
@@ -371,6 +385,17 @@ export class Gameplay {
     for(const world of this.objects.filter(o=>o.entity.classname==='World'))this.runEvent(world,'OnPlayerRespawnCommand');
     resetGraveyardMaze(this);
     return [...this.checkpoint.position];
+  }
+
+  /** Script RespawnPlayer (0x436f60): back to the save point with full health and protection. */
+  scriptRespawn() {
+    if(this.playerReaction?.phase==='respawn')return;
+    this.cancelPlayerCharge();
+    this.state.health=this.state.maxHealth;this.respawnProtection=PLAYER_RESPAWN_PROTECTION_SECONDS;
+    this.pendingPlayerAttack=null;this.playerAttackUntil=0;
+    this.playerReaction=beginPlayerReaction('respawn');
+    this.playerPosition=[...this.checkpoint.position];
+    this.emit('teleport',{position:[...this.checkpoint.position],orientation:this.checkpoint.orientation});
   }
 
   updatePlayerReaction(dt) {
@@ -638,7 +663,36 @@ export class Gameplay {
     else if(target.kind==='actor')damageDestructible(this,target,projectile.damage);
   }
 
+  /**
+   * CRcEnemy update (0x422fb0). The think-radius flag is recomputed on every
+   * 14th update (+0xe0 > 13), starting false, so an enemy first thinks on its
+   * 14th update and only while within ENEMY_THINK_RADIUS of RedCat. A
+   * thinking enemy runs its state logic on the cached sight result, then the
+   * sight test (testEnemySight).
+   */
   updateEnemy(object,dt,playerPosition,lineOfSight,traceEnemy) {
+    const think=object.think??=newEnemyThink();
+    if(++think.count>=ENEMY_THINK_INTERVAL){think.count=0;think.inRadius=distance(object.position,playerPosition)<=ENEMY_THINK_RADIUS;}
+    // The contact cooldown is a timestamp in the original; it runs on regardless.
+    if(!think.inRadius){object.attackTimer=Math.max(0,object.attackTimer-dt);return;}
+    this.thinkEnemy(object,dt,playerPosition,lineOfSight,traceEnemy);
+    if(object.enabled&&object.health>0)this.testEnemySight(object,playerPosition,lineOfSight);
+  }
+
+  /**
+   * D10: the sight test repeats at most every 500 ms (0x422fb0, int 500 at
+   * 0x68f7f0); the first runs on the enemy's first thinking update. Between
+   * tests a cached sighting keeps refreshing the last-seen time.
+   */
+  testEnemySight(object,playerPosition,lineOfSight) {
+    const sight=object.sight??=newEnemySight();
+    if(this.time-sight.lastCheck>=ENEMY_SIGHT_INTERVAL) {
+      sight.lastCheck=this.time;sight.seen=enemySeesPlayer(object,playerPosition,distance(object.position,playerPosition),lineOfSight);
+    }
+    if(sight.seen){object.lastSeenAt=this.time;object.lastSeenPosition=[...playerPosition];}
+  }
+
+  thinkEnemy(object,dt,playerPosition,lineOfSight,traceEnemy) {
     if(object.animationState==='idle'&&object.animationLoop===false&&this.time>=object.animationUntil)this.enemyAnimation(object,'idle');
     this.navigation.syncReservations(this.objects,this.time,playerPosition);
     const recoveries=object.movementRecovery?.recoveries||0;
@@ -649,9 +703,12 @@ export class Gameplay {
     object.attackTimer=Math.max(0,object.attackTimer-dt);
     const touchDamage=contact=>{
       if(!usesTouchPursuit(object)||!contact||object.attackTimer!==0)return;
+      // The original's contact (0x42dd80) comes from the actor's own collision
+      // sweep and needs no sight ray. The port detects contact by hull overlap,
+      // so it keeps a sight ray to stop hits through walls (intentional).
       const from=enemySightEye(object),to=[playerPosition[0],playerPosition[1]+PLAYER_CENTRE_HEIGHT,playerPosition[2]];
       if(!lineOfSight(from,to))return;
-      // Contact damage (0x42dd80) requests no enemy sound; only RedCat reacts.
+      // Contact damage requests no enemy sound; only RedCat reacts.
       this.damage(n(object.stats.Damage,1),object.id);object.attackTimer=1;
       this.emit('enemyAttack',{id:object.id,position:[...object.position],ranged:false,contact:true});
     };
@@ -664,10 +721,12 @@ export class Gameplay {
     const d=distance(object.position,playerPosition);
     // CRcEnemy sight (0x423800): 3-D range, view cone and up to two rays; no
     // height limit. See enemy-perception-native.js.
-    const visible=enemySeesPlayer(object,playerPosition,d,lineOfSight);
+    // The state logic sees the previous sight test's result (D10; the test
+    // itself follows in updateEnemy).
+    const visible=(object.sight??=newEnemySight()).seen;
     if(visible&&!object.alerted){object.alerted=true;this.enemyAction(object,'alert');}
-    if(visible){object.lastSeenAt=this.time;object.lastSeenPosition=[...playerPosition];}
-    else if(object.alerted&&this.time-n(object.lastSeenAt,-100)>n(object.stats.TimeToRememberVisual,2)){
+    // Remembered while now - lastSeen < TimeToRememberVisual (0x422f30).
+    if(!visible&&object.alerted&&this.time-n(object.lastSeenAt,-100)>=n(object.stats.TimeToRememberVisual,2)){
       // Losing the target completes the attack/move child; the main state
       // requests one Sound(0) then (0x4030fe / 0x403177).
       object.alerted=false;object.knightSwinging=false;this.enemyAction(object,'idle',{grunt:true});
@@ -836,10 +895,18 @@ export class Gameplay {
   // guardians, ghosts and bats chatter back to back while unaware. Other
   // families are silent while unaware. Enemies beyond the native think radius
   // (0x422fb0) do nothing.
+  // The request period is (int)(4 + (rand() % 10000) * 0.0002) ms: the
+  // deadline is armed on one update and Sound(0) requested on a later one
+  // once it has passed.
   unawareChatter(object,playerPosition) {
-    if(object.alerted||!UNAWARE_CHATTER.has(object.enemyType)||this.scripts?.cutscene||this.time<n(object.nextIdleAt))return;
-    if(distance(object.position,playerPosition)>ENEMY_THINK_RADIUS)return;
-    object.nextIdleAt=this.time+.25;this.enemyAction(object,'idle');
+    if(object.alerted||!UNAWARE_CHATTER.has(object.enemyType)||this.scripts?.cutscene)return;
+    const timer=object.idleTimer??={period:this.chatterPeriod(),deadline:-1};
+    if(timer.deadline<0){timer.deadline=this.time+timer.period;return;}
+    if(this.time>timer.deadline){timer.period=this.chatterPeriod();timer.deadline=-1;this.enemyAction(object,'idle');}
+  }
+  chatterPeriod() {
+    this.chatterRandomState=((this.chatterRandomState??0x1d)*1103515245+12345)>>>0;
+    return Math.trunc(4+((this.chatterRandomState>>>16)&0x7fff)%10000*.0002)/1000;
   }
 
   objectPosition(object) {
@@ -937,11 +1004,13 @@ export class Gameplay {
     dt=clamp(n(dt),0,0.1);this.time+=dt;this.playerPosition=v3(playerPosition);
     this.rewardEffects=retainRewardEffects(this.rewardEffects,this.time);
     const wasRecovering=this.playerReaction?.phase==='death'||this.playerReaction?.phase==='respawn';
+    // Count protection down before a respawn in this frame sets its full five seconds.
+    this.respawnProtection=Math.max(0,this.respawnProtection-dt);
     this.updatePlayerReaction(dt);
     // Native checks input before retiring the current firing state. Crossing
     // 80% releases the next controller tick, not another shot on this tick.
     const canStartPlayerAttack=this.attackCooldown<=1e-8;
-    this.hitCooldown=Math.max(0,this.hitCooldown-dt);this.respawnProtection=Math.max(0,this.respawnProtection-dt);if(!this.scripts?.cutscene)this.attackCooldown=Math.max(0,this.attackCooldown-dt);
+    this.hitCooldown=Math.max(0,this.hitCooldown-dt);if(!this.scripts?.cutscene)this.attackCooldown=Math.max(0,this.attackCooldown-dt);
     // Do not run interactions against the old death position on the tick that
     // the event handler moves RedCat back to his checkpoint.
     if(this.dyingEnemies.size)this.updateDyingEnemies(traceEnemy);
@@ -951,7 +1020,9 @@ export class Gameplay {
       // Dialogue freezes combat, but already defeated enemies must finish
       // their death motion, smoke and retirement during the conversation.
       if(this.scripts?.cutscene&&object.health<=0)continue;
-      for(const key of ['animationUntil','corpseUntil','deathStartedAt','nextIdleAt','lastSeenAt','lastAttackedAt'])if(Number.isFinite(object[key]))object[key]+=dt;
+      for(const key of ['animationUntil','corpseUntil','deathStartedAt','lastSeenAt','lastAttackedAt'])if(Number.isFinite(object[key]))object[key]+=dt;
+      if(object.sight)object.sight.lastCheck+=dt;
+      if(object.idleTimer?.deadline>=0)object.idleTimer.deadline+=dt;
       if(object.pendingAttack){object.pendingAttack.at+=dt;if(Number.isFinite(object.pendingAttack.until))object.pendingAttack.until+=dt;}
       if(Number.isFinite(object.nativeShooter?.waitUntil))object.nativeShooter.waitUntil+=dt;
       if(Number.isFinite(object.nativeStandingShooter?.waitUntil))object.nativeStandingShooter.waitUntil+=dt;
@@ -1042,7 +1113,7 @@ export class Gameplay {
     const explosionDamage=restoreExplosionDamage(this.explosionDamage,this.time);
     return {version:1,healthVersion:2,level:this.level.id,difficulty:this.difficulty,state:{...this.state},time:this.time,completed:this.completed,debriefing:this.debriefing?structuredClone(this.debriefing):null,
       hazards:this.hazards.snapshot(),environmentFeedbackCooldown:this.environmentFeedbackCooldown,hitCooldown:this.hitCooldown,
-      respawnProtection:this.respawnProtection,hurtSoundUntil:this.hurtSoundUntil,hurtRandomState:this.hurtRandomState,
+      respawnProtection:this.respawnProtection,hurtSoundUntil:this.hurtSoundUntil,hurtRandomState:this.hurtRandomState,chatterRandomState:this.chatterRandomState,
       entryState:this.entryState?{...this.entryState}:null,
       spoutEffects:this.spoutSnapshot?this.spoutSnapshot():this.spoutStates,
       footstepState:this.footstepState?{...this.footstepState}:undefined,
@@ -1066,7 +1137,7 @@ export class Gameplay {
         nativeStandingShooter:restoreNativeStandingShooter(o.nativeStandingShooter),
         boss:snapshotBossState(o),ambush:o.ambush?structuredClone(o.ambush):null,flightDetour:o.flightDetour?{...o.flightDetour}:null,batContact:o.batContact?{...o.batContact}:null,
         patrol:o.patrol?{...o.patrol}:null,aiRandomState:o.aiRandomState,relocateAfterSalvo:o.relocateAfterSalvo,boneSkullPhase:o.boneSkullPhase,boneChargePending:o.boneChargePending,lastSeenPosition:o.lastSeenPosition?[...o.lastSeenPosition]:null,
-        velocityY:o.velocityY,grounded:o.grounded,lastSeenAt:o.lastSeenAt,nextIdleAt:o.nextIdleAt,alerted:o.alerted,knightSwinging:o.knightSwinging,yaw:o.yaw}))};
+        velocityY:o.velocityY,grounded:o.grounded,lastSeenAt:o.lastSeenAt,sight:Number.isFinite(o.sight?.lastCheck)?{...o.sight}:undefined,think:o.think?{...o.think}:undefined,flashStartedAt:Number.isFinite(o.flashStartedAt)?o.flashStartedAt:undefined,idleTimer:o.idleTimer?{...o.idleTimer}:undefined,alerted:o.alerted,knightSwinging:o.knightSwinging,yaw:o.yaw}))};
   }
 
   restore(save) {
@@ -1100,6 +1171,7 @@ export class Gameplay {
     this.respawnProtection=Number.isFinite(save.respawnProtection)?clamp(save.respawnProtection,0,PLAYER_RESPAWN_PROTECTION_SECONDS)
       :save.playerReaction?.phase==='respawn'?Math.max(0,PLAYER_RESPAWN_PROTECTION_SECONDS-n(save.playerReaction.age)):0;
     this.hurtSoundUntil=n(save.hurtSoundUntil);if(Number.isInteger(save.hurtRandomState))this.hurtRandomState=save.hurtRandomState>>>0;
+    if(Number.isInteger(save.chatterRandomState))this.chatterRandomState=save.chatterRandomState>>>0;
     this.entryState=save.entryState&&typeof save.entryState==='object'&&['health','maxHealth','lives','score','mirror','skill'].every(k=>Number.isFinite(save.entryState[k]))?{...save.entryState}:null;
     this.footstepState=save.footstepState?{phase:save.footstepState.phase,side:save.footstepState.side}:undefined;
     this.projectileImpacts=restoreProjectileImpacts(save.projectileImpacts,this.time);
@@ -1121,7 +1193,18 @@ export class Gameplay {
       object.movementRecovery?.reset();delete object.lastMovementRecovery;
       if(Number.isFinite(value.health))object.restoredHealth=true;
       for(const key of ['enabled','visible','collected','open','locked','switchedOn','pendingButtonSwitch','inside','grounded','alerted','relocateAfterSalvo','boneSkullPhase','boneChargePending','beamTriggered','secretFound','animationLoop','knightSwinging'])if(typeof value[key]==='boolean')object[key]=value[key];
-      for(const key of ['health','triggerCount','switchCount','openFraction','closeAt','volume','motionSpeed','animationSerial','animationUntil','corpseUntil','attackTimer','salvoRemaining','velocityY','lastSeenAt','lastAttackedAt','nextIdleAt','yaw','aiRandomState'])if(Number.isFinite(value[key]))object[key]=value[key];
+      for(const key of ['health','triggerCount','switchCount','openFraction','closeAt','volume','motionSpeed','animationSerial','animationUntil','corpseUntil','attackTimer','salvoRemaining','velocityY','lastSeenAt','lastAttackedAt','yaw','aiRandomState'])if(Number.isFinite(value[key]))object[key]=value[key];
+      // Optional: a FlashEffect burst still running when saved.
+      if(object.entity.classname==='FlashEffect'&&Number.isFinite(value.flashStartedAt))object.flashStartedAt=value.flashStartedAt;else delete object.flashStartedAt;
+      // Optional since the native sight and chatter timers; older saves start
+      // them fresh (their nextIdleAt is no longer used).
+      if(object.kind==='enemy') {
+        const sight=value.sight,timer=value.idleTimer;
+        object.sight=sight&&Number.isFinite(sight.lastCheck)&&typeof sight.seen==='boolean'?{lastCheck:sight.lastCheck,seen:sight.seen}:newEnemySight();
+        const think=value.think;
+        object.think=think&&Number.isInteger(think.count)&&think.count>=0&&think.count<ENEMY_THINK_INTERVAL&&typeof think.inRadius==='boolean'?{count:think.count,inRadius:think.inRadius}:newEnemyThink();
+        if(timer&&Number.isFinite(timer.period)&&Number.isFinite(timer.deadline))object.idleTimer={period:timer.period,deadline:timer.deadline};else delete object.idleTimer;
+      }
       if(object.kind==='trigger')restoreTriggerPhase(object,value.triggerPhase);
       if(object.kind==='button'){delete object.pendingButtonSwitch;if(typeof value.pendingButtonSwitch==='boolean')object.pendingButtonSwitch=value.pendingButtonSwitch;object.buttonPhase=Number.isInteger(value.buttonPhase)&&value.buttonPhase>=1&&value.buttonPhase<=8?value.buttonPhase:undefined;}
       restorePropDamage(object,value.propDamage);
@@ -1157,7 +1240,10 @@ export class Gameplay {
         else if(n(value.attackTimer)>0)
           object.nativeStandingShooter={version:1,phase:'wait',remaining:0,waitUntil:this.time+n(value.attackTimer)};
       }
-      const legacyShooter=usesNativeShooter(object)&&!object.nativeShooter&&!value.nativeShooter;
+      // Only a shooter that runs the native state machine can come from a
+      // pre-state-machine save. A path-less Brutus runs the fallback AI, whose
+      // pending attack, charge and relocation fields must be kept as saved.
+      const legacyShooter=nativeShooterActive(this,object)&&!object.nativeShooter&&!value.nativeShooter;
       // A saved Bone charge has already switched ammo. Adopt its playing
       // clip, without repeating that entry action or resurrecting the salvo.
       if(legacyShooter&&object.enemyType==='brutusb'&&value.animationState==='charge'){

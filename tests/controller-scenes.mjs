@@ -3,8 +3,9 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {chromium} from 'playwright';
-process.env.TMPDIR='current_work';
-const output=resolve(`current_work/controller-support-2026-10-03/scenes-${Date.now()}`);
+import {sceneOutput} from './support/scene-output.mjs';
+process.env.TMPDIR=sceneOutput('current_work');
+const output=resolve(sceneOutput(`current_work/controller-support-2026-10-03/scenes-${Date.now()}`));
 await mkdir(output,{recursive:true});
 const report={checks:[],errors:[]},port=Number(process.env.CONTROLLER_TEST_PORT||4331);
 const check=name=>{report.checks.push(name);console.log(`PASS ${name}`);};
@@ -12,7 +13,7 @@ const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,POR
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let context,page;
 try {
-  context=await chromium.launchPersistentContext(resolve(output,'profile'),{executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl'],viewport:{width:1000,height:800}});
+  context=await chromium.launchPersistentContext(resolve(output,'profile'),{executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required'],viewport:{width:1000,height:800}});
   page=await context.newPage();
   await page.route('**/controller-fixture.html',route=>route.fulfill({contentType:'text/html',body:`<style>[hidden]{display:none}#scope{height:120px;overflow:auto}button{display:block}</style><div id="scope"><button id="first">First</button><button disabled>Disabled</button><div hidden><button>Hidden</button></div><button style="visibility:hidden">Invisible</button><select id="select"><option>A</option><option disabled>B</option><option>C</option></select><input id="range" type="range" min="0" max="1" step=".1" value=".5"><input id="toggle" type="checkbox"><button id="last">Last</button><div style="height:1000px"></div></div><dialog id="dialog"><button autofocus id="cancel">Cancel</button><button id="confirm">Confirm</button></dialog>`}));
   await page.goto(`http://127.0.0.1:${port}/controller-fixture.html`);
@@ -51,22 +52,41 @@ try {
   const focus=()=>page.evaluate(()=>document.activeElement.id);
   const navigate=async id=>{for(let i=0;i<30&&await focus()!==id;i++)await tap(13);assert.equal(await focus(),id,`controller reaches ${id}`);};
   assert.equal(await page.evaluate(()=>window.__redcat.controllerActive),false,'neutral pad does not steal input');
-  await tap(2);assert.equal(await focus(),'start');
-  await navigate('open-settings');await tap(0);await page.waitForFunction(()=>!document.getElementById('settings').hidden);
+  const focusMatches=selector=>page.evaluate(selector=>document.activeElement?.matches(selector)===true,selector);
+  const navigateTo=async selector=>{for(let i=0;i<40&&!await focusMatches(selector);i++)await tap(13);assert.ok(await focusMatches(selector),`controller reaches ${selector}`);};
+  // The original-style menu (menu rework) has no flat Start button: the first
+  // press focuses its first control, the header's Help button.
+  await tap(2);assert.equal(await focus(),'native-help');
+  const openMoreSettings=async()=>{
+    await navigate('open-settings');await tap(0);await page.waitForFunction(()=>!document.getElementById('settings').hidden);
+    if(!await page.evaluate(()=>document.getElementById('native-settings-more').open)){await navigate('open-more-settings');await tap(0);}
+    await page.waitForFunction(()=>document.getElementById('native-settings-more').open);
+  };
+  await openMoreSettings();
   await navigate('difficulty');await tap(15);assert.equal(await page.locator('#difficulty').inputValue(),'Hard');
   await navigate('sensitivity');await tap(15);assert.equal(await page.locator('#sensitivity').inputValue(),'1.1');
   await navigate('auto-intro');await tap(0);assert.equal(await page.locator('#auto-intro').isChecked(),true);await tap(0);
   await page.screenshot({path:resolve(output,'controller-settings-focus.png')});
   await navigate('apply-settings');await tap(0);await page.waitForFunction(()=>document.getElementById('settings').hidden);
   assert.equal(await page.evaluate(()=>window.__redcat.settings.sensitivity),1.1);
+  // Help (Besturing) and Over now sit under Instellingen > Meer instellingen.
+  await openMoreSettings();
   await navigate('open-help');await tap(0);await page.waitForFunction(()=>!document.getElementById('help').hidden);
   await axes([0,0,0,1]);await frames(35);assert.ok(await page.locator('#help>.panel').evaluate(e=>e.scrollTop)>0);await axes([0,0,0,0]);await tap(1);
   await page.waitForFunction(()=>document.getElementById('help').hidden);
   await navigate('open-about');await tap(0);await page.waitForFunction(()=>document.getElementById('about').open);await tap(1);assert.equal(await page.locator('#about').evaluate(e=>e.open),false);
+  for(let i=0;i<4&&!await page.evaluate(()=>document.getElementById('settings').hidden);i++)await tap(1);
+  await page.waitForFunction(()=>document.getElementById('settings').hidden);
+  // Recovery saves are under the adventure start page's Meer opties.
+  await navigateTo('[data-menu-choice="adventure"]');await tap(0);
+  await navigate('native-next');await tap(0);
+  if(await page.evaluate(()=>document.querySelector('.native-menu-frame').dataset.page==='difficulty')){await navigate('native-next');await tap(0);}
+  await page.waitForFunction(()=>document.querySelector('.native-menu-frame').dataset.page==='startinfo');
+  await navigateTo('#native-start-extras > summary');await tap(0);await page.waitForFunction(()=>document.getElementById('native-start-extras').open);
   await navigate('open-recovery');await tap(0);await page.waitForFunction(()=>document.getElementById('recovery-saves').open);await tap(1);
   check('controller navigates actual settings, help, About and recovery menus');
 
-  await navigate('start');await tap(0);await page.waitForFunction(()=>window.__redcat.mode==='playing'&&window.__redcat.gameplay.scripts.cutscene,null,{timeout:60000});
+  await navigate('native-start');await tap(0);await page.waitForFunction(()=>window.__redcat.mode==='playing'&&window.__redcat.gameplay.scripts.cutscene,null,{timeout:60000});
   assert.equal(await page.evaluate(()=>window.__redcat.readInput().jump),false,'start confirm does not become a jump');
   const before=await page.evaluate(()=>({yaw:window.__redcat.world.yaw,pitch:window.__redcat.world.pitch}));
   await axes([0,0,1,.5]);await frames(12);
@@ -87,7 +107,10 @@ try {
   check('controller analog movement, look, jump, walk, held firing and camera toggle reach gameplay');
 
   await button(9,true);await page.waitForFunction(()=>window.__redcat.mode==='paused');await frames(12);assert.equal(await page.evaluate(()=>window.__redcat.mode),'paused');await button(9,false);
-  await navigate('pause-settings');await tap(0);await navigate('open-cheats');await tap(0);await navigate('cheat-noclip');await tap(0);
+  // Cheats sit under Meer instellingen since the menu rework.
+  await navigate('pause-settings');await tap(0);
+  if(!await page.evaluate(()=>document.getElementById('native-settings-more').open)){await navigate('open-more-settings');await tap(0);}
+  await navigate('open-cheats');await tap(0);await navigate('cheat-noclip');await tap(0);
   assert.equal(await page.evaluate(()=>window.__redcat.world.player.noClip),true);await tap(1);await tap(1);await tap(9);await page.waitForFunction(()=>window.__redcat.mode==='playing');
   const altitude=await page.evaluate(()=>window.__redcat.world.player.position[1]);await button(0,true);await frames(8);await button(0,false);assert.ok(await page.evaluate(()=>window.__redcat.world.player.position[1])>altitude);
   const high=await page.evaluate(()=>window.__redcat.world.player.position[1]);await button(1,true);await frames(8);await button(1,false);assert.ok(await page.evaluate(()=>window.__redcat.world.player.position[1])<high);
@@ -98,18 +121,33 @@ try {
 
   // Real keyboard/mouse input can take over without disconnecting the controller.
   await page.keyboard.press('Escape');await page.waitForFunction(()=>window.__redcat.mode==='paused');assert.equal(await page.evaluate(()=>window.__redcat.controllerActive),false);
-  await page.locator('#return-menu').click();await tap(2);await navigate('start-over');await tap(0);await page.waitForFunction(()=>document.getElementById('new-adventure-warning').open);
+  // Opnieuw beginnen sits under the adventure start page's Meer opties since the menu rework.
+  await page.locator('#return-menu').click();await tap(2);
+  if(await page.evaluate(()=>document.querySelector('.native-menu-frame').dataset.page!=='startinfo')) {
+    for(let i=0;i<4&&await page.evaluate(()=>document.querySelector('.native-menu-frame').dataset.page!=='home');i++){await navigate('native-previous');await tap(0);}
+    await navigateTo('[data-menu-choice="adventure"]');await tap(0);await navigate('native-next');await tap(0);
+    if(await page.evaluate(()=>document.querySelector('.native-menu-frame').dataset.page==='difficulty')){await navigate('native-next');await tap(0);}
+  }
+  if(!await page.evaluate(()=>document.getElementById('native-start-extras').open)){await navigateTo('#native-start-extras > summary');await tap(0);}
+  await navigate('start-over');await tap(0);await page.waitForFunction(()=>document.getElementById('new-adventure-warning').open);
   assert.equal(await focus(),'cancel-new-adventure');await tap(1);assert.equal(await page.locator('#new-adventure-warning').evaluate(e=>e.open),false);
   check('keyboard takeover and controller save-overwrite cancellation');
 
   // Separate desktop profile state: verify the actual opening, ten-second toast,
   // persistent first-time marker and no hint after loading an existing save.
-  await page.evaluate(()=>{localStorage.removeItem('redcat.desktop-intro-hint.v1');window.testPads=[];});await page.reload();await page.waitForFunction(()=>window.__redcat);
+  // A chapter this profile already played (in its progress or its adventure
+  // save) counts as a replay, which skips first-time hints (replayed-level
+  // intros); start from an unplayed Forest.
+  // Both the hint marker and progress are stored per player (player profiles).
+  // Clear from a non-game page of the same origin, so the game's own unload save cannot write them back.
+  await page.goto(`http://127.0.0.1:${port}/data/dialogue/nl.json`);
+  await page.evaluate(()=>{for(const key of Object.keys(localStorage))if(key.endsWith('redcat.desktop-intro-hint.v1')||key.endsWith('redcat.save.v1'))localStorage.removeItem(key);
+    for(const key of Object.keys(localStorage))if(key.includes('redcat.progress')){try{const value=JSON.parse(localStorage.getItem(key));if(value&&typeof value==='object'){delete value.playedLevels;localStorage.setItem(key,JSON.stringify(value));}}catch{}}});await page.goto(`http://127.0.0.1:${port}/?skipIntro`);await page.evaluate(()=>{window.testPads=[];});await page.waitForFunction(()=>window.__redcat);
   await page.evaluate(()=>{window.testPads=[];window.hintShown=[];const toast=document.getElementById('toast');new MutationObserver(()=>{if(toast.classList.contains('visible')&&toast.textContent.startsWith('Klik om rond te kijken'))window.hintShown.push({at:performance.now(),cutscene:window.__redcat.gameplay.scripts.cutscene,camera:window.__redcat.gameplay.scripts.camera});}).observe(toast,{attributes:true,childList:true});});
   await page.evaluate(()=>window.__redcat.startLevel(0));await page.waitForFunction(()=>window.__redcat.gameplay.scripts.cutscene);assert.equal(await page.evaluate(()=>window.hintShown.length),0);
   await page.waitForFunction(()=>window.hintShown.length===1,null,{timeout:30000});assert.equal(await page.evaluate(()=>window.hintShown[0].cutscene),false);assert.equal(await page.evaluate(()=>window.hintShown[0].camera),null);
   await page.waitForFunction(()=>performance.now()-window.hintShown[0].at>9400);assert.equal(await page.locator('#toast').evaluate(e=>e.classList.contains('visible')),true);
-  await page.waitForFunction(()=>!document.getElementById('toast').classList.contains('visible'));assert.equal(await page.evaluate(()=>localStorage.getItem('redcat.desktop-intro-hint.v1')),'true');
+  await page.waitForFunction(()=>!document.getElementById('toast').classList.contains('visible'));assert.deepEqual(await page.evaluate(()=>Object.keys(localStorage).filter(key=>key.endsWith('redcat.desktop-intro-hint.v1')).map(key=>localStorage.getItem(key))),['true']);
   await page.evaluate(()=>{window.__redcat.saveGame(true);window.__redcat.pause();});await page.reload();await page.waitForFunction(()=>window.__redcat);await page.evaluate(()=>window.__redcat.loadSave());await frames(8);
   assert.equal(await page.locator('#toast').evaluate(e=>e.classList.contains('visible')&&e.textContent.startsWith('Klik om rond te kijken')),false);
   check('desktop hint waits for forest opening, remains ten seconds, and stays dismissed after reload/save load');

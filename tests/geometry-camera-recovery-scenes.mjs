@@ -2,11 +2,12 @@ import {chromium} from 'playwright';
 import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
+import {sceneOutput} from './support/scene-output.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4207'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try {
- await mkdir('artifacts',{recursive:true});
+ await mkdir(sceneOutput('artifacts'),{recursive:true});
  browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
  const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
  page.on('pageerror',e=>errors.push(e.stack));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
@@ -17,16 +18,20 @@ try {
   const w=app.world,h=app.gameplay.scripts,{FrontSide,DoubleSide,WebGLRenderTarget}=await import('three');
   for(const p of h.players.values())p.stop();h.cutscene=false;h.camera=null;h.enemiesFrozen=true;w.redcat.visible=false;
   w.camera.position.set(-154,76,710);w.camera.lookAt(-84,42,502);w.syncModels();
+  // Residency and streaming follow the camera: settle them for this hand-placed view.
+  w.camera.updateMatrixWorld(true);w.updateRenderResidency();await w.geometryStream.settle();await w.settleActorTextures();
   const meshes=w.modelMeshes.get(42),target=new WebGLRenderTarget(640,360),front=new Uint8Array(640*360*4),doubled=new Uint8Array(front.length);
-  const sideCounts={front:0,other:0};for(const [index,list]of w.modelMeshes)for(const mesh of list)sideCounts[mesh.material.side===FrontSide?'front':'other']++;
+  // Sky-boundary masks are depth-only (colorWrite false, double-sided) and draw
+  // nothing; every surface that draws colour must be single-sided.
+  const sideCounts={front:0,other:0,depthOnlyMasks:0,otherMasks:0};for(const [index,list]of w.modelMeshes)for(const mesh of list){if(mesh.material.colorWrite===false){sideCounts[mesh.material.side===DoubleSide&&mesh.material.depthWrite?'depthOnlyMasks':'otherMasks']++;continue;}sideCounts[mesh.material.side===FrontSide?'front':'other']++;}
   w.renderer.setRenderTarget(target);w.render();w.renderer.readRenderTargetPixels(target,0,0,640,360,front);
   for(const mesh of meshes){mesh.material.side=DoubleSide;mesh.material.needsUpdate=true;}w.render();w.renderer.readRenderTargetPixels(target,0,0,640,360,doubled);
   for(const mesh of meshes){mesh.material.side=FrontSide;mesh.material.needsUpdate=true;}w.renderer.setRenderTarget(null);target.dispose();w.render();
   let changed=0;for(let i=0;i<front.length;i+=4)if(front[i]!==doubled[i]||front[i+1]!==doubled[i+1]||front[i+2]!==doubled[i+2])changed++;
   return {meshes:meshes.length,faces:w.level.collision.models[42].numFaces,sideCounts,changed,error:h.vm.lastError};
  });
- assert.equal(fence.meshes,1);assert.equal(fence.faces,6);assert.equal(fence.sideCounts.other,0);assert.ok(fence.changed>200,JSON.stringify(fence));assert.equal(fence.error,null);
- await page.screenshot({path:'artifacts/castle-fence-single-surface.png'});
+ assert.equal(fence.meshes,1);assert.equal(fence.faces,6);assert.equal(fence.sideCounts.other,0,JSON.stringify(fence.sideCounts));assert.equal(fence.sideCounts.otherMasks,0);assert.ok(fence.changed>200,JSON.stringify(fence));assert.equal(fence.error,null);
+ await page.screenshot({path:sceneOutput('artifacts/castle-fence-single-surface.png')});
  const doorway=await page.evaluate(async()=>{
   const app=window.__redcat;await app.startLevel(3);app.pause();document.getElementById('pause').hidden=true;
   const w=app.world,g=app.gameplay,h=g.scripts;
@@ -49,7 +54,7 @@ try {
   return {before,after,reloadTrace,outward,returning,hidden:app.gameplay.find('draai_opening01')[0].visible===false,disabled:restored.collider.disabledModels.has(122),samePose:JSON.stringify(saved.game.scripts.poses.find(([i])=>i===110))===JSON.stringify(rh.snapshot().poses.find(([i])=>i===110)),error:rh.vm.lastError};
  });
  assert.ok(doorway.before.fraction<1);assert.equal(doorway.after.fraction,1);assert.equal(doorway.reloadTrace.fraction,1);assert.equal(doorway.hidden,true);assert.equal(doorway.disabled,true);assert.equal(doorway.samePose,true);assert.ok(doorway.outward[0]>-1730,JSON.stringify(doorway));assert.ok(doorway.returning[0]<-1810,JSON.stringify(doorway));assert.equal(doorway.error,null);
- await page.screenshot({path:'artifacts/caves-restored-rotating-passage.png'});
+ await page.screenshot({path:sceneOutput('artifacts/caves-restored-rotating-passage.png')});
  const camera=await page.evaluate(()=>{
   const app=window.__redcat,w=app.world,g=app.gameplay,h=g.scripts;
   w.player.position=[2409,0.05,732];w.player.resetVelocity();w.yaw=-Math.PI/2;w.pitch=.16;w.settings.camera='third';
@@ -61,7 +66,7 @@ try {
   return {overview,hiddenPreference,returned,error:h.vm.lastError};
  });
  assert.equal(camera.overview.mode,2);assert.equal(camera.hiddenPreference,'third');assert.equal(camera.returned.camera,null);assert.equal(camera.returned.setting,'third');assert.ok(camera.returned.distance>100,JSON.stringify(camera));assert.equal(camera.error,null);
- await page.screenshot({path:'artifacts/caves-fire-overview-return.png'});
- assert.deepEqual(errors,[]);await writeFile('artifacts/geometry-camera-recovery-scenes.json',JSON.stringify({fence,doorway,camera,errors},null,2)+'\n');
+ await page.screenshot({path:sceneOutput('artifacts/caves-fire-overview-return.png')});
+ assert.deepEqual(errors,[]);await writeFile(sceneOutput('artifacts/geometry-camera-recovery-scenes.json'),JSON.stringify({fence,doorway,camera,errors},null,2)+'\n');
  console.log('PASS original fence single visible surface; rotating passage collision and physical traversal after save/load; fire overview ignores hidden mode shortcut and returns to third person.');
 } finally {await browser?.close();server.kill();}

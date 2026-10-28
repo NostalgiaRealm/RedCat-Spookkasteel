@@ -5,10 +5,11 @@ import {Gameplay} from '../source/gameplay.js';
 import {BspCollider} from '../source/collision.js';
 import {moveEnemy} from '../source/enemies.js';
 import {triggerOnlyModels} from '../source/world.js';
+import {thinkingOnFirstUpdate} from './support/enemy-thinking.mjs';
 const level=JSON.parse(readFileSync(new URL('../data/levels/lvl02a/level.json',import.meta.url)));
-const far=[5000,1000,5000];
 function fixture(save) {
- const game=new Gameplay(level,{deferInit:true,save}),collider=new BspCollider(level.collision);
+ // Mid-encounter fixture: enemies are already thinking (gameplay.js updateEnemy).
+ const game=thinkingOnFirstUpdate(new Gameplay(level,{deferInit:true,save})),collider=new BspCollider(level.collision);
  const names=new Map(level.entities.filter(e=>e.classname==='%Model%').map(e=>[e['%name%'],Number(e.Model)])),triggers=triggerOnlyModels(level.entities,names);
  const models=[...level.collision.models.keys()].filter(i=>!triggers.has(i));
  for(const i of models)if(i&&!game.modelState(i).solid)collider.disabledModels.add(i);
@@ -16,7 +17,9 @@ function fixture(save) {
  const frogs=game.objects.filter(o=>o.enemyType==='frog');
  for(const frog of frogs){frog.collisionMins=[-24,0,-24];frog.collisionMaxs=[24,27,24];}
  const trace=(a,b,mins,maxs)=>collider.trace(a,b,mins,maxs,models);
- const step=()=>{game.time+=.025;for(const frog of frogs)game.updateEnemy(frog,.025,far,()=>false,trace);};
+ // RedCat is out of sight 1000 units above each frog: inside the native
+ // 1600-unit think radius (0x422fb0), so the frogs keep thinking and patrol.
+ const step=()=>{game.time+=.025;for(const frog of frogs)game.updateEnemy(frog,.025,frog.position.map((v,i)=>v+(i===1?1000:0)),()=>false,trace);};
  return {game,collider,frogs,trace,step};
 }
 test('grounded patrol reaches the actual waypoint before turning at the graveyard corner',()=>{

@@ -3,8 +3,9 @@ import {spawn} from 'node:child_process';
 import {mkdir, writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
-const out = 'temp_work/save-import-2026-10-22';
-await mkdir(out, {recursive: true}); process.env.TMPDIR = out;
+import {sceneOutput,sceneTemp} from './support/scene-output.mjs';
+const out = sceneOutput('temp_work/save-import-2026-10-22');
+await mkdir(out, {recursive: true}); process.env.TMPDIR = sceneTemp();
 const server = spawn(process.execPath, ['tools/serve.mjs'], {env: {...process.env, PORT: '0'}, stdio: ['ignore', 'pipe', 'inherit']});
 const url = await new Promise((ok, fail) => {
   let output = '';

@@ -3,14 +3,19 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Gameplay} from '../source/gameplay.js';
 import {updateZombieGraveRise,zombieGraveEdge} from '../source/zombie-grave-rise.js';
+import {thinkingOnFirstUpdate} from './support/enemy-thinking.mjs';
 
 const level=JSON.parse(readFileSync(new URL('../data/levels/lvl02a/level.json',import.meta.url)));
-const boot=save=>new Gameplay(level,{deferInit:true,save});
+// Mid-encounter fixture: enemies are already thinking (gameplay.js updateEnemy).
+const boot=save=>thinkingOnFirstUpdate(new Gameplay(level,{deferInit:true,save}));
 const names=['frogzom1','frogzom2','frogzom3','frogzom4','zombie1','zombie2','zombie3','zombie4'];
 const distance=(a,b)=>Math.hypot(...a.map((v,i)=>v-b[i]));
 const near=(actual,expected,message)=>assert.ok(Math.abs(actual-expected)<1e-7,`${message}: ${actual} != ${expected}`);
 const forbidden=()=>assert.fail('grave ascent must not run step/gravity sweeps or pursuit visibility searches');
-const advance=(game,zombie,dt)=>{game.time+=dt;game.updateEnemy(zombie,dt,[3642,-64,1271],forbidden,forbidden);};
+// RedCat stands 700 units beside the zombie's authored origin: inside the
+// native 1600-unit think radius (0x422fb0), outside its sense and visual range.
+const beside=zombie=>String(zombie.entity.Origin).split(/\s+/).map(Number).map((v,i)=>v+(i===0?700:0));
+const advance=(game,zombie,dt)=>{game.time+=dt;game.updateEnemy(zombie,dt,beside(zombie),forbidden,forbidden);};
 
 test('grave ascent is restricted to the eight authored upward entrance edges',()=>{
   const game=boot();

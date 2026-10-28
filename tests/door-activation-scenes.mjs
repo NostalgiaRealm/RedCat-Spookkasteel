@@ -3,11 +3,12 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4196'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
   await page.addInitScript(()=>localStorage.setItem('redcat.progress.v1',JSON.stringify({version:1,highestUnlocked:2})));
@@ -34,7 +35,7 @@ try {
     w.updateCamera(1,true);w.render();return {blocked,returning,stairs,passage,error:h.vm.lastError};
   });
   assert.equal(castle.blocked.open,false);assert.equal(castle.returning.open,true);assert.ok(castle.stairs.every(Boolean));assert.equal(castle.passage.open,true);assert.equal(castle.error,null);
-  await page.screenshot({path:'artifacts/door-activation-knight-passage.png'});
+  await page.screenshot({path:sceneOutput('artifacts/door-activation-knight-passage.png')});
   const chapel=await page.evaluate(async()=>{
     const app=window.__redcat;await app.startLevel(2);app.pause();document.getElementById('pause').hidden=true;
     const w=app.world,g=app.gameplay,h=g.scripts;
@@ -62,13 +63,13 @@ try {
   });
   assert.equal(chapel.switched,true);assert.equal(chapel.raised.open,false);assert.equal(chapel.raised.time,0);
   assert.equal(chapel.entered.open,true);assert.ok(chapel.end[1]<250,JSON.stringify({...chapel,samples:chapel.samples.filter((_,i)=>i%30===0)}));assert.ok(chapel.samples.every(s=>!s.solid));assert.equal(chapel.samples.at(-1).time,6);assert.equal(chapel.error,null);
-  await page.screenshot({path:'artifacts/door-activation-chapel-descended.png'});
+  await page.screenshot({path:sceneOutput('artifacts/door-activation-chapel-descended.png')});
   const brutus=await page.evaluate(()=>{
     const w=window.__redcat.world,g=w.gameplay;w.player.position=[-1720,216.05,1300];w.player.resetVelocity();w.player.grounded=true;w.yaw=Math.PI;
     for(let i=0;i<32;i++)w.update(.025,{forward:1,right:0});
     return {position:[...w.player.position],open:['endbossdeur_links_mc','endbossdeur_rechts_mc'].map(n=>g.find(n)[0].open)};
   });
   assert.ok(brutus.open.every(Boolean),JSON.stringify(brutus));assert.deepEqual(errors,[]);
-  await writeFile('artifacts/door-activation-scenes.json',JSON.stringify({castle,chapel,brutus},null,2)+'\n');
+  await writeFile(sceneOutput('artifacts/door-activation-scenes.json'),JSON.stringify({castle,chapel,brutus},null,2)+'\n');
   console.log('PASS physical one-way castle door, knight passage, chapel switch and descending passenger, and Brutus approach doors without E.');
 } finally {await browser?.close();server.kill();}

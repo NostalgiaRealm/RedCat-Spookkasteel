@@ -77,8 +77,8 @@ export class OriginalMenu {
     }
   }
 
-  home({focus=false}={}) {
-    this.flow='adventure';this.choice='adventure';
+  home({focus=false,choice='adventure'}={}) {
+    this.flow='adventure';this.choice=choice;
     this.adventure=this.getState().hasSave?'continue':'new';
     this.show('home',{announce:false,focus});
   }

@@ -2,6 +2,7 @@ import {chromium} from 'playwright';
 import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
+import {sceneOutput} from './support/scene-output.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4232'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});let browser;
 try {
@@ -15,7 +16,13 @@ try {
   const setup=()=>{
    const w=app.world,g=app.gameplay,h=g.scripts;for(const p of h.players.values())p.stop();h.cutscene=false;h.enemiesFrozen=false;h.camera=null;
    const frogs=g.objects.filter(o=>o.enemyType==='frog');for(const o of g.objects)if(o.kind==='enemy'&&!frogs.includes(o))o.enabled=false;
-   w.player.noClip=true;w.player.position=[5000,1000,5000];return {w,g,h,frogs};
+   // Enemies beyond 1600 units do not think at all (0x422fb0, +0xe4), so the
+   // unaware frogs are watched from 1000 units above their middle: within
+   // that radius, far outside their sight.
+   const middle=[0,1,2].map(i=>frogs.reduce((sum,o)=>sum+o.position[i],0)/frogs.length);
+   w.player.noClip=true;w.player.position=[middle[0],middle[1]+1000,middle[2]];
+   for(const o of frogs)if(Math.hypot(...o.position.map((v,i)=>v-w.player.position[i]))>1500)throw new Error('A frog is too far from the watch point');
+   return {w,g,h,frogs};
   };
   let {w,g,h,frogs}=setup();const progress=frogs.map(o=>({id:o.id,start:[...o.position],distance:0,stall:0,maxStall:0,visited:new Set()}));
   for(let frame=0;frame<1600;frame++){
@@ -34,6 +41,6 @@ try {
  });
  for(const f of result.originalPatrol){assert.ok(f.distance>2800,JSON.stringify(f));assert.ok(f.maxStall<1,JSON.stringify(f));assert.ok(f.visited.length>3);assert.equal(f.alerted,false);}
  assert.ok(result.restoredPatrol.visited.includes('GrobberPathPoint124'));assert.equal(result.restoredPatrol.alerted,false);assert.equal(result.scriptError,null);assert.deepEqual(errors,[]);
- await mkdir('artifacts',{recursive:true});await page.screenshot({path:'artifacts/graveyard-frog-patrol.png'});await writeFile('artifacts/graveyard-frog-patrol-scenes.json',JSON.stringify({result,errors},null,2)+'\n');
+ await mkdir(sceneOutput('artifacts'),{recursive:true});await page.screenshot({path:sceneOutput('artifacts/graveyard-frog-patrol.png')});await writeFile(sceneOutput('artifacts/graveyard-frog-patrol-scenes.json'),JSON.stringify({result,errors},null,2)+'\n');
  console.log('PASS all three graveyard frogs patrol for 40 seconds with player far away; formerly stuck saved frog resumes through original point 124.');
 } finally {await browser?.close();server.kill();}

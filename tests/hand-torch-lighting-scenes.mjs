@@ -3,11 +3,12 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4299'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
   page.on('pageerror',e=>errors.push(e.stack));
@@ -55,7 +56,7 @@ try {
   assert.ok(report.meanLitBrightness>20,JSON.stringify(report));
   assert.equal(report.repeatedQueries,0,'stationary animated hands retain their cached floor sample');
   assert.deepEqual(errors,[]);
-  await page.screenshot({path:'artifacts/hand-torches-fixed.png'});
-  await writeFile('artifacts/hand-torch-lighting-scenes.json',JSON.stringify(report,null,2)+'\n');
+  await page.screenshot({path:sceneOutput('artifacts/hand-torches-fixed.png')});
+  await writeFile(sceneOutput('artifacts/hand-torch-lighting-scenes.json'),JSON.stringify(report,null,2)+'\n');
   console.log(`PASS 24 graveyard hand torches lit; ${report.changedPixels} entrance pixels restored, brightness ${report.meanLitBrightness.toFixed(1)}, no repeat floor queries during animation.`);
 }finally{await browser?.close();server.kill();}

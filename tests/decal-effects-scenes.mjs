@@ -3,11 +3,12 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4224'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try{
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
   page.on('pageerror',e=>errors.push(e.stack));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
@@ -42,12 +43,12 @@ try{
       return {index,expected:expected.length,entries,visiblePixels,toggles,screenshots};
     },index);
     const {screenshots,...data}=result;report.push(data);
-    for(const [name,png] of Object.entries(screenshots))await writeFile(`artifacts/decal-${index}-${name}.png`,Buffer.from(png,'base64'));
+    for(const [name,png] of Object.entries(screenshots))await writeFile(sceneOutput(`artifacts/decal-${index}-${name}.png`),Buffer.from(png,'base64'));
     assert.equal(data.entries.length,data.expected,'all original decal placements found');
     assert.ok(Object.values(data.visiblePixels).every(n=>n>10),`decal artwork must reach the rendered image: ${JSON.stringify(data.visiblePixels)}`);
     if(index===0){assert.equal(data.expected,14);assert.deepEqual(data.toggles,{disabled:true,enabled:true});assert.ok(Math.abs(data.entries.find(e=>e.name==='ufohole').placement.position[1]+159.5)<1e-4);}
     else assert.equal(data.expected,5);
   }
-  await writeFile('artifacts/decal-effects-scenes.json',JSON.stringify({report,errors},null,2)+'\n');
+  await writeFile(sceneOutput('artifacts/decal-effects-scenes.json'),JSON.stringify({report,errors},null,2)+'\n');
   assert.deepEqual(errors,[]);console.log('PASS: original UFO impact patch, forest lily pads and graveyard decal faces placed and visibly rendered; script enable/disable works; no browser/HTTP errors.');
 }finally{await browser?.close();server.kill();}

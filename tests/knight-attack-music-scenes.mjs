@@ -3,11 +3,12 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4214'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
   // StandardSkill applies only to quick play natively (parity review item 5);
@@ -52,7 +53,7 @@ try {
     w.yaw=Math.atan2(playerPosition[0]-knight.position[0],playerPosition[2]-knight.position[2]);w.pitch=.16;
     w.targeting.clear();w.syncPlayer(0,input);
     const events=[],oldEvent=g.onEvent;
-    g.onEvent=event=>{events.push({time:g.time,...event});oldEvent(event);};
+    g.onEvent=event=>{events.push({time:g.time,knightHealth:knight.health,...event});oldEvent(event);};
     const state=()=>({time:g.time,knightPosition:[...knight.position],playerPosition:[...w.player.position],distance:Math.hypot(...knight.position.map((v,i)=>v-w.player.position[i])),health:knight.health,playerHealth:g.state.health,alerted:!!knight.alerted,selected:w.targeting.target?.id,locked:w.targeting.locked,mode:h.musicState?.mode,sound:h.musicState?.sound,audio:app.audio.snapshot().find(r=>r.key==='music'),lastAttackedAt:knight.lastAttackedAt??null,projectiles:g.projectiles.filter(p=>p.owner==='player').length,attacks:events.filter(e=>e.type==='attack').length,impacts:events.filter(e=>e.type==='playerProjectileImpact').length});
     for(let i=0;i<60;i++)w.update(1/60,input);
     const lookOnly=state();
@@ -70,10 +71,10 @@ try {
     const afterDeath=state();
     return {knight:knight.id,stats:{health:knight.maxHealth,visualRange:knight.stats.VisualRange,senseRange:knight.stats.SenseRange,memory:knight.stats.TimeToRememberVisual},skill:g.state.skill,lookOnly,acceptedAttack,firing,afterDeath,events:events.filter(e=>['scriptMusic','attack','playerProjectileImpact','enemyHurt','enemyKilled'].includes(e.type)),error:h.vm.lastError};
   });
-  await page.screenshot({path:'artifacts/knight-attack-music.png'});
+  await page.screenshot({path:sceneOutput('artifacts/knight-attack-music.png')});
   await page.waitForFunction(()=>window.__redcat.audio.snapshot().filter(r=>r.key==='music').every(r=>r.readyState>=2));
   result.finalMusic=await page.evaluate(()=>window.__redcat.audio.snapshot().find(r=>r.key==='music'));
-  await writeFile('artifacts/knight-attack-music-scenes.json',JSON.stringify({result,errors},null,2)+'\n');
+  await writeFile(sceneOutput('artifacts/knight-attack-music-scenes.json'),JSON.stringify({result,errors},null,2)+'\n');
   assert.equal(result.stats.visualRange,100);assert.equal(result.stats.senseRange,100);
   assert.ok(result.skill&1);
   assert.equal(result.lookOnly.selected,result.knight);assert.equal(result.lookOnly.locked,false);
@@ -91,7 +92,12 @@ try {
   assert.equal(result.afterDeath.playerHealth,result.lookOnly.playerHealth);
   assert.ok(Math.hypot(...result.afterDeath.playerPosition.map((v,i)=>v-result.lookOnly.playerPosition[i]))<.1);
   const impacts=result.events.filter(e=>e.type==='playerProjectileImpact'&&e.target===result.knight);
-  assert.equal(impacts.length,result.stats.health,'The original basic pellets defeat the real knight');
+  // A sleeping knight can be targeted (native target list, review L7). The
+  // pellet that wakes it hits stone, which takes no health (0x40e400); every
+  // later pellet removes one point.
+  const healths=impacts.map(e=>e.knightHealth);
+  assert.deepEqual(healths,[result.stats.health,...Array.from({length:result.stats.health},(_,i)=>result.stats.health-1-i)],
+    `the first pellet strikes stone, then each removes one point: ${healths}`);
   const shot=result.events.find(e=>e.type==='attack');
   assert.ok(Math.hypot(shot.origin[0]-result.lookOnly.playerPosition[0],shot.origin[2]-result.lookOnly.playerPosition[2])>10,'Pellets release from the animated hand');
   assert.equal(result.error,null);assert.deepEqual(errors,[]);

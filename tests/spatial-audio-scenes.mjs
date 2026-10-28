@@ -3,6 +3,7 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4286'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
@@ -12,7 +13,9 @@ try {
   await page.addInitScript(()=>localStorage.setItem('redcat.progress.v1',JSON.stringify({version:1,highestUnlocked:4})));
   await page.goto('http://127.0.0.1:4286/?skipIntro');await page.waitForFunction(()=>window.__redcat);
   // A real gesture grants audio; this test does not bypass browser autoplay.
-  await page.locator('#open-help').click();await page.locator('#close-help').click();
+  // Help sits under Meer instellingen since the original-menu rework.
+  await page.locator('#open-settings').click();await page.locator('#open-more-settings').click();
+  await page.locator('#open-help').click();await page.locator('#close-help').click();await page.locator('#close-settings').click();
   const result=await page.evaluate(async()=>{
     const {GameAudio}=await import('./source/audio.js');
     // Steady mono WAV measures actual split/upmix/centibel channel output,
@@ -45,6 +48,6 @@ try {
   assert.ok(result.castle.some(r=>r.stereoConnected));assert.ok(result.castle.some(r=>r.spatial&&!r.audible));
   assert.ok(result.castle.filter(r=>r.channel==='music').every(r=>!r.stereoConnected&&r.pan===0));
   assert.ok(result.castle.every(r=>r.paused));assert.deepEqual(errors,[]);
-  await mkdir('artifacts',{recursive:true});await writeFile('artifacts/spatial-audio-scenes.json',JSON.stringify(result,null,2)+'\n');
+  await mkdir(sceneOutput('artifacts'),{recursive:true});await writeFile(sceneOutput('artifacts/spatial-audio-scenes.json'),JSON.stringify(result,null,2)+'\n');
   console.log('PASS measured native stereo output, camera rotation, media pause/resume and actual castle PVS mixing.');
 } finally {await browser?.close();server.kill();}

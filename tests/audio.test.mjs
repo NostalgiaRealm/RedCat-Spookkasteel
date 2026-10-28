@@ -122,3 +122,15 @@ test('original forest host emits spatial metadata and restores only enabled repe
   restored.audio.update(0,[-100000,0,0]);
   assert.ok(restored.audio.snapshot().filter(e=>e.sound.startsWith('forest')).every(e=>e.volume<.04),'forest ambience still attenuates beyond the intentionally expanded hearing range');
 });
+
+test('an instance gain above 1 applies only where the original product stays at or below full gain', () => {
+  // The gargoyle alert asks for 1.5; DirectSound refuses louder than 0 dB, so
+  // the channel keeps its last accepted level (the gain-1 start volume first).
+  // The original's channel is SoundVolume 80 when the port's is full.
+  const amplitude=gain=>10**(.5*Math.log2(gain));
+  for (const [channel, expected] of [[1, 1], [.8, 1.2], [.5, .75]]) {
+    const audio=makeAudio({channels:{effects:channel}});
+    const record=audio.play({sound:'gargoyl3.wav',channel:'effects',volume:1.5});
+    near(record.element.volume, Math.min(1,audio.master*amplitude(expected)));
+  }
+});

@@ -5,6 +5,7 @@ import { ModelTransformMap } from './model-transforms.js';
 import {queueControllerTarget,restoreControllerTarget,updateControllerTarget} from './model-controller-target.js';
 import {buttonSettled,setButtonPhase,restoreButtonPhase,updateButtonController} from './button-controller-native.js';
 import {playerMotionHintValue} from './player-animation.js';
+import {FLASH_SECONDS} from './flash-effect-native.js';
 
 const number=(value,fallback=0)=>Number.isFinite(Number(value))?Number(value):fallback;
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
@@ -18,7 +19,8 @@ export class ScriptHost {
   constructor(gameplay,program,{motions={motions:[]},dialogue={},isDialoguePlaying=()=>false,replayLevel=false}={}) {
     this.game=gameplay;this.dialogue=dialogue;this.bindings=new Map();this.players=new Map();
     this.modelTransforms=new ModelTransformMap();this.keyItems=new Set();this.missions=new Map();
-    this.cutscene=false;this.playerVisible=true;this.enemiesFrozen=false;this.weaponsEnabled=true;
+    this.cutscene=false;this.playerVisible=true;this.enemiesFrozen=false;this.weaponsEnabled=true;this.messages=[];this.lastMessage=null;
+    this.flashes=gameplay.objects.filter(o=>o.entity.classname==='FlashEffect');
     this.hintMotion=0;
     this.isDialoguePlaying=isDialoguePlaying;this.pendingCutsceneStop=null;
     this.replayLevel=replayLevel===true;
@@ -124,7 +126,8 @@ export class ScriptHost {
         if(!this.skippingCutscene&&this.isDialoguePlaying())this.pendingCutsceneStop={fade:number(a)};
         else this.finishCutscene(number(a));
         return 0;
-      case 'cutscenesay':case 'say':case 'communicatorsay':this.say(String(a));return 0;
+      case 'cutscenesay':case 'communicatorsay':this.say(String(a));return 0;
+      case 'say':this.message(String(a));return 0;
       case 'rchide':this.portalPlayerVisibility(false);return 0;
       case 'rcshow':this.portalPlayerVisibility(true);return 0;
       case 'playervisible':this.playerVisible=!!a;return 0;
@@ -154,10 +157,15 @@ export class ScriptHost {
       case 'getgametype':return Number(this.replayLevel);
       case 'giveplayerkeyitem':this.keyItems.add(String(a).toLowerCase());return 0;
       case 'playerhaskeyitem':return Number(this.keyItems.has(String(a).toLowerCase()));
-      case 'enableweapons':this.weaponsEnabled=!!a;return 0;
-      case 'looseallweapons':game.state.skill=0;return 0;
-      case 'killplayer':game.hitCooldown=0;game.damage(game.state.health);return 0;
-      case 'respawnplayer':game.respawn();this.teleport(String(a));return 0;
+      // D7: no shipped level reaches these. EnableWeapons and LooseAllWeapons
+      // call empty CRcPlayerProperties slots (0x581170, 0x5630e0).
+      case 'enableweapons':case 'looseallweapons':return 0;
+      // KillPlayer (0x56d910) applies a forced -1e8 health change that ignores
+      // invulnerability and the respawn protection.
+      case 'killplayer':game.damage(game.state.health,null,{force:true});return 0;
+      // RespawnPlayer (0x436f60) ignores its argument and returns RedCat to the
+      // last save point without the death sequence or a life change.
+      case 'respawnplayer':game.scriptRespawn();return 0;
       case 'addmission':this.missions.set(number(a),{text:args[1],portrait:args[2],sound:args[3],complete:false});return 0;
       case 'completemission':if(this.missions.has(number(a)))this.missions.get(number(a)).complete=true;return 0;
       case 'showmission':game.emit('mission',{mission:this.missions.get(number(a))});return 0;
@@ -167,6 +175,18 @@ export class ScriptHost {
       case 'debugmessage':game.emit('scriptDebug',{text:String(a)});return 0;
       default:throw new Error(`Unimplemented Davi-Script native: ${name}`);
     }
+  }
+  /**
+   * Say (CAdamGame::DisplayMessage, 0x529c90) queues the text literally:
+   * skipped when the same text is queued, or repeats the last message within
+   * 3 s; each line lasts 5 s, at most 8 are drawn.
+   */
+  message(text) {
+    const key=text.toLowerCase();
+    if(this.messages.some(m=>m.text.toLowerCase()===key))return;
+    if(this.lastMessage&&this.lastMessage.text.toLowerCase()===key&&this.time-this.lastMessage.at<3)return;
+    this.messages.push(this.lastMessage={text,at:this.time});
+    this.game.emit('scriptMessages',{lines:this.messages.slice(0,8).map(m=>m.text)});
   }
   say(id) {
     const key=id.replace(/\.wav$/i,'').toLowerCase(),entry=this.dialogue[key];
@@ -270,7 +290,8 @@ export class ScriptHost {
       else if(enabled&&changed){if(p&&!p.finished&&object.motionStarted)p.resume();else this.startMotion(object);}else if(!enabled)p?.stop();
     }
     if(object.entity.classname==='EffectSound'&&(changed||enabled&&!number(object.entity.Replay)))this.sound(object,enabled);
-    if(changed&&enabled&&object.entity.classname==='FlashEffect'){object.flashStartedAt=this.game.time;this.game.emit('flash',{id:object.id});}
+    // Every Enable restarts a FlashEffect, even while it is already enabled (0x465b90).
+    if(enabled&&object.entity.classname==='FlashEffect'){object.flashStartedAt=this.game.time;this.game.emit('flash',{id:object.id});}
     if(changed&&enabled)object.activatedAt=this.time;
     // Disabling a CameraTrigger leaves its active view running (D8).
   }
@@ -328,6 +349,12 @@ export class ScriptHost {
   update(dt) {
     this.time+=dt;
     this.updateBossMusic();
+    // A finished FlashEffect disables itself (0x4654f0 -> 0x502350(0)).
+    for(const object of this.flashes)if(Number.isFinite(object.flashStartedAt)&&this.game.time-object.flashStartedAt>=FLASH_SECONDS){object.enabled=false;delete object.flashStartedAt;}
+    if(this.messages.length&&this.time-this.messages[0].at>5) {
+      this.messages=this.messages.filter(m=>this.time-m.at<=5);
+      this.game.emit('scriptMessages',{lines:this.messages.slice(0,8).map(m=>m.text)});
+    }
     for(const [id,player] of this.players) {
       const object=player.object,previousTime=player.time;
       if(updateButtonController(this,object,player,dt)){if(player.time!==previousTime)this.applyMotion(object,player);}
@@ -368,7 +395,8 @@ export class ScriptHost {
     this.replayLevel=save.replayLevel===true;
     this.vm.restore(save.vm);this.time=number(save.time);
     this.hintMotion=playerMotionHintValue(save.hintMotion)??0;
-    for(const key of ['cutscene','playerVisible','enemiesFrozen','weaponsEnabled'])if(typeof save[key]==='boolean')this[key]=save[key];
+    // weaponsEnabled stays saved for older builds; EnableWeapons has no effect (D7).
+    for(const key of ['cutscene','playerVisible','enemiesFrozen'])if(typeof save[key]==='boolean')this[key]=save[key];
     this.camera=save.camera||null;this.subtitle=save.subtitle||null;this.keyItems=new Set(save.keyItems||[]);this.missions=new Map(save.missions||[]);
     this.pendingCutsceneStop=save.pendingCutsceneStop||null;
     // Optional; older saves have no pending fade.

@@ -4,12 +4,13 @@ import {readFile,mkdir,writeFile} from 'node:fs/promises';
 import {resolve,relative,extname} from 'node:path';
 import {chromium} from 'playwright';
 
+import {sceneOutput,sceneTemp} from './support/scene-output.mjs';
 // Run with retained pre-change UI modules for a same-browser differential check.
 // No game profile, save, native game or release package is opened or changed.
-const root=resolve('.'),evidence=resolve('temp_work/efficiency-2026-10-26');
-const baseline=resolve(process.env.UI_EFFICIENCY_BASELINE||`${evidence}/ui-baseline`);
+const root=resolve('.'),evidence=resolve(sceneOutput('temp_work/efficiency-2026-10-26'));
+const baseline=resolve(process.env.UI_EFFICIENCY_BASELINE||"temp_work/efficiency-2026-10-26/ui-baseline");
 const output=resolve(evidence,`ui-scenes-${Date.now()}`);
-await mkdir(output,{recursive:true});process.env.TMPDIR=relative(root,output);
+await mkdir(output,{recursive:true});process.env.TMPDIR=sceneTemp();
 const types={'.js':'text/javascript','.json':'application/json','.css':'text/css','.png':'image/png','.woff2':'font/woff2'};
 const html='<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="/src/style.css"><body></body>';
 const server=createServer(async(req,res)=>{

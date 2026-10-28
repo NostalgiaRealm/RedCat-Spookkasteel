@@ -5,9 +5,10 @@ import {createHash} from 'node:crypto';
 import {mkdir, mkdtemp, readFile, readdir, rename, symlink, writeFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {prepareAndroidAssets, parseAndroidArguments, DEFAULT_ANDROID_OUTPUT} from '../tools/prepare-android.mjs';
+import {testOutput} from './support/scene-output.mjs';
 
 // Retain each run's fixtures as evidence; do not use or clean a shared temp directory.
-const evidence = fileURLToPath(new URL('../temp_work/source-layout-2026-10-26/android-asset-tests/', import.meta.url));
+const evidence = testOutput('source-layout-2026-10-26-android-asset-tests');
 const levels = ['lvl00a', 'lvl01a', 'lvl02a', 'lvl03a', 'lvl04a'];
 async function put(root, relative, contents = relative) {
   const file = path.join(root, relative);

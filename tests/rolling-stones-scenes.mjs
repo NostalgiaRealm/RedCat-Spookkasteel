@@ -3,13 +3,16 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4224'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try{
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+  await unlockChapters(page);
   page.on('pageerror',e=>errors.push(e.stack));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
   await page.goto('http://127.0.0.1:4224/?skipIntro');await page.waitForFunction(()=>window.__redcat);
   const result=await page.evaluate(async()=>{
@@ -48,8 +51,8 @@ try{
     return {start,doorOpened:door.open||activated.every(o=>o.enabled),before,activated,after:state(),player:[...w.player.position],samples,screenshots};
   });
   const {screenshots,...report}=result;
-  for(const [name,data] of Object.entries(screenshots))await writeFile(`artifacts/rolling-stones-${name}.png`,Buffer.from(data,'base64'));
-  await writeFile('artifacts/rolling-stones-scenes.json',JSON.stringify({report,errors},null,2)+'\n');
+  for(const [name,data] of Object.entries(screenshots))await writeFile(sceneOutput(`artifacts/rolling-stones-${name}.png`),Buffer.from(data,'base64'));
+  await writeFile(sceneOutput('artifacts/rolling-stones-scenes.json'),JSON.stringify({report,errors},null,2)+'\n');
   assert.ok(report.before.every(o=>!o.enabled&&!o.playing),'restored rocks wait for authored activation');
   assert.ok(report.doorOpened,'the actual E interaction opens the corridor door');
   assert.ok(report.activated.every(o=>o.enabled&&o.loop&&o.playing),'door command initializes all eight repeating tracks');

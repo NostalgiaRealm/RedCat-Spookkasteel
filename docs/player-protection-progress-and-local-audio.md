@@ -7,7 +7,9 @@ These changes are source-only. No packages or website deployment are generated.
 `CastleWorld.attachGameplay` supplies `Gameplay.damage` with the current player
 controller's no-clip flag. Every damage route through the gameplay damage entry
 point is ignored during free flight, including enemies, projectile bodies,
-beams, liquids and scripted `KillPlayer`. Mushroom ribbons are visual only:
+beams and liquids. Since 28 October 2026 the script command `KillPlayer`, which
+no shipped level uses, is a forced kill that passes free flight, as the
+original's is (parity review D7). Mushroom ribbons are visual only:
 the native `TrailDamage` field has no hurt consumer; direct mushroom-body
 contact supplies their damage. Ignored damage causes no hurt
 reaction, death, lost life or new hit cooldown. Turning no-clip off immediately

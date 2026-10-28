@@ -4,10 +4,12 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
 // Isolate the battle from entry triggers while exercising Gameplay.update,
 // imported actor clips and the WebGL renderer in each original arena.
 export async function verifyBossPhaseScenes(page) {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   const results={};
   for(const [type,index] of [['maxd',3],['maxj',1],['witch',4]]){
     const initial=await page.evaluate(async({type,index})=>{
@@ -20,6 +22,8 @@ export async function verifyBossPhaseScenes(page) {
         const double=game.find('max_actor')[0],renderedDouble=world.actorInstances.get(double.id),boss=game.find('Max')[0];
         const [x,y,z]=boss.boss.home;
         world.camera.position.set(x+140,y+80,z+160);world.camera.lookAt(x,y+30,z);
+        // Residency/streaming follow the camera: settle them for this hand-placed view (as the newer scenes do).
+        world.camera.updateMatrixWorld(true);world.updateRenderResidency();await world.geometryStream.settle();await world.settleActorTextures();
         const changedPixels=()=>{
           const renderer=world.renderer,target=new WebGLRenderTarget(320,180),previous=renderer.getRenderTarget();
           const before=new Uint8Array(320*180*4),after=new Uint8Array(before.length),visible=renderedDouble.visible;
@@ -31,7 +35,8 @@ export async function verifyBossPhaseScenes(page) {
         };
         world.syncActors(0);const before={position:renderedDouble.position.toArray(),pixels:changedPixels()};
         game.trigger(game.find('trigger_cuts05')[0]);
-        for(let i=0;i<400;i++)host.update(.05);
+        // StopCutScene waits for spoken dialogue (release 1.0.4); audio is paused here, so each line ends at once.
+        for(let i=0;i<400;i++){window.__redcat.audio.stopDialogue();host.update(.05);}
         world.syncModels();world.syncActors(0);
         const after={position:renderedDouble.position.toArray(),pixels:changedPixels()};
         game.setDoor(game.find('door_left_endbattle')[0],true);game.setDoor(game.find('door_left_endbattle')[0],false);
@@ -67,7 +72,7 @@ export async function verifyBossPhaseScenes(page) {
         f.tick();record();
         if(f.boss.boss.phase===end&&(type!=='witch'||f.events.some(e=>e.type==='enemyProjectile')))break;
       }
-      f.render();return {seen,shots:f.events.filter(e=>e.type==='enemyProjectile').map(e=>e.kind),phase:f.boss.boss.phase};
+      f.render();return {salvo:f.boss.salvoSize,seen,shots:f.events.filter(e=>e.type==='enemyProjectile').map(e=>e.kind),phase:f.boss.boss.phase};
     },type);
     if(type==='maxd'){
       assert.deepEqual(initial.intro.before.position,[2,36,-2143]);assert.ok(initial.intro.before.pixels>20,'original cutscene double is visible before descending');
@@ -76,12 +81,15 @@ export async function verifyBossPhaseScenes(page) {
       assert.deepEqual(initial.intro.after.position,[2,-37,-2143]);assert.ok(initial.intro.after.pixels<initial.intro.before.pixels*.05,'original Max double withdraws beneath the platform after the compiled max_weg event: '+JSON.stringify(initial.intro));
       assert.equal(initial.intro.actor,'maxd');assert.equal(initial.intro.enabled,true);assert.equal(initial.intro.cutscene,false);assert.equal(initial.intro.error,null);
       assert.equal(initial.machine,3);assert.equal(phases.phase,'lower');
-      for(const p of ['shoot','betweenShots','rise','look','lower'])assert.ok(phases.seen.some(s=>s.phase===p),p);
+      // CRcDmAttackState loops shoot, rise, look and lower with no between-shots wait (review item 8).
+      for(const p of ['shoot','rise','look','lower'])assert.ok(phases.seen.some(s=>s.phase===p),p);
       assert.equal(phases.seen.find(s=>s.phase==='shoot').machineMotion,'shoot1');
       assert.equal(phases.seen.find(s=>s.phase==='rise').machineMotion,'litopen');
       assert.equal(phases.seen.find(s=>s.phase==='lower').machineMotion,'litclose');
-      assert.equal(phases.seen.find(s=>s.phase==='look').position[1],initial.position[1]+40);
-      assert.deepEqual(phases.shots,['magma','magma','magma']);
+      // The rise is scaled by MachineScale 1.4: 40 x 1.4 = 56 units (review item 8).
+      assert.equal(phases.seen.find(s=>s.phase==='look').position[1],initial.position[1]+56);
+      // One salvo; each shot leaves both barrels (BONE07 and BONE13, enemy-projectile-origins.js).
+      assert.equal(phases.shots.length,2*phases.salvo);assert.ok(phases.shots.every(kind=>kind==='magma'));
     }else if(type==='maxj'){
       assert.equal(phases.phase,'shoot');assert.equal(phases.seen.find(s=>s.phase==='invisible').visible,false);
       const out=phases.seen.find(s=>s.phase==='teleportOut'),into=phases.seen.find(s=>s.phase==='teleportIn');
@@ -94,7 +102,7 @@ export async function verifyBossPhaseScenes(page) {
       assert.notDeepEqual(phases.seen.find(s=>s.phase==='shoot').position,initial.position);
       assert.deepEqual(phases.shots,['magicBall']);
     }
-    await page.screenshot({path:`artifacts/${type}-boss-phase.png`});
+    await page.screenshot({path:sceneOutput(`artifacts/${type}-boss-phase.png`)});
     const shielding=type==='maxd'?await page.evaluate(()=>{
       const {world,gameplay:game}=window.__redcat,{boss,events}=window.__phaseFixture,host=game.scripts;
       const [x,y,z]=boss.boss.home,health=boss.health,input={forward:0,right:0,turn:0,jump:false,attack:false,use:false};
@@ -142,7 +150,7 @@ export async function verifyBossPhaseScenes(page) {
     if(type==='witch'){assert.deepEqual(defeat.beams,[true,true]);assert.equal(defeat.cutscene,true);assert.equal(defeat.frozen,true);assert.equal(defeat.camera,defeat.expectedCamera);}
     results[type]={initial,phases,...(shielding?{shielding}:{}),defeat};
   }
-  await writeFile('artifacts/boss-phase-scenes.json',JSON.stringify(results,null,2)+'\n');
+  await writeFile(sceneOutput('artifacts/boss-phase-scenes.json'),JSON.stringify(results,null,2)+'\n');
   console.log('PASS Dungeon Max machine cycle and physical shielding, Jester visibility/teleport animation, Witch takeoff/flight, original ammunition and defeat script handoffs.');
 }
 
@@ -152,6 +160,7 @@ if(import.meta.url===pathToFileURL(process.argv[1]).href){
   try{
     browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
     const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];page.on('pageerror',error=>errors.push(error.stack));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
+    await unlockChapters(page);
     await page.goto('http://127.0.0.1:4184/?skipIntro');await page.waitForFunction(()=>window.__redcat);
     await verifyBossPhaseScenes(page);assert.deepEqual(errors,[]);
   }finally{await browser?.close();server.kill();}

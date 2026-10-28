@@ -2,13 +2,16 @@ import {chromium} from 'playwright';
 import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4197'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});let browser;
 try{
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];page.on('pageerror',e=>errors.push(e.stack));
+  await unlockChapters(page);
   page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
-  await page.goto('http://127.0.0.1:4197/?skipIntro');await page.waitForFunction(()=>window.__redcat);await mkdir('artifacts',{recursive:true});
+  await page.goto('http://127.0.0.1:4197/?skipIntro');await page.waitForFunction(()=>window.__redcat);await mkdir(sceneOutput('artifacts'),{recursive:true});
   const bats=await page.evaluate(async()=>{
     const {batOverlapsPlayer}=await import('/source/enemy-flight.js'),app=window.__redcat;await app.startLevel(1);if(!app.gameplay)throw Error(document.body.innerText);app.pause();document.getElementById('pause').hidden=true;
     const world=app.world,game=app.gameplay,host=game.scripts;
@@ -46,7 +49,7 @@ try{
   });
   assert.deepEqual(bats.overlaps,[]);assert.equal(bats.recovered,true);assert.ok(bats.hits.length>0);assert.ok(bats.health>0);
   for(const id of new Set(bats.hits.map(h=>h.id))){const times=bats.hits.filter(h=>h.id===id).map(h=>h.time);for(let i=1;i<times.length;i++)assert.ok(times[i]-times[i-1]>=3-1e-6);}
-  await page.screenshot({path:'artifacts/castle-bat-contact-escape.png'});
+  await page.screenshot({path:sceneOutput('artifacts/castle-bat-contact-escape.png')});
   const ending=await page.evaluate(async()=>{
     const app=window.__redcat;await app.startLevel(4);app.pause();document.getElementById('pause').hidden=true;
     const world=app.world,game=app.gameplay,host=game.scripts;for(const p of host.players.values())p.stop();host.cutscene=false;host.camera=null;host.enemiesFrozen=false;
@@ -64,7 +67,7 @@ try{
     return {wasVisible,records,doublePosition:double.position.toArray(),error:host.vm.lastError,subtitle:host.subtitle?.text};
   });
   assert.equal(ending.wasVisible,true);assert.ok(ending.records.every(r=>!r.body&&r.double&&r.later.every(v=>!v)));assert.equal(ending.error,null);assert.deepEqual(errors,[]);
-  await page.screenshot({path:'artifacts/witch-ending-single-actor.png'});
-  await writeFile('artifacts/bat-contact-witch-ending-scenes.json',JSON.stringify({bats,ending},null,2)+'\n');
+  await page.screenshot({path:sceneOutput('artifacts/witch-ending-single-actor.png')});
+  await writeFile(sceneOutput('artifacts/bat-contact-witch-ending-scenes.json'),JSON.stringify({bats,ending},null,2)+'\n');
   console.log('PASS actual castle bat/player collision, stationary and moving player contact escape, overlap-save recovery; Witch ending retires combat actor during original cutscene.');
 }finally{await browser?.close();server.kill();}

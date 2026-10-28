@@ -2,6 +2,7 @@ import {chromium} from 'playwright';
 import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
+import {sceneOutput} from './support/scene-output.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4208'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
@@ -37,10 +38,10 @@ try{
   assert.equal(summary.level,'lvl00a');assert.equal(summary.touchHidden,true);assert.ok(summary.summary);
   assert.deepEqual(summary.summary.rows.map(r=>r.total),[15,19,4,0]);
   assert.equal(summary.save.game.debriefing.newScore,summary.score);
-  await mkdir('artifacts',{recursive:true});
-  await page.screenshot({path:'artifacts/debriefing-desktop.png'});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
+  await page.screenshot({path:sceneOutput('artifacts/debriefing-desktop.png')});
   await page.setViewportSize({width:390,height:844});
-  await page.screenshot({path:'artifacts/debriefing-mobile.png'});
+  await page.screenshot({path:sceneOutput('artifacts/debriefing-mobile.png')});
   const layout=await page.locator('.debriefing-frame').boundingBox();
   assert.ok(layout.width<=390);assert.ok(layout.y>=0&&layout.y+layout.height<=844);
   // An app/browser restart at this screen must not skip it or award twice.
@@ -54,6 +55,6 @@ try{
   assert.equal(result.completed,true);assert.equal(result.initialPending,true);assert.equal(result.ended,true);
   assert.equal(result.levelAtEnd,'lvl00a');assert.ok(Math.abs(result.endTime-result.duration)<.01);assert.ok(result.duration>3);
   assert.equal(result.finalLevel,'lvl01a');assert.deepEqual(errors,[]);
-  await writeFile('artifacts/mirror-audio-transition-scenes.json',JSON.stringify({result,paused,duringPause,summary,layout},null,2)+'\n');
+  await writeFile(sceneOutput('artifacts/mirror-audio-transition-scenes.json'),JSON.stringify({result,paused,duringPause,summary,layout},null,2)+'\n');
   console.log('PASS forest mirror WAV and pause, original scoreboard at desktop/mobile sizes, save/reload without double bonus, touch continue to castle.');
 }finally{await browser?.close();server.kill();}

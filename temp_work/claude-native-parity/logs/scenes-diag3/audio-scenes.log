@@ -1,0 +1,22 @@
+DBG {"before":["level 1 - the forest.wav","endbosses.wav"],"restored":["level 1 - the forest.wav","endbosses.wav"],"host":{"m":{"id":"EffectMusic1","sound":"Endbosses.wav","mode":"special"},"save":{"id":"EffectMusic1","sound":"Endbosses.wav","mode":"special"},"keys":["redcat.progress.v1","redcat.settings.v1","redcat.player-options.v1","redcat.save.v1","redcat.players.v1"]}}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Script-selected boss music survives loading
++ actual - expected
+
++ 'level 1 - the forest.wav'
+- 'endbosses.wav'
+
+    at verifyForestAudio (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/audio-scenes.mjs:43:10)
+    at async file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/audio-scenes.mjs:84:5 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'level 1 - the forest.wav',
+  expected: 'endbosses.wav',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

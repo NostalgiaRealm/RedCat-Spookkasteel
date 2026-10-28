@@ -4,15 +4,16 @@ import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 const save=process.argv[2]?JSON.parse(await readFile(process.argv[2],'utf8')):null;
-const out=path.resolve(`temp_work/graveyard-sky-gap-2026-10-09/scenes-${Date.now()}`);
+const out=path.resolve(sceneOutput(`temp_work/graveyard-sky-gap-2026-10-09/scenes-${Date.now()}`));
 await mkdir(out,{recursive:true});
-const env={...process.env,TMPDIR:'temp_work'};
+const env={...process.env,TMPDIR:sceneOutput('temp_work')};
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...env,PORT:'0'},stdio:['ignore','pipe','inherit']});
 const base=await new Promise((resolve,reject)=>{server.stdout.once('data',s=>resolve(s.toString().match(/http:\/\/127.0.0.1:\d+/)[0]));server.once('error',reject);});
 let context;
 try {
-  context=await chromium.launchPersistentContext(path.join(out,'profile'),{executablePath:'/usr/bin/google-chrome',headless:true,env,
+  context=await chromium.launchPersistentContext(path.join(out,'profile'),{executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,env,
     viewport:{width:1280,height:720},args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
   const page=await context.newPage(),errors=[];
   page.on('pageerror',error=>errors.push(error.stack));
@@ -29,22 +30,28 @@ try {
   },!!save),true);
   const result=await page.evaluate(async()=>{
     const THREE=await import('three'),app=window.__redcat,w=app.world,stream=w.geometryStream;
+    // Streaming computes visibility from the camera matrices: update them, let the
+    // stream pick the view's chunks, load them, then update residency once more.
+    const refresh=async()=>{w.camera.updateMatrixWorld(true);w.updateRenderResidency();await stream.settle();w.updateRenderResidency();};
     w.camera.position.set(2240.679048124565,105.26586600094487,528.412264482492);
     w.camera.lookAt(w.camera.position.clone().add(new THREE.Vector3(-.6429578465301031,.2000013569987305,-.7393271703272096)));
-    w.syncModels();w.syncActors(0);await stream.settle();w.updateRenderResidency();
+    w.syncModels();w.syncActors(0);await refresh();
     const camera=w.camera.position.clone(),quaternion=w.camera.quaternion.clone();
     const target=new THREE.WebGLRenderTarget(1280,720);
     const pixels=()=>{const bytes=new Uint8Array(1280*720*4);w.renderer.setRenderTarget(target);w.renderer.render(w.scene,w.camera);w.renderer.readRenderTargetPixels(target,0,0,1280,720,bytes);w.renderer.setRenderTarget(null);return bytes;};
     const image=()=>{w.renderer.render(w.scene,w.camera);return w.renderer.domElement.toDataURL('image/png').split(',')[1];};
     const models=()=>[50,51].map(id=>({id,pvsVisible:stream.movingModels.get(id).pvsVisible,chunks:stream.chunks.filter(c=>c.group.model===id).map(c=>({layer:c.mesh.layers.mask,inView:c.inView,resident:c.resident}))}));
     const fixedBoundsVisible=stream.boundsVisible,modelBoxes=new Set([...stream.movingModels.values()].map(m=>m.bounds)),views=[],images={};
+    // The old renderer predates the room masks too: its bypass also skipped them for these fences.
+    const fixedRoomBounds=stream.roomBoundsAllowed,fenceBoxes=new Set(stream.chunks.filter(c=>[50,51].includes(c.group.model)).map(c=>c.bounds));
     for(const dx of [0,-8,8]) {
       w.camera.position.copy(camera).add(new THREE.Vector3(dx,0,0));w.camera.quaternion.copy(quaternion);
       // Recreate only the old moving-model bypass, keeping static PVS/sky and
       // all scene transforms identical. Nearby residency is not visibility.
-      stream.boundsVisible=box=>modelBoxes.has(box)||fixedBoundsVisible.call(stream,box);await stream.settle();w.updateRenderResidency();
+      stream.boundsVisible=box=>modelBoxes.has(box)||fixedBoundsVisible.call(stream,box);
+      stream.roomBoundsAllowed=box=>fenceBoxes.has(box)||fixedRoomBounds.call(stream,box);await refresh();
       const before=pixels();if(!dx)images.before=image();
-      stream.boundsVisible=fixedBoundsVisible;await stream.settle();w.updateRenderResidency();
+      stream.boundsVisible=fixedBoundsVisible;stream.roomBoundsAllowed=fixedRoomBounds;await refresh();
       const after=pixels(),modelStates=models();if(!dx)images.after=image();
       const children=w.scene.children.map(o=>[o,o.visible]);children.forEach(([o])=>o.visible=false);
       const sky=pixels();children.forEach(([o,visible])=>o.visible=visible);
@@ -63,7 +70,7 @@ try {
       views.push({dx,leaf:stream.visibility.lastLeaf,changed,skyRestored,foregroundChanged,remainingGapPixels,models:modelStates});
     }
     // The same fences remain visible on approach and at a partially open pose.
-    w.camera.position.set(932,592,-1100);w.camera.lookAt(932,592,-840);await stream.settle();
+    w.camera.position.set(932,592,-1100);w.camera.lookAt(932,592,-840);await refresh();
     const gateChunks=stream.chunks.filter(c=>[50,51].includes(c.group.model));
     const gateArtwork=()=>{
       const before=pixels(),states=gateChunks.map(c=>c.mesh.visible);gateChunks.forEach(c=>c.mesh.visible=false);
@@ -77,7 +84,7 @@ try {
       const offset=origin.clone().sub(origin.clone().applyQuaternion(rotation));
       for(const c of gateChunks.filter(c=>c.group.model===id)){c.mesh.position.copy(offset);c.mesh.quaternion.copy(rotation);}
     }
-    await stream.settle();gates.opening={models:models(),pixels:gateArtwork()};images.gatesOpening=image();
+    await refresh();gates.opening={models:models(),pixels:gateArtwork()};images.gatesOpening=image();
     target.dispose();return {views,gates,images};
   });
   for(const [name,data]of Object.entries(result.images))await writeFile(path.join(out,name+'.png'),Buffer.from(data,'base64'));

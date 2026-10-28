@@ -4,11 +4,12 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 
+import {sceneOutput,sceneTemp} from './support/scene-output.mjs';
 // Only native generic smoke/flame emitters are advanced. Music and sound
 // scheduling is outside this fixture; the desktop profile is never opened.
-const work='current_work/native-spouts-2026-10-05',out=path.resolve(`${work}/scenes-${Date.now()}`),temp=`${work}/t`;
+const work=sceneOutput('current_work/native-spouts-2026-10-05'),out=path.resolve(`${work}/scenes-${Date.now()}`),temp=`${work}/t`;
 await mkdir(out,{recursive:true});await mkdir(temp,{recursive:true});
-const env={...process.env,TMPDIR:temp},port=process.env.SPOUT_PORT||'4394';
+const env={...process.env,TMPDIR:sceneTemp()},port=process.env.SPOUT_PORT||'4394';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...env,PORT:port},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let context;
@@ -57,11 +58,20 @@ try{
    for(let i=0;i<Math.ceil((Number(e.LifeSecondsMax)+.1)/.025);i++)fx.update(.025);
    const drained={particles:state.particles.length,serial:serial()};object.enabled=true;for(let i=0;i<40;i++)fx.update(.025);
    const restarted={particles:state.particles.length,active:state.active};
-   for(let i=0;i<400;i++)fx.update(.025);w.render();const resourceBefore=resources(),poolBefore=[...(state.spout?.pool||[])],limit=15;
+   for(let i=0;i<400;i++)fx.update(.025);w.render();
+   // Scene geometry objects, to show the long run creates none.
+   const geometryIds=()=>{const ids=[];w.scene.traverse(o=>{if(o.geometry)ids.push(o.geometry.uuid);});return ids.sort().join();};const idsBefore=geometryIds();
+   const resourceBefore=resources(),poolBefore=[...(state.spout?.pool||[])],limit=15;
    let maximum=0,minCount=Infinity,allEmitterMaximum=0,maxPoolLength=0;
    for(let i=0;i<Math.ceil(fixture.seconds/.025);i++){fx.update(.025);maximum=Math.max(maximum,state.particles.length);for(const entry of fx.entries.values())if(entry.object.entity.classname==='EffectSpoutEntity'){allEmitterMaximum=Math.max(allEmitterMaximum,entry.particles.length);maxPoolLength=Math.max(maxPoolLength,entry.spout?.pool?.length||0);}minCount=Math.min(minCount,state.particles.length);if(i%200===0){w.render();await new Promise(resolve=>setTimeout(resolve,0));}}
-   w.render();const resourceAfter=resources(),poolReused=poolBefore.length===15&&poolBefore.every((particle,i)=>state.spout.pool[i]===particle),glError=w.renderer.getContext().getError();
-   return {fixture,id:object.id,key,source:e,radialViews,paused:pause,pixels,liveBefore,serialBefore,tail,drained,restarted,maximum,minCount,allEmitterMaximum,maxPoolLength,limit,resourceBefore,resourceAfter,poolReused,glError,image};
+   w.render();const resourceAfter=resources(),idsAfter=geometryIds();
+   // A second window of the same length: once each existing geometry has been
+   // drawn (uploaded) at least once, nothing may grow; render residency can
+   // still release offscreen artwork.
+   for(let i=0;i<Math.ceil(fixture.seconds/.025);i++){fx.update(.025);if(i%200===0){w.render();await new Promise(resolve=>setTimeout(resolve,0));}}
+   w.render();const resourceSteady=resources(),sameGeometryObjects=idsBefore===idsAfter&&idsAfter===geometryIds();
+   const poolReused=poolBefore.length===15&&poolBefore.every((particle,i)=>state.spout.pool[i]===particle),glError=w.renderer.getContext().getError();
+   return {fixture,id:object.id,key,source:e,radialViews,paused:pause,pixels,liveBefore,serialBefore,tail,drained,restarted,maximum,minCount,allEmitterMaximum,maxPoolLength,limit,resourceBefore,resourceAfter,resourceSteady,sameGeometryObjects,poolReused,glError,image};
   },fixture);
   await writeFile(path.join(out,`${fixture.name}.png`),Buffer.from(result.image,'base64'));delete result.image;results.push(result);
  }
@@ -82,7 +92,7 @@ try{
  });
  if(hands){await writeFile(path.join(out,'moving-hand-torch.png'),Buffer.from(hands.image,'base64'));delete hands.image;}
  await writeFile(path.join(out,'report.json'),JSON.stringify({results,hands,errors},null,2)+'\n');
- for(const r of results){for(const view of r.radialViews){assert.ok(view.colored>20,JSON.stringify(view));assert.equal(view.glError,0);}assert.ok(Object.values(r.paused).every(Boolean),JSON.stringify(r.paused));assert.ok(r.pixels>10,JSON.stringify({fixture:r.fixture,pixels:r.pixels}));assert.ok(r.liveBefore>0);assert.ok(r.tail.particles>0);assert.equal(r.tail.serial,r.serialBefore);assert.equal(r.tail.active,false);assert.equal(r.drained.particles,0);assert.equal(r.drained.serial,r.serialBefore);assert.ok(r.restarted.active&&r.restarted.particles>0);assert.ok(r.maximum<=r.limit,`${r.maximum}>${r.limit}`);assert.ok(r.minCount>0);assert.ok(r.allEmitterMaximum<=15);assert.equal(r.maxPoolLength,15);assert.ok(r.poolReused);assert.deepEqual(r.resourceAfter,r.resourceBefore);assert.equal(r.glError,0);}
+ for(const r of results){for(const view of r.radialViews){assert.ok(view.colored>20,JSON.stringify(view));assert.equal(view.glError,0);}assert.ok(Object.values(r.paused).every(Boolean),JSON.stringify(r.paused));assert.ok(r.pixels>10,JSON.stringify({fixture:r.fixture,pixels:r.pixels}));assert.ok(r.liveBefore>0);assert.ok(r.tail.particles>0);assert.equal(r.tail.serial,r.serialBefore);assert.equal(r.tail.active,false);assert.equal(r.drained.particles,0);assert.equal(r.drained.serial,r.serialBefore);assert.ok(r.restarted.active&&r.restarted.particles>0);assert.ok(r.maximum<=r.limit,`${r.maximum}>${r.limit}`);assert.ok(r.minCount>0);assert.ok(r.allEmitterMaximum<=15);assert.equal(r.maxPoolLength,15);assert.ok(r.poolReused);assert.equal(r.sameGeometryObjects,true,'the long run creates no geometry objects');const {geometries:firstUploads,...otherBefore}=r.resourceBefore,{geometries:afterUploads,...otherAfter}=r.resourceAfter;assert.deepEqual(otherAfter,otherBefore);assert.ok(afterUploads>=firstUploads);const {geometries:steadyUploads,textures:steadyTextures,...otherSteady}=r.resourceSteady,{textures:afterTextures,...otherAfterNoTextures}=otherAfter;assert.deepEqual(otherSteady,otherAfterNoTextures,'other resources stay level over a second window');assert.ok(steadyUploads<=afterUploads&&steadyTextures<=afterTextures,`GPU geometries/textures do not grow (render residency may release some): ${JSON.stringify({afterUploads,steadyUploads,afterTextures,steadyTextures})}`);assert.equal(r.glError,0);}
  if(hands){assert.ok(hands.displacement>1);assert.ok(hands.maxTipError<1e-6);assert.ok(hands.spawnDistances.length>0&&Math.max(...hands.spawnDistances)<10);assert.ok(hands.particles>0);assert.ok(hands.ordinary?.particles>0);assert.deepEqual(hands.ordinary.position,hands.ordinary.authored);assert.equal(hands.glError,0);}assert.deepEqual(errors,[]);
  console.log('PASS original smoke/flame artwork renders, pause is inert, disabled particles drain then restart, long-run particle/resources stay bounded, and moving hand flames follow their wick while ordinary torches keep authored positions.');console.log(out);
 }finally{await context?.close();server.kill();}

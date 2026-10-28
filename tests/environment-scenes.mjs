@@ -4,8 +4,10 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
 export async function verifyEnvironmentScenes(page) {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   await page.evaluate(async()=>{
     const THREE=await import('three'),{BspCollider}=await import('./source/collision.js');
     window.__environmentFixture={
@@ -42,7 +44,7 @@ export async function verifyEnvironmentScenes(page) {
   });
   const forest=[];
   for(const model of [56,57]) {
-    const result=await page.evaluate(model=>{
+    const result=await page.evaluate(async model=>{
       const app=window.__redcat,world=app.world,game=app.gameplay,fixture=window.__environmentFixture;
       const geometry=world.level.collision.models[model],center=geometry.min.map((v,i)=>(v+geometry.max[i])/2);
       const meshes=world.modelMeshes.get(model)||[];
@@ -57,6 +59,8 @@ export async function verifyEnvironmentScenes(page) {
       for(let i=0;i<20;i++)world.update(.025,{forward:0,right:0});
       const health=game.state.health,feet=[...world.player.position];
       world.camera.position.set(center[0]+125,geometry.max[1]+125,center[2]+165);world.camera.lookAt(center[0],geometry.max[1],center[2]);
+      // Residency/streaming follow the camera: settle them for this hand-placed view (as the newer scenes do).
+      world.camera.updateMatrixWorld(true);world.updateRenderResidency();await world.geometryStream.settle();await world.settleActorTextures();
       const pixels=fixture.pixels(meshes),visible=meshes.every(mesh=>mesh.visible);
       const materials=meshes.map(mesh=>({opacity:mesh.material.opacity,alphaTest:mesh.material.alphaTest,depthWrite:mesh.material.depthWrite}));
       const previousHealth=game.state.health;fixture.place([position[0],geometry.max[1]+12,position[2]]);
@@ -67,9 +71,11 @@ export async function verifyEnvironmentScenes(page) {
     },model);
     assert.ok(result.meshCount>0);assert.equal(result.visible,true);assert.equal(result.solid,false);
     assert.ok(result.pixels>50,`Water ${model} contributes only ${result.pixels} visible pixels`);
-    assert.ok(Math.abs(result.damage-.5)<1e-8);assert.equal(result.aboveDamage,0);
+    // CAdamTriggerModel::Tick (0x4d3680) enters on the first occupied tick and
+    // applies DamagePerSecond from the next one: 19 of the 20 frames hurt.
+    assert.ok(Math.abs(result.damage-.475)<1e-8,`water damage ${result.damage}`);assert.equal(result.aboveDamage,0);
     for(const material of result.materials){assert.equal(material.opacity,125/255);assert.ok(material.alphaTest<material.opacity);assert.equal(material.depthWrite,false);}
-    await page.screenshot({path:`artifacts/forest-water-${model}.png`});forest.push(result);
+    await page.screenshot({path:sceneOutput(`artifacts/forest-water-${model}.png`)});forest.push(result);
   }
   const castle=await page.evaluate(async()=>{
     const fixture=window.__environmentFixture;await fixture.start(1);
@@ -92,7 +98,7 @@ export async function verifyEnvironmentScenes(page) {
   });
   assert.ok(castle.meshCount>0);assert.ok(castle.pixels>50);assert.ok(castle.contents&0x20000);
   assert.ok(Math.abs(castle.damage-1.5)<1e-8);assert.equal(castle.bridge.damage,0);assert.equal(castle.bridge.grounded,true);assert.equal(castle.bridge.contents&0x60000,0);
-  await page.screenshot({path:'artifacts/castle-moat-water.png'});
+  await page.screenshot({path:sceneOutput('artifacts/castle-moat-water.png')});
   const mushroom=await page.evaluate(async()=>{
     const fixture=window.__environmentFixture;await fixture.start(0);
     const world=window.__redcat.world,game=window.__redcat.gameplay,boss=game.find('brutus')[0];
@@ -125,13 +131,13 @@ export async function verifyEnvironmentScenes(page) {
   assert.ok(mushroom.segments>2);assert.equal(mushroom.meshes,mushroom.segments);assert.ok(mushroom.pixels>5);
   assert.equal(mushroom.physicsWidth,6.4);assert.ok(mushroom.width>=6.4-.001);assert.equal(mushroom.frozen,true);assert.equal(mushroom.restored,true);
   assert.equal(mushroom.damage,0);assert.equal(mushroom.overlappingDamage,0);assert.match(mushroom.texture,/mushroom-trail\.png$/);
-  await page.screenshot({path:'artifacts/brutus-mushroom-trail.png'});
+  await page.screenshot({path:sceneOutput('artifacts/brutus-mushroom-trail.png')});
   const cleared=await page.evaluate(()=>{
     const world=window.__redcat.world,game=world.gameplay;game.respawn();world.syncHazards();
     return {segments:game.hazards.segments.length,meshes:world.hazardMeshes.size};
   });
   assert.deepEqual(cleared,{segments:0,meshes:0});
-  await writeFile('artifacts/environment-scenes.json',JSON.stringify({forest,castle,mushroom,cleared},null,2)+'\n');
+  await writeFile(sceneOutput('artifacts/environment-scenes.json'),JSON.stringify({forest,castle,mushroom,cleared},null,2)+'\n');
   console.log('PASS original forest/castle water pixels, continuous liquid damage and safe bridge, original mushroom ribbon, contact/freeze/save/respawn.');
 }
 
@@ -142,6 +148,7 @@ if(import.meta.url===pathToFileURL(process.argv[1]).href) {
   try {
     browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
     const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+    await unlockChapters(page);
     page.on('pageerror',error=>errors.push(error.stack));page.on('response',response=>{if(response.status()>=400)errors.push(`${response.status()} ${response.url()}`);});
     await page.goto('http://127.0.0.1:4182/?skipIntro');await page.waitForFunction(()=>window.__redcat);
     await verifyEnvironmentScenes(page);assert.deepEqual(errors,[]);

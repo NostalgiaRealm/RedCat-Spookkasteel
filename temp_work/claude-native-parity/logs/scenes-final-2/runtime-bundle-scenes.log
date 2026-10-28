@@ -1,0 +1,7 @@
+PASS Unbundled loader restores historical save and writes real profile-specific localStorage / IndexedDB recovery snapshots.
+PASS Same-origin bundle upgrade preserves exact save bytes, player metadata, puzzle variables and 2/5/10-minute recovery history without import.
+PASS Recovery UI loads a pre-upgrade checkpoint; second player remains independent and active selection survives reload.
+PASS All five actual levels load scripts, streamed geometry, original actors and render with the bundled runtime.
+PASS Bundled desktop gameplay processes real keyboard movement/shooting and active WebGL frames.
+PASS Mobile auto-detection, simultaneous touch movement/look and shooting/jump overlay input work through the bundled loader.
+PASS focused bundle/save/input validation. Evidence: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/scene-output/temp_work/js-bundling-2026-10-26/browser-1793211827183

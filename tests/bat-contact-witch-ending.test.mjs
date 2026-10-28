@@ -6,9 +6,11 @@ import {EnemyNavigation} from '../source/enemy-navigation.js';
 import {ScriptHost} from '../source/script-host.js';
 import {actorVisible} from '../source/world.js';
 import {batOverlapsPlayer,clipBatPlayerContact} from '../source/enemy-flight.js';
+// Mid-encounter fixtures: enemies are already thinking (gameplay.js updateEnemy).
+import {thinkingOnFirstUpdate} from './support/enemy-thinking.mjs';
 const json=p=>JSON.parse(readFileSync(new URL('../'+p,import.meta.url)));
 const clear=(a,b)=>({fraction:1,end:[...b],normal:[0,0,0],startSolid:false});
-const fixture=()=>{const game=new Gameplay(json('data/levels/lvl01a/level.json'),{deferInit:true}),bat=game.find('Bat01')[0];bat.position=[80,0,0];bat.entity={...bat.entity,StartPoint:'a'};game.navigation=new EnemyNavigation({entities:[{classname:'GrobberPathPoint','%name%':'a',Origin:'80 0 0',WayPoint1:'b'},{classname:'GrobberPathPoint','%name%':'b',Origin:'-80 0 0'}]},{MaxConnectionDistance:0});game.navigation.initialize(bat);bat.yaw=-Math.PI/2;bat.enabled=true;bat.collisionMins=[-7.19,5.3,-8.44];bat.collisionMaxs=[8.56,36.28,7.47];for(const o of game.objects)if(o!==bat)o.enabled=false;return{game,bat};};
+const fixture=()=>{const game=thinkingOnFirstUpdate(new Gameplay(json('data/levels/lvl01a/level.json'),{deferInit:true})),bat=game.find('Bat01')[0];bat.position=[80,0,0];bat.entity={...bat.entity,StartPoint:'a'};game.navigation=new EnemyNavigation({entities:[{classname:'GrobberPathPoint','%name%':'a',Origin:'80 0 0',WayPoint1:'b'},{classname:'GrobberPathPoint','%name%':'b',Origin:'-80 0 0'}]},{MaxConnectionDistance:0});game.navigation.initialize(bat);bat.yaw=-Math.PI/2;bat.enabled=true;bat.collisionMins=[-7.19,5.3,-8.44];bat.collisionMaxs=[8.56,36.28,7.47];for(const o of game.objects)if(o!==bat)o.enabled=false;return{game,bat};};
 
 test('bat hull sweeps stop at RedCat and a moving player overlap recovers without crossing a wall',()=>{
   const {bat}=fixture(),player=[0,0,0],before=[80,0,0];bat.position=[-80,0,0];
@@ -45,7 +47,7 @@ test('bat waypoint movement preserves remaining time through saves and script fr
 });
 
 test('Witch defeat retires the combat body before its authored ending double arrives, including old saves',()=>{
-  const game=new Gameplay(json('data/levels/lvl04a/level.json'),{deferInit:true}),host=new ScriptHost(game,json('data/davi/lvl04a.json'),{motions:json('data/motions/lvl04a.json'),dialogue:json('data/dialogue/nl.json')});
+  const game=thinkingOnFirstUpdate(new Gameplay(json('data/levels/lvl04a/level.json'),{deferInit:true})),host=new ScriptHost(game,json('data/davi/lvl04a.json'),{motions:json('data/motions/lvl04a.json'),dialogue:json('data/dialogue/nl.json')});
   host.initialize();for(let i=0;i<100;i++)host.update(.1);
   const door=game.find('door_witch01')[0];game.command(door,'unlock');game.command(door,'open');
   game.command(game.find('trigger_witchmodel')[0],'enable');for(let i=0;i<450;i++)host.update(.1);
@@ -55,5 +57,5 @@ test('Witch defeat retires the combat body before its authored ending double arr
   const double=game.find('witch_model02')[0];assert.ok(game.objectPosition(double)[1]<2600);assert.equal(actorVisible(double,game.time),true);
   for(const name of ['witch_model03','witch_model04'])assert.equal(actorVisible(game.find(name)[0],game.time),false);
   const old={...witch,visible:true,corpseUntil:game.time+100,animationState:'death'};assert.equal(actorVisible(old,game.time),false);
-  const restored=new Gameplay(game.level,{deferInit:true,save:game.snapshot()});assert.equal(actorVisible(restored.find('The_Witch')[0],game.time),false);assert.equal(host.vm.lastError,null);
+  const restored=thinkingOnFirstUpdate(new Gameplay(game.level,{deferInit:true,save:game.snapshot()}));assert.equal(actorVisible(restored.find('The_Witch')[0],game.time),false);assert.equal(host.vm.lastError,null);
 });

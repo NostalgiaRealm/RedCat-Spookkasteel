@@ -4,6 +4,8 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
 export async function verifyGameplayAudio(page) {
   const player=await page.evaluate(async()=>{
     const app=window.__redcat;await app.startLevel(1);app.pause();
@@ -67,7 +69,7 @@ export async function verifyGameplayAudio(page) {
   await page.evaluate(()=>window.__redcat.audio.resume());
   await page.waitForFunction(()=>window.__redcat.audio.snapshot().some(r=>r.sound==='zombie6.wav'&&!r.paused&&r.currentTime>.03));
   await page.locator('#return-menu').click();
-  await mkdir('artifacts',{recursive:true});await writeFile('artifacts/gameplay-audio.json',JSON.stringify({player,playerDecoded,enemies},null,2)+'\n');
+  await mkdir(sceneOutput('artifacts'),{recursive:true});await writeFile(sceneOutput('artifacts/gameplay-audio.json'),JSON.stringify({player,playerDecoded,enemies},null,2)+'\n');
   console.log('PASS actual jump/shot/impact/damage audio and decoded spider, knight, guardian and zombie cues.');
 }
 
@@ -78,6 +80,7 @@ if(import.meta.url===pathToFileURL(process.argv[1]).href) {
   try {
     browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
     const page=await browser.newPage(),errors=[],bad=[];
+    await unlockChapters(page);
     page.on('pageerror',e=>errors.push(e.stack));page.on('response',r=>{if(r.status()>=400)bad.push(r.url());});
     await page.goto('http://127.0.0.1:4177/?skipIntro');await page.waitForFunction(()=>window.__redcat);
     await verifyGameplayAudio(page);assert.deepEqual(errors,[]);assert.deepEqual(bad,[]);

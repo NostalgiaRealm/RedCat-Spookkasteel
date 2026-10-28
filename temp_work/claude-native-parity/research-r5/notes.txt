@@ -1,0 +1,11 @@
+RESTART (retry screen) timing/input - r5
+- Raw vtable 0x64e4c4 (vt.py): slot4 DoFade 0x51a440, slot5 HasFade 0x53dc80 (XOR AL,AL;RET) => no fade; slot6 IsDone 0x51d700 (+0x78 read&clear).
+- Frame 0x51d680 calls slots 9/11 (first frame), 12, 14 input, bg(+0x74) 8/7, 13, 10, present. Never slot 4.
+- Retry.ini FadeIn/OutTime never read (FadeInTime readers: 0x483bf0 GAME, 0x4851a0 LOADING, 0x48ae00 RESULTS, 0x51afc0).
+- 0x51d020/0x51d5a0 = base GS_RESTART centering/draw of +0x64 bitmap, overridden by 0x488620/0x489600.
+- Restart loop 0x53557a..0x53558a: Handle, IsDone; done right after confirm frame.
+- Input 0x48ace0: per PeekMessage loop; x<0 ->Ja(1), x>0 ->Nee(0); Fire(+0xc)/Jump(+0x10) level -> +0x78=1.
+- CRcInput move 0x482110: mouse dx*0.125 (consumed) * sens(+0x40); MoveLeft/TurnLeft=-1, MoveRight/TurnRight=+1; normalize if >1.
+- Action query 0x544f90 called with repeat flag 0 => level.
+- Nee: 0x52c270 fades states[game+0x98]=GS_GAME (HasFade 0x5ad370=1), dur +0x54 from 0x483bf0 FadeOutTime (def 3.0, 0..10, x1000) section=state name, file ""=AdamWin.Ini [GS_GAME]=0.0.
+- Ja: game+0x68="restart"; main loop 0x4bfd60: 0x52af50 (1 GAME Handle) then LoadLevel 0x52c970 -> restart branch JMP 0x52d3c1 -> FadeOutCurrentState 0x52d41f.

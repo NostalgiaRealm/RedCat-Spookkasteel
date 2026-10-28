@@ -3,11 +3,12 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4213'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
   // StandardSkill applies only to quick play natively (parity review item 5);
@@ -42,8 +43,8 @@ try {
     w.render();
     return {image,before,after:{position:[...w.player.position],health:g.state.health,lives:g.state.lives,switched:button.switchedOn,count:button.switchCount,bridgeOpen:bridge.open,bridgeTime:motion.time,error:h.vm.lastError,selected:w.targeting.target?.id,events:events.filter(e=>['attack','playerProjectileImpact','button','door'].includes(e.type))}};
   });
-  await writeFile('artifacts/castle-drawbridge-targeting.png',Buffer.from(castle.image.split(',')[1],'base64'));delete castle.image;
-  await page.screenshot({path:'artifacts/castle-drawbridge-lowered.png'});
+  await writeFile(sceneOutput('artifacts/castle-drawbridge-targeting.png'),Buffer.from(castle.image.split(',')[1],'base64'));delete castle.image;
+  await page.screenshot({path:sceneOutput('artifacts/castle-drawbridge-lowered.png')});
   await page.evaluate(async()=>{const app=window.__redcat;await app.startLevel(2);app.pause();document.getElementById('pause').hidden=true;});
   const graveyard=await page.evaluate(async()=>{
     const {targetAimPoint,targetableObject}=await import('/source/targeting.js');
@@ -63,24 +64,27 @@ try {
     w.render();
     return {image,skill:g.state.skill,weapons:h.weaponsEnabled,crate:{before,after},lights,error:h.vm.lastError};
   });
-  await writeFile('artifacts/graveyard-authored-crate-targeting.png',Buffer.from(graveyard.image.split(',')[1],'base64'));delete graveyard.image;
+  await writeFile(sceneOutput('artifacts/graveyard-authored-crate-targeting.png'),Buffer.from(graveyard.image.split(',')[1],'base64'));delete graveyard.image;
   graveyard.lamp=await page.evaluate(async()=>{
     const {targetAimPoint}=await import('/source/targeting.js'),w=window.__redcat.world,g=w.gameplay;
+    const {actorVisible}=await import('/source/world.js'),{attachedActorVisible}=await import('/source/actor-placement.js');
     const lamp=g.objects.find(o=>o.id==='AdamAnyActor12');
     w.player.position=[966,-63.95,2260];w.player.velocityY=0;w.yaw=Math.PI;w.pitch=-.2;
     w.syncPlayer(0,{});w.targeting.clear();w.updateTargeting(.05,{attack:true});w.updateCamera(1,true);w.syncTargetMarker();w.render();
     const hit=w.collider.trace([966,-18.95,2260],targetAimPoint(lamp),[0,0,0],[0,0,0],w.physicalModels,'blocksLOS');
-    return {id:lamp.id,actor:lamp.entity.ActorFileName,targetFlag:lamp.entity.Targetable,available:lamp.targetAvailable,selected:w.targeting.target?.id??null,ring:w.targetMarker.visible,locked:w.targeting.locked,losHit:hit.actorId,losModel:hit.modelIndex,losFraction:hit.fraction};
+    // updateTargeting only sets targetAvailable on actors that opt in to aiming, so
+    // check the lamp's own visibility with the renderer's rules instead.
+    return {id:lamp.id,actor:lamp.entity.ActorFileName,targetFlag:lamp.entity.Targetable,available:!!w.actorInstances.get(lamp.id)&&actorVisible(lamp,g.time)&&attachedActorVisible(lamp,g),selected:w.targeting.target?.id??null,ring:w.targetMarker.visible,locked:w.targeting.locked,losHit:hit.actorId,losModel:hit.modelIndex,losFraction:hit.fraction};
   });
-  await page.screenshot({path:'artifacts/graveyard-lamp-not-targeted.png'});
+  await page.screenshot({path:sceneOutput('artifacts/graveyard-lamp-not-targeted.png')});
   graveyard.enemy=await page.evaluate(()=>{
     const w=window.__redcat.world,g=w.gameplay,enemy=g.objects.find(o=>o.id==='StandingEnemy1');
     w.player.position=[1083,-63.95,20];w.player.velocityY=0;w.yaw=0;w.pitch=.16;
     w.syncPlayer(0,{});w.targeting.clear();w.updateTargeting(.05,{attack:true});w.updateCamera(1,true);w.syncTargetMarker();w.render();
     return {id:enemy.id,selected:w.targeting.target?.id??null,ring:w.targetMarker.visible,locked:w.targeting.locked,health:enemy.health};
   });
-  await page.screenshot({path:'artifacts/graveyard-enemy-targeting.png'});
-  await writeFile('artifacts/target-eligibility-scenes.json',JSON.stringify({castle,graveyard,errors},null,2)+'\n');
+  await page.screenshot({path:sceneOutput('artifacts/graveyard-enemy-targeting.png')});
+  await writeFile(sceneOutput('artifacts/target-eligibility-scenes.json'),JSON.stringify({castle,graveyard,errors},null,2)+'\n');
   assert.equal(castle.before.skill,1,'The earned basic shot carries into the castle');
   assert.deepEqual(castle.before.actors,[],'The castle has no authored Targetable crates');
   assert.equal(castle.before.selected,castle.before.button);assert.ok(castle.before.ring&&castle.before.locked);

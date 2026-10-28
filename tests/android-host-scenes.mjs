@@ -5,6 +5,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {chromium} from 'playwright';
 
+import {sceneOutput} from './support/scene-output.mjs';
 // Browser integration with a simulated native endpoint; this is not a device test.
 // Keep profiles, screenshots and reports as evidence under temp_work.
 const root = fileURLToPath(new URL('../', import.meta.url));
@@ -13,9 +14,9 @@ await mkdir(evidence, {recursive: true});
 const output = await mkdtemp(path.join(evidence, 'host-scenes-'));
 // Chromium's Unix socket path limit requires a short, relative temp path.
 process.chdir(root);
-process.env.TMPDIR = 'temp_work';
-process.env.TMP = 'temp_work';
-process.env.TEMP = 'temp_work';
+process.env.TMPDIR = sceneOutput('temp_work');
+process.env.TMP = sceneOutput('temp_work');
+process.env.TEMP = sceneOutput('temp_work');
 const nativeOnly = process.env.ANDROID_TEST_SCOPE === 'native';
 const browserOnly = process.env.ANDROID_TEST_SCOPE === 'browser';
 const report = {kind: 'browser-simulated-android-host', scope: nativeOnly ? 'native' : browserOnly ? 'browser' : 'all', checks: [], errors: [], samples: {}};

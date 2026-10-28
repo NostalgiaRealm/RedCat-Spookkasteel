@@ -5,10 +5,11 @@ import {mkdir, writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import assert from 'node:assert/strict';
 
-const out = `temp_work/death-save-2026-10-18/run-${Date.now()}`;
+import {sceneOutput} from './support/scene-output.mjs';
+const out = sceneOutput(`temp_work/death-save-2026-10-18/run-${Date.now()}`);
 await mkdir(out, {recursive: true});
-await mkdir('temp_work/t', {recursive: true});
-const env = {...process.env, TMPDIR: 'temp_work/t'};
+await mkdir(sceneOutput('temp_work/t'), {recursive: true});
+const env = {...process.env, TMPDIR: sceneOutput('temp_work/t')};
 const port = 4582;
 const server = spawn(process.execPath, ['tools/serve.mjs'], {env: {...env, PORT: String(port)}, stdio: ['ignore', 'pipe', 'inherit']});
 await new Promise((ok, fail) => {server.stdout.once('data', ok); server.once('error', fail);});

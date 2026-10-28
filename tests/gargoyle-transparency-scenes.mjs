@@ -4,8 +4,9 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import assert from 'node:assert/strict';
 
-process.env.TMPDIR='current_work';
-const output=resolve(`current_work/gargoyle-transparency-2026-09-29/render-${Date.now()}`);
+import {sceneOutput} from './support/scene-output.mjs';
+process.env.TMPDIR=sceneOutput('current_work');
+const output=resolve(sceneOutput(`current_work/gargoyle-transparency-2026-09-29/render-${Date.now()}`));
 await mkdir(output,{recursive:true});
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4308'},stdio:['ignore','pipe','inherit']});
 await new Promise((done,fail)=>{server.stdout.once('data',done);server.once('error',fail);});
@@ -31,6 +32,8 @@ try {
   for(let i=0;i<19;i++)g.updateProjectiles(1/60,[10000,0,0]);
   w.camera.position.set(o.position[0]+210,o.position[1]+160,o.position[2]+330);
   w.camera.lookAt(o.position[0]+130,o.position[1]+60,o.position[2]+30);w.camera.updateMatrixWorld();
+  // Room-aware streaming and effect culling follow the camera: settle them for this hand-placed view.
+  w.updateRenderResidency();await w.geometryStream.settle();await w.settleActorTextures();
   w.syncProjectiles();w.effects.update(0);
   const batch=w.effects.beamBatches.get('kaboom.bmp|kaboom_a.bmp'),map=batch.mesh.material.map;
   const actualFlip=map.flipY,image={},quadCount=batch.count;
@@ -41,7 +44,9 @@ try {
   // Their difference isolates transmission, independent of flame RGB.
   const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-1,1,1,-1,.1,10);camera.position.z=2;
   const mesh=batch.mesh.clone();scene.add(mesh);
-  batch.count=0;
+  // The synthetic quad sits outside the world view: switch this batch's
+  // frustum/range/room culling (docs/gpu-effect-buffer-residency.md) off for it.
+  batch.count=0;batch.frustum=null;batch.viewRange=Infinity;batch.rooms=null;
   batch.addPoints([[-1,-1,0],[1,-1,0],[-1,1,0],[1,-1,0],[1,1,0],[-1,1,0]].map(p=>new THREE.Vector3(...p)),[1,1,1],1,1,0);
   batch.flush();
   const renderer=w.renderer,rt=new THREE.WebGLRenderTarget(128,128);rt.texture.colorSpace=THREE.LinearSRGBColorSpace;

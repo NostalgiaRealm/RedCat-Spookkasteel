@@ -3,13 +3,16 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4222'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+  await unlockChapters(page);
   page.on('pageerror',e=>errors.push(e.stack));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
   await page.goto('http://127.0.0.1:4222/?skipIntro');await page.waitForFunction(()=>window.__redcat);
   await page.evaluate(()=>document.getElementById('cheat-unlock-levels').click());
@@ -61,8 +64,8 @@ try {
     return {hz,fan:{id:fan.id,name:fan.entity.DaviName,model:fan.modelIndex,enabled:fan.enabled,speed:fan.entity.AddPlayerSpeed,bounds:fanBounds},start,startFloor:{y:startFloor.end[1],solid:startFloor.startSolid},platform:{y:platform.end[1],model:platform.modelIndex,solid:platform.startSolid},initialVelocity,maxY,firstWind,firstAbovePlatform,landed,recovered,samples,screenshots};
   },hz);
   const {screenshots,...report}=result;
-  for(const [name,data] of Object.entries(screenshots))await writeFile(`artifacts/vertical-fan-${name}${hz===60?'':`-${hz}hz`}.png`,Buffer.from(data,'base64'));
-  reports.push(report);await writeFile('artifacts/vertical-fan-scenes.json',JSON.stringify({reports,errors},null,2)+'\n');
+  for(const [name,data] of Object.entries(screenshots))await writeFile(sceneOutput(`artifacts/vertical-fan-${name}${hz===60?'':`-${hz}hz`}.png`),Buffer.from(data,'base64'));
+  reports.push(report);await writeFile(sceneOutput('artifacts/vertical-fan-scenes.json'),JSON.stringify({reports,errors},null,2)+'\n');
   assert.equal(report.fan.id,'Trigger24');assert.equal(report.fan.model,147);assert.equal(report.fan.enabled,true);assert.equal(report.fan.speed,'0 5 -1');
   assert.equal(report.startFloor.solid,false);assert.equal(report.platform.solid,false);assert.deepEqual(report.initialVelocity,[0,0,0]);
   assert.ok(report.firstWind>0,'player walks into the original fan volume');

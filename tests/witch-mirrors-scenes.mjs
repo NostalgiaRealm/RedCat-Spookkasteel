@@ -2,13 +2,16 @@ import {chromium} from 'playwright';
 import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4206'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});let browser;
 try{
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+  await unlockChapters(page);
   page.on('pageerror',e=>errors.push(e.stack));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
-  await page.goto('http://127.0.0.1:4206/?skipIntro');await page.waitForFunction(()=>window.__redcat);await mkdir('artifacts',{recursive:true});
+  await page.goto('http://127.0.0.1:4206/?skipIntro');await page.waitForFunction(()=>window.__redcat);await mkdir(sceneOutput('artifacts'),{recursive:true});
   const mirrors=await page.evaluate(async()=>{
     const app=window.__redcat;await app.startLevel(4);app.pause();document.getElementById('pause').hidden=true;
     const w=app.world,g=app.gameplay,h=g.scripts,o=name=>g.find(name)[0],rows=[];
@@ -32,7 +35,7 @@ try{
   // FlashEffect is now a one-second in-world ray burst on the gameplay clock.
   // The paused scene clock would hold it, so retire it for the mirror screenshot.
   await page.evaluate(()=>{for(const o of window.__redcat.gameplay.objects)if(o.entity.classname==='FlashEffect')delete o.flashStartedAt;window.__redcat.world.render();});
-  await page.screenshot({path:'artifacts/tower-raised-mirror.png'});
+  await page.screenshot({path:sceneOutput('artifacts/tower-raised-mirror.png')});
   for(const row of mirrors.rows){assert.ok(row.frames<150,row.name+' must respond to walking into its trigger');assert.equal(row.position[1],2416,row.name);assert.equal(row.standard[1],2304);assert.equal(row.enabled,false);}
   assert.equal(mirrors.error,null);
   const witch=await page.evaluate(async()=>{
@@ -50,7 +53,7 @@ try{
     w.camera.position.set(-175,2530,425);w.camera.lookAt(150,2480,-120);w.render();
     return {records,error:h.vm.lastError};
   });
-  await page.screenshot({path:'artifacts/tower-window-witch-single.png'});
+  await page.screenshot({path:sceneOutput('artifacts/tower-window-witch-single.png')});
   witch.handoff=await page.evaluate(()=>{
     const w=window.__redcat.world,g=window.__redcat.gameplay,h=g.scripts,witch=g.find('The_Witch')[0],body=w.actorInstances.get(witch.id);let earlyVisible=false;
     const motion=h.players.get(g.find('trigger_witchmodel')[0].id);
@@ -60,6 +63,6 @@ try{
   });
   assert.ok(witch.records.every(r=>!r.combat&&r.cinematic&&!r.enabled));assert.equal(witch.error,null);
   assert.equal(witch.handoff.earlyVisible,false);assert.equal(witch.handoff.enabled,true);assert.equal(witch.handoff.visible,true);assert.equal(witch.handoff.error,null);assert.deepEqual(errors,[]);
-  await writeFile('artifacts/witch-mirrors-scenes.json',JSON.stringify({mirrors,witch,errors},null,2)+'\n');
+  await writeFile(sceneOutput('artifacts/witch-mirrors-scenes.json'),JSON.stringify({mirrors,witch,errors},null,2)+'\n');
   console.log('PASS five tower mirror placements reached by walking without E, original upright raised actors; combat Witch hidden during window introduction.');
 }finally{await browser?.close();server.kill();}

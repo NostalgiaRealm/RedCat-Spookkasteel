@@ -4,8 +4,9 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 export async function verifyCheatScenes(page) {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   // Desktop verification can enter here after another scene has paused the
   // game and hidden its pause panel to capture the world unobstructed.
   if(await page.evaluate(()=>window.__redcat.mode==='intro'))await page.locator('#skip-intro').click();
@@ -19,9 +20,10 @@ export async function verifyCheatScenes(page) {
   if(await page.evaluate(()=>window.__redcat.mode==='paused'))await page.locator('#return-menu').click();
   // A native renderer reload has no ?skipIntro URL. Persist this through the
   // actual settings controls before exercising settings/save restoration.
-  await page.locator('#open-settings').click();await page.locator('#auto-intro').uncheck();
+  // Since the original-menu rework these controls sit under Meer instellingen.
+  await page.locator('#open-settings').click();await page.locator('#open-more-settings').click();await page.locator('#auto-intro').uncheck();
   await page.locator('#apply-settings').click();await page.locator('#settings').waitFor({state:'hidden'});
-  await page.locator('#open-settings').click();await page.locator('#open-cheats').click();
+  await page.locator('#open-settings').click();await page.locator('#open-more-settings').click();await page.locator('#open-cheats').click();
   assert.equal(await page.locator('#cheat-supplies').isDisabled(),true);
   await page.locator('#cheat-noclip').check();
   assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('redcat.settings.v1')).noClip),true);
@@ -41,7 +43,7 @@ export async function verifyCheatScenes(page) {
     game.onEvent=event=>{window.__cheatEvents.push(event.type);onEvent(event);};
     window.__cheatMirrorBefore=JSON.stringify(game.objects.filter(o=>o.subtype==='mirror').map(o=>({id:o.id,collected:o.collected,enabled:o.enabled})));
   });
-  await page.locator('#pause-settings').click();await page.locator('#open-cheats').click();
+  await page.locator('#pause-settings').click();await page.locator('#open-more-settings').click();await page.locator('#open-cheats').click();
   assert.equal(await page.locator('#cheat-noclip').isChecked(),true);
   await page.locator('#cheat-supplies').click();
   const reward=await page.evaluate(()=>({
@@ -54,7 +56,7 @@ export async function verifyCheatScenes(page) {
   assert.deepEqual(reward.hud,['5','100','9123']);
   await page.locator('#cheat-supplies').click();
   assert.equal(await page.evaluate(()=>window.__redcat.gameplay.state.score),18123);
-  await page.screenshot({path:'artifacts/cheats-menu.png'});
+  await page.screenshot({path:sceneOutput('artifacts/cheats-menu.png')});
   await page.locator('#back-cheats').click();assert.equal(await page.locator('#settings').isVisible(),true);
   await page.keyboard.press('Escape');await page.locator('#resume').click();
   await page.waitForFunction(()=>window.__redcat.mode==='playing');
@@ -82,14 +84,18 @@ export async function verifyCheatScenes(page) {
     return {before,position:[...world.player.position],lastSafe,health,afterHealth:game.state.health,camera:world.camera.position.toArray()};
   });
   assert.deepEqual(outside.position,outside.before);assert.equal(outside.health,outside.afterHealth);
-  assert.ok(Math.hypot(...outside.camera.map((v,i)=>v-outside.position[i]))>100,'third-person camera remains outside the level with RedCat');
+  // Native follow camera (review L1): the idle row is 1.7xH (98 units) behind RedCat, and the
+  // earlier upward look swings it lower; the old 145-unit framing no longer applies. It must
+  // still follow him out here rather than stay in the level.
+  const cameraDistance=Math.hypot(...outside.camera.map((v,i)=>v-outside.position[i]));
+  assert.ok(cameraDistance>80&&cameraDistance<200,`third-person camera remains outside the level with RedCat (${cameraDistance})`);
   await page.evaluate(async()=>{const app=window.__redcat;await app.loadSave();app.pause();});
   const restored=await page.evaluate(()=>({position:[...window.__redcat.world.player.position],lastSafe:[...window.__redcat.world.player.lastSafe],enabled:window.__redcat.world.player.noClip,settings:window.__redcat.settings.noClip,state:{...window.__redcat.gameplay.state},completed:window.__redcat.gameplay.completed}));
   assert.deepEqual(restored.position,outside.position);assert.deepEqual(restored.lastSafe,outside.lastSafe);
   assert.equal(restored.enabled,true);assert.equal(restored.settings,true);assert.equal(restored.state.score,18123);
   assert.equal(restored.state.mirror,5);assert.equal(restored.state.potions,100);assert.equal(restored.completed,false);
 
-  await page.locator('#pause-settings').click();await page.locator('#open-cheats').click();
+  await page.locator('#pause-settings').click();await page.locator('#open-more-settings').click();await page.locator('#open-cheats').click();
   await page.locator('#cheat-noclip').uncheck();
   const returned=await page.evaluate(()=>{
     const app=window.__redcat,world=app.world;
@@ -99,10 +105,10 @@ export async function verifyCheatScenes(page) {
   assert.equal(returned.enabled,false);assert.equal(returned.solid,false);assert.equal(returned.saved,false);
   assert.ok(Math.hypot(...returned.position.map((v,i)=>v-outside.lastSafe[i]))<=1,'an exact floor-plane spawn can be lifted one unit to clear its collision hull');
   assert.match(returned.status,/veilige plek/);
-  await page.screenshot({path:'artifacts/cheats-safe-return.png'});
+  await page.screenshot({path:sceneOutput('artifacts/cheats-safe-return.png')});
   await page.reload();await page.waitForFunction(()=>window.__redcat);
   assert.equal(await page.evaluate(()=>window.__redcat.settings.noClip),false);
-  await writeFile('artifacts/cheat-scenes.json',JSON.stringify({reward,start,risen,lowered,pitched,outside,restored,returned},null,2)+'\n');
+  await writeFile(sceneOutput('artifacts/cheat-scenes.json'),JSON.stringify({reward,start,risen,lowered,pitched,outside,restored,returned},null,2)+'\n');
   console.log('PASS Cheats submenu, maximum supplies/+9000, no premature level completion, keyboard free flight, outside-world save/load, collision-safe return and settings persistence.');
 }
 

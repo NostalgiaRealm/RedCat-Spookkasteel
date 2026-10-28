@@ -10,7 +10,7 @@ import { HIGHSCORES_KEY, recordHighscore } from './menu-highscores.js';
 import { createSaveExport, downloadSaveExport } from './save-export.js';
 import { parseSaveImport } from './save-import.js';
 import { pickSaveImport } from './save-import-picker.js';
-import { normalizeControlBindings, readKeyboardInput, bindingPressed, controlBindingLabel } from './control-bindings.js';
+import { normalizeControlBindings, readKeyboardInput, bindingPressed, controlBindingLabel, CAMERA_DISTANCE_ACTIONS } from './control-bindings.js';
 import { KeySettingsMenu } from './key-settings-menu.js';
 import { SliderAudio, SLIDER_VOICES } from './slider-audio.js';
 import { QuitMenu } from './quit-menu.js';
@@ -21,6 +21,7 @@ import { grantCheatSupplies, setNoClip } from './cheats.js';
 import { nativePlayerYaw } from './actor-placement.js';
 import { OriginalHud } from './hud.js';
 import { OriginalDebriefing, awardLevelSummary } from './debriefing.js';
+import { OriginalRetry } from './retry-screen.js';
 import { canTogglePlayerCamera } from './camera-control.js';
 import { CutsceneSkipHold } from './cutscene-skip.js';
 import { AutosaveClock } from './autosave.js';
@@ -41,7 +42,9 @@ const androidHost=new AndroidHost();
 const $=id=>document.getElementById(id);
 if(androidHost.enabled)$('android-privacy').hidden=false;
 const LEVELS=[{id:'lvl00a',name:'Het Bos',subtitle:'Waar het avontuur begint'},{id:'lvl01a',name:'Het Kasteel',subtitle:'Achter de kasteeldeur'},{id:'lvl02a',name:'Het Kerkhof',subtitle:'Tussen de oude graven'},{id:'lvl03a',name:'De Grotten',subtitle:'Diep onder het kasteel'},{id:'lvl04a',name:'De Toren',subtitle:'Het geheim van de heks'}];
-const DEFAULTS={resolution:'native',renderScale:100,msaa:4,showFps:false,fullscreen:true,fov:65,sensitivity:1,volume:0.6,effectsVolume:1,musicVolume:1,autoIntro:true,camera:'third',noClip:false,difficulty:'Normal',touchControls:'auto'};
+// fov 54: the original's projection, about 54° vertical on 4:3 (docs/native-camera.md).
+// Only new players get it; a stored field of view is kept.
+const DEFAULTS={resolution:'native',renderScale:100,msaa:4,showFps:false,fullscreen:true,fov:54,sensitivity:1,volume:0.6,effectsVolume:1,musicVolume:1,autoIntro:true,camera:'third',noClip:false,difficulty:'Normal',touchControls:'auto'};
 const SETTINGS_KEY='redcat.settings.v1',SAVE_KEY='redcat.save.v1',PROGRESS_KEY='redcat.progress.v1';
 const PLAYER_OPTIONS_KEY='redcat.player-options.v1';
 const ADVENTURE_REVISION_KEY='redcat.adventure-revision.v1';
@@ -61,7 +64,7 @@ settings.msaa=normalizeMsaa(settings.msaa);
 settings.showFps=settings.showFps===true;
 const renderQuality=new RenderQuality();
 settings.fullscreen=normalizeFullscreenPreference(stored.fullscreen);
-if(!Number.isFinite(settings.fov)||settings.fov<45||settings.fov>90)settings.fov=65;
+if(!Number.isFinite(settings.fov)||settings.fov<45||settings.fov>90)settings.fov=DEFAULTS.fov;
 if(!Number.isFinite(settings.sensitivity)||settings.sensitivity<0.2||settings.sensitivity>2)settings.sensitivity=1;
 if(!Number.isFinite(settings.volume)||settings.volume<0||settings.volume>1)settings.volume=.6;
 for(const key of ['effectsVolume','musicVolume'])if(!Number.isFinite(settings[key])||settings[key]<0||settings[key]>1)settings[key]=1;
@@ -102,6 +105,8 @@ const originalHud=new OriginalHud($('original-hud')),skipHold=new CutsceneSkipHo
 originalHud.ready.catch(showError);
 const debriefing=new OriginalDebriefing($('debriefing'),continueDebriefing,{mobile:mobileWeb});
 debriefing.ready.catch(showError);
+const retryScreen=new OriginalRetry($('retry'),chooseRetry);
+retryScreen.ready.catch(showError);
 const loadingScreen=new OriginalLoadingScreen($('loading'));
 loadingScreen.ready.catch(showError);
 try {renderer=new THREE.WebGLRenderer({canvas:$('game'),antialias:false,powerPreference:'high-performance'});renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.setPixelRatio(1);msaaRenderer=new MsaaRenderer(renderer,settings.msaa);}catch(error){showError(new Error('WebGL 2 is niet beschikbaar. Controleer je grafische stuurprogramma. '+error.message));}
@@ -333,7 +338,7 @@ function syncTouchSettings(){
 }
 function toggleCamera(){if(!canTogglePlayerCamera(world))return;settings.camera=settings.camera==='third'?'first':'third';resize();store(SETTINGS_KEY,settings);}
 function pause(){if(mode!=='playing')return;mode='paused';worldRenderDirty=true;clearInputs();syncTouchUI();document.exitPointerLock?.();$('pause').hidden=false;audio.pause();saveGame(true);}
-function resume(){menuAudio.stop();if(!world||androidSuspended())return;if(gameplay.completed&&chapterTransition?.world!==world)return loadSave();if(gameplay.state.health<=0&&!(gameplay.playerReaction?.phase==='death'&&!gameplay.playerReaction.finished))return retryLevel(selected,gameplay.entryState,gameplay.scripts?.replayLevel===true);clearInputs();mode='playing';$('pause').hidden=true;$('settings').hidden=true;$('cheats').hidden=true;if(androidHost.enabled)audio.context?.resume()?.catch(()=>{});audio.resume();lastFrame=performance.now();syncTouchUI();requestLook();}
+function resume(){if(mode==='retry')return;menuAudio.stop();if(!world||androidSuspended())return;if(gameplay.completed&&chapterTransition?.world!==world)return loadSave();if(gameplay.state.health<=0&&!(gameplay.playerReaction?.phase==='death'&&!gameplay.playerReaction.finished))return retryLevel(selected,gameplay.entryState,gameplay.scripts?.replayLevel===true);clearInputs();mode='playing';$('pause').hidden=true;$('settings').hidden=true;$('cheats').hidden=true;if(androidHost.enabled)audio.context?.resume()?.catch(()=>{});audio.resume();lastFrame=performance.now();syncTouchUI();requestLook();}
 function requestLook(event){if(controllerActive||touchEnabled||(mobileWeb&&!event)||event?.pointerType==='touch'||event?.sourceCapabilities?.firesTouchEvents)return;if(mode==='playing'&&!document.pointerLockElement){const result=$('game').requestPointerLock?.();result?.catch(()=>{if(event?.isTrusted)toast('Klik in het spel om rond te kijken.');});}}
 async function returnMenu(){if(world)saveGame(true);levelReplaySelected=false;mode='menu';menuAudio.showMenu();clearInputs();syncTouchUI();document.exitPointerLock?.();stopAudio();debriefing.hide();$('menu').hidden=false;$('hud').hidden=true;$('pause').hidden=true;$('settings').hidden=true;$('cheats').hidden=true;document.body.classList.remove('in-cutscene','cutscene-fading-in','cutscene-release');$('subtitle').hidden=true;refreshContinue();renderChapters();originalMenu?.home();}
 const dialogueStarted=line=>{$('subtitle').textContent=line.text||'';$('subtitle').hidden=!line.text;};
@@ -366,6 +371,7 @@ function handleGameEvent(event){
   if(event.type==='scriptVolume')audio.setScriptVolume(event.id,event.volume);
   if(event.type==='teleport'&&world){world.player.position=[...event.position];world.player.position[1]+=1;world.player.lastSafe=[...world.player.position];world.player.resetVelocity();world.player.movementRecovery.reset();if(world.redcat)delete world.redcat.userData.motionState;world.yaw=nativePlayerYaw(event.orientation);world.updateCamera(1,true);}
   if(event.type==='message')toast(event.message || event.text || '');
+  if(event.type==='scriptMessages'){$('script-messages').textContent=event.lines.join('\n');$('script-messages').hidden=!event.lines.length;}
   if(event.type==='pickup'){const label={coin:'Geldzakje verzameld',potion:'Toverdrank verzameld',health:'Een hartje erbij',mirror:'Spiegelstuk gevonden!',life:'Een extra leven!',hart:'Meer levenskracht!'}[event.subtype] || 'Voorwerp verzameld';toast(event.message || `${label} · +${event.score||0}`);}
   if(event.type==='door'&&!gameplay?.objects.find(o=>o.id===event.id)?.hasMotion)world?.setModel(event.modelIndex,!event.open);
   if(event.type==='visibility' && event.modelIndex!=null)world?.setModel(event.modelIndex,event.visible);
@@ -378,7 +384,7 @@ function handleGameEvent(event){
     world.yaw=nativePlayerYaw(event.orientation);world.updateCamera(1,true);
     toast(`Je bent terug bij het bewaarpunt. Nog ${event.lives} levens.`);
   }
-  if(event.type==='gameOver'){pause();toast('Geen levens meer. Start het level opnieuw.');}
+  if(event.type==='gameOver')showRetry();
   if(event.type==='levelComplete'){
     awardLevelSummary(gameplay);
     campaign=completeCampaignLevel(campaign,world.id);store(PROGRESS_KEY,campaign);renderChapters();saveGame(true);
@@ -392,6 +398,23 @@ function advanceChapterTransition(dt){
   // reset it mid-recording, and could also cut the last buffered dialogue line.
   if(chapterTransition.remaining>0||audio.pickupsPending||audio.dialoguePending)return;
   showDebriefing();
+}
+// Game over: the original "Opnieuw proberen?" screen (D6). Ja retries the
+// chapter from its entry state; Nee returns to the main menu with the
+// adventure save untouched (a dead state is never saved).
+function showRetry(){
+  if(mode!=='playing')return;
+  // Held keys stay held: the original reads Fire/Jump as levels from the first frame.
+  mode='retry';mouseAttack=false;syncTouchUI();document.exitPointerLock?.();$('pause').hidden=true;audio.pause();saveGame(true);
+  retryScreen.show();
+}
+async function chooseRetry(yes){
+  if(mode!=='retry')return;
+  if(yes)return retryLevel(selected,gameplay?.entryState,gameplay?.scripts?.replayLevel===true);
+  // The original menu highlights the branch the game was started from.
+  const choice=originalMenu?.flow==='quickplay'?'quickplay':'adventure';
+  await returnMenu();
+  if(choice!=='adventure')originalMenu.home({choice});
 }
 function showDebriefing(){
   if(!world||!gameplay.completed)return;
@@ -701,15 +724,20 @@ $('game').addEventListener('click',requestLook);
 window.addEventListener('keydown',e=>{
   if(e.isTrusted)setControllerActive(false);
   if($('native-help-viewer').open||keySettings.isOpen||playerMenu.openDialog||$('new-adventure-warning').open||$('recovery-saves').open||$('about').open)return;
+  if(mode==='retry'){e.preventDefault();keys.add(e.code);if(!e.repeat)retryScreen.key(e.code,settings.controlBindings);return;}
   if(mode==='debriefing'){if(['ControlLeft','ControlRight','Space','Enter'].includes(e.code)){e.preventDefault();if(!e.repeat)continueDebriefing();}return;}
   if(e.code==='Escape'){if($('quit-confirmation').open){e.preventDefault();quitMenu.cancel();return;}if(mode==='intro'){finishIntro();return;}if(!$('cheats').hidden){closeCheats();return;}if(!$('help').hidden){$('help').hidden=true;return;}if(!$('settings').hidden){closeSettings();return;}if(mode==='playing')pause();else if(mode==='paused')resume();else if(mode==='menu')originalMenu.back();return;}
   if(mode!=='playing')return;e.preventDefault();keys.add(e.code);
   if(e.repeat)return;
   if(e.code==='KeyP')pause();if(bindingPressed(new Set([e.code]),settings.controlBindings,'camera'))toggleCamera();
+  // Weapon1/2/3 in the original: pick the follow camera's distance row until the next chapter.
+  CAMERA_DISTANCE_ACTIONS.forEach((action,row)=>{if(world&&bindingPressed(new Set([e.code]),settings.controlBindings,action))world.followCamera.presetIndex=row;});
   if(e.code==='F5')saveGame();if(e.code==='F9')loadSave();
 });
 window.addEventListener('keyup',e=>keys.delete(e.code));
-window.addEventListener('mousemove',e=>{if(mode==='playing'&&document.pointerLockElement)world?.look(e.movementX,e.movementY);});
+window.addEventListener('mousemove',e=>{if(mode==='playing'&&document.pointerLockElement)world?.look(e.movementX,e.movementY);
+  // 0x482110: any sideways mouse movement sets the retry choice (x * 0.125 * sensitivity).
+  if(mode==='retry'&&e.movementX)retryScreen.input({x:e.movementX*.125*settings.sensitivity});});
 window.addEventListener('mousedown',e=>{if(!touchEnabled&&!e.sourceCapabilities?.firesTouchEvents&&e.button===0&&mode==='playing'&&document.pointerLockElement)mouseAttack=true;});
 window.addEventListener('mouseup',()=>mouseAttack=false);
 document.addEventListener('pointerlockchange',()=>{if(!touchEnabled&&!controllerActive&&!document.pointerLockElement&&mode==='playing')pause();});
@@ -743,7 +771,7 @@ function readInput(){const keyboard=readKeyboardInput(keys,settings.controlBindi
 };}
 function controllerMenuRoot(){
   for(const id of ['native-help-viewer','key-settings','player-import-dialog','player-delete-dialog','player-name-dialog','player-list','quit-confirmation','new-adventure-warning','recovery-saves','about'])if($(id).open)return $(id);
-  for(const id of ['fatal','intro','cheats','help','settings','pause','debriefing','menu'])if(!$(id).hidden)return $(id);
+  for(const id of ['fatal','intro','cheats','help','settings','pause','debriefing','retry','menu'])if(!$(id).hidden)return $(id);
   return null;
 }
 function controllerBack(root){
@@ -833,13 +861,14 @@ if(waiting)return;if(world&&mode==='playing'){
   desktopIntroHint.update({playing:mode==='playing',enabled:!touchEnabled||controllerActive,cutscene:!!gameplay.scripts?.cutscene,camera:gameplay.scripts?.camera});
   advanceChapterTransition(realDt);
 }if(mode==='debriefing')debriefing.update(realDt);
+if(mode==='retry'){const input=readInput();retryScreen.input({x:(input.right||0)+(input.steer||0),confirm:!!(input.attack||input.jump)});retryScreen.update();}
 // Paused menus keep their last completed world frame. Redraw after display,
 // camera/context changes or pending streaming, while controller/UI polling
 // continues normally.
 if(world&&!document.hidden&&(mode==='playing'||mode==='paused'&&(worldRenderDirty||lastRenderedWorld!==world||world.geometryStream?.readyForView===false||world.actorResidency?.readyForView===false||world.actorTextures?.readyForView===false))){world.render(msaaRenderer?.render);lastRenderedWorld=world;worldRenderDirty=false;}}
 touchControls=new TouchControls({onLook:(dx,dy)=>{if(mode==='playing')world?.look(dx,dy);},onGesture:()=>{if(mode==='playing'&&!streamingWait)audio.resume();},onAction:action=>{if(mode!=='playing')return;if(action==='camera')toggleCamera();}});
 syncTouchSettings();
-window.__redcat={get world(){return world;},get gameplay(){return gameplay;},get mode(){return mode;},get settings(){return settings;},get audio(){return audio;},get touchEnabled(){return touchEnabled;},get controllerActive(){return controllerActive;},get recovery(){return recovery;},profiles,playerMenu,originalMenu,keySettings,menuAudio,gamepad,touchControls,readInput,startLevel,pause,resume,saveGame,loadSave,resize,renderHud};
+window.__redcat={get world(){return world;},get retryScreen(){return retryScreen;},get gameplay(){return gameplay;},get mode(){return mode;},get settings(){return settings;},get audio(){return audio;},get touchEnabled(){return touchEnabled;},get controllerActive(){return controllerActive;},get recovery(){return recovery;},profiles,playerMenu,originalMenu,keySettings,menuAudio,gamepad,touchControls,readInput,startLevel,pause,resume,saveGame,loadSave,resize,renderHud};
 store(PROGRESS_KEY,campaign);store(PLAYER_OPTIONS_KEY,{difficulty:settings.difficulty,noClip:settings.noClip});refreshPlayerName();renderChapters();refreshContinue();resize();scheduleFrame();
 if(window.desktop){
   const [width,height]=settings.resolution==='native'?[Math.max(800,Math.round(screen.width*.85)),Math.max(600,Math.round(screen.height*.85))]:resolutionSize();

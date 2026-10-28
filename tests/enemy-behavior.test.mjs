@@ -3,11 +3,13 @@ import assert from 'node:assert/strict';
 import { Gameplay } from '../source/gameplay.js';
 import { GAMEPLAY_SETTINGS } from '../source/gameplay-settings.js';
 import { sweepPlayer } from '../source/enemies.js';
+import {thinkingOnFirstUpdate} from './support/enemy-thinking.mjs';
 
 const enemy=(subtype=1,extra={})=>({classname:'MovingEnemy','%name%':'spider',DaviName:'spider',Type:'1',SubType:String(subtype),Origin:'0 0 0',StartOrientation:'6',...extra});
 const level=(entities=[])=>({id:'lvl01a',spawn:{position:[0,0,0],orientation:0},entities});
 function fixture(entities=[enemy()],options={}) {
-  const events=[],game=new Gameplay(level(entities),{onEvent:e=>events.push(e),...options});
+  // Mid-encounter fixture: enemies are already thinking (gameplay.js updateEnemy).
+  const events=[],game=thinkingOnFirstUpdate(new Gameplay(level(entities),{onEvent:e=>events.push(e),...options}));
   for(const object of game.objects)object.animationDurations={attack:1.6,hurt:.8,death:1.6};
   return {game,events,spider:game.objects[0]};
 }

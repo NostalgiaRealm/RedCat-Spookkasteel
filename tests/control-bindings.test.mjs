@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   DEFAULT_CONTROL_BINDINGS, normalizeControlBindings, validateControlBindings,
   assignControlBinding, readKeyboardInput, bindingPressed, controlBindingLabel,
+  CAMERA_DISTANCE_ACTIONS,
 } from '../source/control-bindings.js';
 
 test('default keyboard actions preserve WASD strafing and arrow turning', () => {
@@ -77,4 +78,33 @@ test('modifier aliases are canonicalized and camera/use can be tested independen
   assert.equal(bindingPressed(new Set(['KeyE']), result.bindings, 'use'), true);
   assert.equal(controlBindingLabel(DEFAULT_CONTROL_BINDINGS, 'forward'), 'W / Pijl omhoog');
   assert.equal(controlBindingLabel(DEFAULT_CONTROL_BINDINGS, 'attack'), 'Ctrl');
+});
+
+test('camera distance actions default to 1, 2 and 3 and select the native distance rows', () => {
+  assert.deepEqual(CAMERA_DISTANCE_ACTIONS, ['cameraNear', 'cameraFar', 'cameraHigh']);
+  CAMERA_DISTANCE_ACTIONS.forEach((action, row) => {
+    assert.equal(bindingPressed(new Set([`Digit${row + 1}`]), DEFAULT_CONTROL_BINDINGS, action), true);
+  });
+  const result = assignControlBinding(DEFAULT_CONTROL_BINDINGS, 'cameraFar', 'KeyF');
+  assert.equal(result.ok, true);
+  assert.equal(bindingPressed(new Set(['KeyF']), result.bindings, 'cameraFar'), true);
+  assert.equal(assignControlBinding(DEFAULT_CONTROL_BINDINGS, 'cameraHigh', 'KeyV').error.code, 'duplicate');
+});
+
+test('bindings stored before the camera distance actions keep their custom keys', () => {
+  const stored = {...Object.fromEntries(Object.entries(DEFAULT_CONTROL_BINDINGS)
+    .filter(([action]) => !CAMERA_DISTANCE_ACTIONS.includes(action))), jump: ['Digit2'], use: ['KeyQ']};
+  const normalized = normalizeControlBindings(JSON.parse(JSON.stringify(stored)));
+  assert.deepEqual(normalized.jump, ['Digit2'], 'the older custom set is not discarded');
+  assert.deepEqual(normalized.use, ['KeyQ']);
+  assert.deepEqual(normalized.cameraNear, ['Digit1']);
+  assert.deepEqual(normalized.cameraFar, [], 'a key already in use is left free');
+  assert.deepEqual(normalized.cameraHigh, ['Digit3']);
+  assert.equal(validateControlBindings(normalized), null);
+  assert.equal(controlBindingLabel(normalized, 'cameraFar'), 'Geen toets');
+  assert.equal(bindingPressed(new Set(['Digit2']), normalized, 'cameraFar'), false);
+  // A stored set that already has the actions keeps them as they are.
+  assert.deepEqual(normalizeControlBindings(normalized), normalized);
+  // Required actions still need a key.
+  assert.deepEqual(normalizeControlBindings({...normalized, jump: []}), DEFAULT_CONTROL_BINDINGS);
 });

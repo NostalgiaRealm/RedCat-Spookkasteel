@@ -3,14 +3,15 @@ import {spawn} from 'node:child_process';
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-const out=path.resolve(`temp_work/pickup-placement-2026-10-09/scenes-${Date.now()}`);
+import {sceneOutput} from './support/scene-output.mjs';
+const out=path.resolve(sceneOutput(`temp_work/pickup-placement-2026-10-09/scenes-${Date.now()}`));
 await mkdir(out,{recursive:true});
-const env={...process.env,TMPDIR:'temp_work'},save=process.argv[2]?JSON.parse(await readFile(process.argv[2],'utf8')):null;
+const env={...process.env,TMPDIR:sceneOutput('temp_work')},save=process.argv[2]?JSON.parse(await readFile(process.argv[2],'utf8')):null;
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...env,PORT:'0'},stdio:['ignore','pipe','inherit']});
 const base=await new Promise((resolve,reject)=>{server.stdout.once('data',s=>resolve(s.toString().match(/http:\/\/127.0.0.1:\d+/)[0]));server.once('error',reject);});
 let context;
 try {
- context=await chromium.launchPersistentContext(path.join(out,'profile'),{executablePath:'/usr/bin/google-chrome',headless:true,env,viewport:{width:1280,height:720},args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
+ context=await chromium.launchPersistentContext(path.join(out,'profile'),{executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,env,viewport:{width:1280,height:720},args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
  const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.stack));
  page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
  await page.addInitScript(saved=>{

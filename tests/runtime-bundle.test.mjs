@@ -6,9 +6,10 @@ import {fileURLToPath, pathToFileURL} from 'node:url';
 import {createRuntimeBundle, RUNTIME_BUNDLE, RUNTIME_BUNDLE_MAP} from '../tools/runtime-bundle.mjs';
 import {moduleSpecifiers, refreshWebCache} from '../tools/refresh-web-cache.mjs';
 import {createSaveExport as originalExport} from '../source/save-export.js';
+import {testOutput} from './support/scene-output.mjs';
 
 const project = fileURLToPath(new URL('../', import.meta.url));
-const evidence = path.join(project, 'temp_work/js-bundling-2026-10-26/unit-fixtures');
+const evidence = testOutput('js-bundling-2026-10-26-unit-fixtures');
 async function put(root, relative, contents) {
   await mkdir(path.dirname(path.join(root, relative)), {recursive:true});
   await writeFile(path.join(root, relative), contents);

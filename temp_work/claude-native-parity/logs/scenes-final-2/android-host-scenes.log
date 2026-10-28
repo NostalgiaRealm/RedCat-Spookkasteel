@@ -1,0 +1,16 @@
+PASS native ready handshake gates startup; automatic touch, offline privacy policy and Android pixel budget remain active
+PASS native suspension preserves intro position; foreground waits for Verder kijken
+PASS visibility-first intro suspension blocks its resume action until visible
+PASS fullscreen settings reach the native bridge without calling HTML fullscreen
+PASS Level 1 loads and native Back pauses the real game
+PASS native background freezes simulation, rendering, audio and save clocks, clears held input, and requires explicit resume
+PASS visibility-first gameplay suspension blocks resume; visibility restoration renders a paused scene
+PASS a level finishing loading while hidden remains paused and silent until explicitly resumed
+PASS native quit waits for the latest real recovery write; keep-awake follows activity
+PASS desktop-browser: no bridge, real intro playback and gesture-based HTML fullscreen remain intact
+PASS desktop-browser: touch settings and uncapped native DPR resolution remain unchanged
+PASS desktop-browser: Level 1 pause/resume and localStorage plus IndexedDB persistence survive reload and Continue
+PASS mobile-browser: no bridge, real intro playback and gesture-based HTML fullscreen remain intact
+PASS mobile-browser: touch settings and uncapped native DPR resolution remain unchanged
+PASS mobile-browser: Level 1 pause/resume and localStorage plus IndexedDB persistence survive reload and Continue
+Browser integration evidence: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/android-release-1.0.3-2026-10-26/assets/host-scenes-29mTYj

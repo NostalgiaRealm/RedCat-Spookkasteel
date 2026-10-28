@@ -4,6 +4,8 @@ import {Gameplay} from '../source/gameplay.js';
 import {EnemyNavigation} from '../source/enemy-navigation.js';
 import {enemySalvoSize,chooseTouchPursuit} from '../source/enemy-combat-native.js';
 import {updateEnemyAmbush} from '../source/enemy-ambush.js';
+// Mid-encounter fixtures: enemies are already thinking (gameplay.js updateEnemy).
+import {thinkingOnFirstUpdate} from './support/enemy-thinking.mjs';
 const wp=(id,x,z,links=[])=>({classname:'GrobberPathPoint','%name%':id,Origin:`${x} 0 ${z}`,SubSystemId:'0',...Object.fromEntries(links.map((p,i)=>[`WayPoint${i+1}`,p]))});
 const level=entities=>({id:'lvl00a',spawn:{position:[5000,0,0],orientation:0},entities});
 const enemy=(Type,extra={})=>({classname:'MovingEnemy','%name%':'test',Type:String(Type),StartPoint:'',StartOrientation:'6',Origin:'0 0 0',...extra});
@@ -13,10 +15,10 @@ const clearTrace=(a,b)=>({end:[...b],fraction:1,startSolid:false,normal:[0,1,0]}
 test('salvo property varies between enemies but remains fixed through salvos and saves',()=>{
  const sizes=new Set();
  for(let i=0;i<80;i++){
-  const l=level([enemy(7,{'%name%':`brutus${i}`})]),g=new Gameplay(l),o=g.objects[0],size=enemySalvoSize(o);
+  const l=level([enemy(7,{'%name%':`brutus${i}`})]),g=thinkingOnFirstUpdate(new Gameplay(l)),o=g.objects[0],size=enemySalvoSize(o);
   sizes.add(size);assert.ok(size>=1&&size<3);
   const rng=o.aiRandomState;assert.equal(enemySalvoSize(o),size);assert.equal(o.aiRandomState,rng);
-  const restored=new Gameplay(l,{save:g.snapshot()});assert.equal(enemySalvoSize(restored.objects[0]),size);assert.equal(restored.objects[0].aiRandomState,rng);
+  const restored=thinkingOnFirstUpdate(new Gameplay(l,{save:g.snapshot()}));assert.equal(enemySalvoSize(restored.objects[0]),size);assert.equal(restored.objects[0].aiRandomState,rng);
  }
  assert.deepEqual([...sizes].sort(),[1,2]);
 });
@@ -46,15 +48,15 @@ test('touch enemy chooses MoveCloser as well as both timed circling directions',
 });
 
 test('guardian approaches instead of causing distant melee damage, then attacks on contact',()=>{
- const g=new Gameplay(level([enemy(10)])),o=g.objects[0];
+ const g=thinkingOnFirstUpdate(new Gameplay(level([enemy(10)]))),o=g.objects[0];
  o.collisionMins=[-12,0,-12];o.collisionMaxs=[12,45,12];
  tick(g,.5,[0,0,140]);assert.equal(g.state.health,10);assert.ok(o.position[2]>0);assert.equal(o.pendingAttack,null);
  tick(g,2,[0,0,140]);assert.ok(g.state.health<10);assert.ok(o.position[2]<=117.01);assert.ok(o.attackTimer>0);
- const restored=new Gameplay(g.level,{save:g.snapshot()});assert.equal(restored.objects[0].attackTimer,o.attackTimer);
+ const restored=thinkingOnFirstUpdate(new Gameplay(g.level,{save:g.snapshot()}));assert.equal(restored.objects[0].attackTimer,o.attackTimer);
 });
 
 test('knight can hit during the end of its active strike window, only once',()=>{
- const g=new Gameplay(level([enemy(2,{classname:'StandingEnemy'})])),o=g.objects[0];
+ const g=thinkingOnFirstUpdate(new Gameplay(level([enemy(2,{classname:'StandingEnemy'})]))),o=g.objects[0];
  o.ambush.phase='awake';o.animationState='idle';o.animationDurations={attack:1.8}; // Native knight rate 1.8: one-second strike.
  g.update(.01,[0,0,60]);assert.equal(o.pendingAttack.until,.71);
  tick(g,.65,[0,0,120]);assert.equal(g.state.health,10);assert.ok(o.pendingAttack);
@@ -63,12 +65,12 @@ test('knight can hit during the end of its active strike window, only once',()=>
 });
 
 test('spider returns to its own hanging anchor after losing the target and restores mid ascent',()=>{
- const g=new Gameplay(level([enemy(1)])),o=g.objects[0];
+ const g=thinkingOnFirstUpdate(new Gameplay(level([enemy(1)]))),o=g.objects[0];
  o.ambush={version:1,type:'spider',phase:'awake',elapsed:0,lower:[0,0,0],upper:[0,100,0],anchor:[0,124,0]};
  o.position=[30,0,0];o.lastSeenAt=0;o.alerted=true;g.time=3;
  const step=()=>{g.time+=.1;return updateEnemyAmbush(g,o,.1,[5000,0,0],()=>false,null);};
  for(let i=0;i<7;i++)step();assert.equal(o.ambush.phase,'ascending');assert.ok(o.position[1]>0);
- const restored=new Gameplay(g.level,{save:g.snapshot()});assert.deepEqual(restored.objects[0].ambush,o.ambush);
+ const restored=thinkingOnFirstUpdate(new Gameplay(g.level,{save:g.snapshot()}));assert.deepEqual(restored.objects[0].ambush,o.ambush);
  for(let i=0;i<10;i++)step();assert.equal(o.ambush.phase,'dormant');assert.deepEqual(o.position,[0,100,0]);
 });
 
@@ -83,24 +85,25 @@ test('failed pursuit search is cached instead of flooding blocked BSP routes eve
 });
 
 test('knight strike-window end survives save and shifts with a script freeze',()=>{
- const g=new Gameplay(level([enemy(2,{classname:'StandingEnemy'})])),o=g.objects[0];
+ const g=thinkingOnFirstUpdate(new Gameplay(level([enemy(2,{classname:'StandingEnemy'})]))),o=g.objects[0];
  o.ambush.phase='awake';o.animationState='idle';o.animationDurations={attack:1.8};
  g.update(.01,[0,0,60]);const initial={...o.pendingAttack};
  g.scripts={cutscene:true};g.update(.1,[0,0,60]);
  assert.ok(Math.abs(o.pendingAttack.until-initial.until-.1)<1e-8);
- g.scripts=null;const restored=new Gameplay(g.level,{save:g.snapshot()});assert.deepEqual(restored.objects[0].pendingAttack,o.pendingAttack);
+ g.scripts=null;const restored=thinkingOnFirstUpdate(new Gameplay(g.level,{save:g.snapshot()}));assert.deepEqual(restored.objects[0].pendingAttack,o.pendingAttack);
 });
 
 test('authored patrol and touch pursuit avoid searches; displaced actors retain bounded reacquisition',()=>{
- const g=new Gameplay(level([wp('a',0,0,['b']),wp('b',100,0),enemy(4,{StartPoint:'a'})])),o=g.objects.find(o=>o.kind==='enemy');
- let searches=0;const original=g.navigation.pursuitTarget.bind(g.navigation);
+ const g=thinkingOnFirstUpdate(new Gameplay(level([wp('a',0,0,['b']),wp('b',100,0),enemy(4,{StartPoint:'a'})]))),o=g.objects.find(o=>o.kind==='enemy');
+ // RedCat is out of sight but inside the native 1600-unit think radius (0x422fb0).
+ const far=[1500,0,0];let searches=0;const original=g.navigation.pursuitTarget.bind(g.navigation);
  g.navigation.pursuitTarget=(...args)=>{searches++;return original(...args);};
- tick(g,.5,[5000,0,0],{traceEnemy:clearTrace});
+ tick(g,.5,far,{traceEnemy:clearTrace});
  assert.equal(searches,0,'a known graph edge is already a route');assert.ok(o.position[0]>0);
  o.alerted=true;o.lastSeenAt=g.time;o.lastSeenPosition=[350,0,0];
- g.update(.02,[5000,0,0],{traceEnemy:clearTrace,lineOfSight:()=>false});
+ g.update(.02,far,{traceEnemy:clearTrace,lineOfSight:()=>false});
  assert.equal(searches,0,'native touch pursuit keeps the unfinished authored edge');
  o.position[2]+=60;o.patrol.reacquiring=true;
- g.update(.02,[5000,0,0],{traceEnemy:clearTrace,lineOfSight:()=>false});
+ g.update(.02,far,{traceEnemy:clearTrace,lineOfSight:()=>false});
  assert.equal(searches,1,'a displaced body can still reacquire its saved destination');
 });

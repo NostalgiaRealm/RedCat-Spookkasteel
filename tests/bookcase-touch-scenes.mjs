@@ -3,15 +3,18 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
 // The two original wall buttons in the castle library, using normal movement
 // and the original BSP collision/motion/scripts. No synthetic touch events.
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4215'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+  await unlockChapters(page);
   page.on('pageerror',error=>errors.push(error.stack));
   page.on('response',response=>{if(response.status()>=400)errors.push(`${response.status()} ${response.url()}`);});
   await page.goto('http://127.0.0.1:4215/?skipIntro');await page.waitForFunction(()=>window.__redcat);
@@ -60,9 +63,9 @@ try {
       return {name,button:button.id,model:button.modelIndex,touch:button.entity.TouchToSwitch,shoot:button.entity.ShootToSwitch,doorTouch:door.entity.TouchToOpen,directUse,ground:{startSolid:ground.startSolid,fraction:ground.fraction,end:ground.end},before,touched,approach,timeline,closed,repeated,repeatTimeline,events,error:h.vm.lastError};
     },name);
     results.push(result);
-    await page.screenshot({path:`artifacts/bookcase-touch-${name}.png`});
+    await page.screenshot({path:sceneOutput(`artifacts/bookcase-touch-${name}.png`)});
   }
-  await writeFile('artifacts/bookcase-touch-scenes.json',JSON.stringify({results,errors},null,2)+'\n');
+  await writeFile(sceneOutput('artifacts/bookcase-touch-scenes.json'),JSON.stringify({results,errors},null,2)+'\n');
   if(process.env.BOOKCASE_DIAGNOSE==='1') {
     for(const r of results)console.log(JSON.stringify({name:r.name,directUse:r.directUse,ground:r.ground,before:r.before,touched:r.touched,events:r.events,maxTime:Math.max(...r.timeline.map(s=>s.motionTime)),closed:r.closed,repeated:r.repeated,last:r.repeatTimeline.at(-1),error:r.error}));
   } else {

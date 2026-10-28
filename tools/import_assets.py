@@ -33,6 +33,7 @@ def main():
     run('import_world_effects.py','--installation',args.installation)
     run('import_hud.py','--installation',args.installation)
     run('import_debriefing.py','--installation',args.installation)
+    run('import_retry.py','--installation',args.installation)
     run('import_loading.py','--installation',args.installation)
     run('import_gameplay_settings.py','--source',args.installation/'Settings')
     run('import_audio_settings.py','--source',args.installation/'Settings')

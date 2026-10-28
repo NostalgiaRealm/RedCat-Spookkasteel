@@ -21,9 +21,11 @@ test('500 ms selection cache, stable firing lock and immediate dead/hidden inval
   b.health=0;assert.equal(tick(system,[a,b],{time:1.2,attack:true}),a);
   a.visible=false;assert.equal(tick(system,[a,b],{time:1.21}),null);
 });
-test('dormant ambush enemies are not revealed by targeting, waking ones are targetable',()=>{
-  const a=enemy('skeleton',[0,0,-60]);a.ambush={phase:'dormant'};assert.equal(targetableEnemy(a),false);
+test('dormant ambush enemies are targetable as in the original; an unplaced spider is not',()=>{
+  // Enemies join the native target list at spawn (0x42aa20/0x427ab0 -> 0x42d130).
+  const a=enemy('skeleton',[0,0,-60]);a.ambush={phase:'dormant'};assert.equal(targetableEnemy(a),true);
   a.ambush.phase='waking';assert.equal(targetableEnemy(a),true);
+  const spider=enemy('spider',[0,0,-60]);spider.ambush={phase:'unplaced'};assert.equal(targetableEnemy(spider),false);
   const system=new EnemyTargeting();tick(system,[a],{attack:true});tick(system,[a],{enabled:false});assert.equal(system.target,null);assert.equal(system.locked,false);
 });
 test('locked pellet aims at the original 80% actor height from actual animated hand',()=>{

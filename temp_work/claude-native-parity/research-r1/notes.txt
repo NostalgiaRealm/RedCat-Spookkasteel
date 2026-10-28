@@ -1,0 +1,10 @@
+R1 research notes (read-only). Key addresses (RcHcGame.dat unless noted):
+Retry: 0x434190 sets game+0xa4 after lives<0 (0x439ce0); app frame 0x4bf16c -> 0x4c4380, game vtbl+0x28 = 0x5351e0 Restart().
+ RESTART state id 7, vtbl 0x64e4c4, ctor 0x4882e0, base ctor 0x51cee0 (+0x7c=1 default Yes).
+ fonts/text 0x488620/0x489600, images 0x4899b0/0x48aa60 (selected button samples next 64px row), input 0x48ace0
+ (CRcInput +4 move vector x<0 -> 1 Yes, x>0 -> 0 No; +0xc Fire, +0x10 Jump confirm; no Esc).
+ Restart(): modal 1 -> game+0x68="restart" (0x53563b), loader 0x52c970; modal 0 -> 0x52c270 FadeOutCurrentState + SetQuit(1) 0x4c4440.
+ RedCat.exe 0x401250: menu exit 0x28 -> run rchcgame.dat -game, then menu /Default. Menu TfrmMainScreen.FormShow 0x560978 highlights PREVSTATE (1 Snelspel, 2 Avontuur, 3 Highscore).
+Sway: MaxXSway/MaxYSway only in EffectLiquid typedef, 0 instances, no binary references. [Wobble] 0x4d94e0 (offset), 0x4da420 (breath sound), 0x4d9d40; caller CAdamPlayer::Update 0x4da970.
+HUD: CRcHUD draw 0x4536a0 mode switch (+0xac, default 1 @0x451b7a); enemy 0x453560; container draw 0x4512f0; SetMax clamp 20 0x4515c0; SetValue clamp 0x4515a0; animation icon 0x451230/0x451030 (no timer).
+ HUD target set 0x4349ff, cleared 0x43496e/0x434a90/0x434b06/0x436994/0x43335d.

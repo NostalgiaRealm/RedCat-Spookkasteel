@@ -82,3 +82,24 @@ test('backing into a wall frame by frame lifts the camera smoothly and never int
   assert.ok(maxStep<4,`largest per-frame height change ${maxStep.toFixed(2)} units`);
   assert.equal(dips,0,'no downward jitter while backing into the wall');
 });
+test('standing still at a wall reuses the lift with two checks, rescans when the geometry changes, and every half second',async()=>{
+  const {CameraWallLift}=await import('../source/third-person-camera.js');
+  const wall=collider([[[-500,-100,11],[500,500,100]]]);
+  let world=wall,traces=0;
+  const trace=(a,b)=>{traces++;return world(a,b);};
+  const f={...fixture(trace,[0,60,6.99])},lift=new CameraWallLift(),dt=1/60;
+  const frame=()=>{traces=0;const pose=lift.update(dt,f);return {pose,traces};};
+  const first=frame();
+  assert.ok(first.traces>10,`the first frame scans the arc (${first.traces})`);
+  const still=frame();
+  assert.ok(still.traces<=3,`an unchanged frame needs at most three traces (${still.traces})`);
+  assert.ok(Math.abs(still.pose.lift-first.pose.lift)<.2);
+  // A slab closes in above RedCat: the reused sample now fails and the arc is rescanned.
+  world=collider([[[-500,-100,11],[500,500,100]],[[-500,100,-500],[500,300,500]]]);
+  const closed=frame();
+  assert.ok(closed.traces>10,`changed geometry rescans (${closed.traces})`);
+  assert.equal(cameraInsidePlayer(closed.pose.position,f.playerPosition),false);
+  // Unchanged frames rescan at least every 0.5 s.
+  let rescans=0;for(let i=0;i<60;i++)if(frame().traces>10)rescans++;
+  assert.ok(rescans>=1&&rescans<=3,`rescans in one second: ${rescans}`);
+});

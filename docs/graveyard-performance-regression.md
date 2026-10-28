@@ -22,7 +22,8 @@ updates, collision, authored paths and rendering active.
 
 ## Measured result
 
-`tests/graveyard-performance-scenes.mjs` loads the actual graveyard and its
+The temporary measurement scene `tests/graveyard-performance-scenes.mjs`
+(removed on 28 October 2026 at the user's request) loaded the actual graveyard and its
 41 initially active enemies, then visits 42 locations three times, 630 simulation
 frames per pass. It uses the real collider, actor animation, effects and audio.
 The player is invulnerable with no-clip so encounters cannot end the measurement;
@@ -41,10 +42,10 @@ spent about 80 ms total in pursuit versus 115,680 ms before. Resources stayed at
 paused in the fixture, so pending one-shot media counts are not a leak metric.
 
 The data is in `artifacts/graveyard-performance-before.json` and
-`artifacts/graveyard-performance-after.json`. The test now asserts bounded trace
-counts, pursuit-call counts and scene/resource counts to catch recurrence
-without imposing hardware-specific frame-time thresholds. A focused unit test
-also proves ordinary patrol does not search while remembered-target chasing can.
+`artifacts/graveyard-performance-after.json`. The scene asserted bounded trace
+counts, pursuit-call counts and scene/resource counts without imposing
+hardware-specific frame-time thresholds. The focused unit test that proves
+ordinary patrol does not search while remembered-target chasing can remains.
 The existing actual-map frog patrol/save-recovery scene is checked because this
 change directly touches the shared patrol movement path.
 

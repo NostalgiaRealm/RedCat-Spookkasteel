@@ -11,6 +11,7 @@ import {hudCommands} from '../source/hud.js';
 import {BspCollider,PlayerController} from '../source/collision.js';
 import {PLAYER_HALF_WIDTH} from '../source/player-hull.js';
 import {readFileSync} from 'node:fs';
+import {thinkingEnemy} from './support/enemy-thinking.mjs';
 
 const level=entities=>({id:'parity',spawn:{position:[0,0,0],orientation:0},entities});
 const near=(actual,expected,epsilon=1e-6,message)=>assert.ok(Math.abs(actual-expected)<=epsilon,message||`${actual} != ${expected}`);
@@ -91,12 +92,48 @@ test('the heart container awards no score but its 75 card; HUD hearts use trunca
 });
 
 test('FlashEffect is a one-second burst of five static short and five accelerating long rays',()=>{
-  const start=flashRays(0);assert.equal(start.length,10);
-  assert.deepEqual([...new Set(start.map(r=>r.size))].sort((a,b)=>a-b),[32.5,50]);
-  const short=flashRays(.5).filter(r=>r.size<50),long=flashRays(.5).filter(r=>r.size===50);
-  assert.deepEqual(short.map(r=>r.rotation),start.filter(r=>r.size<50).map(r=>r.rotation));
-  near(long[0].rotation-start.find(r=>r.size===50).rotation,.5*12*.25);
-  near(long[0].opacity,.5);assert.deepEqual(flashRays(FLASH_SECONDS),[]);
+  // Size envelope min(t, 1 - t): nothing at the start and end, largest halfway.
+  assert.ok(flashRays(0).every(r=>r.size===0));
+  const half=flashRays(.5),short=half.filter(r=>r.size<25),long=half.filter(r=>r.size===25);
+  assert.equal(half.length,10);assert.equal(short.length,5);assert.equal(long.length,5);
+  near(short[0].size,50*.65*.5);
+  near(flashRays(.25)[1].size,12.5);near(flashRays(.75)[1].size,12.5);
+  // Static short rays; long rays spin by 6 t^2.
+  assert.deepEqual(short.map(r=>r.rotation),flashRays(.1).filter((_,i)=>i%2===0).map(r=>r.rotation));
+  near(long[0].rotation-Math.PI/5,.5*12*.25);
+  // Outer vertices (245,245,255) with alpha 180 - 160 t; the tip (10,5,255) at 180.
+  assert.deepEqual(half[0].outer.slice(0,3),[245/255,245/255,1]);near(half[0].outer[3],100/255);
+  near(flashRays(.999)[0].outer[3],(180-159.84)/255);assert.equal(flashRays(0)[0].outer[3],0,'first frame');
+  assert.deepEqual(half[0].tip,[10/255,5/255,1,180/255]);
+  assert.deepEqual(flashRays(FLASH_SECONDS),[]);
+});
+
+test('FlashEffect rays are camera-facing triangles from the native template with per-vertex colour',async()=>{
+  const THREE=await import('three'),{FlashRays}=await import('../source/world-effects.js');
+  const world={scene:new THREE.Scene(),track:value=>value},camera=new THREE.PerspectiveCamera();
+  camera.position.set(0,0,100);camera.lookAt(0,0,0);camera.updateMatrixWorld();
+  const mesh=new FlashRays(world,new THREE.Texture(),1);
+  mesh.begin(camera);for(const ray of flashRays(.5))mesh.add([0,0,0],ray);mesh.flush();
+  assert.equal(mesh.count,30);assert.equal(mesh.mesh.visible,true);
+  // A long ray at rotation pi/5 + 1.5: tip at the origin, outer corners at size * (-.5,2.5) and (.5,1.5).
+  const ray=flashRays(.5)[1],c=Math.cos(ray.rotation),s=Math.sin(ray.rotation),at=i=>[mesh.positions.getX(i),mesh.positions.getY(i),mesh.positions.getZ(i)];
+  near(at(3)[0],(c*-.5-s*2.5)*25,1e-4);near(at(3)[1],(s*-.5+c*2.5)*25,1e-4);near(at(3)[2],0,1e-4);
+  assert.deepEqual(at(5).map(v=>Math.abs(v)<1e-9?0:v),[0,0,0]);
+  near(mesh.colors.getW(3),100/255);near(mesh.colors.getW(5),180/255);near(mesh.colors.getX(5),10/255);
+  assert.deepEqual([mesh.uvs.getX(3),mesh.uvs.getY(3),mesh.uvs.getX(5),mesh.uvs.getY(5)],[1,0,0,1]);
+  mesh.begin(camera);mesh.flush();assert.equal(mesh.mesh.visible,false,'nothing drawn without a running flash');
+});
+
+test('every Enable restarts a FlashEffect, which disables itself after one second and survives a save',()=>{
+  const game=new Gameplay(level([{classname:'FlashEffect','%name%':'flash',Origin:'0 0 0'}])),host=new ScriptHost(game,{version:27}),flash=game.objects[0];
+  const step=seconds=>{for(let t=0;t<seconds-1e-9;t+=.05){game.time+=.05;host.update(.05);}};
+  game.command(flash,'enable');assert.equal(flash.flashStartedAt,game.time);
+  step(.5);game.command(flash,'enable');const restarted=game.time;
+  assert.equal(flash.flashStartedAt,restarted,'an Enable while enabled restarts it');
+  const saved=JSON.parse(JSON.stringify(game.snapshot())),copy=new Gameplay(level([{classname:'FlashEffect','%name%':'flash',Origin:'0 0 0'}]));
+  assert.equal(copy.restore(saved),true);assert.equal(copy.objects[0].flashStartedAt,restarted);
+  step(.95);assert.equal(flash.enabled,true);
+  step(.1);assert.equal(flash.enabled,false,'disabled at the end of the burst');assert.equal(flash.flashStartedAt,undefined);
 });
 
 test('StopCutScene fade and fixed/route cameras hold control; route mode 4 with no time expires at once',()=>{
@@ -130,6 +167,21 @@ test('MultiplyVolume scales only the playing track; a new track starts at full g
   host.selectMusic(music,'action');assert.equal(emitted.at(-1).volume,1);assert.equal(music.volume,1);
 });
 
+test('the shipped cutscene volumedown/volumeup pairs end at full gain even when the track changes in between',()=>{
+  // Every shipped MultiplyVolume call is a cutscene pair on "muziek": x0.5 at
+  // the dialogue, x2 afterwards (research-d9-multiplyvolume.txt). 0x57f1a0
+  // clamps the product to [0, 1], as the port does.
+  const emitted=[],host=Object.create(ScriptHost.prototype);
+  const music={id:'m',kind:'effect',volume:1,entity:{classname:'EffectMusic',DaviName:'muziek',MusicAmbient:'a.wav',MusicSpecial:'boss.wav'}};
+  Object.assign(host,{musicState:null,game:{objects:[music],find:()=>[music],emit:(type,event)=>emitted.push({type,...event})}});
+  host.selectMusic(music,'ambient');
+  host.callMethod('muziek','MultiplyVolume',[.5]);assert.equal(music.volume,.5);
+  host.selectMusic(music,'special');assert.equal(emitted.at(-1).volume,1,'the boss track starts at full gain');
+  host.callMethod('muziek','MultiplyVolume',[2]);assert.equal(music.volume,1,'clamped at full gain');
+  host.callMethod('muziek','MultiplyVolume',[.5]);assert.equal(music.volume,.5,'the next dialogue still halves it');
+  host.callMethod('muziek','MultiplyVolume',[2]);assert.equal(music.volume,1);
+});
+
 test('lethal damage restores the normal camera',()=>{
   const game=new Gameplay(level([]));game.scripts={camera:{mode:2},cutscene:false,dispatch(){}};
   game.damage(100);assert.equal(game.scripts.camera,null);
@@ -146,4 +198,152 @@ test('a saved position just inside a wall under the wider native hull is recover
   const p=new PlayerController(new BspCollider(data),[8.95,.05,0],[0,1]);p.grounded=true;
   for(let i=0;i<40;i++)p.update(.05,{forward:0,right:0},0);
   assert.ok(p.position[0]<=20-PLAYER_HALF_WIDTH+1e-6,`left the wall: ${p.position[0]}`);
+});
+
+test('a real sloped brush is floor above normal.y 0.7 and too steep below it',()=>{
+  // A convex ramp brush rising toward +X: its top face has normal (-sin a, cos a, 0)
+  // through the origin, closed by axial bevels, as in a compiled Genesis3D leaf.
+  const ramp=normalY=>{
+    const a=Math.acos(normalY),top=200*Math.tan(a);
+    const data={planes:[],nodes:[],leaves:[],leafSides:[],models:[]};
+    const min=[-200,-200*Math.tan(a)-30,-200],max=[200,top,200];
+    for(const plane of [[-Math.sin(a),Math.cos(a),0,0],[0,-1,0,-min[1]],[1,0,0,max[0]],[-1,0,0,-min[0]],[0,0,1,max[2]],[0,0,-1,-min[2]],[0,1,0,max[1]]]){
+      data.leafSides.push([data.planes.length,0]);data.planes.push(plane);
+    }
+    data.leaves.push({contents:1,firstSide:0,numSides:7,min,max});data.models.push({root:-1,min,max});
+    return new BspCollider(data);
+  };
+  const results={};
+  for(const normalY of [.75,.65]) {
+    // Drop RedCat onto the ramp, then walk him straight up it.
+    const p=new PlayerController(ramp(normalY),[0,60,0],[0]);
+    let landed=false;
+    for(let i=0;i<40;i++){p.update(.05,{forward:0,right:0},0);landed||=p.grounded;}
+    const before=[...p.position];
+    let walking=0;
+    for(let i=0;i<10;i++){p.update(.05,{forward:0,right:1},0);if(p.grounded)walking++;}
+    results[normalY]={landed,walking,rise:p.position[1]-before[1]};
+  }
+  assert.equal(results[.75].landed,true,'a 0.75 slope is floor');
+  assert.equal(results[.75].walking,10,'RedCat stays grounded walking up it');
+  assert.ok(results[.75].rise>0,`and climbs it: ${results[.75].rise}`);
+  assert.equal(results[.65].landed,false,'a 0.65 slope is too steep to stand on');
+  assert.equal(results[.65].walking,0);
+});
+
+test('D10: enemies test their sight every 500 ms and keep the cached result in between',()=>{
+  const game=new Gameplay(level([{classname:'MovingEnemy','%name%':'zombie',Type:'4',Origin:'0 0 0'}])),zombie=game.objects[0];
+  zombie.stats={...zombie.stats,SenseRange:1000,VisualRange:1000};
+  const checks=new Set();let clear=true;
+  const lineOfSight=()=>clear;
+  for(let i=0;i<60;i++){game.update(1/60,[0,0,200],{lineOfSight});checks.add(zombie.sight.lastCheck);}
+  assert.equal(zombie.alerted,true,'seen on the first test');
+  // The first test comes with the first thinking update (the 14th, 0x422fb0),
+  // the next 0.5 s later, within the first second.
+  const times=[...checks].filter(Number.isFinite);assert.equal(times.length,2,`tests at ${times}`);
+  assert.ok(Math.abs(times[0]-14/60)<1e-9,`first test at ${times[0]}`);assert.ok(times[1]-times[0]>=.5-1e-9);
+  // Blocked sight is only noticed at the next test; until then the cached sighting refreshes last-seen.
+  clear=false;const blocked=game.time;
+  for(let i=0;i<6;i++)game.update(1/60,[0,0,200],{lineOfSight});
+  assert.ok(zombie.lastSeenAt>blocked,'cached sighting still refreshes the last-seen time');
+});
+
+test('unaware chatter is requested every other thinking update (period 4-5 ms)',()=>{
+  let frame=0;const idle=[],game=new Gameplay(level([{classname:'MovingEnemy','%name%':'zombie',Type:'4',Origin:'0 0 0'}]),
+    {onEvent:e=>{if(e.type==='enemyAction'&&e.action==='idle')idle.push(frame);}});
+  for(frame=1;frame<=60;frame++)game.update(1/60,[0,0,-900],{lineOfSight:()=>false});
+  // Chatter belongs to the state logic, which first runs on update 14 (0x422fb0):
+  // armed there, requested on update 15, then on every other update.
+  assert.equal(idle.length,23,'armed on one update, requested on the next');
+  assert.equal(idle[0],15,'the first request comes on the second thinking update');
+  const period=game.objects[0].idleTimer.period;
+  assert.ok(period===.004||period===.005,`period ${period}`);
+});
+
+test('think gate: no state logic or sight test on updates 1-13, then thinking from the 14th (0x422fb0)',()=>{
+  const events=[],game=new Gameplay(level([{classname:'MovingEnemy','%name%':'zombie',Type:'4',Origin:'0 0 0'}]),{onEvent:e=>events.push(e)}),zombie=game.objects[0];
+  zombie.stats={...zombie.stats,SenseRange:1000,VisualRange:1000};
+  // RedCat in plain view, 200 units in front.
+  for(let update=1;update<=13;update++) {
+    game.update(1/60,[0,0,200],{lineOfSight:()=>true});
+    assert.equal(zombie.sight.lastCheck,-Infinity,`update ${update}: no sight test`);
+    assert.equal(zombie.think.inRadius,false);assert.equal(zombie.alerted,false);
+  }
+  assert.equal(events.filter(e=>e.type==='enemyAction').length,0,'no state logic: not even unaware chatter');
+  game.update(1/60,[0,0,200],{lineOfSight:()=>true});
+  assert.equal(zombie.think.inRadius,true);assert.equal(zombie.sight.lastCheck,game.time,'the first sight test runs on update 14');
+  assert.equal(zombie.sight.seen,true);
+});
+
+test('think gate: an enemy beyond 1600 units never thinks, and starts at the next 14-update recheck once RedCat is in range',()=>{
+  const game=new Gameplay(level([{classname:'MovingEnemy','%name%':'zombie',Type:'4',Origin:'0 0 0'}])),zombie=game.objects[0];
+  for(let update=1;update<=30;update++)game.update(1/60,[0,0,2000],{lineOfSight:()=>false});
+  assert.equal(zombie.think.inRadius,false);assert.equal(zombie.sight.lastCheck,-Infinity);assert.equal(zombie.idleTimer,undefined);
+  // RedCat comes within range after the recheck on update 28; the next one is update 42.
+  for(let update=31;update<=41;update++){game.update(1/60,[0,0,1000],{lineOfSight:()=>false});assert.equal(zombie.think.inRadius,false,`update ${update}`);}
+  game.update(1/60,[0,0,1000],{lineOfSight:()=>false});
+  assert.equal(zombie.think.inRadius,true);assert.equal(zombie.sight.lastCheck,game.time);assert.ok(zombie.idleTimer,'state logic runs (chatter armed)');
+});
+
+test('ordering: the state logic sees the previous sight test, so an alert follows on the next thinking update',()=>{
+  const game=new Gameplay(level([{classname:'MovingEnemy','%name%':'zombie',Type:'4',Origin:'0 0 0'}])),zombie=game.objects[0];
+  zombie.stats={...zombie.stats,SenseRange:1000,VisualRange:1000};
+  thinkingEnemy(game,zombie,[0,0,200],()=>false);assert.equal(zombie.sight.seen,false);
+  zombie.sight.lastCheck=-Infinity;
+  game.update(1/60,[0,0,200],{lineOfSight:()=>true});
+  assert.equal(zombie.sight.seen,true,'the sight test of this update sees RedCat');
+  assert.equal(zombie.alerted,false,'its state logic ran before the test');
+  game.update(1/60,[0,0,200],{lineOfSight:()=>true});
+  assert.equal(zombie.alerted,true,'the next thinking update alerts');
+});
+
+test('save/restore keeps the think counter and flag; an older save starts a fresh counter',()=>{
+  const entities=[{classname:'MovingEnemy','%name%':'zombie',Type:'4',Origin:'0 0 0'}];
+  const game=new Gameplay(level(entities)),zombie=game.objects[0];
+  for(let update=1;update<=20;update++)game.update(1/60,[0,0,1000],{lineOfSight:()=>false});
+  assert.deepEqual(zombie.think,{count:6,inRadius:true});
+  const save=JSON.parse(JSON.stringify(game.snapshot()));
+  const restored=new Gameplay(level(entities),{save});assert.deepEqual(restored.objects[0].think,{count:6,inRadius:true});
+  delete save.objects.find(o=>o.id===zombie.id).think;
+  const older=new Gameplay(level(entities),{save});assert.deepEqual(older.objects[0].think,{count:0,inRadius:false});
+});
+
+test('D7: Say queues literal messages; KillPlayer is forced; RespawnPlayer keeps lives; EnableWeapons and LooseAllWeapons do nothing',()=>{
+  const events=[],game=new Gameplay(level([]),{onEvent:e=>events.push(e)}),host=new ScriptHost(game,{version:27});
+  game.setCheckpoint([100,0,50],1.5);game.state.skill=7;
+  host.callNative('EnableWeapons',[0]);host.callNative('LooseAllWeapons',[]);
+  assert.equal(host.weaponsEnabled,true);assert.equal(game.state.skill,7);
+  // Say: literal text; the same queued text or a repeat of the last within 3 s is dropped.
+  host.callNative('Say',['start cut scene']);host.callNative('Say',['Start Cut Scene']);
+  assert.deepEqual(events.filter(e=>e.type==='scriptMessages').map(e=>e.lines),[['start cut scene']]);
+  assert.equal(events.some(e=>e.type==='dialogue'),false,'not a dialogue lookup');
+  host.update(5.01);assert.deepEqual(events.at(-1).lines,[],'a line lasts 5 s');
+  for(let i=0;i<10;i++)host.callNative('Say',[`line ${i}`]);
+  assert.equal(events.at(-1).lines.length,8,'at most eight lines are drawn');
+  // KillPlayer passes the respawn protection; RespawnPlayer restores health without using a life.
+  game.respawnProtection=5;host.callNative('KillPlayer',[]);
+  assert.equal(game.state.health,0);assert.equal(game.playerReaction.phase,'death');
+  const lives=game.state.lives;host.callNative('RespawnPlayer',['ignored']);
+  assert.equal(game.state.health,game.state.maxHealth);assert.equal(game.state.lives,lives);
+  assert.equal(game.respawnProtection,5);
+  assert.deepEqual(events.filter(e=>e.type==='teleport').at(-1).position,[100,0,50]);
+  assert.equal(events.some(e=>e.type==='respawn'),false,'no respawn event or World command');
+});
+
+test('D4: Easy guardians use the loader defaults, because the original drops the malformed [Easy block',()=>{
+  const guardian=difficulty=>new Gameplay(level([{classname:'MovingEnemy','%name%':'g',Type:'10',Origin:'0 0 0'}]),{difficulty}).objects[0];
+  const easy=guardian('Easy'),normal=guardian('Normal');
+  assert.equal(easy.enemyType,'guardian');
+  assert.deepEqual({health:easy.health,speed:easy.stats.Speed,attack:easy.stats.AttackRange,sense:easy.stats.SenseRange,score:easy.stats.PlayerScore,min:easy.stats.MinPlayerDistance,damage:easy.stats.Damage},
+    {health:5,speed:50,attack:100,sense:50,score:0,min:0,damage:1});
+  assert.deepEqual({health:normal.health,speed:normal.stats.Speed,damage:normal.stats.Damage},{health:7,speed:70,damage:2},'Normal keeps its INI block');
+});
+
+test('the enemy health bar clamps its maximum to 20 and its value to that maximum',()=>{
+  const manifest=JSON.parse(readFileSync(new URL('../assets/hud/manifest.json',import.meta.url)));
+  const state={health:10,maxHealth:10,lives:3,potions:0,score:0,coins:0,mirror:0};
+  const bar=enemy=>hudCommands(manifest,state,15,{kind:'enemy',enemyType:'zombie',...enemy}).filter(c=>c.name==='EnemyHealth').map(c=>c.frame);
+  assert.equal(bar({health:30,maxHealth:30}).length,10,'at most ten hearts');
+  assert.deepEqual(bar({health:30,maxHealth:30}),bar({health:20,maxHealth:20}));
+  assert.deepEqual(bar({health:9,maxHealth:5}),bar({health:5,maxHealth:5}),'a value above the maximum shows full');
 });

@@ -145,8 +145,9 @@ save and initial ray diagnostics are also retained there.
 
 The earlier roof-only investigation recorded 13 restored sky samples and
 12 unchanged foreground samples in `artifacts/graveyard-sky-scenes.json`.
-Its old `tests/graveyard-sky-scenes.mjs` range assertions predate chunked world
-geometry; use the current checks above for this follow-up.
+Its old `tests/graveyard-sky-scenes.mjs` range assertions predated chunked world
+geometry. That temporary scene was removed on 28 October 2026 at the user's
+request; use the current checks above for this follow-up.
 
 Only focused checks for this visibility change were run. No full historical
 test suite or release build was generated, and the user's live save/session

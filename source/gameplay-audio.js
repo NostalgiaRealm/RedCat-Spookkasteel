@@ -140,6 +140,8 @@ export class GameplayAudio {
         const batIdle=idle&&BAT_IDLE[event.actorFile];
         sound=batIdle||`${prefix}${suffix}.wav`;
         if(batIdle){loop=true;volume=.4;}
+        // The gargoyle's alert, Sound(1), alone plays at gain 1.5 (0x40c7d7).
+        if(event.actorFile==='gargoyle'&&event.action==='alert')volume=1.5;
       }
       if(!sound)return;
       // 0x423be0 (0x423c7d-0x423c98): while the actor's previous one-shot

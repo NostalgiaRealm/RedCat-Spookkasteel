@@ -2,8 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {Gameplay} from '../source/gameplay.js';
+import {thinkingEnemy} from './support/enemy-thinking.mjs';
 
-const near=[0,0,50],far=[0,0,5000];
+// `far` is beyond the fixture's 1000-unit visual range but inside the native
+// 1600-unit think radius (0x422fb0), so the enemy keeps thinking.
+const near=[0,0,50],far=[0,0,1500];
 const waypoint=(id,z,other)=>({classname:'GrobberPathPoint','%name%':id,Origin:`0 0 ${z}`,SubSystemId:'0',...(other?{WayPoint1:other}:{})});
 
 function fixture(type=5,save=null,level=null) {
@@ -18,6 +21,8 @@ function fixture(type=5,save=null,level=null) {
     TimeToRememberVisual:.02,DrawMotionPart:.5,WaitTimeBetweenShots:.25,WaitTimeAfterSalvo:10,ChanceToMoveAfterSalvo:0};
   enemy.animationDurations={attack:.5,hurt:2,idle:2,start:.5};
   if(!save){
+    // Mid-encounter fixture: the enemy is already thinking (past its first 13 updates).
+    thinkingEnemy(game,enemy);
     enemy.health=100;enemy.maxHealth=100;enemy.salvoSize=2;enemy.yaw=0;
     if(enemy.ambush){
       enemy.ambush.phase='awake';enemy.animationState='idle';
@@ -34,7 +39,9 @@ function until(f,predicate,{player=far,visible=false,limit=5}={}) {
   for(let elapsed=0;!predicate()&&elapsed<limit;elapsed+=.01)tick(f,.01,player,visible);
   assert.ok(predicate(),`condition was not reached: ${f.enemy.enemyType} ${f.enemy.nativeShooter?.phase}`);
 }
-function begin(f) {tick(f,.01,near,true);assert.equal(f.enemy.nativeShooter?.phase,'shoot');assert.ok(f.enemy.pendingAttack);}
+// The state logic sees the previous sight test (0x422fb0): run one first.
+const prime=(f,player,visible)=>thinkingEnemy(f.game,f.enemy,player,()=>visible);
+function begin(f) {prime(f,near,true);tick(f,.01,near,true);assert.equal(f.enemy.nativeShooter?.phase,'shoot');assert.ok(f.enemy.pendingAttack);}
 const savedEnemy=save=>save.objects.find(object=>object.id==='shooter');
 const copyOf=(f,save=JSON.parse(JSON.stringify(f.game.snapshot())))=>fixture(f.type,save,f.level);
 
@@ -42,7 +49,7 @@ test('Gameplay uses native adjacent approach, reserves before strict range compl
   const f=fixture();let searches=0;
   const search=f.game.navigation.pursuitTarget.bind(f.game.navigation);
   f.game.navigation.pursuitTarget=(...args)=>{searches++;return search(...args);};
-  tick(f,.01,[0,0,100],true);
+  prime(f,[0,0,100],true);tick(f,.01,[0,0,100],true);
   assert.equal(f.enemy.nativeShooter.phase,'approach');assert.equal(f.enemy.patrol.target,'b');
   assert.ok(f.enemy.position[2]>0&&f.enemy.position[2]<80);assert.equal(f.enemy.pendingAttack,undefined);
   const position=[...f.enemy.position];tick(f,.01,[0,0,100],true);
@@ -53,7 +60,8 @@ test('Gameplay uses native adjacent approach, reserves before strict range compl
 test('all ordinary shooter families release the whole committed salvo after LOS, range and memory are lost',()=>{
   for(const type of [1,2,3,5,6,7]) {
     const f=fixture(type);begin(f);const release=f.enemy.pendingAttack.at;
-    tick(f,.05);assert.equal(f.enemy.alerted,false,`${f.enemy.enemyType} memory expired before release`);
+    // The next 500 ms sight test (D10) falls on the coming update.
+    f.enemy.sight.lastCheck=-Infinity;tick(f,.05);assert.equal(f.enemy.alerted,false,`${f.enemy.enemyType} memory expired before release`);
     assert.equal(f.shots.length,0);assert.ok(f.enemy.pendingAttack);
     until(f,()=>f.shots.length===1);
     assert.ok(f.shots[0].time>=release&&f.shots[0].time<release+.011);assert.equal(f.enemy.pendingAttack,null);
@@ -88,7 +96,8 @@ test('imported Forest Mushroom Brutus uses native closer and retains its committ
   const f={game,enemy,shots};
   until(f,()=>enemy.nativeShooter?.phase==='shoot',{player,visible:true,limit:20});
   const salvo=enemy.salvoSize;
-  until(f,()=>shots.length>=salvo,{player:far,visible:false,limit:20});
+  // Out of sight, but inside the think radius around this Brutus.
+  until(f,()=>shots.length>=salvo,{player:enemy.position.map((value,index)=>value+(index===2?1500:0)),visible:false,limit:20});
   assert.equal(shots.length,salvo);assert.ok(shots.every(shot=>shot.kind==='mushRoom'));
   assert.equal(enemy.salvoRemaining,0);assert.ok(game.navigation.find(enemy.patrol?.start));
 });
@@ -123,7 +132,7 @@ test('legacy Bone Brutus charge restores once and pending charge waits for the f
 });
 
 test('a native no-destination result starts and releases a shot outside attack range',()=>{
-  const f=fixture();tick(f,.01,[0,0,-300],true);
+  const f=fixture();prime(f,[0,0,-300],true);tick(f,.01,[0,0,-300],true);
   assert.equal(f.enemy.nativeShooter.phase,'shoot');assert.equal(f.enemy.patrol.target,null);
   assert.ok(f.enemy.pendingAttack);assert.deepEqual(f.enemy.position,[0,0,0]);
   until(f,()=>f.shots.length===1);assert.equal(f.shots[0].kind,'poison');

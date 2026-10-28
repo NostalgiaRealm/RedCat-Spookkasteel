@@ -3,12 +3,15 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4293'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try {
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+  await unlockChapters(page);
   page.on('pageerror',e=>errors.push(e.stack));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
   await page.goto('http://127.0.0.1:4293/?skipIntro');await page.waitForFunction(()=>window.__redcat);
   await page.evaluate(()=>document.getElementById('cheat-unlock-levels').click());
@@ -69,7 +72,7 @@ try {
   }
   assert.ok(result.turret.points.every(p=>p[1]>result.turret.actorPosition[1]+300));
   assert.notDeepEqual(result.turret.points[0],result.turret.points[1]);assert.deepEqual(errors,[]);
-  await mkdir('artifacts',{recursive:true});await writeFile('artifacts/movement-muzzle-scenes.json',JSON.stringify(result,null,2)+'\n');
-  await page.screenshot({path:'artifacts/movement-muzzle-turret.png'});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});await writeFile(sceneOutput('artifacts/movement-muzzle-scenes.json'),JSON.stringify(result,null,2)+'\n');
+  await page.screenshot({path:sceneOutput('artifacts/movement-muzzle-turret.png')});
   console.log('PASS real menu save/load preserves airborne movement; Brutus, spider and both turret-barrel origins match their rendered release poses; no browser/HTTP errors.');
 } finally {await browser?.close();server.kill();}

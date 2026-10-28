@@ -1,0 +1,33 @@
+PERF {"round":0,"index":0,"total":23.899999983608723,"trace":26.000000022351742}
+PERF {"round":0,"index":10,"total":165.90000002086163,"trace":96.79999992251396}
+PERF {"round":0,"index":20,"total":300.30000004917383,"pursuit":0.5999999940395355,"trace":240.30000000447035}
+PERF {"round":0,"index":30,"total":429.5000000372529,"pursuit":0.5999999940395355,"trace":366.2000000551343}
+PERF {"round":0,"index":40,"total":551.3000000491738,"pursuit":0.5999999940395355,"trace":416.8999999836087}
+PERF {"round":1,"index":0,"total":574.3000000789762,"pursuit":0.5999999940395355,"trace":436.40000000596046}
+PERF {"round":1,"index":10,"total":695.3000000938773,"pursuit":0.5999999940395355,"trace":510.19999992102385}
+PERF {"round":1,"index":20,"total":808.1000001356006,"pursuit":0.5999999940395355,"trace":644.5999999642372}
+PERF {"round":1,"index":30,"total":918.1000001356006,"pursuit":0.6999999955296516,"trace":767.8999999538064}
+PERF {"round":1,"index":40,"total":1027.3000000566244,"pursuit":0.7999999970197678,"trace":822}
+PERF {"round":2,"index":0,"total":1050.2000000402331,"pursuit":0.7999999970197678,"trace":842.7999999597669}
+PERF {"round":2,"index":10,"total":1155.5000000596046,"pursuit":0.7999999970197678,"trace":911.3999999165535}
+PERF {"round":2,"index":20,"total":1251.7000000327826,"pursuit":1,"trace":1047.4999999925494}
+PERF {"round":2,"index":30,"total":1348.8000000417233,"pursuit":1.2000000029802322,"trace":1172.4000000283122}
+PERF {"round":2,"index":40,"total":1443.3999999836087,"pursuit":1.3000000044703484,"trace":1225.0999999120831}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: graphics resources remain bounded
+
+1367 !== 1366
+
+    at file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/graveyard-performance-scenes.mjs:52:10 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1367,
+  expected: 1366,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

@@ -19,12 +19,17 @@ try {
       const record=original(options);
       if(/^(switchpushbutton|opendoorsecret|magiev1)\.wav$/i.test(record?.name||'')){
         const sample={name:record.name,ended:false};window.__actionSamples.push(sample);
-        record.element.addEventListener('ended',()=>Object.assign(sample,{ended:true,time:record.element.currentTime,duration:record.element.duration}));
+        // The audio layer releases a finished element in its own onended; a capture
+        // listener runs first at the target, before that release.
+        record.element.addEventListener('ended',()=>Object.assign(sample,{ended:true,time:record.element.currentTime,duration:record.element.duration}),{capture:true});
       }
       return record;
     };
     const button=game.objects.find(o=>o.kind==='button'&&o.entity.ButtonType==='1');button.enabled=true;button.switchedOn=false;button.switchCount=0;
     game.switchButton(button,true);
+    // A button with an authored motion latches the press; the native controller
+    // (button-controller-native.js) plays its sound on the second tick.
+    for(let i=0;i<2;i++)host.update(.05);
     const door=game.find('secretdoor04')[0];door.open=false;door.locked=false;game.command(door,'open');
     app.audio.resume();
   });
@@ -41,7 +46,9 @@ try {
     const fairy=app.gameplay.objects.find(o=>o.kind==='fairy');app.world.player.position=[...fairy.position];
     app.audio.setPlayerListener(app.world.player.position);
     const sound=app.audio.play({sound:'idlefee1.wav',loop:true,spatial:true,position:fairy.position});
-    await new Promise((resolve,reject)=>{sound.element.addEventListener('playing',resolve,{once:true});sound.element.addEventListener('error',reject,{once:true});});
+    // The fairy idle plays through BufferedAudioVoice (audio.js), which has no media
+    // events; wait until its buffer is decoded and playing.
+    for(let i=0;i<250&&(sound.element.readyState<2||sound.element.paused);i++)await new Promise(resolve=>setTimeout(resolve,20));
     app.audio.update(0,fairy.position);const before=sound.element.volume;
     app.audio.update(0,[999999,999999,999999]);const after=sound.element.volume;
     return {before,after,ready:sound.element.readyState};

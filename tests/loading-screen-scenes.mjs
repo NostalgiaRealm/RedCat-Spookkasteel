@@ -4,9 +4,10 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 
-const out=path.resolve(`temp_work/loading-screen-2026-10-09/check-${Date.now()}`);
+import {sceneOutput} from './support/scene-output.mjs';
+const out=path.resolve(sceneOutput(`temp_work/loading-screen-2026-10-09/check-${Date.now()}`));
 await mkdir(out,{recursive:true});
-const env={...process.env,TMPDIR:'temp_work'};
+const env={...process.env,TMPDIR:sceneOutput('temp_work')};
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...env,PORT:'0'},stdio:['ignore','pipe','inherit']});
 const base=await new Promise((resolve,reject)=>{server.stdout.once('data',s=>resolve(s.toString().match(/http:\/\/127.0.0.1:\d+/)[0]));server.once('error',reject);});
 let context,held=null,holdNext=false;

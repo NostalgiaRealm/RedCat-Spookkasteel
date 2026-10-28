@@ -1,13 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {Gameplay} from '../source/gameplay.js';
+// Mid-encounter fixtures: enemies are already thinking (gameplay.js updateEnemy).
+import {thinkingOnFirstUpdate} from './support/enemy-thinking.mjs';
 
-const far=[0,0,5000];
+// Out of sight, but inside the native 1600-unit think radius (0x422fb0).
+const far=[0,0,1500];
 const phases=['dormant','descending','returning','ascending'];
 
 function fixture(type=1,variant=3,phase='dormant') {
   const level={id:'ambush-hit',entities:[{classname:'MovingEnemy','%name%':'enemy',Type:String(type),SubType:String(variant),Origin:'0 0 0'}]};
-  const events=[],game=new Gameplay(level,{onEvent:event=>events.push(event)}),enemy=game.objects[0];
+  const events=[],game=thinkingOnFirstUpdate(new Gameplay(level,{onEvent:event=>events.push(event)})),enemy=game.objects[0];
   game.time=10;game.playerPosition=[...far];enemy.health=100;enemy.animationDurations={hurt:1,start:1,death:1};
   if(type===1){
     enemy.ambush={version:1,type:'spider',phase,elapsed:.2,lower:[0,0,0],upper:[0,100,0],anchor:[0,124,0]};
@@ -17,7 +20,7 @@ function fixture(type=1,variant=3,phase='dormant') {
 }
 function tick(f,dt=.1) {f.game.time+=dt;f.game.updateEnemy(f.enemy,dt,far,()=>false);}
 function copy(f) {
-  const events=[],game=new Gameplay(f.level,{save:JSON.parse(JSON.stringify(f.game.snapshot())),onEvent:event=>events.push(event)});
+  const events=[],game=thinkingOnFirstUpdate(new Gameplay(f.level,{save:JSON.parse(JSON.stringify(f.game.snapshot())),onEvent:event=>events.push(event)}));
   const enemy=game.objects[0];enemy.animationDurations={...f.enemy.animationDurations};game.playerPosition=[...far];
   return {game,enemy,events,level:f.level};
 }

@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {Gameplay} from '../source/gameplay.js';
 import {EnemyNavigation} from '../source/enemy-navigation.js';
+import {thinkingOnFirstUpdate} from './support/enemy-thinking.mjs';
 
 const waypoint=(id,x,links=[])=>({classname:'GrobberPathPoint','%name%':id,Origin:`${x} 0 0`,...Object.fromEntries(links.map((value,index)=>[`WayPoint${index+1}`,value]))});
 const points=[waypoint('a',0,['b']),waypoint('b',100),waypoint('c',200,['b'])];
@@ -43,7 +44,8 @@ function gameplay() {
   const level={id:'cursor-reservations',entities:[...points,
     {classname:'MovingEnemy','%name%':'challenger',Type:'5',Origin:'0 0 0',StartPoint:'a',StartOrientation:'3'},
     {classname:'MovingEnemy','%name%':'skeleton',Type:'6',Origin:'100 0 0',StartPoint:'b',StartOrientation:'6'}]};
-  const game=new Gameplay(level),skeleton=game.objects.find(value=>value.id==='skeleton'),challenger=game.objects.find(value=>value.id==='challenger');
+  // Mid-encounter fixture: enemies are already thinking (gameplay.js updateEnemy).
+  const game=thinkingOnFirstUpdate(new Gameplay(level)),skeleton=game.objects.find(value=>value.id==='skeleton'),challenger=game.objects.find(value=>value.id==='challenger');
   skeleton.ambush.phase='awake';skeleton.animationState='idle';skeleton.alerted=true;skeleton.health=100;
   for(const object of [challenger,skeleton]){
     object.stats={...object.stats,AttackRange:30,MinPlayerDistance:0,SenseRange:1000,VisualRange:1000};object.animationDurations={attack:1,hurt:1};

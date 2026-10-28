@@ -1,10 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {Gameplay} from '../source/gameplay.js';
+import {thinkingOnFirstUpdate} from './support/enemy-thinking.mjs';
 
 const near=[0,0,100],far=[0,0,1000];
 function create(type=1){
- const g=new Gameplay({id:'lvl00a',spawn:{position:near,orientation:0},entities:[{classname:'StandingEnemy','%name%':'enemy',Type:String(type),Origin:'0 0 0',StartOrientation:'6'}]});
+ // Mid-encounter fixture: enemies are already thinking (gameplay.js updateEnemy).
+ const g=thinkingOnFirstUpdate(new Gameplay({id:'lvl00a',spawn:{position:near,orientation:0},entities:[{classname:'StandingEnemy','%name%':'enemy',Type:String(type),Origin:'0 0 0',StartOrientation:'6'}]}));
  const o=g.objects[0],shots=[];o.yaw=0;o.animationDurations={attack:1,hurt:1};o.salvoSize=2;
  o.stats={...o.stats,DrawMotionPart:.5,WaitTimeBetweenShots:10,WaitTimeAfterSalvo:.5};
  g.onEvent=e=>{if(e.type==='enemyProjectile')shots.push(g.time);};

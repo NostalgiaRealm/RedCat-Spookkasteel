@@ -3,6 +3,8 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
 // Exercise the graveyard's actual button/trigger brushes and compiled scripts.
 // The actor state is never enabled directly and E is never pressed.
 const cases=[
@@ -15,9 +17,10 @@ const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,POR
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+  await unlockChapters(page);
   page.on('pageerror',error=>errors.push(error.stack));
   page.on('response',response=>{if(response.status()>=400)errors.push(`${response.status()} ${response.url()}`);});
   await page.goto('http://127.0.0.1:4216/?skipIntro');await page.waitForFunction(()=>window.__redcat);
@@ -50,7 +53,7 @@ try {
       const f=window.__zombieFixture;
       return {state:f.state(),ground:{startSolid:f.ground.startSolid,fraction:f.ground.fraction,end:f.ground.end},all:f.g.objects.filter(o=>o.entity.classname==='MovingEnemy'&&o.entity.Type==='4').map(f.actorState),statue:f.actorState(f.g.find('AdamAnyActor134')[0]),model:f.object.modelIndex};
     });
-    await page.screenshot({path:`artifacts/zombie-${fixture.name}-before.png`});
+    await page.screenshot({path:sceneOutput(`artifacts/zombie-${fixture.name}-before.png`)});
     const after=await page.evaluate(()=>{
       const {w,g,h,object,zombie,state,photograph,events}=window.__zombieFixture,input={forward:0,right:0,use:false,attack:false},approach=[],timeline=[];
       for(let i=0;i<100;i++){w.update(1/60,{...input,forward:1});approach.push(state());if(object.switchCount||object.triggerCount)break;}
@@ -60,10 +63,10 @@ try {
       const groundTrace=w.collider.trace(zombie.position,zombie.position.map((v,i)=>v-(i===1?100:0)),zombie.collisionMins,zombie.collisionMaxs,w.physicalModels);
       photograph();return {approach,touched,timeline,events,final:state(),diagnostics:{enemiesFrozen:h.enemiesFrozen,cutscene:h.cutscene,trace,groundTrace},error:h.vm.lastError};
     });
-    await page.screenshot({path:`artifacts/zombie-${fixture.name}-after.png`});
+    await page.screenshot({path:sceneOutput(`artifacts/zombie-${fixture.name}-after.png`)});
     results.push({fixture,before,after});
   }
-  await writeFile('artifacts/zombie-activation-scenes.json',JSON.stringify({results,errors},null,2)+'\n');
+  await writeFile(sceneOutput('artifacts/zombie-activation-scenes.json'),JSON.stringify({results,errors},null,2)+'\n');
   if(process.env.ZOMBIE_DIAGNOSE==='1') {
     for(const r of results)console.log(JSON.stringify({name:r.fixture.name,initialVisible:r.before.all.filter(o=>o.visible).map(o=>o.name),before:r.before.state,after:{touched:r.after.touched,final:r.after.final,states:[...new Set(r.after.timeline.map(x=>`${x.zombie.animation}/${x.zombie.visible}`))],diagnostics:r.after.diagnostics,error:r.after.error}}));
   }else{

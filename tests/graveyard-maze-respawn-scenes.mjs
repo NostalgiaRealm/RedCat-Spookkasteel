@@ -4,17 +4,46 @@ import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 // Run against a copy of the reported adventure, never the active Electron
-// profile. The original snapshot remains available for regression diagnosis.
-assert.ok(process.argv[2],'Pass the copied stranded-entrance adventure JSON');
-const save=JSON.parse(await readFile(process.argv[2],'utf8'));
-const out=path.resolve(`current_work/graveyard-maze-respawn-2026-10-05/scenes-${Date.now()}`);
+// profile, when one is passed. Without one, build the same stranded-entrance
+// pattern from the shipped Graveyard in a separate isolated profile, as
+// tests/graveyard-maze-respawn.test.mjs does: all five maze triggers in order,
+// RedCat inside the exhausted entrance trigger.
+const out=path.resolve(sceneOutput(`current_work/graveyard-maze-respawn-2026-10-05/scenes-${Date.now()}`));
 await mkdir(out,{recursive:true});
-const env={...process.env,TMPDIR:'current_work'};
+const env={...process.env,TMPDIR:sceneOutput('current_work')};
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...env,PORT:'4372'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let context;
 try{
+const save=process.argv[2]?JSON.parse(await readFile(process.argv[2],'utf8')):await strandedEntranceSave();
+async function strandedEntranceSave() {
+  const builder=await chromium.launchPersistentContext(path.join(out,'fixture-profile'),{executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,env,
+    viewport:{width:1280,height:720},args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
+  try{
+    const page=await builder.newPage();
+    await page.addInitScript(()=>{if(!localStorage.getItem('redcat.progress.v1'))localStorage.setItem('redcat.progress.v1',JSON.stringify({version:1,highestUnlocked:4}));});
+    await page.goto('http://127.0.0.1:4372/?skipIntro');await page.waitForFunction(()=>window.__redcat);
+    const built=await page.evaluate(async()=>{
+      const app=window.__redcat;await app.startLevel(2);app.pause();
+      const w=app.world,g=app.gameplay,h=g.scripts;
+      for(let i=0;i<40&&!h.cutscene;i++)h.update(.05);if(h.cutscene)h.skipCutscene();
+      for(const name of ['heg1_trigger_mc','heg2_closetrigger_mc','heg3_trigger1_mc','heg3_trigger2_mc','heg5_trigger_mc']){
+        g.trigger(g.find(name)[0]);for(let t=0;t<3.1-1e-9;t+=.02)h.update(.02);
+      }
+      // The reported autosave's position, inside the exhausted first trigger.
+      const position=[-922.2278975624878,512.05,-798.9451312953597];
+      g.playerPosition=[...position];w.player.position=[...position];w.player.lastSafe=[...position];w.player.resetVelocity();
+      app.saveGame(true);
+      const key=Object.keys(localStorage).find(key=>key.endsWith('redcat.save.v1'));
+      return JSON.parse(localStorage.getItem(key));
+    });
+    assert.equal(built?.level,'lvl02a','stranded-entrance fixture was saved');
+    await writeFile(path.join(out,'stranded-entrance-fixture.json'),JSON.stringify(built));
+    return built;
+  }finally{await builder.close();}
+}
   context=await chromium.launchPersistentContext(path.join(out,'profile'),{executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,env,
     viewport:{width:1280,height:720},args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
   const page=await context.newPage(),errors=[];

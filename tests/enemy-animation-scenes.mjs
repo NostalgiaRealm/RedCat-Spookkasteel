@@ -3,16 +3,20 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-const out=path.resolve(`temp_work/enemy-actor-animations-2026-10-12/scenes-${Date.now()}`);
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
+const out=path.resolve(sceneOutput(`temp_work/enemy-actor-animations-2026-10-12/scenes-${Date.now()}`));
 await mkdir(out,{recursive:true});
-const env={...process.env,TMPDIR:'temp_work'};
+const env={...process.env,TMPDIR:sceneOutput('temp_work')};
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...env,PORT:'0'},stdio:['ignore','pipe','inherit']});
 const base=await new Promise((resolve,reject)=>{server.stdout.once('data',s=>resolve(s.toString().match(/http:\/\/127.0.0.1:\d+/)[0]));server.once('error',reject);});
 let context;
 try {
   context=await chromium.launchPersistentContext(path.join(out,'profile'),{executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,env,
     viewport:{width:1280,height:720},args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required',`--crash-dumps-dir=${out}`]});
+  await unlockChapters(context);
   const page=await context.newPage(),errors=[];
+  await unlockChapters(page);
   page.on('pageerror',e=>errors.push(e.stack));
   page.on('console',m=>{if(m.type()==='error'&&/shader|webgl|gl_invalid|program/i.test(m.text()))errors.push(m.text());});
   page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
@@ -58,7 +62,8 @@ try {
       for(const object of app.gameplay.objects) {
         const e=object.entity;if(e.classname!=='AdamAnyActor'||e.MotionName)continue;
         const actor=w.actorInstances.get(object.id),a=actor?.userData.animator;if(!a)continue;
-        const before=a.geometry.attributes.position.version;a.update(.5);
+        // Offscreen actors defer their vertex update (render residency); flush it to read the pose.
+        const before=a.geometry.attributes.position.version;a.update(.5);a.flushGeometry?.();
         rows.push({level:w.id,id:object.id,asset:e.ActorFileName,name:a.name,changed:a.geometry.attributes.position.version!==before});
       }
     }

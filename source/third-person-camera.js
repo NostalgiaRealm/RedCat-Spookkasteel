@@ -9,8 +9,9 @@ export const CAMERA_BODY={radius:28,bottom:-8,top:80};
 // The lifted boom keeps at least this much distance from the chest anchor.
 const COMFORTABLE_DISTANCE=80;
 // The arc is scanned coarsely, then the lowest suitable angle is refined, so
-// the lift changes continuously instead of in steps.
-const SCAN_STEPS=16,REFINE_STEPS=10;
+// the lift changes continuously instead of in steps. Six halvings place it
+// within 1/1024 of the arc (about 0.1 unit).
+const SCAN_STEPS=16,REFINE_STEPS=6;
 // Easing per second of the lift used to turn the view toward RedCat: rise
 // quickly, settle back more gently.
 const RISE_RATE=10,FALL_RATE=4;
@@ -18,6 +19,8 @@ const RISE_RATE=10,FALL_RATE=4;
 // position itself eases at this rate (as release 1.0.4 did), so changes in how
 // the wall clips the arc never jump. Each eased step is collision-checked.
 const POSITION_RATE=12,RETURN_RATE=6,SETTLED=.25;
+// A reused lift (see CameraWallLift.reuse) is rescanned at least this often.
+const RESCAN_SECONDS=.5;
 const distance=(a,b)=>Math.hypot(...a.map((v,i)=>v-b[i]));
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 export function cameraInsidePlayer(position,playerPosition) {
@@ -44,18 +47,29 @@ function arc({anchor,desired,playerPosition,trace}) {
   return {delta,back,horizontal,minimum,sample};
 }
 
-/** Lowest lift in (0, 1] whose arc sample satisfies `test`, refined between scan steps; null if none. */
-function lowestLift(sample,test) {
-  let previous=0;
+const comfortable=s=>s.comfortable,valid=s=>s.valid;
+
+/**
+ * Lowest lift in (0, 1] whose arc sample is comfortable, or else the lowest
+ * that is at least valid, refined between scan steps; null if none. One scan
+ * serves both tests. Returns {lift, low, test, sample}: `low` is the highest
+ * lift known to fail the test, and `sample` the arc sample at `lift`.
+ */
+function lowestLift(sample) {
+  let previous=0,firstValid=null;
   for(let step=1;step<=SCAN_STEPS;step++) {
-    const lift=step/SCAN_STEPS;
-    if(!test(sample(lift))){previous=lift;continue;}
-    let low=previous,high=lift;
-    for(let i=0;i<REFINE_STEPS;i++){const middle=(low+high)/2;if(test(sample(middle)))high=middle;else low=middle;}
-    return high;
+    const lift=step/SCAN_STEPS,s=sample(lift);
+    if(s.comfortable)return refine(sample,comfortable,previous,lift,s);
+    if(s.valid&&!firstValid)firstValid={low:step===1?0:(step-1)/SCAN_STEPS,lift,s};
+    previous=lift;
   }
-  return null;
+  return firstValid&&refine(sample,valid,firstValid.low,firstValid.lift,firstValid.s);
 }
+function refine(sample,test,low,high,highSample) {
+  for(let i=0;i<REFINE_STEPS;i++){const middle=(low+high)/2,s=sample(middle);if(test(s)){high=middle;highSample=s;}else low=middle;}
+  return {lift:high,low,test,sample:highSample};
+}
+const sameVector=(a,b)=>!!a&&!!b&&a[0]===b[0]&&a[1]===b[1]&&a[2]===b[2];
 
 /**
  * Stateful wall lift. anchor: RedCat's chest; desired: the unobstructed native
@@ -67,7 +81,7 @@ function lowestLift(sample,test) {
  */
 export class CameraWallLift {
   constructor(){this.reset();}
-  reset(){this.lift=0;this.last=null;this.blending=false;}
+  reset(){this.lift=0;this.last=null;this.blending=false;this.found=null;this.foundAge=0;}
   /** Direct mouse/touch look turns the eased position with RedCat (see native-camera.js). */
   lookTurn(deltaYaw,eye) {
     if(!this.last||!Number.isFinite(deltaYaw)||!deltaYaw)return;
@@ -99,7 +113,13 @@ export class CameraWallLift {
     // else the lowest that keeps the camera outside the model. The position
     // aims at that unclipped arc point; update() eases the position, and the
     // eased lift only turns the view toward RedCat.
-    const target=nativeClear?0:lowestLift(sample,s=>s.comfortable)??lowestLift(sample,s=>s.valid);
+    let found=null;this.foundAge+=Math.max(0,dt);
+    if(!nativeClear) {
+      found=this.reuse({anchor,desired,position,playerPosition},sample);
+      if(!found){found=lowestLift(sample)??{lift:null};this.foundAge=0;}
+    }
+    this.found=found&&{...found,anchor,desired,position,playerPosition};
+    const target=nativeClear?0:found.lift;
     if(target===null)return this.fallback({anchor,position,playerPosition,trace,back,horizontal,delta,minimum});
     const rate=target>this.lift?RISE_RATE:FALL_RATE;
     let lift=snap?target:this.lift+(target-this.lift)*(1-Math.exp(-rate*Math.max(0,dt)));
@@ -108,7 +128,24 @@ export class CameraWallLift {
     // With the native view clear again, aim for the native position; the
     // position easing in update() carries the camera back down smoothly.
     if(nativeClear)return {position,lift,focus:lift,hidePlayer:false};
-    return {position:sample(target).position,lift,focus:lift,hidePlayer:false};
+    return {position:found.sample.position,lift,focus:lift,hidePlayer:false};
+  }
+  /**
+   * While RedCat and the native camera stay put (standing against a wall),
+   * keep last frame's lift when its arc sample still passes and the one just
+   * below still fails: two traces instead of a full scan. A blocked arc is
+   * kept as is. Moving geometry that changes either sample triggers a new
+   * scan, and any reuse is rescanned after RESCAN_SECONDS.
+   */
+  reuse({anchor,desired,position,playerPosition},sample) {
+    const found=this.found;
+    if(!found||this.foundAge>=RESCAN_SECONDS||!sameVector(found.anchor,anchor)||!sameVector(found.desired,desired)||
+      !sameVector(found.position,position)||!sameVector(found.playerPosition,playerPosition))return null;
+    if(found.lift===null)return found;
+    const s=sample(found.lift);
+    if(!found.test(s)||found.low>0&&found.test(sample(found.low)))return null;
+    if(found.test===valid&&s.comfortable)return null;
+    return {...found,sample:s};
   }
   /** Low ceiling blocks the whole arc: a clear side or front view, else hide the model. */
   fallback({anchor,position,playerPosition,trace,back,horizontal,delta,minimum}) {

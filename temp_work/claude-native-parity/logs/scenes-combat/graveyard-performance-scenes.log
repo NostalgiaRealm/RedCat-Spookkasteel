@@ -1,0 +1,168 @@
+PERF {"round":0,"index":0,"total":23.799999989569187,"trace":34.80000003427267}
+PERF {"round":0,"index":10,"total":172.80000001192093,"trace":103.90000001341105}
+PERF {"round":0,"index":20,"total":302.1000000089407,"pursuit":0.3999999985098839,"trace":236.3999999165535}
+PERF {"round":0,"index":30,"total":424.59999994933605,"pursuit":0.3999999985098839,"trace":354.49999987334013}
+PERF {"round":0,"index":40,"total":541.6999999433756,"pursuit":0.3999999985098839,"trace":403.5999999344349}
+PERF {"round":1,"index":0,"total":563.5999999567866,"pursuit":0.3999999985098839,"trace":422.19999995082617}
+PERF {"round":1,"index":10,"total":684.4999998956919,"pursuit":0.3999999985098839,"trace":492.49999987334013}
+PERF {"round":1,"index":20,"total":808.3999999016523,"pursuit":0.5,"trace":634.4999998807907}
+PERF {"round":1,"index":30,"total":923.3999999091029,"pursuit":0.8999999985098839,"trace":762.0999998897314}
+PERF {"round":1,"index":40,"total":1032.4999999403954,"pursuit":0.8999999985098839,"trace":813.2999999299645}
+PERF {"round":2,"index":0,"total":1055.9999999180436,"pursuit":0.8999999985098839,"trace":835.0999999269843}
+PERF {"round":2,"index":10,"total":1178.7999999076128,"pursuit":0.8999999985098839,"trace":913.0999998673797}
+PERF {"round":2,"index":20,"total":1304.7999999448657,"pursuit":1,"trace":1074.3999998122454}
+PERF {"round":2,"index":30,"total":1419.6999999210238,"pursuit":1.3000000044703484,"trace":1206.9999998137355}
+PERF {"round":2,"index":40,"total":1525.8999999910593,"pursuit":1.4000000059604645,"trace":1261.8999999165535}
+{
+  "points": 42,
+  "enemies": 41,
+  "rounds": [
+    {
+      "round": 0,
+      "frames": 630,
+      "median": 3.2000000029802322,
+      "p95": 5.200000002980232,
+      "max": 31,
+      "total": 2210.3999999836087,
+      "timings": {
+        "syncModelStates": 31.400000013411045,
+        "syncModels": 17.69999998062849,
+        "syncMountedActorCollisions": 10.200000055134296,
+        "updateEnemy": 443.4999999552965,
+        "trace": 406.3999999538064,
+        "gameplay": 553.0999999567866,
+        "syncActors": 265.30000003427267,
+        "syncPlayer": 24.900000028312206,
+        "updateCamera": 8.599999964237213,
+        "syncProjectiles": 2.899999976158142,
+        "syncActorLighting": 46.10000006109476,
+        "effects": 513.0000001192093,
+        "audioQuery": 11.099999979138374,
+        "audio": 44.59999988973141,
+        "pursuitTarget": 0.3999999985098839
+      },
+      "calls": {
+        "syncModelStates": 1260,
+        "syncModels": 630,
+        "syncMountedActorCollisions": 630,
+        "updateEnemy": 25830,
+        "trace": 26052,
+        "gameplay": 630,
+        "syncActors": 630,
+        "syncPlayer": 630,
+        "updateCamera": 630,
+        "syncProjectiles": 630,
+        "syncActorLighting": 630,
+        "effects": 630,
+        "audioQuery": 7287,
+        "audio": 630,
+        "pursuitTarget": 50
+      },
+      "sounds": 37,
+      "resources": 1365,
+      "actors": 383,
+      "projectiles": 1,
+      "sceneChildren": 114,
+      "programs": 26,
+      "particles": 69
+    },
+    {
+      "round": 1,
+      "frames": 630,
+      "median": 3,
+      "p95": 4.600000001490116,
+      "max": 6.4000000059604645,
+      "total": 2048.499999962747,
+      "timings": {
+        "syncModelStates": 31.799999982118607,
+        "syncModels": 16.19999998062849,
+        "syncMountedActorCollisions": 8.69999997317791,
+        "updateEnemy": 384.6000000461936,
+        "trace": 411.69999999552965,
+        "gameplay": 491.49999997764826,
+        "syncActors": 254.30000010877848,
+        "syncPlayer": 19.19999997317791,
+        "updateCamera": 3.5999999791383743,
+        "syncProjectiles": 4.000000014901161,
+        "syncActorLighting": 43.699999906122684,
+        "effects": 473.7999999895692,
+        "audioQuery": 10.400000020861626,
+        "audio": 42.000000044703484,
+        "pursuitTarget": 0.5
+      },
+      "calls": {
+        "syncModelStates": 1260,
+        "syncModels": 630,
+        "syncMountedActorCollisions": 630,
+        "updateEnemy": 25830,
+        "trace": 28755,
+        "gameplay": 630,
+        "syncActors": 630,
+        "syncPlayer": 630,
+        "updateCamera": 630,
+        "syncProjectiles": 630,
+        "syncActorLighting": 630,
+        "effects": 630,
+        "audioQuery": 8121,
+        "audio": 630,
+        "pursuitTarget": 44
+      },
+      "sounds": 37,
+      "resources": 1364,
+      "actors": 383,
+      "projectiles": 2,
+      "sceneChildren": 116,
+      "programs": 26,
+      "particles": 65
+    },
+    {
+      "round": 2,
+      "frames": 630,
+      "median": 3.5,
+      "p95": 5.700000002980232,
+      "max": 8.199999995529652,
+      "total": 2296.5000000298023,
+      "timings": {
+        "syncModelStates": 36.2999999076128,
+        "syncModels": 18.59999991953373,
+        "syncMountedActorCollisions": 10.99999999254942,
+        "updateEnemy": 373.3999999240041,
+        "trace": 447.3999999463558,
+        "gameplay": 491.2000000625849,
+        "syncActors": 302.5999999642372,
+        "syncPlayer": 20.30000001192093,
+        "updateCamera": 4.800000041723251,
+        "syncProjectiles": 3.5999999940395355,
+        "syncActorLighting": 50.90000003576279,
+        "effects": 531.5,
+        "audioQuery": 10.100000016391277,
+        "audio": 46.799999959766865,
+        "pursuitTarget": 0.5000000074505806
+      },
+      "calls": {
+        "syncModelStates": 1260,
+        "syncModels": 630,
+        "syncMountedActorCollisions": 630,
+        "updateEnemy": 25830,
+        "trace": 30391,
+        "gameplay": 630,
+        "syncActors": 630,
+        "syncPlayer": 630,
+        "updateCamera": 630,
+        "syncProjectiles": 630,
+        "syncActorLighting": 630,
+        "effects": 630,
+        "audioQuery": 7350,
+        "audio": 630,
+        "pursuitTarget": 45
+      },
+      "sounds": 37,
+      "resources": 1363,
+      "actors": 383,
+      "projectiles": 1,
+      "sceneChildren": 115,
+      "programs": 26,
+      "particles": 71
+    }
+  ]
+}

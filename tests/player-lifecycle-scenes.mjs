@@ -3,6 +3,7 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4287'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
@@ -65,8 +66,8 @@ try {
   assert.equal(result.pausedAge,result.pausedEnd);assert.equal(result.recovered,true);
   assert.deepEqual(result.lastLife,{clip:'death',finished:true,phase:'death',health:0,lives:0,mode:'paused'});
   assert.deepEqual(result.restarted,{health:10,lives:3},'game-over resume restarts instead of locking the completed death state');
-  assert.deepEqual(errors,[]);await mkdir('artifacts',{recursive:true});
-  await writeFile('artifacts/player-lifecycle-scenes.json',JSON.stringify(result,null,2)+'\n');
-  await page.screenshot({path:'artifacts/player-lifecycle-restart.png'});
+  assert.deepEqual(errors,[]);await mkdir(sceneOutput('artifacts'),{recursive:true});
+  await writeFile(sceneOutput('artifacts/player-lifecycle-scenes.json'),JSON.stringify(result,null,2)+'\n');
+  await page.screenshot({path:sceneOutput('artifacts/player-lifecycle-restart.png')});
   console.log('PASS real player hurt/fall, delayed checkpoint, death-save reload, protected respawn, pause and final death pose.');
 } finally {await browser?.close();server.kill();}

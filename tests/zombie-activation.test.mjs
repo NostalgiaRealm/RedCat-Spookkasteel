@@ -8,11 +8,13 @@ import {actorVisible,CastleWorld} from '../source/world.js';
 import {targetableEnemy} from '../source/targeting.js';
 import {BspCollider} from '../source/collision.js';
 import {resolveZombieSpawn} from '../source/enemies.js';
+import {thinkingOnFirstUpdate} from './support/enemy-thinking.mjs';
 
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 const level=json('data/levels/lvl02a/level.json');
 const dormantNames=['zombie1','zombie2','zombie3','zombie4','zombie5','frogzom1','frogzom2','frogzom3','frogzom4','ghost1'].sort();
-const boot=save=>new Gameplay(level,{deferInit:true,save});
+// Mid-encounter fixture: enemies are already thinking (gameplay.js updateEnemy).
+const boot=save=>thinkingOnFirstUpdate(new Gameplay(level,{deferInit:true,save}));
 
 test('all ten authored inactive zombies stay hidden while the two mausoleum zombies remain visible',()=>{
   const game=boot(),world=new CastleWorld({},{}),zombies=game.objects.filter(o=>o.enemyType==='zombie');

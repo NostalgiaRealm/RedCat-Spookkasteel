@@ -26,7 +26,11 @@ export function hudCommands(manifest,state,totalPotions,enemy,width=640,height=4
   sprite('Slash',0,extra);
   const start=out.length;number('TotalPotionNumber',totalPotions);for(let i=start;i<out.length;i++)out[i].x+=extra;
   sprite('ScoreIcon');number('ScoreNumber',state.score);
-  if(enemy&&(enemy.kind===undefined||enemy.kind==='enemy')&&enemy.health>0){sprite('EnemyPortrait',enemyPortrait(enemy));hearts('EnemyHealth',enemy.health,enemy.maxHealth||enemy.health);}
+  if(enemy&&(enemy.kind===undefined||enemy.kind==='enemy')&&enemy.health>0) {
+    // The enemy bar clamps its maximum to 20 (0x4515c0) and the value to that maximum (0x4515a0).
+    const max=Math.min(20,enemy.maxHealth||enemy.health);
+    sprite('EnemyPortrait',enemyPortrait(enemy));hearts('EnemyHealth',Math.min(enemy.health,max),max);
+  }
   return out;
 }
 

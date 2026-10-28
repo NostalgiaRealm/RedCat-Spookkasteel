@@ -1,0 +1,34 @@
+{
+ "entry": {
+  "health": 12,
+  "maxHealth": 14,
+  "lives": 0,
+  "score": 500,
+  "mirror": 2
+ },
+ "shown": {
+  "selection": 1,
+  "visible": true,
+  "pauseHidden": true,
+  "status": "Opnieuw proberen? Wil je dit level opnieuw spelen?",
+  "buttons": [
+   [
+    "Ja",
+    210,
+    81
+   ],
+   [
+    "Nee",
+    210,
+    81
+   ]
+  ]
+ },
+ "menu": {
+  "menuHidden": false,
+  "retryHidden": true,
+  "page": "home",
+  "choice": "adventure"
+ }
+}
+PASS game over shows the original retry screen on Ja; Ja retries from the chapter entry; Nee returns to the menu with the save untouched.

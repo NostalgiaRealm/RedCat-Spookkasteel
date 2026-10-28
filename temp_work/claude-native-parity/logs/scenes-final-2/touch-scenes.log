@@ -1,0 +1,12 @@
+PASS mobile automatically enables touch; help and original intro work by touch
+PASS settings scroll by touch and the Off override survives reload
+PASS touch Off hides the touch Menu, Auto restores it; real two-second touch hold skips the authored intro
+PASS touch jump executes grounded collision movement and emits the normal jump event
+PASS touch camera, slow-walk toggle and pause/settings/cheats navigation
+PASS four simultaneous fingers move/look/jump/fire and release independently
+PASS no-clip descend, pointercancel and authored fixed-camera look suppression
+PASS pause clears held controls; save/load work through visible touch menus
+PASS orientation and visibility loss clear input; landscape UI fits; touch never requests pointer lock
+PASS 320px portrait controls fit and touch can cancel the new-adventure warning
+PASS desktop detection, persistent forced On and Electron auto suppression
+PASS 11 focused touch integration groups; /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/scene-output/temp_work/touch-scenes/run-1793211998525/touch-scenes.json

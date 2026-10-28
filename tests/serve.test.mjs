@@ -6,8 +6,9 @@ import {once} from 'node:events';
 import {mkdir, mkdtemp, symlink, utimes, writeFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {createGameServer} from '../tools/serve.mjs';
+import {testOutput} from './support/scene-output.mjs';
 
-const evidence = fileURLToPath(new URL('../temp_work/efficiency-2026-10-26/server-tests/', import.meta.url));
+const evidence = testOutput('efficiency-2026-10-26-server-tests');
 async function fixture(t) {
   await mkdir(evidence, {recursive:true});
   const root = await mkdtemp(path.join(evidence, 'run-'));

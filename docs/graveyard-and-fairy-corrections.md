@@ -54,9 +54,11 @@ build or version bump was made. Focused browser commands are:
 
 ```sh
 node tests/cave-door-artwork-scenes.mjs
-node tests/graveyard-sky-scenes.mjs
 node tests/fairy-skip-audio-scenes.mjs
 ```
+
+The graveyard sky scene that was listed here was temporary and was removed on
+28 October 2026 at the user's request.
 
 The linked fairy notes list the selected unit checks. Results and screenshots
 are in `artifacts/cave-door-artwork-scenes.json`,

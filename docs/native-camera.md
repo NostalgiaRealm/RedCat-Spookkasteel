@@ -152,10 +152,26 @@ option and no first-person view.
   and the previous movement model.
 - **Key mapping.** Arrow left/right map to TurnLeft/Right, A/D to the strafe
   keys, and touch and controller sticks steer like the turn keys.
-- **Distance index.** The port has no Weapon1/2/3 actions, so row 0 is always
-  used.
-- **Field of view.** The FOV remains the user's setting (default 65°
-  vertical). Natively it works out to about 54° vertical on 4:3.
+- **Distance keys (requested 28 October).** The original's Weapon1/2/3 keys
+  select the preset row. The port has three key actions for them, **Camera
+  dichtbij**, **Camera verder weg** and **Camera hoog**, on 1, 2 and 3 by
+  default and changeable in the key settings. The row returns to 0 in each
+  chapter and after loading a save, as the original resets it per sublevel.
+- **Field of view (28 October).** New players start at 54° vertical, the
+  original's projection on 4:3. A field of view already stored in the
+  settings is kept.
+- **Firing stops movement (28 October).** While Fire is held and RedCat has a
+  skill, `0x437770` zeroes the move vector at the end of steering; he keeps
+  turning. `nativeSteer(…, {firing})` does the same. While he stands to
+  shoot, his animation state `+0x340` is `0xf` (set at `0x4328e6`), and the
+  follow camera (`0x4598e0`) then takes the idle row, so it settles at the
+  standing distance; the turn rate still follows the held input.
+- **Wall-lift cost (28 October).** One arc scan serves both the comfortable
+  and the merely valid criteria, the refinement stops at 1/1024 of the arc,
+  and while RedCat and the native camera stay put the previous lift is reused
+  after two checking traces, with a full rescan at least every 0.5 s. Standing
+  at a wall now costs about 4 traces per frame instead of 28–36
+  (`temp_work/claude-native-parity/probe-camera-traces.mjs`).
 - **Save compatibility.** No new save fields. Saves store RedCat's heading as
   before, and loading cuts the camera behind him.
 
@@ -186,7 +202,10 @@ option and no first-person view.
 ## Limits
 
 - The native smoothing is frame-rate dependent, and the port keeps that.
-- The angle quirk near −π/2 in `0x458900` and the firing-stops-movement branch
-  (`0x4353e5`, gated by an unidentified flag) are not reproduced.
-- Visual comparison with the original, and a campaign playthrough with the new
-  steering, have not been done.
+- The angle quirk near −π/2 in `0x458900` is not reproduced, by request: an
+  intentional fix ([catalog](intentional-fixes-and-findings.md)). The
+  firing-stops-movement branch was identified on 28 October (the flag is the
+  skill mask) and is reproduced.
+- In-game play, packaged builds, campaign playthroughs and visual comparison
+  with the original are the owner's manual checks; see
+  [the parity review](claude-native-parity-review.md#owner-checks).

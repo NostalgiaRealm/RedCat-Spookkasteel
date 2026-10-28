@@ -14,6 +14,9 @@ const savedVoice = event => event&&typeof event.voice==='string'&&event.voice.le
 // updater retains this base gain. Keep it separate from saved/script volume
 // so older saves also receive the correction, without compounding on reload.
 const FAIRY_IDLE_BASE_GAIN = .4;
+// The original's sound channel: SoundVolume 80 of 100 in the default
+// Settings/Player1.ini, matching the port's full effects channel.
+const NATIVE_SOUND_CHANNEL = .8;
 
 // Adam's LinToLog followed by Genesis3D's DirectSound centibel conversion.
 // An authored volume of .25 is -20 dB (amplitude .1), not amplitude .25.
@@ -289,7 +292,20 @@ export class GameAudio {
     }
     record.distanceGain = positioned ? (record.obstruction.audible?
       (range ? nearbyAmbienceGain(listener, position, range) : distanceGain(listener, position, spatial)):0) : 1;
-    const volume = clamp(this.master * nativeGainToAmplitude((this.channels[record.channel] ?? 1) * clamp(record.authoredGain) * record.volume * (fairy?FAIRY_IDLE_BASE_GAIN:1) * record.distanceGain*(record.fadeGain??1)));
+    let gain = (this.channels[record.channel] ?? 1) * clamp(record.authoredGain) * record.volume * (fairy?FAIRY_IDLE_BASE_GAIN:1) * record.distanceGain*(record.fadeGain??1);
+    // An instance gain above 1 (the gargoyle alert's 1.5, 0x553610) is stored
+    // unclamped, but DirectSound refuses a volume above 0 dB: the channel keeps
+    // its last accepted level, starting from the gain-1 start volume. The test
+    // uses the original's product, whose sound channel is SoundVolume 80 when
+    // the port's effects channel is full, so an accepted boost can reach 1.25
+    // here: exactly full gain in the original, 1.25x an unboosted cue.
+    let amplitude;
+    if(record.volume>1) {
+      if(gain*NATIVE_SOUND_CHANNEL<=1)record.acceptedGain=gain;
+      else gain=record.acceptedGain??=gain/record.volume;
+      amplitude=gain>0?10**(.5*Math.log2(gain)):0;
+    } else amplitude=nativeGainToAmplitude(gain);
+    const volume = clamp(this.master * amplitude);
     // Both media volume and buffered gains reach the browser's audio backend.
     // Retain full-rate calculation/fades, but do not resend an identical gain.
     if(record.element.volume!==volume)record.element.volume=volume;

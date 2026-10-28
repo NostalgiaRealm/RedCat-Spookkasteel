@@ -4,6 +4,7 @@ import {EnemyNavigation} from '../source/enemy-navigation.js';
 import {Gameplay} from '../source/gameplay.js';
 import {GAMEPLAY_SETTINGS} from '../source/gameplay-settings.js';
 import {selectTouchWaypoint,touchWaypointTarget} from '../source/enemy-waypoint-steering.js';
+import {thinkingOnFirstUpdate} from './support/enemy-thinking.mjs';
 
 const wp=(id,position,links=[])=>({classname:'GrobberPathPoint','%name%':id,Origin:position.join(' '),SubSystemId:'0',...Object.fromEntries(links.map((p,i)=>['WayPoint'+(i+1),p]))});
 const mode=(name='closer',direction=-1)=>({version:2,started:false,wait:0,remaining:name==='circle'?2:0,mode:name,direction});
@@ -12,7 +13,8 @@ const ring=[wp('a',[100,0,0],['b','d']),wp('b',[0,0,80],['c']),wp('c',[-100,0,0]
 const fixture=(points=ring,type=2)=>{
   const level={id:'lvl01a',spawn:{position:[0,0,0]},entities:[...points,{classname:'MovingEnemy','%name%':'touch',Type:String(type),SubType:'1',StartPoint:points[0]['%name%'],Origin:points[0].Origin}]};
   const settings={...GAMEPLAY_SETTINGS,game:{...GAMEPLAY_SETTINGS.game,WayPointSystem:{MaxConnectionDistance:0}}};
-  const game=new Gameplay(level,{settings}),object=game.find('touch')[0];object.batContact=mode();object.yaw=-Math.PI/2;
+  // Mid-encounter fixture: enemies are already thinking (gameplay.js updateEnemy).
+  const game=thinkingOnFirstUpdate(new Gameplay(level,{settings})),object=game.find('touch')[0];object.batContact=mode();object.yaw=-Math.PI/2;
   return {game,object};
 };
 const selector=(points,position)=>{
@@ -119,7 +121,7 @@ test('flying patrol reaches a waypoint before turning instead of cutting the cor
 test('legacy orbit saves with a non-null stale destination use bounded reacquisition',()=>{
   const {game,object}=fixture();object.patrol.current='a';object.patrol.target='b';object.position=[150,0,40];object.alerted=true;
   object.batContact={wait:0,remaining:1,direction:1,mode:'circle'};
-  const restored=new Gameplay(game.level,{settings:game.settings,save:game.snapshot()}),copy=restored.find('touch')[0];
+  const restored=thinkingOnFirstUpdate(new Gameplay(game.level,{settings:game.settings,save:game.snapshot()})),copy=restored.find('touch')[0];
   assert.equal(copy.patrol.target,'b');assert.equal(copy.patrol.reacquiring,true);assert.equal(copy.batContact,null);
   const blocked=(a,b)=>({fraction:0,end:[...a],normal:[0,0,1],startSolid:false});
   restored.update(.01,[0,0,0],{traceEnemy:blocked,lineOfSight:()=>true});

@@ -58,8 +58,9 @@ test('each enemy family uses native alert, attack, hurt and death samples with s
     const batIdle=action==='idle'&&actorFile.startsWith('bat');
     if(batIdle)expected={batg:'bafxi1.wav',baty:'baiifx1.wav',batr:'baiiifx1.wav'}[actorFile];
     assert.equal(records[0].sound,expected); assert.equal(records[0].spatial,true);
-    // 0x423be0: bat idles loop at gain 0.4; every other cue is a one-shot at 1.
-    assert.equal(records[0].loop,batIdle);assert.equal(records[0].scriptVolume,batIdle?.4:1);
+    // 0x423be0: bat idles loop at gain 0.4; the gargoyle alert asks for 1.5
+    // (0x40c7d7); every other cue is a one-shot at 1.
+    assert.equal(records[0].loop,batIdle);assert.equal(records[0].scriptVolume,batIdle?.4:actorFile==='gargoyle'&&action==='alert'?1.5:1);
     assert.ok(existsSync(new URL(`../assets/audio/${expected}`,import.meta.url)));
     // Starting to walk is not a native cue.
     audio.reset();router.handle({type:'enemyAction',id:'enemy',actorFile,action:'walk',position:[10,20,30]});

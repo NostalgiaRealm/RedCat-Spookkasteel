@@ -4,14 +4,15 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import assert from 'node:assert/strict';
 
-process.env.TMPDIR='current_work';
-const output=resolve(`current_work/world-streaming-2026-09-30/render-${Date.now()}`);
+import {sceneOutput} from './support/scene-output.mjs';
+process.env.TMPDIR=sceneOutput('current_work');
+const output=resolve(sceneOutput(`current_work/world-streaming-2026-09-30/render-${Date.now()}`));
 await mkdir(output,{recursive:true});
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4312'},stdio:['ignore','pipe','inherit']});
 let browser;
 try {
  await new Promise((done,fail)=>{server.stdout.once('data',done);server.once('error',fail);});
- browser=await chromium.launchPersistentContext(resolve(output,'browser-profile'),{executablePath:'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl'],viewport:{width:960,height:540}});
+ browser=await chromium.launchPersistentContext(resolve(output,'browser-profile'),{executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl'],viewport:{width:960,height:540}});
  const page=await browser.newPage(),errors=[],reports=[];
  page.on('pageerror',e=>errors.push(e.stack));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
  await page.addInitScript(()=>{

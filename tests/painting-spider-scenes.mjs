@@ -3,6 +3,8 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
 // The imported painting tiles, compiled Davi callbacks, BSP floor/roof and
 // spider actors. Player movement is real; no puzzle globals or callbacks are
 // injected, and E is never used.
@@ -10,9 +12,10 @@ const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,POR
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+  await unlockChapters(page);
   page.on('pageerror',error=>errors.push(error.stack));
   page.on('response',response=>{if(response.status()>=400)errors.push(`${response.status()} ${response.url()}`);});
   await page.goto('http://127.0.0.1:4217/?skipIntro');await page.waitForFunction(()=>window.__redcat);
@@ -42,7 +45,7 @@ try {
     window.__painting={w,g,h,input,spiders,buttons,strips,gate,sequence,pieces,events,effects,state,place,photograph,step};
     return state();
   });
-  await page.screenshot({path:'artifacts/painting-spiders-initial.png'});
+  await page.screenshot({path:sceneOutput('artifacts/painting-spiders-initial.png')});
   const puzzle=await page.evaluate(()=>{
     const f=window.__painting,{w,g,h,buttons,state,place,step}=f,presses=[];
     for(const [index,count] of [[0,3],[1,1],[3,3],[4,2]]){
@@ -58,7 +61,7 @@ try {
     return {presses,timeline,final:state(),events:f.events,effects:f.effects,error:h.vm.lastError};
   });
   await page.evaluate(()=>window.__painting.photograph([1819,-152,-2029],[1802,-152,-2590]));
-  await page.screenshot({path:'artifacts/painting-spiders-gate-open.png'});
+  await page.screenshot({path:sceneOutput('artifacts/painting-spiders-gate-open.png')});
   const descent=await page.evaluate(()=>{
     const f=window.__painting,{w,g,h,state,place,step}=f;
     place(1130,-2134,-Math.PI/2);step(1);const before=state(),timeline=[];
@@ -66,15 +69,15 @@ try {
     const spider=f.spiders[0],[x,y,z]=spider.position;f.photograph([x-140,-165,z+110],[x,y+12,z]);
     f.approach={before,timeline};return state();
   });
-  await page.screenshot({path:'artifacts/painting-spiders-descending.png'});
+  await page.screenshot({path:sceneOutput('artifacts/painting-spiders-descending.png')});
   const approach=await page.evaluate(()=>{
     const f=window.__painting,{h,state,step}=f,{before,timeline}=f.approach;
     for(let i=0;i<6*60;i++){step(1,i<160?1:0);if(i%3===0)timeline.push(state());}
     f.photograph([1150,-150,-2200],[1520,-162,-2133]);
     return {before,timeline,final:state(),events:f.events,error:h.vm.lastError};
   });
-  await page.screenshot({path:'artifacts/painting-spiders-approached.png'});
-  await writeFile('artifacts/painting-spider-scenes.json',JSON.stringify({initial,puzzle,descent,approach,errors},null,2)+'\n');
+  await page.screenshot({path:sceneOutput('artifacts/painting-spiders-approached.png')});
+  await writeFile(sceneOutput('artifacts/painting-spider-scenes.json'),JSON.stringify({initial,puzzle,descent,approach,errors},null,2)+'\n');
   if(process.env.PAINTING_DIAGNOSE==='1'){
     console.log(JSON.stringify({initial,puzzle:{presses:puzzle.presses.map(p=>({i:p.index,before:p.before.globals,touched:p.touched.buttons,position:p.touched.position,contacts:p.touched.contacts,after:p.after.globals,strips:p.after.strips,spiders:p.after.spiders})),final:puzzle.final,error:puzzle.error},approach:{before:approach.before,final:approach.final,phases:approach.timeline.map(s=>s.spiders.map(o=>o.phase)).filter((s,i,a)=>!i||JSON.stringify(s)!==JSON.stringify(a[i-1])),error:approach.error},errors}));
   }else{

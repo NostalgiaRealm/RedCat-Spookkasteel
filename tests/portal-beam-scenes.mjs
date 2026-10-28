@@ -4,8 +4,10 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
 export async function verifyPortalBeamScenes(page) {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   await page.evaluate(async()=>{
     const THREE=await import('three');
     window.__portalFixture={
@@ -31,7 +33,11 @@ export async function verifyPortalBeamScenes(page) {
     const fixture=window.__portalFixture,{world,game,host}=await fixture.start(4),object=game.find('telepfx01')[0],state=world.effects.entries.get(object.id),effects=world.effects;
     world.player.position=[365,-3351,600];world.player.velocityY=0;world.player.grounded=true;world.player.update=()=>{};
     world.camera.position.set(185,-3225,435);world.camera.lookAt(365,-3310,600);
-    effects.update(.1);const spark=effects.batches.get('spark8.bmp|spark8_a.bmp'),restPixels=fixture.pixels([spark.mesh]);
+    // Effects cull against the camera matrices and streamed room view: refresh both for this hand-placed view.
+    world.camera.updateMatrixWorld(true);world.updateRenderResidency();
+    // Native standby emission waits for its 750 ms timer (0x472cd0, docs/portal-native-recovery.md)
+    // before the first corner sparks appear: let the resting portal run for a second.
+    for(let i=0;i<10;i++)effects.update(.1);const spark=effects.batches.get('spark8.bmp|spark8_a.bmp'),restPixels=fixture.pixels([spark.mesh]);
     const before=state.teleporterGeometry.sparks.map(s=>s.position);
     game.command(game.find('telepoort01')[0],'enable');for(let i=0;i<36;i++)world.update(.025,{forward:0,right:0});
     const meshes=[spark.mesh,...effects.beamBatches.values()].map(value=>value.mesh||value);
@@ -43,7 +49,7 @@ export async function verifyPortalBeamScenes(page) {
   assert.ok(portal.restPixels>10,JSON.stringify(portal));assert.ok(portal.pixels>20);assert.ok(portal.age>.5&&portal.age<1);
   assert.equal(portal.serial,1);assert.equal(portal.cutscene,true);assert.equal(portal.rays,5);assert.equal(portal.moved,true);assert.equal(portal.error,null);
   assert.ok(portal.floor<portal.origin[1]&&portal.ceiling>portal.origin[1]);
-  await page.screenshot({path:'artifacts/tower-teleport-original-effects.png'});
+  await page.screenshot({path:sceneOutput('artifacts/tower-teleport-original-effects.png')});
   const restored=await page.evaluate(async()=>{
     const app=window.__redcat,age=app.gameplay.find('telepfx01')[0].teleportEffectAge;app.saveGame(true);await app.loadSave();app.pause();
     const object=app.gameplay.find('telepfx01')[0],state=app.world.effects.entries.get(object.id);
@@ -54,14 +60,14 @@ export async function verifyPortalBeamScenes(page) {
     const fixture=window.__portalFixture,{world,game,host}=await fixture.start(3);host.update=()=>{};
     world.player.position=[0,.05,704];world.player.velocityY=0;world.player.grounded=true;world.player.update=()=>{};
     game.state.health=game.state.maxHealth=20;game.hitCooldown=5;
-    world.camera.position.set(0,45,760);world.camera.lookAt(0,24,704);world.effects.update(0);
+    world.camera.position.set(0,45,760);world.camera.lookAt(0,24,704);world.camera.updateMatrixWorld(true);world.updateRenderResidency();world.effects.update(0);
     const beamBatch=world.effects.beamBatches.get('beam.bmp|beam_a.bmp'),pixels=fixture.pixels([beamBatch.mesh]);
     world.update(.025,{forward:0,right:0});const first=game.state.health;
     world.update(.025,{forward:0,right:0});const delayed=game.state.health;
     world.render();return {pixels,damage:20-first,delayedDamage:first-delayed};
   });
   assert.ok(beam.pixels>20,JSON.stringify(beam));assert.equal(beam.damage,10);assert.equal(beam.delayedDamage,0);
-  await page.screenshot({path:'artifacts/caves-boss-gate-beams-active.png'});
+  await page.screenshot({path:sceneOutput('artifacts/caves-boss-gate-beams-active.png')});
   Object.assign(beam,await page.evaluate(()=>{
     const world=window.__redcat.world,game=world.gameplay,host=game.scripts;
     const states=[];
@@ -73,8 +79,8 @@ export async function verifyPortalBeamScenes(page) {
   }));
   assert.equal(beam.after,10);
   assert.deepEqual(beam.states,[3,2,1,0]);assert.equal(beam.error,null);
-  await page.screenshot({path:'artifacts/caves-boss-gate-beams-cleared.png'});
-  await writeFile('artifacts/portal-beam-scenes.json',JSON.stringify({portal,restored,beam},null,2)+'\n');
+  await page.screenshot({path:sceneOutput('artifacts/caves-boss-gate-beams-cleared.png')});
+  await writeFile(sceneOutput('artifacts/portal-beam-scenes.json'),JSON.stringify({portal,restored,beam},null,2)+'\n');
   console.log('PASS original tower portal timeline, animated sprite pixels and save restoration; Caves beam damage, trigger delay and four original puzzle callbacks.');
 }
 
@@ -84,6 +90,7 @@ if(import.meta.url===pathToFileURL(process.argv[1]).href) {
   try {
     browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
     const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+    await unlockChapters(page);
     page.on('pageerror',e=>errors.push(e.stack));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
     await page.goto('http://127.0.0.1:4193/?skipIntro');await page.waitForFunction(()=>window.__redcat);await verifyPortalBeamScenes(page);assert.deepEqual(errors,[]);
   }finally{await browser?.close();server.kill();}

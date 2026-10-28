@@ -4,10 +4,12 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
 /** The paired tower door shown in Stuck in doors.png, using its actual brushes,
  * authored hinges, compiled Open callback and normal player hull/controller. */
 export async function verifyDoorScenes(page) {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   const before=await page.evaluate(async()=>{
     const app=window.__redcat;await app.startLevel(4);app.pause();document.getElementById('pause').hidden=true;
     const world=app.world,game=app.gameplay,host=game.scripts;
@@ -22,7 +24,7 @@ export async function verifyDoorScenes(page) {
       doors:doors.map(door=>({id:door.id,model:door.modelIndex,open:door.open,time:host.players.get(door.id).time}))};
   });
   assert.equal(before.solid,false);assert.deepEqual(before.doors.map(door=>door.model),[2,3]);
-  await page.screenshot({path:'artifacts/tower-door-before.png'});
+  await page.screenshot({path:sceneOutput('artifacts/tower-door-before.png')});
   const during=await page.evaluate(()=>{
     const world=window.__redcat.world,game=world.gameplay,fixture=window.__doorFixture;
     game.command(fixture.doors[0],'open');
@@ -34,7 +36,7 @@ export async function verifyDoorScenes(page) {
     world.updateCamera(1,true);world.render();return fixture.samples.at(-1);
   });
   assert.equal(during.solid,false);assert.ok(during.time>.4&&during.time<.6);
-  await page.screenshot({path:'artifacts/tower-door-opening.png'});
+  await page.screenshot({path:sceneOutput('artifacts/tower-door-opening.png')});
   const opened=await page.evaluate(()=>{
     const world=window.__redcat.world,game=world.gameplay,fixture=window.__doorFixture;
     for(let frame=0;frame<22;frame++) {
@@ -48,14 +50,14 @@ export async function verifyDoorScenes(page) {
   assert.ok(opened.samples.every(sample=>!sample.solid),'Opening door left the player hull inside a solid brush');
   assert.ok(Math.hypot(...opened.position.map((v,i)=>v-before.position[i]))>10,'Player was not displaced by the opening leaf');
   assert.ok(opened.doors.every(door=>door.open&&door.time===1));assert.equal(opened.error,null);
-  await page.screenshot({path:'artifacts/tower-door-open.png'});
+  await page.screenshot({path:sceneOutput('artifacts/tower-door-open.png')});
   const walked=await page.evaluate(()=>{
     const world=window.__redcat.world;world.yaw=0;
     for(let frame=0;frame<20;frame++)world.update(.025,{forward:1,right:0});
     return [...world.player.position];
   });
   assert.ok(walked[2]<opened.position[2]-50,`Player cannot walk away from opened door: ${walked}`);
-  await writeFile('artifacts/door-scenes.json',JSON.stringify({before,during,opened,walked},null,2)+'\n');
+  await writeFile(sceneOutput('artifacts/door-scenes.json'),JSON.stringify({before,during,opened,walked},null,2)+'\n');
   console.log('PASS original paired tower door pushes RedCat clear throughout opening, finishes both hinges and permits walking away.');
 }
 
@@ -66,6 +68,7 @@ if(import.meta.url===pathToFileURL(process.argv[1]).href) {
   try {
     browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
     const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+    await unlockChapters(page);
     page.on('pageerror',error=>errors.push(error.stack));page.on('response',response=>{if(response.status()>=400)errors.push(`${response.status()} ${response.url()}`);});
     await page.goto('http://127.0.0.1:4190/?skipIntro');await page.waitForFunction(()=>window.__redcat);
     await verifyDoorScenes(page);assert.deepEqual(errors,[]);

@@ -3,11 +3,12 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4263'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl']});
   const page=await browser.newPage({viewport:{width:1100,height:700}}),errors=[];
   await page.addInitScript(()=>localStorage.setItem('redcat.progress.v1',JSON.stringify({version:1,highestUnlocked:4})));
@@ -21,6 +22,8 @@ try {
     const actor=w.actorInstances.get(boss.id),scene=new THREE.Scene();scene.background=new THREE.Color(0x183448);scene.add(actor,new THREE.AmbientLight(0xffffff,2));
     const smoke=w.effects.batches.get(DEATH_SMOKE_TEXTURE);scene.add(smoke.mesh);
     w.camera.position.set(0,80,340);w.camera.lookAt(0,45,0);w.camera.updateMatrixWorld();
+    // Residency, streaming and effect culling follow the camera: settle them for this hand-placed view.
+    w.updateRenderResidency();await w.geometryStream.settle();await w.settleActorTextures();
     const screenshots=[],report=[];
     function capture(name) {
       w.syncActors(0);w.effects.update(0);w.renderer.render(scene,w.camera);
@@ -29,7 +32,9 @@ try {
     }
     for(const phase of ['departure','arrival']) {
       // Render the native particles in a clean inspection scene at its floor.
-      boss.boss.teleportEffects=[{phase,age:.5,position:[0,0,0]}];
+      // The native teleport table (jester-teleport-timing.js) emits five particles
+      // per 0.25 s; all 15 are out from 0.75 s.
+      boss.boss.teleportEffects=[{phase,age:.8,position:[0,0,0]}];
       const original=w.collider.trace;w.collider.trace=()=>({fraction:1});capture('jester-'+phase);w.collider.trace=original;
     }
     boss.boss.teleportEffects=[];
@@ -48,8 +53,8 @@ try {
     const corpse=cw.actorInstances.get(max.id),caveState={doubleVisible:double.visible,corpseVisible:corpse.visible,playerMotion:cw.redcat.userData.animator.clip?.name,smoke:cw.effects.batches.get(DEATH_SMOKE_TEXTURE).count};
     return {report,projectiles,caveState,screenshots};
   });
-  for(const shot of result.screenshots)await writeFile('artifacts/'+shot.name+'.png',Buffer.from(shot.png,'base64'));
-  delete result.screenshots;await writeFile('artifacts/enemy-combat-scenes.json',JSON.stringify({result,errors},null,2)+'\n');
+  for(const shot of result.screenshots)await writeFile(sceneOutput('artifacts/')+shot.name+'.png',Buffer.from(shot.png,'base64'));
+  delete result.screenshots;await writeFile(sceneOutput('artifacts/enemy-combat-scenes.json'),JSON.stringify({result,errors},null,2)+'\n');
   assert.equal(result.report[0].particles,15);assert.equal(result.report[1].particles,15);
   assert.ok(result.projectiles.every(p=>p.sprite&&p.map.includes('/assets/projectiles/')));
   assert.deepEqual(result.caveState,{doubleVisible:false,corpseVisible:false,playerMotion:'idle',smoke:0});assert.deepEqual(errors,[]);

@@ -3,6 +3,7 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 // Profile real graveyard activation scripts, then chase around the grave walls.
 // Unlike the patrol benchmark, this keeps the relevant trigger and explosion.
 const port=process.env.PERF_PORT||'4289';
@@ -76,7 +77,7 @@ try {
   },fixture);
   results.push(result);
  }
- const output=process.env.PERF_REPORT||'artifacts/zombie-hitch-scenes.json';await mkdir('artifacts',{recursive:true});await writeFile(output,JSON.stringify({results,errors},null,2)+'\n');
+ const output=process.env.PERF_REPORT||sceneOutput('artifacts/zombie-hitch-scenes.json');await mkdir(sceneOutput('artifacts'),{recursive:true});await writeFile(output,JSON.stringify({results,errors},null,2)+'\n');
  for(const result of results){
   console.log(JSON.stringify({fixture:result.fixture.name,activated:result.activated,stages:result.stages.map(({positions,worst,totals,...summary})=>summary)}));
   assert.ok(result.activated,'original touch script enables zombie');assert.equal(result.scriptError,null);

@@ -3,12 +3,13 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 const port=process.env.EFFECT_PORT||'4290',label=process.env.EFFECT_REPORT||'native';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:port},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try {
- await mkdir('artifacts',{recursive:true});
+ await mkdir(sceneOutput('artifacts'),{recursive:true});
  browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
  const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
  page.on('pageerror',e=>errors.push(e.stack));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
@@ -45,7 +46,7 @@ try {
    return {time,age:o.teleportEffectAge,active:geometry.active,sparks:geometry.sparks.length,rays:geometry.rays,discs:geometry.discs,light:geometry.light,
     draws:w.renderer.info.render.calls,programs:w.renderer.info.programs.length,scriptError:g.scripts.vm.lastError};
   },time));
-  await page.screenshot({path:`artifacts/portal-${label}-${time}.png`});
+  await page.screenshot({path:sceneOutput(`artifacts/portal-${label}-${time}.png`)});
  }
  const sounds=await page.evaluate(()=>window.__effectsFixture.events);
  assert.ok(portal[0].age>0,'authored tower motion starts Show');assert.ok(portal.some(p=>p.rays.length===5));assert.equal(portal.at(-1).active,false);
@@ -63,10 +64,10 @@ try {
    w.render();const particles=w.effects.destructibles.particles;
    return {time,coverHealth:cover.health,count:particles.length,maxUpdate,positions:particles.map(p=>p.position),opacity:particles.map(p=>p.materials[0].opacity),lifetimes:particles.map(p=>({age:p.age,life:p.life,contacts:p.contacts,settled:p.settled})),draws:w.renderer.info.render.calls,scriptError:g.scripts.vm.lastError};
   },time));
-  if([1.5,3,4.5].includes(time))await page.screenshot({path:`artifacts/debris-${label}-${time}.png`});
+  if([1.5,3,4.5].includes(time))await page.screenshot({path:sceneOutput(`artifacts/debris-${label}-${time}.png`)});
  }
  assert.ok(debris.some(frame=>frame.coverHealth===0&&frame.count>0),'original grave script creates debris');assert.equal(debris.at(-1).count,0,'expired fragments retire');
  assert.ok(debris.every(frame=>frame.positions.flat().every(Number.isFinite)));assert.ok(debris.every(frame=>frame.scriptError===null));assert.deepEqual(errors,[]);
- await writeFile(`artifacts/portal-debris-${label}.json`,JSON.stringify({portal,sounds,debris,errors},null,2)+'\n');
+ await writeFile(sceneOutput(`artifacts/portal-debris-${label}.json`),JSON.stringify({portal,sounds,debris,errors},null,2)+'\n');
  console.log(JSON.stringify({portal:portal.map(({rays,discs,...p})=>({...p,rays:rays.length,discs:discs.length})),debris:debris.map(({positions,opacity,...p})=>p),errors},null,2));
 }finally{await browser?.close();server.kill();}

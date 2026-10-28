@@ -3,8 +3,12 @@ import { transformMotionPoint } from './motions.js';
 // RCTargetList 0x42c280/0x42cb60: nearest visible actor, half of the
 // caller's PI cone, Player.DetectionRange, refreshed every 500 ms.
 // The separate model-button fallback (0x42cf40) uses nine times that range.
+// Enemies join the target list when they spawn (CRcKnight slot 31 0x42aa20 and
+// the moving-enemy initializer 0x427ab0 call 0x42d130), so dormant ambushers
+// such as a stone knight or a bone pile can be targeted. Only a spider the
+// port has not yet placed on its anchor is left out.
 export function targetableEnemy(object) {
-  return !!object&&!['unplaced','dormant'].includes(object.ambush?.phase)&&object.kind==='enemy'&&object.enabled!==false&&object.visible!==false&&object.health>0&&!object.boss?.hidden;
+  return !!object&&object.ambush?.phase!=='unplaced'&&object.kind==='enemy'&&object.enabled!==false&&object.visible!==false&&object.health>0&&!object.boss?.hidden;
 }
 export function targetableObject(object) {
   if(!object||object.enabled===false||object.visible===false||object.collected||object.health<=0||object.targetAvailable===false)return false;

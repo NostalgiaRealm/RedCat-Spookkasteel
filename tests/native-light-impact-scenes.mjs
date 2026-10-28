@@ -3,6 +3,7 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4295'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
@@ -101,9 +102,9 @@ try {
     for(const impact of capture.impacts){assert.ok(impact.count>0);assert.deepEqual(impact.light,impact.expectedLight);}
   }
   assert.ok(scene.floorFraction<1);assert.equal(scene.floorWaveVertices,12);assert.ok(scene.waveChangesPixels);
-  assert.deepEqual(errors,[]);await mkdir('artifacts',{recursive:true});
-  await writeFile('artifacts/native-impact-bursts.png',Buffer.from(scene.screenshot,'base64'));delete scene.screenshot;
-  await writeFile('artifacts/native-charged-impact-wave.png',Buffer.from(scene.waveScreenshot,'base64'));delete scene.waveScreenshot;
-  await writeFile(`artifacts/${gpu.length?'native-light-impact':'native-impact'}-scenes.json`,JSON.stringify({gpu,scene,errors},null,2)+'\n');
+  assert.deepEqual(errors,[]);await mkdir(sceneOutput('artifacts'),{recursive:true});
+  await writeFile(sceneOutput('artifacts/native-impact-bursts.png'),Buffer.from(scene.screenshot,'base64'));delete scene.screenshot;
+  await writeFile(sceneOutput('artifacts/native-charged-impact-wave.png'),Buffer.from(scene.waveScreenshot,'base64'));delete scene.waveScreenshot;
+  await writeFile(sceneOutput(`artifacts/${gpu.length?'native-light-impact':'native-impact'}-scenes.json`),JSON.stringify({gpu,scene,errors},null,2)+'\n');
   console.log(`PASS ${gpu.length?'GPU lightmap pixels match native fixed-point reference (baked, oblique, moving and saturated); ':''}graveyard shaders, all three original player-impact sprite/light profiles and the charged impact wave/floor fold render without errors.`);
 } finally {await browser?.close();server.kill();}

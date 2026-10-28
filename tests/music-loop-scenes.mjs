@@ -6,8 +6,9 @@ import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import assert from 'node:assert/strict';
 
-process.env.TMPDIR='current_work';
-const output=resolve('current_work',`music-loop-render-${new Date().toISOString().replace(/[:.]/g,'-')}`);
+import {sceneOutput} from './support/scene-output.mjs';
+process.env.TMPDIR=sceneOutput('current_work');
+const output=resolve(sceneOutput('current_work'),`music-loop-render-${new Date().toISOString().replace(/[:.]/g,'-')}`);
 await mkdir(output,{recursive:true});
 const tracks=[];
 const names=[];
@@ -32,11 +33,11 @@ let browser,desktop;
 try {
   let page;
   if(process.argv.includes('--electron')) {
-    desktop=await electron.launch({args:['.','--ozone-platform=x11',`--user-data-dir=${resolve('current_work/music-loop-electron-render-profile')}`],
-      cwd:process.cwd(),env:{...process.env,TMPDIR:'current_work'}});
+    desktop=await electron.launch({args:['.','--ozone-platform=x11',`--user-data-dir=${resolve(sceneOutput('current_work/music-loop-electron-render-profile'))}`],
+      cwd:process.cwd(),env:{...process.env,TMPDIR:sceneOutput('current_work')}});
     page=await desktop.firstWindow();await page.waitForFunction(()=>window.__redcat);
   } else {
-    browser=await chromium.launchPersistentContext(resolve('current_work/music-loop-render-profile'),{
+    browser=await chromium.launchPersistentContext(resolve(sceneOutput('current_work/music-loop-render-profile')),{
       executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl']});
     page=await browser.newPage();await page.goto('http://127.0.0.1:4306/?skipIntro');
   }

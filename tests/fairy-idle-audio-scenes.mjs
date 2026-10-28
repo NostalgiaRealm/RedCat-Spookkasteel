@@ -6,15 +6,16 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 
-const out=path.resolve(`temp_work/fairy-idle-audio-${Date.now()}`);
-await mkdir(out,{recursive:true});await mkdir('temp_work/fairy-audio-tmp',{recursive:true});
+import {sceneOutput} from './support/scene-output.mjs';
+const out=path.resolve(sceneOutput(`temp_work/fairy-idle-audio-${Date.now()}`));
+await mkdir(out,{recursive:true});await mkdir(sceneOutput('temp_work/fairy-audio-tmp'),{recursive:true});
 await writeFile(out+'/harness.html','<!doctype html><base href="/"><title>Fairy idle audio check</title>');
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'0'},stdio:['ignore','pipe','inherit']});
 let browser;
 try {
   const url=await new Promise((resolve,reject)=>{server.stdout.once('data',data=>resolve(String(data).trim().split(' ').at(-1)));server.once('error',reject);});
   browser=await chromium.launchPersistentContext(out+'/profile',{executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,
-    env:{...process.env,TMPDIR:'temp_work/fairy-audio-tmp'}});
+    env:{...process.env,TMPDIR:sceneOutput('temp_work/fairy-audio-tmp')}});
   const page=await browser.newPage(),errors=[];page.on('pageerror',error=>errors.push(error.stack));
   await page.goto(url+'/'+path.relative(process.cwd(),out)+'/harness.html');
   const results=await page.evaluate(async()=>{

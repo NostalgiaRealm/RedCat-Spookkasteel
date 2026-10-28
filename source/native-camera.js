@@ -60,9 +60,15 @@ const sign=value=>value>1e-3?1:value<-1e-3?-1:0;
  * the original. `cameraYaw` is the previous frame's camera yaw. With
  * `lockYaw` (lock-on), input turns RedCat toward the target and the raw input
  * moves him in his own frame. Shipped Game.ini sets ControlMode=1, so a
- * sideways input alone turns RedCat in place.
+ * sideways input alone turns RedCat in place. `firing`: Fire is held and
+ * RedCat has a skill; 0x437770 then zeroes the move vector at the end, so he
+ * still turns but stands still to shoot.
  */
-export function nativeSteer({forward=0,steer=0,strafe=0}={},{heading,cameraYaw,dt,lockYaw=null}) {
+export function nativeSteer(controls,{firing=false,...options}) {
+  const result=steerInput(controls,options);
+  return firing?{...result,move:{forward:0,right:0}}:result;
+}
+function steerInput({forward=0,steer=0,strafe=0}={},{heading,cameraYaw,dt,lockYaw=null}) {
   const z=-sign(forward),x=sign(steer),sx=sign(strafe);
   if(!z&&!x&&!sx)return {heading,move:{forward:0,right:0},hasInput:false,backpedal:false};
   // A held strafe key freezes the heading and drops any forward component.
@@ -118,13 +124,14 @@ export class NativeFollowCamera {
    * @param {object} o
    * feet/eye: RedCat's feet and box origin; height: box height H; heading: RedCat yaw;
    * hasInput/backpedal: from nativeSteer; steering: control enabled (not frozen);
+   * aiming: RedCat stands to shoot (animation state 0xf), which selects the idle row;
    * offset: CamOffset [h,d,pitch] for mode 6; lockTarget: aim point for mode 9;
    * orbitPitch: port orbit pitch in radians (positive looks down);
    * ray/sweep: zero-width and +-8 box traces returning {fraction,end,normal,startSolid};
    * direct: no-clip flight, follow the heading without collision.
    */
   update(dt,o) {
-    const {feet,eye,height:H,heading,hasInput=false,backpedal=false,steering=true,offset=null,lockTarget=null,
+    const {feet,eye,height:H,heading,hasInput=false,backpedal=false,steering=true,aiming=false,offset=null,lockTarget=null,
       orbitPitch=0,ray,sweep,direct=false}=o;
     const cut=this.cut||!this.position;this.cut=false;
     const moved=!!this.lastFeet&&Math.max(...feet.map((v,i)=>Math.abs(v-this.lastFeet[i])))>MOVED;
@@ -138,7 +145,9 @@ export class NativeFollowCamera {
     let row,lock=!!lockTarget;
     if(lock)row=[LOCK_ON_CAMERA.height,LOCK_ON_CAMERA.distance,null];
     else if(offset)row=offset;
-    else if((hasInput||moved)&&steering) {
+    // 0x4598e0 takes the idle row while the player's state +0x340 is 0xf, the
+    // shooting stance that holding Fire with a skill enters (0x4328e6).
+    else if((hasInput||moved)&&steering&&!aiming) {
       this.moving=true;this.idleAfterMove=false;this.pulledIn=false;
       row=CAMERA_PRESETS[this.presetIndex][backpedal?'backpedal':'moving'];
     } else {this.idleAfterMove=this.moving;this.moving=false;row=CAMERA_PRESETS[this.presetIndex].idle;}

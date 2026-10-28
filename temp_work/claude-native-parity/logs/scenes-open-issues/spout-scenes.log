@@ -1,0 +1,47 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  {
+    batchGeometry: 'a862f183-f5b9-486c-b7a2-d464bcd362d7',
+    batchMaterial: '8ac723e0-d803-4c86-97c3-23ca0f8c9d9b',
+    batchTexture: 'd658afff-8099-4f30-924b-d603c8965766',
+    children: 106,
++   geometries: 162,
+-   geometries: 161,
+    programs: 33,
+    resources: 705,
+    textures: 22
+  }
+
+    at file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/spout-scenes.mjs:86:736 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: {
+    resources: 705,
+    geometries: 162,
+    textures: 22,
+    programs: 33,
+    children: 106,
+    batchGeometry: 'a862f183-f5b9-486c-b7a2-d464bcd362d7',
+    batchMaterial: '8ac723e0-d803-4c86-97c3-23ca0f8c9d9b',
+    batchTexture: 'd658afff-8099-4f30-924b-d603c8965766'
+  },
+  expected: {
+    resources: 705,
+    geometries: 161,
+    textures: 22,
+    programs: 33,
+    children: 106,
+    batchGeometry: 'a862f183-f5b9-486c-b7a2-d464bcd362d7',
+    batchMaterial: '8ac723e0-d803-4c86-97c3-23ca0f8c9d9b',
+    batchTexture: 'd658afff-8099-4f30-924b-d603c8965766'
+  },
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

@@ -42,12 +42,13 @@ identifies retained evidence and canonical copies of deduplicated files.
 | --- | --- | --- |
 | Automatic saving | Save every 60 seconds of active play, alongside manual saves and checkpoints. This reduces progress lost after interruptions. | [Autosaves](autosave.md) |
 | Preserve living saves | Reject new saves while RedCat has no health, preserving the latest living save and recovery history through death, menu/quit and player changes. Saving resumes after respawn; existing death-animation saves remain loadable. | [Autosaves](autosave.md), [focused evidence](../temp_work/death-save-2026-10-18/verified-fix.md) |
+| Doorgaan after a game over | When you choose **Nee** on the retry screen, the original returns to the menu with its player file holding the chapter-entry state, so **Doorgaan** restarts the chapter as you entered it, like **Ja**. The port deliberately keeps loading your last real save from before the death instead, so saves and recovery history stay compatible. **Ja** still restarts from the chapter-entry state, as in the original. | [Parity review L7](claude-native-parity-review.md#l7), [retry screen](../source/retry-screen.js) |
 | Recovery history | Offer saves from approximately 2, 5 and 10 minutes of playing time ago. Retain at most eleven minute checkpoints; older ones are discarded. Paused/offline time does not age them. | [Recovery storage and retention](autosave.md#retention-and-storage) |
 | Transient-state continuity | New saves retain smoke/flame pools, knight fragment physics, active WAV positions, dialogue queues, loop waits and crossfade progress. Loading continues these states instead of restarting them. This extends the port's save format; it is not a claim about the original RCR format. | [Effect continuity](effects-save-continuity.md), [audio continuity](audio-save-continuity.md) |
 | Safer adventure replacement | The original **Avontuur → Startinfo** route continues an existing save. **Meer opties → Opnieuw beginnen** retains confirmation; **Snelspel** selects a chapter without replacing the save until **Level Spelen** is confirmed. Replacement occurs only after the new level loads successfully. | [Starting a new adventure](autosave.md#starting-a-new-adventure), [original menu](original-menu-native.md) |
 | Export and import a player's save | **Spelerlijst → Exporteren** copies the selected player's primary save and permanent progress. **Importeren** validates that JSON backup and asks before replacing the selected player’s save, progress and gameplay options. Other players, shared settings and local recovery points remain. Browser, desktop and Android share the same format; native RCR files are unsupported. | [Save backups](save-export.md) |
 | Optional cheats | A settings submenu fills mirror pieces and potions to their limits, adds 9000 points, unlocks all chapters, or enables free flight. Supplies do not collect actual level objects or complete their scripts. | [Cheat implementation](../source/cheats.js), [chapter access](campaign-menu-native.md) |
-| Invulnerable no-clip | Free flight ignores all damage, including enemies, liquids, beams and scripted kills. Exiting inside geometry seeks a safe position; if none is available, flight and protection stay enabled. | [No-clip protection](player-protection-progress-and-local-audio.md#no-clip-protection) |
+| Invulnerable no-clip | Free flight ignores all damage, including enemies, liquids and beams. The script command KillPlayer, which no shipped level uses, kills even in free flight, as the original's forced kill does (D7). Exiting inside geometry seeks a safe position; if none is available, flight and protection stay enabled. | [No-clip protection](player-protection-progress-and-local-audio.md#no-clip-protection) |
 | Campaign ownership | Unlocks and earned abilities are stored separately from individual checkpoints. Earlier chapter replays and recovery loads retain them. A confirmed new adventure resets shooting upgrades, SuperSkippie and played-level history; chapter unlocks and preferences remain. | [Permanent abilities](player-protection-progress-and-local-audio.md#earned-abilities-across-chapter-replays), [replay history](replayed-level-intros-native.md#automatic-replay-policy-in-the-port) |
 | Accessible final chapter | The original fifth-card handler has an additional, unexplained comparison. The port makes the Tower selectable once legitimately unlocked, without reproducing that restriction. | [Original chapter-menu evidence](campaign-menu-native.md#original-evidence) |
 | Stuck-character recovery | RedCat and independently moving enemies try a small clear offset or a recently verified safe position after a sustained geometry wedge. Recovery checks support, hazards and the escape route. A bounded player-only search can also return from a narrow fall trap to an already reached higher safe position, as needed behind the Castle warehouse crates. Scripted doors/platforms/hazards are not relocated. | [Movement recovery](movement-recovery.md) |
@@ -85,6 +86,14 @@ upgrade revoked. See [player abilities](player-abilities-native.md#fairy-rewards
 | Automatic replay policy | Visiting a previously played chapter selects the original connected quick-play tutorial branches through the existing chapter menu. The restored **Avontuur/Snelspel** menu routes share one campaign/save system rather than independent game modes; visited-level history determines replay behavior. Eight Forest and two Graveyard tutorials are skipped; required rewards, bosses and exits remain. | [Replay branches](replayed-level-intros-native.md) |
 | Exclusive Fleurifee encounters | Fresh levels keep fairies dormant until an encounter enables them, overriding two originally enabled later-encounter entities. Enabling another fairy retires the previous one. This enforces the requested single active encounter; legacy multiple-fairy saves are resolved using the saved player position. | [Fairy identity and activation](fairy-dialogue-pickup-lifecycle.md#wrong-fairy-identities) |
 
+### Contact damage needs a clear line
+
+The original's contact damage (`0x42dd80`) comes from the enemy's own
+collision sweep, so it needs no sight ray. The port detects contact by hull
+overlap. It therefore keeps a sight ray from the enemy's eye to RedCat's
+centre, so an enemy can never hurt him through a wall. See
+[the parity review](claude-native-parity-review.md#l7).
+
 ### Native parity corrections (27–28 October 2026)
 
 At the user's request, these former port behaviours now follow the original
@@ -97,12 +106,21 @@ game. They are no longer intentional departures:
 - the port's 22×56 player box (D1);
 - the port's camera framing and camera solver (D5; rebuilt from the original on 28 October, see [native camera](native-camera.md); direct mouse/touch look, first person and the wall lift remain as requested extras);
 - the camera trigger edge cases (D8);
-- MultiplyVolume carrying over to a new track (D9).
+- MultiplyVolume carrying over to a new track (D9);
+- the repaired guardian Easy values (D4), the pause-menu-only retry (D6), the
+  port's script APIs (D7) and the per-frame sight check (D10), all replaced on
+  28 October;
+- the fixed 0.25 s chatter gap, the linear FlashEffect fade, and walking while
+  firing.
+- hiding dormant ambush enemies from targeting. This had been a deliberate
+  port departure, so that the target ring could not give away a stone knight
+  or a skeleton pile. At the user's request on 28 October it was overridden to
+  match the original, which puts every enemy on its target list when it
+  spawns (`0x42aa20`/`0x427ab0` → `0x42d130`). The first pellet on a stone
+  knight or gargoyle still does no damage, as in the original (`0x40e400`).
 
-The guardian Easy repair (D4) stays a content correction. The retry screen
-(D6), the unreachable script APIs (D7) and the per-frame sight check (D10)
-remain documented differences. See
-[the parity review](claude-native-parity-review.md).
+See [the parity review](claude-native-parity-review.md), entries L7 and
+D1–D10.
 
 ## Audio choices
 
@@ -150,6 +168,9 @@ present settings. Sources: [Cave ambience](cave-ambience-range.md),
 | Modern input | Camera-relative keyboard/mouse controls, touch overlays with automatic mobile detection and an off switch, and standard-mapped controllers for gameplay/menus. Touch labels use **Schieten**; redundant Gebruik/Meer save-load controls are removed because contact controls and Menu cover them. | [Movement adaptations](player-movement-native.md#scope), [touch controls](touch-controls.md), [controllers](controller-support.md) |
 | Camera protection near walls | The camera follows the original logic ([native camera](native-camera.md)). The additions: when RedCat backs into a wall and the native pull-in would leave the camera inside his model, it rises along an arc over him; under a low ceiling it takes a clear side or front view instead, and only with no external view at all is his model hidden for that frame. Authored fixed cameras still own their timer and cannot be cancelled by look input. | [Native camera](native-camera.md), [wall lift](../source/third-person-camera.js) |
 | Direct look and first person | The original has no mouse-look or first-person view. Mouse, touch-drag and right-stick look turn RedCat and the camera together at once, without the native smoothing, as in release 1.0.4; keyboard steering keeps the native follow camera. The first-person toggle remains. | [Native camera](native-camera.md#port-behaviour-and-extras) |
+| Subtitle box | Dialogue subtitles keep the port's readable box: a dark, rounded panel near the bottom centre, up to 900 px wide, with a larger font and line spacing. It is kept deliberately as a readability improvement and is not changed to the original's subtitle drawing. Script `Say` messages, which the original draws as plain centred lines, use their own element. | [Parity review L7](claude-native-parity-review.md#l7), [style](../src/style.css) |
+| Steering angle quirk left out | The original's camera-relative steering has an angle quirk near −π/2 (`0x458900`). The port leaves it out as an intentional fix; all other steering rates and snaps follow the original. | [Native camera](native-camera.md#limits) |
+| Camera distance and field of view | The original's Weapon1/2/3 camera-distance keys are bindable actions (default 1, 2 and 3), reset in each chapter. New players start at the original's 54° field of view; a stored field of view is kept. | [Native camera](native-camera.md#port-behaviour-and-extras) |
 | Full-screen level overview | Stretch the original background to fill any window, including portrait displays, while keeping text/icons proportional. Use **KLIK/TIK hier om verder te gaan** on every device instead of the original shooting prompt. | [Responsive overview](touch-controls.md), [renderer](../source/debriefing.js) |
 | Updated menu/help/About | A modern responsive HTML interface hosts display/input settings, cheats, recovery saves and **Over** with project version, donations and website/YouTube links. Requested promotional/development text and the redundant gameplay II overlay/menu Afsluiten button are removed. | [Menu markup](../index.html), [menu source](../source/main.js), [historical UI cleanup](native-parity-audit.md#historical-audit-changes-and-checks-23-september) |
 | First-time control hints | Desktop and touch help appear once for ten seconds after the first Forest opening camera/cutscene returns control. Each input hint is remembered independently across restarts; controller use changes the desktop hint text. | [First-time startup help](startup-behavior.md) |

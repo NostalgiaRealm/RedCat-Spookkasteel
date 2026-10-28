@@ -3,6 +3,8 @@
 /* Native letterbox: 10% bars that fade with the StartCutScene/StopCutScene time. */
 .cinema-bar{position:fixed;left:0;right:0;height:10vh;background:#000000;z-index:5;pointer-events:none;opacity:0;transition:opacity var(--cutscene-fade,0s) linear}#cinema-top{top:0}#cinema-bottom{bottom:0}.in-cutscene .cinema-bar{opacity:1}.in-cutscene .hud-top,.in-cutscene .hud-bottom,.in-cutscene .controls-hint,.in-cutscene .crosshair,.cutscene-release .hud-top,.cutscene-release .hud-bottom,.cutscene-release .controls-hint,.cutscene-release .crosshair{visibility:hidden}.cutscene-fading-in #subtitle{visibility:hidden}
 #subtitle{position:fixed;z-index:6;bottom:11vh;left:50%;transform:translateX(-50%);width:min(900px,82vw);padding:16px 24px;border-radius:12px;background:rgba(10,7,19,.88);color:#fff;font-size:clamp(18px,1.5vw,25px);line-height:1.5;text-align:center;text-shadow:0 2px 4px #000;pointer-events:none}
+/* Script Say messages (DisplayMessage 0x529a80): plain white lines, centred, from 53.3% height. */
+#script-messages{position:fixed;z-index:6;top:53.333%;left:50%;transform:translateX(-50%);width:90vw;color:#fff;font-size:clamp(14px,1.2vw,20px);line-height:1.4;text-align:center;white-space:pre-line;text-shadow:0 1px 2px #000;pointer-events:none}
 
 .in-cutscene #toast,.cutscene-release #toast{visibility:hidden}
 
@@ -36,6 +38,12 @@
 .debriefing-frame button{position:absolute;left:5%;right:5%;top:81.5%;min-height:10%;padding:0;border:0;border-radius:0;background:transparent;color:white;font:16px "Comic Sans MS","Comic Neue",cursive;text-align:center;text-shadow:0 1px 2px #001b4d;white-space:normal;touch-action:manipulation}
 .debriefing-frame button:disabled{opacity:.45;cursor:default}
 .debriefing-frame button:focus-visible{outline:2px solid #ffe168;outline-offset:2px}
+#retry{position:fixed;inset:0;height:100%;height:100dvh;z-index:50;background:#000;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+#retry[hidden]{display:none}
+.retry-frame{position:relative;width:100%;height:100%}
+.retry-frame canvas{display:block;width:100%;height:100%}
+.retry-frame button{position:absolute;padding:0;border:0;border-radius:0;background:transparent;color:transparent;cursor:pointer;touch-action:manipulation}
+.retry-frame button:focus-visible{outline:2px solid #ffe168;outline-offset:2px}
 
 .recovery-panel,.about-panel{color:inherit;max-width:min(580px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow-y:auto}
 .recovery-panel::backdrop,.about-panel::backdrop{background:#070e14cc;backdrop-filter:blur(12px)}

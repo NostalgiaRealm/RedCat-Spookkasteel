@@ -1,0 +1,23 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  {
++   health: 0,
+-   health: 10,
+    lives: 3
+  }
+
+    at file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/player-audio-integration-scenes.mjs:22:53 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: { health: 0, lives: 3 },
+  expected: { health: 10, lives: 3 },
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

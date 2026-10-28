@@ -3,11 +3,15 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { Gameplay } from '../source/gameplay.js';
 import { EnemyNavigation } from '../source/enemy-navigation.js';
+// Mid-encounter fixtures: enemies are already thinking (gameplay.js updateEnemy).
+import {thinkingOnFirstUpdate} from './support/enemy-thinking.mjs';
 
 const waypoint=(name,position,extra={})=>({classname:'GrobberPathPoint','%name%':name,Origin:position.join(' '),SubSystemId:'0',...extra});
 const enemy=(extra={})=>({classname:'MovingEnemy','%name%':'guard',DaviName:'guard',Origin:'0 0 0',Type:'10',StartPoint:'a',StartOrientation:'6',...extra});
 const makeLevel=entities=>({id:'lvl01a',spawn:{position:[0,0,0],orientation:0},entities});
-const advance=(game,seconds,player=[5000,0,5000],options={})=>{for(let t=0;t<seconds-1e-8;t+=.05)game.update(Math.min(.05,seconds-t),player,options);};
+// The default RedCat is out of sight but inside the native 1600-unit think
+// radius (0x422fb0), so unaware enemies keep patrolling.
+const advance=(game,seconds,player=[1000,0,1000],options={})=>{for(let t=0;t<seconds-1e-8;t+=.05)game.update(Math.min(.05,seconds-t),player,options);};
 
 test('automatic waypoint links respect native distance, height, subsystem and walls',()=>{
   const nav=new EnemyNavigation(makeLevel([
@@ -73,9 +77,9 @@ test('automatic collinear routes use the intermediate waypoint instead of skippi
 
 test('unaware moving enemies patrol original points, retain progress in saves, and freeze',()=>{
   const level=makeLevel([enemy(),waypoint('a',[0,0,0],{WayPoint1:'b'}),waypoint('b',[0,0,120],{WayPoint1:'c'}),waypoint('c',[120,0,120])]);
-  const game=new Gameplay(level),guard=game.objects[0];
+  const game=thinkingOnFirstUpdate(new Gameplay(level)),guard=game.objects[0];
   advance(game,.8);assert.equal(guard.animationState,'walk');assert.ok(Math.hypot(guard.position[0],guard.position[2])>40);
-  assert.equal(guard.alerted,false);const save=JSON.parse(JSON.stringify(game.snapshot())),restored=new Gameplay(level,{save});
+  assert.equal(guard.alerted,false);const save=JSON.parse(JSON.stringify(game.snapshot())),restored=thinkingOnFirstUpdate(new Gameplay(level,{save}));
   assert.deepEqual(restored.objects[0].patrol,guard.patrol);
   advance(game,.5);advance(restored,.5);assert.deepEqual(restored.objects[0].position,guard.position);
   restored.scripts={enemiesFrozen:true};const before=[...restored.objects[0].position];advance(restored,1);assert.deepEqual(restored.objects[0].position,before);
@@ -89,10 +93,13 @@ test('leaving an unlinked start does not send enemies back into their initial gr
 });
 
 test('view cone and remembered position replace omnidirectional player tracking',()=>{
-  const game=new Gameplay(makeLevel([enemy({StartPoint:'',Type:'1'})])),object=game.objects[0];
+  const game=thinkingOnFirstUpdate(new Gameplay(makeLevel([enemy({StartPoint:'',Type:'1'})]))),object=game.objects[0];
+  // Sight is tested every 500 ms after the state logic (D10, 0x422fb0): each
+  // change below runs a sight test first, and the following update reacts.
+  const sightTest=(player,clear=true)=>{object.sight.lastCheck=-Infinity;game.testEnemySight(object,player,()=>clear);};
   game.update(.1,[0,0,-200]);assert.equal(object.alerted,false);assert.deepEqual(object.position,[0,0,0]);
-  game.update(.1,[0,0,200]);assert.equal(object.alerted,true);assert.deepEqual(object.lastSeenPosition,[0,0,200]);
-  const before=[...object.position];game.update(.1,[300,0,200],{lineOfSight:()=>false});
+  sightTest([0,0,200]);game.update(.1,[0,0,200]);assert.equal(object.alerted,true);assert.deepEqual(object.lastSeenPosition,[0,0,200]);
+  sightTest([300,0,200],false);const before=[...object.position];game.update(.1,[300,0,200],{lineOfSight:()=>false});
   assert.deepEqual(object.lastSeenPosition,[0,0,200]);assert.equal(object.position[0],before[0]);
   advance(game,3,[300,0,200],{lineOfSight:()=>false});assert.equal(object.alerted,false);
 });
@@ -101,7 +108,7 @@ test('view cone and remembered position replace omnidirectional player tracking'
 // the former move-between-salvos relocation no longer applies.
 test('Brutus launches original mushrooms',()=>{
   const level=makeLevel([enemy({Type:'7',StartPoint:'a'}),waypoint('a',[0,0,0]),waypoint('b',[150,0,0]),waypoint('c',[0,0,-150])]);
-  const game=new Gameplay(level),brutus=game.objects[0];brutus.stats={...brutus.stats,ChanceToMoveAfterSalvo:1,AverageShotsPerSalvo:1};brutus.salvoSize=1;
+  const game=thinkingOnFirstUpdate(new Gameplay(level)),brutus=game.objects[0];brutus.stats={...brutus.stats,ChanceToMoveAfterSalvo:1,AverageShotsPerSalvo:1};brutus.salvoSize=1;
   brutus.animationDurations={attack:1};game.update(.05,[0,0,400]);advance(game,.55,[0,0,400]);
   assert.equal(game.projectiles.length,1);const projectile=game.projectiles[0];
   assert.equal(projectile.kind,'mushRoom');assert.equal(projectile.damage,2);assert.ok(Math.abs(Math.hypot(...projectile.velocity)-250)<1e-6);
@@ -109,7 +116,7 @@ test('Brutus launches original mushrooms',()=>{
 
 test('boss projectile classes and difficulty values come from original settings',()=>{
   for(const [type,standing,kind,damage,speed] of [[7,false,'mushRoom',2,250],[8,false,'bone',2,500],[5,true,'magma',1,400],[4,true,'jesterBall',4,600],[9,false,'magicBall',3,80]]) {
-    const game=new Gameplay(makeLevel([enemy({Type:String(type),classname:standing?'StandingEnemy':'MovingEnemy'})]));
+    const game=thinkingOnFirstUpdate(new Gameplay(makeLevel([enemy({Type:String(type),classname:standing?'StandingEnemy':'MovingEnemy'})])));
     game.enemyProjectile(game.objects[0],[0,0,100]);const p=game.projectiles[0];
     assert.equal(p.kind,kind);assert.equal(p.damage,damage);assert.ok(Math.abs(Math.hypot(...p.velocity)-speed)<1e-6);
     if(type===8){game.objects[0].boneSkullPhase=true;game.enemyProjectile(game.objects[0],[0,0,100]);assert.equal(game.projectiles[1].kind,'skull');}
@@ -118,14 +125,14 @@ test('boss projectile classes and difficulty values come from original settings'
 
 test('Bone Brutus charges between bone and skull salvos and restores the charge phase',()=>{
   // Shipped Bone Brutus always has an authored path, which selects the native shooter states.
-  const level=makeLevel([enemy({Type:'8',StartPoint:'a'}),waypoint('a',[0,0,0])]),game=new Gameplay(level),brutus=game.objects[0];
+  const level=makeLevel([enemy({Type:'8',StartPoint:'a'}),waypoint('a',[0,0,0])]),game=thinkingOnFirstUpdate(new Gameplay(level)),brutus=game.objects[0];
   brutus.stats={...brutus.stats,AverageShotsPerSalvo:1,ChanceToMoveAfterSalvo:0};brutus.salvoSize=1;
   brutus.animationDurations={attack:1,charge:1.933343};
   advance(game,1.1,[0,0,300]);
   assert.equal(brutus.animationState,'charge');assert.equal(brutus.boneSkullPhase,true);
   assert.ok(brutus.animationRate>=.9&&brutus.animationRate<1.1);
   assert.equal(game.projectiles.length,1);assert.equal(game.projectiles[0].kind,'bone');
-  const restored=new Gameplay(level,{save:JSON.parse(JSON.stringify(game.snapshot()))});
+  const restored=thinkingOnFirstUpdate(new Gameplay(level,{save:JSON.parse(JSON.stringify(game.snapshot()))}));
   const copy=restored.objects[0];copy.stats={...brutus.stats};copy.animationDurations={...brutus.animationDurations};
   assert.equal(copy.animationState,'charge');assert.equal(copy.animationRate,brutus.animationRate);
   assert.equal(copy.animationUntil,brutus.animationUntil);assert.equal(copy.boneSkullPhase,true);
@@ -136,9 +143,9 @@ test('Bone Brutus charges between bone and skull salvos and restores the charge 
 });
 
 test('shot deviation is reproducible across saves without changing projectile speed',()=>{
-  const level=makeLevel([enemy({Type:'7'})]),game=new Gameplay(level),object=game.objects[0];
+  const level=makeLevel([enemy({Type:'7'})]),game=thinkingOnFirstUpdate(new Gameplay(level)),object=game.objects[0];
   game.enemyProjectile(object,[0,0,400]);const first=game.projectiles[0].velocity;
-  const saved=JSON.parse(JSON.stringify(game.snapshot())),restored=new Gameplay(level,{save:saved});
+  const saved=JSON.parse(JSON.stringify(game.snapshot())),restored=thinkingOnFirstUpdate(new Gameplay(level,{save:saved}));
   game.enemyProjectile(object,[0,0,400]);restored.enemyProjectile(restored.objects[0],[0,0,400]);
   assert.deepEqual(restored.projectiles[1].velocity,game.projectiles[1].velocity);assert.notDeepEqual(first,game.projectiles[1].velocity);
 });
@@ -148,4 +155,24 @@ test('forest arena and frog area remain separate automatic path networks',()=>{
   const nav=new EnemyNavigation(level);nav.build();const reached=new Set(),queue=['GrobberPathPoint1'];
   while(queue.length){const id=queue.shift();if(reached.has(id))continue;reached.add(id);queue.push(...nav.links.get(id));}
   assert.equal(reached.size,15);assert.ok(!reached.has('GrobberPathPoint17'));
+});
+
+test('a path-less Bone Brutus fallback fight reloads exactly as it played',()=>{
+  // Custom levels without an authored path run the fallback AI. The legacy-save
+  // migration must not mistake its pending charge/relocation for an old save.
+  const level=makeLevel([enemy({Type:'8',StartPoint:''})]);
+  const setup=game=>{const brutus=game.objects[0];brutus.stats={...brutus.stats,AverageShotsPerSalvo:1,ChanceToMoveAfterSalvo:0};brutus.salvoSize=1;brutus.animationDurations={attack:1,charge:1.933343};return brutus;};
+  let sawCharge=false;
+  for(let saveAt=.3;saveAt<12;saveAt+=.35) {
+    const game=thinkingOnFirstUpdate(new Gameplay(level)),brutus=setup(game);advance(game,saveAt,[0,0,300]);
+    sawCharge||=brutus.boneChargePending||brutus.animationState==='charge';
+    const restored=thinkingOnFirstUpdate(new Gameplay(level,{save:JSON.parse(JSON.stringify(game.snapshot()))})),copy=restored.objects[0];
+    copy.stats={...brutus.stats};copy.animationDurations={...brutus.animationDurations};
+    assert.equal(copy.nativeShooter,null,`save at ${saveAt.toFixed(2)} s: no invented native state`);
+    assert.equal(copy.boneChargePending,brutus.boneChargePending);assert.equal(copy.relocateAfterSalvo,brutus.relocateAfterSalvo);
+    advance(game,6,[0,0,300]);advance(restored,6,[0,0,300]);
+    assert.deepEqual(restored.projectiles,game.projectiles,`save at ${saveAt.toFixed(2)} s: same shots`);
+    assert.equal(copy.aiRandomState,brutus.aiRandomState,`save at ${saveAt.toFixed(2)} s: same random sequence`);
+  }
+  assert.equal(sawCharge,true,'the saves include a pending skull charge');
 });

@@ -4,8 +4,9 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import assert from 'node:assert/strict';
 
-process.env.TMPDIR='current_work';
-const output=resolve(`current_work/fixture-lights-2026-09-30/render-${Date.now()}`);
+import {sceneOutput} from './support/scene-output.mjs';
+process.env.TMPDIR=sceneOutput('current_work');
+const output=resolve(sceneOutput(`current_work/fixture-lights-2026-09-30/render-${Date.now()}`));
 await mkdir(output,{recursive:true});
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4308'},stdio:['ignore','pipe','inherit']});
 await new Promise((done,fail)=>{server.stdout.once('data',done);server.once('error',fail);});

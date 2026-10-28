@@ -4,8 +4,10 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
 export async function verifyActorPlacementScenes(page) {
-  await mkdir('artifacts',{recursive:true});const results=[];
+  await mkdir(sceneOutput('artifacts'),{recursive:true});const results=[];
   for(const level of [1,3]) {
     const result=await page.evaluate(async level=>{
       const app=window.__redcat;await app.startLevel(level);app.pause();document.getElementById('pause').hidden=true;
@@ -23,6 +25,9 @@ export async function verifyActorPlacementScenes(page) {
         visible:actor.visible,model:object.modelIndex,spin:actor.userData.template.data.settings.rotationDegreesPerSecond,quaternion:actor.quaternion.toArray()}));
       if(level===1){world.camera.position.set(1570,90,520);world.camera.lookAt(1570,10,220);}
       else {world.camera.position.set(-1255,155,-480);world.camera.lookAt(-1255,75,-820);}
+      // Actor residency and geometry streaming follow the camera; settle them for this
+      // hand-placed view before rendering directly (as the newer scenes do).
+      world.camera.updateMatrixWorld(true);world.updateRenderResidency();await world.geometryStream.settle();await world.settleActorTextures();
       const renderer=world.renderer,target=new THREE.WebGLRenderTarget(640,360),original=renderer.getRenderTarget();
       const before=new Uint8Array(640*360*4),after=new Uint8Array(before.length);
       renderer.setRenderTarget(target);renderer.render(world.scene,world.camera);renderer.readRenderTargetPixels(target,0,0,640,360,before);
@@ -37,7 +42,7 @@ export async function verifyActorPlacementScenes(page) {
     for(const pose of result.poses){assert.equal(pose.visible,true);assert.deepEqual(pose.position,pose.expected);assert.deepEqual(pose.spin,level===1?[-360,0,0]:[360,0,0]);}
     assert.ok(result.poses.filter(p=>Math.hypot(...p.position.map((v,i)=>v-p.anchor[i]))>100).length>=(level===1?2:4));
     assert.ok(result.pixels>60,`Rolling balls were not rendered: ${JSON.stringify(result)}`);assert.equal(result.error,null);
-    await page.screenshot({path:`artifacts/${level===1?'castle':'caves'}-rolling-balls.png`});
+    await page.screenshot({path:sceneOutput(`artifacts/${level===1?'castle':'caves'}-rolling-balls.png`)});
     const changed=await page.evaluate(()=>{
       const world=window.__redcat.world,{fixtures}=window.__actorPlacementFixture;
       world.syncActors(.25);
@@ -50,7 +55,7 @@ export async function verifyActorPlacementScenes(page) {
     assert.ok(changed.pausedVisible.every(Boolean));assert.ok(changed.hiddenVisible.every(v=>v===false));
     results.push({...result,changed});
   }
-  await writeFile('artifacts/actor-placement-scenes.json',JSON.stringify(results,null,2)+'\n');
+  await writeFile(sceneOutput('artifacts/actor-placement-scenes.json'),JSON.stringify(results,null,2)+'\n');
   console.log('PASS castle and cave rolling-ball render pixels, original moving brush attachments, signed spin and controller visibility.');
 }
 
@@ -60,6 +65,7 @@ if(import.meta.url===pathToFileURL(process.argv[1]).href) {
   try {
     browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
     const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+    await unlockChapters(page);
     page.on('pageerror',error=>errors.push(error.stack));page.on('response',response=>{if(response.status()>=400)errors.push(`${response.status()} ${response.url()}`);});
     await page.goto('http://127.0.0.1:4191/?skipIntro');await page.waitForFunction(()=>window.__redcat);
     await verifyActorPlacementScenes(page);assert.deepEqual(errors,[]);

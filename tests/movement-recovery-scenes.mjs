@@ -4,15 +4,19 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import assert from 'node:assert/strict';
 
-process.env.TMPDIR='current_work';
-const work=resolve('current_work');await mkdir(work,{recursive:true});
+import {sceneOutput} from './support/scene-output.mjs';
+import {unlockChapters} from './support/scene-progress.mjs';
+process.env.TMPDIR=sceneOutput('current_work');
+const work=resolve(sceneOutput('current_work'));await mkdir(work,{recursive:true});
 const output=resolve(work,`movement-recovery-scenes-${new Date().toISOString().replace(/[:.]/g,'-')}`);await mkdir(output);
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4303'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try {
   browser=await chromium.launchPersistentContext(resolve(work,'movement-recovery-browser-profile'),{executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl'],viewport:{width:1280,height:720}});
+  await unlockChapters(browser);
   const page=await browser.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.stack));
+  await unlockChapters(page);
   await page.addInitScript(()=>localStorage.setItem('redcat.settings.v1',JSON.stringify({autoIntro:false})));
   await page.goto('http://127.0.0.1:4303/?skipIntro');await page.waitForFunction(()=>window.__redcat);
   await page.evaluate(()=>document.getElementById('cheat-unlock-levels').click());

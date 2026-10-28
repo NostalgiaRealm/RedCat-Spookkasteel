@@ -1,10 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {Gameplay} from '../source/gameplay.js';
+import {thinkingOnFirstUpdate} from './support/enemy-thinking.mjs';
 
 function fixture(type=4,standing=false){
   const events=[],level={id:'hits',entities:[{classname:standing?'StandingEnemy':'MovingEnemy','%name%':'enemy',Type:String(type),Origin:'0 0 0',StartOrientation:'6'}]};
-  const game=new Gameplay(level,{onEvent:event=>events.push(event)}),enemy=game.objects[0];
+  // Mid-encounter fixture: enemies are already thinking (gameplay.js updateEnemy).
+  const game=thinkingOnFirstUpdate(new Gameplay(level,{onEvent:event=>events.push(event)})),enemy=game.objects[0];
   game.time=10;game.playerPosition=[0,0,100];enemy.health=100;enemy.animationDurations={hurt:1,attack:2,start:1};
   return {game,enemy,events,level};
 }
@@ -69,7 +71,7 @@ test('a sound-only hit wakes stone enemies through ordinary alert without cancel
 
 test('reaction choice and pending stone alert survive save/load and script freezes',()=>{
   const {game,enemy,level}=fixture(2,true);enemy.aiRandomState=1;game.hurtEnemy(enemy,1);
-  const saved=JSON.parse(JSON.stringify(game.snapshot())),copy=new Gameplay(level,{save:saved}),restored=copy.objects[0];
+  const saved=JSON.parse(JSON.stringify(game.snapshot())),copy=thinkingOnFirstUpdate(new Gameplay(level,{save:saved})),restored=copy.objects[0];
   assert.deepEqual(restored.ambush,enemy.ambush);assert.equal(restored.aiRandomState,enemy.aiRandomState);
   const until=restored.animationUntil;copy.scripts={enemiesFrozen:true};copy.update(.05,[0,0,100]);
   assert.equal(restored.animationUntil,until+.05);assert.equal(restored.ambush.resumeAlert,true);

@@ -4,8 +4,9 @@ import path from 'node:path';
 import {mkdir, mkdtemp, readFile, writeFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {moduleSpecifiers, refreshWebCache} from '../tools/refresh-web-cache.mjs';
+import {testOutput} from './support/scene-output.mjs';
 
-const evidence = fileURLToPath(new URL('../temp_work/web-cache-tests/', import.meta.url));
+const evidence = testOutput('web-cache-tests');
 async function put(root, relative, contents) {
   await mkdir(path.dirname(path.join(root, relative)), {recursive:true});
   await writeFile(path.join(root, relative), contents);

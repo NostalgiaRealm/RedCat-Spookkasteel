@@ -3,12 +3,13 @@ import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
+import {sceneOutput} from './support/scene-output.mjs';
 const port=process.env.EFFECT_PORT||'4290';
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:port},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let browser;
 try {
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(sceneOutput('artifacts'),{recursive:true});
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
   page.on('pageerror',e=>errors.push(e.stack));
@@ -26,6 +27,8 @@ try {
     const position=object.effectPosition();
     w.updateCamera=()=>{};w.player.noClip=true;w.player.position=[position[0]+100,position[1],position[2]+200];w.player.update=()=>{};
     w.camera.position.set(position[0]+180,position[1]+100,position[2]+240);w.camera.lookAt(...position);
+    // Residency, streaming and effect view culling follow the camera: settle them for this hand-placed view.
+    w.camera.updateMatrixWorld(true);w.updateRenderResidency();await w.geometryStream.settle();await w.settleActorTextures();
     window.__explosionFixture={w,g,object,input:{forward:0,right:0,turn:0,jump:false,attack:false,use:false}};
     g.destroy(object);w.effects.update(0);w.render();
     const effect=g.explosions.find(e=>e.sourceId===object.id);window.__explosionFixture.birth=effect.birth;
@@ -55,9 +58,9 @@ try {
         blastCohorts:effects.blasts.length,smokeCohortParticles:effects.blasts.reduce((n,b)=>n+b.smoke.length,0),fragments:effects.particles.length,
         fragmentPositions:effects.particles.map(p=>p.position),draws:w.renderer.info.render.calls,scriptError:g.scripts.vm.lastError};
     },time));
-    if([.15,.45,2].includes(time))await page.screenshot({path:`artifacts/explosion-native-${time}.png`});
+    if([.15,.45,2].includes(time))await page.screenshot({path:sceneOutput(`artifacts/explosion-native-${time}.png`)});
   }
-  await writeFile('artifacts/explosion-native-scenes.json',JSON.stringify({source,frames,errors},null,2)+'\n');
+  await writeFile(sceneOutput('artifacts/explosion-native-scenes.json'),JSON.stringify({source,frames,errors},null,2)+'\n');
   const count=(frame,prefix)=>frame.bitmapBatches.filter(b=>b.key.startsWith(prefix)).reduce((n,b)=>n+b.count,0);
   assert.equal(source.explosion.settings.explosion.SizePercentage,25,'fixture uses authored crate explosion size');
   assert.ok(count(frames[0],'explosie')>0,'original explosion artwork is submitted');

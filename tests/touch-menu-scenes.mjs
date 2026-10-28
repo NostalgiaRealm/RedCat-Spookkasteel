@@ -4,9 +4,10 @@ import {mkdir, writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {chromium, devices} from 'playwright';
 
+import {sceneOutput} from './support/scene-output.mjs';
 // Only the mobile control cleanup and responsive end-of-level overview.
 // Keep every profile, log and screenshot for later reference.
-const output = `current_work/touch-menu-${new Date().toISOString().replace(/[:.]/g, '-')}`;
+const output = sceneOutput(`current_work/touch-menu-${new Date().toISOString().replace(/[:.]/g, '-')}`);
 await mkdir(output, {recursive: true});
 const port = Number(process.env.TOUCH_MENU_TEST_PORT || 4315);
 const report = {checks: [], errors: [], layouts: []};
@@ -46,7 +47,7 @@ try {
     const label = mobile ? 'mobile' : 'desktop';
     context = await chromium.launchPersistentContext(resolve(output, `${label}-profile`), {
       executablePath:process.env.CHROME_PATH || '/usr/bin/google-chrome', headless:true,
-      env:{...process.env,TMPDIR:'current_work'}, args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required'],
+      env:{...process.env,TMPDIR:sceneOutput('current_work')}, args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required'],
       ...(mobile ? devices['Pixel 7'] : {}), viewport:{width:844,height:390}, deviceScaleFactor:1,
     });
     await context.addInitScript(() => {

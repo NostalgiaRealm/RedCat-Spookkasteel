@@ -4,14 +4,15 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 
-const out=path.resolve(`current_work/player-world-light-2026-10-04/scenes-${Date.now()}`);
+import {sceneOutput} from './support/scene-output.mjs';
+const out=path.resolve(sceneOutput(`current_work/player-world-light-2026-10-04/scenes-${Date.now()}`));
 await mkdir(out,{recursive:true});
-const env={...process.env,TMPDIR:'current_work'};
+const env={...process.env,TMPDIR:sceneOutput('current_work')};
 const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...env,PORT:'4339'},stdio:['ignore','pipe','inherit']});
 await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
 let context;
 try{
-  context=await chromium.launchPersistentContext(path.join(out,'profile'),{executablePath:'/usr/bin/google-chrome',headless:true,env,
+  context=await chromium.launchPersistentContext(path.join(out,'profile'),{executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,env,
     viewport:{width:1280,height:720},args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
   const page=await context.newPage(),errors=[];
   page.on('pageerror',error=>errors.push(error.stack));
