@@ -1,5 +1,10 @@
 # Native parity review: research and validation files
 
+On 29 October 2026 the generated folders described below (`baseline/`,
+`scene-outputs*/`, `venv-import/` and `temp_work/scene-output/earlier-runs/`)
+were removed in the [project cleanup](../../docs/project-cleanup-2026-10-29.md);
+the notes, logs, scripts and research files remain.
+
 This folder holds the material behind
 [`docs/claude-native-parity-review.md`](../../docs/claude-native-parity-review.md).
 

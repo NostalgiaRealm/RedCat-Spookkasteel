@@ -5,15 +5,16 @@ import {mkdtemp, mkdir, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {_electron as electron} from 'playwright';
+import {sceneOutput,sceneTemp} from './support/scene-output.mjs';
 
 const root=fileURLToPath(new URL('../',import.meta.url));
-const scratch=path.join(root,'temp_work/android-release-1.0.3-2026-10-26/assets');
+const scratch=path.resolve(sceneOutput('temp_work/android-scenes'));
 await mkdir(scratch,{recursive:true});
 const evidence=await mkdtemp(path.join(scratch,'desktop-scenes-'));
 const errors=[];let app;
 try {
   app=await electron.launch({cwd:root,args:['.',...(process.platform==='linux'?['--ozone-platform=x11']:[]),`--user-data-dir=${path.join(evidence,'profile')}`],
-    env:{...process.env,TMPDIR:path.relative(root,evidence)},timeout:60000});
+    env:{...process.env,TMPDIR:sceneTemp()},timeout:60000});
   const page=await app.firstWindow();
   page.on('pageerror',error=>errors.push(error.message));
   await page.waitForFunction(()=>window.__redcat,{timeout:60000});

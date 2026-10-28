@@ -7,9 +7,9 @@ import {chromium} from 'playwright';
 
 import {sceneOutput} from './support/scene-output.mjs';
 // Browser integration with a simulated native endpoint; this is not a device test.
-// Keep profiles, screenshots and reports as evidence under temp_work.
+// Profiles, screenshots and reports go to the scene output folder.
 const root = fileURLToPath(new URL('../', import.meta.url));
-const evidence = path.join(root, 'temp_work/android-release-1.0.3-2026-10-26/assets');
+const evidence = path.resolve(sceneOutput('temp_work/android-scenes'));
 await mkdir(evidence, {recursive: true});
 const output = await mkdtemp(path.join(evidence, 'host-scenes-'));
 // Chromium's Unix socket path limit requires a short, relative temp path.

@@ -816,7 +816,8 @@ D4, D6, D7 and D10 were implemented on 28 October; see [L7](#l7).
   `enemy-ambush-flight`) gave 1531 passing and 56 failing tests before the
   test removals described below.
 - A baseline was rebuilt from the 2026-10-26 Android bundle source map in
-  `temp_work/claude-native-parity/baseline/`. It fails 57 tests in the same run.
+  `temp_work/claude-native-parity/baseline/` (removed in the
+  [29 October cleanup](project-cleanup-2026-10-29.md)). It fails 57 tests in the same run.
 - All 56 current failures also fail in the baseline (`diff-failures.py`). One
   shows as new only because it was renamed; it fails at the same pre-existing
   distance-attenuation assertion.
