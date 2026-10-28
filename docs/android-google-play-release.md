@@ -11,16 +11,16 @@ level is getest.
 | Onderdeel | Waarde / gebruik |
 | --- | --- |
 | App-ID | `com.nostalgiarealm.redcatspookkasteel` |
-| Zichtbare versie | `1.0.4` |
-| Android-versiecode | `6`; verhoog deze bij iedere volgende Play-upload |
+| Zichtbare versie | `1.0.5` |
+| Android-versiecode | `7`; verhoog deze bij iedere volgende Play-upload |
 | Minimum | Android 10 / API 29, met voldoende recente Android System WebView en WebGL 2 |
 | Compile- en target-API | Android 16 / API 36 |
-| Google Play-bestand | `dist/android/1.0.4/RedCat-Spookkasteel-1.0.4-android.aab` |
-| Direct installeren | `dist/android/1.0.4/RedCat-Spookkasteel-1.0.4-android.apk`; een AAB installeer je niet rechtstreeks |
+| Google Play-bestand | `dist/android/1.0.5/RedCat-Spookkasteel-1.0.5-android.aab` |
+| Direct installeren | `dist/android/1.0.5/RedCat-Spookkasteel-1.0.5-android.apk`; een AAB installeer je niet rechtstreeks |
 | Spelinhoud | De voorbereide spelruntime in `src/`, `assets/`, `data/` en Three.js; nieuwe builds gebruiken de gegenereerde JavaScriptbundel, zonder losse `source/`-modules |
 | Apparchitectuur | Kotlin/Java Android-shell met AndroidX WebView; geen meegeleverde native `.so`-bibliotheken in de gecontroleerde release |
 
-Versie 1.0.4 wordt op verzoek zonder nieuwe tests of pakketcontroles gebouwd. De huidige pakketten bevatten de bundeling en bronmapwijzigingen; onderstaande controles blijven historisch bewijs voor 1.0.3.
+Voor versie 1.0.5 is de broncode gecontroleerd met de volledige unittests en browserscènes; de gebouwde Android-pakketten zelf zijn niet op een apparaat of emulator getest. Onderstaande controles blijven historisch bewijs voor 1.0.3.
 
 De hieronder vastgelegde 1.0.3-build van 26 oktober dateert van vóór de latere JavaScriptbundeling, optimalisaties en verplaatsing naar `source/`. Bouw opnieuw om die nieuwere broncodewijzigingen mee te leveren; de bestaande APK/AAB veranderen niet door broncode te verplaatsen. Die vastgelegde build bevat 3.086 gecontroleerde runtimebestanden. De geschatte Play-download is 108.196.436–108.197.556 bytes. De controles staan in `dist/android/1.0.3/release-verification.json` en `temp_work/android-release-1.0.3-2026-10-26/verification/`.
 

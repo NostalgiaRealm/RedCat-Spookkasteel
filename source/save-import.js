@@ -107,8 +107,8 @@ function checkSave(save) {
   for (const [key, value] of Object.entries(game.state)) requireValue(finite(value) && Math.abs(value) <= Number.MAX_SAFE_INTEGER, `save.game.state.${key}`);
   optional(game, 'difficulty', v => ['Easy', 'Normal', 'Hard'].includes(v), 'save.game');
   optional(game, 'completed', v => typeof v === 'boolean', 'save.game');
-  for (const key of ['time', 'healthVersion', 'environmentFeedbackCooldown', 'hitCooldown', 'attackCooldown', 'playerAttackSerial', 'playerAttackUntil', 'nextProjectileId']) optional(game, key, finite, 'save.game');
-  for (const key of ['debriefing', 'checkpoint', 'hazards', 'footstepState', 'playerReaction', 'playerCharge', 'pendingPlayerAttack', 'spoutEffects']) optional(game, key, record, 'save.game', true);
+  for (const key of ['time', 'healthVersion', 'environmentFeedbackCooldown', 'hitCooldown', 'respawnProtection', 'hurtSoundUntil', 'hurtRandomState', 'attackCooldown', 'playerAttackSerial', 'playerAttackUntil', 'nextProjectileId']) optional(game, key, finite, 'save.game');
+  for (const key of ['debriefing', 'checkpoint', 'hazards', 'footstepState', 'playerReaction', 'playerCharge', 'pendingPlayerAttack', 'spoutEffects', 'entryState']) optional(game, key, record, 'save.game', true);
   if (game.checkpoint) requireValue(vector(game.checkpoint.position) && finite(game.checkpoint.orientation), 'save.game.checkpoint');
   if (game.debriefing) {
     requireValue(game.debriefing.version === 1 && game.debriefing.level === save.level, 'save.game.debriefing');

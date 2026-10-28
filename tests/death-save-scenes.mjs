@@ -45,7 +45,8 @@ try {
     for (const player of game.scripts.players.values()) player.stop();
     game.scripts.cutscene = false; game.scripts.camera = null;
     for (const object of game.objects) if (['enemy', 'trigger', 'fairy'].includes(object.kind)) object.enabled = false;
-    game.state.lives = 1;
+    // Natively the last attempt is played at 0 lives; the life is deducted at respawn.
+    game.state.lives = 0;
     // A real living latest save and populated IndexedDB recovery timeline.
     for (let minute = 0; minute <= 2; minute++) {
       app.recovery.advance(60); game.state.score = 100 + minute;

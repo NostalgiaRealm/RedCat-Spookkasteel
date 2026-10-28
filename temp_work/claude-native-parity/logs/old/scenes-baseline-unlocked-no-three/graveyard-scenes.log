@@ -1,0 +1,19 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+false !== true
+
+    at verifyGraveyardScenes (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/claude-native-parity/baseline/tests/graveyard-scenes.mjs:31:12)
+    at async file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/claude-native-parity/baseline/tests/graveyard-scenes.mjs:100:5 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

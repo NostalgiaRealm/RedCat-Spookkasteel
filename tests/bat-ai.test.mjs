@@ -4,9 +4,11 @@ import fs from 'node:fs';
 import * as THREE from 'three';
 import { Gameplay } from '../source/gameplay.js';
 import {batOverlapsPlayer} from '../source/enemy-flight.js';
+import {PLAYER_HALF_WIDTH} from '../source/player-hull.js';
 import { GAMEPLAY_SETTINGS } from '../source/gameplay-settings.js';
 import { BspCollider } from '../source/collision.js';
 import { CastleWorld } from '../source/world.js';
+import {prepareBareWorld} from './support/bare-world.mjs';
 
 function fixture(variant=1,extra={}) {
   const level={id:'lvl01a',spawn:{position:[0,0,0],orientation:0},entities:[{
@@ -33,7 +35,8 @@ test('green bats pursue through the inherited attack radius and damage only on c
   assert.equal(game.state.health,9);assert.equal(game.projectiles.length,0);
   assert.ok(events.some(e=>e.type==='enemyAttack'&&e.contact===true));
   assert.equal(batOverlapsPlayer(bat,[0,0,80]),false);
-  assert.ok(Math.hypot(bat.position[0],bat.position[2]-80)<24,'contact stops at RedCat hull, not his origin');
+  // Box faces meet at RedCat's native half-width plus the bat's 12 units.
+  assert.ok(Math.hypot(bat.position[0],bat.position[2]-80)<PLAYER_HALF_WIDTH+13,'contact stops at RedCat hull, not his origin');
   assert.notEqual(bat.animationState,'attack','contact does not stop flight for shoot1');
 });
 
@@ -78,7 +81,8 @@ test('green bat hurt, enemy freeze, and cutscenes pause pursuit and the saved co
   assert.equal(bat.attackTimer,initialCooldown);assert.equal(game.state.health,9);
   game.scripts={cutscene:true};advance(game,2,player);
   assert.equal(bat.attackTimer,initialCooldown);assert.equal(game.state.health,9);
-  game.scripts=null;game.hurtEnemy(bat,1);const before=[...bat.position];
+  // Native hits choose a reaction on an even roll (enemy-hit-native.js); seed 1 rolls even.
+  game.scripts=null;bat.aiRandomState=1;game.hurtEnemy(bat,1);const before=[...bat.position];
   advance(game,.5,[0,0,90]);assert.deepEqual(bat.position,before);
   assert.equal(bat.animationState,'hurt');assert.equal(game.state.health,9);
   const restored=new Gameplay(game.level,{save:JSON.parse(JSON.stringify(game.snapshot()))});
@@ -134,7 +138,7 @@ test('authored active bat spawns fit the stable imported body hull rather than s
     const original=JSON.parse(fs.readFileSync(new URL(`../data/levels/lvl0${index}a/level.json`,import.meta.url)));
     const entities=original.entities.filter(e=>e.classname==='MovingEnemy'&&e.Type==='2');
     const game=new Gameplay({...original,entities}),world=new CastleWorld({},{});
-    world.collider=new BspCollider(original.collision);world.physicalModels=[0];
+    world.collider=new BspCollider(original.collision);world.physicalModels=[0];prepareBareWorld(world,{level:original});
     world.loadActor=async name=>{
       const data=JSON.parse(fs.readFileSync(new URL(`../assets/actors/${name}.json`,import.meta.url)));
       const geometry=world.track(new THREE.BufferGeometry());

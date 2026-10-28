@@ -85,6 +85,25 @@ upgrade revoked. See [player abilities](player-abilities-native.md#fairy-rewards
 | Automatic replay policy | Visiting a previously played chapter selects the original connected quick-play tutorial branches through the existing chapter menu. The restored **Avontuur/Snelspel** menu routes share one campaign/save system rather than independent game modes; visited-level history determines replay behavior. Eight Forest and two Graveyard tutorials are skipped; required rewards, bosses and exits remain. | [Replay branches](replayed-level-intros-native.md) |
 | Exclusive Fleurifee encounters | Fresh levels keep fairies dormant until an encounter enables them, overriding two originally enabled later-encounter entities. Enabling another fairy retires the previous one. This enforces the requested single active encounter; legacy multiple-fairy saves are resolved using the saved player position. | [Fairy identity and activation](fairy-dialogue-pickup-lifecycle.md#wrong-fairy-identities) |
 
+### Native parity corrections (27–28 October 2026)
+
+At the user's request, these former port behaviours now follow the original
+game. They are no longer intentional departures:
+
+- the 0.65 s damage immunity;
+- the life deducted at the fatal hit;
+- the “Deze deur zit op slot.” toast (D3);
+- press-only jumping (D2);
+- the port's 22×56 player box (D1);
+- the port's camera framing and camera solver (D5; rebuilt from the original on 28 October, see [native camera](native-camera.md); direct mouse/touch look, first person and the wall lift remain as requested extras);
+- the camera trigger edge cases (D8);
+- MultiplyVolume carrying over to a new track (D9).
+
+The guardian Easy repair (D4) stays a content correction. The retry screen
+(D6), the unreachable script APIs (D7) and the per-frame sight check (D10)
+remain documented differences. See
+[the parity review](claude-native-parity-review.md).
+
 ## Audio choices
 
 Original recordings, per-file gains and recovered attenuation arithmetic remain
@@ -115,7 +134,7 @@ present settings. Sources: [Cave ambience](cave-ambience-range.md),
 | --- | --- | --- |
 | Audible originally silent door panels | Selected visible DoorType-4 panels use original normal/secret door recordings, despite native type 4 selecting `empty.wav`. Invisible area barriers, faceless carriers, hedges and other mechanisms stay excluded. | [Door fallback](world-action-audio.md#buttons-and-doors), [selector](../source/door-audio.js) |
 | Shared secret-door source placement | Castle's shared non-3D secret-door cue is located at the invoking panel for the localized mix. Its editor position is unrelated to some later doors. | [Shared scripted door cues](world-action-audio.md#buttons-and-doors) |
-| Combat music on accepted attack | A valid targeted enemy contributes to combat music immediately when the attack starts, before the pellet hits. Actual hits separately refresh the recovered native awareness. Native evidence establishes hit memory, but does not establish music onset before impact. | [Knight music timing](knight-attack-music.md#starting-music-when-an-attack-begins) |
+| Combat music on accepted attack | A valid targeted enemy contributes to combat music immediately when the attack starts, before the pellet hits. Actual hits separately refresh the recovered native awareness. Native evidence establishes hit memory, but does not establish music onset before impact. Since the D9 correction, a track started this way begins at full gain and discards an earlier MultiplyVolume ([parity review](claude-native-parity-review.md#d9)). | [Knight music timing](knight-attack-music.md#starting-music-when-an-attack-begins) |
 | User-selected fairy cue | Appearance uses `gri5fx11.wav` once, active idle loops `idlefee1.wav`, and ordinary disappearance uses `magiev12.wav` once. The appearance assignment follows the user's corrected choice; the recordings themselves are original assets. | [Fairy sound selection](fairy-skip-audio-2026-09-22.md) |
 | Complete speech and pickup tails | Queue dialogue by actual playback completion, wait for it at natural scene end, and wait for pickup/voice tails before the level overview. Pause/resume preserves all active audio positions. This is the portable scheduling guarantee for uninterrupted recordings, not a claim about identical native decoder internals. | [Dialogue/pickup lifetime](fairy-dialogue-pickup-lifecycle.md), [completion wait](player-protection-progress-and-local-audio.md#focused-verification) |
 | Music continuity | Loop the complete decoded track and resume its in-session playhead after combat instead of restarting every return to ambient music. Reuse/reverse an outgoing fade to avoid duplicate voices. Explicit stops and level resets clear remembered positions. | [Music loops and continuity](audio.md#complete-music-loops-and-encounter-continuity) |
@@ -129,7 +148,8 @@ present settings. Sources: [Cave ambience](cave-ambience-range.md),
 | --- | --- | --- |
 | Modern display options | Widescreen, ultrawide and HD/4K resolution selection, automatic window sizing and a stored fullscreen preference. Fullscreen defaults on; browsers request it on an eligible user gesture. Original movies keep their 4:3 framing. | [README display overview](../README.md#modern-controls-saving-and-performance), [startup/fullscreen](startup-behavior.md) |
 | Modern input | Camera-relative keyboard/mouse controls, touch overlays with automatic mobile detection and an off switch, and standard-mapped controllers for gameplay/menus. Touch labels use **Schieten**; redundant Gebruik/Meer save-load controls are removed because contact controls and Menu cover them. | [Movement adaptations](player-movement-native.md#scope), [touch controls](touch-controls.md), [controllers](controller-support.md) |
-| Camera protection near walls | The third-person camera rises above RedCat when there is too little room behind him, preventing a view inside his body. The reconstructed collision/compensation solver retains this requested behavior. Authored fixed cameras still own their timer and cannot be cancelled by look input. | [Camera implementation](../source/world.js), [camera controls](../source/camera-control.js), [camera boundaries](camera-native-status.md) |
+| Camera protection near walls | The camera follows the original logic ([native camera](native-camera.md)). The additions: when RedCat backs into a wall and the native pull-in would leave the camera inside his model, it rises along an arc over him; under a low ceiling it takes a clear side or front view instead, and only with no external view at all is his model hidden for that frame. Authored fixed cameras still own their timer and cannot be cancelled by look input. | [Native camera](native-camera.md), [wall lift](../source/third-person-camera.js) |
+| Direct look and first person | The original has no mouse-look or first-person view. Mouse, touch-drag and right-stick look turn RedCat and the camera together at once, without the native smoothing, as in release 1.0.4; keyboard steering keeps the native follow camera. The first-person toggle remains. | [Native camera](native-camera.md#port-behaviour-and-extras) |
 | Full-screen level overview | Stretch the original background to fill any window, including portrait displays, while keeping text/icons proportional. Use **KLIK/TIK hier om verder te gaan** on every device instead of the original shooting prompt. | [Responsive overview](touch-controls.md), [renderer](../source/debriefing.js) |
 | Updated menu/help/About | A modern responsive HTML interface hosts display/input settings, cheats, recovery saves and **Over** with project version, donations and website/YouTube links. Requested promotional/development text and the redundant gameplay II overlay/menu Afsluiten button are removed. | [Menu markup](../index.html), [menu source](../source/main.js), [historical UI cleanup](native-parity-audit.md#historical-audit-changes-and-checks-23-september) |
 | First-time control hints | Desktop and touch help appear once for ten seconds after the first Forest opening camera/cutscene returns control. Each input hint is remembered independently across restarts; controller use changes the desktop hint text. | [First-time startup help](startup-behavior.md) |

@@ -1,3 +1,4 @@
+import {PLAYER_MINS,PLAYER_MAXS,PLAYER_HALF_WIDTH,PLAYER_HEIGHT,PLAYER_EYE_HEIGHT} from './player-hull.js';
 // CAdamTriggerModel adds AddPlayerSpeed on entry (0x4d3b98) and removes
 // the same vector on leave (0x4d40e8). These are velocities in metres/sec,
 // not per-frame impulses: one metre is 32 Genesis world units.
@@ -21,11 +22,14 @@ export function buttonTouched(game,object,position,contacts=[]) {
 export function withinTriggerRadius(object,position) {
   const radius=Number(object.entity.TriggerRadius);
   if(!(radius>0))return false;
-  // The native model radius check (0x4d14f0) uses the authored
-  // entity origin, not its brush pivot, and the player's full box dimensions.
-  // Radius expands X/Z only. Offset origins deliberately make one-way doors.
-  const size=[22,56,22];
-  return object.position.every((value,index)=>Math.abs(value-position[index])<size[index]+(index===1?0:radius));
+  // The native model radius check (0x4d14f0) uses the authored entity
+  // origin, not its brush pivot, against the player's box origin, which sits
+  // at eye height (+0x198, feet+54.08). X/Z allow the full box width plus the
+  // radius; Y allows the full box height without the radius (0x4d166c).
+  // Offset origins deliberately make one-way doors.
+  const eye=[position[0],position[1]+PLAYER_EYE_HEIGHT,position[2]];
+  const size=[PLAYER_HALF_WIDTH*2,PLAYER_HEIGHT,PLAYER_HALF_WIDTH*2];
+  return object.position.every((value,index)=>Math.abs(value-eye[index])<size[index]+(index===1?0:radius));
 }
 
 export function playerActivatesModel(game,object,position,contacts=[]) {

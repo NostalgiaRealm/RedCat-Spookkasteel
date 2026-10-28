@@ -74,7 +74,8 @@ test('saving at exact equality preserves an intact prop and its next-hit destruc
   hit(restored.game,restored.crate,.125);assert.equal(restored.crate.health,0);
   const destroyed=fixture(100,JSON.parse(JSON.stringify(restored.game.snapshot())));
   assert.equal(destroyed.crate.health,0);assert.equal(destroyed.crate.propDamage,undefined);
-  assert.equal(actorVisible(destroyed.crate,0),false);assert.equal(destroyed.game.explosions.length,0);
+  // Saves deliberately keep the active explosion record (explosion-damage-native.md).
+  assert.equal(actorVisible(destroyed.crate,0),false);
 });
 
 test('legacy saves keep their remaining budget and same-world restoration clears newer accumulated damage',()=>{

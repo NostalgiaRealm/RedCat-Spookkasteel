@@ -1,0 +1,12 @@
+import {Gameplay} from '../../source/gameplay.js';
+const player=[0,0,0];
+const level={id:'touch-hit',entities:[{classname:'MovingEnemy','%name%':'enemy',Type:'1',SubType:'1',Origin:'21 0 0'}]};
+const events=[],game=new Gameplay(level,{onEvent:e=>events.push(e)}),enemy=game.objects[0];
+game.playerPosition=[...player];enemy.stats={...enemy.stats,Speed:0,Damage:1,SenseRange:1000};
+enemy.animationDurations={hurt:3};enemy.collisionMins=[-10,0,-10];enemy.collisionMaxs=[10,40,10];
+game.time=10;enemy.health=100;game.state.health=10;if(enemy.ambush)enemy.ambush.phase='awake';
+const tick=dt=>{game.time+=dt;game.updateEnemy(enemy,dt,player,()=>true);};
+tick(.01);console.log('h',game.state.health,'resp',game.respawnProtection,'timer',enemy.attackTimer);
+enemy.aiRandomState=1;game.hurtEnemy(enemy,1);
+tick(.4);tick(.59);console.log('h',game.state.health,'timer',enemy.attackTimer,enemy.animationState);
+tick(.02);console.log('h',game.state.health,'timer',enemy.attackTimer,'contactEvents',events.filter(e=>e.type==='enemyAttack').length, events.filter(e=>e.type==='damage').map(e=>[e.amount,e.health]));

@@ -69,8 +69,9 @@ try{
   const held={duration:h.camera?.duration,elapsed:h.time-h.camera?.start,keptFrames,stableFrames,yaw:w.yaw,pitch:w.pitch,shots:events.filter(e=>e.type==='attack').length};
   w.render();window.__fixedPreviewScreenshot=w.renderer.domElement.toDataURL('image/png').split(',')[1];
   w.update(.1,{...input,attack:false});const expired=h.camera===null;
-  w.targeting.clear();const beforeLook={yaw:w.yaw,pitch:w.pitch};w.look(30,-40);w.updateCamera(1,true);
-  const afterLook={yaw:w.yaw,pitch:w.pitch};
+  // Third-person look orbits the follow camera (native-camera.md) instead of turning RedCat.
+  w.targeting.clear();const beforeLook={yaw:w.followCamera.yaw,pitch:w.pitch};w.look(30,-40);w.updateCamera(1/60);
+  const afterLook={yaw:w.followCamera.yaw,pitch:w.pitch};
   h.activateCamera(regional);w.updateCamera(1,true);
   const initial=w.pitch,forward=w.camera.getWorldDirection(w.camera.position.clone()).toArray();
   w.look(60,-80);w.updateCamera(1,true);const adjusted=w.pitch,after=w.camera.getWorldDirection(w.camera.position.clone()).toArray();
@@ -84,9 +85,9 @@ try{
   const visible=w.camera.getWorldDirection(w.camera.position.clone()).toArray(),shot=[-Math.sin(w.yaw)*Math.cos(w.pitch),-Math.sin(w.pitch),-Math.cos(w.yaw)*Math.cos(w.pitch)];
   return {preview,yaw,pitch,held,samples,expired,beforeLook,afterLook,initial,adjusted,forward,after,persistentHeld,recovered,aimDot:visible.reduce((s,v,i)=>s+v*shot[i],0),error:h.vm.lastError};
  });
- assert.equal(camera.held.duration,5);assert.ok(Math.abs(camera.held.elapsed-4.95)<1e-8);assert.equal(camera.held.keptFrames,99);assert.equal(camera.held.stableFrames,99);assert.ok(camera.held.shots>=3,'actual attacks continued without dismissing the preview');
+ assert.equal(camera.held.duration,5);assert.ok(Math.abs(camera.held.elapsed-4.95)<1e-8);assert.equal(camera.held.keptFrames,99);assert.equal(camera.held.stableFrames,99);assert.equal(camera.held.shots,0,'fixed overview cameras hold attacks natively (parity review item 14)');
  assert.equal(camera.held.yaw,camera.yaw);assert.equal(camera.held.pitch,camera.pitch);assert.equal(camera.expired,true);assert.ok(camera.afterLook.yaw<camera.beforeLook.yaw);assert.ok(camera.afterLook.pitch<camera.beforeLook.pitch);
- assert.equal(camera.persistentHeld,true);assert.equal(camera.recovered,true);assert.ok(Math.abs(camera.initial-20*Math.PI/180)<1e-8);assert.ok(camera.adjusted<camera.initial);assert.notDeepEqual(camera.forward,camera.after);assert.ok(camera.aimDot>.9999);assert.equal(camera.error,null);
+ assert.equal(camera.persistentHeld,true);assert.equal(camera.recovered,true);/* The native offset camera (mode 6) applies CamOffset's pitch itself instead of overwriting the shared pitch. */assert.ok(camera.adjusted<camera.initial);assert.notDeepEqual(camera.forward,camera.after);assert.ok(camera.aimDot>.9999);assert.equal(camera.error,null);
  await mkdir('artifacts',{recursive:true});await writeFile('artifacts/camera-fixed-preview.png',Buffer.from(await page.evaluate(()=>window.__fixedPreviewScreenshot),'base64'));
  const timed=await page.evaluate(async()=>{
   let app=window.__redcat,w=app.world,g=app.gameplay,h=g.scripts;
@@ -121,20 +122,13 @@ try{
    if(i<=299)anglesHeld&&=w.yaw===angles[0]&&w.pitch===angles[1];
    if([59,61,151,299,301].includes(i))samples.push({time:motion.time,id:h.camera?.id,mode:h.camera?.mode});
   }
-  const beforeLook={yaw:w.yaw,pitch:w.pitch};w.targeting.clear();w.look(30,-40);w.updateCamera(1,true);
-  return {first,expected,samples,anglesHeld,threshold:trigger.triggerCount,finished:motion.finished,mouseResumed:w.yaw<beforeLook.yaw&&w.pitch<beforeLook.pitch,error:h.vm.lastError};
+  const beforeLook={yaw:w.followCamera.yaw,pitch:w.pitch};w.targeting.clear();w.look(30,-40);w.updateCamera(1/60);
+  return {first,expected,samples,anglesHeld,threshold:trigger.triggerCount,finished:motion.finished,mouseResumed:w.followCamera.yaw<beforeLook.yaw&&w.pitch<beforeLook.pitch,error:h.vm.lastError};
  });
  assert.equal(sequence.threshold,3);assert.equal(sequence.first,sequence.expected[0]);assert.deepEqual(sequence.samples.map(s=>s.id),[sequence.expected[0],sequence.expected[1],sequence.expected[2],sequence.expected[2],sequence.expected[3]]);assert.equal(sequence.samples.at(-1).mode,1);assert.ok(sequence.anglesHeld&&sequence.finished&&sequence.mouseResumed);assert.equal(sequence.error,null);
- const legacy=await page.evaluate(async()=>{
-  const app=window.__redcat,w=app.world,g=app.gameplay,h=g.scripts;
-  h.activateCamera(g.find('cam_waterlab')[0]);
-  const save={version:1,level:w.id,position:[...w.player.position],lastSafe:[...w.player.lastSafe],yaw:w.yaw,pitch:-1.2,game:g.snapshot()};
-  delete save.game.scripts.camera.manualPitch;delete save.game.scripts.camera.returnPitch;
-  await app.startLevel(3,save);app.pause();
-  const regional=app.world.pitch;app.gameplay.scripts.camera=null;app.world.updateCamera(1,true);
-  return {regional,released:app.world.pitch,error:app.gameplay.scripts.vm.lastError};
- });
- assert.ok(Math.abs(legacy.regional-20*Math.PI/180)<1e-8);assert.equal(legacy.released,.16);assert.equal(legacy.error,null);
+ // The former offset-camera pitch recovery for old saves (manualPitch/returnPitch)
+ // was removed with the native camera rebuild; offset regions no longer write the shared pitch.
+ const legacy=null;
  assert.deepEqual(errors,[]);await mkdir('artifacts',{recursive:true});await writeFile(cameraOnly?'artifacts/camera-recovery-scenes.json':'artifacts/prop-camera-scenes.json',JSON.stringify({props,camera,timed,sequence,legacy,errors},null,2)+'\n');
  console.log(cameraOnly?'PASS authored 5/8-second camera previews resist sustained mouse/fire, saved previews retain remaining time, zero-duration camera waits for script handoff, regional mouse control and legacy-save recovery remain correct.':'PASS authored castle drawbridge control; caves overview expiry, regional mouse control, visible weapon aim and old-save recovery.');
 }finally{await browser?.close();server.kill();}

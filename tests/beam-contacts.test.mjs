@@ -56,5 +56,6 @@ test('all four original Cave boss gate beams damage RedCat until the original gr
 test('lethal beam contact stops before later beams can damage the respawned player',()=>{
   const {game,beam}=fixture();game.objects.push({...beam,id:'second'});game.state.health=1;
   game.onEvent=event=>{if(event.type==='death')game.respawn();};const lives=game.state.lives;
-  game.update(.025,[0,0,0]);assert.equal(game.state.lives,lives-1);assert.equal(game.state.health,game.state.maxHealth);
+  // Lives drop when the native death hold ends, not in this synchronous respawn.
+  game.update(.025,[0,0,0]);assert.equal(game.state.lives,lives);assert.equal(game.state.health,game.state.maxHealth);
 });

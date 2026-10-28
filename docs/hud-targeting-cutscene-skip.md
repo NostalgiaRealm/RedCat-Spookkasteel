@@ -17,9 +17,11 @@ prepared projects can run just this importer with `--installation PATH`.
 
 The HUD displays the original health glove and full/half/empty hearts,
 RedCat portrait and life count, potion count/level total, treasure chest and
-score. One heart represents two health points. Enemy health and its portrait
-appear while attack lock is active. The logical 640×480 layout scales with
-height; right-side counters remain attached to the right edge on widescreen
+score. One heart represents two health points, drawn from the truncated
+health value, so fractional liquid damage never shows an extra half heart.
+Enemy health and its portrait appear while attack lock is active. The logical
+640×480 layout is fitted to both the width and the height (with a touch
+bottom inset); right-side counters remain attached to the right edge on widescreen
 and stay inside the fitted game image when a 4:3 resolution is selected.
 An accessible text equivalent remains in the DOM. The extra “II” pause button
 has been removed from gameplay; Escape and P still open the pause menu.

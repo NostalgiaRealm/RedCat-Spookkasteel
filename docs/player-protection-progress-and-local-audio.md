@@ -71,9 +71,9 @@ as requested; they intentionally differ from the original game's long reach.
 - `node --test tests/player-cheat-progress.test.mjs` — four checks covering live,
   restored and blocked-exit no-clip protection, lethal script damage, campaign
   skill persistence/replay and migration validation.
-- `node --test tests/castle-tower-ambience.test.mjs` — three checks covering every
-  actual castle sound emitter, moving positions and volume factors, all ten
-  actual tower fire emitters and untouched bubbling/music/voice routing.
+- The former `tests/castle-tower-ambience.test.mjs` asserted the superseded
+  25 m castle and 18 m tower-fire ranges and was removed on 28 October 2026;
+  the current ranges are checked in `tests/spatial-audio.test.mjs`.
 - `node tests/player-audio-integration-scenes.mjs` — browser checks of the real
   cheats setting, immunity, reload/replay skill retention, complete sequential
   WAV playback, pause/resume and explicit two-second skip. Results are recorded

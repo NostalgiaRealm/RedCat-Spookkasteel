@@ -19,6 +19,7 @@ import {TorchFlames} from './torch-flames.js';
 import {WorldLightShadows} from './world-light-shadows.js';
 import {NativeSpoutEffect,restoreSpoutSnapshots} from './spout-effects.js';
 import {explosionTextureFilter} from './explosion-variants.js';
+import {FLASH_TEXTURE,flashRays} from './flash-effect-native.js';
 import {ELECTRIC_SPARK_TEXTURE} from './electric-explosion-native.js';
 
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
@@ -385,6 +386,7 @@ export class WorldEffects {
       }
       this.entries.set(object.id,state);
     }
+    this.flashes=gameplay.objects.filter(object=>object.entity.classname==='FlashEffect');
     this.torches=new TorchFlames(world,gameplay);
     for(const object of this.torches.synthetic)this.entries.set(object.id,{object,active:false,age:0,particles:[],nextSpawn:0,serial:0,opacity:0});
     for(const saved of restoreSpoutSnapshots(gameplay.spoutStates)?.entries||[]) {
@@ -443,6 +445,13 @@ export class WorldEffects {
     for(const batch of this.beamBatches.values())if(batch.beginView)batch.beginView(cullSprites?this.spriteFrustum:null);else batch.frustum=cullSprites?this.spriteFrustum:null;
     if(this.coronaBatch)if(this.coronaBatch.beginView)this.coronaBatch.beginView(cullSprites?this.spriteFrustum:null);else this.coronaBatch.frustum=cullSprites?this.spriteFrustum:null;
     this.torches.update(eye);
+    const flashBatch=this.flashes.length?this.batches.get(FLASH_TEXTURE):null;
+    if(flashBatch)for(const object of this.flashes) {
+      if(!Number.isFinite(object.flashStartedAt))continue;
+      const rays=flashRays(this.gameplay.time-object.flashStartedAt),origin=this.position(object);
+      for(const ray of rays)flashBatch.add(origin,ray.size,ray.size,[1,1,1],ray.opacity,ray.rotation);
+      if(!rays.length)delete object.flashStartedAt;
+    }
     for(const state of this.entries.values())if(state.object.entity.classname==='EffectCoronaEntity') {
       const {object}=state,origin=this.position(object);
       coronas.push({id:object.id,origin,enabled:object.enabled!==false&&object.visible!==false,

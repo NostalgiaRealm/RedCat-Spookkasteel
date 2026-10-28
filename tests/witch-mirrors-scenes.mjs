@@ -29,7 +29,9 @@ try{
     w.redcat.visible=false;w.camera.position.set(80,2424,-416);w.camera.lookAt(0,2435,-544);w.render();
     return {rows,error:h.vm.lastError};
   });
-  await page.waitForFunction(()=>Number(getComputedStyle(document.getElementById('script-flash')).opacity)===0);
+  // FlashEffect is now a one-second in-world ray burst on the gameplay clock.
+  // The paused scene clock would hold it, so retire it for the mirror screenshot.
+  await page.evaluate(()=>{for(const o of window.__redcat.gameplay.objects)if(o.entity.classname==='FlashEffect')delete o.flashStartedAt;window.__redcat.world.render();});
   await page.screenshot({path:'artifacts/tower-raised-mirror.png'});
   for(const row of mirrors.rows){assert.ok(row.frames<150,row.name+' must respond to walking into its trigger');assert.equal(row.position[1],2416,row.name);assert.equal(row.standard[1],2304);assert.equal(row.enabled,false);}
   assert.equal(mirrors.error,null);

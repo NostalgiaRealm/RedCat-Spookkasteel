@@ -110,7 +110,8 @@ test('hidden and inactive targets stay protected, and brush OnHit callbacks do n
 
 test('player death fires once; noclip immunity and cutscene protection remain intact',()=>{
   const dead=fixture();dead.game.destroy(dead.crate);advance(dead.game,.4,[0,0,0]);
-  assert.equal(dead.game.state.health,0);assert.equal(dead.game.state.lives,2);assert.equal(dead.events.filter(event=>event.type==='death').length,1);
+  // Still inside the two-second death hold: the life is deducted at respawn.
+  assert.equal(dead.game.state.health,0);assert.equal(dead.game.state.lives,3);assert.equal(dead.events.filter(event=>event.type==='death').length,1);
   const immune=fixture();immune.game.isPlayerInvulnerable=()=>true;immune.game.destroy(immune.crate);advance(immune.game,.5,[0,0,0]);assert.equal(immune.game.state.health,10);
   const cutscene=fixture();cutscene.game.destroy(cutscene.crate);cutscene.game.scripts={cutscene:true};
   advance(cutscene.game,.5,[0,0,0]);cutscene.game.scripts.cutscene=false;advance(cutscene.game,.1,[0,0,0]);assert.equal(cutscene.game.state.health,10);
@@ -142,7 +143,8 @@ test('a synchronous respawn during blast damage discards the old cell iteration 
     if(event.type==='death'){game.respawn();game.playerReaction=null;}
   };
   advance(game,.1,[0,0,0]);
-  assert.equal(game.state.health,10);assert.equal(game.state.lives,2);assert.equal(hits,1);
+  // Lives drop when the native death hold ends, not in this synchronous respawn.
+  assert.equal(game.state.health,10);assert.equal(game.state.lives,3);assert.equal(hits,1);
   assert.equal(game.explosionDamage.length,0);assert.equal(game.find('enemy')[0].health,3);
 });
 

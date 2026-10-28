@@ -10,6 +10,9 @@ try {
   await mkdir('artifacts',{recursive:true});
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+  // StandardSkill applies only to quick play natively (parity review item 5);
+  // give this adventure profile the basic shot it would have earned.
+  await page.addInitScript(()=>localStorage.setItem('redcat.progress.v1',JSON.stringify({version:1,highestUnlocked:4,earnedSkills:1})));
   page.on('pageerror',error=>errors.push(error.stack));
   page.on('response',response=>{if(response.status()>=400)errors.push(`${response.status()} ${response.url()}`);});
   await page.goto('http://127.0.0.1:4213/?skipIntro');await page.waitForFunction(()=>window.__redcat);
@@ -31,7 +34,7 @@ try {
     w.syncModels();w.syncActors(0);w.syncPlayer(0,{});w.targeting.clear();w.updateTargeting(.05,{attack:true});w.updateCamera(1,true);w.syncTargetMarker();w.render();
     const button=g.find('knopbridge')[0],bridge=g.find('ophaalbrug01_mc')[0],motion=h.players.get(bridge.id),aim=targetAimPoint(button);
     const cameraDirection=w.camera.getWorldDirection(w.camera.position.clone()).toArray(),cameraAim=aim.map((v,i)=>v-w.camera.position.getComponent(i)),cameraDistance=Math.hypot(...cameraAim);
-    const before={button:button.id,selected:w.targeting.target?.id,ring:w.targetMarker.visible,locked:w.targeting.locked,skill:g.state.skill,weapons:h.weaponsEnabled,health:g.state.health,lives:g.state.lives,position:[...w.player.position],aim,distance:Math.hypot(...aim.map((v,i)=>v-w.player.position[i])),cameraAimDot:cameraDirection.reduce((sum,v,i)=>sum+v*cameraAim[i]/cameraDistance,0),bridgeOpen:bridge.open,bridgeTime:motion.time,buttonModel:button.modelIndex,actors:g.objects.filter(o=>o.kind==='actor'&&targetableObject(o)).map(o=>o.id)};
+    const before={button:button.id,selected:w.targeting.target?.id,ring:w.targetMarker.visible,locked:w.targeting.locked,skill:g.state.skill,weapons:h.weaponsEnabled,health:g.state.health,lives:g.state.lives,position:[...w.player.position],aim,distance:Math.hypot(...aim.map((v,i)=>v-w.player.position[i])),cameraAimDot:cameraDirection.reduce((sum,v,i)=>sum+v*cameraAim[i]/cameraDistance,0),cameraPitch:Math.asin(cameraDirection[1]),aimPitch:Math.asin(cameraAim[1]/cameraDistance),bridgeOpen:bridge.open,bridgeTime:motion.time,buttonModel:button.modelIndex,actors:g.objects.filter(o=>o.kind==='actor'&&targetableObject(o)).map(o=>o.id)};
     const image=w.renderer.domElement.toDataURL('image/png');
     const events=[],oldEvent=g.onEvent;g.onEvent=event=>{events.push(event);oldEvent(event);};
     for(let i=0;i<180&&!button.switchedOn;i++)w.update(1/60,{attack:true,forward:0,right:0});
@@ -78,10 +81,11 @@ try {
   });
   await page.screenshot({path:'artifacts/graveyard-enemy-targeting.png'});
   await writeFile('artifacts/target-eligibility-scenes.json',JSON.stringify({castle,graveyard,errors},null,2)+'\n');
-  assert.equal(castle.before.skill,1,'The native castle initializer grants the basic shot');
+  assert.equal(castle.before.skill,1,'The earned basic shot carries into the castle');
   assert.deepEqual(castle.before.actors,[],'The castle has no authored Targetable crates');
   assert.equal(castle.before.selected,castle.before.button);assert.ok(castle.before.ring&&castle.before.locked);
-  assert.ok(castle.before.distance>480&&castle.before.distance<4320);assert.ok(castle.before.cameraAimDot>.9999);
+  assert.ok(castle.before.distance>480&&castle.before.distance<4320);// Native lock-on (mode 9) pitches toward the target; its yaw keeps following RedCat's heading.
+  assert.ok(Math.abs(castle.before.cameraPitch-castle.before.aimPitch)<1e-6);
   assert.equal(castle.before.bridgeOpen,true);assert.equal(castle.before.bridgeTime,3);
   assert.equal(castle.after.switched,true);assert.equal(castle.after.count,1);
   assert.equal(castle.after.bridgeOpen,false);assert.ok(castle.after.bridgeTime<1e-6);

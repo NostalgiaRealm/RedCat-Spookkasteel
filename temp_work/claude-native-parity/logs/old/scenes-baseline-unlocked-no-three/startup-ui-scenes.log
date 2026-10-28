@@ -1,0 +1,29 @@
+PASS fresh browser defaults to fullscreen and the sound gesture enables both sound and fullscreen
+/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/claude-native-parity/baseline/current_work/startup-ui-2026-10-03/scenes-1793145566508
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.uncheck: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('#fullscreen')
+    - locator resolved to <input id="fullscreen" type="checkbox"/>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    56 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+
+    at /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/claude-native-parity/baseline/tests/startup-ui-scenes.mjs:30:82 {
+  name: 'TimeoutError'
+}
+
+Node.js v24.13.1

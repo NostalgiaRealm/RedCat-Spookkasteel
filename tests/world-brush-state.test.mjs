@@ -24,8 +24,9 @@ const cross=(app,reverse=false)=>{
   return app.collider.trace(...ends,[-11,0,-11],[11,56,11],[110,122]);
 };
 const press=(app,name)=>{
-  const button=app.game.find(name)[0];app.game.switchButton(button);assert.equal(button.switchedOn,true);
-  for(let elapsed=0;elapsed<12;elapsed+=.025)app.host.update(.025);
+  // Button presses are queued and applied by later controller updates (button-controller-native.js).
+  const button=app.game.find(name)[0];app.game.switchButton(button);
+  for(let elapsed=0;elapsed<12;elapsed+=.025)app.host.update(.025);assert.equal(button.switchedOn,true);
   app.world.syncModels();
 };
 

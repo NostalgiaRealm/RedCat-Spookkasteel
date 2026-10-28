@@ -21,7 +21,9 @@ Read-only disassembly of installed `RcHcGame.dat` shows:
   radius plus the full respective box dimensions; the Y threshold is the
   full box height without the radius. These are strict per-axis comparisons,
   not a sphere. `0x554a50`, calling subtraction at `0x5b2fe0`, supplies the
-  full dimensions. The reconstruction uses its normal 22 × 56 × 22 hull.
+  full dimensions. The reconstruction now uses the native 24.96 × 57.92 ×
+  24.96 box, measured from the eye (feet + 54.08); see
+  [the parity review](claude-native-parity-review.md#17).
 - Buttons invoke the same radius helper at `0x4cb469` and `0x4cb62d`.
 - At `0x4cce0b–0x4cce1b`, an expired stay-open timer still waits while the
   player is within the door's radius.
@@ -64,3 +66,11 @@ wall button and walk-on floor, and Brutus approach. Its JSON results and
 screenshots are written under `artifacts/door-activation-*`.
 
 No builds, original installation edits or website changes are part of this fix.
+
+## Locked doors
+
+Lock and Unlock play the DoorType's `LockDoor*`/`UnlockDoor*` cue at the door
+when the state changes (`0x4cd800`; types 0 and 4 are silent). Using a locked
+door with `UserFeedBack=1` plays `ErrorSound.wav`. The port's former
+“Deze deur zit op slot.” toast is removed (D3 in
+[the parity review](claude-native-parity-review.md#13)).

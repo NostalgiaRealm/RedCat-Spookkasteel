@@ -117,8 +117,9 @@ configured ViewAngle. No shorter encounter-specific radius is substituted.
 Both range paths require line of sight. The eye is the current actor
 position plus 80% of its bounding-box height: `0x422a96–0x422aac`
 calculates that height, and `0x4236b0` adds it to the current position.
-The first ray targets the player's origin; if blocked, the second targets
-the origin plus the player's full bounding-box height. The spider's own
+The first ray targets the centre of the player's box (`0x49bc80`, feet +
+28.96); if blocked, the second targets that centre plus the full box height
+(57.92). The spider's own
 actor is excluded from the query. The state transition at `0x40311e`
 uses the existing seen/recently-seen predicate (`0x422f30`).
 

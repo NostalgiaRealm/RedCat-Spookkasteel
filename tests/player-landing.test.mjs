@@ -43,7 +43,7 @@ test('actual gameplay subtracts fractional fall damage once and ordinary jumps r
 
 test('fall damage keeps existing no-clip, cutscene, respawn and completed-level protection',()=>{
   for(const protect of [game=>game.isPlayerInvulnerable=()=>true,
-    game=>game.scripts={cutscene:true},game=>game.playerReaction={phase:'respawn'},game=>game.completed=true]) {
+    game=>game.scripts={cutscene:true},game=>game.respawnProtection=5,game=>game.completed=true]) {
     const {game,events}=fixture();protect(game);game.land(jumpSpeed*4,[0,0,0]);
     assert.equal(game.state.health,10);assert.equal(events.some(event=>event.type==='damage'),false);
   }

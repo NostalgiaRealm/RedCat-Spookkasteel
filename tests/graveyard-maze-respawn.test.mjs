@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Gameplay} from '../source/gameplay.js';
 import {ScriptHost} from '../source/script-host.js';
-import {PLAYER_REACTIONS} from '../source/player-lifecycle.js';
+import {PLAYER_REACTIONS,PLAYER_DEATH_SECONDS} from '../source/player-lifecycle.js';
 
 const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url)));
 const clone=value=>JSON.parse(JSON.stringify(value));
@@ -94,8 +94,8 @@ test('the real death clip reaches one respawn and does not retrigger the maze at
   scene.game.playerPosition=[...scene.object('heg1_trigger_mc').position];
   const checkpoint=clone(scene.game.checkpoint);
   scene.game.damage(100);
-  assert.equal(scene.game.playerReaction.phase,'death');assert.equal(scene.game.state.lives,2);
-  tick(scene,PLAYER_REACTIONS.death.duration-.025,true);
+  assert.equal(scene.game.playerReaction.phase,'death');assert.equal(scene.game.state.lives,3,'the life is deducted at respawn');
+  tick(scene,PLAYER_DEATH_SECONDS-.025,true);
   assert.equal(scene.object('heg1_trigger_mc').triggerCount,1,'Maze reset waits for respawn');
   assert.equal(scene.events.filter(event=>event.type==='respawn').length,0);
   tick(scene,.025,true);
@@ -112,7 +112,7 @@ test('fatal damage cancels an unfinished final button before it can start the ma
   assert.equal(scene.object('mazedeur1_groen').enabled,false);
   scene.game.damage(100);
   assert.equal(scene.player('mazedeur1_knop').playing,false,'Pending AfterSwitchOnCommand is canceled at fatal damage');
-  tick(scene,PLAYER_REACTIONS.death.duration,true);
+  tick(scene,PLAYER_DEATH_SECONDS,true);
   assert.equal(scene.events.filter(event=>event.type==='respawn').length,1);
   assert.equal(scene.events.filter(event=>event.type==='cutscene').length,0);
   assertInitialMaze(scene);
@@ -158,7 +158,7 @@ test('save/load during death or after reset retains reset transforms and permits
     if(saveDuringDeath){scene.game.damage(100);tick(scene,.3,true);}
     else scene.game.respawn();
     const saved=clone(scene.game.snapshot());scene=boot(saved);
-    if(saveDuringDeath)tick(scene,PLAYER_REACTIONS.death.duration-.3,true);
+    if(saveDuringDeath)tick(scene,PLAYER_DEATH_SECONDS-.3,true);
     assertInitialMaze(scene);
     const poses=progression.map(name=>clone(scene.host.modelTransforms.get(scene.object(name).modelIndex)));
     scene.game.restore(clone(scene.game.snapshot()));
@@ -216,7 +216,7 @@ test('loading an older death save cancels its pending final-button callback befo
   save.state.health=0;save.state.lives=2;save.playerReaction={phase:'death',age:.3};
   const restored=boot(save);
   assert.equal(restored.player('mazedeur1_knop').playing,false);
-  tick(restored,PLAYER_REACTIONS.death.duration-.3,true);
+  tick(restored,PLAYER_DEATH_SECONDS-.3,true);
   assert.equal(restored.events.filter(event=>event.type==='respawn').length,1);
   assert.equal(restored.events.filter(event=>event.type==='cutscene'&&event.active).length,0);
   assertInitialMaze(restored);assertNativeReplay(restored);
@@ -265,6 +265,6 @@ test('fatal damage before the first button controller check also cancels its que
   const scene=boot();advanceStages(scene,5);const button=scene.object('mazedeur1_knop');
   scene.game.switchButton(button,true);assert.equal(button.switchedOn,false);assert.equal(button.pendingButtonSwitch,true);
   scene.game.damage(100);assert.equal(button.pendingButtonSwitch,undefined);
-  tick(scene,PLAYER_REACTIONS.death.duration,true);assertInitialMaze(scene);
+  tick(scene,PLAYER_DEATH_SECONDS,true);assertInitialMaze(scene);
   tick(scene,14);assert.equal(scene.object('mazedeur1_dm').open,false);
 });

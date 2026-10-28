@@ -1,3 +1,4 @@
+import {PLAYER_MINS,PLAYER_MAXS,PLAYER_HALF_WIDTH,PLAYER_HEIGHT,PLAYER_EYE_HEIGHT} from './player-hull.js';
 import {transformMotionPoint} from './motions.js';
 const numeric=(v,f=0)=>Number.isFinite(Number(v))?Number(v):f;
 
@@ -17,7 +18,7 @@ export function beamEndpoints(game,object,trace=null) {
 // Clip (player movement time, distance along beam) against all six sides of
 // the moving player box. Unlike enclosing AABBs this does not hit a diagonal
 // beam's empty corners, and fast movement cannot tunnel through a thin beam.
-export function beamTouchesPlayer(start,end,previous,current,mins=[-11,0,-11],maxs=[11,56,11]) {
+export function beamTouchesPlayer(start,end,previous,current,mins=PLAYER_MINS,maxs=PLAYER_MAXS) {
   let polygon=[[0,0],[1,0],[1,1],[0,1]];
   for(let axis=0;axis<3;axis++)for(const side of [-1,1]) {
     const delta=current[axis]-previous[axis],length=end[axis]-start[axis];

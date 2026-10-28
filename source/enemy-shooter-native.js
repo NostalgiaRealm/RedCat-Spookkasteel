@@ -41,14 +41,23 @@ export function updateNativeShooter(game,object,dt,{playerPosition,visible,dista
   if(!object.patrol||!game.navigation.find(object.patrol.start))return false;
   const remembers=()=>visible||object.alerted===true;
   let state=object.nativeShooter;
+  const brutus=['brutusm','brutusb'].includes(object.enemyType);
   if(!state) {
-    if(!remembers())return false;
+    // Both Brutus defaults are an endless stand-still wait (Mushroom
+    // 0x406840, Bone 0x4010b0): an unaware Brutus waits where he is instead
+    // of walking the arena's waypoints.
+    if(!remembers()){if(brutus){game.enemyAnimation(object,'idle');moveIdle();return true;}return false;}
     state=object.nativeShooter={version:1,phase:object.enemyType==='skeleton'?'shoot':'approach',remaining:0,waitUntil:null};
     if(object.enemyType==='skeleton')return startSalvo();
   }
   const range=number(object.stats.AttackRange,100),minimum=number(object.stats.MinPlayerDistance),bone=object.enemyType==='brutusb';
   function idle() {game.enemyAnimation(object,'idle');moveIdle();return true;}
-  function finish() {object.nativeShooter=null;object.salvoRemaining=0;return false;}
+  function finish() {
+    object.nativeShooter=null;object.salvoRemaining=0;
+    // Mushroom Brutus returns to his idle wait (0x406f70 -> slot 9).
+    if(object.enemyType==='brutusm'){game.enemyAnimation(object,'idle');moveIdle();return true;}
+    return false;
+  }
   function startShot() {
     moveIdle();
     const duration=game.enemyAnimation(object,'attack',game.enemyDuration(object,'attack'));
@@ -140,7 +149,10 @@ export function updateNativeShooter(game,object,dt,{playerPosition,visible,dista
       // the cursor resume its edge before this one-shot finishes.
       if(distance>range){moveIdle();return true;}
     }else if(distance<range){
-      return remembers()?startSalvo():finish();
+      if(remembers())return startSalvo();
+      // Bone Brutus's attack state never completes (0x401160): out of memory
+      // on arrival he simply keeps choosing closer moves.
+      if(!bone)return finish();
     }
     walk(target.position,{authoredRoute:!object.patrol.reacquiring,destinationId:target.id,...(retreat?{backward:true}:{})});return true;
   }

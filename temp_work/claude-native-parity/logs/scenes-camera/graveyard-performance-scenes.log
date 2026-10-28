@@ -1,0 +1,33 @@
+PERF {"round":0,"index":0,"total":23.399999991059303,"trace":24.200000017881393}
+PERF {"round":0,"index":10,"total":159.29999999701977,"trace":90.49999999254942}
+PERF {"round":0,"index":20,"total":284.3000000566244,"pursuit":0.4000000059604645,"trace":219.40000001341105}
+PERF {"round":0,"index":30,"total":406.50000008940697,"pursuit":0.4000000059604645,"trace":339.89999996870756}
+PERF {"round":0,"index":40,"total":520.6000000908971,"pursuit":0.4000000059604645,"trace":387.7000000178814}
+PERF {"round":1,"index":0,"total":542.3000001236796,"pursuit":0.4000000059604645,"trace":407.600000038743}
+PERF {"round":1,"index":10,"total":662.1000001430511,"pursuit":0.4000000059604645,"trace":479.1000000834465}
+PERF {"round":1,"index":20,"total":770.400000102818,"pursuit":0.5000000074505806,"trace":610.2000001445413}
+PERF {"round":1,"index":30,"total":875.3000001087785,"pursuit":0.5000000074505806,"trace":731.5000001788139}
+PERF {"round":1,"index":40,"total":977.7000001370907,"pursuit":0.6000000089406967,"trace":781.5000001713634}
+PERF {"round":2,"index":0,"total":1001.3000001162291,"pursuit":0.6000000089406967,"trace":802.4000001773238}
+PERF {"round":2,"index":10,"total":1101.4000001102686,"pursuit":0.6000000089406967,"trace":868.8000002577901}
+PERF {"round":2,"index":20,"total":1193.600000090897,"pursuit":0.7000000104308128,"trace":1003.2000002264977}
+PERF {"round":2,"index":30,"total":1282.9000000581145,"pursuit":0.800000011920929,"trace":1125.0000002011657}
+PERF {"round":2,"index":40,"total":1374.6000000238419,"pursuit":0.800000011920929,"trace":1174.2000000923872}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: graphics resources remain bounded
+
+1366 !== 1365
+
+    at file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/graveyard-performance-scenes.mjs:51:10 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1366,
+  expected: 1365,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

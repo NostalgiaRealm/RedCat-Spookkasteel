@@ -15,3 +15,9 @@
 
 # Chromium temporary files have no research value.
 .com.google.Chrome.*
+
+# Native-parity review (28 October 2026): the rebuilt pre-change tree copies
+# game assets, and scene-run outputs are regenerated screenshots and browser
+# profiles. Keep both local; the logs, scripts and notes are retained.
+/claude-native-parity/baseline/
+/claude-native-parity/scene-outputs*/

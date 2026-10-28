@@ -84,7 +84,7 @@ test('finite spout disable and repeated Enable commands reset only visual timers
 test('authored dynamic light follows a moving model and Davi-Script disable',()=>{
   const {object,effects}=fixture({classname:'DynamicLightEntity',ColorA:'255 0 0',ColorZ:'0 255 0',StartZValues:'1',ColorTime:'0',RadiusA:'100',RadiusZ:'300',RadiusFunction:'z',RadiusTime:'1'});
   object.modelIndex=7;effects.gameplay.scripts={modelTransforms:new Map([[7,{origin:[0,0,0],translation:[10,20,30],rotation:[0,0,0,1]}]])};
-  effects.update(.1);assert.deepEqual(effects.lights,[{position:[11,22,33],color:[0,1,0],radius:300}]);
+  effects.update(.1);assert.deepEqual(effects.lights,[{position:[11,22,33],color:[0,1,0],radius:300,castShadow:false}]);
   object.enabled=false;effects.update(.1);assert.equal(effects.lights.length,0);assert.ok(effects.pointLights.every(l=>l.intensity===0));effects.dispose();
 });
 

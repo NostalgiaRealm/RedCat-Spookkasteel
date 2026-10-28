@@ -5,7 +5,12 @@ import { ActorAnimator, ActorStateAnimator } from './animation.js';
 import {cloneActorPoseGeometry} from './actor-geometry.js';
 import { sampleCameraRoute } from './script-camera.js';
 import { PlayerCameraControl } from './camera-control.js';
-import { resolveThirdPersonCamera } from './third-person-camera.js';
+import { CameraWallLift } from './third-person-camera.js';
+import { NativeFollowCamera, nativeSteer, yawToward, CAMERA_HULL_HALF_SIZE } from './native-camera.js';
+import { PLAYER_HEIGHT, PLAYER_EYE_HEIGHT } from './player-hull.js';
+// The shared look/aim pitch's default; at this value the orbit adds nothing
+// to the native camera pitch.
+const DEFAULT_PITCH=0.16;
 import { visibleLiquidGroups, surfaceAlphaTest } from './liquids.js';
 import { trailOpacity } from './projectile-hazards.js';
 import { projectileVisibilityScale } from './projectile-visibility.js';
@@ -92,7 +97,7 @@ export class CastleWorld {
         texture.flipY=true;texture.colorSpace=THREE.SRGBColorSpace;texture.wrapS=texture.wrapT=THREE.RepeatWrapping;
         texture.magFilter=THREE.LinearFilter;texture.anisotropy=Math.min(8,this.renderer.capabilities.getMaxAnisotropy());
       }});
-    this.targeting=new EnemyTargeting();this.cameraControl=new PlayerCameraControl();
+    this.targeting=new EnemyTargeting();this.cameraControl=new PlayerCameraControl();this.followCamera=new NativeFollowCamera();this.wallLift=new CameraWallLift();this.cameraMode=null;this.cameraInput={hasInput:false,backpedal:false,steering:true};
     this.hazardMeshes=new Map();this.bossMachines=new Map();this.spiderWebs=new Map();
     this.skyBoundaryMeshes=[];
   }
@@ -343,6 +348,7 @@ export class CastleWorld {
             obj.animationSnapshot=()=>stateAnimator.snapshot();
           }
           obj.projectileOrigins=()=>this.enemyProjectileOrigins(obj,actor);
+          if(obj.enemyType==='knight')obj.knightStrikeSegment=()=>this.knightStrikeSegment(obj,actor);
           obj.recoverySafePosition=position=>{
             const mins=obj.collisionMins||[-12,0,-12],maxs=obj.collisionMaxs||[12,45,12];
             if(this.collider.contents(position,mins,maxs,this.physicalModels)&0x60000)return false;
@@ -421,7 +427,9 @@ export class CastleWorld {
     });
     for(const obj of gameplay.objects)if(obj.kind==='pickup') {
       const actor=this.actorInstances.get(obj.id);if(!actor)continue;
-      obj.pickupPlacement=pickupPlacement(point(obj.entity),pickupBounds(actor.userData.template.data,obj.entity),
+      // Gameplay keeps the item box for its native hull-overlap pickup test.
+      obj.pickupBounds=pickupBounds(actor.userData.template.data,obj.entity);
+      obj.pickupPlacement=pickupPlacement(point(obj.entity),obj.pickupBounds,
         (start,end,mins,maxs)=>placementCollider.trace(start,end,mins,maxs,this.physicalModels));
       actor.position.fromArray(gameplay.objectPosition(obj));
     }
@@ -747,6 +755,20 @@ export class CastleWorld {
     if(machine)this.syncBossMachine(object,machine,false);
     return posedEnemyProjectileOrigins(object,actor,machine);
   }
+  knightStrikeSegment(object,actor) {
+    // Pose the current swing (same clock as projectile release), then read
+    // BONE01 (CRcKnight slot 49, 0x40e660) in world space.
+    this.enemyProjectileOrigins(object,actor);
+    const animator=actor.userData.animator,mesh=actor.userData.mesh;
+    if(!animator||!mesh)return null;
+    const index=animator.data.bones.findIndex(bone=>bone.name.toUpperCase()==='BONE01');
+    const bone=animator.transforms[index];if(!bone)return null;
+    mesh.updateWorldMatrix(true,false);
+    const tipBone=mesh.localToWorld(new THREE.Vector3(bone[9],bone[10],bone[11])).toArray();
+    const mins=object.collisionMins||[-18,0,-18],maxs=object.collisionMaxs||[18,50,18];
+    const centre=object.position.map((v,i)=>v+(mins[i]+maxs[i])/2);
+    return [tipBone.map((v,i)=>v+.3*(v-centre[i])),centre];
+  }
   syncBossMachine(object,machine,collision=true) {
     machine.root.position.fromArray(object.boss.home);machine.root.rotation.y=object.yaw||0;
     machine.root.visible=object.visible!==false&&object.health>0;
@@ -1063,7 +1085,9 @@ export class CastleWorld {
         // Native targeting accepts a clear ray or the selected object's hull.
         return hit.fraction>=1||hit.actorId===object.id||(object.kind!=='enemy'&&object.modelIndex!==undefined&&hit.modelIndex===object.modelIndex);
       }});
-    if(this.targeting.locked){
+    // Native lock-on turns RedCat only while movement input is held (steering
+    // above); first person and no-clip keep turning toward the target.
+    if(this.targeting.locked&&!this.steeredThirdPerson()){
       const target=targetAimPoint(this.targeting.target),dx=target[0]-this.player.position[0],dz=target[2]-this.player.position[2];
       const desired=Math.atan2(-dx,-dz),delta=Math.atan2(Math.sin(desired-this.yaw),Math.cos(desired-this.yaw));
       this.yaw+=delta*(1-Math.exp(-12*dt));
@@ -1095,17 +1119,34 @@ export class CastleWorld {
     }
     this.syncModels();
     this.syncMountedActorCollisions();
-    this.cameraControl.sync(this);
     // Hurt is a presentation/weapon reaction, not a freeze of the physics
     // controller. Keep falling, riding platforms and escaping water possible.
-    const playerFrozen=host?.cutscene||this.gameplay?.completed||this.gameplay?.playerReaction?.phase==='respawn'||this.gameplay?.state.health<=0;
+    // Fixed/route cameras and a StopCutScene fade hold input natively too.
+    const playerFrozen=host?.controlLocked||host?.cutscene||this.gameplay?.completed||this.gameplay?.playerReaction?.phase==='respawn'||this.gameplay?.state.health<=0;
     if(playerFrozen)input={forward:0,right:0,turn:0,jump:false,attack:false,use:false};
-    if(input.turn&&!this.targeting.locked)this.yaw+=input.turn*dt*1.7;
-    this.updateTargeting(dt,input);
+    // Third person uses the original camera-relative steering (0x434f20):
+    // RedCat turns toward a direction built from the follow camera's yaw.
+    // First person and no-clip flight keep direct turning.
+    const steered=this.steeredThirdPerson();
+    // A heading set from outside (spawn, teleport, load) cuts the camera behind RedCat.
+    if(this.yaw!==this.steeredYaw){this.followCamera.cut=true;this.followCamera.yaw=this.yaw;}
+    let moveInput=input;
+    if(steered&&!playerFrozen) {
+      const lock=this.targeting.locked&&targetableObject(this.targeting.target)?targetAimPoint(this.targeting.target):null;
+      // Callers without the separate fields use `right` as strafe and `turn` (left positive) as steering.
+      const controls={forward:input.forward,strafe:input.strafe??input.right,steer:input.steer??-(input.turn||0)};
+      const steer=nativeSteer(controls,{heading:this.yaw,cameraYaw:this.followCamera.yaw,dt,lockYaw:lock?yawToward(this.player.position,lock):null});
+      this.yaw=steer.heading;moveInput={...input,...steer.move};
+      this.cameraInput={hasInput:steer.hasInput,backpedal:steer.backpedal,steering:true};
+    } else {
+      if(!steered&&input.turn&&!this.targeting.locked)this.yaw+=input.turn*dt*1.7;
+      this.cameraInput={hasInput:false,backpedal:false,steering:!playerFrozen};
+    }
+    this.updateTargeting(dt,input);this.steeredYaw=this.yaw;
     this.player.skill=this.gameplay?.state.skill||0;
     this.player.environmentVelocity=!playerFrozen&&this.gameplay?.state.health>0?this.gameplay.environmentVelocity(this.player.position):[0,0,0];
     const stepStart=[...this.player.position];
-    if(!playerFrozen)this.player.update(dt,input,this.yaw,this.pitch);
+    if(!playerFrozen)this.player.update(dt,moveInput,this.yaw,this.pitch);
     // Scripted support carrying happened earlier in the frame. Only RedCat's
     // own horizontal step participates in footstep contact feedback.
     this.player.stepDisplacement=playerFrozen||this.player.recoveredThisStep?0:Math.hypot(this.player.position[0]-stepStart[0],this.player.position[2]-stepStart[2]);
@@ -1138,7 +1179,7 @@ export class CastleWorld {
       this.syncActors(dt);
       this.syncModelStates();
     }
-    this.syncPlayer(dt,input);this.updateCamera(dt);this.syncProjectiles();this.syncTargetMarker();this.syncHazards();this.updateRenderResidency();this.residencyPrepared=true;
+    this.syncPlayer(dt,moveInput);this.updateCamera(dt);this.syncProjectiles();this.syncTargetMarker();this.syncHazards();this.updateRenderResidency();this.residencyPrepared=true;
     // Effects read managed actor poses and may create unmanaged fragments.
     // Limit matrix reuse to this synchronous call; pause/restore/direct
     // lighting calls must never inherit an earlier frame's preparation.
@@ -1146,14 +1187,16 @@ export class CastleWorld {
     try{this.effects?.update(dt);}finally{this.actorLightingMatricesPrepared=false;}
     return p;
   }
+  /** Third-person follow camera with native steering (not first person or no-clip flight). */
+  steeredThirdPerson() {
+    const scripted=this.gameplay?.scripts?.camera;
+    return !this.player?.noClip&&(this.settings.camera!=='first'||scripted?.mode===1);
+  }
   updateCamera(dt,snap=false) {
-    const scripted=this.cameraControl.sync(this);
-    if(this.cameraOccludesPlayer){
-      this.cameraOccludesPlayer=false;
-      if(this.redcat)this.redcat.visible=(this.settings.camera==='third'||!!scripted)&&this.gameplay?.scripts?.playerVisible!==false;
-    }
+    const host=this.gameplay?.scripts,scripted=host?.camera||null;
     if(scripted&&scripted.mode!==0&&scripted.mode!==1) {
-      const host=this.gameplay.scripts;
+      // Modes 7, 8 and 10 (fixed, actor-tracking and route) place the view directly.
+      this.cameraMode='scripted';
       const route=sampleCameraRoute(scripted.points,host.time-scripted.start);
       const pos=new THREE.Vector3(...(route||scripted.position));
       const target=scripted.target?this.gameplay.find(scripted.target)[0]?.position:null;
@@ -1161,25 +1204,44 @@ export class CastleWorld {
       if(!scripted.targetPosition&&!target)look.y+=43;
       pos.add(new THREE.Vector3(...scripted.offset));this.camera.position.copy(pos);this.camera.lookAt(look);return;
     }
-    const locked=this.targeting.locked&&(!scripted||scripted.mode===1)&&targetableObject(this.targeting.target)?this.targeting.target:null;
+    const locked=this.targeting.locked&&targetableObject(this.targeting.target)?this.targeting.target:null;
     const offsetMode=scripted?.mode===1&&!locked;
-    const p=new THREE.Vector3(...this.player.position);p.y+=offsetMode?Math.max(1,scripted.offset[1])*32:this.settings.camera==='first'?51:43;
-    const pitch=this.pitch;
-    const direction=locked?new THREE.Vector3(...targetDirection(p.toArray(),locked)):new THREE.Vector3(-Math.sin(this.yaw)*Math.cos(pitch),-Math.sin(pitch),-Math.cos(this.yaw)*Math.cos(pitch));
-    if(this.settings.camera==='first'&&!offsetMode){this.camera.position.copy(p);this.camera.lookAt(p.clone().add(direction));}
-    else {
-      const desired=p.clone().addScaledVector(direction,offsetMode?-Math.max(1,scripted.offset[0])*32:-145);desired.y+=13;
-      let lift=0;
-      if(this.player.noClip)this.camera.position.lerp(desired,snap?1:1-Math.exp(-12*dt));
-      else{
-        const resolved=resolveThirdPersonCamera({anchor:p.toArray(),desired:desired.toArray(),previous:this.camera.position.toArray(),playerPosition:this.player.position,dt,snap,
-          trace:(a,b)=>this.collider.trace(a,b,[-4,-4,-4],[4,4,4],this.physicalModels)});
-        this.camera.position.fromArray(resolved.position);lift=resolved.lift;
-        this.cameraOccludesPlayer=resolved.hidePlayer;
-        if(resolved.hidePlayer&&this.redcat)this.redcat.visible=false;
-      }
-      this.camera.lookAt(locked?new THREE.Vector3(...targetAimPoint(locked)):p.clone().addScaledVector(direction,80*(1-lift)));
+    const first=this.settings.camera==='first'&&!offsetMode;
+    const mode=first?'first':locked?'lock':offsetMode?'offset':'follow';
+    // Every native camera mode change is a hard cut (0x4594a0 flag +0x454).
+    if(snap||mode!==this.cameraMode)this.followCamera.cut=true;
+    this.cameraMode=mode;
+    const feet=this.player.position,eye=[feet[0],feet[1]+PLAYER_EYE_HEIGHT,feet[2]];
+    if(first) {
+      const p=new THREE.Vector3(...eye),pitch=locked?null:this.pitch;
+      const direction=locked?new THREE.Vector3(...targetDirection(eye,locked)):new THREE.Vector3(-Math.sin(this.yaw)*Math.cos(pitch),-Math.sin(pitch),-Math.cos(this.yaw)*Math.cos(pitch));
+      this.camera.position.copy(p);this.camera.lookAt(p.clone().add(direction));return;
     }
+    const cutting=this.followCamera.cut;
+    const half=CAMERA_HULL_HALF_SIZE,trace=(a,b,size)=>this.collider.trace(a,b,[-size,-size,-size],[size,size,size],this.physicalModels);
+    const view=this.followCamera.update(dt,{feet,eye,height:PLAYER_HEIGHT,heading:this.yaw,
+      hasInput:this.cameraInput.hasInput,backpedal:this.cameraInput.backpedal,steering:this.cameraInput.steering,
+      offset:offsetMode?scripted.offset:null,lockTarget:locked?targetAimPoint(locked):null,
+      orbitPitch:this.pitch-DEFAULT_PITCH,direct:!!this.player.noClip,
+      ray:(a,b)=>trace(a,b,0),sweep:(a,b)=>trace(a,b,half)});
+    let position=view.position,focus=0;
+    const chest=[feet[0],feet[1]+43,feet[2]];
+    // A model hidden by last frame's fallback reappears once there is room.
+    if(this.cameraHidesPlayer){this.cameraHidesPlayer=false;if(this.redcat)this.redcat.visible=this.gameplay?.scripts?.playerVisible!==false;}
+    if(!this.player.noClip) {
+      // Requested fix: never leave the camera inside RedCat when he backs into a
+      // wall (lift over him; side view or hidden model under a low ceiling).
+      // The lift eases over time and is applied on top of the native result;
+      // it is never fed back into the native chase.
+      const fixed=this.wallLift.update(dt,{anchor:chest,desired:view.desired,position,playerPosition:feet,trace:(a,b)=>trace(a,b,4),snap:cutting});
+      position=fixed.position;focus=fixed.focus;
+      if(fixed.hidePlayer&&this.redcat){this.redcat.visible=false;this.cameraHidesPlayer=true;}
+    }
+    this.camera.position.fromArray(position);
+    const direction=[-Math.sin(view.yaw)*Math.cos(view.pitch),Math.sin(view.pitch),-Math.cos(view.yaw)*Math.cos(view.pitch)];
+    // While lifted or beside him, turn the view toward RedCat accordingly.
+    const look=position.map((v,i)=>v+direction[i]+(chest[i]-v)*focus);
+    this.camera.lookAt(new THREE.Vector3(...look));
   }
   updateRenderResidency(){
     this.geometryStream?.update();

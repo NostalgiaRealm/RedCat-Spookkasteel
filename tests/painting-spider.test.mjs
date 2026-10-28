@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {PLAYER_HEIGHT,PLAYER_CENTRE_HEIGHT} from '../source/player-hull.js';
 import {readFileSync} from 'node:fs';
 import {Gameplay} from '../source/gameplay.js';
 import {ScriptHost} from '../source/script-host.js';
@@ -77,11 +78,14 @@ test('hanging spider perception uses its ceiling eye, horizontal range and two n
   const eye=[spider.position[0],spider.position[1]+24*.8,spider.position[2]];
   const blocked=(a,b)=>{rays.push([[...a],[...b]]);return false;};
   game.updateEnemy(spider,0,feet,blocked,trace);
-  assert.equal(state.phase,'dormant');assert.deepEqual(rays,[[eye,feet],[eye,[feet[0],feet[1]+56,feet[2]]]]);
+  // 0x423ad0: aim at RedCat's box centre, then retry one box height higher.
+  const centre=[feet[0],feet[1]+PLAYER_CENTRE_HEIGHT,feet[2]],head=[feet[0],centre[1]+PLAYER_HEIGHT,feet[2]];
+  assert.equal(state.phase,'dormant');assert.deepEqual(rays,[[eye,centre],[eye,head]]);
   rays.length=0;
-  game.updateEnemy(spider,0,[feet[0]+1,feet[1],feet[2]],blocked,trace);
+  // Native range is inclusive (<=), so step just past VisualRange.
+  game.updateEnemy(spider,0,[feet[0]+1.5,feet[1],feet[2]],blocked,trace);
   assert.equal(rays.length,0,'outside horizontal range cannot see RedCat');
-  game.updateEnemy(spider,0,feet,(a,b)=>b[1]===feet[1]+56,trace);
+  game.updateEnemy(spider,0,feet,(a,b)=>b[1]===head[1],trace);
   assert.equal(state.phase,'descending','a visible head triggers descent even with feet hidden');
 });
 

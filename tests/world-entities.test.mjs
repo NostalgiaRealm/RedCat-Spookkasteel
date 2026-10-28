@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {prepareBareWorld} from './support/bare-world.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
@@ -34,7 +35,10 @@ test('a camera reference does not remove the forest mirror platform from the wor
 
 test('forest mirror rises with its platform for rendering, collection and save restoration',()=>{
   const {game,host}=forest(),mirror=game.find('mirror')[0],base=[...mirror.position];
-  host.callMethod(host.resolveObject('mirrormodel_mc'),'SetTo',[.01]);
+  // SetTo on the still-disabled controller stays pending (world-script-commands-native.md),
+  // so place its timeline directly to pose the raised platform.
+  const controller=game.find('mirrormodel_mc')[0],motion=host.players.get(controller.id);
+  motion.seek(.01);host.applyMotion(controller,motion);
   const raised=game.objectPosition(mirror);
   assert.deepEqual(raised,[2340,-154,-1158]);assert.deepEqual(mirror.position,base);
   const restored=forest(JSON.parse(JSON.stringify(game.snapshot())));
@@ -60,7 +64,7 @@ test('patrol topology ignores moving doors and remains identical after save/load
   const graph=async(closed,save=null)=>{
     const game=new Gameplay(level,{save,deferInit:true}),world=new CastleWorld({},{}),queries=[];
     world.collider={trace(a,b,mins,maxs,models){queries.push(models);return {fraction:closed&&models.includes(1)?0:1,end:b};}};
-    await world.attachGameplay(game);
+    prepareBareWorld(world);await world.attachGameplay(game);
     const links=[...game.navigation.links].map(([id,next])=>[id,[...next]]),snapshot=game.snapshot();world.dispose();
     return {links,snapshot,queries};
   };

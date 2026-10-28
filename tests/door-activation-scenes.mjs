@@ -27,6 +27,8 @@ try {
     place([460,-24.05,118],Math.PI/2);step(5,{forward:1});
     const returning={position:[...w.player.position],open:right.open};
     step(85);const stairs=['vlakvoortrap','trap01','schuinvlaktrap'].map(n=>g.find(n)[0].open);
+    // The scripted 4.5 s stair overview (camera4, mode 2) holds input natively.
+    for(let i=0;i<400&&h.controlLocked;i++)step(1);
     const secret=g.find('doorhallway05_01')[0];place([2080,-24.05,-820],Math.PI);step(20,{forward:1});
     const passage={position:[...w.player.position],open:secret.open,motion:h.players.get(secret.id).time};
     w.updateCamera(1,true);w.render();return {blocked,returning,stairs,passage,error:h.vm.lastError};
@@ -44,7 +46,12 @@ try {
     place([948,536.05,-1077],-Math.PI/2);step(20,{forward:1});
     const switched=button.switchedOn;place([300,536.05,0],0);step(310);
     const raised={open:lift.open,time:h.players.get(lift.id).time};
+    // The scripted 8 s floor overview (avloercam, mode 2) holds input natively.
+    for(let i=0;i<400&&h.controlLocked;i++)step(1);
     place([0,528.05,-90],0);step(30,{forward:1});
+    // Touching the floor enables its 5 s overview (CameraTrigger9), which holds
+    // RedCat at the edge; afterwards he steps fully onto the floor.
+    for(let i=0;i<400&&h.controlLocked;i++)step(1);step(20,{forward:1});
     const entered={position:[...w.player.position],open:lift.open,time:h.players.get(lift.id).time};
     const samples=[];for(let i=0;i<270;i++){
       step(1);const p=w.player.position;

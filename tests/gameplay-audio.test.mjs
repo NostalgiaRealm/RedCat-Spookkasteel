@@ -31,12 +31,16 @@ test('jump and pickups retain full authored gain rather than old placeholder red
 test('health loss selects native reaction thresholds from VoiceNL and death replaces the reaction',()=>{
   const {audio,router}=setup();
   for(const [amount,sound] of [[1,'rcgen1.wav'],[10,'rcgen2.wav'],[40,'rcgen3.wav']]) {
-    router.handle({type:'damage',amount,health:1});
+    audio.reset();router.handle({type:'damage',amount,health:1});
     assert.equal(audio.snapshot().length,1);
     assert.equal(audio.snapshot()[0].sound,sound);assert.equal(audio.snapshot()[0].channel,'voices');
     assert.equal(audio.snapshot()[0].volume,.6);
   }
-  audio.reset();router.handle({type:'damage',amount:1,health:0});assert.equal(audio.sounds.size,0);
+  // 0x433d7c: no new hurt voice while the previous one still plays.
+  router.handle({type:'damage',amount:1,health:1});assert.equal(audio.snapshot().length,1);assert.equal(audio.snapshot()[0].sound,'rcgen3.wav');
+  router.handle({type:'damage',amount:1,health:1,hurtSound:false});assert.equal(audio.snapshot()[0].sound,'rcgen3.wav');
+  audio.reset();router.handle({type:'damage',amount:1,health:1,hurtSound:false});assert.equal(audio.sounds.size,0,'the gameplay hurt timer can withhold the cue');
+  router.handle({type:'damage',amount:1,health:0});assert.equal(audio.sounds.size,0);
   router.handle({type:'death'});assert.equal(audio.snapshot()[0].sound,'rcgen7.wav');
   assert.ok([...audio.sounds][0].element.src.startsWith('assets/voices/'));
   audio.pause();assert.equal(audio.snapshot()[0].paused,true,'Pause now includes every voice, including the death cue');
@@ -44,29 +48,63 @@ test('health loss selects native reaction thresholds from VoiceNL and death repl
 
 test('each enemy family uses native alert, attack, hurt and death samples with spatial playback',()=>{
   const {audio,router}=setup();
-  for(const [actorFile,prefix] of Object.entries(ENEMY_SOUND_PREFIXES))for(const [action,suffix] of [['idle',1],['walk',1],['alert',3],['attack',4],['hurt',5],['death',6]]) {
+  for(const [actorFile,prefix] of Object.entries(ENEMY_SOUND_PREFIXES))for(const [action,suffix] of [['idle',1],['alert',3],['attack',4],['hurt',5],['death',6]]) {
     audio.reset();
     router.handle({type:'enemyAction',id:'enemy',actorFile,action,position:[10,20,30]});
     const records=audio.snapshot(); assert.equal(records.length,1);
     let expected=`${prefix}${suffix}.wav`;
     if(actorFile==='plant'&&action==='alert')expected='plant4.wav';
     if(actorFile==='plant'&&action==='attack')expected='plant3.wav';
-    if(['idle','walk'].includes(action)&&actorFile.startsWith('bat'))expected={batg:'bafxi1.wav',baty:'baiifx1.wav',batr:'baiiifx1.wav'}[actorFile];
+    const batIdle=action==='idle'&&actorFile.startsWith('bat');
+    if(batIdle)expected={batg:'bafxi1.wav',baty:'baiifx1.wav',batr:'baiiifx1.wav'}[actorFile];
     assert.equal(records[0].sound,expected); assert.equal(records[0].spatial,true);
+    // 0x423be0: bat idles loop at gain 0.4; every other cue is a one-shot at 1.
+    assert.equal(records[0].loop,batIdle);assert.equal(records[0].scriptVolume,batIdle?.4:1);
     assert.ok(existsSync(new URL(`../assets/audio/${expected}`,import.meta.url)));
+    // Starting to walk is not a native cue.
+    audio.reset();router.handle({type:'enemyAction',id:'enemy',actorFile,action:'walk',position:[10,20,30]});
+    assert.equal(audio.sounds.size,0);
   }
 });
 
-test('enemy vocal position follows its moving actor and old reactions stop',()=>{
+test('an enemy drops new cues while its one-shot plays; a loop yields only to a different cue',()=>{
+  const {audio,router}=setup();
+  router.handle({type:'enemyAction',id:'e',actorFile:'zombie',action:'hurt',position:[0,0,0]});
+  router.handle({type:'enemyAction',id:'e',actorFile:'zombie',action:'death',position:[0,0,0]});
+  assert.deepEqual(audio.snapshot().map(r=>r.sound),['zombie5.wav'],'a lethal hit keeps the hurt cue; the death cue is dropped');
+  audio.reset();
+  router.handle({type:'enemyAction',id:'b',actorFile:'batg',action:'idle',position:[0,0,0]});
+  const loop=[...audio.sounds][0];
+  router.handle({type:'enemyAction',id:'b',actorFile:'batg',action:'idle',position:[0,0,0]});
+  assert.equal([...audio.sounds][0],loop,'the same looping cue is not restarted');
+  router.handle({type:'enemyAction',id:'b',actorFile:'batg',action:'alert',position:[0,0,0]});
+  assert.deepEqual(audio.snapshot().map(r=>r.sound),['batl3.wav']);assert.equal(loop.element.paused,true);
+});
+
+test('Max and Witch bosses use their native localized combat voices',()=>{
+  const {audio,router}=setup();
+  const expected={maxd:{attack:'mxin0011.wav',hurt:'mxin0003.wav',death:'mxin0004.wav'},maxj:{attack:'mxin0002.wav',hurt:'mxin0003.wav',death:'mxin0004.wav'},
+    witch:{attack:'grizatt1.wav',hurt:'grizhit1.wav',death:null}};
+  for(const [enemyType,cues] of Object.entries(expected))for(const [action,sound] of Object.entries(cues)) {
+    audio.reset();router.handle({type:'enemyAction',id:enemyType,actorFile:enemyType,enemyType,action,position:[0,0,0]});
+    assert.deepEqual(audio.snapshot().map(r=>r.sound),sound?[sound]:[],`${enemyType} ${action}`);
+    if(sound){assert.equal(audio.snapshot()[0].channel,'voices');assert.ok(existsSync(new URL(`../assets/voices/${sound}`,import.meta.url)));}
+  }
+});
+
+test('enemy vocal position follows its moving actor and a playing cue is not interrupted',()=>{
   const {audio,router}=setup(),object={id:'spider',position:[0,0,0]},gameplay={objects:[object]};
   router.handle({type:'enemyAction',id:object.id,actorFile:'spiderg',action:'alert'},gameplay);
   const old=[...audio.sounds][0];assert.equal(old.element.volume,.6);
-  object.position=[20000,0,0];audio.update(.1);
+  // The hearing radius was deliberately widened to 175.5 m (audio-settings.js); go well beyond it.
+  object.position=[100000,0,0];audio.update(.1);
   assert.ok(old.element.volume<.01);assert.deepEqual(audio.snapshot()[0].position,object.position);
   router.handle({type:'enemyAction',id:object.id,actorFile:'spiderg',action:'hurt'},gameplay);
-  assert.equal(old.element.paused,true);assert.equal(audio.sounds.size,1);
-  router.handle({type:'enemyAction',id:object.id,actorFile:'spiderg',action:'walk'},gameplay);
-  assert.equal(audio.snapshot()[0].sound,'spiderl5.wav','Walking must not interrupt the hurt cue');
+  assert.equal(old.element.paused,false);assert.equal(audio.sounds.size,1);
+  assert.equal(audio.snapshot()[0].sound,'spiderl3.wav','0x423be0 drops the hurt request while the alert plays');
+  old.element.onended();
+  router.handle({type:'enemyAction',id:object.id,actorFile:'spiderg',action:'hurt'},gameplay);
+  assert.equal(audio.snapshot()[0].sound,'spiderl5.wav');
 });
 
 test('all required player WAV files exist in the correct imported asset directory',()=>{

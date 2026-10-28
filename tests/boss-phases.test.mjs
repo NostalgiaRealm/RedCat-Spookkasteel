@@ -6,6 +6,7 @@ import { initializeBoss,updateBoss,bossCanTakeDamage,bossHitResult,bossWasHit,sn
 import { ActorAnimator, ActorStateAnimator } from '../source/animation.js';
 import * as THREE from 'three';
 import {enemyRandom} from '../source/enemy-navigation.js';
+import {JESTER_EFFECT_SECONDS} from '../source/jester-teleport-timing.js';
 
 const data=async file=>JSON.parse(await readFile(new URL('../'+file,import.meta.url),'utf8'));
 const levels=await Promise.all(['lvl01a','lvl03a','lvl04a'].map(id=>data('data/levels/'+id+'/level.json')));
@@ -32,7 +33,8 @@ test('original castle and cave StandingEnemy enums create their respective bosse
     const game=new Gameplay(levels[index],{deferInit:true});
     const boss=game.objects.find(o=>o.entity.classname==='StandingEnemy'&&o.entity.Type===type);
     assert.ok(boss);assert.equal(boss.actorFile,actor);assert.equal(boss.enemyType,actor);
-    assert.equal(boss.stats,game.settings[actor==='maxd'?'dungeonmax':'jestermax'].Normal);
+    // Normal sections are complete, so the native constructor defaults add nothing.
+    assert.deepEqual(boss.stats,game.settings[actor==='maxd'?'dungeonmax':'jestermax'].Normal);
   }
 });
 
@@ -59,9 +61,12 @@ test('Dungeon Max completes native turret salvo, rise, look, lower and second sa
   until(()=>o.boss.phase==='rise');
   assert.equal(game.projectiles.length,o.salvoSize);assert.ok(game.projectiles.every(p=>p.kind==='magma'));
   assert.equal(o.boss.machineMotion,'litopen');
-  until(()=>o.boss.phase==='look');assert.equal(o.position[1],home+40);
+  // Heights are scaled by MachineScale 1.4 (and a positive entity Scale).
+  const scale=1.4*(Number(o.entity.Scale)>0?Number(o.entity.Scale):1);
+  until(()=>o.boss.phase==='look');assert.ok(Math.abs(o.position[1]-(home+40*scale))<1e-9);
   const lookAt=game.time;until(()=>o.boss.phase==='lower');assert.ok(game.time-lookAt>=2-1e-8);
-  assert.equal(o.boss.machineMotion,'litclose');until(()=>o.boss.phase==='idle');assert.equal(o.position[1],home);
+  // CRcDmAttackState never completes: lowering leads straight into the next salvo.
+  assert.equal(o.boss.machineMotion,'litclose');until(()=>o.boss.phase!=='lower');assert.equal(o.boss.phase,'shoot');assert.equal(o.position[1],home);
   until(()=>game.projectiles.length===o.salvoSize+1);assert.equal(o.boss.phase,'shoot');
 });
 
@@ -80,13 +85,16 @@ test('Boss freeze and save/load preserve a partially raised turret',()=>{
   for(let i=0;i<100;i++){f.tick();other.tick();assert.deepEqual(f.o.boss,other.o.boss);assert.deepEqual(f.o.position,other.o.position);}
 });
 
-test('Jester follows disappearance, InvisibleTime, reappearance, salvo, protected teleport',()=>{
-  const f=fixture('maxj');f.tick();assert.equal(f.o.boss.phase,'teleportOut');assert.equal(bossCanTakeDamage(f.o),false);
-  f.until(()=>f.o.boss.phase==='invisible');assert.equal(f.o.boss.hidden,true);
-  const t=f.game.time;f.until(()=>f.o.boss.phase==='teleportIn');assert.ok(f.game.time-t>=1-1e-8);
-  assert.equal(f.o.boss.hidden,false);assert.equal(bossCanTakeDamage(f.o),false);
+test('Jester follows disappearance, effect-timed reappearance, salvo, protected teleport',()=>{
+  // The opening teleport starts on Enable (0x404550) and is not protected.
+  const f=fixture('maxj');const start=f.game.time;f.tick();assert.equal(f.o.boss.phase,'teleportOut');assert.equal(bossCanTakeDamage(f.o),true);
+  f.until(()=>f.o.boss.phase==='invisible');assert.equal(f.o.boss.hidden,true);assert.equal(bossCanTakeDamage(f.o),false);
+  // Hidden until the departure particles retire; InvisibleTime is never read.
+  f.until(()=>f.o.boss.phase==='teleportIn');assert.ok(f.game.time-start>=JESTER_EFFECT_SECONDS-1e-8);
+  assert.equal(f.o.boss.hidden,false);assert.equal(bossCanTakeDamage(f.o),true);
   f.until(()=>f.o.boss.phase==='shoot');assert.equal(bossCanTakeDamage(f.o),true);
   f.until(()=>f.o.boss.phase==='teleportOut');assert.equal(f.game.projectiles.length,f.o.salvoSize);
+  assert.equal(bossCanTakeDamage(f.o),false,'the post-salvo teleport is protected');
   assert.ok(f.game.projectiles.every(p=>p.kind==='jesterBall'));
 });
 
@@ -98,7 +106,7 @@ test('Jester teleport chooses authored locations, respects player spacing, and p
 });
 
 test('Invisible Jester rejects damage without restarting animation or consuming RNG',()=>{
-  const {o,game,tick}=fixture('maxj');tick();const random=o.aiRandomState,state=snapshotBossState(o);
+  const {o,game,until}=fixture('maxj');until(()=>o.boss.phase==='invisible');const random=o.aiRandomState,state=snapshotBossState(o);
   assert.deepEqual(bossHitResult(game,o,10),{damage:0,defeated:false,reaction:false});
   assert.equal(o.aiRandomState,random);assert.deepEqual(snapshotBossState(o),state);
 });
@@ -122,7 +130,8 @@ test('A boss hit interrupts its pending shot only when native reaction chooses a
   bossWasHit(f.game,f.o,{reaction:false});assert.equal(f.o.boss.phase,'shoot');
   bossWasHit(f.game,f.o,{reaction:true});assert.equal(f.o.boss.phase,'recover');assert.equal(f.o.pendingAttack,null);
   assert.equal(f.o.animationState,'hurt');assert.equal(bossCanTakeDamage(f.o),true);
-  f.until(()=>f.o.boss.phase==='teleportOut');assert.equal(bossCanTakeDamage(f.o),false);
+  // A hit reaction's follow-up teleport is not a post-salvo teleport: unprotected.
+  f.until(()=>f.o.boss.phase==='teleportOut');assert.equal(bossCanTakeDamage(f.o),true);
 });
 
 test('Gameplay routes bosses through specialized phases and restores a moving turret without a phase reset',()=>{
@@ -157,6 +166,8 @@ test('Jester actually plays and restarts the original teleport clip for disappea
   f.tick();states.update(f.o,.1,false,f.game.time);assert.equal(animator.name,'teleport');assert.equal(animator.loop,false);
   const serial=f.o.animationSerial;f.until(()=>f.o.boss.phase==='teleportIn');
   assert.ok(f.o.animationSerial>serial);states.update(f.o,.1,false,f.game.time);assert.equal(animator.time,.1);
+  // Only the post-salvo teleport is protected against damage.
+  f.until(()=>f.o.boss.phase==='shoot');f.until(()=>f.o.boss.phase==='teleportOut');
   const health=f.o.health;f.game.hurtEnemy(f.o,100);assert.equal(f.o.health,health);
   f.until(()=>f.o.boss.phase==='shoot');f.game.hurtEnemy(f.o,100);assert.equal(f.o.health,0);
   geometry.dispose();

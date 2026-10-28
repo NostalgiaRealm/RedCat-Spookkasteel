@@ -20,7 +20,8 @@ test('native death motion is followed by five seconds of fade; clocks freeze and
   assert.ok(fadeStart>12);assert.ok(Math.abs(fadeEnd-fadeStart-5)<1e-10,'fade duration is independent of the native randomized actor playback rate');
   assert.equal(enemyDeathOpacity(object,fadeStart-.1),1);assert.ok(Math.abs(enemyDeathOpacity(object,fadeStart+2.5)-.5)<1e-10);assert.equal(enemyDeathOpacity(object,fadeEnd+.1),0);
   game.time=fadeStart+2.5;const before=enemyDeathOpacity(object,game.time),age=game.time-object.deathStartedAt;
-  game.scripts={enemiesFrozen:true};game.update(.05,[10000,0,0]);
+  // The zombie's deferred AfterDestroyCommand is due once its death clip ended.
+  game.scripts={enemiesFrozen:true,dispatch:()=>{}};game.update(.05,[10000,0,0]);
   assert.ok(Math.abs(enemyDeathOpacity(object,game.time)-before)<1e-10);assert.ok(Math.abs(game.time-object.deathStartedAt-age)<1e-10);
   game.scripts=null;object.deathSmokeAnchors=Array.from({length:15},(_,i)=>[i,2*i,3*i]);
   const save=game.snapshot(),restored=fixture();assert.equal(restored.game.restore(save),true);
@@ -94,11 +95,12 @@ test('knight breakup resumes its age after load and does not restart at its expi
     const material=new MeshBasicMaterial();material.addEventListener('dispose',()=>disposed++);return actor(material);
   },track:v=>v});
   world.createKnightDebris(object,a);world.updateEnemyDebris(0);
-  const parts=world.enemyDebris.get('knight');assert.equal(parts.parts.length,9);assert.ok(Math.abs(parts.age-2.5)<1e-8);assert.ok(parts.parts.every(p=>p.actor.userData.mesh.material.opacity===1),'airborne armour has no invented final fade');
+  const parts=world.enemyDebris.get('knight');assert.equal(parts.parts.length,9);assert.ok(Math.abs(parts.age-2.5)<1e-8);assert.ok(parts.parts.every(p=>[p.actor.userData.mesh.material].flat().every(m=>m.opacity===1)),'airborne armour has no invented final fade');
   const positions=parts.parts.map(p=>p.actor.position.toArray());world.updateEnemyDebris(0);assert.deepEqual(parts.parts.map(p=>p.actor.position.toArray()),positions,'redraw leaves breakup motion unchanged');
   world.gameplay.time=11;world.updateEnemyDebris(0);assert.ok(Math.abs(world.enemyDebris.get('knight').age-1)<1e-8,'loading an earlier death pose rewinds existing debris');
-  assert.equal(disposed,9,'rewinding releases the previous cohort materials');
-  world.gameplay.time=14;world.updateEnemyDebris(0);assert.equal(world.enemyDebris.size,0);assert.equal(scene.children.length,0);assert.equal(disposed,18);
+  // Fragments now render through the pooled DebrisRenderPool, which recycles
+  // released materials instead of disposing them; check the pool is emptied.
+  world.gameplay.time=14;world.updateEnemyDebris(0);assert.equal(world.enemyDebris.size,0);assert.equal(scene.children.length,0);assert.equal(world.knightRenderPool.active.size,0);
 });
 
 test('knight fragments use original actor settings and native bounds, launch and per-piece physics',()=>{

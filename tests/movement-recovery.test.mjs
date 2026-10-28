@@ -46,6 +46,9 @@ function wellRoofPinch({floorHeight=0,barrier=false}={}) {
 const floor=[[-500,-30,-500],[500,0,500]];
 const wall=[[20,0,-200],[40,100,200]];
 const hull={mins:[-11,0,-11],maxs:[11,56,11]};
+// These hand-built brushes are sized for this 22x56 fixture box, not RedCat's
+// native 24.96x57.92 box; give live controllers the same fixture box.
+const fixturePlayer=(...args)=>{const p=new PlayerController(...args);p.mins=[...hull.mins];p.maxs=[...hull.maxs];return p;};
 const at=(position,trace,extra={})=>({dt:.05,before:[...position],position:[...position],intended:[1,0,0],
   ...hull,grounded:true,trace,...extra});
 const finiteClear=(f,p,mins=hull.mins,maxs=hull.maxs)=>{
@@ -196,7 +199,7 @@ test('PlayerController records dry support only and does not promote water to a 
 });
 
 test('live player physics holding into a wall stays put until the user changes direction',()=>{
-  const f=boxes([floor,wall]),p=new PlayerController(f.collider,[0,.05,0],f.models);p.grounded=true;
+  const f=boxes([floor,wall]),p=fixturePlayer(f.collider,[0,.05,0],f.models);p.grounded=true;
   for(let i=0;i<150;i++)p.update(.05,{right:1},0);
   assert.equal(p.movementRecovery.recoveries,0);assert.ok(Math.abs(p.position[0]-8.95)<.001);
   const x=p.position[0];p.update(.05,{right:-1},0);assert.ok(p.position[0]<x-5);
@@ -234,7 +237,7 @@ test('a shallow well-side wedge leaves the raised base horizontally before settl
 });
 
 test('a non-overlapping player pinched under a sloped well roof escapes diagonally down and resumes walking',()=>{
-  const f=wellRoofPinch(),origin=f.origin,p=new PlayerController(f.collider,origin,f.models);
+  const f=wellRoofPinch(),origin=f.origin,p=fixturePlayer(f.collider,origin,f.models);
   assert.equal(f.trace(origin,origin,hull.mins,hull.maxs).startSolid,false);
   for(let i=0;i<8;i++){
     const angle=i*Math.PI/4,to=[origin[0]+8*Math.cos(angle),origin[1],origin[2]+8*Math.sin(angle)];
@@ -277,7 +280,7 @@ test('extended airborne settling remains bounded and cannot bypass an intervenin
 });
 
 test('normal free fall beside a wall does not trigger the suspended-body recovery',()=>{
-  const f=boxes([floor,wall]),p=new PlayerController(f.collider,[8.95,90,0],f.models);
+  const f=boxes([floor,wall]),p=fixturePlayer(f.collider,[8.95,90,0],f.models);
   p.launchVelocityXZ=[156.8,0];
   for(let i=0;i<120;i++)p.update(.025,{right:1},0);
   assert.equal(p.movementRecovery.recoveries,0);assert.equal(p.grounded,true);
@@ -365,7 +368,7 @@ test('higher fall-pocket history cannot bypass a door beyond the local probe',()
   f.collider.disabledModels.add(gateIndex);r.reset();r.history.push([...previous]);
   assert.deepEqual(tickUntil(r,options,1500)?.position,previous);
   f.collider.disabledModels.delete(gateIndex);
-  const door={open:false},p=new PlayerController(f.collider,[...f.position],f.models);
+  const door={open:false},p=fixturePlayer(f.collider,[...f.position],f.models);
   p.grounded=true;p.recoveryDoors=new Map([[gateIndex,door]]);
   p.movementRecovery.history.push([...previous]);
   for(let i=0;i<1500;i++)p.recoverMovement(.05,[...p.position],[1,0,0],false);

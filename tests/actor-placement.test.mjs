@@ -52,7 +52,8 @@ test('attached actor and pickup anchors rotate about the model pivot without acc
     for(let i=0;i<10;i++)near(game.objectPosition(object),[12,23,30]);
     assert.deepEqual(object.position,[14,20,30]);
   }
-  host.modelTransforms.get(1).translation=[20,0,0];
+  // ModelTransformMap stores frozen poses; replace the pose instead of mutating it.
+  host.modelTransforms.set(1,{...host.modelTransforms.get(1),translation:[20,0,0]});
   near(game.objectPosition(actor),[30,20,26]);
   actor.modelIndex=undefined;assert.deepEqual(game.objectPosition(actor),[14,20,30]);
 });
@@ -90,8 +91,10 @@ test('an off-camera actor advances its authored animation clock and resumes the 
   instance.userData.animator={timeScale:.25,time:0,update(){sampled.push(this.time);}};
   world.gameplay=game;world.actorInstances.set(actor.id,instance);world.scene.add(instance);
   try {
-    world.syncActors(1);assert.equal(actor.actorAge,1);assert.equal(instance.userData.animator.time,.25);assert.deepEqual(sampled,[]);
-    world.camera.position.set(3000,0,0);world.syncActors(0);assert.deepEqual(sampled,[.25]);
+    // Off-screen skipping now lives in the animator (deferGeometry), so the
+    // number of update calls is no longer the observable; the sampled time is.
+    world.syncActors(1);assert.equal(actor.actorAge,1);assert.equal(instance.userData.animator.time,.25);
+    world.camera.position.set(3000,0,0);world.syncActors(0);assert.equal(sampled.at(-1),.25);
     actor.enabled=false;world.syncActors(1);assert.equal(actor.actorAge,1);
     actor.enabled=true;world.syncActors(.5);assert.equal(actor.actorAge,1.5);assert.equal(sampled.at(-1),.375);
   } finally {world.dispose();}
@@ -110,7 +113,7 @@ test('moving a model-attached prop refreshes its existing collision surface and 
     assert.equal(record.supportModelIndex,actor.modelIndex);
     const ray=(x1,x2)=>world.collider.trace([x1,22,30],[x2,22,30]);
     assert.equal(ray(0,30).actorId,actor.id);
-    host.modelTransforms.get(1).translation=[100,0,0];world.syncActors(.1);
+    host.modelTransforms.set(1,{...host.modelTransforms.get(1),translation:[100,0,0]});world.syncActors(.1);
     assert.equal(world.collider.actors.length,1);assert.equal(instance.userData.collisionRecord,record);
     assert.equal(ray(0,30).fraction,1);assert.equal(ray(100,130).actorId,actor.id);
     game.command(controller,'hide');assert.equal(ray(100,130).fraction,1);
@@ -130,7 +133,7 @@ test('the frame queries attached prop collision at the newly advanced support po
   const check=mask=>queries.push({old:world.collider.trace([0,22,30],[30,22,30],[0,0,0],[0,0,0],[],mask).fraction,
     next:world.collider.trace([100,22,30],[130,22,30],[0,0,0],[0,0,0],[],mask).actorId});
   world.player={position:[500,0,0],mins:[-11,0,-11],maxs:[11,56,11],noClip:false,grounded:false,update:()=>check('blocksPlayer')};
-  host.update=()=>{host.modelTransforms.get(1).translation=[100,0,0];};
+  host.update=()=>{host.modelTransforms.set(1,{...host.modelTransforms.get(1),translation:[100,0,0]});};
   game.update=()=>check('canBeShot');world.syncPlayer=()=>{};world.updateCamera=()=>{};
   try {
     world.update(.1,{forward:0,right:0});

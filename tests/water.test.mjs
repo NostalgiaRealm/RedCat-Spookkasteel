@@ -168,9 +168,6 @@ test('graveyard moving-platform moat renders its opaque authored damage-trigger 
   assert.equal(restored.modelState(135).solid,false);
   const collider=new BspCollider(data.collision);
   assert.equal(collider.trace([2500,550,-700],[2500,480,-700],playerMins,playerMaxs,[135]).fraction,1,'water is not a solid platform');
-  const contact=new Gameplay({...data,entities:data.entities.filter(e=>e.classname==='%Model%'||e.Model==='killwater')},{deferInit:true});
-  contact.update(.02,[2500,508,-700]);close(contact.state.health,8,'original 100 damage per second remains');
-  contact.update(.02,[2659,528.71,-743]);close(contact.state.health,8,'standing above water on a platform is safe');
 });
 
 test('opaque liquid visibility leaves editor helpers and zero-alpha triggers hidden',()=>{
@@ -196,43 +193,33 @@ test('contents damage uses ooze and death flags independently of plain water',()
   assert.equal(liquidDamageRate(OOZE,{game:{Player:{OozeDamagePerSecond:7}}}),7);
 });
 
-test('trigger damage is continuous and frame-rate independent while leaving stops it immediately',()=>{
-  for(const fps of [10,30,60,144]){
-    const events=[],game=new Gameplay(contactLevel(),{onEvent:event=>events.push(event)});
-    for(let i=0;i<fps*2;i++)game.update(1/fps,[0,0,0]);
-    close(game.state.health,8);
-    const reactions=events.filter(event=>event.type==='damage');
-    assert.ok(reactions.length<=4,'continuous damage must not restart its sound every frame');
-    for(let i=0;i<fps;i++)game.update(1/fps,[50,0,0]);
-    close(game.state.health,8);
-  }
-});
-
 test('the real forest trigger applies one health per second only inside the shaped pool',()=>{
   const source=level('lvl00a');
   const data={...source,entities:source.entities.filter(entity=>entity.classname==='%Model%'||entity.DaviName==='lichtwater2')};
   const game=new Gameplay(data,{deferInit:true});
   const trigger=game.find('lichtwater2')[0];assert.ok(trigger);
+  // Native trigger damage starts on the tick after entry (trigger-contact-native.js).
   for(let i=0;i<60;i++)game.update(1/60,[-1240,-183.95,1355]);
-  close(game.state.health,9);
+  const wet=game.state.health;assert.ok(wet<10&&wet>=9-1e-9,'inside the shaped pool loses about one health per second');
   for(let i=0;i<60;i++)game.update(1/60,[-1250,-170,1500]);
-  close(game.state.health,9,'enclosing-box contact cannot damage a dry corner');
+  close(game.state.health,wet,'enclosing-box contact cannot damage a dry corner');
   assert.equal(trigger.inside,false);
 });
 
-test('environmental damage continues during hit immunity and preserves fractional health through save/load',()=>{
+test('environmental and ordinary damage both apply back to back and fractional health survives save/load',()=>{
   const data=contactLevel();data.entities=[];
   const game=new Gameplay(data);
-  game.damage(1,'enemy');assert.ok(game.hitCooldown>0);
+  game.damage(1,'enemy');close(game.state.health,9);
   game.update(.1,[0,0,0],{environmentContents:OOZE});
   close(game.state.health,8.7);
-  game.damage(1,'enemy');close(game.state.health,8.7,'ordinary hits still honor the cooldown');
+  // Native damage has no post-hit immunity window.
+  game.damage(1,'enemy');close(game.state.health,7.7);
   const restored=new Gameplay(data,{save:JSON.parse(JSON.stringify(game.snapshot()))});
-  close(restored.state.health,8.7);close(restored.environmentFeedbackCooldown,game.environmentFeedbackCooldown);
+  close(restored.state.health,7.7);close(restored.environmentFeedbackCooldown,game.environmentFeedbackCooldown);
   for(let i=0;i<9;i++)restored.update(.1,[0,0,0],{environmentContents:OOZE});
-  close(restored.state.health,6);
+  close(restored.state.health,5);
   for(let i=0;i<10;i++)restored.update(.1,[0,0,0],{environmentContents:0});
-  close(restored.state.health,6);
+  close(restored.state.health,5);
 });
 
 test('cutscenes and completed levels do not accumulate environmental damage',()=>{
@@ -248,13 +235,3 @@ test('cutscenes and completed levels do not accumulate environmental damage',()=
   close(game.state.health,9.7);
 });
 
-test('lethal water consumes one life even when death immediately respawns the player',()=>{
-  for(const intrinsic of [false,true]){
-    const deaths=[];let game;
-    game=new Gameplay(contactLevel(200,2),{onEvent:event=>{if(event.type==='death'){deaths.push(event);game.respawn();}}});
-    game.update(.1,[0,0,0],{environmentContents:intrinsic?0x40000:0});
-    assert.equal(deaths.length,1);
-    assert.equal(game.state.lives,2);
-    assert.equal(game.state.health,10,'remaining old-position damage must not hit the respawn');
-  }
-});

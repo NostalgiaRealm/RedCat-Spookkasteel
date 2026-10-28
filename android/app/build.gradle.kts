@@ -39,8 +39,8 @@ android {
         applicationId = "com.nostalgiarealm.redcatspookkasteel"
         minSdk = 29
         targetSdk = 36
-        versionCode = 6
-        versionName = "1.0.4"
+        versionCode = 7
+        versionName = "1.0.5"
     }
 
     sourceSets["main"].assets.setSrcDirs(listOf(gameAssets))

@@ -23,17 +23,9 @@ const groundTrace=(a,b)=>{
   return clearTrace(a,b);
 };
 
-test('spider variants use original melee damage versus red-spider projectile settings',()=>{
-  for(const subtype of [1,2]) {
-    const {game,spider,events}=fixture([enemy(subtype)]);
-    game.update(.05,[0,0,80]);
-    assert.equal(spider.animationState,'attack');assert.equal(game.state.health,10,'melee waits for its strike pose');
-    assert.equal(events.filter(e=>e.type==='enemyAction'&&e.action==='attack').length,0,'attack audio waits for the strike');
-    advance(game,.9,[0,0,80]);
-    assert.equal(game.state.health,10-GAMEPLAY_SETTINGS['spider'+subtype].Normal.Damage);
-    assert.equal(game.projectiles.length,0);
-    assert.equal(events.filter(e=>e.type==='enemyAction'&&e.action==='attack').length,1);
-  }
+// Green/yellow spiders are touch enemies now (enemy-combat-native.js); their
+// contact damage is covered by enemy-touch-hit.test.mjs.
+test('red spiders use their projectile settings',()=>{
   const {game,spider,events}=fixture([enemy(3)]);
   game.update(.05,[0,0,170]);
   assert.equal(events.filter(e=>e.type==='enemyAction'&&e.action==='attack').length,0);
@@ -52,7 +44,8 @@ test('red spider shots stop at BSP walls and can be dodged',()=>{
   advance(game,.5,[0,0,170],{traceProjectile:wall});
   assert.equal(game.state.health,10);assert.equal(game.projectiles.length,0);
   game.objects[0].attackTimer=0;game.objects[0].animationUntil=0;
-  game.update(.05,[0,0,170]);advance(game,.85);
+  // Native motion rates are randomised 0.8-1.2 (enemy-animation-rules.js); allow the slowest release.
+  game.update(.05,[0,0,170]);advance(game,1.05);
   assert.equal(game.projectiles.length,1);
   advance(game,.6,[100,0,170]);assert.equal(game.state.health,10);assert.equal(game.projectiles.length,1);
 });

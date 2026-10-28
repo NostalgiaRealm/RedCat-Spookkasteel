@@ -26,7 +26,10 @@ The original VM still evaluates the potion gate and chooses `cutscene04a` or
 `cutscene04b`. Calling index 4 anywhere else retains the original bit-16 mapping.
 The corrected skill event also allows the campaign to retain the right reward.
 
-The imported chapter starting masks are 0, 1, 3, 7, and 15. The cave default
+The imported chapter starting masks (`StandardSkill`) are 0, 1, 3, 7, and 15.
+Natively they apply to quick play only; an adventure starts each chapter with
+the abilities actually earned and carried (see
+[the parity review](claude-native-parity-review.md#5)). The cave default
 7 already includes super shot, even though the same chapter awards it at the
 30-potion fairy. Fresh `lvl03a` construction therefore removes bit 4 from its
 default, leaving mask 3. Normal carry from a graveyard visit that earned

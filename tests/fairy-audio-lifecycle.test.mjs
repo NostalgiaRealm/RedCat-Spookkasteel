@@ -117,14 +117,19 @@ test('pickup router selects complete native S/M/L recordings and overlapping pic
 test('BIG BENG charge sound follows its native hold, pause and release lifetime',()=>{
   const audio=mixer(),router=new GameplayAudio(audio);
   router.handle({type:'player-charge',active:true});const record=audio.keyed.get('player:charge');
-  assert.equal(record.name,'rcshoot3.wav');assert.equal(record.loop,true);
+  // 0x54ffe0(def,0,1.0,0,0): a one-shot, loop flag 0.
+  assert.equal(record.name,'rcshoot3.wav');assert.equal(record.loop,false);
   record.element.currentTime=.4;audio.pause();assert.equal(record.element.paused,true);
   audio.resume();assert.equal(record.element.currentTime,.4);router.handle({type:'player-charge',active:false});
   assert.equal(audio.sounds.size,0);audio.resume();assert.equal(record.element.paused,true);
   const game={playerCharge:{age:.7},state:{health:10},settings:{game:{}}},world={player:{position:[0,0,0]}};
   router.update(.05,world,game);assert.equal(audio.keyed.get('player:charge').name,'rcshoot3.wav');
   router.update(.05,world,game);assert.equal(audio.sounds.size,1);
+  // Once the one-shot ends, a continued hold does not replay it.
+  audio.keyed.get('player:charge').element.onended();assert.equal(audio.sounds.size,0);
+  router.update(.05,world,game);assert.equal(audio.sounds.size,0);
   game.playerCharge=null;router.update(.05,world,game);assert.equal(audio.sounds.size,0);
+  game.playerCharge={age:0};router.update(.05,world,game);assert.equal(audio.sounds.size,1,'a new charge plays it again');
 });
 
 test('level-transition pickup guard waits for every ending, freezes with pause, and clears on failure or reset',()=>{

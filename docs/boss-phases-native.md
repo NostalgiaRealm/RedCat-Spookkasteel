@@ -20,7 +20,11 @@ FreezeEnemies suspends the machine. Terminal hits pass through the existing
   the incompatible phase/pose/ammunition while preserving enabled state,
   defeated state, damage proportion and script progress.
 - Dungeon Max fires the authored magma salvo, opens the lid, rises from
-  `MinHeight` to `MaxHeight`, waits `LookTime`, lowers, and repeats. Normal
+  `MinHeight` to `MaxHeight` (both × `MachineScale` 1.4, and × a positive
+  entity `Scale`), waits `LookTime`, lowers, and immediately starts the next
+  salvo: `CRcDmAttackState` (0x401d00) never completes while he lives. He
+  enters that loop as soon as RedCat is seen or remembered; `AttackRange` is
+  not consulted. See [the parity review](claude-native-parity-review.md#8). Normal
   difficulty samples its salvo from the imported average of three, with two
   seconds to rise and two seconds to look; Easy and Hard use their own values. The three original
   machine actors are `turbot`, `turtop`, and `brcrate`, scaled by `MachineScale`.
@@ -29,10 +33,14 @@ FreezeEnemies suspends the machine. Terminal hits pass through the existing
   longer sinks Max's platform. A selected hit preserves the current height
   through the hurt clip, then starts a fresh salvo through the native root's
   alert entry. It does not insert a reconstructed lowering phase.
-- Jester Max plays `teleport`, becomes hidden for `InvisibleTime`, chooses an
-  authored `JesterMaxPoint` (or its appended spawn fallback), reappears with a
-  fresh teleport animation, and fires jester balls. Hidden enemies do not
-  absorb player projectiles. Teleporting rejects damage. Current/max health
+- Jester Max starts his first teleport on Enable (0x404550). He plays
+  `teleport`, stays hidden until the departure particles retire
+  (`InvisibleTime` is stored but never read), chooses an authored
+  `JesterMaxPoint` (or its appended spawn fallback), reappears with a fresh
+  teleport animation that lasts at least the arrival effect, and fires jester
+  balls. Hidden enemies do not absorb player projectiles. Only the teleport
+  that follows a salvo rejects damage; the opening teleport and those after a
+  hit or an idle choice can be hit while visible. Current/max health
   controls whether he shoots or teleports again after reappearing, and a
   one-in-three accepted-hit reaction interrupts the salvo with the full hurt
   clip before entering a fresh teleport. Further selected hits do not restart

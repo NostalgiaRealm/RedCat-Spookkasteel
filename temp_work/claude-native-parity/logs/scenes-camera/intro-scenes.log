@@ -1,0 +1,30 @@
+PASS desktop: intro actually advances without interaction under blocked audible autoplay; controls fit
+PASS desktop: click/tap enables sound without rewinding or changing volume
+/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/current_work/intro-autoplay-2026-10-02/browser-1793192442586
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('#play-intro')
+    - locator resolved to <button type="button" id="play-intro" class="text-button">Bekijk de originele intro</button>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    56 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+
+    at /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/tests/intro-scenes.mjs:59:39 {
+  name: 'TimeoutError'
+}
+
+Node.js v24.13.1

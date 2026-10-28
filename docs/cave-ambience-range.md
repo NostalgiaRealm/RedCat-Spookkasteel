@@ -44,9 +44,13 @@ same filenames in other levels keep their existing attenuation policies.
 ## Focused verification
 
 ```sh
-node --test tests/cave-ambience-range.test.mjs
+node --test tests/spatial-audio.test.mjs
 node tests/cave-ambience-range-scenes.mjs
 ```
+
+The unit file `tests/cave-ambience-range.test.mjs` asserted the superseded
+5–30 m range and was removed on 28 October 2026; `tests/spatial-audio.test.mjs`
+checks the current range.
 
 At the time of the initial 5–30 m change, three focused unit/integration tests
 passed, covering the distance curve,

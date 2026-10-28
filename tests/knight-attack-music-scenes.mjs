@@ -10,6 +10,9 @@ try {
   await mkdir('artifacts',{recursive:true});
   browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
   const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[];
+  // StandardSkill applies only to quick play natively (parity review item 5);
+  // give this adventure profile the basic shot it would have earned.
+  await page.addInitScript(()=>localStorage.setItem('redcat.progress.v1',JSON.stringify({version:1,highestUnlocked:4,earnedSkills:1})));
   page.on('pageerror',error=>errors.push(error.stack));
   page.on('response',response=>{if(response.status()>=400)errors.push(`${response.status()} ${response.url()}`);});
   await page.goto('http://127.0.0.1:4214/?skipIntro');await page.waitForFunction(()=>window.__redcat);

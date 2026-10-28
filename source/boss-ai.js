@@ -13,13 +13,17 @@ const TYPES=new Set(['maxd','maxj','witch']);
 const nativeRoll=o=>Math.floor(enemyRandom(o)*32768);
 const PHASES=new Set(['idle','shoot','betweenShots','rise','look','lower','teleportOut','invisible','teleportIn','start','fly','recover','salvoWait']);
 
+// Dungeon Max heights are scaled by the machine's MachineScale, and by the
+// entity Scale only when positive (0x41b600 at 0x41b857-0x41b865).
+function dungeonScale(o){const scale=n(o.entity?.Scale,-1);return n(o.stats.MachineScale,1.4)*(scale>0?scale:1);}
+function dungeonHeights(o){const k=dungeonScale(o),min=n(o.stats.MinHeight)*k;return {min,max:Math.max(min,n(o.stats.MaxHeight,40)*k)};}
 export function initializeBoss(game,object) {
   if(!TYPES.has(object.enemyType))return;
   object.boss={version:1,type:object.enemyType,phase:'idle',elapsed:0,duration:0,shots:0,released:false,
     waitUntil:null,approaching:false,
     home:vector(object.entity.Origin||object.position),started:false,machineMotion:'still',machineSerial:0,machineElapsed:0,
     teleportIndex:-1,hidden:false,invulnerable:false,lowerFrom:n(object.stats.MaxHeight,40)};
-  if(object.enemyType==='maxd')object.position[1]=object.boss.home[1]+n(object.stats.MinHeight);
+  if(object.enemyType==='maxd'){const h=dungeonHeights(object);object.boss.lowerFrom=h.max;object.position[1]=object.boss.home[1]+h.min;}
 }
 
 function enter(game,o,phase,duration=0,animation=null) {
@@ -48,8 +52,11 @@ function salvo(game,o) {
   o.boss.shots=enemySalvoSize(o);
   shoot(game,o);
 }
-function teleport(game,o) {
-  o.boss.invulnerable=true;o.boss.hidden=false;
+// Only the teleport that follows a salvo is protected (+0x250 set at
+// 0x40480c, cleared at 0x404a86); opening, post-hurt and repeated teleports
+// accept hits.
+function teleport(game,o,{guarded=false}={}) {
+  o.boss.invulnerable=guarded;o.boss.hidden=false;
   enter(game,o,'teleportOut',duration(game,o,'teleport',.9333379864692688),'teleport');
   teleportEffect(game,o,'departure');
 }
@@ -93,7 +100,8 @@ export function updateBoss(game,o,dt,context) {
   if(!b.started){
     b.started=true;
     if(o.enemyType==='witch')enter(game,o,'start',duration(game,o,'start',3.2666831016540527),'start');
-    else if(o.enemyType==='maxj'&&context.visible)teleport(game,o);
+    // CRcJesterMainState::Init (0x404550) starts the first teleport on Enable.
+    else if(o.enemyType==='maxj')teleport(game,o);
   }
   b.elapsed+=dt;
   b.machineElapsed+=dt;
@@ -109,9 +117,11 @@ export function updateBoss(game,o,dt,context) {
 }
 
 function updateDungeon(game,o,c) {
-  const b=o.boss,min=n(o.stats.MinHeight),max=n(o.stats.MaxHeight,40),rise=Math.max(.001,n(o.stats.RiseTime,1));
+  const b=o.boss,{min,max}=dungeonHeights(o),rise=Math.max(.001,n(o.stats.RiseTime,1));
   switch(b.phase) {
-    case 'idle':if(c.visible&&c.distance<=n(o.stats.AttackRange,675))salvo(game,o);break;
+    // The root state enters the attack child when RedCat is seen or
+    // remembered (0x4030b0 -> 0x422f30); AttackRange is not consulted.
+    case 'idle':if(c.visible||o.alerted)salvo(game,o);break;
     case 'shoot':
       if(!b.released&&b.elapsed>=b.duration*clamp(n(o.stats.DrawMotionPart,.25),0,1)){b.released=true;fire(game,o,c);}
       if(b.elapsed>=b.duration){
@@ -126,13 +136,15 @@ function updateDungeon(game,o,c) {
     case 'look':if(b.elapsed>=b.duration)lowerDungeon(game,o);break;
     case 'lower':
       o.position[1]=b.home[1]+b.lowerFrom-(b.lowerFrom-min)*clamp(b.elapsed/b.duration,0,1);
-      if(b.elapsed>=b.duration){machine(o,'still');enter(game,o,'idle',0,'idle');}break;
+      // CRcDmAttackState (0x401d00) never completes: after lowering it
+      // starts the next salvo at once, for as long as Max lives.
+      if(b.elapsed>=b.duration){machine(o,'still');salvo(game,o);}break;
     case 'recover':
       if(b.elapsed>=b.duration)salvo(game,o);break;
   }
 }
 function lowerDungeon(game,o) {
-  const b=o.boss,min=n(o.stats.MinHeight),max=n(o.stats.MaxHeight,40);
+  const b=o.boss,{min,max}=dungeonHeights(o);
   b.lowerFrom=clamp(o.position[1]-b.home[1],min,max);
   machine(o,'litclose');
   enter(game,o,'lower',Math.max(.001,n(o.stats.RiseTime,1)*(b.lowerFrom-min)/Math.max(.001,max-min)),'idle');
@@ -140,11 +152,17 @@ function lowerDungeon(game,o) {
 function updateJester(game,o,c) {
   const b=o.boss;
   switch(b.phase) {
-    case 'idle':if(c.visible)teleport(game,o);break;
+    case 'idle':teleport(game,o);break;
+    // CRcJmMoveState (0x404970): hidden after the clip until the departure
+    // particles retire, then visible until the arrival particles retire.
+    // InvisibleTime is stored but never read.
     case 'teleportOut':
-      if(b.elapsed>=b.duration){b.hidden=true;enter(game,o,'invisible',n(o.stats.InvisibleTime,1));}break;
+      if(b.elapsed>=b.duration){
+        const departure=[...(b.teleportEffects||[])].reverse().find(effect=>effect.phase==='departure');
+        b.hidden=true;enter(game,o,'invisible',departure?Math.max(0,JESTER_EFFECT_SECONDS-departure.age):0);
+      }break;
     case 'invisible':
-      if(b.elapsed>=b.duration){chooseTeleport(game,o,c.playerPosition);b.hidden=false;enter(game,o,'teleportIn',duration(game,o,'teleport',.9333379864692688),'teleport');teleportEffect(game,o,'arrival');}break;
+      if(b.elapsed>=b.duration){chooseTeleport(game,o,c.playerPosition);b.hidden=false;enter(game,o,'teleportIn',duration(game,o,'teleport',.9333379864692688),'teleport');b.duration=Math.max(b.duration,JESTER_EFFECT_SECONDS);teleportEffect(game,o,'arrival');}break;
     case 'teleportIn':
       if(b.elapsed>=b.duration){
         b.invulnerable=false;
@@ -158,7 +176,7 @@ function updateJester(game,o,c) {
       if(b.elapsed>=b.duration){
         b.shots--;
         if(b.shots>0)shoot(game,o);
-        else teleport(game,o);
+        else teleport(game,o,{guarded:true});
       }break;
     case 'betweenShots':if(b.elapsed>=b.duration)shoot(game,o);break;
     case 'recover':if(b.elapsed>=b.duration)teleport(game,o);break;
@@ -167,7 +185,8 @@ function updateJester(game,o,c) {
 function updateWitch(game,o,c) {
   const b=o.boss;
   switch(b.phase) {
-    case 'idle':if(c.visible||o.alerted)approachWitch(game,o);break;
+    // Unaware, the Witch resumes random flight (CRcMoveDefault 0x405990).
+    case 'idle':if(c.visible||o.alerted)approachWitch(game,o);else enter(game,o,'fly');break;
     case 'start':
       if(b.elapsed>=b.duration){enter(game,o,'fly');b.target=o.patrol?.target||null;}break;
     case 'fly': {
@@ -179,11 +198,14 @@ function updateWitch(game,o,c) {
         // The cursor chooses/reserves before its strict range check. Retain
         // the existing body-clear flight fallback if no authored graph exists.
         if(target===null||(target!==undefined&&c.distance<n(o.stats.AttackRange,175)&&(c.visible||o.alerted))){b.approaching=false;salvo(game,o);break;}
-        if(target!==undefined&&c.distance<n(o.stats.AttackRange,175)&&!c.visible&&!o.alerted){b.approaching=false;enter(game,o,'idle',0,'idle');break;}
+        // Arriving without memory completes the attack; random flight resumes.
+        if(target!==undefined&&c.distance<n(o.stats.AttackRange,175)&&!c.visible&&!o.alerted){b.approaching=false;b.target=null;enter(game,o,'fly');break;}
         if(target===undefined)b.approaching=false;
         b.target=target?.id||null;
       }
-      if(!b.approaching&&!target&&c.visible&&c.distance<=n(o.stats.AttackRange,175)){salvo(game,o);break;}
+      // Perceiving or remembering RedCat starts the attack, which always
+      // tries a closer move first (0x4030b0 / 0x407280), at any range.
+      if(!b.approaching&&o.patrol?.leftStart&&(c.visible||o.alerted)){approachWitch(game,o);break;}
       if(!target){
         game.navigation.build(c.lineOfSight);
         target=game.navigation.find(o.patrol?.target)||game.navigation.choose(o,{player:c.playerPosition,canTravel:flightClearance(o,c)});
@@ -212,7 +234,7 @@ function updateWitch(game,o,c) {
       else {
         if(target&&o.patrol){o.patrol.previous=o.patrol.current;o.patrol.current=target.id;o.patrol.target=null;o.patrol.leftStart=target.id!==o.patrol.start;o.patrol.relocating=false;}
         b.target=null;
-        if(!b.approaching&&c.visible&&c.distance<=n(o.stats.AttackRange,175))salvo(game,o);
+        if(!b.approaching&&(c.visible||o.alerted))approachWitch(game,o);
         else if(!b.approaching){const next=game.navigation.choose(o,{player:c.playerPosition,canTravel:!o.patrol?.leftStart?null:flightClearance(o,c)});if(next)b.target=next.id;else game.enemyAnimation(o,'idle');}
         // A closer child selects its next edge through approachTarget on
         // the next update; an unrestricted patrol choice would poison it.

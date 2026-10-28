@@ -1,0 +1,31 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  [
+    false,
++   false,
++   false,
++   false,
++   false
+-   true,
+-   true,
+-   true,
+-   true
+  ]
+
+    at file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/campaign-settings-scenes.mjs:30:10
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at process.processImmediate (node:internal/timers:472:9) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [ false, false, false, false, false ],
+  expected: [ false, true, true, true, true ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

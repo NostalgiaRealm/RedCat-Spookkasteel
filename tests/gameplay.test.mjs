@@ -34,8 +34,10 @@ test('enter trigger fires once, leaving runs its own command, max trigger count 
     entity('Trigger','trigger',{Model:'volume',CommandOnEnter:'door.open',CommandOnLeave:'door.close',MaxTriggerTimes:'1'})
   ]));
   game.update(.02,[0,0,0]);assert.equal(game.find('door')[0].open,true);
-  game.update(.02,[50,0,0]);assert.equal(game.find('door')[0].open,false);
-  game.update(.02,[0,0,0]);assert.equal(game.find('door')[0].open,false);
+  // Native trigger phases (trigger-contact-native.js): the tick after entry is a
+  // stay tick, leave runs on the following one, and the phase resets a tick later.
+  game.update(.02,[50,0,0]);assert.equal(game.find('door')[0].open,true);game.update(.02,[50,0,0]);assert.equal(game.find('door')[0].open,false);
+  game.update(.02,[0,0,0]);game.update(.02,[0,0,0]);assert.equal(game.find('door')[0].open,false);
   assert.equal(game.find('trigger')[0].triggerCount,1);
 });
 
@@ -90,11 +92,14 @@ test('snapshot restores mutable state and prevents item farming after load',()=>
   assert.equal(restored.restore({...save,level:'different'}),false);
 });
 
-test('damage cooldown, death and checkpoint respawn are deterministic',()=>{
+test('back-to-back hits, death and checkpoint respawn are deterministic',()=>{
   const events=[];const game=new Gameplay(fixture(),{onEvent:e=>events.push(e)});
-  game.setCheckpoint([1,2,3],6);game.damage(3);game.damage(3);assert.equal(game.state.health,7);
-  game.hitCooldown=0;game.damage(10);assert.equal(game.state.lives,2);assert.equal(events.filter(e=>e.type==='death').length,1);
-  assert.deepEqual(game.respawn(),[1,2,3]);assert.equal(game.state.health,10);assert.ok(game.hitCooldown>0);
+  // Native damage has no post-hit immunity window; each hit applies.
+  game.setCheckpoint([1,2,3],6);game.damage(3);game.damage(3);assert.equal(game.state.health,4);
+  game.damage(10);assert.equal(game.state.lives,3);assert.equal(events.filter(e=>e.type==='death').length,1);
+  // Respawn grants the native five-second protection instead.
+  assert.deepEqual(game.respawn(),[1,2,3]);assert.equal(game.state.health,10);assert.equal(game.respawnProtection,5);
+  game.damage(1);assert.equal(game.state.health,10);
 });
 
 test('original level transition target is normalized and emitted once',()=>{

@@ -19,7 +19,8 @@ test('damage and rendering share one exact seeded cohort without adding save fie
   nativeSmokeState(shared[0].smoke[0],12.4);
   assert.equal(JSON.stringify(effect),before,'transient render state stays outside the explosion/save record');
   const restored=restoreNativeExplosions([effect],12.4)[0];
-  assert.deepEqual(nativeBlastsForEffect(restored),expected,'restored cohort starts with original particle states, not cached render fields');
+  // Restore deliberately carries each blast's lightState for continuous explosion light.
+  assert.deepEqual(nativeBlastsForEffect(restored).map(({lightState,...blast})=>blast),expected,'restored cohort starts with original particle states, not cached render fields');
   assert.notEqual(nativeBlastsForEffect(restored),shared);
 });
 

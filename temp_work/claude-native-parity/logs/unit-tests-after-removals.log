@@ -1,0 +1,2288 @@
+✔ actor broad phase skips distant state predicates but still checks nearby dormant and hidden actors (1.238721ms)
+✔ actor masks and ignored actor/support identities still bypass collision and state checks (0.283148ms)
+✔ scalar actor bounds preserve touching and the original tolerance on every axis (0.844914ms)
+✔ an exactly touching actor surface allows moving away and still blocks moving into it (0.570386ms)
+✔ managed candidate grid preserves exact ordered contacts for seeded actor sweeps and filters (121.771309ms)
+✔ same-cell motion and state changes reuse candidates while contacts remain current (4.385118ms)
+✔ cell boundaries retain the existing contact epsilon on every axis and sign (1.233971ms)
+✔ oversized actors and long rays fall back conservatively with the authored tie order (0.623965ms)
+✔ managed append, removal and conservative pose bounds stay synchronized (3.528434ms)
+✔ scalar actor SAT preserves degenerate, axis-aligned and near-parallel triangle contacts (87.257338ms)
+✔ original animated torch, skull, cobweb and turret surfaces keep identical player and pellet sweeps (90.940032ms)
+✔ actor surfaces block a swept player and projectiles but respect native LOS flags (3.385765ms)
+✔ actor collision allows sliding, moving away, and passing empty portions of a triangle bounding box (0.733745ms)
+✔ standing on an actor surface remains stable and is not mistaken for starting inside it (7.359326ms)
+✔ original rotated graveyard statue blocks its pedestal while a disabled blocker disappears (14.720333ms)
+✔ a dormant graveyard zombie reuses its triangle collision until its pose or placement changes (32.093008ms)
+✖ Dungeon machine retains original geometry and exposes every turret part to player shots (31.943869ms)
+✖ Dungeon turret, crate, lid and exposed body all forward pellet damage to Max (6.461334ms)
+✖ Dungeon ammunition exits its own shields but other enemies still collide, and defeated shields disappear (4.051811ms)
+✔ floor broad phase keeps authored order and every nonphysical brush, rather than nearest floor (6.989829ms)
+✔ floor query plans can be prepared during loading without adding lighting samples (1.028843ms)
+✔ floor broad phase follows translated/rotated, disabled and restored brushes with tracked poses (3.031708ms)
+✔ floor broad phase follows translated/rotated, disabled and restored brushes with ordinary poses (1.766197ms)
+✔ allocation-free inverse segment bounds exactly match the original converted endpoints (228.754294ms)
+✔ level 1 moving-fragment floor samples match the full brush scan through pose changes (232.256489ms)
+✔ level 2 moving-fragment floor samples match the full brush scan through pose changes (200.235291ms)
+✔ level 3 moving-fragment floor samples match the full brush scan through pose changes (197.751729ms)
+✔ level 4 moving-fragment floor samples match the full brush scan through pose changes (391.02097ms)
+✔ level 5 moving-fragment floor samples match the full brush scan through pose changes (52.251392ms)
+✔ exact downward point trace retains the native floor node and no hull epsilon (1.479789ms)
+✔ floor uses one truncated native texel with authored shifts, not bilinear atlas samples (1.100512ms)
+✔ ordered native face bounding boxes allow twenty units around a face (0.430727ms)
+✔ ambient RGB caps each channel at native .3 after raw dynamic lightmap addition (0.695294ms)
+✔ stationary actor cache retains surfaces and invalid results without retaining light state (0.561126ms)
+✔ native model fallback samples transformed brush space and invalidates only on actual changes (0.758394ms)
+✔ first authored world hit wins over a closer brush floor, matching Exact3 order (1.36705ms)
+✔ rotated brush fallback samples the local BSP plane while the ray remains world vertical (0.312097ms)
+✔ shadow endpoints use native texture-to-world vectors and oriented plane offset (0.204489ms)
+✔ shadowed floor lights test the sampled luxel against world BSP and cache stable visibility (0.698895ms)
+✔ imported level 1 has bounded native floor samples at authored actor positions (67.510601ms)
+✔ imported level 2 has bounded native floor samples at authored actor positions (56.387952ms)
+✔ imported level 3 has bounded native floor samples at authored actor positions (65.791974ms)
+✔ imported level 4 has bounded native floor samples at authored actor positions (41.939476ms)
+✔ imported level 5 has bounded native floor samples at authored actor positions (16.280302ms)
+✔ actor root chooses nearest in-range lights and retains ties in input order (1.38433ms)
+✔ native one-unit distance floor changes direction and falloff without changing eligibility (0.383318ms)
+✔ prepared lighting is shared across an actor; only transformed vertex normals change (0.192419ms)
+✔ material multiplies the raw sum before saturation, without gamma decoding (1.099602ms)
+✔ light count honors authored settings up to the native capacity and ignores invalid records (0.362238ms)
+✔ Sun spatial plans can be prepared during loading without adding visibility rays (9.401342ms)
+✔ Sun ray candidates preserve rotated local bounds tolerance with tracked brush poses (26.532888ms)
+✔ Sun ray candidates preserve rotated local bounds tolerance with ordinary brush poses (23.324251ms)
+✔ level 1 Sun/debris obstruction matches all-brush rays through moving and disabled poses (132.754379ms)
+✔ level 2 Sun/debris obstruction matches all-brush rays through moving and disabled poses (97.584713ms)
+✔ level 3 Sun/debris obstruction matches all-brush rays through moving and disabled poses (160.505408ms)
+✔ level 4 Sun/debris obstruction matches all-brush rays through moving and disabled poses (251.666709ms)
+✔ level 5 Sun/debris obstruction matches all-brush rays through moving and disabled poses (89.224284ms)
+✔ Sun visibility checks directed native PVS before tracing world and brush models (3.417285ms)
+✔ solid clusters are rejected but a missing PVS row bypasses connected-area filtering (0.459997ms)
+✔ closed area portals reject Sun lighting and authored opening motion invalidates the cache (0.475517ms)
+✔ actor/source leaf caches preserve exact point sides including bounds exterior and moved lights (0.602216ms)
+✔ moving/disabled brush changes bump revision only when values change (0.491466ms)
+✔ native Sun point rays honor transformed brushes and exact wall edges without contact skin (0.663645ms)
+✔ Sun spatial selection retains inclusive radius and cell boundaries in all directions (3.502725ms)
+✔ unlimited and wide Suns retain authored tie order among local Suns (1.070152ms)
+✔ zero-radius and negative-radius Suns preserve native eligibility (0.212838ms)
+✔ bounded dynamic selection preserves input ties at every authored maximum (4.019651ms)
+✔ typed dynamic positions retain intermediate Float32 rounding (0.420997ms)
+✔ actor orientation applies native world-axis script and spin rotations before the brush rotation (1.952976ms)
+✔ original castle balls and cave rocks spin one revolution per second in opposite authored directions (1.754477ms)
+✖ attached actor and pickup anchors rotate about the model pivot without accumulating displacement (3.320126ms)
+✔ controller Disable pauses the support without hiding its actor, whereas Hide removes both (1.055562ms)
+✔ saving preserves local actor age, script rotation and its unmodified anchor while restoring the brush pose (6.071916ms)
+✔ an off-camera actor advances its authored animation clock and resumes the current pose when approached (4.866685ms)
+✖ moving a model-attached prop refreshes its existing collision surface and Hide disables it (4.509378ms)
+✖ the frame queries attached prop collision at the newly advanced support pose without advancing its animation twice (1.944726ms)
+✔ all original decorative actors resolve their assets, explicit motions and moving-model attachments (136.985598ms)
+✔ original heart ambient interpolates red to white and wraps over two seconds (9.848839ms)
+✔ stained glass uses original fullbright ambient and ordinary actors retain world lighting (4.289629ms)
+✔ actors choose their own closest two in-range lights, never the camera selection (3.267557ms)
+✔ material clones used for ghosts and death fade retain isolated lighting state when repatched (2.381743ms)
+✔ default Sun and animated ambient use native fallback settings independently of actual Sun intensity (0.391307ms)
+✔ native projectile light colours and radius are independent of sprite size and disappear with owner (18.353357ms)
+✔ authored dynamic shadow flags reach actor floor lighting without changing actor direct-light eligibility (39.231206ms)
+✔ offscreen actor parking skips scene traversal and restores on camera turns without gameplay visibility changes (7.950213ms)
+✔ parked actor direct queries and same-frame reveal preserve transformed scene ancestry (2.933849ms)
+✔ nested roots and externally reparented or removed actors keep their owner hierarchy (5.58612ms)
+✔ unmanaged child lights and presentation effects never enter the actor parking branch (4.741306ms)
+✔ removal and disposal restore owned roots and their original layers (0.639956ms)
+✔ off-camera actors release only GPU resources after hysteresis and return immediately on camera turn (13.887989ms)
+✔ shared actor geometry and textures are retained until the last resident owner leaves (1.41404ms)
+✔ distant visible actors and large transformed assemblies stay complete (2.996128ms)
+✔ near-camera preload and distance hysteresis avoid repeated uploads at the boundary (0.843314ms)
+✔ nearby actors behind PVS stay preloaded without drawing while distant visible bounds stay intact (1.368351ms)
+✔ player and nonmanaged scene consumers protect shared textures and geometry (5.659919ms)
+✔ release protection inspects a shared chunk material once per query and observes subsequent texture changes (19.791717ms)
+✔ removal and controller disposal restore original layers without changing gameplay visibility (7.156809ms)
+✔ byte-identical moneybag variants share body geometry and two decoded maps without merging definitions or rewards (15.359018ms)
+✔ shared canonical maps retain independent per-template and per-instance colour, transparency and native settings (4.1318ms)
+✔ concurrent names fetch each actor definition once without fetching an unused canonical definition (5.003613ms)
+✔ a missing optional alias sidecar keeps the ordinary loading and rendering contract (15.485328ms)
+✔ only actor PNG URLs are canonicalized; override, ghost and other asset namespaces stay unchanged (4.12747ms)
+✔ repeated real potions share one mesh resource and map but keep lighting, visibility and collision records independent (10.600803ms)
+✔ animated real knights share immutable backing and prepared clips while keeping poses, collision and transitions private (43.356417ms)
+✔ a saved animated transition restores exactly without changing a sibling or shared source data (17.813781ms)
+✔ actual Three geometry disposal never removes sibling GPU handles that share immutable CPU arrays (13.176845ms)
+✔ room residency eviction and re-entry preserve sibling buffers, shared maps and separate gameplay visibility (15.015671ms)
+✔ pose cloning preserves groups and bounds, while unfamiliar or morph geometry keeps independent fallback arrays (10.730602ms)
+✔ actor handles defer decoding, stay shared across cloned materials and retain sampler/colour settings (4.027441ms)
+✔ actor residency loads only wanted maps and holds a visible view until its real image is ready (9.158823ms)
+✔ idle decoded images are dropped after grace, shared wanted maps and pinned player maps stay ready (5.313041ms)
+✔ unstarted and late texture loads release cleanly when their level is disposed (0.483016ms)
+✔ missing actor artwork propagates through residency settle without drawing a placeholder (1.495709ms)
+✔ pooled fragment warmup does not fetch distant artwork; active visibility and changed scale request the right maps (3.597944ms)
+✔ world actor metadata remains eager while campaign textures opt into deferral and ad-hoc actors remain ready to render (17.574133ms)
+✔ Sun modes retain authored radius cutoff and full-intensity inner radius (1.716868ms)
+✔ strongest visible Sun wins rather than nearest Sun or sum of Suns (3.487104ms)
+✔ equal scores preserve native first-entity ordering (0.369667ms)
+✔ Sun direction and visibility use three-quarter actor height (0.379597ms)
+✔ selection score includes authored attenuation and colour-channel sum (0.312968ms)
+✔ no eligible visible Sun returns null and excluded lights do not trace (0.715515ms)
+✔ zero-distance Sun produces a finite zero normal, and non-Sun entities are excluded (0.255618ms)
+✔ stationary actor reuses Sun selection without repeating visibility traces (0.230858ms)
+✔ position, actor height and world revision invalidate cached Sun selection (0.672265ms)
+✔ cached occlusion clears on revision and actor caches remain independent (0.587256ms)
+✔ calls without an actor cache key continue sampling current visibility (0.288718ms)
+✔ Android staging contains only runtime roots, complete Three package and deterministic hashes (638.405239ms)
+✔ multi-chunk binary assets and empty optional files retain exact bytes and manifest hashes (151.041497ms)
+✔ missing required bundle, styles, levels, media and Three modules leave staged runtime intact (1127.865337ms)
+✔ re-preparing removes stale files only from the owned staging output (610.923198ms)
+✔ unsafe and unowned output paths are refused without altering source or unrelated files (95.40879ms)
+✔ symlinked input files and output ancestors cannot escape the project (47.755284ms)
+✔ an ownership marker is specific to its source project and output path (199.568906ms)
+✔ CLI accepts a single explicit output and rejects incomplete or unknown options (0.614036ms)
+✔ hidden files and invalid version metadata cannot replace a valid asset snapshot (477.550423ms)
+✔ ordinary desktop and mobile browser hosts require no native handshake (1.254351ms)
+✔ native lifecycle waits for foreground, deduplicates events and blocks background Back (1.285931ms)
+✔ native display messages release keep-awake while suspended without a per-frame bridge call (2.325193ms)
+✔ Android automatic render size caps pixels without stretching portrait or ultrawide screens (0.400598ms)
+✔ Android save export correlates document picker results and treats cancellation as cancellation (1.049263ms)
+✔ Android save export validates names and byte limits and rejects disposed requests (55.043972ms)
+✔ Android import correlates picker results, supports cancellation and excludes export concurrently (0.945263ms)
+✔ Android import rejects malformed results, native read errors and disposed requests (59.712048ms)
+✔ every imported actor clip keeps exact Three.js bounds at start, interior and final poses (382.240314ms)
+✔ morph positions retain Three.js bounds and empty actors retain an empty box and zero-radius sphere (14.943132ms)
+✔ cached mathematical animation envelopes enclose every native clip and transitions without sampling bones (379.678102ms)
+✔ the envelope includes Hermite overshoot, hierarchy shear, unbound vertices and normalized quaternion keys (10.492115ms)
+✔ all 16 original RedCat clips produce finite, bounded animated geometry (59.39891ms)
+✔ animation advances vertices, loops and keeps instance poses separate (2.179895ms)
+✔ one-shot animation finishes without producing invalid samples (0.495797ms)
+✔ held poses do not invalidate their GPU geometry, while seeks and resumed movement do (5.104133ms)
+✔ completed poses stay cached and explicit restarts, clip changes and wraparound sample correctly (1.691508ms)
+✔ stationary voices do not resend gains, while settings, motion and fades remain immediate (80.687866ms)
+✔ stereo routing avoids duplicate backend writes even when AudioParam getters round to float32 (0.897973ms)
+✔ all five original portal graphs retain visibility through door motion and material changes (34.214882ms)
+✔ pickup-pending detection sees records added and released without allocating a copy (0.504546ms)
+✔ ended releases the HTML player after handlers and spatial nodes (3.378795ms)
+✔ error releases the HTML player after handlers and spatial nodes (0.368257ms)
+✔ replacement, stop and reset unload released elements without unloading a remaining sound (0.681705ms)
+✔ pause/resume and a delayed loop keep their loaded resource and playback position (0.554526ms)
+✔ HTML fallback music captures its cursor before unload and resumes that cursor on return (1.135212ms)
+✔ custom disposable voices retain their own cleanup path (0.607075ms)
+✔ a released buffered music source stops and disconnects without HTML media methods (12.350981ms)
+✔ the configured pickup group completes through buffered disposal without HTML tail cleanup (1.992725ms)
+✔ unloading a pending HTML play cannot notify completion or resurrect a released record (1.585368ms)
+✔ restores music layers, native fade phase and remembered tracks without changing scheduling (5.734799ms)
+✔ restores overlapping pickup tails, keyed effects and delayed replay countdown without rerandomizing (1.913256ms)
+✔ restored dialogue keeps active offset and FIFO; reconstruction and stale callbacks never duplicate lines (1.034843ms)
+✔ metadata-delayed seeks never play an introduction and respect pause/reset while pending (0.677366ms)
+✔ immediate saves retain a pending seek even when HAVE_NOTHING accepts it but reports zero (0.889114ms)
+✔ a restored replay delay may expire before metadata without seeking errors or an early replay (2.81297ms)
+✔ legacy/cross-level states leave reconstructed playback untouched; malformed entries are bounded (1.275581ms)
+✔ decoded WAV voices restore offsets across decode, pause and cancellation without stale playback (15.672836ms)
+✔ one-shots saved at EOF complete once without replaying the file on either audio backend (1.925966ms)
+✔ matching reconstructed moving emitter binding survives playback restoration (0.765665ms)
+✔ original UFO and forest gains use case-insensitive basenames and leave dialogue at full gain (2.908259ms)
+✔ native logarithmic driver volumes become waveform amplitude before the portable master (0.246299ms)
+✔ native distance model uses 32 units/meter and logarithmic control-to-amplitude conversion (0.294308ms)
+✔ level override controls spatial effects while music and voices remain independent of camera distance (1.719257ms)
+✔ master changes preserve authored, channel, script and spatial gains on every live sound (0.781584ms)
+✔ pause, keyed replacement and reset cannot resurrect a stopped voice or leave duplicate loops (0.641605ms)
+✔ replaying emitters honor authored delays and freeze their countdown while paused (0.416037ms)
+✔ original forest host emits spatial metadata and restores only enabled repeating ambience (140.525933ms)
+✔ autosave waits one minute of active wall time, including slow frames (1.160562ms)
+✔ successful manual/checkpoint saves and level loads restart the minute (0.200559ms)
+✔ failed storage writes retry without marking a minute successfully saved (0.208739ms)
+✔ green bats pursue through the inherited attack radius and damage only on contact (11.221119ms)
+✔ green bat contact cooldown is one second, independent of inherited melee timing (2.211484ms)
+✔ bat contact uses its asymmetric hull and the swept movement segment (0.700925ms)
+✔ blocking geometry and obscured remembered positions cannot cause remote contact damage (4.423218ms)
+✖ green bat hurt, enemy freeze, and cutscenes pause pursuit and the saved contact cooldown (9.988887ms)
+✔ old saved green bat melee attacks convert to contact pursuit without a remote hit (3.780422ms)
+✔ yellow and red bats retain native flight speed, shoot motions and projectile release timing (3.749273ms)
+✔ original castle bat variants resolve to contact and ranged behavior without map overrides (29.451367ms)
+✖ authored active bat spawns fit the stable imported body hull rather than spread wings (42.551782ms)
+✔ bat hull sweeps stop at RedCat and a moving player overlap recovers without crossing a wall (53.623972ms)
+✔ stationary RedCat gets separated bat contacts at the independent native damage cooldown (92.868408ms)
+✔ walking into green and shooting bats never leaves RedCat embedded in their bodies (129.746811ms)
+✔ bat waypoint movement preserves remaining time through saves and script freezes (114.240004ms)
+✔ Witch defeat retires the combat body before its authored ending double arrives, including old saves (142.3148ms)
+✔ large blocked bat searches span updates and keep their negative cache as the goal moves (10.505625ms)
+✔ actual bat detours and grounded pursuit share 48 sweeps fairly and all finish (61.980072ms)
+✔ a newly clear direct flight resumes immediately during pending work or a cached failure (2.924619ms)
+✔ score ordered clearance finds the exhaustive optimum without sweeping every candidate (2.227944ms)
+✔ unfinished flight searches are transient and restored detours retain plain save data (6.449934ms)
+✔ beam intersection clips the actual segment and the complete swept player hull (1.665818ms)
+✔ beam contact applies native dt times DPS, delays the callback and next trace, and survives saving (15.16805ms)
+✔ disabled, hidden and once-only beams reject further contacts; type 3 does not arm a command delay (2.510682ms)
+✔ beam endpoints follow brush motions and optional nearest-wall clipping (1.806357ms)
+✔ all four original Cave boss gate beams damage RedCat until the original group is disabled (75.243726ms)
+✔ lethal beam contact stops before later beams can damage the respawned player (0.952233ms)
+✔ knopdisc01 touch runs the full original flip before the stay-open delay, then resets and repeats (71.692801ms)
+✔ knopdisc02 touch runs the full original flip before the stay-open delay, then resets and repeats (45.152213ms)
+✔ the scripted bookcase ignores E and direct contact but still accepts its script open command (4.627536ms)
+✔ loading an old premature timer during paused opening waits for completion before scheduling closure (32.088998ms)
+✔ doors without motion still schedule their wait, and AfterOpen closing is not overwritten (5.047203ms)
+✔ original castle and cave StandingEnemy enums create their respective bosses (59.571769ms)
+✔ legacy swapped Max saves retain progress while discarding incompatible phases and ammunition (25.158448ms)
+✔ Dungeon Max completes native turret salvo, rise, look, lower and second salvo (16.001315ms)
+✔ Dungeon Max uses sampled difficulty salvo counts and original rise time (32.605414ms)
+✔ Boss freeze and save/load preserve a partially raised turret (9.808079ms)
+✔ Jester follows disappearance, effect-timed reappearance, salvo, protected teleport (7.890273ms)
+✔ Jester teleport chooses authored locations, respects player spacing, and preserves in-place native fallback (7.244988ms)
+✔ Invisible Jester rejects damage without restarting animation or consuming RNG (2.432872ms)
+✔ Witch plays takeoff, then follows original tower waypoints in 3D and fires magic salvos (53.652121ms)
+✔ Witch enters the scripted defeat at native health threshold two (3.353176ms)
+✔ A boss hit interrupts its pending shot only when native reaction chooses a new state (3.882772ms)
+✔ Gameplay routes bosses through specialized phases and restores a moving turret without a phase reset (36.694295ms)
+✔ Gameplay freeze pauses every specialized boss phase and disabled bosses retain their initial pose (13.84712ms)
+✔ Jester actually plays and restarts the original teleport clip for disappearing and reappearing (40.221609ms)
+✔ Hidden Jester does not absorb a player pellet at its previous location (6.166156ms)
+✔ Witch threshold defeat dispatches the existing end-scene hook exactly once (5.54469ms)
+✔ Interrupting Dungeon Max during a rise preserves height then starts a fresh native salvo (6.295564ms)
+✔ Dungeon Max accepts every exposed-body hit but reacts on the native half of hits (15.568648ms)
+✔ boss hit reactions use CRT modulo and preserve a playing hurt child through repeated hits (35.381464ms)
+✔ standing bosses release committed salvos with no extra pause between shoot animations (12.778208ms)
+✔ a recovering boss never releases its canceled shot and pauses its actual hurt duration (116.853205ms)
+✔ Witch hit recovery preserves closer selection at waypoint arrivals (6.840731ms)
+✔ boss attack and hit poses reach the native release/end at the same rate as their phase clocks (70.220832ms)
+✔ Witch waits arm on first check and preserve strict expiry through save and freeze (21.977401ms)
+✔ original cave intro moves its Max double away before the turret battle handoff (600.441634ms)
+✔ castle WhizKitty scene uses the inside endpoint despite its duplicate PlayerStart name (109.789445ms)
+✔ Brutus defeat restores ambient music and raises the mirror through the original ending motion (272.361209ms)
+✔ native boss activation selects special music in each original arena (203.07308ms)
+✔ boss defeat chooses action music while another living enemy remains engaged (187.691742ms)
+✔ older saves with a defeated Brutus no longer restart the stranded boss track (132.992967ms)
+✔ an empty authored music selection stops the previous track and remains stopped after loading (80.309169ms)
+✔ all four exit mirrors execute their authored route to the following level exactly once (579.819704ms)
+✔ lvl00a BSP triangles face their imported normals for native backface culling (114.088474ms)
+✔ lvl01a BSP triangles face their imported normals for native backface culling (102.885636ms)
+✔ lvl02a BSP triangles face their imported normals for native backface culling (106.452909ms)
+✔ lvl03a BSP triangles face their imported normals for native backface culling (165.321603ms)
+✔ lvl04a BSP triangles face their imported normals for native backface culling (42.479673ms)
+✔ buried-floor recovery opts in only confirmed decorative assets and standing knights (137.421405ms)
+✔ ten buried standing knights recover while twelve original samples and animated-pose caches remain intact (345.39871ms)
+✔ production actor lighting recovers the 27 buried decorations and preserves every valid sample across all five levels (481.663884ms)
+✔ production recovery keeps its setup bounds during geometry animation but invalidates on transformed placement (94.297438ms)
+✔ hidden or nonresident buried props skip lighting work and recover when rendered again (96.237794ms)
+✔ authored regional offset initializes viewing pitch, then accepts mouse pitch and restores free view (1.263711ms)
+✔ fixed and route overviews ignore mouse input until the timer or script releases the camera (1.033852ms)
+✔ dialogue and target locks still retain camera ownership (0.193958ms)
+✔ old offset-camera saves recover hidden pitch and new saves preserve deliberate camera adjustment (0.301718ms)
+✔ camera shortcut changes only a player-owned view, never a hidden overview preference (2.014096ms)
+✔ distant sections in the camera direction make no geometry or texture requests until approached (12.983486ms)
+✔ camera-local loading keeps long nearby faces whole even when their centre extends beyond the view radius (5.907958ms)
+✔ camera-local actor graphics return immediately while retaining live visibility, bounds and geometry (7.728284ms)
+✔ all four Caves altar puzzles open the boss route only after their own final motions, including saves between buttons (2456.054225ms)
+✔ Caves fire bridges and rotating earth passage preserve their finished collision poses across reload and respawn (1000.223561ms)
+✔ Tower five mirror placements survive reload, start one witch, and reach the authored ending (215.290242ms)
+✔ late-level fairy rewards can be earned from authored pickups and survive saves without spending potions (879.897502ms)
+✔ all six Caves save pillars restore their authored respawn point without rewinding completed gates (287.680098ms)
+✔ all authored Graveyard and Caves secret triggers count once across death and reload (376.521265ms)
+✔ fresh adventures expose only the forest and unlock one successor on earned completion (2.905339ms)
+✔ valid legacy checkpoints preserve reached chapters and completion without trusting inventory cheats (2.020605ms)
+✔ earned progress survives earlier replays, save overwrites, difficulty changes and malformed records (0.559366ms)
+✔ chapter states use original resources with their recorded uncropped dimensions (11.560507ms)
+✔ supplies fill native maxima, add score repeatedly and preserve level gateway scripts (7.990542ms)
+✔ supply grants use configured mirror/score limits, native potion cap, and tolerate absent state (0.346537ms)
+✔ original potion pickups pass the 30-potion skill threshold and saturate at 100 after cheating (1.092852ms)
+✔ collecting a real mirror after the cheat keeps the cap and still opens its gateway (0.457486ms)
+✔ free flight bypasses all geometry and gravity, follows pitch, and normalizes diagonal input (1.104352ms)
+✔ no-clip crosses a solid wall and disabling it restores ordinary collision (8.443478ms)
+✔ disabling inside a wall or beyond any world bound returns to a verified safe point (3.184517ms)
+✔ safe exit revalidates stale lastSafe after doors move and refuses to strand the player (0.753625ms)
+✖ world flight bypasses platform carry, lower-world recovery and third-person camera clipping (1.4211ms)
+✔ broad phase preserves crossing, start-solid, zero-length and exact hull-boundary contacts (5.429761ms)
+✔ translated and rotated brush bounds follow replacement and in-place pose changes (9.63462ms)
+✔ collision leaf bounds extend undersized render metadata and missing bounds fall back (0.509866ms)
+✔ world exterior, disabled brushes and nearest-model ordering remain unchanged (0.431167ms)
+✔ distant model rejection avoids narrow-phase leaf visits (0.933603ms)
+✔ bounded randomized rotated hull sweeps match unpruned traversal (55.198961ms)
+✔ lvl02a authored collision matches unpruned traversal around static and moved models (146.231912ms)
+✔ lvl03a authored collision matches unpruned traversal around static and moved models (132.045755ms)
+✔ frozen physical lists visit only overlapping static brushes and preserve sweep results (10.346736ms)
+✔ moved, disabled, replaced and in-place mutated brush poses remain live in an indexed list (5.076013ms)
+✔ candidate ordering retains duplicate IDs, start-solid penetrations and the unbounded world (2.864989ms)
+✔ mutable lists retain immediate edits and non-finite hull queries use the original scan (3.202987ms)
+✔ tracked pose snapshots refit translated brushes immediately, including temporary and restored poses (9.333702ms)
+✔ tracked refits preserve disabled invalid transforms and overlapping duplicate model ordering (2.078265ms)
+✔ indexed contents retain liquid cells without collision sides through pose changes and disabling (3.899111ms)
+✔ stationary trace and contents queries reuse transformed planes and model/leaf bounds (14.466085ms)
+✔ in-place translation, rotation and pivot mutations immediately invalidate the pose (21.742493ms)
+✔ temporary old and destination poses restore exact collision without retaining historical poses (200.603998ms)
+✔ deleting a pose restores stationary bounds and reinserting it moves collision again (6.785771ms)
+✔ invalid mutations still fail validation after a valid pose has been cached (5.815207ms)
+✔ world model remains stationary and transform defaults and normalized quaternions stay valid (3.655663ms)
+✔ swept hull stops at an expanded solid wall, with outward normal (4.828495ms)
+✔ parallel movement outside a solid leaves full motion available (0.265068ms)
+✔ slide projects motion onto wall instead of passing through it (0.392037ms)
+✔ disabled moving model does not block movement (0.170729ms)
+✔ original level 1: spawn settles and player can walk/jump (50.665643ms)
+✔ original level 2: spawn settles and player can walk/jump (50.891172ms)
+✔ original level 3: spawn settles and player can walk/jump (52.51409ms)
+✔ original level 4: spawn settles and player can walk/jump (99.933867ms)
+✔ original level 5: spawn settles and player can walk/jump (19.299051ms)
+✔ translated brush collision follows motion beyond the original leaf bounds (1.638818ms)
+✔ model zero stays fixed and shared BSP leaves are visited for each model instance (0.507687ms)
+✔ rotated convex planes expand against the world AABB around an offset pivot (0.370278ms)
+✔ rotated BSP partition traversal uses the moved plane and world sweep extent (1.116082ms)
+✔ rotated collision honors inverted leaf sides and the nearest model hit (0.644855ms)
+✔ default keyboard actions preserve WASD strafing and arrow turning (1.996915ms)
+✔ both physical modifier sides retain walk, descend and attack (0.286498ms)
+✔ remapping removes old keyboard aliases without changing unrelated actions (2.75594ms)
+✔ duplicate and reserved keys are rejected before any bindings change (1.087732ms)
+✔ malformed stored bindings fall back safely as a complete conflict-free set (3.340796ms)
+✔ modifier aliases are canonicalized and camera/use can be tested independently (0.391377ms)
+✔ lazy actor triangles match eager sweeps through rotated, moving and newly animated props (108.343396ms)
+✔ effect batches upload only live vertices/instances through growth, shrinking and empty frames (4.699256ms)
+✔ sprite culling rejects distant artwork while retaining large, rotated, expanded and native spout edges (1.37081ms)
+✔ deferred skinning preserves live bone transforms, transitions, save state and exact later vertices (205.246975ms)
+✔ camera re-entry and hidden collision queries resolve the current pose without advancing its clock (3.899712ms)
+✔ a disabled animator retains its last evaluated pose even if a new clip is selected before skinning (2.608832ms)
+✔ orientation cache follows authored/runtime turns, rotating pickups, moving supports and independent callers (18.417747ms)
+✔ skip requires continuous two second E hold and latches until release (3.126417ms)
+✔ skipping original forest introduction executes its completion callbacks (155.022068ms)
+✔ skipping fairy skill dialogue preserves potion branch and granted skill (120.372409ms)
+✔ witch laughter keeps its voice with an intentionally blank original subtitle (27.802049ms)
+✔ skipping cave boss introduction preserves stand-in withdrawal and subsequent arena door activation (376.403046ms)
+✔ double strings use native six-digit %lg notation and exponent width (2.215224ms)
+✔ integer strings retain native wrapping and C-locale whitespace (1.767517ms)
+✔ native decimal parsing accepts D exponents and preserves signed zero with C whitespace (2.328884ms)
+✔ string comparisons use native unsigned byte order and full stored length (0.664115ms)
+✔ double remainder uses the original signed 32-bit quotient (0.246708ms)
+✔ double-to-int keeps the low word of native x87 conversion (0.214428ms)
+✔ original forest introduction takes only the matching event branch and forwards typed arguments (6.691171ms)
+✔ original door reset functions select the original enabled door controllers (3.044048ms)
+✔ original graveyard puzzle requires all five pillar flags and persists them across callbacks (10.310786ms)
+✔ original tower gates fifth mirror until last mirror pickup, then advances its persistent counter (2.230934ms)
+✔ original witch death starts both beam timelines and their cutscene freezes enemies (9.289793ms)
+✔ all five original programs execute every function, handler and literal motion-event branch (73.2463ms)
+✔ native operand order, temporary return register, cast and conditional jumps (0.934474ms)
+✔ invalid instructions, stack underflow, missing native implementations and runaway jumps fail explicitly (1.827977ms)
+✔ native unary jump table includes hyperbolic and inverse trigonometric operations (0.702114ms)
+✔ native string unary operators retain byte encoding, C locale and terminators (0.661975ms)
+✔ debriefing fade and continue delay advance, then 600 neutral frames retain pixels (13.630621ms)
+✔ debriefing notices resize, DPR, target values and restored graphics/fonts (2.943668ms)
+✔ a failed draw retries, and reopening the same summary starts its fade again (2.219634ms)
+✔ original Dutch debriefing text, icon crops, timing and per-level totals are retained (207.067421ms)
+✔ counts level objects, not cumulative inventory, money value or cheated supplies; bonus is awarded once (68.97734ms)
+✔ corrupt debriefing saves are rejected and final bonus obeys original maximum score (26.26909ms)
+✔ completion remains final while pickup/dialogue audio drains, even after lethal damage (16.734049ms)
+✔ native fragments originate throughout the source bounds and launch in its steep upward cone (11.394847ms)
+✔ fragment INI owns lifetime, collision dimensions and physics, independent of the destroyed parent (1.811517ms)
+✔ semi-implicit gravity, linear air drag and velocity-scaled spin use recovered units (1.006333ms)
+✔ native normalized reflection applies friction and removes grazing components before restoring speed (0.326498ms)
+✔ spin composes world X/Y/Z rotations instead of accumulating Euler angles (0.755724ms)
+✔ fragments remain opaque while flying and begin a two-second fade only after settling (1.30009ms)
+✔ collision work is bounded and settled fragments stop tracing (1.073442ms)
+✔ embedded corner contacts reflect along the nearest separating plane (2.336303ms)
+✔ a new explosion creates one bounded fragment cohort and pools then disposes its cloned materials (12.341121ms)
+✔ nearby cohorts reserve the sum of original fragment maxima without changing native spawn limits (13.563732ms)
+✔ preparation work stays bounded for large groups while a real native spawn remains unrestricted (27.543431ms)
+✔ transparent debris has stable back/front passes in the original material-group order (6.87074ms)
+✔ reused fragment roots reset transforms, scale and opacity while lighting stays independent (2.254103ms)
+✔ cached fragment child matrices exactly match automatic TRS for moving roots, nonuniform scale and reuse (38.65585ms)
+✔ production actor lighting samples moving frozen-local fragments before any renderer matrix traversal (8.400489ms)
+✔ recycling a fragment begins a fresh native Sun lookup without clearing unrelated actors (0.538656ms)
+✔ load-time prewarming has a global budget and initializes the exact target-scene shaders and maps (2.240204ms)
+✔ idle burst capacity is released after ten seconds with one warm shader owner per artwork (1.768738ms)
+✔ opaque character fragments retain their original single pass and switch to stable transparent fade passes only when needed (3.148587ms)
+✔ nearby reservations count airborne fragments and cap preparation work and total owned entries (4.676276ms)
+✔ nearby reservations retain their needed free cohort while unrelated burst overflow expires (2.243403ms)
+✔ load-only warm draws prepare pooled lighting and restore scene state even if sampling or rendering fails (5.178772ms)
+✔ 100,000 nonunit and extreme fragment rotations preserve every output component exactly (762.73933ms)
+✔ zero, nonfinite, typed and frozen inputs retain original values and fresh output arrays (4.24394ms)
+✔ original UFO decal projects down 3200 units, uses 0.5 face offset and 128-unit square (2.469282ms)
+✔ native decal placement supports ceiling and nearest of eight wall directions (0.529246ms)
+✔ real forest decal entities produce fixed surface geometry and obey script enable/hide (38.76937ms)
+✔ deferred native prop collision matches eager current-pose triangles through motion and transitions (1981.44986ms)
+✔ masked, ignored, hidden and carried props retain deferred geometry until an exact query needs it (3.766493ms)
+✔ off-screen generic props retain current animation clocks and exact collision at any distance (36.072239ms)
+✔ parked and GPU-released mounted props remain exact remote collision surfaces after scripted motion (17.053946ms)
+✔ unchanged off-screen prop envelopes reuse collision bounds without evaluating bones or skinning vertices (3.868321ms)
+✔ desktop save export only accepts the main local game frame and bounded JSON payloads (50.814322ms)
+✔ desktop save export writes exclusively to the path chosen in the native dialog (1.172442ms)
+✔ desktop save export cancellation never writes and concurrent dialogs are rejected (1.132082ms)
+✔ desktop import only opens a JSON file selected by the native dialog (2.580172ms)
+✔ desktop import rejects untrusted senders before opening its picker (2.612181ms)
+✔ desktop import cancellation releases its lock and never reads a file (0.400857ms)
+✔ desktop import discards selections after main-page navigation or window destruction (0.483066ms)
+✔ desktop import checks file type, actual byte limits, valid UTF-8 and closes every handle (108.426525ms)
+✔ destruction centre and bounds reuse a single posed box for an unchanged simple actor (4.837505ms)
+✔ destruction bounds retain live geometry after moved root (0.852534ms)
+✔ destruction bounds retain live geometry after changed child pose (0.667385ms)
+✔ destruction bounds retain live geometry after changed geometry bound (0.533346ms)
+✔ destruction bounds retain live geometry after added compound child (7.016089ms)
+✔ destroying a rotated and scaled prop passes its rendered world bounds to fragment spawning (7.240888ms)
+✔ a prop survives exact projectile equality, remains targetable/collidable, and breaks on the next positive hit (11.794024ms)
+✔ all projectile strengths and partial hits use the same strict accumulated limit (3.126817ms)
+✔ blast and projectile damage share one accumulator without suppressing later blast ticks at equality (1.614858ms)
+✔ saving at exact equality preserves an intact prop and its next-hit destruction across actor loading (6.738132ms)
+✔ legacy saves keep their remaining budget and same-world restoration clears newer accumulated damage (1.700298ms)
+✔ explicit script destruction still bypasses the threshold, including an equality-state prop (0.373638ms)
+✔ indestructible actors still run OnHit commands while ignoring damage, and enemy equality still defeats (1.271191ms)
+✔ invalid damage and accumulator state cannot revive destroyed props or poison future damage (0.523066ms)
+✔ brcrate: destruction uses the native explosion WAV and authored-size gain once (6.300924ms)
+✔ wkcrate: destruction uses the native explosion WAV and authored-size gain once (2.853109ms)
+✔ glaslood: destruction uses the native explosion WAV and authored-size gain once (1.024023ms)
+✔ grafdek: destruction uses the native explosion WAV and authored-size gain once (0.496266ms)
+✔ grafdum: destruction uses the native explosion WAV and authored-size gain once (0.675755ms)
+✔ hekdoor: destruction uses the native explosion WAV and authored-size gain once (0.489667ms)
+✔ explosion tails overlap, pause/resume intact, and do not replay when loading destroyed props (6.105435ms)
+✔ an explicitly disabled explosion does not add an unrelated destruction sound (0.728684ms)
+✔ original Dutch labels, native IDs and invalid-setting fallback select the three native sections (3.720783ms)
+✖ difficulty changes real knight health and melee damage using the original per-enemy values (5.240842ms)
+✖ difficulty chooses native projectile damage, speed and real collision damage without scaling player pellets (1.564289ms)
+✔ native movement and boss encounter parameters use the chosen section (2.132734ms)
+✔ all imported level enemies receive populated difficulty-specific native tables (249.059077ms)
+✔ saved difficulty restores health limits, projectile rules, boss progress and hazards independently of menu preference (7.587565ms)
+✔ legacy saves retain Normal difficulty and incompatible saves do not change a running encounter (0.885404ms)
+✔ stationary managed brush poses stop mesh writes while live brush states remain checked (6.87649ms)
+✔ pose map replacement, clears and new model collections do not leave stale subscriptions or transforms (1.884906ms)
+✔ ordinary mutable pose maps retain immediate numeric in-place updates (0.860354ms)
+✔ one-pass brush state preserves triggers, liquids, pickups, doors and live controller changes (76.374018ms)
+✔ native proximity is an origin-centered X/Z box with unexpanded height and full hull dimensions (3.433366ms)
+✔ castle entrance preserves its left-first route and raises throne stairs only from the right corridor (180.224956ms)
+✔ walking into original doorhallway05_01 opens the knight-room passage at its brush, without E (50.801672ms)
+✔ walking into original doorhallway05_02 opens the knight-room passage at its brush, without E (52.129663ms)
+✔ walking into original doorhallway05_03 opens the knight-room passage at its brush, without E (45.390722ms)
+✔ walking into original secretdoor04 opens the knight-room passage at its brush, without E (31.086775ms)
+✔ chapel floor descends and carries RedCat after the original floor button raises it (345.515999ms)
+✔ Brutus double doors open through their original remote approach radii (106.192442ms)
+✔ automatic interaction retains authored locks, disable flags and shoot-only buttons (2.021475ms)
+✔ small initial effect storage grows without changing live Float32 data or geometry ownership (6.88361ms)
+✔ effect batches keep their original maximums, custom limits, material states and culling (7.987732ms)
+✔ idle effect buffers release once after ten seconds, shrink, then resume in the same flush (1.666198ms)
+✔ empty or frustum-rejected billboard submissions never grow storage (6.665262ms)
+✔ beam bounds reject only complete quads outside each frustum plane and retain crossing vertices (2.998449ms)
+✔ accepted broad beam, ribbon and Gargoyle quads retain every coordinate, UV and vertex color (4.495377ms)
+✔ shared smoke, glow and beam batches never draw complete effects beyond the camera artwork range (13.029046ms)
+✔ large nearby particle tails, native half-unit quads and crossing beams retain their complete artwork (2.513291ms)
+✔ moving the main camera restores effects immediately, including cameras with a transformed parent (4.716766ms)
+✔ fixtures without a geometry stream retain their original unlimited batch distance (3.146557ms)
+✔ smoke/flame saves retain every live slot, fractional tick, timers, colour and future births (58.682285ms)
+✔ every shipped spout supports bounded save state including expired flash tails (255.309152ms)
+✔ invalid save pools, nonfinite numbers and duplicate emitter ids are rejected (1.090002ms)
+✔ world renderer hooks preserve saved smoke immediately without warm-up or catch-up (14.882693ms)
+✔ knight fragments restore actual positions, spin, contact history and fade without retracing history (14.436215ms)
+✔ legacy knight saves still replay once and malformed snapshots never create unbounded fragments (6.112516ms)
+✔ ordinary and lower-quality explosions allocate no electric cohorts or new texture uploads (4.233549ms)
+✔ each staggered blast owns independent spark paths and original textures with tapered native quad UVs (52.760468ms)
+✔ electric live state survives save/load without restarting spark paths or replaying previous crackles (141.261748ms)
+✔ legacy reconstruction, zero-time redraws and expired cohorts remain silent and bounded (134.170329ms)
+✔ the dedicated crackle handler uses guarded independent spatial one-shots without a replacement key (1.067903ms)
+✔ Electric independently requires its native quality3 branch and uses each staggered blast origin (2.574462ms)
+✔ cell emits three paths at0/300/600ms and lazily arms path and spark lifetimes (14.208387ms)
+✔ burst interval uses strict expiry, with a separate arm tick after each burst (0.495997ms)
+✔ simultaneous path bursts follow native newest-first active-list traversal (3.090988ms)
+✔ short streak trajectories match isolated original4e4bc0 kernel samples (0.414637ms)
+✔ spark quad has native world-axis orientation, tapered widths and longitudinalUV direction (0.620335ms)
+✔ display refresh does not change particles, RNG, lazy timers or path trails (41.306621ms)
+✔ snapshot restores exact dynamic state and suppresses old crackles (184.353406ms)
+✔ large elapsed catchup is bounded and missing/invalid saves reconstruct silently once (98.591346ms)
+✔ selected spider hit interrupts dormant movement and survives reload (11.084419ms)
+✔ selected spider hit interrupts descending movement and survives reload (2.499542ms)
+✔ selected spider hit interrupts returning movement and survives reload (3.639763ms)
+✔ selected spider hit interrupts ascending movement and survives reload (1.095722ms)
+✔ sound-only spider hits leave each active ambush movement intact (2.280624ms)
+✔ dormant skeleton hit replaces the pile and restores without an extra wake after hurt (2.328963ms)
+✔ selected skeleton hits discard waking/retracting children without replaying them (0.763404ms)
+✔ old skeleton snapshots with a dormant/wake child during hurt recover to fresh alert (1.801957ms)
+✔ sound-only skeleton damage keeps ordinary wake and does not cancel an active transition (0.671915ms)
+✔ lethal damage to dormant skeleton preserves its death state on reload (1.771387ms)
+✔ a script freeze preserves a selected spider hit instead of resuming its old ascent (1.977286ms)
+✔ fresh spider alert chooses descent near the ceiling and combat at the midpoint or below (1.543529ms)
+✔ post-hit spider return-for-descent survives reload and never resumes the old ascent (2.896689ms)
+✔ enemy transitions freeze the outgoing pose and use a 250 ms Hermite bone blend at any playback rate (110.348561ms)
+✔ rapid enemy state changes retain an outgoing pose above half weight and replace it below half (31.579662ms)
+✔ initial gameplay poses and dormant skeletons skip preview blends and retain geometry caches (14.098958ms)
+✔ paused transitions and completed one-shots leave position and normal uploads unchanged (21.580404ms)
+✔ gameplay snapshots restore the exact in-progress enemy blend and its next frame (31.755061ms)
+✔ same-frame projectile queries and actor synchronization advance an enemy transition only once (37.802596ms)
+✔ cutscenes freeze living enemy poses while visible corpses continue their death motion (29.566706ms)
+✔ Dungeon Max machine snapshots restore both barrel poses and deduplicate release-frame blending (16.996407ms)
+✔ native common motion samples retain the CRT modulo shape, with fixed knight and separate boss rates (3.869952ms)
+✔ knight swing, damage window and rendering use the same native 1.8 speed (36.00906ms)
+✔ randomized attack, hurt and death durations stay aligned with the selected motion and corpse fade (43.332096ms)
+✔ plant idle chooses all four original nonlooping clips and resamples only on completion (82.419153ms)
+✔ gargoyle idle variants and selected speeds persist with their exact pose through a game save (41.435391ms)
+✔ walking keeps its sampled rate and old saved walks do not restart during grave emergence (4.234979ms)
+✔ blank scenery motion stays in bind pose while authored clips and all moving hands remain animated (294.524549ms)
+✔ spiderg: walking uses original moving legs instead of its idle pose (32.441215ms)
+✔ spidery: walking uses original moving legs instead of its idle pose (15.566117ms)
+✔ spiderr: walking uses original moving legs instead of its idle pose (14.667364ms)
+✔ zombie: walking uses original moving legs instead of its idle pose (13.776031ms)
+✔ batg: active idle keeps flying while dormant and scripted hanging poses remain available (11.580496ms)
+✔ baty: active idle keeps flying while dormant and scripted hanging poses remain available (3.479625ms)
+✔ batr: active idle keeps flying while dormant and scripted hanging poses remain available (4.266539ms)
+✔ enemy attack runs once, holds its last pose, and restarts only for the next actual attack (3.509574ms)
+✔ original knight hit factor controls both rendered speed and reported gameplay duration (4.026351ms)
+✔ Bone Brutus charge uses its original one-shot clip and saved playback rate (10.396195ms)
+✔ cutscene freezing holds the current enemy animation pose (5.828137ms)
+✔ restoring a attack one-shot resumes the saved phase (3.006968ms)
+✔ restoring a hurt one-shot resumes the saved phase (2.439693ms)
+✔ restoring a death one-shot resumes the saved phase (2.709761ms)
+✔ defeated spiders remain visible while their death clip plays instead of vanishing on health zero (7.420057ms)
+✔ visible enemy projectiles follow simulation positions and disappear at impact (2.563822ms)
+✔ knight death uses all nine original breakup actors, freezes with cutscenes and cleans up (45.841368ms)
+✖ jump feedback fires once on a grounded jump, never from a held airborne input or cutscene (2.002815ms)
+✔ red spiders use their projectile settings (10.030358ms)
+✖ red spider shots stop at BSP walls and can be dodged (6.9565ms)
+✔ swept collision catches a player crossed entirely within one frame (0.565806ms)
+✔ enemy movement walks along terrain, falls to floor and respects blocking walls (5.074554ms)
+✔ hurt and death react once, cancel attacks and retain a timed death state (1.978996ms)
+✔ enemy audio actions are staggered, audible-nearby only, and attacks respect cadence (6.866151ms)
+✔ cutscenes and enemy freeze pause pending attacks, projectiles and animation deadlines (1.670718ms)
+✔ saved enemy animation, salvo cooldown and projectile flight resume without refiring (5.256372ms)
+✔ player pellets hit the nearest brush and emit enemy hurt only on arrival (2.135055ms)
+✖ defeated boss retires during frozen fairy dialogue while RedCat returns to animated idle (147.327903ms)
+✔ cave intro double retires after withdrawal and remains retired after turret defeat and loading (462.85537ms)
+✔ Jester departure and arrival retain native particle counts, directions and saved phase age (21.218967ms)
+✔ native non-ribbon projectiles do not emit invented smoke trails or impact tails (0.650705ms)
+✔ all enemy projectile kinds have the original imported frame sequences and INI sprite sizes (48.487539ms)
+✔ a committed plant shot releases once even if RedCat moves out of range and behind cover (11.068789ms)
+✔ standing-shooter salvo finishes without new visibility gates or invented between-shot waits (8.636788ms)
+✔ gargoyle finishes a committed salvo after alert memory expires (14.232017ms)
+✔ a selected hit reaction cancels an unreleased shot and death cannot emit it later (5.168223ms)
+✔ knight melee still requires RedCat inside the actual strike range (2.044245ms)
+✔ saved and frozen committed release retains its remaining deadline (12.982216ms)
+✔ ordinary moving cursors retain current and destination claims through shoot, wait, and selected hurt (2.316043ms)
+✔ boss and unknown direct-pursuit policies keep their existing reservation gate (0.364707ms)
+✔ initial skeleton shoot reserves its authored cursor before an earlier enemy chooses a destination (7.032219ms)
+✔ actual selected hit clears the skeleton attack child without relinquishing its cursor claim (3.322646ms)
+✔ fresh and same-game restore rebuild cursor claims immediately before any update or explicit synchronization (16.66164ms)
+✔ native death motion is followed by five seconds of fade; clocks freeze and saves resume without replay (13.313553ms)
+✔ fading clones materials and multiplies native ghost alpha, restoring original materials when living (2.439452ms)
+✔ purple smoke emits once per death, is stable on redraw and restores original bone anchors (2.326224ms)
+✔ script-retired witch does not receive generic death smoke (1.010493ms)
+✔ smoke follows native bind-bone offsets, outward velocity and positive acceleration (0.393177ms)
+✔ smoke uses native independent clock deadlines, byte alpha and bounded fixed-step sampling (0.280478ms)
+✖ knight breakup resumes its age after load and does not restart at its expiry (53.505932ms)
+✔ knight fragments use original actor settings and native bounds, launch and per-piece physics (5.019744ms)
+✔ ordinary hits choose reaction or sound-only continuation without changing damage or awareness (6.863041ms)
+✔ selected hits during hurt keep its original pose deadline and entry sound (0.450576ms)
+✔ stone inactive immunity alerts on the first hit, and fresh alert wake follows its hit reaction (3.734673ms)
+✔ a sound-only hit wakes stone enemies through ordinary alert without cancelling another state (0.304917ms)
+✔ reaction choice and pending stone alert survive save/load and script freezes (3.743783ms)
+✔ lethal ordinary damage cancels all pending attacks and awards only one defeat (0.754565ms)
+✔ Bone Brutus only accepts damage on its native one-in-three hit branch (0.428987ms)
+✔ knight wakes at 1.7, waits before attacking, and retracts at -1.7 after memory expires (20.595161ms)
+✔ reverse start pose and lifecycle deadline survive saves without losing playback direction (17.007187ms)
+✔ gargoyles use the native no-start idle fallback and settle once their alert is lost (8.033782ms)
+✔ skeleton wake uses the sampled native rate, then returns to a pile after losing the player (10.765363ms)
+✔ salvo property varies between enemies but remains fixed through salvos and saves (17.499554ms)
+✔ native route uses minimum hops instead of shortest metric distance and respects blockers (1.074622ms)
+✔ pursuit routes around a wall on authored points and resumes directly when clear (2.353303ms)
+✔ touch enemy chooses MoveCloser as well as both timed circling directions (0.737895ms)
+✔ guardian approaches instead of causing distant melee damage, then attacks on contact (21.577474ms)
+✔ knight can hit during the end of its active strike window, only once (2.119565ms)
+✔ spider returns to its own hanging anchor after losing the target and restores mid ascent (1.696088ms)
+✔ failed pursuit search is cached instead of flooding blocked BSP routes every frame (0.622806ms)
+✔ knight strike-window end survives save and shifts with a script freeze (0.959843ms)
+✔ authored patrol and touch pursuit avoid searches; displaced actors retain bounded reacquisition (4.19468ms)
+✔ native shooter approach randomly selects strictly closer neighbors, never arbitrary endpoints (7.985433ms)
+✔ native closer comparison uses full 3D distance, strict inequality, and current player clearance (0.569156ms)
+✔ busy and unlinked-start nodes are not replaced with a forbidden or arbitrary destination (0.464477ms)
+✔ changing the target actor position retains an unfinished native cursor edge (0.309618ms)
+✔ off-node bodies safely reacquire their cursor before selecting another native edge (0.319768ms)
+✔ native graph approach retires old arbitrary jobs without refunding current search credits (0.492257ms)
+✔ native no-neighbor and absent-path results are distinct for the gameplay state caller (0.287578ms)
+✔ native MoveFurther chooses the strictly farthest valid adjacent slot without consuming RNG (0.336307ms)
+✔ native retreat retains committed edges then reevaluates current-player gates at the next node (0.328728ms)
+✔ native retreat rejects equal-distance neighbors and allows bounded off-node reacquisition (0.351497ms)
+✔ ballistic and homing enemy flight use identical canonical ticks at low and high display rates (29.388537ms)
+✔ partial steps move smoothly but witch steering waits until the native tick completes (1.168242ms)
+✔ enemy collision sweeps follow every curved segment and stop at the first wall (0.414077ms)
+✔ large direct updates defer flight within a bounded trace budget and persist the debt (6.84276ms)
+✔ fractional enemy flight saves continue exactly and invalid or legacy phases reset safely (1.879756ms)
+✔ gravity-free non-homing shots retain a single collinear sweep per display update (0.505097ms)
+✔ native enemy muzzle selectors exist in every original ranged actor and follow its pose (99.60071ms)
+✔ Dungeon Max uses the two animated turret barrels rather than his lowered body (3.798973ms)
+✔ gameplay fires independently aimed native projectiles from each supplied release attachment (2.360443ms)
+✔ missing actor data keeps simulation finite and invalid callbacks cannot inject bad coordinates (0.307198ms)
+✔ world release sampling repairs stale and restored attack poses without advancing animation twice (41.119572ms)
+✔ world machine release synchronizes both turret barrels to the saved machine pose (6.551953ms)
+✔ native enemy initial speed and gravity follow authored projectile classes, including both Brutus attacks (4.16576ms)
+✔ Brutus bones use native gravity before each movement step and retain forward speed (4.738865ms)
+✔ forest Brutus mushrooms fly at InitialSpeed, with no invented acceleration or fallback Speed override (3.570874ms)
+✔ native lifetimes sample the full authored range on 1/10000 steps and truncate to milliseconds (0.229619ms)
+✔ projectile randomness preserves the shipped 15-bit modulo distribution and excludes the upper endpoint (4.784156ms)
+✔ all shooter families apply independent native spread samples before normalization without changing speed (0.690805ms)
+✔ sampled lifetimes and the next salvo remain deterministic after save/load (7.071359ms)
+✔ witch magic applies native shared movement, then homes toward the moved player at authored speed (0.646385ms)
+✔ legacy generated enemy gravity migrates exactly once without altering player or custom units (0.862623ms)
+✔ frozen enemy ammunition preserves the entire ballistic or homing flight state (1.105092ms)
+✔ nearby detour does not sweep hundreds of distant waypoint candidates (48.44818ms)
+✔ failed large search is spread over frames, then cached even as the player moves (39.085807ms)
+✔ simultaneously alerted enemies share a bounded search budget and each completes (64.069856ms)
+✔ blocked cached edge waits for the retry deadline and normal local collision (16.016194ms)
+✔ completed route save shape remains plain data; in-progress searches are transient (34.57901ms)
+✔ pending routes restart after pursuit stops or either endpoint moves substantially (15.464498ms)
+✔ ground pursuit and flight detours share the same bounded fair collision allowance (31.063415ms)
+✔ finishing a search cannot reset an enemy allowance within the same update (2.526232ms)
+✔ inactive and finished searches stop reserving the next update allowance (7.203208ms)
+✔ explicit spider return destination cannot be replaced by a nearer arbitrary waypoint (0.887783ms)
+✔ switching to an explicit return endpoint retires a cached chase route without resetting search credits (20.242763ms)
+✔ Gameplay uses native adjacent approach, reserves before strict range completion, and stops mid-edge (9.206063ms)
+✔ all ordinary shooter families release the whole committed salvo after LOS, range and memory are lost (39.899692ms)
+✔ an unarmed inter-shot wait survives save and freeze without consuming its duration before first update (15.136031ms)
+✔ imported Forest Mushroom Brutus uses native closer and retains its committed mushroom salvo (113.27542ms)
+✔ Bone Brutus save/freeze keeps charge, ammo and committed shots without a duplicate charge entry (11.456497ms)
+✔ legacy Bone Brutus charge restores once and pending charge waits for the final shot pose (19.550299ms)
+✔ a native no-destination result starts and releases a shot outside attack range (1.114322ms)
+✔ snapshot and fresh Gameplay restore preserve an active release and remaining native salvo (8.056342ms)
+✔ snapshot restores an inter-shot wait without replaying the already released shot (5.291382ms)
+✔ legacy saves adopt the outstanding shot or inter-shot wait without starting a second full salvo (9.773679ms)
+✔ script freeze and cutscene shift native wait deadlines without consuming the committed child (6.187946ms)
+✔ actual selected hit cancels the native child and pending release, while sound-only hit preserves both (5.132253ms)
+✔ ordinary closer selects before strict range completion and preserves its selected mid-edge target (3.959451ms)
+✔ a no-destination closer enters shoot outside attack range instead of inventing another endpoint (0.330348ms)
+✔ whole salvo remains committed and inter-shot wait begins only after complete shoot motion (0.571135ms)
+✔ after-salvo chance chooses another closer without an unconditional extra wait or memory gate (0.286968ms)
+✔ a completed parent wait shoots at inclusive attack range and otherwise re-enters closer (0.426536ms)
+✔ skeleton retreat range stops movement but its one-shot child completes only at the animation deadline (1.092732ms)
+✔ completed retreat holds its last motion while too close, refreshes memory, and never replays the same child (0.315367ms)
+✔ an active retreat without a destination still shortcuts to a new shot before its clip ends (0.320928ms)
+✔ skeleton retreat failure shoots immediately; expired memory ends its completed child first (0.262628ms)
+✔ safe waypoint reacquisition forwards its explicit destination and native edges bypass search (0.308658ms)
+✔ phase state remains plain save data and wait deadlines can be shifted across a freeze (0.443947ms)
+✔ bosses and non-ranged touch variants retain separate states, and missing paths retain the portable fallback (0.219828ms)
+✔ wait first-check arms once, uses strict integer milliseconds and survives a saved unarmed handoff (1.163392ms)
+✔ Bone Brutus charges after a full salvo, changes ammo once on entry and shoots without an after-salvo wait (0.359968ms)
+✔ Bone Brutus chooses closer only after charge completion and retains its authored cursor (0.240389ms)
+✔ imported skeleton backward clip and Gameplay deadline use WalkMotionFactor squared (1) (54.747413ms)
+✔ imported skeleton backward clip and Gameplay deadline use WalkMotionFactor squared (2) (17.95698ms)
+✔ retreat can stop and resume on range while its original clip, edge, and refreshed memory remain active (39.818462ms)
+✔ motion completion while RedCat is still too close holds the last imported pose without replaying retreat (31.410303ms)
+✔ mid-retreat fresh save restores the exact backward pose and remaining child (1) (25.660174ms)
+✔ mid-retreat fresh save restores the exact backward pose and remaining child (2) (22.202769ms)
+✔ freeze and cutscene preserve the retreat pose and shift its single animation deadline (17.038416ms)
+✔ standing wait begins after the complete salvo, arms on a later check and expires strictly after the deadline (2.639501ms)
+✔ standing waits with zero duration still arm and require a later millisecond (0.504476ms)
+✔ standing parent retains the wait through memory loss and uses remembered target rather than a fresh range gate (0.328617ms)
+✔ standing save restoration and script freeze preserve both unarmed and armed waits (25.774134ms)
+✔ gargoyle keeps its wait child until expiry, then returns to stone if its target was forgotten (5.005913ms)
+✔ selected hits cancel standing waits and ordinary saved legacy cooldowns retain remaining duration (3.050388ms)
+✔ invalid standing state cannot inject an invalid phase, count or timer into a save (0.488126ms)
+✔ spider contact cooldown survives hurt and expires while still hurt (8.104791ms)
+✔ bat contact cooldown survives hurt and expires while still hurt (1.778287ms)
+✔ ghost contact cooldown survives hurt and expires while still hurt (0.723795ms)
+✔ zombie contact cooldown survives hurt and expires while still hurt (4.815795ms)
+✔ guardian contact cooldown survives hurt and expires while still hurt (3.161577ms)
+✔ reloading a hurt touching enemy preserves the remaining independent contact cooldown (3.939871ms)
+✔ current and destination claims update immediately and ignore their owner or retired actors (2.159455ms)
+✔ direct pursuit releases stale patrol claims while active waypoint modes reserve them (0.502887ms)
+✔ reservation rebuild runs once per update and explicit invalidation supports loading at the same time (0.623936ms)
+✔ ordinary patrol observes touch reservations and claims its selected edge before later actors choose (0.610695ms)
+✔ minimum player distance applies to ordinary and relocation choices without forbidden fallback (0.422027ms)
+✔ generic random selection includes the previous neighbor and works without frame synchronization (6.138956ms)
+✔ arrival preserves the current-point claim after relocation and immediately reserves a subsequent patrol edge (0.536436ms)
+✔ native clockwise/anticlockwise select nearest linked point on the proper angular side (3.274507ms)
+✔ native bearing wraps across +/-pi and closer samples every strictly closer neighbor in 3D (3.496035ms)
+✔ touch selection uses only eight neighbors and reserves destinations until death/disable (8.125931ms)
+✔ circle starts clock on first update, keeps edge at equality, selects before expiration (0.726014ms)
+✔ no closer neighbor waits one second without searching distant points (0.560836ms)
+✔ touch spider, bat, ghost, zombie and guardian follow their edge and damage on body contact (26.105751ms)
+✔ movement state and destination survive a save, freeze, and older orbit saves migrate safely (7.401906ms)
+✔ authored flying patrol and touch steps never invoke whole-network detour searches (2.235594ms)
+✔ a displaced saved cursor reacquires its node before choosing a new authored edge (1.201801ms)
+✔ flying patrol reaches a waypoint before turning instead of cutting the corner five units early (0.413048ms)
+✔ legacy orbit saves with a non-null stale destination use bounded reacquisition (1.484329ms)
+✔ the actual graveyard puzzle tile fires by solid contact, once until RedCat steps off (48.254471ms)
+✔ the original cave fan volumes supply their signed velocities and obey button group commands (37.037662ms)
+✔ a fan drives swept player motion without penetrating a wall and noclip ignores wind (1.38492ms)
+✔ original cave spring-box volumes launch a grounded player higher than the ordinary jump (24.272874ms)
+✔ the original cave hidden-button room plays SecretFound on entry once, including across save/reload (111.296334ms)
+✔ a crate collider takes both pellets, survives native threshold equality, and explodes only once (9.967758ms)
+✖ damage and rendering share one exact seeded cohort without adding save fields (15.883445ms)
+✔ mutable diagnostic callers invalidate every blast spawn input without changing public factory behavior (7.506756ms)
+✔ authored crate damage rates/radii use the native percentages and the visual blast births (3.599403ms)
+✔ nearby RedCat receives whole frame doses through the inclusive first-activation deadline (6.704472ms)
+✔ RedCat range and LOS use his native eye-height movement origin (0.902803ms)
+✔ moving out of range stops damage while moving into an expired blast never damages (0.704495ms)
+✔ enemy falloff uses the nearest posed box edge and tries native centre-relative corner rays (0.799184ms)
+✔ exploding crates kill nearby enemies, preserve distant enemies, and award defeat once (3.041298ms)
+✔ hurt cells damage smoke-only crates and chain destructible actors without projectile OnHit hooks (1.884346ms)
+✔ hidden and inactive targets stay protected, and brush OnHit callbacks do not receive splash (0.905183ms)
+✔ player death fires once; noclip immunity and cutscene protection remain intact (1.913416ms)
+✔ saving mid-blast resumes only remaining damage and respawn clears pending damage (9.529091ms)
+✔ a synchronous respawn during blast damage discards the old cell iteration immediately (0.996693ms)
+✔ delayed blasts arm on the first eligible frame and do not clip that frame or the inclusive end (0.528506ms)
+✔ the first frame beyond expiry does not receive a clipped remainder (1.084573ms)
+✔ pending saves preserve first activation, old saves retain their original expiry, and bad clocks are rejected (0.476217ms)
+✔ world explosion targets expose rendered bounds for rotated, scaled moving actors (3.216056ms)
+✔ normal and green explosion lights use original radius, colour and one-second pattern (3.164657ms)
+✔ smoke-only and zero-size blasts add no light, delayed blasts start independently and reuse records (0.973963ms)
+✔ world update passes blast lights to actors while retaining the existing eight world-light slots (8.028562ms)
+✔ light constructors, pre-step pattern boundaries and inclusive lazy expiry match native ordering (1.822466ms)
+✔ original-byte light/interpolator trace agrees with timer and float radius for all retained tick samples (3.498884ms)
+✔ fixed light clock is independent of display frequency and catches up in at most62 tiny steps (0.291598ms)
+✔ explosion light save roundtrips current phase and continues with the same cached cohort (6.527903ms)
+✔ light snapshots reject future, malformed and stale-birth clock state without changing legacy appearance (1.910926ms)
+✔ blasts follow the native longest-axis layout and are staggered rather than simultaneous (3.979421ms)
+✔ each blast emits a finite native smoke cohort with authored sizes, upward velocity and lifetimes (0.420597ms)
+✔ smoke motion, opacity and size use each puff lifetime without per-frame emission or allocation (2.381523ms)
+✔ renderer retains original flash clocks, supports smoke-only/green clouds and releases cohorts (2.80596ms)
+✔ current-pose radii enclose all original actor clips and transition poses without skinning vertices (337.866735ms)
+✔ unbound vertices, scaled/sheared bones and unsupported geometry retain conservative behavior (0.652065ms)
+✔ distant pending actors are rejected without skinning, while nearby targets retain exact geometry (5.768368ms)
+✔ several blast cells reuse one current-pose radius until bones are actually resampled (4.518327ms)
+✔ moving explosion targets keep identical reach decisions and exact damage through all current poses (52.944117ms)
+✔ saving after damage expires retains the visible smoke tail without restarting damage or sound (9.426741ms)
+✔ restored prop fragments resume their saved age instead of relaunching with the smoke tail (6.86226ms)
+✔ green flashes use their own original eight alpha-paired frames with unchanged normal artwork (4.995523ms)
+✔ green native shockwave grows from radius5 to200 for600ms, folds onto floor and obeys smoke-only (0.811824ms)
+✔ new variant textures stay unloaded for all authored campaign actors, but load for opt-in actors or saved blasts (107.618971ms)
+✔ green wave submits original alpha texture in a bounded reused mesh and cleans up after expiry (2.515412ms)
+✔ dialogue FIFO preserves every WAV through delayed loading, pause, expiry and final completion (3.349225ms)
+✔ pause covers every playing channel and pending sound, preserving delayed-loop countdowns (1.089202ms)
+✔ explicit dialogue skip and reset remove queued tails; playback errors cannot stall a sequence (7.738744ms)
+✔ all 31 authored fairy locations activate exactly their own Davi binding and stop their idle on deactivation (368.082746ms)
+✔ native cutscene finish waits for the actual voice end and keeps its fairy present; skip stays immediate (109.434808ms)
+✔ a second fairy encounter replaces the first and legacy saves keep only the fairy at the saved player (58.370038ms)
+✔ pickup router selects complete native S/M/L recordings and overlapping pickups keep separate tails (0.962353ms)
+✔ BIG BENG charge sound follows its native hold, pause and release lifetime (1.108582ms)
+✔ level-transition pickup guard waits for every ending, freezes with pause, and clears on failure or reset (0.711065ms)
+✔ fairy idle uses one complete original-rate PCM loop at native base volume (8.146591ms)
+✔ legacy media save resumes the idle sample and gain once across pause and repeated reload (7.171308ms)
+✔ fairy deactivation before decode cannot start a late loop; other cues retain their gain and media path (2.598531ms)
+✔ fairy loop retains a working media fallback without Web Audio (0.733355ms)
+✔ native fairy seek integrates before speed cap and advances only one authored waypoint per tick (2.140025ms)
+✔ native fairy hover applies conditional14-unit offset and Z-then-X jitter; missing waypoints stop centre (2.152574ms)
+✔ native fairy timer priority emits one slow per250ms then a five-star burst on the following tick (12.699968ms)
+✔ native fairy shared pool retains living particles and slot oscillator phase across departure/re-enable (4.18721ms)
+✔ native fairy particle random generator, opposite slot Y biases, gravity and delayed fade use recovered constants (2.174824ms)
+✔ native fairy saved active age replays once; render-only refresh preserves state and emits no duplicate audio (92.341941ms)
+✔ native fairy fixed-step trajectory and cached trail geometry do not depend on rendering frame size (11.523086ms)
+✔ fairy ribbon uses native alpha100/255, linear800ms attenuation and alpha5 cutoff (1.4324ms)
+✔ fairy ribbon commits a history point only beyond1.6units and keeps a moving head (3.443046ms)
+✔ fairy ribbon first quad uses its newer timestamp and following quads use their older timestamp (0.936953ms)
+✔ fairy ribbon disappears with central particle while departure stars keep their own fade (18.023799ms)
+✔ fairy ribbon snapshot preserves point timestamps and fractional clock without mutating on draw (54.834543ms)
+✔ legacy segment-only fairy saves migrate without rejecting the rest of their effect state (2.078825ms)
+✔ malformed ribbon timing and ownership in new saves are rejected (2.231944ms)
+✔ fairy save preserves current seek/hover, random stream, fractional tick and pulse history (129.369854ms)
+✔ departure saves restore living particles without resurrecting the fairy or replaying the burst (35.096086ms)
+✔ reused and dormant slots retain oscillator state across saves and later activations (112.635375ms)
+✔ snapshot copies never share live state and malformed unbounded pools or paths are rejected (7.199508ms)
+✔ real gameplay saves restore fairy draw buffers before ticking and resume only one idle loop (193.790988ms)
+✔ skip after restore clears the saved tail and does not resume an idle sound on the next tick (70.327761ms)
+✔ legacy age-only fairy saves remain supported without replaying their appearance cue (39.690633ms)
+✔ fairy appearance plays Gri5FX11 once and loops original idlefee1, with silent periodic particles (59.48501ms)
+✔ ordinary fairy departure retains its separate visual burst and single departure cue (6.172096ms)
+✔ skipping during fairy departure clears its surviving tail and sound without touching future encounters (0.989423ms)
+✔ skipping before original fairy activation consumes that dialogue fairy and preserves future encounters (221.257319ms)
+✔ skipping an already visible skill fairy clears particles/audio and preserves the potion reward (84.25561ms)
+✔ buried tree lighting recovers inside its bounds only when explicitly enabled (11.943313ms)
+✔ tree recovery preserves native samples, black floors, and the ambient cap (1.350891ms)
+✔ embedded tree samples stay cached and update when bounds or position change (1.122742ms)
+✔ all 60 embedded forest trees recover while the three standalone trees keep native lighting (80.825645ms)
+✔ fullscreen defaults on and preserves an explicitly disabled saved preference (1.439939ms)
+✔ default entry waits for a gesture and runs after media playback and pointer lock (3.487724ms)
+✔ disabled preferences and unsupported browsers never request fullscreen (0.440346ms)
+✔ synthetic clicks, escape, repeated keys and browser shortcuts do not trigger entry (1.206231ms)
+✔ keyboard activation of controls preserves the gesture for their click handler (0.677735ms)
+✔ a gesture already consumed by another control waits for a later interaction (0.334007ms)
+✔ reserved UI gestures leave the initial request pending (0.302738ms)
+✔ gestures cannot start concurrent fullscreen requests (0.336118ms)
+✔ a rejected initial request can retry on the next trusted gesture (1.43658ms)
+✔ disabling fullscreen while a request is pending prevents retries after rejection (0.574506ms)
+✔ exiting fullscreen with Escape never triggers automatic re-entry (0.686975ms)
+✔ manual fullscreen entry satisfies the default even when an old request rejects later (0.497187ms)
+✔ a document already fullscreen at startup does not re-enter after exit (0.207939ms)
+✔ explicit settings changes do not re-arm a completed automatic startup entry (2.166345ms)
+✔ radial deadzone removes drift and scales analog movement and look to a circular limit (9.285303ms)
+✔ standard gameplay mapping preserves independent held actions and button edges (0.804114ms)
+✔ first meaningful press is delivered while neutral connection only updates status (0.537306ms)
+✔ menu confirm and cancel fire once, with no gameplay movement or camera output (2.094355ms)
+✔ D-pad and left stick navigate with delayed repeat, immediate direction changes, and neutral release (3.144167ms)
+✔ navigation caps stalled frames without queuing repeat bursts (0.347087ms)
+✔ menu transitions suppress held confirm, cancel, and sticks until independently released (0.759754ms)
+✔ reset and disable suppress held Start and actions until release without blocking other buttons (0.380847ms)
+✔ sparse multiple controllers select by meaningful input and only selected loss signals disconnect (0.773994ms)
+✔ an idle selected controller can yield to another controller without repeating its held action edges (0.739875ms)
+✔ disconnect, replacement, and reconnect clear suppression without creating permanent lockout (0.378197ms)
+✔ nonstandard mappings, explicitly disconnected pads, and unbound buttons are ignored (0.230749ms)
+✔ unavailable or blocked API is safe, zeroes active input, and recovers on a later poll (1.241551ms)
+✔ missing values, nonfinite axes, and caller mutation do not contaminate later frames (0.555266ms)
+✔ right stick scrolls menus without changing the gameplay camera or movement (0.257368ms)
+✔ shots use rcshoot1, and only actual impacts play rcshoot4 (4.14399ms)
+✔ jump and pickups retain full authored gain rather than old placeholder reductions (0.453117ms)
+✔ health loss selects native reaction thresholds from VoiceNL and death replaces the reaction (0.557256ms)
+✔ each enemy family uses native alert, attack, hurt and death samples with spatial playback (5.014053ms)
+✔ an enemy drops new cues while its one-shot plays; a loop yields only to a different cue (0.610815ms)
+✔ Max and Witch bosses use their native localized combat voices (2.017065ms)
+✖ enemy vocal position follows its moving actor and a playing cue is not interrupted (5.875557ms)
+✔ all required player WAV files exist in the correct imported asset directory (0.809104ms)
+✔ pickup checks keep authored trigger order without querying unrelated object positions (17.239725ms)
+✔ pickup checks retain settled anchors, current support transforms and line of sight (1.852957ms)
+✔ brush host reuses the accepted final pose while blocked segments wait and resume (2.458943ms)
+✔ brush host uses the final pose after a callback replaces playback (0.831244ms)
+✔ original forest imports correct entities and normal-difficulty frog attributes (49.101684ms)
+✔ safe commands honor escaped newlines, comments, named doors and unsupported branches (1.45969ms)
+✖ enter trigger fires once, leaving runs its own command, max trigger count persists (3.526455ms)
+✔ touch and shot switches respect maximum count and trigger original named commands (0.812724ms)
+✔ pickups score exactly once, health caps and blocked line of sight prevents pickup (1.304181ms)
+✔ repeatable touch switch changes on entry rather than oscillating every frame (0.473247ms)
+✔ attack requires aim and line of sight, defeats enemy, runs destruction command (3.869442ms)
+✔ snapshot restores mutable state and prevents item farming after load (4.749976ms)
+✔ back-to-back hits, death and checkpoint respawn are deterministic (1.118322ms)
+✔ original level transition target is normalized and emitted once (0.671115ms)
+✔ timer and script closes wait until the player leaves the doorway (1.134452ms)
+✔ Gargoyle imports its original full resolution kaboom artwork and alpha (2.446853ms)
+✔ native mouth shot keeps damage physics, hides only its pellet and starts a separate blast (6.94088ms)
+✔ native blast timer, emission pool and tapered red/yellow geometry match the recovered constants (10.375235ms)
+✔ blast survives projectile collision, freezes, and restores its exact particles and timers (11.818315ms)
+✔ hidden Gargoyle projectile still damages RedCat and stops at a wall (3.907662ms)
+✖ Gargoyle fires consecutive shoot motions within each native salvo then waits two seconds (31.244784ms)
+✔ ghost material replacement uses native variant tints and leaves shared material and fades independent (3.276416ms)
+✔ classification follows the original ghost enemy type, never the object name or actor art (30.763177ms)
+✔ both original grave buttons open the disabled paired doors through the compiled Davi callbacks (123.476816ms)
+✔ grave-door progress survives saving after one button and during the paired opening motion (334.127292ms)
+✔ disabled door still rejects direct player touch and use while explicit script Open works (3.653264ms)
+✔ grounded patrol reaches the actual waypoint before turning at the graveyard corner (1128.88743ms)
+✔ all three original graveyard frogs continue far-player patrols beyond the former corner stall (1332.928653ms)
+✔ a previously stuck frog resumes the same authored route after save/load with the player far away (861.953341ms)
+✔ grounded tangent movement stays on the near side of a solid wall (381.806527ms)
+✔ death after every original maze stage and during moving hedges restores the replayable initial layout (2254.202645ms)
+✔ the real death clip reaches one respawn and does not retrigger the maze at the old death position (80.232659ms)
+✔ fatal damage cancels an unfinished final button before it can start the maze exit cutscene (121.455041ms)
+✔ nonfatal damage leaves an unfinished final button able to commit its original completion callback (61.155098ms)
+✔ committed final button and fully open maze stay solved across respawn and save/load (300.477985ms)
+✔ save/load during death or after reset retains reset transforms and permits the original route again (242.899442ms)
+✔ maze retry preserves loot, enemy defeats, the crate secret, painting globals and the independent moving hedge (82.850691ms)
+✔ respawn does not reset a different levels original puzzle progress or motion (8.114232ms)
+✔ older saves with no motion-started fields still reset an unfinished maze after death (123.703085ms)
+✔ loading an older death save cancels its pending final-button callback before timelines advance (118.592831ms)
+✔ loading the stranded entrance pattern repairs only the maze and retains the saved level progress (102.017491ms)
+✔ loading viable intermediate, moving-door or committed maze saves does not rewind their progress (344.926464ms)
+✔ fatal damage before the first button controller check also cancels its queued maze exit (109.04436ms)
+✔ failed shifted floor coordinates recover the actual floor lightmap, retaining cache and cap (5.071353ms)
+✔ floor recovery preserves native matches and genuinely unlit or missing floors (1.166912ms)
+✔ all authored hand torches have floor light and the six graveyard failures recover deterministically (179.330102ms)
+✔ capacity pickups use the original golden heart actor in every authored level and restored saves (441.226587ms)
+✔ native container adds two max HP without healing; a lost half-heart can be refilled (2.043255ms)
+✔ full-health healing hearts collect once with score, effects, sound and pickup command (3.886822ms)
+✔ native small/medium/large heal 1/2/20 HP and fractional healing caps at maximum health (0.403807ms)
+✔ legacy half-capacity saves migrate once without removing wounds or reviving a dead player (6.537723ms)
+✔ cutscenes prevent enemy, continuous and lethal damage; normal damage resumes afterwards (0.371087ms)
+✔ unchanged HUD frames retain pixels without clear/draw calls while still measuring layout (4.16835ms)
+✔ every displayed state and target value invalidates the HUD drawing (2.259614ms)
+✔ HUD redraw follows CSS size, game viewport, DPR and touch inset changes (1.344041ms)
+✔ HUD redraw follows artwork replacement and recovers after artwork is temporarily unavailable (6.053016ms)
+✔ canvas resets and restored contexts redraw an otherwise unchanged HUD (1.417369ms)
+✔ a failed draw cannot retain the signature of an earlier cleared image (1.150972ms)
+✔ main HUD counter updates write only changed text and keep checking canvas layout (3.765223ms)
+✔ original HUD atlas uses full/half/empty hearts, life, potion level total and score (3.541364ms)
+✔ widescreen leaves health at left, counters at right, enemy meter at bottom (0.651395ms)
+✔ portrait HUD fits health and counters and leaves room above touch controls for the enemy meter (2.645211ms)
+✔ desktop widescreen and letterboxed HUD keep the original scale and anchors (0.217908ms)
+✔ allowed autoplay starts with the selected volume and needs no action (3.949932ms)
+✔ blocked audible autoplay retries muted and offers sound without rewinding (0.543806ms)
+✔ blocking both attempts leaves a play action that starts unmuted from the click (0.332047ms)
+✔ a rejected click remains recoverable without another automatic muted attempt (0.343787ms)
+✔ stopping while initial autoplay is pending prevents a late retry (0.342208ms)
+✔ stopping during the muted retry ignores its late failure (0.291078ms)
+✔ a late success from an older intro cannot hide a newer blocked movie action (0.337137ms)
+✔ a late rejection from an older intro cannot mute or restart its replacement (0.253388ms)
+✔ a new movie resets mute state left by the automatic browser fallback (0.305787ms)
+✔ zero volume stays silent and does not offer a misleading sound action (0.641415ms)
+✔ desktop playback does not automatically fall back to muted audio (5.326251ms)
+✔ unsupported media reports its error without an automatic retry (0.496027ms)
+✔ Android suspension keeps the movie position and resumes only from the play action (0.340828ms)
+✔ a pending autoplay cannot restart a suspended movie or replace its resume action (1.36148ms)
+✔ Jester emits one native delayed slot at a time and retains the complete last particle (2.333533ms)
+✔ Jester uses half-second radial motion, delayed byte alpha and previous-tick height (0.304498ms)
+✔ saved phase/age reproduces identical particle geometry while each effect retains its own origin (0.389457ms)
+✔ accepted ranged attack starts castle Action before impact without enlarging knight perception (97.043818ms)
+✔ empty shots, props, inactive targets and rejected attacks do not trigger enemy music (395.059601ms)
+✔ a free-aim hit gives a distant knight native hit memory and music expires after disengagement (48.480399ms)
+✔ an aimed attack that misses has a finite music duration (53.531542ms)
+✔ a non-damaging knight hit still refreshes native awareness and remembered player position (47.521106ms)
+✔ defeat clears attack music only after the final enemy, with boss music retaining priority (29.898963ms)
+✔ ranged attack music survives saving and frozen gameplay then expires normally (99.583669ms)
+✔ boolean light rays retain exact plane endpoints, contents masks and typed midpoint rounding (13.657761ms)
+✔ boolean light rays retain the exact invalid-depth guard (6.302294ms)
+✔ level 1: 18,000 world and rotated-brush boolean rays exactly match detailed floor traversal (240.982176ms)
+✔ level 2: 18,000 world and rotated-brush boolean rays exactly match detailed floor traversal (142.482379ms)
+✔ level 3: 18,000 world and rotated-brush boolean rays exactly match detailed floor traversal (127.397198ms)
+✔ level 4: 18,000 world and rotated-brush boolean rays exactly match detailed floor traversal (133.085137ms)
+✔ level 5: 18,000 world and rotated-brush boolean rays exactly match detailed floor traversal (85.570511ms)
+✔ each level plays its requested two clips only after the preceding clip ends (18.982583ms)
+✔ rapid selection cancels old announcement and prevents stale second clip (2.7808ms)
+✔ menu music is requested once, stops on departure, and can restart (0.288328ms)
+✔ failed playback resolves level-start cue instead of blocking loading (1.217781ms)
+✔ pause/resume and volume changes retain the active announcement (0.595285ms)
+✔ effects and music channels change independently without restarting either (5.669419ms)
+✔ channel changes reapply mixer gain while retaining authored mixer channels (0.468347ms)
+✔ original ten names and scores survive an empty or malformed store (3.834172ms)
+✔ opening highscores repeatedly retains one best result per player and its chapter (0.726764ms)
+✔ ties insert ahead of older scores, keep player identities separate and cap ten rows (0.378067ms)
+✔ welcome is once per menu display, never looped or repeated by focus (1.567978ms)
+✔ browser-blocked welcome retries after gesture and cancels on leaving menu (4.496057ms)
+✔ reverse target motion emits native ascending labels but collision travels toward the target (6.346184ms)
+✔ forward target motion excludes its endpoint and includes it on a later interval only if moving beyond (6.315674ms)
+✔ blocked target motion preserves native label-before-pose ordering without replaying labels on retry (0.456886ms)
+✔ a native target label callback sees the old time and supersedes its pending position commit (0.267518ms)
+✔ exact-target pending completion persists through a motion snapshot and disabled update (0.567915ms)
+✔ target label retry state survives save/load and a callback disabling midway (0.489007ms)
+✔ SetTo keeps old time during callbacks and saves marker progress separately from a blocked pose (0.562276ms)
+✔ SetTo replacement callbacks cannot carry the player using an obsolete final pose (0.239018ms)
+✔ pose maps publish immutable snapshots and retain ordinary Map serialization and chaining (1.981346ms)
+✔ pose notifications reflect exact numeric changes, deletes and clear including immediate away-and-back writes (0.522096ms)
+✔ Hermite brush translation matches Genesis end slopes and time-weighted interior slopes (4.205279ms)
+✔ zero-derivative easing, channel looping and missing channels retain their meanings (0.492356ms)
+✔ quaternion SLERP rotates a brush around its pivot in original Y-up coordinates (0.507536ms)
+✔ SQUAD retains unit rotations and exact keyframes (0.565606ms)
+✔ all crossed original event labels dispatch once before completion even on a long frame (1.583548ms)
+✔ partial reverse playback and silent seeking use authored seconds (0.529536ms)
+✔ looping preserves all events across multiple cycles and exact boundaries (0.442236ms)
+✔ callbacks can stop or replace a motion without stale later events or completion (0.526266ms)
+✔ ping-pong repeat reflects leftover frame time, keeps endpoint events single and resumes direction (0.904843ms)
+✔ InitialPosition can be midway through a complete repeating path (0.714365ms)
+✔ graveyard final event after the path endpoint is delivered before wrap regardless of frame step (24.700531ms)
+✔ zero-length loop completes once and non-finite frame time cannot hang playback (0.977193ms)
+✔ all five imported worlds sample every path and replay all 806 original event labels (35.327654ms)
+✔ a shallow embedded player hull is nudged to nearby supported body clearance (6.014687ms)
+✔ corner recovery clears both obstacles without crossing either solid (2.183215ms)
+✔ ordinary pushing against a wall, idle actors and flowing movement do not trigger recovery (6.95085ms)
+✔ a visited clear position is used when local candidates are unsafe and is revalidated (9.187273ms)
+✔ a newly closed gate prevents recovering through it to previously clear history (13.849859ms)
+✔ history under a moved obstacle is rejected in its current brush pose (1.445189ms)
+✔ ground recovery rejects cliffs, unsupported hull corners and hazardous candidate predicates (1.099062ms)
+✔ shallow recovery never tunnels through a thin obstacle when starting overlapped (0.438987ms)
+✔ history is capped, paused updates do no work, teleports clear old history, and searches are bounded (8.123481ms)
+✔ PlayerController recovers an overlap and clears stale airborne velocity without blocking normal noclip (5.060754ms)
+✔ ground frogs and flying enemies recover from body overlaps while preserving authored patrol targets (1.902496ms)
+✔ authored takeoff, dormant/descending spiders, turret phases and dead actors are excluded (22.620867ms)
+✔ PlayerController records dry support only and does not promote water to a safe return point (5.790548ms)
+✔ live player physics holding into a wall stays put until the user changes direction (9.259793ms)
+✔ resumed natural travel cancels an unfinished recovery search; loading resets stale history (0.699525ms)
+✔ a shallow well-side wedge leaves the raised base horizontally before settling on lower ground (1.33164ms)
+✔ a non-overlapping player pinched under a sloped well roof escapes diagonally down and resumes walking (10.250386ms)
+✔ extended airborne settling remains bounded and cannot bypass an intervening gate (0.923923ms)
+✔ normal free fall beside a wall does not trigger the suspended-body recovery (8.092111ms)
+✔ a low sealed fall pocket recovers only to a revalidated higher visited position (18.857893ms)
+✔ fall-pocket recovery cannot replace an ordinary walk around a low corridor corner (143.447752ms)
+✔ a nearby authored gate vetoes returning from a fall pocket to higher history (118.93563ms)
+✔ higher fall-pocket history cannot bypass a door beyond the local probe (55.27061ms)
+✔ a jumpable lip below a previously visited higher shelf does not trigger fall-pocket recovery (50.273726ms)
+✔ a descending passage beneath a lower ceiling is an ordinary fall-pocket exit (29.379017ms)
+✔ a jump becomes available after walking beneath the edge of a low ceiling (39.928711ms)
+✔ the original Castle warehouse pocket recovers to the verified upper shelf with bounded work (154.885809ms)
+✔ player rides a translated floor while collision remains solid at its new position (10.270685ms)
+✔ script teleport supersedes floor carry during the same frame (4.12433ms)
+✔ a translating brush sweeps a stationary player instead of trapping or passing through the hull (14.827073ms)
+✔ a hinged door sweeps its arc and leaves RedCat free to move beside it (17.672623ms)
+✔ a wall-blocked door rejects its movement and cannot crush the player or teleport through a wall (3.406125ms)
+✔ the same brush transaction carries moving floors and refuses a ceiling crush (3.061368ms)
+✔ only committed support carrying contributes to takeoff momentum, never rejected moves or side pushes (10.898191ms)
+✔ world motion handoff adds actual platform carry to a jump and resets support velocity on the next frame (33.804915ms)
+✔ carrying ignores the floor own mounted prop at its previous pose while unrelated props still block (9.091724ms)
+✔ no-clip and disabled trigger brushes never push or stall the player (4.768665ms)
+✔ rejected motion segments wait before emitting their event or completion and resume without repeats (0.833924ms)
+✔ a motion event teleport supersedes the displacement already accepted before that event (6.185845ms)
+✔ the original tower witch door does not strand the player inside its opening leaf (24.857671ms)
+✔ MSAA uses valid preferences and safely adapts a saved choice to another GPU (1.130882ms)
+✔ only exact sample counts shared by color and depth are offered (1.035022ms)
+✔ frames during context loss cannot recreate attachments or compile shaders (2.380862ms)
+✔ native fade ramps control volume at constant rate and clamps overshoot (1.925656ms)
+✔ reversing a partly faded track uses the same native rate (0.230868ms)
+✔ saved fade progress produces the same remaining envelope (0.216098ms)
+✔ music fade is converted with native control gain, not final amplitude (0.607505ms)
+✔ each level selects its complete original background WAV as an indefinite loop (190.243583ms)
+✔ returning after combat has faded out restores the background playhead before playback begins (1.090752ms)
+✔ returning during a crossfade reverses the existing layer without duplicate music or a position reset (0.870563ms)
+✔ pause freezes both music layers, positions and crossfade clocks then resumes from the same positions (1.31378ms)
+✔ explicit music stop and level reset discard remembered positions and all fading layers (1.094492ms)
+✔ fallback EOF events repeat complete tracks indefinitely without a replay delay or early restart (0.376357ms)
+✔ an EOF delivered while paused remains silent until resume and restarts at the beginning (0.263458ms)
+✔ selecting the same filename preserves playback while updating authored volume and owner (0.654795ms)
+✔ a track stopped exactly at EOF resumes at zero instead of trying to seek past its duration (1.228081ms)
+✔ Web Audio loops the full decoded sample range repeatedly without media seeking or a new source (19.975656ms)
+✔ buffered music preserves its sample offset across combat and pause with no introduction replay (2.431813ms)
+✔ reset during a pending music decode cannot resurrect the released source or refill its cache (1.220111ms)
+✔ music decoded while paused remains silent and starts exactly once when resumed (2.227564ms)
+✔ music retains at most two decoded tracks independently of the eight short-effect buffers (2.416143ms)
+✔ native door types play on actual open/close transitions, with scripted silent types respected (7.919403ms)
+✔ both Brutus variants emit native localized attack, hurt and death voices (5.934147ms)
+✔ native footfall cadence scales with movement and preserves normal/liquid sound slots (1.122422ms)
+✔ footstep router uses actual ground movement and rejects walls, platforms, flight and teleport jumps (0.807485ms)
+✔ water footsteps overlap without clipping their tails and finish independently after pausing or stopping (2.502482ms)
+✔ every level selects authored ambient/action/special slots and recovers after the final ordinary threat (342.380312ms)
+✔ music crossfades preserve same-file playback, pause correctly and stop every fading layer (1.42393ms)
+✔ saved Action and Special modes remain distinct when both use Endbosses.wav (125.321133ms)
+✔ Jester Easy/Hard sections inherit the native constructor shooter defaults; Normal keeps its INI values (3.302656ms)
+✔ boss and zombie AfterDestroyCommand waits for the death clip; ordinary enemies run it at once (9.548161ms)
+✔ a dead ghost sinks to the traced floor while fading over five seconds from the moment of death (4.567137ms)
+✔ door Lock/Unlock click only on a state change; a locked UserFeedBack door plays ErrorSound without a toast (3.041448ms)
+✔ pickups use the native hull/item box overlap without a sight line, keeping the old radius only without bounds (1.206801ms)
+✔ the heart container awards no score but its 75 card; HUD hearts use truncated health (1.496279ms)
+✔ FlashEffect is a one-second burst of five static short and five accelerating long rays (0.631635ms)
+✔ StopCutScene fade and fixed/route cameras hold control; route mode 4 with no time expires at once (0.596125ms)
+✔ CamActivateOnEnable re-activates on every Enable within MaxTriggerTimes and never runs CommandOnEnter (0.806244ms)
+✔ MultiplyVolume scales only the playing track; a new track starts at full gain (0.617266ms)
+✔ lethal damage restores the normal camera (0.437427ms)
+✔ a saved position just inside a wall under the wider native hull is recovered by movement recovery (5.901087ms)
+✔ authored cobweb masks apply to every graveyard web without mutating actor templates (37.632218ms)
+✔ native fairy square halo, diagonal pulses, color cycle and departure survive central lifetime (41.876217ms)
+✔ native fairy lifecycle emits one departure burst and audio then supports subsequent dialogue (8.944125ms)
+✔ source and root lockfile agree on the game release version (16.309982ms)
+✔ packaging requires an explicit version before calling the builder (1.032803ms)
+  • electron-builder  version=26.15.3 os=7.2.12-200.fc44.x86_64
+  • loaded configuration  file=package.json ("build" field)
+  • electron-builder  version=26.15.3 os=7.2.12-200.fc44.x86_64
+  • loaded configuration  file=package.json ("build" field)
+✔ builder accepts injected package metadata without building or changing source (1164.232024ms)
+✔ original painting solution wraps at path end, enables all three spiders, and breaks the entryway (166.777983ms)
+✔ the three roof-origin spiders wait for approach, descend at native FallSpeed, then land (43.047488ms)
+✔ hanging spider perception uses its ceiling eye, horizontal range and two native sight rays (48.642278ms)
+✔ pre-fix solved saves recover skipped spider enables and roof placement without replaying the gate cutscene (229.088012ms)
+✔ saving retains descent progress and does not rewind a fought or roaming roof-origin spider (225.735096ms)
+✔ CParticle arms lifetime/delay independently, fades on the following update, and keeps integer alpha (2.335713ms)
+✔ CParticle restart retains current alpha until its new fade, without inheriting old deadlines (0.250508ms)
+✔ Fleurifee departure stars retain their native deadline tick and resume exact fade clocks from saves (7.119218ms)
+✔ Portal lifetime/fade clocks survive all phases and legacy saves without replaying movement (108.508874ms)
+✔ Fleurifee legacy star states retain position and displayed alpha when timer fields were absent (19.638898ms)
+✔ automatic waypoint links respect native distance, height, subsystem and walls (3.869852ms)
+✔ explicit waypoint edges preserve authored climbs but never cross subsystems (0.666215ms)
+✔ automatic links reject narrow 3D angles at either endpoint while authored links survive (0.731384ms)
+✔ automatic links honor native 3D clearance to third points and finite segment endpoints (0.445757ms)
+✔ automatic links avoid strict crossings but permit bridges above the height threshold (0.921334ms)
+✔ automatic collinear routes use the intermediate waypoint instead of skipping it (2.576202ms)
+✔ unaware moving enemies patrol original points, retain progress in saves, and freeze (16.490981ms)
+✔ leaving an unlinked start does not send enemies back into their initial grave (0.641185ms)
+✔ view cone and remembered position replace omnidirectional player tracking (9.095924ms)
+✔ Brutus launches original mushrooms (6.349664ms)
+✔ boss projectile classes and difficulty values come from original settings (2.110854ms)
+✖ Bone Brutus charges between bone and skull salvos and restores the charge phase (14.523015ms)
+✔ shot deviation is reproducible across saves without changing projectile speed (1.818547ms)
+✔ forest arena and frog area remain separate automatic path networks (38.597831ms)
+✔ large money bags share decoded PCM but retain independent complete pickup voices (9.201473ms)
+✔ buffered pickup pause/resume preserves sample position and reset cancels outstanding loads (2.751391ms)
+✔ pickup decode failure releases the transition guard and allows retry (2.259893ms)
+✔ without Web Audio pickups retain media fallback; ordinary effects and dialogue keep their existing path (0.958783ms)
+✔ native item sweep uses its scaled actor box, Y+1 start, 100 meters down and an 18 unit offset (3.194326ms)
+✔ no floor and embedded sweeps retain the authored height plus the native offset (0.293918ms)
+✔ the reported castle potion and all five levels use supporting geometry, preserving authored X/Z (440.821529ms)
+✔ all nine authored model attachments move from their settled anchor and survive repeated saves without drift (2130.934798ms)
+✔ rendered pickups do not bob and the score effect uses the settled pickup position (19.042953ms)
+✔ native fairy potion gates award SuperSkippie and BIG BENG only at 30 potions (352.378239ms)
+✔ fresh caves and a real graveyard carry keep BIG BENG locked; restored and earned ownership survive (231.216927ms)
+✔ SuperSkippie requires its skill and a released/repressed jump within native tap limits (183.077165ms)
+✔ original graveyard cave staircase needs three 72-unit ascents and SuperSkippie climbs all three (51.07658ms)
+✔ jump2 restarts at the airborne boost and retains the native 1.3x animation through descent (27.060814ms)
+✔ BIG BENG holds its native pose, releases once, scales damage, and recharges for the next shot (66.015373ms)
+✔ ordinary held fire stays available before BIG BENG and stale charges cancel on death/weapon removal (10.337055ms)
+✔ charging survives save/load without losing its release (4.07108ms)
+✔ dialogue cancels a held charge so RedCat idles and cannot fire it after the cutscene (8.151361ms)
+✔ touch press/release supplies the same SuperSkippie and charging edges as held keyboard input (23.904137ms)
+✔ RcHintMotion accepts the native range, ignores invalid values and survives legacy/new saves (4.389098ms)
+✔ dormant hint 12 repeatedly requests fall1 until cleared, then yields on a movement-state change (42.980519ms)
+✔ hinted fall never overrides jumps or the deliberate protected player states (7.413026ms)
+✔ RedCat locomotion uses recovered strafe rates without changing diagonal controls (0.480357ms)
+✔ long jump and super-jump cycle their original motion; an upward fan is not a jump (8.904905ms)
+✔ drop detection retains positive floor measurements and probes only the native 1000 units (7.104948ms)
+✔ normal and charged shots yield to movement at native 80%, without altering the deadline (3.083928ms)
+✔ reactions and cutscene idle retain priority, and respawn idle alone uses 1.7x (4.802495ms)
+✔ save restoration preserves descending jumps, outgoing blend and boost clocks exactly (43.480295ms)
+✔ native transition freezes the old pose and blends keys with Hermite/SLERP over 250ms (1.126191ms)
+✔ rapid switches retain the original native transition until its remaining weight drops below half (2.63624ms)
+✖ no-clip ignores normal, continuous and lethal scripted damage, and immediately restores normal damage on exit (5.942647ms)
+✖ restored no-clip and blocked no-clip exits retain immunity (1.719857ms)
+✔ earned abilities persist independently of a chapter save, replay, completion and level unlock cheats (2.149774ms)
+✔ valid older checkpoints migrate learned abilities without trusting malformed saves or inventory cheats (0.895374ms)
+✔ native impact thresholds retain equality and only damage above double jump speed (2.476272ms)
+✔ landing selects dry, water and ooze slots without truncating impact gain (0.485427ms)
+✔ actual gameplay subtracts fractional fall damage once and ordinary jumps remain safe (2.362173ms)
+✔ fall damage keeps existing no-clip, cutscene, respawn and completed-level protection (0.953983ms)
+✔ native player hit, death and respawn clocks match actual imported motions (14.394116ms)
+✔ nonfatal damage interrupts a pending shot and hurt finishes without losing another life (4.500517ms)
+✔ death holds two native seconds, deducts the life at respawn, protects five seconds and persists both phases (5.311332ms)
+✔ dying with no lives left is game over after the death hold, with the final pose and no repeated events (1.252731ms)
+✔ cutscene immunity and no-clip never start a hurt reaction; paused simulation keeps the same pose (1.40717ms)
+✔ original ground direction speeds and instantaneous stop are independent of frame rate (29.420087ms)
+✔ analog input keeps its magnitude, normalizes diagonals before speeds, and turns with yaw (0.466257ms)
+✔ jump carries takeoff momentum after release and yaw changes only the small airborne steering (0.431927ms)
+✔ walking off an edge carries launch velocity, then landing clears it before the next step (0.552186ms)
+✔ SuperSkippie slows horizontal displacement only on the boost trigger frame (0.943743ms)
+✔ environment velocity uses the ground multiplier; fan launches and noclip retain their own rules (2.496452ms)
+✔ jump inherits moving support velocity once, then flight retains it after leaving the support (1.711478ms)
+✔ midair saves resume the same trajectory and legacy or invalid saves safely start at rest (1.164331ms)
+✔ adopts the old adventure in place, including the old recovery database (7.309447ms)
+✔ players have independent saves, skills, unlocks, options, hints and recovery names (1.36786ms)
+✔ original limit is eight players and names have at most twelve characters (0.832434ms)
+✔ names are normalized and duplicate or empty names rejected (0.588486ms)
+✔ metadata errors and failed writes preserve both prior metadata and saves (0.657285ms)
+✔ failed switch/deletion does not expose another profile or clean up its saves (0.399147ms)
+✔ deletion cleans only that player and preserves shared settings (0.622855ms)
+✔ cleanup failure is reported after committing removal without harming other players (0.307078ms)
+✔ another window cannot overwrite a newer player list (7.139198ms)
+✔ profile keys remain tied to IDs and cannot collide with orphaned data (1.091572ms)
+✔ shot: Gameplay emits the native firing and impact recordings only at their actual events (6.885491ms)
+✔ shot: expiry is silent and a saved in-flight pellet retains its impact sound after skills change (3.514835ms)
+✔ powerShot: Gameplay emits the native firing and impact recordings only at their actual events (0.612866ms)
+✔ powerShot: expiry is silent and a saved in-flight pellet retains its impact sound after skills change (1.680798ms)
+✔ superShot: Gameplay emits the native firing and impact recordings only at their actual events (1.076462ms)
+✔ superShot: expiry is silent and a saved in-flight pellet retains its impact sound after skills change (0.926453ms)
+✔ successive player shots and impacts keep independent complete one-shot tails (0.985323ms)
+✔ cancelled BIG BENG charge stops immediately without a firing or impact cue (0.276609ms)
+✔ player flight matches native accelerate/cap-before-translation at canonical60Hz (1.43777ms)
+✔ player native flight keeps smooth partial movement and identical travel across display rates (4.041371ms)
+✔ saved player flight validates its partial step and preserves simulation roundtrips (6.394763ms)
+✔ held shooting releases after 46% and restarts after the native 80% handoff (14.924572ms)
+✔ native release threshold is strict and firing can re-arm only on the following update (0.610136ms)
+✔ player pellets accelerate at the authored rate, cap their speed, and have finite lifetime (1.501629ms)
+✔ skill upgrades retain native projectile kinds, damage and speed (0.452857ms)
+✔ the renderer supplies the animated right-hand origin only at pellet release (1.674657ms)
+✔ cutscenes cancel queued release while ordinary save/load preserves cadence and in-flight pellets (6.96015ms)
+✔ freezing enemies leaves player pellets active for shootable puzzles (3.835712ms)
+✔ death cancels an unreleased pellet so it cannot fire after checkpoint respawn (3.588434ms)
+✔ all three original animated player pellet sequences are packaged with alpha (2.697431ms)
+✔ native shadow retains its 25-unit basis, template offsets and ground position through a jump (2.79707ms)
+✔ sloped ground receives the native plane-aligned shadow rather than a horizontal floating sprite (0.442867ms)
+✔ missing ground, an invalid plane or a solid starting position cannot leave a floating shadow (0.239058ms)
+✔ shadow collision follows solid/window surfaces and moving platforms while skipping invisible clip hulls (3.116008ms)
+✔ renderer reuses one mesh and the artwork alpha, hides with RedCat, and removes the shadow on disposal (7.247688ms)
+✔ native rc glow uses fixed actor-box centre, original offset/radius/colour and follows movement (4.474498ms)
+✔ native falloff lights only nearby world samples and never alters the baked lightmap (1.138842ms)
+✔ player light reaches world and actor lighting while preserving the eight-slot budget (6.406994ms)
+✔ native portal frequency remains .075 with shared decoding and positional stereo gain (9.72964ms)
+✔ slow native sounds preserve sample position across pause/resume and stop pending decodes (3.561615ms)
+✔ native terminal zero frequency uses original rate and ordinary audio keeps its media behavior (0.475826ms)
+✔ slow native one-shot completion releases once and delayed loops restart without duplicate sources (1.864306ms)
+✔ all seven castle portraits stand upright on their original walls with the native missing-INI basis (42.232254ms)
+✔ native corona fades radius with a fixed maximum-radius rate and clamps to distance target (3.063688ms)
+✔ beacon UV scrolls in authored ray order and resumes directly from activation age (1.149701ms)
+✔ corona BSP checks are bounded, fair, and remain idle while paused (0.587926ms)
+✔ saved footstep phase and side resume the next native cadence crossing without a replay (0.486147ms)
+✔ footsteps use native input speed rather than ground scaling or moving-platform carry (1.627488ms)
+✔ native backwards clip runs at 2.2x while forward and no-clip preserve their own rates (0.304188ms)
+✔ real corona batch fades size on world occlusion and keeps beacon glow depth testing separate (29.08691ms)
+✔ real corona update excludes behind-camera lamps and bounds visibility work as the camera turns (8.927386ms)
+✖ all five levels use native textured-point dimensions for their button and fixture coronas (459.723283ms)
+✖ native beacon texture coordinates reach the actual energy buffer and stay read-only on refresh (4.180559ms)
+✔ Gameplay snapshots preserve footstep phase across JSON save/load (4.175889ms)
+✔ native clock-face heading agrees between player camera and +Z-front character assets (1.27642ms)
+✔ actual first Fleurifee rcshow script makes RedCat face her instead of empty space (71.632892ms)
+✔ UFO authored XYZ turns multiply about world axes in native order (24.089106ms)
+✔ normal jump keeps the descending half of jump1 at native speed through the apex (0.725155ms)
+✔ a slight ledge does not trigger the long-drop motion; native >80 floor-gap transition does (0.460277ms)
+✔ Fleurifee has original masked layers, orbit trails plus secondary stars, finite lifetime and radius110 light (85.961358ms)
+✔ a completed fairy lifetime can be enabled again by a later dialogue script (4.981314ms)
+✔ all original bitmap sequences use the recovered 50 ms interval and native frame counts (1.923036ms)
+✔ long updates do not skip frames or bypass the separate native rearm update (0.976513ms)
+✔ gameplay advances enemy and player animations and freezes only enemy ammunition (4.204309ms)
+✔ save and restore preserve an active deadline and its exact next frame (4.099561ms)
+✔ older saves start at frame zero and never acquire an age-derived or random phase (0.686275ms)
+✔ native thin projectile sweep hits the body but no longer catches empty space next to it (1.132102ms)
+✔ all generated shots use the recovered collision extent regardless of visual sprite size (5.383741ms)
+✔ projectile sweep resolves the earliest impact without tunnelling or applying hits through a wall (2.198964ms)
+✔ mushroom wall impacts retire the body and its harmless ribbon immediately (6.96895ms)
+✔ lethal projectile impact cannot reintroduce a trail or another projectile after respawn (1.521599ms)
+✖ lethal melee respawn stops later liquid triggers from damaging the old player location (9.347583ms)
+✔ gameplay saves owned ribbons and pauses them with cutscenes and enemy freezes (7.461036ms)
+✔ mushroom hazard uses original difficulty properties and ribbon artwork (3.047728ms)
+✔ native sampler updates a live endpoint and commits once per tick, not every ten units (1.138232ms)
+✔ native distance and millisecond gates are strict and either gate commits (0.396168ms)
+✔ 30, 60 and 144 fps follow native endpoint-gated sampling rather than invented fixed cadence (7.982832ms)
+✔ native ribbons remain harmless even when crossed or overlapped (2.211694ms)
+✔ native opacity fades per committed quad, culls at five alpha units and freezes without damage (1.767797ms)
+✔ impact or expiry destroys only the corresponding native ribbon (0.516046ms)
+✔ save/load preserves the active sampler and validates difficulty properties (2.501792ms)
+✔ old segment saves migrate once to trusted native ribbon properties (0.778084ms)
+✔ hazard growth stays bounded across excessive projectile input (0.651156ms)
+✔ the first native update seeds duplicate current endpoints and emits no artificial launch segment (0.462657ms)
+✔ gameplay impact and lifetime expiry retire the native ribbon immediately (2.80854ms)
+✔ gameplay restore keeps owned ribbons and discards orphan or invalid projectile trails (6.86486ms)
+✔ fatal projectile hits retire all owned ribbons before the death screen freezes gameplay (1.630739ms)
+✔ only the three live player factories emit impacts, five units behind contact along flight velocity (3.171807ms)
+✔ native impact artwork and scale use 100ms cells and the 699ms final cell (1.670798ms)
+✔ independent native impact light follows the shared lazy pre-step clock (1.270851ms)
+✔ actual wall and enemy contacts each create one effect, but expiry and misses do not (3.663334ms)
+✔ impact state survives gameplay saves, rejects malformed entries and retires without an ID history (6.604542ms)
+✔ impact renderer submits the original sprite without allocating destruction debris (1.102712ms)
+✔ charged hit Electricwave is an upright camera-facing quad with native delayed squared-radius growth (0.837254ms)
+✔ charged wave touching the floor retains its upright quad and folds the bottom onto the surface (0.337297ms)
+✔ charged wave renders original alpha artwork in one bounded reusable mesh and clears after retirement (2.344193ms)
+✔ readability grows small distant shots without shrinking close sprites or unbounded growth (1.229141ms)
+✔ rendering preserves projectile physics and frame state and uses current camera depth (4.467908ms)
+✔ ribbon readability only changes rendered width, retaining native contact geometry and fade (1.179701ms)
+✔ prop fragments retain live poses, collisions and fade across JSON save/load without historical traces (27.185563ms)
+✔ empty saved cohorts stay empty, preserve smoke records and release renderer hooks (5.444771ms)
+✔ legacy and invalid prop records use bounded replay while unknown or oversized saved cohorts are rejected (3.683133ms)
+✔ synchronous gameplay saves retain the last integrated time and imported callback fields cannot execute (2.532412ms)
+✔ Stoppen and Nee play their original voices and dismiss without quitting (13.615811ms)
+✔ Ja waits for both clips and prevents double quit or cancellation (0.460587ms)
+✔ recovery retains one immutable complete save per active minute and offers 2, 5 and 10 minutes (18.856043ms)
+✔ minute buckets preserve the ten-minute slot despite frame jitter (9.434021ms)
+✔ offline time, level changes and recovery loads do not reset the active-play history (2.68372ms)
+✔ queued writes retain call-time snapshots and successful new adventures alone clear history (2.376873ms)
+✔ failed writes and failed resets preserve history with a five-active-second retry (2.290663ms)
+✔ invalid and dead snapshots never become recovery choices; unavailable storage degrades safely (2.020276ms)
+✔ loading validates and bounds persisted history before exposing any snapshot (1.890887ms)
+✔ missed capture buckets do not fabricate saves or mislabel recovery ages (1.44521ms)
+✔ captures and clock advances queued before storage opens retain their order (3.340886ms)
+✔ beam scratch vectors preserve exact previous vertices, colours and ribbon UVs across consecutive rays (18.128008ms)
+✔ discs and custom coloured quads preserve earlier batch data, capacity and upload state (3.271416ms)
+✔ precomputed light distances retain stable ties, player priority, eligibility and eight-light limit (1.447609ms)
+✔ light order matches previous calculation after camera, light position and radius changes (5.307831ms)
+✔ actor lighting reads freshly updated scene matrices for mounted parts and debris without ancestor refreshes (7.162679ms)
+✔ 100% default and proportional dimensions (1.921266ms)
+✔ sustained slow rendering drops to 75%, 50%, then 25% and stops (2.431642ms)
+✔ manual scale drops by percentage points and never below 25% (1.000282ms)
+✔ healthy frames, isolated hitches and pause/loading do not lower quality (0.443837ms)
+✔ recovered FPS prevents a second reduction (0.715305ms)
+✔ supersampling permits 300% and reduces in 25-point steps to the floor (0.288228ms)
+✔ automatic settings changes commit exact 75/50/25 scales and disable MSAA without double reductions (0.548716ms)
+✔ committed quality survives resets/reload; recovering FPS never re-enables MSAA (0.562516ms)
+✔ low FPS at minimum scale can still disable MSAA, while pause/loading cannot (0.729715ms)
+✔ committed manual and supersampling scales use 25 percentage-point steps (0.320467ms)
+✔ unlocking a successor or cheating all levels open does not mark them played (1.806987ms)
+✔ legacy history uses only a valid saved chapter, never guessed unlocks or malformed records (1.180151ms)
+✔ saved first-play and replay sessions override history, while new adventures reset only played history (0.549136ms)
+✔ native replay initialization disables only the eight Forest and two Graveyard tutorial triggers (261.198439ms)
+✔ replay retains every skill encounter, boss sequence and the Cave exit controller (77.46138ms)
+✔ save restoration preserves replay policy and existing triggers instead of applying initialization again (203.522007ms)
+✔ pickup pinwheel uses five original textured triangles with native orbit and tapered width (3.452705ms)
+✔ pickup colours cycle one component at a time and re-sampling never advances a paused effect (0.757254ms)
+✔ every collectible emits the corresponding original score artwork exactly once (8.439379ms)
+✔ disabled pickups do not create reward effects (0.467297ms)
+✔ enemy kills award their authored score once; wounds, scenery and the zero-score witch do not (2.669ms)
+✔ pickup effects capture the current model transform without following later movement (0.613415ms)
+✔ enemy score starts at the rendered bounds centre, with a collision-bounds fallback (0.544126ms)
+✔ save/load preserves active effect age and cannot replay collected items or dead enemies (5.815418ms)
+✔ cutscenes allow reward retirement while redraws at paused game time do not advance it (7.594525ms)
+✔ effect restoration rejects malformed, future and expired records while preserving legacy saves (0.721335ms)
+✔ burst pickup traffic stays bounded and keeps the newest 128 effects (5.58347ms)
+✔ native score quads expand, rise and fade for one second on pickups or 1.5 seconds on enemies (3.935822ms)
+✔ score artwork stays upright and finite under oblique or directly overhead cameras (0.372307ms)
+✔ save before first use preserves native rolling-stone repeat mode and staggered phases (342.67192ms)
+✔ legacy save made during the erroneous first lap repairs repeat without moving the rocks (125.122804ms)
+✔ already-stalled legacy stones stay disabled until the original re-entry trigger enables them (148.026469ms)
+✔ authored outside-section Disable retains phase across save/load and resumes on re-entry (98.614456ms)
+✔ original narrow rolling-stone thresholds activate on crossing at 20 Hz (128.158633ms)
+✔ original narrow rolling-stone thresholds activate on crossing at 60 Hz (164.890837ms)
+✔ original narrow rolling-stone thresholds activate on crossing at 120 Hz (158.778721ms)
+✔ a room transition preserves one outstanding shared image decode for the newly needed room (23.361841ms)
+✔ rapid forward and reverse room changes transfer a shared pending image without repeated garbage churn (18.307968ms)
+✔ steady forward movement prepares the next range-edge image and buffer before either becomes drawable (4.862955ms)
+✔ stationary, paused and teleporting cameras never project extra room-loading distance (5.56436ms)
+✔ an unknown authored-camera teleport uses its conservative fallback without projecting a remote loading strip (2.226434ms)
+✔ actors use the same forward preparation strip while drawing retains its unchanged current-camera limit (30.358101ms)
+✔ pooled-fragment map watchers prepare the forward strip before drawing and reject unrelated rooms (25.419436ms)
+✔ forward-range preparation obeys the shared frame job and elapsed-time budgets (14.806233ms)
+✔ nearby stacked and nonadjacent rooms never allocate artwork; spatial cells are split by room ownership (16.123394ms)
+✔ the room beyond a closed doorway is prepared, and aligned open doorways preserve a farther visible room (3.351586ms)
+✔ crossing a doorway preloads the next room and promptly releases unrelated rooms even inside the distance grace radius (3.927762ms)
+✔ remote authored cameras select their own room and return safely; flying into solid exterior space retains the last valid room (3.730563ms)
+✔ actors and pooled fragment textures in unrelated rooms do not request maps or enter residency (10.240246ms)
+✔ flames and ribbons from excluded floors are omitted while large effects touching the selected room remain visible (3.770153ms)
+✔ missing room metadata falls back conservatively, without inventing a closed room (1.139292ms)
+✔ animation padding cannot assign an upstairs actor to the basement and shared admitted textures remain protected (3.187157ms)
+✔ a room change during an outstanding texture load cannot activate an obsolete room (2.354323ms)
+✔ fragment preparation excludes destructibles across a floor without limiting a real explosion (5.056984ms)
+✔ excluded flame emitters retain simulation clocks without submitting particles through a ceiling (2.586161ms)
+✔ all five chapters have exact static room ownership, including the complete Tower witch room (211.576928ms)
+✔ a long camera transition retains its visible room while loading priming still uses restored player coordinates (1.778637ms)
+✔ a cold turn within the present room reuses fully prepared geometry and maps behind the camera (21.027977ms)
+✔ same-room PVS-hidden surfaces prepare without drawing and survive a camera-leaf visibility change (5.52592ms)
+✔ whole-room preparation does not fetch another floor, a hidden doorway neighbor, or beyond the existing range (3.105068ms)
+✔ new background room work shares the existing three-job frame budget with visible uploads (24.190425ms)
+✔ hidden current-room actors prepare real textures and buffers before a turn while unrelated and distant actors stay unloaded (31.603841ms)
+✔ background actor preparation does not bypass native hidden-leaf rejection (10.163017ms)
+✔ current-area queries invalidate when the player crosses a doorway, without treating all admitted rooms as current (6.404684ms)
+✔ a briefly lost open doorway retains preparation without enlarging the draw mask or flooding never-admitted rooms (16.56352ms)
+✔ closing an open connection or changing the anchor promptly drops preparation held only by a previous view (25.039069ms)
+✔ actors in a retained open-connected room warm in the background without drawing through its lost aperture (21.305686ms)
+✔ minified real save/profile cycle retains existing saves, export format and storage namespaces (212.655171ms)
+✔ minification preserves dynamic property access, diagnostic names and module side effects (32.480295ms)
+✔ bundler consumes validated snapshot bytes even if files on disk changed meanwhile (16.338172ms)
+✔ refresh is deterministic, excludes generated output, repairs output and versions dependency changes (68.744383ms)
+✔ invalid edited source leaves the last complete HTML and runtime bundle intact (31.045375ms)
+✔ export contains only the selected adventure, campaign and player options (10.292496ms)
+✔ export refuses missing, malformed and non-serializable adventures (1.067203ms)
+✔ native export receives a single file payload and cancellation never falls through to a browser download (0.869004ms)
+✔ browser export downloads the complete JSON and releases its Blob after the handoff (0.689615ms)
+✔ player-list export uses the selected owner without switching or replacing any profile (0.450027ms)
+✔ player-list export displays cancellation and errors while preserving selection (0.400098ms)
+✔ browser import reads the selected JSON file and removes its picker (2.301813ms)
+✔ browser picker cancellation and focus fallback release the pending menu (0.495356ms)
+✔ focus return cannot cancel a selected file while its contents are being read (0.399677ms)
+✔ browser import refuses oversized, empty and non-JSON files before reading (0.694145ms)
+✔ native cancellation or errors never fall through to a browser picker (0.847614ms)
+✔ original v1 exports round-trip without sharing mutable state or importing unrelated keys (48.453639ms)
+✔ all five actual campaign exports restore scripts, objects, camera routes and effect state (1064.057639ms)
+✔ legacy v1 snapshots may omit fields that were added later (0.454687ms)
+✔ refuses foreign files, unsupported future versions and malformed restore containers (2.83497ms)
+✔ rejects unsafe keys, excessive nesting, nonfinite numbers and oversized UTF-8 before use (50.056527ms)
+✔ imports only the chosen profile, commits a new revision, and preserves selection, names, settings and hints (6.994329ms)
+✔ every write-failure position rolls back exact prior raw bytes including absent keys (1.969536ms)
+✔ stale profile metadata and invalid direct bundles refuse all storage writes (0.500767ms)
+✔ scripted route follows authored points, skips zero-length edges and holds the final point (1.950406ms)
+✔ final approach uses the original truncated distance lookup and speed clamps (0.257829ms)
+✔ last leg slows near its endpoint and snaps the native five-unit arrival distance (3.761353ms)
+✔ all five authored routes preserve intermediate waypoints and resume the final approach from save time (169.441014ms)
+✔ empty, singleton and duplicate routes remain safe without changing authored points (0.564576ms)
+✔ all original levels bind scripts and motion assets without initialization faults (268.969574ms)
+✔ original forest potion branch checks the configured threshold and grants only the correct skill (37.710537ms)
+✔ graveyard original pillar callbacks open the mausoleum only when the conjunction succeeds (28.446004ms)
+✖ graveyard looping motion wraps to the correct first marker within its geometric path endpoint (25.513446ms)
+✔ witch defeat drives the original motion callback, freezes enemies and teleports RedCat (7.853543ms)
+✔ tower last-mirror pickup unlocks the fifth placement without prematurely completing the level (8.438199ms)
+✔ save/load retains pickup, script globals and partially completed puzzle state (48.457489ms)
+✔ restoring paused motions stops current playback and does not replay an emitted event marker (64.261805ms)
+✔ original castle boss door self-open callback does not recurse and paired doors open once (11.361698ms)
+✔ initial weapon skills retain chapter defaults with the corrected Caves BIG BENG gate (42.970309ms)
+✔ tower witch trigger waits for all five mirrors and persists its counter (20.290623ms)
+✔ cave boss doors stay locked until all four elemental puzzle signals arrive (19.483979ms)
+✔ an inactive controller sharing a brush cannot overwrite an opening crypt door (56.132714ms)
+✔ touching an initially paused cave platform starts its original motion handler (99.163852ms)
+✔ shooting the inactive graveyard plank brush invokes its original destruction script (15.774666ms)
+✖ an original shootable button is selected by the first brush hit (5.315062ms)
+✔ forest boss music selection and scripted volume survive saving and loading (18.485167ms)
+✔ stopped music remains stopped after loading and can be selected again (20.074865ms)
+✔ forest opening and older saves keep the default ambient music selection (23.071303ms)
+✔ GET streams original bytes and HEAD returns the same metadata without a body (91.824276ms)
+✔ media seeking returns exact bounded, open and suffix byte ranges (43.933092ms)
+✔ unchanged assets revalidate without a body; changed source is returned immediately (31.335383ms)
+✔ If-Range uses the matching date and otherwise returns the whole current file (20.509611ms)
+✔ missing, hidden, invalid and escaping paths remain unavailable; mutations are rejected (10.134167ms)
+✔ large files stream exactly and an aborted movie does not prevent subsequent requests (61.000309ms)
+✔ actual campaign sky artwork becomes upload-compatible, with existing uniform skies untouched (164.442ms)
+✔ native missing faces stay blank, while entirely unassigned skies allocate nothing (0.926703ms)
+✔ Tower ceiling and floor share one normalized and oriented image within the GPU limit (0.277768ms)
+✔ GPU cube limit applies to every face, preserving shared source images and source dimensions (0.678166ms)
+✔ intrinsic image dimensions determine upload size regardless of element display dimensions (0.214718ms)
+✔ incomplete images and invalid cube limits fail before attempting GPU upload (0.652625ms)
+✔ all settings sliders choose the requested original WAV by direction (19.626108ms)
+✔ both original sound sliders use softer and louder announcements (0.440927ms)
+✔ rapid drag keeps full words and coalesces direction reversals (3.125388ms)
+✔ closing or repopulating settings prevents delayed slider voices (1.962396ms)
+✔ same value, invalid input, and playback cancellation do not produce extra cues (3.725853ms)
+✔ native azimuth and centibel stereo law preserve near speaker and do not pan above/below (2.184154ms)
+✔ blocked BSP path changes effective distance by 1.5 without changing stereo source or dialogue (2.973768ms)
+✔ PVS suppression, shortened ambience and player-centered fairy exception are retained (2.005925ms)
+✔ audio areas track the real door pose and never trace actors (1.961976ms)
+✔ original castle PVS and BSP obstruct spatial emitters independently of renderer visibility (73.424609ms)
+✔ empty inactive or completed spouts preserve every native timer, slot and save field (2489.807841ms)
+✔ whole-cloud culling leaves moving, paused, disabled and returning spout draws identical (88.255801ms)
+✔ cloud bounds keep large tails and native-spout half-unit quads at every frustum plane (3.242376ms)
+✔ fully enclosed clouds skip repeated sphere checks; unusual diagnostic sizes retain original data (0.690865ms)
+✔ native deferred birth timers, triple launch speed and semi-implicit gravity (5.54917ms)
+✔ alpha has its own delayed integer fade and size uses lifetime, independent of image resolution (1.749437ms)
+✔ 15 reusable templates cap long-lived smoke, and first free slot reuses its launch and offset (11.629886ms)
+✔ cone tangents retain native narrowing and spread stays a world-XZ square for sideways emitters (0.667675ms)
+✔ pause is inert, disabled particles drain, and re-enable retains survivors without catch-up bursts (1.274991ms)
+✔ fixed simulation gives the same bounded cloud at 30, 60 and 120 Hz (17.415683ms)
+✔ finite Tower flash stops new births, drains its tail, and a restored expired flash cannot restart (23.349172ms)
+✔ colour cycling belongs to the emitter with the native half-second rate and channel mapping (1.102432ms)
+✔ visible room geometry and textures no longer activate in an unbounded burst (48.036342ms)
+✔ explicit load settling drains bounded preparation without needing the game frame loop (86.803241ms)
+✔ leaving a room cancels its queued geometry and image preparation (23.846567ms)
+✔ returning during a cancelled upload microtask reacquires real maps instead of activating null artwork (91.30194ms)
+✔ actors wait for warmed buffers, share preparation across owners and remain independent of gameplay visibility (18.153769ms)
+✔ actors just outside the camera view prepare ahead of turns without drawing or admitting unrelated rooms (5.53645ms)
+✔ closed-door preloads do not hold the complete current room; opening the doorway makes its artwork required (30.476769ms)
+✔ actual transparency metadata covers every original level texture and distinguishes Castle wood from Graveyard grilles (126.723943ms)
+✔ camera travel prefetch is capped and teleports never project remote loading neighborhoods (7.684555ms)
+✔ decoded actor maps upload through the frame queue before becoming render-ready (10.223486ms)
+✔ explicit actor load settling pumps bounded work and yields rather than deadlocking before the first frame (8.136281ms)
+✔ visible and pinned maps outrank background requests without retaining old priority forever (3.116357ms)
+✔ an expired decoded map skips graphics preparation and can be requested again (1.698897ms)
+✔ a fresh owner of the same map keeps an already decoded request alive (1.547518ms)
+✔ level disposal resolves staged actor work without a future frame or a disposed-handle upload (1.632998ms)
+✔ preparation failures propagate through settle and never expose a ready placeholder (1.540978ms)
+✔ without a shared work queue the standalone actor loader remains immediately usable (0.625546ms)
+✔ GPU eviction invalidates readiness and re-entry budgets a retained decoded-image upload without fetching again (2.420733ms)
+✔ GPU-evicted retained images still expire and a later owner fetches fresh artwork (2.353353ms)
+✔ streaming preparation shares one frame budget, prioritizes visible work and cancels obsolete rooms (12.603339ms)
+✔ a burst of tiny jobs is capped even on a fast CPU and explicit loading yields between budgets (0.994363ms)
+✔ preparation errors propagate, while disposing cancels all queued work without running it (1.662528ms)
+✔ GPU preparation is deduplicated, draws zero triangles privately, restores state and rewarms after eviction (19.35945ms)
+✔ obsolete actor buffer uploads are cancelled and GPU exceptions leave the displayed target unchanged (10.594063ms)
+✔ only enemies, shootable buttons and explicitly targetable shootable props participate (1.753967ms)
+✔ selection and animated ring use the transformed brush instead of its displaced editor origin (5.383201ms)
+✔ actors take priority over button fallback, with occlusion and a stable firing lock (0.802154ms)
+✔ native button fallback reaches nine times the actor range while retaining cone and visibility checks (0.489667ms)
+✔ world targeting rejects walls near distant buttons and accepts only a clear ray or the selected hull (0.743175ms)
+✔ original level target flags select the twelve crates and reject decorative actors throughout the campaign (312.077122ms)
+✔ world aiming updates shootable bounds without sampling decorative models and recovers hidden buttons (0.909413ms)
+✔ original front hemisphere/range/nearest visibility selects the ring target (1.439909ms)
+✔ 500 ms selection cache, stable firing lock and immediate dead/hidden invalidation (0.348938ms)
+✔ dormant ambush enemies are not revealed by targeting, waking ones are targetable (0.233408ms)
+✔ locked pellet aims at the original 80% actor height from actual animated hand (2.471912ms)
+✔ original target ring pulses, rotates, cycles colours and sits in front of actor hull (0.551046ms)
+✔ all 13 authored teleport effects support their original waypoint layouts despite NumberOfWayPoints zero (387.096848ms)
+✔ native terminal flash uses a billboard and its one-shot survives completion without duplicate player-transition cues (292.743322ms)
+✔ Show ignores a disabled effect and repeated calls while its native sequence is active (0.281438ms)
+✔ authored tower motion event starts portal Show, with original artwork, movement and finite sequence (111.446164ms)
+✔ portal save/load resumes particle pose and looping layer without replaying startup (50.967531ms)
+✔ native portal looping layer starts once and stops on completion, disable and disposal (102.978995ms)
+✔ a completed seven-second legacy save does not revive the portal loop or terminal flash (15.957235ms)
+✔ native standby timer releases four corner particles and integrates upward acceleration (4.607017ms)
+✔ special beam radius finishes contracting at2.1 seconds while orbit continues for6.8 (12.523889ms)
+✔ Show changes living corner particles into Seek and fills at most250 native orbit slots (39.282215ms)
+✔ native orbit centres only follow height continuously for every third slot (1.997845ms)
+✔ terminal flash lasts300ms, expands8→80 and moves towards the camera before outward burst (57.036838ms)
+✔ native portal state survives save/restore without replay, and geometry refresh is pure (44.715186ms)
+✔ expired portal save slots are compact and retain exact future slot reuse (100.79628ms)
+✔ native energy UV scroll changes direction once and continues past the negative endpoint (1.35979ms)
+✔ fixed native particle steps give matching trajectories across renderer frame rates (16.087274ms)
+✔ legacy portal sampling is bounded regardless of saved level age (9.175193ms)
+✔ open-space chase position and normal smoothing remain unchanged (4.982494ms)
+✔ backing into a rear wall lifts the camera above the visible actor instead of inside it (3.409016ms)
+✔ every frame of a backwards approach and retreat stays outside model and geometry (30.525599ms)
+✔ corner walls still allow an overhead pose (12.930637ms)
+✔ low ceilings choose a clear external side view instead of entering the ceiling or actor (0.647505ms)
+✔ smoothing is collision-checked and cannot cut through the body between safe endpoints (0.284257ms)
+✔ a camera with no external clearance hides only the obstructing model until room returns (4.626586ms)
+✔ camera solution does not mutate actor position, intended boom or remembered view (1.216671ms)
+✔ all levels gain exactly sixteen missing hand flames without duplicating sixteen existing flames or touching static fixtures (66.809546ms)
+✔ hand flames and their lights follow the rendered wick across animation, rotation and scale (35.553142ms)
+✔ integration emits alpha-masked flames at the moving tip, uses eight light slots and respects disable, pause and distance (41.090203ms)
+✔ touch preference preserves explicit choices and migrates legacy booleans (1.40364ms)
+✔ mobile auto detection uses device capabilities, including iPad desktop UA (3.153137ms)
+✔ joystick is analog with a dead zone and a circular limit (4.1425ms)
+✔ move, look, attack and jump can be held independently with multiple pointer owners (1.253311ms)
+✔ repeated frame context preserves a hold; actual transitions clear it and update controls (2.042175ms)
+✔ skip is available only in cutscenes and clears use when leaving them (3.014628ms)
+✔ cancel, capture loss, blur, visibility, resize, disable, and reset clear every held action (9.283072ms)
+✔ camera and walk respond once per gesture without obsolete use or save/load controls (3.687533ms)
+✔ dispose clears input, removes controls and disconnects their listeners (0.574406ms)
+✔ first forest hint waits for both the authored camera and cutscene, then requests ten seconds once (2.405543ms)
+✔ other levels, restored saves, keyboard starts and remembered hints do not teach touch again (0.385767ms)
+✔ leaving the forest during its opening cancels the pending hint (0.244649ms)
+✔ the original forest opening script delays the hint until its real camera sequence finishes (128.705749ms)
+✔ desktop hint follows the same opening-only timing, lifetime and persisted opt-out (0.810574ms)
+✔ the authored vertical fan refreshes an airborne launch every tick at 20, 60 and 120 Hz (52.250562ms)
+✔ leaving or disabling the fan removes external speed but preserves the launched flight (35.008987ms)
+✔ fan flight respects ceiling and floor collision, clears carry on landing and ignores wind in noclip (0.838764ms)
+✔ midpoint gravity retains the original ordinary jump height of 1.3 metres (4.984584ms)
+✔ resource ownership survives actor removal, re-addition and live visibility changes without per-frame recounts (14.404645ms)
+✔ camera world position needs one ancestor update and honors a moved camera parent immediately (3.206647ms)
+✔ immutable world faces reuse their local matrix while moved brushes and changed scene ancestors propagate immediately (14.273887ms)
+✔ both nonblocking forest pools supply water footsteps despite solid-collision exclusion (123.904474ms)
+✔ all levels select liquid contact from contents rather than visible texture names (201.593591ms)
+✔ banks, shaped-pool dry corners, bridge decks and airborne feet do not splash (140.385944ms)
+✔ water walking and ooze retain original dry sound slots; no steps while stopped or in no-clip (72.313337ms)
+✔ water contact follows its brush pose without changing the collision exclusion set (14.079208ms)
+✔ liquid jump and landing use native contact slots with impact-scaled landing gain (59.006923ms)
+✔ real pool contact emits one landing per fall, with no repeats while supported or in no-clip (50.535754ms)
+✔ non-solid liquid contents come from BSP cells with no collision sides (4.715985ms)
+✔ hull contents clip each BSP branch instead of independently testing the original box (3.781713ms)
+✔ a concave moat leaves the dry inner corner clear and combines intersected contents (0.965443ms)
+✔ liquid hulls follow translated and rotated models without filling the rotated bounding box (1.271811ms)
+✔ original forest streams expose their nonblocking authored water cells (31.293424ms)
+✔ original shaped forest pool does not damage dry corners inside its bounds (49.857669ms)
+✔ original castle moat is ooze while banks and the bridge remain dry (43.933392ms)
+✔ original water surfaces remain visible, keyed and nonblocking (57.945871ms)
+✔ opaque graveyard wall trim does not inherit the shared fence texture cutouts (33.845095ms)
+✔ graveyard moving-platform moat renders its opaque authored damage-trigger water (131.072122ms)
+✔ opaque liquid visibility leaves editor helpers and zero-alpha triggers hidden (87.701655ms)
+✔ contents damage uses ooze and death flags independently of plain water (0.325738ms)
+✔ the real forest trigger applies one health per second only inside the shaped pool (33.282889ms)
+✔ environmental and ordinary damage both apply back to back and fractional health survives save/load (2.093835ms)
+✔ cutscenes and completed levels do not accumulate environmental damage (0.795905ms)
+✔ dependency scanning ignores comments, strings and regex but handles imports and re-exports (3.061168ms)
+✔ one deterministic version covers entry, CSS, every source module and transitive Three modules (110.299461ms)
+✔ editing a leaf dependency changes every module URL even when the release version is unchanged (114.67479ms)
+✔ addon aliases and their relative imports point directly to the same version (134.801324ms)
+✔ unsafe or incomplete module graphs fail before modifying index.html (53.8878ms)
+✔ the combat Witch stays hidden before the original intro handoff, including old saves (176.267735ms)
+✔ five tower mirrors retain native upright basis, two-part 112-unit exchange and fifth-piece gate across saves (67.540671ms)
+✔ fairy idle reaches exactly three times the former distance in all five levels and follows RedCat through camera cuts (11.589876ms)
+✖ stepping onto the original chapel floor button plays its native push cue once; all native button types switch audibly (115.929911ms)
+✔ native door types and the explicitly requested type-4 panel fallback cover actual doors without adding the fallback to lifts or props (359.620357ms)
+✔ forest area crossings keep invisible door controls silent while real gate panels retain their cue (52.745098ms)
+✔ door cues exclude hidden or faceless controllers without muting visible scripted and locked panels (49.610561ms)
+✔ shared scripted door cues replay at each invoking door and suppress automatic double playback (21.756302ms)
+✔ native heart-container pickup uses IHart rather than the large-health recording (18.663605ms)
+✔ all eleven authored portal journeys emit the native terminal cue exactly at disappearance and reappearance (542.011387ms)
+✔ portal cue state survives a save between effect and player transition, and ordinary visibility calls or skip do not add it (74.196493ms)
+✖ native cave doorway retains its invisible lock until all three rotating buttons are pressed (99.001714ms)
+✖ saved three-button doorway restores both moving wood and hidden collision before the first frame (55.003602ms)
+✔ collision-only brushes also reappear when explicitly shown (54.481276ms)
+✔ every original authored emitter texture has a portable color/alpha pair (3.938261ms)
+✔ beacon assembles six radial rays then extends seventh to ceiling (1.39872ms)
+✔ corona size uses authored distance/radius bounds (0.222588ms)
+✔ dynamic light animation wraps and interpolates authored a-z functions (0.185849ms)
+✔ Davi-Script enabled beacon retains activation clock and resets only when disabled (9.129814ms)
+✔ turning off a flame stops emission and allows existing particles to expire (22.987093ms)
+✔ finite spout disable and repeated Enable commands reset only visual timers and keep live particles (8.022192ms)
+✖ authored dynamic light follows a moving model and Davi-Script disable (15.789106ms)
+✔ save beacon emits original staged sound and seventh-ray pitch without replaying after load (13.192514ms)
+✔ Brutus is visible while waiting for the intro, but disable does not activate his AI (92.383211ms)
+✔ a camera reference does not remove the forest mirror platform from the world (37.29717ms)
+✖ forest mirror rises with its platform for rendering, collection and save restoration (39.542044ms)
+✔ the last mirror never acts as a fallback level exit without a script host (14.611044ms)
+✖ patrol topology ignores moving doors and remains identical after save/load (3.409695ms)
+✔ collecting a model-bound item leaves its supporting bridge visible and solid (36.469136ms)
+✔ native world-only obstruction keeps visible luxels and rejects samples behind solid geometry (2.393653ms)
+✔ window and clip contents block light, water and empty leaves do not (3.367086ms)
+✔ atlas edges duplicate nearest sample without overwriting another light bit (0.667786ms)
+✔ pulses, disabled lamps and renderer slot reorder reuse stable identity bits without traces (2.017816ms)
+✔ moving a source or growing its radius rebuilds only that light, clears old obstruction (1.489589ms)
+✔ fullbright/Gouraud/no-lightmap faces are excluded and an unused bit can be recycled (2.930459ms)
+✔ all five authored Tower light masks match independent native luxel audit and imported atlas UVs (367.975386ms)
+✔ prepared lighting reuses fresh managed matrices and updates new player/debris ancestor chains (27.385232ms)
+✔ a direct lighting call after moving a managed actor refreshes its current pose (2.081215ms)
+✔ effect exceptions cannot leave matrix reuse enabled for a later frame or direct caller (1.105713ms)
+✔ BSP light radius shrinks by absolute plane distance, then uses native octagonal distance (1.41849ms)
+✔ native texinfo scaling and truncation survive fractional and oblique axes (1.233731ms)
+✔ fixed8 light intensity uses absolute radius/195 gain and saturates before texture modulation (0.512376ms)
+✔ missing lights preserve baked bytes and invalid axes are rejected (0.525736ms)
+✖ moving models use whole transformed native bounds, retain all materials, and cache unchanged queries (38.839169ms)
+✔ older imported data without model bounds keeps conservative visibility (3.341725ms)
+✔ original graveyard PVS hides both remote fences at the reported gap, but reveals them from their own room (61.257326ms)
+✔ MoveTo retains the current endpoint and overrides authored pingpong playback (8.161371ms)
+✔ SetTo is a deferred enabled-controller operation, replaces a loop, and dispatches native forward labels (2.583982ms)
+✔ pending target commands and completed target mode survive saves and enable toggles (2.444802ms)
+✔ SetTo retains motion collision guards and does not replay a label when blocked (0.721195ms)
+✔ a label may replace SetTo without a stale target overriding its new command (0.518457ms)
+✔ controller Reset discards target mode; target commands clamp to authored motion rather than event tail (0.700155ms)
+✔ explicit Trigger is an enabled-independent Enter/Leave pulse with positive use limits (0.516096ms)
+✔ zero limits mean unlimited for triggers, buttons and shootable-button selection (0.760994ms)
+✔ original Caves altar/button counters and four-pulse gate callbacks retain their authored thresholds (119.925402ms)
+✔ rapid presses cannot cancel the Castle bookcase endpoint callback, including after a save (107.8103ms)
+✔ restoring an earlier snapshot into the same host clears a later target override (1.248991ms)
+✔ re-enabling completed once-only playback does not rewind or replay its last marker (0.543596ms)
+✔ physical button contact waits during motion and can activate again at the next settled endpoint (2.123625ms)
+✔ physical trigger minimum counts, enter/stay/leave phases and maximum exhaustion match native (0.870303ms)
+✔ trigger occupancy phase saves preserve callbacks and old occupied saves migrate to stay (1.184142ms)
+✔ disabled buttons retain one explicit request while ignoring direct contact requests (0.428837ms)
+✔ native button request, sound, motion and completion occupy separate checks in both directions (0.457267ms)
+✔ button phase saves retain deferred sound/completion and old moving saves migrate without replay (1.859747ms)
+✔ button endpoint collision refusal delays the completion callback and preserves queued requests (0.291687ms)
+✔ button Reset restores its authored endpoint, enabled state and clears pending work (0.252648ms)
+✔ button reset callbacks retain the native phase-derived on/off state and endpoint callback (0.612636ms)
+✔ restored native button phases are authoritative over a stale duplicate on/off flag (1.226861ms)
+✔ shots during button travel do not queue a reverse switch, while script commands do (0.311617ms)
+✔ older paused mid-motion button saves migrate to travel and resume only when enabled (0.649485ms)
+✔ skipping services queued and endpoint button callbacks before declaring there is no motion (0.828694ms)
+✔ a mixed-room static chunk submits individual PVS faces without rebuilding vertex or index storage (11.424747ms)
+✖ invalid-camera visibility draws conservatively and returning to the same cached PVS restores filtering (4.924845ms)
+✔ PVS render filtering does not remove hidden faces from CPU surface queries (2.914949ms)
+✔ unreferenced faces, moving brushes and depth-only sky retain conservative whole-face coverage (4.414098ms)
+✔ eviction releases filtered geometry and reloading rebuilds indices for the current camera leaf (2.100835ms)
+✔ large packed chunks use 32-bit indices and preserve complete triangle spans (7.982133ms)
+✔ visibility changes before a render preserve the dirty tail needed by a later larger draw (3.133867ms)
+✔ only drawable chunks join normal scene traversal; camera turns restore them immediately (15.998324ms)
+✔ normal scene matrix and visible traversals skip parked children, but direct geometry queries remain current (4.884044ms)
+✔ unchanged static chunk matrices are not multiplied each frame and moving representatives update once (2.452543ms)
+✔ stream disposal removes its hidden branch and every chunk without changing authored visibility (2.531502ms)
+✔ chunk partition preserves every authored face and material in all five levels (370.245571ms)
+✔ distant chunks release independent buffers; shared textures stay until their last resident user leaves (11.512287ms)
+✔ far visible sections stay unloaded until approached, and moved brushes use current nearby bounds (2.493702ms)
+✔ distant decal rays use CPU source faces even when their render chunks are unloaded (3.094097ms)
+✔ leaving a level during an outstanding texture request releases its late result (2.006895ms)
+✔ camera turns preload distant surfaces outside the rendered view before they become visible (2.372302ms)
+✔ repeated five second camera circles reuse resident buffers and textures, then evict after leaving (6.641832ms)
+✔ all ten authored inactive zombies stay hidden while the two mausoleum zombies remain visible (35.668932ms)
+✔ original grave triggers and button motion callbacks destroy the cover before revealing their zombie (168.295782ms)
+✔ old and new saves honor zombie activation without reviving defeated zombies or hiding death animations (73.820826ms)
+✔ zombie activation respects explicit hiding and does not hide inactive gargoyles or Brutus (7.01129ms)
+✔ the first zombie clears its shallow original grave overlap and follows its authored escape path (23.350401ms)
+✔ grave ascent is restricted to the eight authored upward entrance edges (36.036169ms)
+✔ all eight grave rises stay continuous at native Speed with 60 Hz (215.879727ms)
+✔ all eight grave rises stay continuous at native Speed with 120 Hz (212.907179ms)
+✔ all eight grave rises stay continuous at native Speed with 7 ms (187.88551ms)
+✔ all eight grave rises stay continuous at native Speed with uneven frames (160.119631ms)
+✔ the captured older-save position continues smoothly, and saving midway preserves the path (49.404072ms)
+✔ hurt and authored cutscenes hold the rise without falling, and facing turns toward the exit (6.593152ms)
+ℹ tests 1579
+ℹ suites 0
+ℹ pass 1544
+ℹ fail 35
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5770.869974
+
+✖ failing tests:
+
+test at tests/actor-collision.test.mjs:91:1
+✖ Dungeon machine retains original geometry and exposes every turret part to player shots (31.943869ms)
+  TypeError: Cannot set properties of undefined (setting 'recoveryDoors')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:315:30)
+      at dungeonMachine (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:87:15)
+      at async TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:92:30)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/actor-collision.test.mjs:113:1
+✖ Dungeon turret, crate, lid and exposed body all forward pellet damage to Max (6.461334ms)
+  TypeError: Cannot set properties of undefined (setting 'recoveryDoors')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:315:30)
+      at dungeonMachine (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:87:15)
+      at async TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:114:27)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/actor-collision.test.mjs:142:1
+✖ Dungeon ammunition exits its own shields but other enemies still collide, and defeated shields disappear (4.051811ms)
+  TypeError: Cannot set properties of undefined (setting 'recoveryDoors')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:315:30)
+      at dungeonMachine (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:87:15)
+      at async TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:143:27)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/actor-placement.test.mjs:48:1
+✖ attached actor and pickup anchors rotate about the model pivot without accumulating displacement (3.320126ms)
+  TypeError: Cannot assign to read only property 'translation' of object '#<Object>'
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-placement.test.mjs:55:42)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/actor-placement.test.mjs:102:1
+✖ moving a model-attached prop refreshes its existing collision surface and Hide disables it (4.509378ms)
+  TypeError: Cannot assign to read only property 'translation' of object '#<Object>'
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-placement.test.mjs:115:44)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/actor-placement.test.mjs:122:1
+✖ the frame queries attached prop collision at the newly advanced support pose without advancing its animation twice (1.944726ms)
+  TypeError: Cannot assign to read only property 'translation' of object '#<Object>'
+      at host.update (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-placement.test.mjs:135:59)
+      at CastleWorld.update (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:1117:12)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-placement.test.mjs:138:11)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/bat-ai.test.mjs:76:1
+✖ green bat hurt, enemy freeze, and cutscenes pause pursuit and the saved contact cooldown (9.988887ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      0,
+  +   -5.488996370237917,
+  +   65.42240431236755
+  -   -20.1,
+  -   0
+    ]
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/bat-ai.test.mjs:84:36)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 0, -5.488996370237917, 65.42240431236755 ],
+    expected: [ 0, -20.1, 0 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/bat-ai.test.mjs:133:1
+✖ authored active bat spawns fit the stable imported body hull rather than spread wings (42.551782ms)
+  TypeError: Cannot set properties of undefined (setting 'recoveryDoors')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:315:30)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/bat-ai.test.mjs:148:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/cheats.test.mjs:93:1
+✖ world flight bypasses platform carry, lower-world recovery and third-person camera clipping (1.4211ms)
+  TypeError: Cannot read properties of undefined (reading 'health')
+      at CastleWorld.update (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:1125:157)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/cheats.test.mjs:99:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/difficulty.test.mjs:19:1
+✖ difficulty changes real knight health and melee damage using the original per-enemy values (5.240842ms)
+  AssertionError [ERR_ASSERTION]: Easy actual melee strike
+  
+  10 !== 8
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/difficulty.test.mjs:24:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 10,
+    expected: 8,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/difficulty.test.mjs:29:1
+✖ difficulty chooses native projectile damage, speed and real collision damage without scaling player pellets (1.564289ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  10 !== 9
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/difficulty.test.mjs:34:49)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 10,
+    expected: 9,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/enemy-animation.test.mjs:120:1
+✖ jump feedback fires once on a grounded jump, never from a held airborne input or cutscene (2.002815ms)
+  TypeError: Cannot read properties of undefined (reading 'health')
+      at CastleWorld.update (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:1125:157)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/enemy-animation.test.mjs:127:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/enemy-behavior.test.mjs:41:1
+✖ red spider shots stop at BSP walls and can be dodged (6.9565ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/enemy-behavior.test.mjs:48:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/enemy-combat-effects.test.mjs:21:1
+✖ defeated boss retires during frozen fairy dialogue while RedCat returns to animated idle (147.327903ms)
+  TypeError: Cannot set properties of undefined (setting 'deferGeometry')
+      at CastleWorld.syncActors (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:830:46)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/enemy-combat-effects.test.mjs:29:33)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+
+test at tests/enemy-death-effects.test.mjs:89:1
+✖ knight breakup resumes its age after load and does not restart at its expiry (53.505932ms)
+  AssertionError [ERR_ASSERTION]: airborne armour has no invented final fade
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/enemy-death-effects.test.mjs:98:129)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/explosion-cohort-reuse.test.mjs:10:1
+✖ damage and rendering share one exact seeded cohort without adding save fields (15.883445ms)
+  AssertionError [ERR_ASSERTION]: restored cohort starts with original particle states, not cached render fields
+  + actual - expected
+  ... Skipped lines
+  
+    [
+      {
+        birth: 12,
+        diameter: 160,
+        expires: 14.985,
+        green: false,
+  +     lightState: {
+  +       active: true,
+  +       birth: 12,
+  +       lifeEndMs: 1016,
+  +       phaseMs: 400,
+  +       sample: 1,
+  +       tick: 24,
+  +       version: 1
+  +     },
+        position: [
+          102.644,
+          207.1824,
+          302.0286
+        ],
+  ...
+        green: false,
+  +     lightState: {
+  +       active: true,
+  +       birth: 12.183,
+  +       lifeEndMs: 1016,
+  +       phaseMs: 216,
+  +       sample: 1,
+  +       tick: 13,
+  +       version: 1
+  +     },
+        position: [
+          100.8752,
+          199.464,
+          271.023
+        ],
+  ...
+        green: false,
+  +     lightState: {
+  +       active: true,
+  +       birth: 12.359,
+  +       lifeEndMs: 1016,
+  +       phaseMs: 33,
+  +       sample: 0.5999999642372131,
+  +       tick: 2,
+  +       version: 1
+  +     },
+        position: [
+          97.568,
+          199.112,
+          269.6964
+        ],
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/explosion-cohort-reuse.test.mjs:22:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ { birth: 12, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], lightState: [Object], expires: 14.985 }, { birth: 12.183, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], lightState: [Object], expires: 15.019 }, { birth: 12.359, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], lightState: [Object], expires: 15.112 }, { birth: 12.554, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], expires: 15.192 }, { birth: 12.713, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], expires: 15.473999999999998 }, { birth: 12.87, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], expires: 16.024 } ],
+    expected: [ { birth: 12, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], expires: 14.985 }, { birth: 12.183, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], expires: 15.019 }, { birth: 12.359, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], expires: 15.112 }, { birth: 12.554, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], expires: 15.192 }, { birth: 12.713, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], expires: 15.473999999999998 }, { birth: 12.87, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], expires: 16.024 } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/gameplay-audio.test.mjs:95:1
+✖ enemy vocal position follows its moving actor and a playing cue is not interrupted (5.875557ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(old.element.volume<.01)
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/gameplay-audio.test.mjs:100:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/gameplay.test.mjs:31:1
+✖ enter trigger fires once, leaving runs its own command, max trigger count persists (3.526455ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/gameplay.test.mjs:37:36)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/gargoyle-blast.test.mjs:73:1
+✖ Gargoyle fires consecutive shoot motions within each native salvo then waits two seconds (31.244784ms)
+  AssertionError [ERR_ASSERTION]: 2.109999999999999 != 1.7520087218284608
+      at close (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/gargoyle-blast.test.mjs:13:36)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/gargoyle-blast.test.mjs:81:3)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/patrol-boss.test.mjs:119:1
+✖ Bone Brutus charges between bone and skull salvos and restores the charge phase (14.523015ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    [
+      {
+        age: 3.126307934495937,
+        collisionProfile: 'native',
+        damage: 2,
+  ...
+      {
+  +     age: 0.1263079344959429,
+  -     age: 0.02630793449594293,
+        collisionProfile: 'native',
+        damage: 3,
+        enemyFlightDebt: 0,
+        enemyFlightPhase: 0.009641267829276264,
+        gravity: 32,
+  ...
+        position: [
+  +       -3.1688016682097198,
+  +       22.082957428253888,
+  +       50.35522381185704
+  -       -0.6257625884543028,
+  -       24.639648665289663,
+  -       10.499009727342226
+        ],
+        radius: 0.03200000151991844,
+        sourceId: 'guard',
+  +     spriteClockMs: 126.30793449594293,
+  +     spriteDeadlineMs: null,
+  +     spriteFrame: 1,
+  -     spriteClockMs: 26.30793449594293,
+  -     spriteDeadlineMs: 76,
+  -     spriteFrame: 0,
+        spriteScale: 0.5,
+        velocity: [
+  +       -25.087906637500296,
+  +       -25.06518274777655,
+  +       398.6703132531589
+  -       -23.78607824764063,
+  -       -14.035317886935138,
+  -       399.0814911357381
+        ]
+      }
+    ]
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/patrol-boss.test.mjs:134:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { id: 'enemy-projectile-1', sourceId: 'guard', kind: 'bone', position: [Array], velocity: [Array], radius: 0.03200000151991844, collisionProfile: 'native', life: 5.243, damage: 2, gravity: 16, gravityUnits: 'world', enemyFlightPhase: 0.009641267829276264, enemyFlightDebt: 0, age: 3.126307934495937, spriteScale: 0.8, spriteClockMs: 3126.307934495943, spriteFrame: 1, spriteDeadlineMs: null }, { id: 'enemy-projectile-2', sourceId: 'guard', kind: 'skull', position: [Array], velocity: [Array], radius: 0.03200000151991844, collisionProfile: 'native', life: 15, damage: 3, gravity: 32, gravityUnits: 'world', enemyFlightPhase: 0.009641267829276264, enemyFlightDebt: 0, age: 0.1263079344959429, spriteScale: 0.5, spriteClockMs: 126.30793449594293, spriteFrame: 1, spriteDeadlineMs: null } ],
+    expected: [ { id: 'enemy-projectile-1', sourceId: 'guard', kind: 'bone', position: [Array], velocity: [Array], radius: 0.03200000151991844, collisionProfile: 'native', life: 5.243, damage: 2, gravity: 16, gravityUnits: 'world', enemyFlightPhase: 0.009641267829276264, enemyFlightDebt: 0, age: 3.126307934495937, spriteScale: 0.8, spriteClockMs: 3126.307934495943, spriteFrame: 1, spriteDeadlineMs: null }, { id: 'enemy-projectile-2', sourceId: 'guard', kind: 'skull', position: [Array], velocity: [Array], radius: 0.03200000151991844, collisionProfile: 'native', life: 15, damage: 3, gravity: 32, gravityUnits: 'world', enemyFlightPhase: 0.009641267829276264, enemyFlightDebt: 0, age: 0.02630793449594293, spriteScale: 0.5, spriteClockMs: 26.30793449594293, spriteFrame: 0, spriteDeadlineMs: 76 } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/player-cheat-progress.test.mjs:20:1
+✖ no-clip ignores normal, continuous and lethal scripted damage, and immediately restores normal damage on exit (5.942647ms)
+  TypeError: Cannot read properties of undefined (reading 'collision')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:424:56)
+      at async setup (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/player-cheat-progress.test.mjs:17:3)
+      at async TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/player-cheat-progress.test.mjs:21:29)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+
+test at tests/player-cheat-progress.test.mjs:31:1
+✖ restored no-clip and blocked no-clip exits retain immunity (1.719857ms)
+  TypeError: Cannot read properties of undefined (reading 'collision')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:424:56)
+      at async setup (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/player-cheat-progress.test.mjs:17:3)
+      at async TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/player-cheat-progress.test.mjs:32:22)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/presentation-renderer.test.mjs:55:1
+✖ all five levels use native textured-point dimensions for their button and fixture coronas (459.723283ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 233
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/presentation-renderer.test.mjs:74:14)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 233,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/presentation-renderer.test.mjs:89:1
+✖ native beacon texture coordinates reach the actual energy buffer and stay read-only on refresh (4.180559ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  6 !== 7
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/presentation-renderer.test.mjs:93:12)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 6,
+    expected: 7,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/projectile-hazards-integration.test.mjs:29:1
+✖ lethal melee respawn stops later liquid triggers from damaging the old player location (9.347583ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  2 !== 10
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/projectile-hazards-integration.test.mjs:38:43)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 10,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/script-host.test.mjs:58:1
+✖ graveyard looping motion wraps to the correct first marker within its geometric path endpoint (25.513446ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/script-host.test.mjs:66:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/script-host.test.mjs:210:1
+✖ an original shootable button is selected by the first brush hit (5.315062ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/script-host.test.mjs:216:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/world-action-sounds.test.mjs:49:1
+✖ stepping onto the original chapel floor button plays its native push cue once; all native button types switch audibly (115.929911ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-action-sounds.test.mjs:56:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/world-brush-state.test.mjs:32:1
+✖ native cave doorway retains its invisible lock until all three rotating buttons are pressed (99.001714ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at press (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-brush-state.test.mjs:27:76)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-brush-state.test.mjs:38:5)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/world-brush-state.test.mjs:47:1
+✖ saved three-button doorway restores both moving wood and hidden collision before the first frame (55.003602ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at press (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-brush-state.test.mjs:27:76)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-brush-state.test.mjs:48:91)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/world-effects.test.mjs:84:1
+✖ authored dynamic light follows a moving model and Davi-Script disable (15.789106ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      {
+  +     castShadow: false,
+        color: [
+          0,
+          1,
+          0
+        ],
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-effects.test.mjs:87:29)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { position: [Array], color: [Array], radius: 300, castShadow: false } ],
+    expected: [ { position: [Array], color: [Array], radius: 300 } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/world-entities.test.mjs:35:1
+✖ forest mirror rises with its platform for rendering, collection and save restoration (39.542044ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      2340,
+  +   -208,
+  -   -154,
+      -1158
+    ]
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-entities.test.mjs:39:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 2340, -208, -1158 ],
+    expected: [ 2340, -154, -1158 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/world-entities.test.mjs:55:1
+✖ patrol topology ignores moving doors and remains identical after save/load (3.409695ms)
+  TypeError: Cannot set properties of undefined (setting 'recoveryDoors')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:315:30)
+      at graph (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-entities.test.mjs:63:17)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-entities.test.mjs:67:22)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/world-model-visibility.test.mjs:23:1
+✖ moving models use whole transformed native bounds, retain all materials, and cache unchanged queries (38.839169ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-model-visibility.test.mjs:49:12)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/world-streaming-face-visibility.test.mjs:37:1
+✖ invalid-camera visibility draws conservatively and returning to the same cached PVS restores filtering (4.924845ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-streaming-face-visibility.test.mjs:41:38)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

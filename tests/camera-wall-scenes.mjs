@@ -73,8 +73,9 @@ try {
   const f=window.__wallFixture,{w}=f,results=[];
   // Actual authored rooms: the second has only 28 units above the chest.
   for(const fixture of [
-   {name:'castle-low-ceiling',position:[-832.95,-23.95,-1407],yaw:Math.PI*1.5},
-   {name:'castle-sloped-ceiling',position:[-788.0869370602062,-23.95,-1315.05],yaw:Math.PI*15/8},
+   // Moved 1.5 units off the walls for the native 24.96-unit box (D1).
+   {name:'castle-low-ceiling',position:[-831.45,-23.95,-1407],yaw:Math.PI*1.5},
+   {name:'castle-sloped-ceiling',position:[-788.0869370602062,-23.95,-1316.55],yaw:Math.PI*15/8},
   ]) {
    const start=f.place(fixture.position,fixture.yaw,0),frames=[];
    const playerHull=w.collider.trace(w.player.position,w.player.position,w.player.mins,w.player.maxs,w.physicalModels);
@@ -89,15 +90,18 @@ try {
  await writeFile(path.join(out,'camera-wall-scenes.json'),JSON.stringify(report,null,2)+'\n');
  assert.deepEqual(errors,[]);
  assert.equal(wall.initial.legacy.fraction,1,'the original castle room starts with a clear normal rear view');
- assert.ok(wall.initial.desiredDistance<1e-6);
- assert.ok(Math.abs(wall.atWall.player[0]-276.95)<.2,'actual backward movement reaches the authored castle wall');
+ // desiredDistance follows the port's former 145-unit framing; the default view
+ // now uses the native presets (parity review D5), so it is not asserted.
+ // The wall face is at x=287.95; RedCat's native box half-width is 12.48 (D1).
+ assert.ok(Math.abs(wall.atWall.player[0]-(287.95-12.48))<.2,'actual backward movement reaches the authored castle wall');
  assert.ok(wall.atWall.legacy.fraction<.15,'the fixture reproduces the old camera being pressed into the player');
  assert.ok(wall.atWall.height>85,'camera rises above RedCat at the wall');
  assert.equal(wall.atWall.visible,true,'RedCat stays visible in the overhead view');
- assert.ok(wall.retreat.at(-1).desiredDistance<.05,'normal rear view returns after walking away');
  for(const [name,frames] of [['approach',wall.approach],['retreat',wall.retreat],...confined.map(s=>[s.name,s.frames])])for(const [i,frame] of frames.entries()){
   assert.equal(frame.occupied,false,`${name} frame ${i}: camera hull is outside level solids`);
   assert.ok(frame.lineFraction>.999,`${name} frame ${i}: camera remains connected to the player through free space`);
+  // Under the confined low/sloped ceilings the arc is blocked; the side-view
+  // fallback keeps the camera outside RedCat with him visible.
   assert.equal(frame.insideBody,false,`${name} frame ${i}: camera stays outside the padded player model`);
   assert.equal(frame.visible,true,`${name} frame ${i}: an external viewpoint keeps RedCat visible`);
  }

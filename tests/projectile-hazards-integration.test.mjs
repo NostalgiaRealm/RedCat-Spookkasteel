@@ -20,7 +20,8 @@ test('lethal projectile impact cannot reintroduce a trail or another projectile 
   game.state.health=2;
   game.projectiles=[mushroom('a'),mushroom('b'),mushroom('c')];
   game.update(.1,[20,0,0]);
-  assert.equal(game.state.lives,2);assert.equal(game.state.health,10);
+  // Lives drop when the native death hold ends, not in this synchronous respawn.
+  assert.equal(game.state.lives,3);assert.equal(game.state.health,10);
   assert.equal(events.filter(event=>event.type==='death').length,1);
   assert.equal(game.hazards.segments.length,0);assert.equal(game.projectiles.length,0);
 });
@@ -31,9 +32,11 @@ test('lethal melee respawn stops later liquid triggers from damaging the old pla
     {classname:'Trigger','%name%':'lava',Origin:'0 0 10',DamagePerSecond:'100',TriggerRadius:'25'},
   ]}),events=[];
   game.onEvent=event=>{events.push(event);if(event.type==='death')game.respawn();};
-  const knight=game.objects[0];knight.pendingAttack={at:0};knight.stats={...knight.stats,Damage:2};knight.ranged=false;
+  // Knights start as dormant stone and strike within a timed window (parity review item 6).
+  const knight=game.objects[0];knight.ambush.phase='awake';knight.alerted=true;knight.pendingAttack={at:0,until:.2};knight.stats={...knight.stats,Damage:2};knight.ranged=false;
   game.state.health=2;game.update(.1,[0,0,10]);
-  assert.equal(game.state.lives,2);assert.equal(game.state.health,10);
+  // Lives drop when the native death hold ends, not in this synchronous respawn.
+  assert.equal(game.state.lives,3);assert.equal(game.state.health,10);
   assert.equal(events.filter(event=>event.type==='death').length,1);
 });
 

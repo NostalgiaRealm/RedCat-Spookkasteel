@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {BspCollider} from '../source/collision.js';
-import {resolveThirdPersonCamera,cameraInsidePlayer} from '../source/third-person-camera.js';
+import {liftCameraOverPlayer,cameraInsidePlayer} from '../source/third-person-camera.js';
 // Real convex BSP sweeps, including start-solid and camera-hull clearance.
 function collider(boxes){
   const planes=[],leaves=[],leafSides=[],models=[];
@@ -16,50 +16,69 @@ function collider(boxes){
   return (a,b)=>world.trace(a,b,[-4,-4,-4],[4,4,4],models.map((_,i)=>i),null);
 }
 const identity=(a,b)=>({end:[...b],fraction:1,startSolid:false});
-const fixture=(trace=identity)=>({anchor:[0,43,0],desired:[0,56,145],previous:[0,56,145],playerPosition:[0,0,0],dt:1/60,snap:false,trace});
-const safe=(pose,f)=>{
-  assert.equal(pose.hidePlayer,false);assert.equal(cameraInsidePlayer(pose.position,f.playerPosition),false);
-  const hit=f.trace(f.anchor,pose.position);assert.equal(hit.startSolid,false);assert.ok(hit.fraction>.99999);
-};
-test('open-space chase position and normal smoothing remain unchanged',()=>{
-  const f=fixture(),pose=resolveThirdPersonCamera(f);assert.deepEqual(pose.position,f.desired);assert.equal(pose.lift,0);safe(pose,f);
-  f.previous=[0,56,165];const moving=resolveThirdPersonCamera(f);assert.ok(Math.abs(moving.position[2]-(145+20*Math.exp(-12/60)))<1e-9);
+// The native camera's unobstructed spot behind RedCat (1.5xH up, 1.7xH back).
+const fixture=(trace=identity,position=[0,86.88,98.46])=>({anchor:[0,43,0],desired:[0,86.88,98.46],position,playerPosition:[0,0,0],trace});
+test('with room behind RedCat the native camera position is left untouched',()=>{
+  const f=fixture(),pose=liftCameraOverPlayer(f);assert.deepEqual(pose.position,f.position);assert.equal(pose.lift,0);
+  // A native pull-in that keeps the fix's 80-unit comfort distance stays native.
+  const pulled=fixture(identity,[0,86.88,80]);assert.deepEqual(liftCameraOverPlayer(pulled).position,pulled.position);
 });
-test('backing into a rear wall lifts the camera above the visible actor instead of inside it',()=>{
-  const trace=collider([[[-500,-100,11],[500,500,100]]]),f=fixture(trace);
-  for(const previous of [[0,43,7],[0,56,145]]){
-    f.previous=previous;const pose=resolveThirdPersonCamera(f);safe(pose,f);assert.ok(pose.position[1]>90);assert.ok(pose.lift>.8);assert.ok(pose.position[2]<7.01);
-    assert.ok(pose.position[2]>.1,'overhead view retains a stable horizontal heading');
-  }
-});
-test('every frame of a backwards approach and retreat stays outside model and geometry',()=>{
-  const trace=collider([[[-500,-100,220],[500,500,400]]]),f=fixture(trace);let position=f.previous,sawOverhead=false;
-  for(const z of [...Array.from({length:210},(_,i)=>i),...Array.from({length:210},(_,i)=>209-i)]){
-    f.playerPosition=[0,0,z];f.anchor=[0,43,z];f.desired=[0,56,z+145];f.previous=position;
-    const pose=resolveThirdPersonCamera(f);safe(pose,f);position=pose.position;sawOverhead||=pose.lift>.8;
-  }
-  assert.equal(sawOverhead,true);
-  for(let i=0;i<120;i++){f.previous=position;position=resolveThirdPersonCamera(f).position;}
-  assert.ok(Math.hypot(...position.map((v,i)=>v-f.desired[i]))<.001,'camera returns to its normal trailing view');
+test('backing into a rear wall lifts the camera over RedCat instead of leaving it inside his model',()=>{
+  const trace=collider([[[-500,-100,11],[500,500,100]]]);
+  // The native pull-in leaves the camera just in front of the wall, inside the body.
+  const f=fixture(trace,[0,86.88,6.99]);assert.equal(cameraInsidePlayer([0,60,6.99],f.playerPosition),true);
+  const pose=liftCameraOverPlayer({...f,position:[0,60,6.99]});
+  assert.equal(cameraInsidePlayer(pose.position,f.playerPosition),false);
+  assert.ok(pose.position[1]>90);assert.ok(pose.lift>.8);assert.ok(pose.position[2]<7.01);
+  assert.ok(pose.position[2]>.1,'overhead view retains a stable horizontal heading');
+  const hit=trace(f.anchor,pose.position);assert.equal(hit.startSolid,false);assert.ok(hit.fraction>.99999);
 });
 test('corner walls still allow an overhead pose',()=>{
-  const f=fixture(collider([[[-500,-100,11],[500,500,100]],[[11,-100,-500],[100,500,500]]]));
-  const pose=resolveThirdPersonCamera(f);safe(pose,f);assert.ok(pose.position[1]>90);
+  const trace=collider([[[-500,-100,11],[500,500,100]],[[11,-100,-500],[100,500,500]]]);
+  const pose=liftCameraOverPlayer({...fixture(trace),position:[0,40,5]});
+  assert.ok(pose.position[1]>90);assert.equal(cameraInsidePlayer(pose.position,[0,0,0]),false);
 });
-test('low ceilings choose a clear external side view instead of entering the ceiling or actor',()=>{
-  const f=fixture(collider([[[-500,-100,11],[500,500,100]],[[-500,72,-500],[500,100,500]]]));
-  const pose=resolveThirdPersonCamera(f);safe(pose,f);assert.ok(pose.position[1]<68);assert.ok(Math.abs(pose.position[0])>28);
+test('a low ceiling that blocks the arc falls back to a clear side view looking at RedCat',()=>{
+  const trace=collider([[[-500,-100,11],[500,500,100]],[[-500,72,-500],[500,100,500]]]);
+  const pose=liftCameraOverPlayer({...fixture(trace),position:[0,40,5]});
+  assert.equal(pose.hidePlayer,false);assert.equal(cameraInsidePlayer(pose.position,[0,0,0]),false);
+  assert.ok(pose.position[1]<68);assert.ok(Math.abs(pose.position[0])>28);assert.equal(pose.focus,1);
+  const hit=trace(fixture().anchor,pose.position);assert.equal(hit.startSolid,false);assert.ok(hit.fraction>.99999);
 });
-test('smoothing is collision-checked and cannot cut through the body between safe endpoints',()=>{
-  const f=fixture();f.previous=[0,43,-40];f.dt=.015;
-  const pose=resolveThirdPersonCamera(f);safe(pose,f);
-  assert.ok(pose.position[2]>=28||pose.position[2]<=-28||pose.position[1]>=80);
-});
-test('a camera with no external clearance hides only the obstructing model until room returns',()=>{
+test('with no external viewpoint at all only the obstructing model is hidden',()=>{
   const boxes=[[[11,-100,-500],[100,500,500]],[[-100,-100,-500],[-11,500,500]],[[-500,-100,11],[500,500,100]],[[-500,-100,-100],[500,500,-11]],[[-500,64,-500],[500,100,500]]];
-  const f=fixture(collider(boxes)),pose=resolveThirdPersonCamera(f);assert.equal(pose.hidePlayer,true);
-  f.trace=identity;f.previous=pose.position;const recovered=resolveThirdPersonCamera(f);safe(recovered,f);
+  const native=[0,40,5],pose=liftCameraOverPlayer({...fixture(collider(boxes)),position:native});
+  assert.equal(pose.hidePlayer,true);assert.deepEqual(pose.position,native);
+  // Room behind him again: the native position is used and the model shows.
+  assert.equal(liftCameraOverPlayer(fixture()).hidePlayer,false);
 });
-test('camera solution does not mutate actor position, intended boom or remembered view',()=>{
-  const f=fixture(collider([[[-500,-100,11],[500,500,100]]]));const before=JSON.stringify({...f,trace:null});resolveThirdPersonCamera(f);assert.equal(JSON.stringify({...f,trace:null}),before);
+
+test('backing into a wall frame by frame lifts the camera smoothly and never into RedCat',async()=>{
+  const {NativeFollowCamera,CAMERA_HULL_HALF_SIZE}=await import('../source/native-camera.js');
+  const {CameraWallLift}=await import('../source/third-person-camera.js');
+  // A wall behind RedCat at z=220; he backs up from z=0 to touch it, waits, then walks away.
+  const wall=[[[-500,-100,220],[500,500,400]]],small=collider(wall);
+  const boxes=(()=>{const planes=[],leaves=[],leafSides=[],models=[];for(const [min,max] of wall){const firstSide=leafSides.length;
+    for(let axis=0;axis<3;axis++)for(const sign of [1,-1]){const n=[0,0,0];n[axis]=sign;leafSides.push([planes.length,0]);planes.push([...n,sign>0?max[axis]:-min[axis]]);}
+    models.push({root:-leaves.length-1,min,max});leaves.push({contents:1,firstSide,numSides:6,min,max});}
+    const world=new BspCollider({planes,nodes:[],leaves,leafSides,models});
+    return size=>(a,b)=>world.trace(a,b,[-size,-size,-size],[size,size,size],[0],null);})();
+  const camera=new NativeFollowCamera(),lift=new CameraWallLift(),dt=1/60;
+  const path=[...Array.from({length:150},(_,i)=>i*1.4),...Array.from({length:60},()=>209),...Array.from({length:150},(_,i)=>209-i*1.4)];
+  let previous=null,maxStep=0,sawLift=false,dips=0;
+  for(const z of path){
+    const feet=[0,0,z],eye=[0,54.08,z],chest=[0,43,z],backing=z<209&&previous&&previous.feet<z;
+    const view=camera.update(dt,{feet,eye,height:57.92,heading:0,hasInput:!!backing,backpedal:!!backing,ray:boxes(0),sweep:boxes(CAMERA_HULL_HALF_SIZE)});
+    const pose=lift.update(dt,{anchor:chest,desired:view.desired,position:view.position,playerPosition:feet,trace:small});
+    assert.equal(cameraInsidePlayer(pose.position,feet),false,`z=${z}: camera outside RedCat`);
+    sawLift||=pose.lift>.5;
+    if(previous)maxStep=Math.max(maxStep,Math.abs((pose.position[1]-feet[1])-previous.height));
+    // While backing in with the lift engaged, the camera only rises.
+    if(previous&&backing&&pose.lift>.05&&pose.position[1]-feet[1]<previous.height-.05)dips++;
+    previous={feet:z,height:pose.position[1]-feet[1]};
+  }
+  assert.equal(sawLift,true,'the camera rises over RedCat at the wall');
+  // The former fixed-step arc jumped by up to ~12 units in a frame here.
+  assert.ok(maxStep<4,`largest per-frame height change ${maxStep.toFixed(2)} units`);
+  assert.equal(dips,0,'no downward jitter while backing into the wall');
 });

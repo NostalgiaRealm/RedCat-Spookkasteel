@@ -97,14 +97,14 @@ test('view cone and remembered position replace omnidirectional player tracking'
   advance(game,3,[300,0,200],{lineOfSight:()=>false});assert.equal(object.alerted,false);
 });
 
-test('Brutus launches original mushrooms, then moves on arena points between salvos',()=>{
+// Native shooter states choose closer/wait after a salvo (enemy-shooter-native.js);
+// the former move-between-salvos relocation no longer applies.
+test('Brutus launches original mushrooms',()=>{
   const level=makeLevel([enemy({Type:'7',StartPoint:'a'}),waypoint('a',[0,0,0]),waypoint('b',[150,0,0]),waypoint('c',[0,0,-150])]);
   const game=new Gameplay(level),brutus=game.objects[0];brutus.stats={...brutus.stats,ChanceToMoveAfterSalvo:1,AverageShotsPerSalvo:1};brutus.salvoSize=1;
   brutus.animationDurations={attack:1};game.update(.05,[0,0,400]);advance(game,.55,[0,0,400]);
   assert.equal(game.projectiles.length,1);const projectile=game.projectiles[0];
   assert.equal(projectile.kind,'mushRoom');assert.equal(projectile.damage,2);assert.ok(Math.abs(Math.hypot(...projectile.velocity)-250)<1e-6);
-  advance(game,1.1,[0,0,400]);assert.equal(brutus.animationState,'walk');assert.ok(Math.hypot(brutus.position[0],brutus.position[2])>20);
-  assert.equal(brutus.patrol.relocating,true);
 });
 
 test('boss projectile classes and difficulty values come from original settings',()=>{
@@ -117,7 +117,8 @@ test('boss projectile classes and difficulty values come from original settings'
 });
 
 test('Bone Brutus charges between bone and skull salvos and restores the charge phase',()=>{
-  const level=makeLevel([enemy({Type:'8',StartPoint:''})]),game=new Gameplay(level),brutus=game.objects[0];
+  // Shipped Bone Brutus always has an authored path, which selects the native shooter states.
+  const level=makeLevel([enemy({Type:'8',StartPoint:'a'}),waypoint('a',[0,0,0])]),game=new Gameplay(level),brutus=game.objects[0];
   brutus.stats={...brutus.stats,AverageShotsPerSalvo:1,ChanceToMoveAfterSalvo:0};brutus.salvoSize=1;
   brutus.animationDurations={attack:1,charge:1.933343};
   advance(game,1.1,[0,0,300]);

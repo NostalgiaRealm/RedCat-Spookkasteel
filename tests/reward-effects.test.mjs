@@ -44,13 +44,15 @@ test('every collectible emits the corresponding original score artwork exactly o
     const events=[],game=make([entity(classname,{Type:String(type)})],{onEvent:event=>events.push(event)}),object=game.objects[0];
     game.state.health=1;game.time=4;
     game.pickup(object);
-    assert.equal(game.state.score,score,`${classname} ${type}`);
+    // The heart container awards no points, but still shows the 75 card.
+    const hart=['ItemHart','ItemHartContainer'].includes(classname);
+    assert.equal(game.state.score,hart?0:score,`${classname} ${type}`);
     assert.equal(object.collected,true);
     assert.deepEqual(game.rewardEffects,[{kind:'pickup',score,position:[10,20,30],birth:4}]);
     const index=[5,15,25,50,75].indexOf(score);
     assert.equal(rewardScoreQuad(game.rewardEffects[0],4.5,[10,100,100]).texture,`score${index}.bmp|score${index}_a.bmp`);
     game.pickup(object);game.pickup(object);
-    assert.equal(game.state.score,score,'repeated overlap cannot award the same item again');
+    assert.equal(game.state.score,hart?0:score,'repeated overlap cannot award the same item again');
     assert.equal(game.rewardEffects.length,1,'repeated overlap cannot restart its effect');
     assert.equal(events.filter(event=>event.type==='pickup').length,1);
   }

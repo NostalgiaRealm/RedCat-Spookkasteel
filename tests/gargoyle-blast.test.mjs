@@ -76,10 +76,15 @@ test('Gargoyle fires consecutive shoot motions within each native salvo then wai
  for(const [difficulty,size]of [['Easy',1],['Normal',2],['Hard',3]]){
   const game=create(difficulty),o=game.objects[0],shots=[];o.salvoSize=size;o.animationDurations={attack:duration};
   game.onEvent=e=>{if(e.type==='enemyProjectile')shots.push(game.time);};
-  for(let t=0;t<20;t+=.01){game.time+=.01;game.updateEnemy(o,.01,[0,0,200],()=>true,null);}
+  // Gargoyle motion rates are randomised per motion (enemy-animation-rules.js),
+  // so time each shot against its own attack motion. A native wait arms on its
+  // first check, adding up to one 0.01 s tick to the two-second salvo gap.
+  const attacks=[];let serial=o.animationSerial;
+  for(let t=0;t<20;t+=.01){game.time+=.01;game.updateEnemy(o,.01,[0,0,200],()=>true,null);
+    if(o.animationSerial!==serial){serial=o.animationSerial;if(o.animationState==='attack')attacks.push([game.time,o.animationUntil]);}}
   assert.ok(shots.length>size);
-  close(shots[0],.01+duration*.67,.011);
-  for(let i=1;i<shots.length;i++)close(shots[i]-shots[i-1],duration+(i%size===0?2:0),.025);
+  for(let i=0;i<shots.length;i++)close(shots[i],attacks[i][0]+(attacks[i][1]-attacks[i][0])*.67,.011);
+  for(let i=1;i<attacks.length;i++)close(attacks[i][0]-attacks[i-1][1],i%size===0?2:0,.035);
   assert.equal(o.relocateAfterSalvo,false,'stationary Gargoyle does not invent a patrol relocation');
   const saved=create(difficulty,JSON.parse(JSON.stringify(game.snapshot())));assert.equal(saved.objects[0].salvoRemaining,o.salvoRemaining);assert.equal(saved.objects[0].salvoSize,size);
  }

@@ -1,3 +1,4 @@
+import {PLAYER_MINS,PLAYER_MAXS,PLAYER_HALF_WIDTH,PLAYER_HEIGHT,PLAYER_EYE_HEIGHT} from './player-hull.js';
 // Small collision helpers shared by enemy movement and projectile simulation.
 // Coordinates use the original world's Y-up units, like PlayerController.
 import {MovementRecovery} from './movement-recovery.js';
@@ -23,8 +24,8 @@ export function resolveZombieSpawn(object,trace) {
 }
 
 export function sweepPlayer(start,end,player,radius=0) {
-  const mins=[player[0]-11-radius,player[1]-radius,player[2]-11-radius];
-  const maxs=[player[0]+11+radius,player[1]+56+radius,player[2]+11+radius];
+  const mins=[player[0]+PLAYER_MINS[0]-radius,player[1]-radius,player[2]+PLAYER_MINS[2]-radius];
+  const maxs=[player[0]+PLAYER_MAXS[0]+radius,player[1]+PLAYER_MAXS[1]+radius,player[2]+PLAYER_MAXS[2]+radius];
   let enter=0,leave=1;
   for(let i=0;i<3;i++) {
     const delta=end[i]-start[i];

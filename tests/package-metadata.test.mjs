@@ -3,6 +3,12 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {Packager,Platform,Arch} from 'electron-builder';
 import {packageOptions} from '../tools/package.mjs';
+import {log as builderLog} from 'builder-util';
+
+// electron-builder logs to stdout in several separate writes, which the
+// parallel test runner also uses for its serialized messages; an interleaved
+// chunk intermittently corrupts that stream. Keep builder output on stderr.
+builderLog.stream=process.stderr;
 
 test('source and root lockfile agree on the game release version',async()=>{
   const metadata=JSON.parse(await readFile(new URL('../package.json',import.meta.url),'utf8'));

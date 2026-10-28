@@ -162,6 +162,17 @@ should be confused with a missing level, puzzle or boss system in the existing
 desktop/web game. There is no defensible completion percentage from a source
 audit alone.
 
+## Native parity review, 27–28 October 2026
+
+A further source-level review compared lives and respawn, damage, retry,
+campaign completion, abilities, enemy perception and melee, bosses, death
+events, voices, door audio, cutscene endings, scripted cameras, FlashEffect,
+pickups, hearts, the player box, jumping and music gain with the original
+executable. The approved corrections are recorded, one entry per issue, in
+[the parity review](claude-native-parity-review.md), together with its
+coverage table and the items left documented only (D4, D6, D7, D10). Where a
+row below conflicts with that review, the review is current.
+
 ## Follow-up implementation and corrected findings
 
 The requested native follow-up is now implemented in the areas supported by

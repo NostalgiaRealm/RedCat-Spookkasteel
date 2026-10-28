@@ -20,8 +20,10 @@ and spinner. It is shared by desktop, browser and Android presentations.
 
 `Settings/LanguageNL.ini` supplies “Even Wachten”, “Avontuur”, and
 “Bezig met het laden van”, followed by the correct native level name: Het Bos,
-Het Kasteel, Het Kerkhof, De Grotten or De Kasteeltoren. The port continues to
-use one adventure mode, including when revisiting levels.
+Het Kasteel, Het Kerkhof, De Grotten or De Kasteeltoren. An adventure shows
+“Avontuur”; replaying an earned chapter is quick play and shows
+`GameType1.msg` (“Snelspel”), as described in
+[replayed level intros](replayed-level-intros-native.md).
 
 The imported bitmaps are `LoadingBG.bmp`, `LogoBG.bmp`, `Progress.bmp` and
 `levelbg1.bmp` through `levelbg5.bmp`. Their original alpha masks are retained

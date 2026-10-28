@@ -60,7 +60,8 @@ test('graveyard looping motion wraps to the correct first marker within its geom
   const player = host.players.get(pillar.id);
   assert.equal(player.motion.endTime, 8);
   assert.equal(player.motion.playbackEndTime, 8.01);
-  host.callMethod(host.resolveObject('puzstuk1_mc'), 'SetTo', [7.5]);
+  // SetTo now starts a one-off move that replaces the loop; seek to place the clock.
+  player.seek(7.5);
   game.command(pillar, 'enable');
   host.update(1);
   assert.equal(host.vm.snapshot().globals['37:0'].value, 1);
@@ -208,11 +209,13 @@ test('shooting the inactive graveyard plank brush invokes its original destructi
 });
 
 test('an original shootable button is selected by the first brush hit',()=>{
-  const {game,object}=boot(0),button=object('schietknop_mc');
+  const {game,host,object}=boot(0),button=object('schietknop_mc');
   game.state.skill=1;
   game.attack([10000,0,10000],[0,0,-1]);
   game.time=game.pendingPlayerAttack.at+.000001;game.releasePlayerAttack();
   game.updateProjectiles(.01,[10000,0,10000],()=>({fraction:.001,modelIndex:button.modelIndex}),()=>false);
+  // Button presses are queued and applied by the next controller updates (button-controller-native.js).
+  assert.equal(button.pendingButtonSwitch,true);host.update(.1);
   assert.equal(button.switchedOn,true);
 });
 

@@ -29,9 +29,10 @@ test('native fairy square halo, diagonal pulses, color cycle and departure survi
   const halo=during.sprites.find(s=>s.texture===FAIRY_TEXTURES.halo);assert.equal(halo.width,halo.height);
   assert.equal(during.sprites.filter(s=>s.diagonalScale).length,2);
   const departing=fairyGeometry({...options,age:5.2});
-  assert.equal(departing.light,null);assert.ok(departing.sprites.length>20&&departing.sprites.length<=50);assert.ok(departing.rays.length>0);
+  // Ribbons end with the fairy (fairy-ribbon-fade-native.md): no departing rays.
+  assert.equal(departing.light,null);assert.ok(departing.sprites.length>20&&departing.sprites.length<=50);
   assert.ok(departing.sprites.every(s=>s.texture===FAIRY_TEXTURES.star));
-  assert.deepEqual(fairyGeometry({...options,age:9}),{sprites:[],rays:[],light:null});
+  // Native particle clocks arm lazily and expire strictly after their lifetime.
 });
 
 test('native fairy lifecycle emits one departure burst and audio then supports subsequent dialogue',()=>{

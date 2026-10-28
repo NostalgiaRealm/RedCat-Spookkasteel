@@ -1,0 +1,11 @@
+file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/claude-native-parity/baseline/tests/new-adventure-warning-scenes.mjs:6
+if (!process.argv.includes('--historical-flat-menu')) throw new Error('Historical flat-menu harness: run tests/level-selection-menu-scenes.mjs, tests/player-menu-scenes.mjs or tests/new-adventure-skills-scenes.mjs against current source.');
+                                                            ^
+
+Error: Historical flat-menu harness: run tests/level-selection-menu-scenes.mjs, tests/player-menu-scenes.mjs or tests/new-adventure-skills-scenes.mjs against current source.
+    at file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/claude-native-parity/baseline/tests/new-adventure-warning-scenes.mjs:6:61
+    at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.13.1

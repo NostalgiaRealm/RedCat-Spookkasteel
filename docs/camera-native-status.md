@@ -1,5 +1,9 @@
 # Native camera behavior: bounded verification
 
+The player camera and steering were rebuilt from the original code on 28 October
+2026; see [native camera](native-camera.md). This note covers the scripted camera
+modes and timers.
+
 Executable address references are version-specific; see [reference build notes](native-reference-builds.md) before relying on native addresses.
 
 This note records read-only checks of the supplied `RcHcGame.dat` and the five

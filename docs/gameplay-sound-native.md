@@ -33,8 +33,9 @@ after normalized motion time .46. Super release instead calls the stop entry
 The portable router now selects these cues from each projectile event's kind,
 including projectiles already in flight when the player's abilities change.
 Impacts play only on actual contact, not lifetime expiry. Independent one-shot
-instances preserve earlier firing and impact tails. The existing charge-loop
-and pause/resume behavior are unchanged. Audit evidence is retained in
+instances preserve earlier firing and impact tails. The BIG BENG charge
+(`rcshoot3.wav`) is a one-shot (`0x54ffe0` loop flag 0), stopped on release or
+cancel and not replayed during the same hold. Pause/resume is unchanged. Audit evidence is retained in
 `temp_work/shooting-audio-audit-2026-10-03/`; focused regression coverage is
 `tests/player-projectile-audio.test.mjs`.
 
@@ -84,6 +85,15 @@ The ACT motion importer finds no embedded motion-event blocks in the shipped
 actors; these gameplay sound decisions come from native enemy/player logic,
 not the level's Davi-Script instruction stream. The native event categories
 do not establish exact idle-repeat timing or the full original AI behavior.
+
+The voice wrapper `0x423be0` ignores a new request while the actor's previous
+one-shot still plays. A loop is replaced only by a differently named cue. Bat
+idles are loops at gain 0.4, and every other cue is a one-shot at gain 1. A
+lethal hit requests hurt before death, so the death cue is normally dropped.
+Starting to walk is not a cue. Only frogs, zombies, guardians, ghosts and bats
+chatter, and only while unaware within the think radius. Dungeon Max, Jester
+Max and the Witch use their slot-47 voices (`mxin*`, `griz*`). Touch contact
+plays no enemy cue. See [the parity review](claude-native-parity-review.md#12).
 
 ## Enemy projectile classes
 

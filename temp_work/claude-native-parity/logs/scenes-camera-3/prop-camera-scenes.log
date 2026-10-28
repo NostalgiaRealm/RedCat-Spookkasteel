@@ -1,0 +1,21 @@
+{"props":{"before":{"button":"ButtonModel1","selected":"ButtonModel1","ring":true,"lock":true,"hitModel":47,"buttonModel":47,"aim":[-350,-6.8994245529174805,1073],"editor":[-351,-8,1086],"enemyHud":false},"after":{"switched":true,"count":1,"impact":"ButtonModel1","bridgeOpen":false,"bridgeTime":1.1000000000000028,"error":null}}}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert.ok(Math.abs(camera.initial-20*Math.PI/180)<1e-8)
+
+    at file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/prop-camera-scenes.mjs:90:86
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at process.processImmediate (node:internal/timers:472:9) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

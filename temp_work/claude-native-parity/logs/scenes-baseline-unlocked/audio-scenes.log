@@ -1,0 +1,29 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.fill: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('#volume')
+    - locator resolved to <input min="0" max="1" id="volume" step="0.05" type="range"/>
+    - fill("0.3")
+  - attempting fill action
+    2 × waiting for element to be visible, enabled and editable
+      - element is not visible
+    - retrying fill action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and editable
+      - element is not visible
+    - retrying fill action
+      - waiting 100ms
+    60 × waiting for element to be visible, enabled and editable
+       - element is not visible
+     - retrying fill action
+       - waiting 500ms
+
+    at verifyForestAudio (/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/claude-native-parity/baseline/tests/audio-scenes.mjs:22:33)
+    at async file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/claude-native-parity/baseline/tests/audio-scenes.mjs:80:5 {
+  name: 'TimeoutError'
+}
+
+Node.js v24.13.1

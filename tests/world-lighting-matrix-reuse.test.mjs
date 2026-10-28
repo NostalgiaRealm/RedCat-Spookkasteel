@@ -55,7 +55,7 @@ test('a direct lighting call after moving a managed actor refreshes its current 
 test('effect exceptions cannot leave matrix reuse enabled for a later frame or direct caller',()=>{
   const world={elapsed:0,player:{position:[0,0,0],noClip:true,update(){}},cameraControl:{sync(){}},targeting:{locked:false},
     effects:{update(){assert.equal(world.actorLightingMatricesPrepared,true);throw new Error('effect failed');}}};
-  for(const method of ['syncModels','syncMountedActorCollisions','updateTargeting','syncPlayer','updateCamera','syncProjectiles','syncTargetMarker','syncHazards','updateRenderResidency'])world[method]=()=>{};
+  for(const method of ['syncModels','syncMountedActorCollisions','updateTargeting','steeredThirdPerson','syncPlayer','updateCamera','syncProjectiles','syncTargetMarker','syncHazards','updateRenderResidency'])world[method]=()=>{};
   assert.throws(()=>CastleWorld.prototype.update.call(world,1/60,{}),/effect failed/);
   assert.equal(world.actorLightingMatricesPrepared,false);
 });

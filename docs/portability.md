@@ -8,9 +8,9 @@ and Android gameplay runs that bundle without loading individual modules. `sourc
 
 This is the central platform-status reference. The [build guide](building.md) contains reproducible commands; the [implementation audit](native-parity-audit.md) covers gameplay fidelity. Status was reconciled with the retained release and Android records on 26 October 2026; this documentation update did not run builds or new platform tests.
 
-## Release 1.0.4
+## Release 1.0.5
 
-The current release packages the bundled runtime for the six desktop targets and signed Android APK/AAB (version code 6). No tests or build checks are run for this release at the owner's request. The platform evidence below retains its historical version and does not constitute 1.0.4 runtime validation. See [the 1.0.4 notes](../RELEASE_NOTES_1.0.4).
+The current release packages the bundled runtime for the six desktop targets and signed Android APK/AAB (version code 7). The source passed the full unit suite and the browser scenes recorded in [the parity review](claude-native-parity-review.md#validation); the built packages themselves were not run. The platform evidence below retains its historical version and does not constitute 1.0.5 runtime validation. See [the 1.0.5 notes](../RELEASE_NOTES_1.0.5).
 
 ## Linux and Windows
 

@@ -1,0 +1,33 @@
+PERF {"round":0,"index":0,"total":28.30000001192093,"trace":24.700000025331974}
+PERF {"round":0,"index":10,"total":167.29999993741512,"trace":92.1000000089407}
+PERF {"round":0,"index":20,"total":305.99999990314245,"pursuit":0.5999999940395355,"trace":227.60000000149012}
+PERF {"round":0,"index":30,"total":457.49999991059303,"pursuit":0.5999999940395355,"trace":360.2000000104308}
+PERF {"round":0,"index":40,"total":574.7999999150634,"pursuit":0.5999999940395355,"trace":412.7999999895692}
+PERF {"round":1,"index":0,"total":596.9999998807907,"pursuit":0.5999999940395355,"trace":425.2000000178814}
+PERF {"round":1,"index":10,"total":711.3999998420477,"pursuit":0.5999999940395355,"trace":484.90000005066395}
+PERF {"round":1,"index":20,"total":834.6999998092651,"pursuit":0.5999999940395355,"trace":612.9000000730157}
+PERF {"round":1,"index":30,"total":954.7999998107553,"pursuit":0.8999999836087227,"trace":731.6000000163913}
+PERF {"round":1,"index":40,"total":1071.499999806285,"pursuit":0.9999999850988388,"trace":786.4999999254942}
+PERF {"round":2,"index":0,"total":1093.399999782443,"pursuit":0.9999999850988388,"trace":800.1999999657273}
+PERF {"round":2,"index":10,"total":1203.1999998390675,"pursuit":0.9999999850988388,"trace":866.6999999508262}
+PERF {"round":2,"index":20,"total":1312.3999998494983,"pursuit":1.2999999895691872,"trace":1000.0999998524785}
+PERF {"round":2,"index":30,"total":1419.9999998435378,"pursuit":1.2999999895691872,"trace":1125.5999997630715}
+PERF {"round":2,"index":40,"total":1522.599999845028,"pursuit":1.2999999895691872,"trace":1182.3999998793006}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: graphics resources remain bounded
+
+1366 !== 1361
+
+    at file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/claude-native-parity/baseline/tests/graveyard-performance-scenes.mjs:51:10 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1366,
+  expected: 1361,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

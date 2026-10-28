@@ -1,0 +1,38 @@
+PASS browser: actual pickup router and full rendered S/M/L waveforms match original decoded PCM, including final 100 samples. [
+  {
+    sound: 'icoins.wav',
+    sampleRate: 44100,
+    samples: 20604,
+    ended: { time: 0.4672108843537415, duration: 0.4672108843537415 },
+    offset: 0,
+    gain: 1,
+    maxError: 0,
+    tailError: 0,
+    tailRms: 0.0748724388133385,
+    pending: false
+  },
+  {
+    sound: 'icoinm.wav',
+    sampleRate: 44100,
+    samples: 18444,
+    ended: { time: 0.4182312925170068, duration: 0.4182312925170068 },
+    offset: 0,
+    gain: 1,
+    maxError: 0,
+    tailError: 0,
+    tailRms: 0.09833358916811413,
+    pending: false
+  },
+  {
+    sound: 'icoinl.wav',
+    sampleRate: 44100,
+    samples: 16356,
+    ended: { time: 0.3708843537414966, duration: 0.3708843537414966 },
+    offset: 0,
+    gain: 1,
+    maxError: 1.1368683772161603e-13,
+    tailError: 0,
+    tailRms: 0.09301772676464504,
+    pending: false
+  }
+]

@@ -63,8 +63,8 @@ function assertSingleFinalPose(scene,dt) {
   scene.host.update(dt);
   assert.equal(scene.samples.length-before,1,'host must consume the final pose returned by the motion update');
   const actual=scene.host.modelTransforms.get(1),sample=scene.samples.at(-1);
+  // ModelTransformMap stores frozen copies, so only value equality applies.
   assert.deepEqual(actual,{...sample,origin:scene.player.motion.origin});
-  assert.equal(actual.translation,sample.translation);
 }
 
 test('brush host reuses the accepted final pose while blocked segments wait and resume',()=>{

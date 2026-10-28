@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {PLAYER_MINS,PLAYER_MAXS,PLAYER_HALF_WIDTH,PLAYER_HEIGHT,PLAYER_EYE_HEIGHT} from '../source/player-hull.js';
 import {readFileSync} from 'node:fs';
 import {Gameplay} from '../source/gameplay.js';
 import {ScriptHost} from '../source/script-host.js';
@@ -24,9 +25,13 @@ function boot(id,names) {
 
 test('native proximity is an origin-centered X/Z box with unexpanded height and full hull dimensions',()=>{
   const door={entity:{TriggerRadius:'30'},position:[460,0,118]};
-  assert.equal(withinTriggerRadius(door,[408.01,-55.99,66.01]),true);
-  assert.equal(withinTriggerRadius(door,[408,-24,118]),false);
-  assert.equal(withinTriggerRadius(door,[460,-56,118]),false);
+  // 0x4d14f0: |door - eye| < full box size (+ radius on X/Z); eye = feet + 54.08.
+  const reach=2*PLAYER_HALF_WIDTH+30,low=-PLAYER_HEIGHT-PLAYER_EYE_HEIGHT,high=PLAYER_HEIGHT-PLAYER_EYE_HEIGHT;
+  assert.equal(withinTriggerRadius(door,[460-reach+.01,low+.01,118-reach+.01]),true);
+  assert.equal(withinTriggerRadius(door,[460-reach-.01,-24,118]),false);
+  assert.equal(withinTriggerRadius(door,[460,low-.01,118]),false);
+  assert.equal(withinTriggerRadius(door,[460,high+.01,118]),false);
+  assert.equal(withinTriggerRadius(door,[460,high-.01,118]),true);
   assert.equal(withinTriggerRadius({...door,entity:{TriggerRadius:'0'}},door.position),false);
 });
 
@@ -57,7 +62,7 @@ for(const name of ['doorhallway05_01','doorhallway05_02','doorhallway05_03','sec
   const axis=model.max[0]-model.min[0]<model.max[2]-model.min[2]?0:2;
   const center=model.min.map((v,i)=>(v+model.max[i])/2);center[1]=model.min[1]+.05;
   const start=[...center];start[axis]=model.min[axis]-45;
-  const hit=collider.trace(start,center,[-11,0,-11],[11,56,11],[door.modelIndex]);
+  const hit=collider.trace(start,center,[...PLAYER_MINS],[...PLAYER_MAXS],[door.modelIndex]);
   assert.equal(hit.modelIndex,door.modelIndex);assert.equal(game.contains(door,hit.end),false);
   game.update(.025,hit.end,{touchedModels:[hit.modelIndex]});
   assert.equal(door.open,true);assert.equal(host.players.get(door.id).playing,true);

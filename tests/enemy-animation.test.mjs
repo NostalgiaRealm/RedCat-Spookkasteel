@@ -122,7 +122,8 @@ test('jump feedback fires once on a grounded jump, never from a held airborne in
   const world=new CastleWorld({},{}),events=[];
   Object.assign(world,{collider,physicalModels:[],player:new PlayerController(collider,[0,100,0]),level:{bounds:{min:[-1000,-1000,-1000]}},updateCamera(){}});
   world.player.grounded=true;
-  world.gameplay={objects:[],projectiles:[],time:0,update(){},emit(type){events.push(type);}};
+  // world.update reads player state, settings and environment velocity.
+  world.gameplay={state:{health:10,skill:0},settings:{},environmentVelocity:()=>[0,0,0],objects:[],projectiles:[],time:0,update(){},emit(type){events.push(type);}};
   const input={forward:0,right:0,jump:true};
   world.update(.016,input);assert.deepEqual(events,['jump']);assert.ok(world.player.velocityY>0);
   world.update(.016,input);assert.deepEqual(events,['jump']);

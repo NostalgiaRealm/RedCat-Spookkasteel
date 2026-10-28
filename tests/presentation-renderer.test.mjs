@@ -10,7 +10,8 @@ const CORONA='coreff.bmp|coreff_a.bmp',ENERGY='energybeam.bmp|energybeam_a.bmp';
 const manifest={textures:{[CORONA]:{file:'core.png',width:64,height:64},[ENERGY]:{file:'energy.png'}}};
 const corona=(id,z=-300)=>({id,kind:'effect',entity:{classname:'EffectCoronaEntity',RadiusMin:'2',RadiusMax:'10',RadiusDistanceMin:'0',RadiusDistanceMax:'300',FadeTime:'.5',Color:'173 235 255'},position:[0,0,z],enabled:true,visible:true});
 async function fixture(objects) {
-  const queries=[],resources=new Set(),world={scene:new THREE.Scene(),camera:new THREE.PerspectiveCamera(),physicalModels:[0,4],modelMeshes:new Map(),
+  // Effects are frustum-culled; use the game's 15000-unit far plane (world.js).
+  const queries=[],resources=new Set(),world={scene:new THREE.Scene(),camera:new THREE.PerspectiveCamera(50,1,1,15000),physicalModels:[0,4],modelMeshes:new Map(),
     track:r=>{resources.add(r);return r;},texture:async()=>new THREE.Texture(),
     collider:{trace(...args){queries.push(args);return {fraction:world.blocked?.5:1,end:args[1]};}}};
   const game={objects,projectiles:[],time:0,find:()=>[],emit(){},scripts:{modelTransforms:new Map()}};
@@ -87,7 +88,8 @@ test('all five levels use native textured-point dimensions for their button and 
 });
 
 test('native beacon texture coordinates reach the actual energy buffer and stay read-only on refresh',async()=>{
-  const beacon={id:'beacon',kind:'effect',entity:{classname:'SavePoint'},position:[10,20,-30],enabled:true,visible:true,effectAge:5},app=await fixture([beacon]);
+  // Far enough in front of the camera for all seven beacon rays to stay in view.
+  const beacon={id:'beacon',kind:'effect',entity:{classname:'SavePoint'},position:[10,20,-300],enabled:true,visible:true,effectAge:5},app=await fixture([beacon]);
   try{
     const {effects}=app,batch=effects.beamBatches.get(ENERGY),state=effects.entries.get('beacon');
     assert.equal(batch.count,7);assert.equal(batch.mesh.material.map.wrapT,THREE.RepeatWrapping);

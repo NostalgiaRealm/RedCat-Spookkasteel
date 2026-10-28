@@ -28,7 +28,7 @@ for(const [skill,kind,fire,impact] of [[1,'shot','rcshoot1.wav','rcshoot4.wav'],
     if(skill&4){
       game.updatePlayerAttackInput(.01,true,position,forward);
       assert.deepEqual(names(audio),['rcshoot3.wav']);
-      const charge=audio.keyed.get('player:charge');assert.equal(charge.loop,true);
+      const charge=audio.keyed.get('player:charge');assert.equal(charge.loop,false,'native one-shot');
       game.updatePlayerAttackInput(.75,true,position,forward);
       assert.equal(audio.sounds.size,1);
       game.updatePlayerAttackInput(.01,false,position,forward);

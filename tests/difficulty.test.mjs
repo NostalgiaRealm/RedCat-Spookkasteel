@@ -20,7 +20,8 @@ test('difficulty changes real knight health and melee damage using the original 
   for(const [difficulty,health,damage,memory] of [['Easy',4,2,2],['Normal',5,3,3],['Hard',6,3,4]]) {
     const game=fixture(difficulty),knight=game.objects[0];knight.animationDurations={attack:1};
     assert.equal(knight.health,health);assert.equal(knight.maxHealth,health);assert.equal(knight.stats.TimeToRememberVisual,memory);
-    for(let i=0;i<8;i++)game.update(.1,[0,0,60]);
+    // The knight wakes from its stone ambush (~1.0 s) and strikes at ~1.46 s.
+    for(let i=0;i<18;i++)game.update(.1,[0,0,60]);
     assert.equal(game.state.health,10-damage,`${difficulty} actual melee strike`);
     game.hurtEnemy(knight,1);assert.equal(knight.health,health-1);
   }
@@ -31,7 +32,8 @@ test('difficulty chooses native projectile damage, speed and real collision dama
     const game=fixture(difficulty,enemy('MovingEnemy','1','3')),spider=game.objects[0];
     game.enemyProjectile(spider,[0,0,100]);const projectile=game.projectiles[0];
     assert.equal(projectile.damage,damage);assert.ok(Math.abs(Math.hypot(...projectile.velocity)-speed)<1e-9);
-    game.updateProjectiles(.4,[0,0,100]);assert.equal(game.state.health,10-damage);assert.equal(game.projectiles.length,0);
+    // Enemy projectiles advance at most 0.1 s per call (ENEMY_PROJECTILE_MAX_CATCHUP).
+    for(let i=0;i<4;i++)game.updateProjectiles(.1,[0,0,100]);assert.equal(game.state.health,10-damage);assert.equal(game.projectiles.length,0);
     const shot=playerShotDefinition(0,GAMEPLAY_SETTINGS,game.difficulty);assert.equal(shot.stats.Damage,1);assert.equal(shot.stats.InitialSpeed,300);assert.equal(shot.stats.RechargeTime,1);
   }
 });

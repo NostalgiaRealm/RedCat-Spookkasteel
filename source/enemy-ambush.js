@@ -1,4 +1,6 @@
 import {moveEnemy} from './enemies.js';
+import {PLAYER_CENTRE_HEIGHT,PLAYER_HEIGHT} from './player-hull.js';
+import {enemySightEye,enemySeesPlayer} from './enemy-perception-native.js';
 // Spider ceiling/floor setup: RcShootSpider::Initialize (0x413a90),
 // RcSpiderMoveToStart (0x409440 / 0x409a60). Skeletons settle to start frame
 // zero and replay it forward on wake; CRcStonedAlert is shared by knights and
@@ -9,7 +11,7 @@ const valid=v=>Array.isArray(v)&&v.length===3&&v.every(Number.isFinite);
 const skeletonSees=(object,player,lineOfSight)=>{
   const p=object.position;
   return Math.hypot(...p.map((v,i)=>v-player[i]))<=n(object.stats.VisualRange,250)&&
-    lineOfSight([p[0],p[1]+25,p[2]],[player[0],player[1]+28,player[2]]);
+    enemySeesPlayer({...object,stats:{...object.stats,SenseRange:Infinity}},player,0,lineOfSight);
 };
 export const enemyDormant=object=>['unplaced','dormant'].includes(object.ambush?.phase);
 
@@ -104,13 +106,15 @@ export function updateEnemyAmbush(game,object,dt,playerPosition,lineOfSight,trac
       if(state.type==='spider') {
         // Native hanging state uses a full-circle view and horizontal range.
         // Both sensing and sight still require a clear ray from the current
-        // ceiling position (not the landing point). Its eye is .8 body heights;
-        // test RedCat's feet, then his head, as 0x417fe0 / 0x413c90 do.
+        // ceiling position (not the landing point). Its eye is .8 body heights.
         const origin=object.position,distance=Math.hypot(origin[0]-playerPosition[0],origin[2]-playerPosition[2]);
-        if(!(distance<n(object.stats.SenseRange)||distance<n(object.stats.VisualRange,250)))return true;
+        if(!(distance<=n(object.stats.SenseRange,50)||distance<=n(object.stats.VisualRange,250)))return true;
         const height=(object.collisionMaxs?.[1]??24)-(object.collisionMins?.[1]??0);
         const eye=[origin[0],origin[1]+height*.8,origin[2]];
-        if(!lineOfSight(eye,playerPosition)&&!lineOfSight(eye,[playerPosition[0],playerPosition[1]+56,playerPosition[2]]))return true;
+        // First ray to RedCat's box centre, then the centre raised by his box
+        // height (0x49bc80, 0x423ad0); the overrides share this pair.
+        const centre=[playerPosition[0],playerPosition[1]+PLAYER_CENTRE_HEIGHT,playerPosition[2]];
+        if(!lineOfSight(eye,centre)&&!lineOfSight(eye,[centre[0],centre[1]+PLAYER_HEIGHT,centre[2]]))return true;
       } else {
         // Dormant bones do not patrol just because their room was enabled.
         if(!skeletonSees(object,playerPosition,lineOfSight))return true;
@@ -226,9 +230,9 @@ function updateSpiderReturn(game,object,dt,player,lineOfSight,trace) {
     // SpiderAttack's generic attack child finishes on loss of its target,
     // then both spider variants enter MoveToStart (0x408f12 / 0x409122).
     const horizontal=Math.hypot(object.position[0]-player[0],object.position[2]-player[2]);
-    const eye=[object.position[0],object.position[1]+25,object.position[2]];
-    const visible=horizontal<Math.max(n(object.stats.VisualRange,250),n(object.stats.SenseRange))&&
-      (lineOfSight(eye,player)||lineOfSight(eye,[player[0],player[1]+56,player[2]]));
+    const eye=enemySightEye(object),centre=[player[0],player[1]+PLAYER_CENTRE_HEIGHT,player[2]];
+    const visible=horizontal<=Math.max(n(object.stats.VisualRange,250),n(object.stats.SenseRange,50))&&
+      (lineOfSight(eye,centre)||lineOfSight(eye,[centre[0],centre[1]+PLAYER_HEIGHT,centre[2]]));
     if(visible||game.time-n(object.lastSeenAt,game.time)<=n(object.stats.TimeToRememberVisual,2)||game.time<object.animationUntil||object.nativeShooter)return false;
     state.phase='returning';state.elapsed=0;object.pendingAttack=null;object.alerted=false;object.pursuit=null;
   }

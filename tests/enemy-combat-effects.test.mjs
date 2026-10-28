@@ -23,7 +23,8 @@ test('defeated boss retires during frozen fairy dialogue while RedCat returns to
   boss.enabled=true;boss.animationDurations={death:1};game.destroy(boss);
   host.cutscene=true;host.enemiesFrozen=true;game.state.skill=7;
   game.pendingPlayerAttack={at:game.time+.2};game.playerAttackUntil=game.time+1;game.playerCharge={age:1};
-  const calls=[],a=new Group();a.userData.stateAnimator={update:(...args)=>calls.push(args)};
+  // Real actors always carry an animator under their state animator (world.js).
+  const calls=[],a=new Group();a.userData.animator={};a.userData.stateAnimator={update:(...args)=>calls.push(args)};
   const idle=[],redcat=new Group();redcat.userData.animator={play:(...args)=>idle.push(['play',...args]),update:dt=>idle.push(['update',dt])};
   const world=Object.assign(Object.create(CastleWorld.prototype),{gameplay:game,actorInstances:new Map([[boss.id,a]]),bossMachines:new Map(),camera:new PerspectiveCamera(),track:v=>v,settings:{camera:'third'},redcat,player:{position:[0,0,0],grounded:false,velocityY:120},yaw:0});
   game.update(.1,[0,0,0]);world.syncActors(.1);world.syncPlayer(.1,{jump:true,attack:true});

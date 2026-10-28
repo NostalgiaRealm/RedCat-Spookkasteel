@@ -14,7 +14,8 @@ export function hudCommands(manifest,state,totalPotions,enemy,width=640,height=4
   };
   const number=(name,value)=>String(Math.max(0,Math.floor(Number(value)||0))).split('').forEach((digit,i)=>sprite(name,Number(digit),i*manifest.sprites[manifest.positions[name].sprite].SizeX));
   const hearts=(name,health,max)=>{
-    const count=Math.max(1,Math.ceil(max/2));
+    // Native HUD draws from the truncated health value (fractional liquid damage).
+    const count=Math.max(1,Math.ceil(max/2));health=Math.trunc(Number(health)||0);
     for(let i=0;i<count;i++)sprite(name,health>=i*2+2?0:health>i*2?1:2,i*manifest.sprites[manifest.positions[name].sprite].SizeX);
   };
   sprite('HealthIcon');hearts('HealthContainer',state.health,state.maxHealth||10);

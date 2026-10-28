@@ -53,6 +53,8 @@ test('stepping onto the original chapel floor button plays its native push cue o
   const bounds=level.collision.models[button.modelIndex],p=bounds.min.map((v,i)=>i===1?bounds.max[i]+2:(v+bounds.max[i])/2);
   const hit=collider.trace(p,[p[0],p[1]-4,p[2]],[-11,0,-11],[11,56,11],[button.modelIndex]);assert.equal(hit.modelIndex,button.modelIndex);
   game.update(.025,hit.end,{touchedModels:[hit.modelIndex]});game.update(.025,hit.end,{touchedModels:[hit.modelIndex]});
+  // Button presses are queued and applied by the next controller updates (button-controller-native.js).
+  host.update(.025);host.update(.025);
   assert.equal(events.filter(e=>e.type==='button'&&e.id===button.id).length,1);
   const cue=[...audio.sounds].find(r=>r.name==='switchpushbutton.wav');assert.ok(cue);assert.equal(cue.spatial,true);assert.deepEqual(cue.currentPosition,game.objectPosition(button));
   const router=new GameplayAudio(audio);audio.reset();

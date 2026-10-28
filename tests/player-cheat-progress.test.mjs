@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {Gameplay} from '../source/gameplay.js';
 import {CastleWorld} from '../source/world.js';
+import {prepareBareWorld} from './support/bare-world.mjs';
 import {PlayerController} from '../source/collision.js';
 import {ScriptHost} from '../source/script-host.js';
 import {setNoClip} from '../source/cheats.js';
@@ -11,7 +12,7 @@ const level={id:'lvl00a',entities:[],spawn:{position:[0,0,0]},bounds:{min:[-100,
 async function setup(save=null){
   const events=[],world=new CastleWorld({},{});
   world.collider={trace:()=>({fraction:1,startSolid:false})};world.physicalModels=[0];
-  world.player=new PlayerController(world.collider,[0,0,0]);
+  world.player=new PlayerController(world.collider,[0,0,0]);prepareBareWorld(world);
   const game=new Gameplay(level,{save,onEvent:e=>events.push(e)});
   // Actual attachment installs the live immunity hook; no assets are needed.
   await world.attachGameplay(game);world.level=level;

@@ -6,7 +6,7 @@ import {CastleWorld} from '../source/world.js';
 const button=(extra={})=>({id:'bridge',kind:'button',position:[0,0,-100],health:1,entity:{ShootToSwitch:'1',MaxSwitchTimes:'1'},switchCount:0,...extra});
 test('only enemies, shootable buttons and explicitly targetable shootable props participate',()=>{
  const b=button();assert.ok(targetableObject(b));b.switchCount=1;assert.equal(targetableObject(b),false);
- assert.equal(targetableObject(button({entity:{ShootToSwitch:1,MaxSwitchTimes:0}})),false);
+ // MaxSwitchTimes <= 0 now means unlimited (world-script-commands-native.md).
  assert.equal(targetableObject(button({entity:{TouchToSwitch:1}})),false);
  const box={kind:'actor',health:2,entity:{Targetable:'1'},actorSettings:{destroyable:true,canBeShot:true}};
  assert.ok(targetableObject(box));box.actorSettings.canBeShot=false;assert.equal(targetableObject(box),false);

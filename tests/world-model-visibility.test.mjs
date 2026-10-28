@@ -44,10 +44,13 @@ test('moving models use whole transformed native bounds, retain all materials, a
     for(const c of model)c.mesh.rotation.y=0;
     world.camera.position.set(-200,40,300);world.camera.lookAt(-400,40,0);stream.update();
     for(const c of model)assert.equal(c.mesh.layers.mask,1,'camera leaf changes invalidate the PVS result');
-    // No-clip / remote cameras outside the BSP use conservative frustum only.
-    world.camera.position.set(2200,40,300);world.camera.lookAt(-400,40,0);stream.update();
+    // A scripted remote camera outside the BSP uses the conservative frustum only;
+    // an ordinary camera keeps the last valid room (room-visibility.js).
+    world.gameplay={scripts:{camera:{mode:2}}};
+    world.camera.position.set(-200,2050,300);world.camera.lookAt(-400,40,0);stream.update();
     assert.equal(stream.visibility.active,false);
     for(const c of model)assert.equal(c.mesh.layers.mask,1);
+    world.gameplay=undefined;
   } finally {stream.dispose();}
 });
 

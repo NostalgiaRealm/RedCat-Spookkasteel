@@ -1,0 +1,16 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: {"restPixels":0,"pixels":6212,"age":0.7,"serial":1,"cutscene":true,"rays":5,"sparks":42,"moved":true,"floor":-3353.95,"ceiling":-3124.05,"origin":[365,-3320,600],"textures":["beam.bmp|beam_a.bmp","blast.bmp|blast_a.bmp","energybeam.bmp|energybeam_a.bmp","fleuri.bmp|fleuri_a.bmp","kaboom2.bmp|kaboom2_a.bmp","score0.bmp|score0_a.bmp","score1.bmp|score1_a.bmp","score2.bmp|score2_a.bmp","score3.bmp|score3_a.bmp","score4.bmp|score4_a.bmp","kaboom.bmp|kaboom_a.bmp","ptrail.bmp|ptrail_a.bmp"],"error":null}
+    at verifyPortalBeamScenes (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/claude-native-parity/baseline/tests/portal-beam-scenes.mjs:43:10)
+    at async file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/claude-native-parity/baseline/tests/portal-beam-scenes.mjs:88:105 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

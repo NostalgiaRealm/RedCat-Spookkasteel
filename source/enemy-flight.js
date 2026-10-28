@@ -1,3 +1,4 @@
+import {PLAYER_MINS,PLAYER_MAXS,PLAYER_HALF_WIDTH,PLAYER_HEIGHT,PLAYER_EYE_HEIGHT} from './player-hull.js';
 // Flight uses the authored waypoint network when a straight pursuit is
 // obstructed. A point visibility ray alone is not clearance for a bat's body.
 import {usesTouchPursuit} from './enemy-combat-native.js';
@@ -13,7 +14,7 @@ export function cancelBatFlightSearch(game,object) {
 
 export function batOverlapsPlayer(object,player,position=object.position) {
   const mins=object.collisionMins||[-10,5,-10],maxs=object.collisionMaxs||[10,40,10];
-  return position.every((v,i)=>v+maxs[i]>player[i]+(i===1?0:-11)+1e-6&&v+mins[i]<player[i]+(i===1?56:11)-1e-6);
+  return position.every((v,i)=>v+maxs[i]>player[i]+PLAYER_MINS[i]+1e-6&&v+mins[i]<player[i]+PLAYER_MAXS[i]-1e-6);
 }
 
 // Enemy world traces omit RedCat. Clip flight against his actual body too,
@@ -21,7 +22,7 @@ export function batOverlapsPlayer(object,player,position=object.position) {
 export function clipBatPlayerContact(object,before,player,trace) {
   if(object.enemyType!=='bat'&&!usesTouchPursuit(object))return false;
   const mins=object.collisionMins||[-10,5,-10],maxs=object.collisionMaxs||[10,40,10];
-  const lo=player.map((v,i)=>v+(i===1?0:-11)-maxs[i]),hi=player.map((v,i)=>v+(i===1?56:11)-mins[i]);
+  const lo=player.map((v,i)=>v+PLAYER_MINS[i]-maxs[i]),hi=player.map((v,i)=>v+PLAYER_MAXS[i]-mins[i]);
   if(batOverlapsPlayer(object,player,before)) {
     if(!batOverlapsPlayer(object,player))return true;
     const position=[...object.position],candidates=[];

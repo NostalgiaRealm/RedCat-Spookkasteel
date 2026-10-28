@@ -11,7 +11,8 @@ const clamp=value=>Math.max(0,Math.min(1,value));
 
 export function enemyDeathOpacity(object,time) {
   if(object.kind!=='enemy'||object.health>0||object.animationState!=='death')return 1;
-  const start=object.animationUntil,end=object.corpseUntil;
+  // Ghost drop-dead (0x405f50) fades from the moment of death, not clip end.
+  const start=object.dropDead&&Number.isFinite(object.deathStartedAt)?object.deathStartedAt:object.animationUntil,end=object.corpseUntil;
   if(!Number.isFinite(start)||!Number.isFinite(end))return 1;
   // Retain old saves' existing retirement deadline rather than resurrecting
   // a corpse by retroactively adding the new five-second fade.

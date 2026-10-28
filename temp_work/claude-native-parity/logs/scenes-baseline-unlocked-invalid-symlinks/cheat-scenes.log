@@ -1,0 +1,37 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('#open-settings')
+    - locator resolved to <button type="button" id="open-settings" class="original-menu-button original-settings">Instellingen</button>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <div id="fatal" class="overlay">…</div> intercepts pointer events
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <div id="fatal" class="overlay">…</div> intercepts pointer events
+    - retrying click action
+      - waiting 100ms
+    56 × waiting for element to be visible, enabled and stable
+       - element is visible, enabled and stable
+       - scrolling into view if needed
+       - done scrolling
+       - <div id="fatal" class="overlay">…</div> intercepts pointer events
+     - retrying click action
+       - waiting 500ms
+
+    at verifyCheatScenes (/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/claude-native-parity/baseline/tests/cheat-scenes.mjs:22:40)
+    at async file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/claude-native-parity/baseline/tests/cheat-scenes.mjs:118:5 {
+  name: 'TimeoutError'
+}
+
+Node.js v24.13.1

@@ -24,9 +24,10 @@ per-difficulty access branch was found in this form.
 
 One native limitation is deliberately not reproduced: the fifth-card branch
 compares with 4 at `0x55e2fa`, then performs a second comparison with 5 at
-`0x55e30e` before enabling the control. An independent all-cards override is
-present at `0x55e1ea`. The exact intention of the extra fifth-card comparison
-is unverified. The portable menu keeps the Tower accessible as soon as its
+`0x55e30e` before enabling the control. The second value is the campaign's
+completion flag, so natively the Tower card unlocks only after the whole
+adventure has been completed. An independent all-cards override is present at
+`0x55e1ea`. The portable menu keeps the Tower accessible as soon as its
 chapter has been earned, consistent with the campaign sequence.
 
 The portable completion event already comes from each level's original Davi
@@ -159,9 +160,8 @@ cancellation (including controller), Continue restoration, chapter replay and
 confirmed Forest restart with recovery reset. Evidence is retained in
 `temp_work/saved-adventure-menu-2026-10-03/`. No builds were created.
 Those historical selectors and primary-button colors predate the restored
-original menu. That script now stops immediately with directions to the current
-checks; its explicit `--historical-flat-menu` opt-in is only for an old source
-snapshot, not the present menu. Current navigation, cancellation and save-preservation checks
+original menu, so the script no longer applied and was removed on 28 October
+2026; the retained evidence folder above still records that run. Current navigation, cancellation and save-preservation checks
 are documented in [original-menu-native.md](original-menu-native.md); they
 cover the new page flow while retaining the same save safeguards.
 

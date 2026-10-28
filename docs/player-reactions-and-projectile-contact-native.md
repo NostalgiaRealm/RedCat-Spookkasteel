@@ -23,11 +23,16 @@ The imported RedCat clips give these durations:
 `player-lifecycle.js` supplies this independent simulation clock to gameplay
 and the actor renderer. A hit cancels a pending shot/charge and selects the hurt
 clip; it does not freeze gravity, platform motion or movement out of water.
-Death consumes one life and finishes its clip before returning to the checkpoint.
-The respawn animation holds player input and protects RedCat from damage until
-finished. On the final life the death clip holds its last frame before game over
-pauses the game. This uses the existing game-over menu; it does not restore
-additional original game-over artwork.
+Death holds RedCat for the native 2 s (`0x433fd0`: two 1000 ms timers),
+keeping the final death pose. Only then is a life deducted, and he returns to
+the checkpoint while the count is 0 or more (`0x439ce0`). Three lives
+therefore give four attempts, and the HUD shows 0 on the last one. Respawn
+holds player input for its clip and grants one 5 s protection window, which
+also blocks liquid damage. Every hit applies; only the hurt voice is
+throttled. Dying with no lives left holds the last death frame before game
+over pauses the game. This uses the existing game-over menu; it does not
+restore additional original game-over artwork. See
+[the parity review](claude-native-parity-review.md#1).
 
 Save data carries the phase and elapsed time. Loading an older mid-death save
 with remaining lives resumes that sequence instead of resetting the level.

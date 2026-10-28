@@ -1,9 +1,12 @@
+import {PLAYER_MINS,PLAYER_MAXS,PLAYER_HALF_WIDTH,PLAYER_HEIGHT,PLAYER_EYE_HEIGHT} from './player-hull.js';
 // Genesis3D BSP convex leaf sweeps. All values remain in the original Y-up units.
 import { traceActors } from './actor-collision.js';
 import { GAMEPLAY_SETTINGS } from './gameplay-settings.js';
 import { PLAYER_MOVEMENT, playerInputVelocity } from './player-movement.js';
 import { MovementRecovery } from './movement-recovery.js';
 import { ModelTransformMap } from './model-transforms.js';
+// Native ground test: a contact counts as floor above normal.y 0.7.
+const FLOOR_NORMAL_Y=0.7;
 const jumpSettings=GAMEPLAY_SETTINGS.game.Player;
 export const PLAYER_JUMP={gravity:jumpSettings.Gravitation*32,height:jumpSettings.JumpHeight*32,
   minTapTime:jumpSettings.SJumpMinTapTime/1000,maxTapTime:jumpSettings.SJumpMaxTapTime/1000,
@@ -328,7 +331,7 @@ export class PlayerController {
   constructor(collider, position, modelIndices=[0]) {
     this.collider=collider; this.position=[...position]; this.velocityY=0;
     this.launchVelocityXZ=[0,0];
-    this.grounded=false; this.modelIndices=modelIndices; this.mins=[-11,0,-11]; this.maxs=[11,56,11];
+    this.grounded=false; this.modelIndices=modelIndices; this.mins=[...PLAYER_MINS]; this.maxs=[...PLAYER_MAXS];
     this.lastSafe=[...position];this.noClip=false;this.environmentVelocity=[0,0,0];this.platformVelocity=[0,0,0];
     this.skill=0;this.previousJump=false;this.jumpAge=Infinity;this.superJumpUsed=false;this.jumpSerial=0;this.jumpKind=null;this.didLand=null;
     this.movementRecovery=new MovementRecovery();this.recoveryDoors=new Map();
@@ -392,7 +395,7 @@ export class PlayerController {
         const step=this.collider.slide(up.end,[dx,0,dz],this.mins,this.maxs,this.modelIndices);
         const down=this.collider.trace(step.position,[step.position[0],step.position[1]-18,step.position[2]],this.mins,this.maxs,this.modelIndices);
         const progress=p=>(p[0]-before[0])**2+(p[2]-before[2])**2;
-        if(down.fraction<1 && down.normal[1]>0.65 && progress(down.end)>progress(move.position)+0.01) move.position=down.end;
+        if(down.fraction<1 && down.normal[1]>FLOOR_NORMAL_Y && progress(down.end)>progress(move.position)+0.01) move.position=down.end;
       }
     }
     this.contacts=new Set(move.models);
@@ -400,9 +403,11 @@ export class PlayerController {
     if(wasGrounded) {
       const platform=this.platformVelocity||[0,0,0];
       const down=this.collider.trace(this.position,[this.position[0],this.position[1]-PLAYER_MOVEMENT.walkOther*dt,this.position[2]],this.mins,this.maxs,this.modelIndices);
-      this.position=down.end;this.grounded=down.fraction<1&&down.normal[1]>.65;
+      this.position=down.end;this.grounded=down.fraction<1&&down.normal[1]>FLOOR_NORMAL_Y;
       if(down.modelIndex!=null&&down.fraction<1)this.contacts.add(down.modelIndex);
-      if(pressedJump) {
+      // D2: the native grounded launch reads the held button, so holding
+      // jump relaunches on landing. Only the airborne super jump needs a press.
+      if(input.jump) {
         // Native launch records the unscaled input/external velocity after
         // ground travel. Gravity and upward travel start on the next tick.
         this.velocityY=jumpSpeed+platform[1];this.launchVelocityXZ=[inputVelocity[0]+wind[0]+platform[0],inputVelocity[2]+wind[2]+platform[2]];this.grounded=false;
@@ -423,7 +428,7 @@ export class PlayerController {
     this.position=fall.end; this.grounded=false;
     if(fall.fraction<1) {
       if(fall.modelIndex!==null)this.contacts.add(fall.modelIndex);
-      this.grounded=fall.normal[1]>0.65 && verticalSpeed<=0;
+      this.grounded=fall.normal[1]>FLOOR_NORMAL_Y && verticalSpeed<=0;
       if(this.grounded&&!fall.startSolid)this.didLand=Math.max(0,-this.velocityY);
       this.velocityY=0;
     }

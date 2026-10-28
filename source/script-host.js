@@ -23,7 +23,7 @@ export class ScriptHost {
     this.isDialoguePlaying=isDialoguePlaying;this.pendingCutsceneStop=null;
     this.replayLevel=replayLevel===true;
     this.portalTransition=null;
-    this.camera=null;this.subtitle=null;this.musicState=null;this.afterBossMusicId=null;this.combatThreats=false;this.combatBoss=false;this.errors=[];this.time=0;this.initialized=false;
+    this.camera=null;this.cutsceneFadeUntil=0;this.cutsceneFadeInUntil=0;this.subtitle=null;this.musicState=null;this.afterBossMusicId=null;this.combatThreats=false;this.combatBoss=false;this.errors=[];this.time=0;this.initialized=false;
     this.vm=new DaviVM(program,this);gameplay.scripts=this;
     const clips=new Map(motions.motions.map(m=>[m.model,m]));
     for(const object of gameplay.objects) {
@@ -115,7 +115,11 @@ export class ScriptHost {
   callNative(name,args=[]) {
     const game=this.game,a=args[0];
     switch(name.toLowerCase()) {
-      case 'startcutscene':this.pendingCutsceneStop=null;this.cutscene=true;this.game.emit('cutscene',{active:true,fade:number(a)});return 0;
+      case 'startcutscene':
+        this.pendingCutsceneStop=null;this.cutscene=true;this.cutsceneFadeUntil=0;
+        // Subtitles appear only once the StartCutScene fade-in has finished.
+        this.cutsceneFadeInUntil=!this.skippingCutscene&&number(a)>0?this.time+number(a):0;
+        this.game.emit('cutscene',{active:true,fade:number(a)});return 0;
       case 'stopcutscene':
         if(!this.skippingCutscene&&this.isDialoguePlaying())this.pendingCutsceneStop={fade:number(a)};
         else this.finishCutscene(number(a));
@@ -172,8 +176,16 @@ export class ScriptHost {
     this.game.emit('dialogue',{id:key,...this.subtitle});
   }
   finishCutscene(fade=0) {
+    if(this.skippingCutscene)fade=0;
     this.pendingCutsceneStop=null;this.portalTransition=null;this.cutscene=false;this.camera=null;this.subtitle=null;
+    // StopCutScene(fade) keeps control and the HUD withheld while the bars
+    // fade out; gameplay itself resumes at once.
+    this.cutsceneFadeUntil=fade>0?this.time+fade:0;this.cutsceneFadeInUntil=0;
     this.game.emit('cutscene',{active:false,fade});
+  }
+  /** Player control is held by cutscenes, their closing fade and fixed/route cameras (modes 2-4). */
+  get controlLocked() {
+    return this.cutscene||this.cutsceneFadeUntil>this.time||[2,3,4].includes(this.camera?.mode);
   }
   portalPlayerVisibility(visible) {
     const changed=this.playerVisible!==visible;this.playerVisible=visible;
@@ -198,7 +210,10 @@ export class ScriptHost {
   }
   selectMusic(object,mode) {
     const field=Object.keys(object.entity).find(key=>key.toLowerCase()==='music'+mode.toLowerCase());
-    const sound=object.entity[field];
+    const sound=object.entity[field],previous=this.musicState;
+    // D9 (0x57f1a0): MultiplyVolume scales only the playing instance. A newly
+    // started track begins at full gain again; reselecting the same one keeps it.
+    if(!(previous?.id===object.id&&previous.sound===sound&&!previous.stop))object.volume=1;
     this.musicState=sound?{id:object.id,sound,mode}:{id:object.id,stop:true,mode};
     this.game.emit('scriptMusic',{...this.musicState,volume:number(object.volume,1),crossFade:!!number(object.entity.CrossFade),fadeInTimeSeconds:number(object.entity.FadeInTimeSeconds),fadeOutTimeSeconds:number(object.entity.FadeOutTimeSeconds)});
   }
@@ -255,9 +270,9 @@ export class ScriptHost {
       else if(enabled&&changed){if(p&&!p.finished&&object.motionStarted)p.resume();else this.startMotion(object);}else if(!enabled)p?.stop();
     }
     if(object.entity.classname==='EffectSound'&&(changed||enabled&&!number(object.entity.Replay)))this.sound(object,enabled);
-    if(changed&&enabled&&object.entity.classname==='FlashEffect')this.game.emit('flash',{id:object.id});
+    if(changed&&enabled&&object.entity.classname==='FlashEffect'){object.flashStartedAt=this.game.time;this.game.emit('flash',{id:object.id});}
     if(changed&&enabled)object.activatedAt=this.time;
-    if(!enabled&&this.camera?.id===object.id)this.camera=null;
+    // Disabling a CameraTrigger leaves its active view running (D8).
   }
   normalizeFairies(position) {
     if(!Array.isArray(position)||position.length!==3||!position.every(Number.isFinite))return;
@@ -271,7 +286,11 @@ export class ScriptHost {
     const e=object.entity,points=[];
     for(let i=0;i<number(e.CamScriptPosTotal);i++){const target=this.game.find(e['CamScriptPos'+i])[0];if(target)points.push([...target.position]);}
     if(number(e.CameraMode)===0){this.camera=null;return;}
+    // Reactivating the view that is already active is a no-op.
+    if(this.camera?.id===object.id)return;
     this.camera={id:object.id,mode:number(e.CameraMode),points,position:[...(this.game.find(e.CamPos)[0]?.position||object.position)],targetPosition:this.game.find(e.CamTargetPos)[0]?.position||null,offset:point(e.CamOffset),target:e.CamTargetDaviName||null,targetPlayer:number(e.CamTargetPlayer)!==0,start:this.time,duration:number(e.CameraMode)===1?0:Math.max(0,number(e.CamTimeInMode)/1000)};
+    // A route camera (mode 4) with CamTimeInMode 0 expires on its next update.
+    if(this.camera.mode===4&&this.camera.duration===0)this.camera.instant=true;
   }
   startMotion(object,to=null) {
     const player=this.players.get(object.id);if(!player)return false;
@@ -315,7 +334,9 @@ export class ScriptHost {
       else if(updateControllerTarget(object,player,dt)){if(player.time!==previousTime)this.applyMotion(object,player);}
       else if(player.playing)this.applyMotion(object,player,player.update(dt));
     }
-    if(this.camera?.duration>0&&this.time-this.camera.start>=this.camera.duration)this.camera=null;
+    if(this.camera&&(this.camera.instant||this.camera.duration>0&&this.time-this.camera.start>=this.camera.duration))this.camera=null;
+    if(this.cutsceneFadeInUntil&&this.time>=this.cutsceneFadeInUntil){this.cutsceneFadeInUntil=0;this.game.emit('cutsceneFade',{phase:'in'});}
+    if(this.cutsceneFadeUntil&&this.time>=this.cutsceneFadeUntil){this.cutsceneFadeUntil=0;this.game.emit('cutsceneFade',{phase:'out'});}
     if(this.pendingCutsceneStop&&!this.isDialoguePlaying())this.finishCutscene(this.pendingCutsceneStop.fade);
     if(this.subtitle&&this.time>=this.subtitle.until){this.subtitle=null;this.game.emit('dialogue',{text:''});}
   }
@@ -337,7 +358,7 @@ export class ScriptHost {
   }
   snapshot() {
     return {version:1,replayLevel:this.replayLevel,vm:this.vm.snapshot(),time:this.time,cutscene:this.cutscene,playerVisible:this.playerVisible,enemiesFrozen:this.enemiesFrozen,weaponsEnabled:this.weaponsEnabled,hintMotion:this.hintMotion,
-      poses:copy([...this.modelTransforms]),camera:copy(this.camera),subtitle:copy(this.subtitle),pendingCutsceneStop:copy(this.pendingCutsceneStop),portalTransition:copy(this.portalTransition),musicState:copy(this.musicState),afterBossMusicId:this.afterBossMusicId,combatThreats:this.combatThreats,combatBoss:this.combatBoss,keyItems:[...this.keyItems],missions:[...this.missions],
+      poses:copy([...this.modelTransforms]),camera:copy(this.camera),cutsceneFadeUntil:this.cutsceneFadeUntil||0,cutsceneFadeInUntil:this.cutsceneFadeInUntil||0,subtitle:copy(this.subtitle),pendingCutsceneStop:copy(this.pendingCutsceneStop),portalTransition:copy(this.portalTransition),musicState:copy(this.musicState),afterBossMusicId:this.afterBossMusicId,combatThreats:this.combatThreats,combatBoss:this.combatBoss,keyItems:[...this.keyItems],missions:[...this.missions],
       motions:[...this.players].map(([id,p])=>({id,started:!!p.object.motionStarted,time:p.time,from:p.from,to:p.to,speed:p.speed,loop:p.loop,playing:p.playing,finished:p.finished,includeStart:p.includeStart,loopFrom:p.loopFrom,loopTo:p.loopTo,...(p.controllerTarget?{controllerTarget:{...p.controllerTarget}}:{}),...(p.object.kind==='button'?{buttonPhase:p.object.buttonPhase??(p.object.switchedOn?5:1)}:{})}))};
   }
   restore(save) {
@@ -350,6 +371,8 @@ export class ScriptHost {
     for(const key of ['cutscene','playerVisible','enemiesFrozen','weaponsEnabled'])if(typeof save[key]==='boolean')this[key]=save[key];
     this.camera=save.camera||null;this.subtitle=save.subtitle||null;this.keyItems=new Set(save.keyItems||[]);this.missions=new Map(save.missions||[]);
     this.pendingCutsceneStop=save.pendingCutsceneStop||null;
+    // Optional; older saves have no pending fade.
+    for(const key of ['cutsceneFadeUntil','cutsceneFadeInUntil'])this[key]=Number.isFinite(save[key])&&save[key]>this.time?save[key]:0;
     this.portalTransition=save.portalTransition||null;
     const correctedPoses=new Set();
     for(const s of save.motions||[]) {

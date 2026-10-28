@@ -1,11 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {Gameplay} from '../source/gameplay.js';
+import {PLAYER_HALF_WIDTH} from '../source/player-hull.js';
 
+// The enemy's 10-unit hull face meets RedCat's native box face exactly.
 const player=[0,0,0];
 const families=[[1,'spider'],[2,'bat'],[3,'ghost'],[4,'zombie'],[10,'guardian']];
 function fixture(type,save=null,level=null) {
-  level??={id:'touch-hit',entities:[{classname:'MovingEnemy','%name%':'enemy',Type:String(type),SubType:'1',Origin:'21 0 0'}]};
+  level??={id:'touch-hit',entities:[{classname:'MovingEnemy','%name%':'enemy',Type:String(type),SubType:'1',Origin:`${PLAYER_HALF_WIDTH+10} 0 0`}]};
   const events=[],game=new Gameplay(level,{save,onEvent:event=>events.push(event)}),enemy=game.objects[0];
   game.playerPosition=[...player];enemy.stats={...enemy.stats,Speed:0,Damage:1,SenseRange:1000};
   enemy.animationDurations={hurt:3};enemy.collisionMins=[-10,0,-10];enemy.collisionMaxs=[10,40,10];

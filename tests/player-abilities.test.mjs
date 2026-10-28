@@ -78,9 +78,12 @@ test('SuperSkippie requires its skill and a released/repressed jump within nativ
     const p=player(skill),result=jumpRun(p,{delay});assert.equal(result.boosts,Number(boost),`${skill}/${delay}`);
     if(!boost)assert.ok(Math.abs(result.apex-349.65)<.12);
   }
+  // D2: the grounded launch reads the held button, so holding relaunches on
+  // each landing. The airborne super jump still needs a fresh press.
   const held=player(),result=jumpRun(held,{hold:true,seconds:2});
-  assert.equal(result.boosts,0);assert.equal(held.jumpSerial,1,'held input neither boosts nor auto-bounces on landing');
-  assert.equal(held.grounded,true);
+  assert.equal(result.boosts,0,'held input never boosts');assert.ok(held.jumpSerial>=3,'held input relaunches on landing');
+  const serial=held.jumpSerial;jumpRun(held,{delay:99,seconds:1.4});
+  assert.equal(held.grounded,true);assert.ok(held.jumpSerial<=serial+1);
 });
 
 test('original graveyard cave staircase needs three 72-unit ascents and SuperSkippie climbs all three',()=>{

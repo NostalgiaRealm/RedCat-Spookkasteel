@@ -1,0 +1,3297 @@
+✔ actor surfaces block a swept player and projectiles but respect native LOS flags (3.364303ms)
+✔ actor collision allows sliding, moving away, and passing empty portions of a triangle bounding box (0.813734ms)
+✔ standing on an actor surface remains stable and is not mistaken for starting inside it (6.382121ms)
+✔ original rotated graveyard statue blocks its pedestal while a disabled blocker disappears (16.972367ms)
+✖ a dormant graveyard zombie reuses its triangle collision until its pose or placement changes (164.400951ms)
+✖ Dungeon machine retains original geometry and exposes every turret part to player shots (25.561299ms)
+✖ Dungeon turret, crate, lid and exposed body all forward pellet damage to Max (9.220028ms)
+✖ Dungeon ammunition exits its own shields but other enemies still collide, and defeated shields disappear (8.607893ms)
+✔ actor orientation applies native world-axis script and spin rotations before the brush rotation (2.338592ms)
+✔ original castle balls and cave rocks spin one revolution per second in opposite authored directions (1.815546ms)
+✖ attached actor and pickup anchors rotate about the model pivot without accumulating displacement (3.021487ms)
+✔ controller Disable pauses the support without hiding its actor, whereas Hide removes both (1.114351ms)
+✔ saving preserves local actor age, script rotation and its unmodified anchor while restoring the brush pose (7.370032ms)
+✖ an off-camera actor advances its authored animation clock and resumes the current pose when approached (5.602656ms)
+✖ moving a model-attached prop refreshes its existing collision surface and Hide disables it (4.629843ms)
+✖ the frame queries attached prop collision at the newly advanced support pose without advancing its animation twice (1.793006ms)
+✔ all original decorative actors resolve their assets, explicit motions and moving-model attachments (153.703475ms)
+✖ green bats pursue through the inherited attack radius and damage only on contact (13.189517ms)
+✔ green bat contact cooldown is one second, independent of inherited melee timing (2.57398ms)
+✔ bat contact uses its asymmetric hull and the swept movement segment (0.995992ms)
+✔ blocking geometry and obscured remembered positions cannot cause remote contact damage (5.900064ms)
+✖ green bat hurt, enemy freeze, and cutscenes pause pursuit and the saved contact cooldown (6.642708ms)
+✔ old saved green bat melee attacks convert to contact pursuit without a remote hit (3.89509ms)
+✔ yellow and red bats retain native flight speed, shoot motions and projectile release timing (4.241767ms)
+✔ original castle bat variants resolve to contact and ranged behavior without map overrides (29.258631ms)
+✖ authored active bat spawns fit the stable imported body hull rather than spread wings (68.526883ms)
+✔ beam intersection clips the actual segment and the complete swept player hull (1.27891ms)
+✔ beam contact applies native dt times DPS, delays the callback and next trace, and survives saving (18.513555ms)
+✔ disabled, hidden and once-only beams reject further contacts; type 3 does not arm a command delay (8.97785ms)
+✔ beam endpoints follow brush motions and optional nearest-wall clipping (1.893375ms)
+✔ all four original Cave boss gate beams damage RedCat until the original group is disabled (46.750713ms)
+✖ lethal beam contact stops before later beams can damage the respawned player (5.961603ms)
+✖ original castle and cave StandingEnemy enums create their respective bosses (36.175886ms)
+✔ legacy swapped Max saves retain progress while discarding incompatible phases and ammunition (28.171719ms)
+✖ Dungeon Max completes native turret salvo, rise, look, lower and second salvo (7.892438ms)
+✔ Dungeon Max uses sampled difficulty salvo counts and original rise time (17.367194ms)
+✔ Boss freeze and save/load preserve a partially raised turret (17.78281ms)
+✖ Jester follows disappearance, InvisibleTime, reappearance, salvo, protected teleport (4.236927ms)
+✔ Jester teleport chooses authored locations, respects player spacing, and preserves in-place native fallback (5.244608ms)
+✖ Invisible Jester rejects damage without restarting animation or consuming RNG (4.373016ms)
+✔ Witch plays takeoff, then follows original tower waypoints in 3D and fires magic salvos (61.077471ms)
+✔ Witch enters the scripted defeat at native health threshold two (2.52282ms)
+✖ A boss hit interrupts its pending shot only when native reaction chooses a new state (4.589494ms)
+✔ Gameplay routes bosses through specialized phases and restores a moving turret without a phase reset (54.009977ms)
+✔ Gameplay freeze pauses every specialized boss phase and disabled bosses retain their initial pose (12.629101ms)
+✖ Jester actually plays and restarts the original teleport clip for disappearing and reappearing (34.005024ms)
+✔ Hidden Jester does not absorb a player pellet at its previous location (4.258566ms)
+✔ Witch threshold defeat dispatches the existing end-scene hook exactly once (2.240902ms)
+✔ Interrupting Dungeon Max during a rise preserves height then starts a fresh native salvo (3.277354ms)
+✔ Dungeon Max accepts every exposed-body hit but reacts on the native half of hits (2.941927ms)
+✔ boss hit reactions use CRT modulo and preserve a playing hurt child through repeated hits (23.423836ms)
+✔ standing bosses release committed salvos with no extra pause between shoot animations (6.558669ms)
+✔ a recovering boss never releases its canceled shot and pauses its actual hurt duration (45.753011ms)
+✔ Witch hit recovery preserves closer selection at waypoint arrivals (2.145484ms)
+✔ boss attack and hit poses reach the native release/end at the same rate as their phase clocks (35.658741ms)
+✔ Witch waits arm on first check and preserve strict expiry through save and freeze (25.739929ms)
+✔ original cave intro moves its Max double away before the turret battle handoff (425.159965ms)
+✔ castle WhizKitty scene uses the inside endpoint despite its duplicate PlayerStart name (97.092308ms)
+✖ Brutus defeat restores ambient music and raises the mirror through the original ending motion (61.955985ms)
+✔ native boss activation selects special music in each original arena (117.929435ms)
+✔ boss defeat chooses action music while another living enemy remains engaged (74.146779ms)
+✔ older saves with a defeated Brutus no longer restart the stranded boss track (30.022455ms)
+✔ an empty authored music selection stops the previous track and remains stopped after loading (42.631416ms)
+✔ all four exit mirrors execute their authored route to the following level exactly once (221.080115ms)
+✖ all positioned castle emitters including non-3D bridge/lift sounds fall silent at 25 metres (56.655266ms)
+✖ moving castle emitters use their current position and preserve channel/script/master gains (1.231191ms)
+✖ tower torch and cauldron fire retain authored locations, are quieter nearby and silent beyond18m (8.244825ms)
+✖ all cave environmental loops fade smoothly within their section and are silent at 30 metres (8.199455ms)
+✖ shorter range preserves script/master volume and leaves unrelated sounds and other levels native (1.027442ms)
+✖ authored cave sound activation and save restoration retain the shorter range (154.022142ms)
+✔ supplies fill native maxima, add score repeatedly and preserve level gateway scripts (6.162191ms)
+✔ supply grants use configured mirror/score limits, native potion cap, and tolerate absent state (0.258838ms)
+✔ original potion pickups pass the 30-potion skill threshold and saturate at 100 after cheating (1.013442ms)
+✔ collecting a real mirror after the cheat keeps the cap and still opens its gateway (0.393117ms)
+✔ free flight bypasses all geometry and gravity, follows pitch, and normalizes diagonal input (0.822183ms)
+✔ no-clip crosses a solid wall and disabling it restores ordinary collision (5.263479ms)
+✔ disabling inside a wall or beyond any world bound returns to a verified safe point (2.766708ms)
+✔ safe exit revalidates stale lastSafe after doors move and refuses to strand the player (0.590435ms)
+✖ world flight bypasses platform carry, lower-world recovery and third-person camera clipping (1.514128ms)
+✔ a prop survives exact projectile equality, remains targetable/collidable, and breaks on the next positive hit (6.939086ms)
+✔ all projectile strengths and partial hits use the same strict accumulated limit (2.051313ms)
+✔ blast and projectile damage share one accumulator without suppressing later blast ticks at equality (0.921623ms)
+✖ saving at exact equality preserves an intact prop and its next-hit destruction across actor loading (6.779267ms)
+✔ legacy saves keep their remaining budget and same-world restoration clears newer accumulated damage (2.089483ms)
+✔ explicit script destruction still bypasses the threshold, including an equality-state prop (0.677555ms)
+✔ indestructible actors still run OnHit commands while ignoring damage, and enemy equality still defeats (1.22722ms)
+✔ invalid damage and accumulator state cannot revive destroyed props or poison future damage (0.714044ms)
+✔ original Dutch labels, native IDs and invalid-setting fallback select the three native sections (4.586674ms)
+✖ difficulty changes real knight health and melee damage using the original per-enemy values (5.542836ms)
+✖ difficulty chooses native projectile damage, speed and real collision damage without scaling player pellets (1.736597ms)
+✔ native movement and boss encounter parameters use the chosen section (2.56793ms)
+✔ all imported level enemies receive populated difficulty-specific native tables (280.118363ms)
+✔ saved difficulty restores health limits, projectile rules, boss progress and hazards independently of menu preference (7.68705ms)
+✔ legacy saves retain Normal difficulty and incompatible saves do not change a running encounter (0.825554ms)
+✖ native proximity is an origin-centered X/Z box with unexpanded height and full hull dimensions (3.483953ms)
+✔ castle entrance preserves its left-first route and raises throne stairs only from the right corridor (209.11586ms)
+✖ walking into original doorhallway05_01 opens the knight-room passage at its brush, without E (61.992244ms)
+✖ walking into original doorhallway05_02 opens the knight-room passage at its brush, without E (40.161515ms)
+✖ walking into original doorhallway05_03 opens the knight-room passage at its brush, without E (47.779586ms)
+✖ walking into original secretdoor04 opens the knight-room passage at its brush, without E (30.760518ms)
+✔ chapel floor descends and carries RedCat after the original floor button raises it (239.232123ms)
+✔ Brutus double doors open through their original remote approach radii (43.32243ms)
+✔ automatic interaction retains authored locks, disable flags and shoot-only buttons (0.821603ms)
+✔ selected spider hit interrupts dormant movement and survives reload (10.077121ms)
+✔ selected spider hit interrupts descending movement and survives reload (2.210083ms)
+✔ selected spider hit interrupts returning movement and survives reload (3.020557ms)
+✔ selected spider hit interrupts ascending movement and survives reload (1.013662ms)
+✔ sound-only spider hits leave each active ambush movement intact (1.758827ms)
+✔ dormant skeleton hit replaces the pile and restores without an extra wake after hurt (2.269392ms)
+✔ selected skeleton hits discard waking/retracting children without replaying them (0.677335ms)
+✔ old skeleton snapshots with a dormant/wake child during hurt recover to fresh alert (1.27206ms)
+✔ sound-only skeleton damage keeps ordinary wake and does not cancel an active transition (0.605115ms)
+✔ lethal damage to dormant skeleton preserves its death state on reload (1.652128ms)
+✔ a script freeze preserves a selected spider hit instead of resuming its old ascent (1.840106ms)
+✔ fresh spider alert chooses descent near the ceiling and combat at the midpoint or below (1.465049ms)
+✔ post-hit spider return-for-descent survives reload and never resumes the old ascent (2.822878ms)
+✔ spiderg: walking uses original moving legs instead of its idle pose (17.85586ms)
+✔ spidery: walking uses original moving legs instead of its idle pose (7.748429ms)
+✔ spiderr: walking uses original moving legs instead of its idle pose (8.239785ms)
+✔ zombie: walking uses original moving legs instead of its idle pose (9.651014ms)
+✔ batg: active idle keeps flying while dormant and scripted hanging poses remain available (7.956998ms)
+✔ baty: active idle keeps flying while dormant and scripted hanging poses remain available (5.340058ms)
+✔ batr: active idle keeps flying while dormant and scripted hanging poses remain available (4.255406ms)
+✔ enemy attack runs once, holds its last pose, and restarts only for the next actual attack (4.301846ms)
+✔ original knight hit factor controls both rendered speed and reported gameplay duration (3.621342ms)
+✔ Bone Brutus charge uses its original one-shot clip and saved playback rate (8.472744ms)
+✔ cutscene freezing holds the current enemy animation pose (3.87343ms)
+✔ restoring a attack one-shot resumes the saved phase (3.704481ms)
+✔ restoring a hurt one-shot resumes the saved phase (5.370648ms)
+✔ restoring a death one-shot resumes the saved phase (4.359086ms)
+✔ defeated spiders remain visible while their death clip plays instead of vanishing on health zero (7.64643ms)
+✔ visible enemy projectiles follow simulation positions and disappear at impact (2.56425ms)
+✔ knight death uses all nine original breakup actors, freezes with cutscenes and cleans up (43.029242ms)
+✖ jump feedback fires once on a grounded jump, never from a held airborne input or cutscene (2.438871ms)
+✖ spider variants use original melee damage versus red-spider projectile settings (8.417754ms)
+✖ red spider shots stop at BSP walls and can be dodged (5.528316ms)
+✔ swept collision catches a player crossed entirely within one frame (2.290902ms)
+✔ enemy movement walks along terrain, falls to floor and respects blocking walls (5.718285ms)
+✔ hurt and death react once, cancel attacks and retain a timed death state (2.200963ms)
+✔ enemy audio actions are staggered, audible-nearby only, and attacks respect cadence (8.374464ms)
+✔ cutscenes and enemy freeze pause pending attacks, projectiles and animation deadlines (2.021105ms)
+✔ saved enemy animation, salvo cooldown and projectile flight resume without refiring (6.199381ms)
+✔ player pellets hit the nearest brush and emit enemy hurt only on arrival (2.039384ms)
+✖ defeated boss retires during frozen fairy dialogue while RedCat returns to animated idle (188.020385ms)
+✔ cave intro double retires after withdrawal and remains retired after turret defeat and loading (370.053138ms)
+✔ Jester departure and arrival retain native particle counts, directions and saved phase age (9.606565ms)
+✔ native non-ribbon projectiles do not emit invented smoke trails or impact tails (0.416007ms)
+✔ all enemy projectile kinds have the original imported frame sequences and INI sprite sizes (10.755745ms)
+✖ native death motion is followed by five seconds of fade; clocks freeze and saves resume without replay (4.135707ms)
+✔ fading clones materials and multiplies native ghost alpha, restoring original materials when living (2.465061ms)
+✔ purple smoke emits once per death, is stable on redraw and restores original bone anchors (6.833097ms)
+✔ script-retired witch does not receive generic death smoke (1.085231ms)
+✔ smoke follows native bind-bone offsets, outward velocity and positive acceleration (0.366817ms)
+✔ smoke uses native independent clock deadlines, byte alpha and bounded fixed-step sampling (0.255598ms)
+✖ knight breakup resumes its age after load and does not restart at its expiry (25.380821ms)
+✔ knight fragments use original actor settings and native bounds, launch and per-piece physics (3.77745ms)
+✔ salvo property varies between enemies but remains fixed through salvos and saves (19.218039ms)
+✔ native route uses minimum hops instead of shortest metric distance and respects blockers (1.050842ms)
+✔ pursuit routes around a wall on authored points and resumes directly when clear (1.497018ms)
+✔ touch enemy chooses MoveCloser as well as both timed circling directions (0.799954ms)
+✔ guardian approaches instead of causing distant melee damage, then attacks on contact (17.435304ms)
+✔ knight can hit during the end of its active strike window, only once (2.327862ms)
+✔ spider returns to its own hanging anchor after losing the target and restores mid ascent (1.955005ms)
+✔ failed pursuit search is cached instead of flooding blocked BSP routes every frame (0.698374ms)
+✔ knight strike-window end survives save and shifts with a script freeze (0.939232ms)
+✔ authored patrol and touch pursuit avoid searches; displaced actors retain bounded reacquisition (6.725187ms)
+✔ Gameplay uses native adjacent approach, reserves before strict range completion, and stops mid-edge (9.403856ms)
+✔ all ordinary shooter families release the whole committed salvo after LOS, range and memory are lost (63.960739ms)
+✔ an unarmed inter-shot wait survives save and freeze without consuming its duration before first update (16.302182ms)
+✔ imported Forest Mushroom Brutus uses native closer and retains its committed mushroom salvo (129.536363ms)
+✔ Bone Brutus save/freeze keeps charge, ammo and committed shots without a duplicate charge entry (11.624419ms)
+✔ legacy Bone Brutus charge restores once and pending charge waits for the final shot pose (23.798883ms)
+✔ a native no-destination result starts and releases a shot outside attack range (2.173003ms)
+✔ snapshot and fresh Gameplay restore preserve an active release and remaining native salvo (13.373105ms)
+✔ snapshot restores an inter-shot wait without replaying the already released shot (8.339905ms)
+✔ legacy saves adopt the outstanding shot or inter-shot wait without starting a second full salvo (6.776947ms)
+✔ script freeze and cutscene shift native wait deadlines without consuming the committed child (7.502161ms)
+✔ actual selected hit cancels the native child and pending release, while sound-only hit preserves both (3.383574ms)
+✔ imported skeleton backward clip and Gameplay deadline use WalkMotionFactor squared (1) (64.640083ms)
+✔ imported skeleton backward clip and Gameplay deadline use WalkMotionFactor squared (2) (17.338154ms)
+✔ retreat can stop and resume on range while its original clip, edge, and refreshed memory remain active (46.797372ms)
+✔ motion completion while RedCat is still too close holds the last imported pose without replaying retreat (27.314086ms)
+✔ mid-retreat fresh save restores the exact backward pose and remaining child (1) (31.045897ms)
+✔ mid-retreat fresh save restores the exact backward pose and remaining child (2) (25.729548ms)
+✔ freeze and cutscene preserve the retreat pose and shift its single animation deadline (19.225009ms)
+✖ spider contact cooldown survives hurt and expires while still hurt (7.003255ms)
+✖ bat contact cooldown survives hurt and expires while still hurt (1.326819ms)
+✖ ghost contact cooldown survives hurt and expires while still hurt (0.649305ms)
+✖ zombie contact cooldown survives hurt and expires while still hurt (2.192892ms)
+✖ guardian contact cooldown survives hurt and expires while still hurt (0.771564ms)
+✖ reloading a hurt touching enemy preserves the remaining independent contact cooldown (3.85897ms)
+✔ native clockwise/anticlockwise select nearest linked point on the proper angular side (3.211885ms)
+✔ native bearing wraps across +/-pi and closer samples every strictly closer neighbor in 3D (2.45942ms)
+✔ touch selection uses only eight neighbors and reserves destinations until death/disable (3.032556ms)
+✔ circle starts clock on first update, keeps edge at equality, selects before expiration (0.914033ms)
+✔ no closer neighbor waits one second without searching distant points (0.645605ms)
+✔ touch spider, bat, ghost, zombie and guardian follow their edge and damage on body contact (20.553729ms)
+✔ movement state and destination survive a save, freeze, and older orbit saves migrate safely (7.540181ms)
+✔ authored flying patrol and touch steps never invoke whole-network detour searches (2.60607ms)
+✔ a displaced saved cursor reacquires its node before choosing a new authored edge (1.822746ms)
+✔ flying patrol reaches a waypoint before turning instead of cutting the corner five units early (3.569962ms)
+✔ legacy orbit saves with a non-null stale destination use bounded reacquisition (3.344124ms)
+✖ damage and rendering share one exact seeded cohort without adding save fields (13.282396ms)
+✔ mutable diagnostic callers invalidate every blast spawn input without changing public factory behavior (5.491207ms)
+✔ authored crate damage rates/radii use the native percentages and the visual blast births (4.078928ms)
+✔ nearby RedCat receives whole frame doses through the inclusive first-activation deadline (8.422974ms)
+✔ RedCat range and LOS use his native eye-height movement origin (1.29498ms)
+✔ moving out of range stops damage while moving into an expired blast never damages (1.021852ms)
+✔ enemy falloff uses the nearest posed box edge and tries native centre-relative corner rays (0.914283ms)
+✔ exploding crates kill nearby enemies, preserve distant enemies, and award defeat once (3.410553ms)
+✔ hurt cells damage smoke-only crates and chain destructible actors without projectile OnHit hooks (2.365742ms)
+✔ hidden and inactive targets stay protected, and brush OnHit callbacks do not receive splash (1.052432ms)
+✖ player death fires once; noclip immunity and cutscene protection remain intact (2.129023ms)
+✔ saving mid-blast resumes only remaining damage and respawn clears pending damage (14.332308ms)
+✖ a synchronous respawn during blast damage discards the old cell iteration immediately (1.427588ms)
+✔ delayed blasts arm on the first eligible frame and do not clip that frame or the inclusive end (0.620515ms)
+✔ the first frame beyond expiry does not receive a clipped remainder (0.581615ms)
+✔ pending saves preserve first activation, old saves retain their original expiry, and bad clocks are rejected (1.187201ms)
+✔ world explosion targets expose rendered bounds for rotated, scaled moving actors (3.396683ms)
+✔ dialogue FIFO preserves every WAV through delayed loading, pause, expiry and final completion (3.368773ms)
+✔ pause covers every playing channel and pending sound, preserving delayed-loop countdowns (4.442265ms)
+✔ explicit dialogue skip and reset remove queued tails; playback errors cannot stall a sequence (0.963033ms)
+✔ all 31 authored fairy locations activate exactly their own Davi binding and stop their idle on deactivation (349.006392ms)
+✔ native cutscene finish waits for the actual voice end and keeps its fairy present; skip stays immediate (90.477851ms)
+✔ a second fairy encounter replaces the first and legacy saves keep only the fairy at the saved player (27.599243ms)
+✔ pickup router selects complete native S/M/L recordings and overlapping pickups keep separate tails (0.996982ms)
+✖ BIG BENG charge sound follows its native hold, pause and release lifetime (1.179861ms)
+✔ level-transition pickup guard waits for every ending, freezes with pause, and clears on failure or reset (0.587756ms)
+✔ shots use rcshoot1, and only actual impacts play rcshoot4 (5.335828ms)
+✔ jump and pickups retain full authored gain rather than old placeholder reductions (0.455347ms)
+✖ health loss selects native reaction thresholds from VoiceNL and death replaces the reaction (1.33725ms)
+✖ each enemy family uses native alert, attack, hurt and death samples with spatial playback (0.887423ms)
+✖ enemy vocal position follows its moving actor and old reactions stop (5.349228ms)
+✔ all required player WAV files exist in the correct imported asset directory (0.465006ms)
+✔ pickup checks keep authored trigger order without querying unrelated object positions (10.038211ms)
+✔ pickup checks retain settled anchors, current support transforms and line of sight (1.799976ms)
+✖ brush host reuses the accepted final pose while blocked segments wait and resume (3.113826ms)
+✖ brush host uses the final pose after a callback replaces playback (1.380939ms)
+✔ original forest imports correct entities and normal-difficulty frog attributes (42.649906ms)
+✔ safe commands honor escaped newlines, comments, named doors and unsupported branches (1.26433ms)
+✖ enter trigger fires once, leaving runs its own command, max trigger count persists (3.602792ms)
+✔ touch and shot switches respect maximum count and trigger original named commands (0.870843ms)
+✔ pickups score exactly once, health caps and blocked line of sight prevents pickup (1.431588ms)
+✔ repeatable touch switch changes on entry rather than oscillating every frame (0.421317ms)
+✔ attack requires aim and line of sight, defeats enemy, runs destruction command (4.030949ms)
+✔ snapshot restores mutable state and prevents item farming after load (4.329726ms)
+✖ damage cooldown, death and checkpoint respawn are deterministic (1.18638ms)
+✔ original level transition target is normalized and emitted once (0.875313ms)
+✔ timer and script closes wait until the player leaves the doorway (1.376389ms)
+✔ Gargoyle imports its original full resolution kaboom artwork and alpha (2.178652ms)
+✔ native mouth shot keeps damage physics, hides only its pellet and starts a separate blast (9.383987ms)
+✔ native blast timer, emission pool and tapered red/yellow geometry match the recovered constants (12.588751ms)
+✔ blast survives projectile collision, freezes, and restores its exact particles and timers (17.528183ms)
+✔ hidden Gargoyle projectile still damages RedCat and stops at a wall (3.528932ms)
+✖ Gargoyle fires consecutive shoot motions within each native salvo then waits two seconds (23.998892ms)
+✔ death after every original maze stage and during moving hedges restores the replayable initial layout (1319.991957ms)
+✖ the real death clip reaches one respawn and does not retrigger the maze at the old death position (66.555328ms)
+✖ fatal damage cancels an unfinished final button before it can start the maze exit cutscene (68.727591ms)
+✔ nonfatal damage leaves an unfinished final button able to commit its original completion callback (63.465492ms)
+✔ committed final button and fully open maze stay solved across respawn and save/load (281.960578ms)
+✖ save/load during death or after reset retains reset transforms and permits the original route again (198.114926ms)
+✔ maze retry preserves loot, enemy defeats, the crate secret, painting globals and the independent moving hedge (71.32376ms)
+✔ respawn does not reset a different levels original puzzle progress or motion (7.915248ms)
+✔ older saves with no motion-started fields still reset an unfinished maze after death (109.573391ms)
+✖ loading an older death save cancels its pending final-button callback before timelines advance (98.346748ms)
+✔ loading the stranded entrance pattern repairs only the maze and retains the saved level progress (114.147605ms)
+✔ loading viable intermediate, moving-door or committed maze saves does not rewind their progress (313.831439ms)
+✖ fatal damage before the first button controller check also cancels its queued maze exit (74.804894ms)
+✔ a shallow embedded player hull is nudged to nearby supported body clearance (4.396106ms)
+✔ corner recovery clears both obstacles without crossing either solid (1.2539ms)
+✔ ordinary pushing against a wall, idle actors and flowing movement do not trigger recovery (4.535074ms)
+✔ a visited clear position is used when local candidates are unsafe and is revalidated (9.729983ms)
+✔ a newly closed gate prevents recovering through it to previously clear history (8.041497ms)
+✔ history under a moved obstacle is rejected in its current brush pose (1.165651ms)
+✔ ground recovery rejects cliffs, unsupported hull corners and hazardous candidate predicates (0.432207ms)
+✔ shallow recovery never tunnels through a thin obstacle when starting overlapped (0.593076ms)
+✔ history is capped, paused updates do no work, teleports clear old history, and searches are bounded (5.646636ms)
+✔ PlayerController recovers an overlap and clears stale airborne velocity without blocking normal noclip (2.988766ms)
+✔ ground frogs and flying enemies recover from body overlaps while preserving authored patrol targets (1.437088ms)
+✔ authored takeoff, dormant/descending spiders, turret phases and dead actors are excluded (14.769144ms)
+✔ PlayerController records dry support only and does not promote water to a safe return point (4.771422ms)
+✖ live player physics holding into a wall stays put until the user changes direction (11.923456ms)
+✔ resumed natural travel cancels an unfinished recovery search; loading resets stale history (1.423909ms)
+✔ a shallow well-side wedge leaves the raised base horizontally before settling on lower ground (1.181681ms)
+✖ a non-overlapping player pinched under a sloped well roof escapes diagonally down and resumes walking (4.759152ms)
+✔ extended airborne settling remains bounded and cannot bypass an intervening gate (1.27728ms)
+✖ normal free fall beside a wall does not trigger the suspended-body recovery (4.406056ms)
+✔ a low sealed fall pocket recovers only to a revalidated higher visited position (17.002247ms)
+✔ fall-pocket recovery cannot replace an ordinary walk around a low corridor corner (90.902297ms)
+✔ a nearby authored gate vetoes returning from a fall pocket to higher history (52.863395ms)
+✖ higher fall-pocket history cannot bypass a door beyond the local probe (53.50869ms)
+✔ a jumpable lip below a previously visited higher shelf does not trigger fall-pocket recovery (30.363572ms)
+✔ a descending passage beneath a lower ceiling is an ordinary fall-pocket exit (18.411966ms)
+✔ a jump becomes available after walking beneath the edge of a low ceiling (30.342602ms)
+✔ the original Castle warehouse pocket recovers to the verified upper shelf with bounded work (107.938143ms)
+✔ authored cobweb masks apply to every graveyard web without mutating actor templates (31.298755ms)
+✖ native fairy square halo, diagonal pulses, color cycle and departure survive central lifetime (40.031876ms)
+✔ native fairy lifecycle emits one departure burst and audio then supports subsequent dialogue (6.766228ms)
+✔ source and root lockfile agree on the game release version (6.232181ms)
+✔ packaging requires an explicit version before calling the builder (0.717154ms)
+  • electron-builder  version=26.15.3 os=7.2.12-200.fc44.x86_64
+  • loaded configuration  file=package.json ("build" field)
+  • electron-builder  version=26.15.3 os=7.2.12-200.fc44.x86_64
+  • loaded configuration  file=package.json ("build" field)
+✔ builder accepts injected package metadata without building or changing source (453.80189ms)
+✔ original painting solution wraps at path end, enables all three spiders, and breaks the entryway (147.482183ms)
+✔ the three roof-origin spiders wait for approach, descend at native FallSpeed, then land (35.782439ms)
+✖ hanging spider perception uses its ceiling eye, horizontal range and two native sight rays (36.769392ms)
+✔ pre-fix solved saves recover skipped spider enables and roof placement without replaying the gate cutscene (138.633782ms)
+✔ saving retains descent progress and does not rewind a fought or roaming roof-origin spider (68.418093ms)
+✔ automatic waypoint links respect native distance, height, subsystem and walls (3.75846ms)
+✔ explicit waypoint edges preserve authored climbs but never cross subsystems (0.583826ms)
+✔ automatic links reject narrow 3D angles at either endpoint while authored links survive (0.599586ms)
+✔ automatic links honor native 3D clearance to third points and finite segment endpoints (0.462737ms)
+✔ automatic links avoid strict crossings but permit bridges above the height threshold (2.238383ms)
+✔ automatic collinear routes use the intermediate waypoint instead of skipping it (0.403217ms)
+✖ unaware moving enemies patrol original points, retain progress in saves, and freeze (9.974462ms)
+✔ leaving an unlinked start does not send enemies back into their initial grave (0.827594ms)
+✖ view cone and remembered position replace omnidirectional player tracking (1.713527ms)
+✖ Brutus launches original mushrooms, then moves on arena points between salvos (9.554305ms)
+✔ boss projectile classes and difficulty values come from original settings (1.528098ms)
+✖ Bone Brutus charges between bone and skull salvos and restores the charge phase (13.029148ms)
+✔ shot deviation is reproducible across saves without changing projectile speed (1.31625ms)
+✔ forest arena and frog area remain separate automatic path networks (38.798316ms)
+✔ native fairy potion gates award SuperSkippie and BIG BENG only at 30 potions (284.688287ms)
+✔ fresh caves and a real graveyard carry keep BIG BENG locked; restored and earned ownership survive (122.713258ms)
+✖ SuperSkippie requires its skill and a released/repressed jump within native tap limits (76.071173ms)
+✔ original graveyard cave staircase needs three 72-unit ascents and SuperSkippie climbs all three (27.121808ms)
+✔ jump2 restarts at the airborne boost and retains the native 1.3x animation through descent (10.931824ms)
+✔ BIG BENG holds its native pose, releases once, scales damage, and recharges for the next shot (9.326657ms)
+✔ ordinary held fire stays available before BIG BENG and stale charges cancel on death/weapon removal (2.033854ms)
+✔ charging survives save/load without losing its release (0.765994ms)
+✔ dialogue cancels a held charge so RedCat idles and cannot fire it after the cutscene (0.629185ms)
+✔ touch press/release supplies the same SuperSkippie and charging edges as held keyboard input (10.579548ms)
+✖ no-clip ignores normal, continuous and lethal scripted damage, and immediately restores normal damage on exit (6.200382ms)
+✖ restored no-clip and blocked no-clip exits retain immunity (1.353649ms)
+✔ earned abilities persist independently of a chapter save, replay, completion and level unlock cheats (2.064063ms)
+✔ valid older checkpoints migrate learned abilities without trusting malformed saves or inventory cheats (0.940303ms)
+✔ native impact thresholds retain equality and only damage above double jump speed (1.773936ms)
+✔ landing selects dry, water and ooze slots without truncating impact gain (0.298187ms)
+✔ actual gameplay subtracts fractional fall damage once and ordinary jumps remain safe (1.393499ms)
+✖ fall damage keeps existing no-clip, cutscene, respawn and completed-level protection (1.522508ms)
+✔ native player hit, death and respawn clocks match actual imported motions (10.593527ms)
+✔ nonfatal damage interrupts a pending shot and hurt finishes without losing another life (3.890069ms)
+✖ death waits for the native clip, respawns once, protects recovery and persists both phases (1.410799ms)
+✖ last-life game over waits for death and holds its final pose without repeated events (0.748444ms)
+✔ cutscene immunity and no-clip never start a hurt reaction; paused simulation keeps the same pose (0.641165ms)
+✔ shot: Gameplay emits the native firing and impact recordings only at their actual events (6.787707ms)
+✔ shot: expiry is silent and a saved in-flight pellet retains its impact sound after skills change (3.578762ms)
+✔ powerShot: Gameplay emits the native firing and impact recordings only at their actual events (0.697645ms)
+✔ powerShot: expiry is silent and a saved in-flight pellet retains its impact sound after skills change (0.944283ms)
+✖ superShot: Gameplay emits the native firing and impact recordings only at their actual events (1.32924ms)
+✔ superShot: expiry is silent and a saved in-flight pellet retains its impact sound after skills change (1.997565ms)
+✔ successive player shots and impacts keep independent complete one-shot tails (1.141851ms)
+✔ cancelled BIG BENG charge stops immediately without a firing or impact cue (0.309677ms)
+✔ real corona batch fades size on world occlusion and keeps beacon glow depth testing separate (19.263779ms)
+✔ real corona update excludes behind-camera lamps and bounds visibility work as the camera turns (4.095878ms)
+✖ all five levels use native textured-point dimensions for their button and fixture coronas (274.20534ms)
+✖ native beacon texture coordinates reach the actual energy buffer and stay read-only on refresh (2.240132ms)
+✔ Gameplay snapshots preserve footstep phase across JSON save/load (2.106323ms)
+✔ native clock-face heading agrees between player camera and +Z-front character assets (1.074802ms)
+✔ actual first Fleurifee rcshow script makes RedCat face her instead of empty space (39.53269ms)
+✔ UFO authored XYZ turns multiply about world axes in native order (26.350043ms)
+✔ normal jump keeps the descending half of jump1 at native speed through the apex (0.448466ms)
+✔ a slight ledge does not trigger the long-drop motion; native >80 floor-gap transition does (0.364307ms)
+✖ Fleurifee has original masked layers, orbit trails plus secondary stars, finite lifetime and radius110 light (117.161681ms)
+✔ a completed fairy lifetime can be enabled again by a later dialogue script (4.574484ms)
+✔ mushroom wall impacts retire the body and its harmless ribbon immediately (4.900181ms)
+✖ lethal projectile impact cannot reintroduce a trail or another projectile after respawn (2.350522ms)
+✖ lethal melee respawn stops later liquid triggers from damaging the old player location (4.387605ms)
+✔ gameplay saves owned ribbons and pauses them with cutscenes and enemy freezes (5.11689ms)
+✔ pickup pinwheel uses five original textured triangles with native orbit and tapered width (2.401241ms)
+✔ pickup colours cycle one component at a time and re-sampling never advances a paused effect (1.204151ms)
+✖ every collectible emits the corresponding original score artwork exactly once (5.09634ms)
+✔ disabled pickups do not create reward effects (4.493944ms)
+✔ enemy kills award their authored score once; wounds, scenery and the zero-score witch do not (3.221364ms)
+✔ pickup effects capture the current model transform without following later movement (0.529926ms)
+✔ enemy score starts at the rendered bounds centre, with a collision-bounds fallback (0.423177ms)
+✔ save/load preserves active effect age and cannot replay collected items or dead enemies (3.286734ms)
+✔ cutscenes allow reward retirement while redraws at paused game time do not advance it (4.675424ms)
+✔ effect restoration rejects malformed, future and expired records while preserving legacy saves (0.747874ms)
+✔ burst pickup traffic stays bounded and keeps the newest 128 effects (4.763933ms)
+✔ native score quads expand, rise and fade for one second on pickups or 1.5 seconds on enemies (0.744875ms)
+✔ score artwork stays upright and finite under oblique or directly overhead cameras (0.528126ms)
+✔ nearby stacked and nonadjacent rooms never allocate artwork; spatial cells are split by room ownership (21.65301ms)
+✔ the room beyond a closed doorway is prepared, and aligned open doorways preserve a farther visible room (3.395614ms)
+✔ crossing a doorway preloads the next room and promptly releases unrelated rooms even inside the distance grace radius (4.201077ms)
+✔ remote authored cameras select their own room and return safely; flying into solid exterior space retains the last valid room (8.165816ms)
+✔ actors and pooled fragment textures in unrelated rooms do not request maps or enter residency (8.317465ms)
+✔ flames and ribbons from excluded floors are omitted while large effects touching the selected room remain visible (4.229836ms)
+✔ missing room metadata falls back conservatively, without inventing a closed room (0.965872ms)
+✔ animation padding cannot assign an upstairs actor to the basement and shared admitted textures remain protected (2.828667ms)
+✖ a room change during an outstanding texture load cannot activate an obsolete room (2.965237ms)
+✔ fragment preparation excludes destructibles across a floor without limiting a real explosion (5.534947ms)
+✔ excluded flame emitters retain simulation clocks without submitting particles through a ceiling (1.441699ms)
+✔ all five chapters have exact static room ownership, including the complete Tower witch room (179.943499ms)
+✔ a long camera transition retains its visible room while loading priming still uses restored player coordinates (1.582188ms)
+✔ all original levels bind scripts and motion assets without initialization faults (127.321501ms)
+✔ original forest potion branch checks the configured threshold and grants only the correct skill (6.534569ms)
+✔ graveyard original pillar callbacks open the mausoleum only when the conjunction succeeds (8.695602ms)
+✖ graveyard looping motion wraps to the correct first marker within its geometric path endpoint (9.301467ms)
+✔ witch defeat drives the original motion callback, freezes enemies and teleports RedCat (4.413725ms)
+✔ tower last-mirror pickup unlocks the fifth placement without prematurely completing the level (3.328095ms)
+✔ save/load retains pickup, script globals and partially completed puzzle state (18.524045ms)
+✔ restoring paused motions stops current playback and does not replay an emitted event marker (23.688955ms)
+✔ original castle boss door self-open callback does not recurse and paired doors open once (6.37602ms)
+✔ initial weapon skills retain chapter defaults with the corrected Caves BIG BENG gate (15.129871ms)
+✔ tower witch trigger waits for all five mirrors and persists its counter (12.039306ms)
+✔ cave boss doors stay locked until all four elemental puzzle signals arrive (6.51104ms)
+✔ an inactive controller sharing a brush cannot overwrite an opening crypt door (29.29246ms)
+✔ touching an initially paused cave platform starts its original motion handler (53.186233ms)
+✔ shooting the inactive graveyard plank brush invokes its original destruction script (6.702777ms)
+✖ an original shootable button is selected by the first brush hit (2.299802ms)
+✔ forest boss music selection and scripted volume survive saving and loading (8.765492ms)
+✔ stopped music remains stopped after loading and can be selected again (7.883108ms)
+✔ forest opening and older saves keep the default ambient music selection (9.670214ms)
+✖ only enemies, shootable buttons and explicitly targetable shootable props participate (1.930805ms)
+✔ selection and animated ring use the transformed brush instead of its displaced editor origin (2.018784ms)
+✔ actors take priority over button fallback, with occlusion and a stable firing lock (0.500906ms)
+✔ native button fallback reaches nine times the actor range while retaining cone and visibility checks (0.428717ms)
+✔ world targeting rejects walls near distant buttons and accepts only a clear ray or the selected hull (0.621565ms)
+✔ original level target flags select the twelve crates and reject decorative actors throughout the campaign (226.835041ms)
+✔ world aiming updates shootable bounds without sampling decorative models and recovers hidden buttons (0.579135ms)
+✔ non-solid liquid contents come from BSP cells with no collision sides (3.911689ms)
+✔ hull contents clip each BSP branch instead of independently testing the original box (3.365424ms)
+✔ a concave moat leaves the dry inner corner clear and combines intersected contents (0.690135ms)
+✔ liquid hulls follow translated and rotated models without filling the rotated bounding box (1.132991ms)
+✔ original forest streams expose their nonblocking authored water cells (21.494492ms)
+✔ original shaped forest pool does not damage dry corners inside its bounds (29.723246ms)
+✔ original castle moat is ooze while banks and the bridge remain dry (34.639598ms)
+✔ original water surfaces remain visible, keyed and nonblocking (50.900331ms)
+✔ opaque graveyard wall trim does not inherit the shared fence texture cutouts (25.896117ms)
+✖ graveyard moving-platform moat renders its opaque authored damage-trigger water (67.209123ms)
+✔ opaque liquid visibility leaves editor helpers and zero-alpha triggers hidden (46.954932ms)
+✔ contents damage uses ooze and death flags independently of plain water (0.115669ms)
+✖ trigger damage is continuous and frame-rate independent while leaving stops it immediately (3.183875ms)
+✖ the real forest trigger applies one health per second only inside the shaped pool (13.314786ms)
+✖ environmental damage continues during hit immunity and preserves fractional health through save/load (3.324534ms)
+✔ cutscenes and completed levels do not accumulate environmental damage (0.437956ms)
+✖ lethal water consumes one life even when death immediately respawns the player (0.748274ms)
+✔ fairy idle reaches exactly three times the former distance in all five levels and follows RedCat through camera cuts (4.506825ms)
+✖ stepping onto the original chapel floor button plays its native push cue once; all native button types switch audibly (98.057671ms)
+✔ native door types and the explicitly requested type-4 panel fallback cover actual doors without adding the fallback to lifts or props (240.387464ms)
+✔ forest area crossings keep invisible door controls silent while real gate panels retain their cue (31.011767ms)
+✔ door cues exclude hidden or faceless controllers without muting visible scripted and locked panels (37.078719ms)
+✔ shared scripted door cues replay at each invoking door and suppress automatic double playback (15.24622ms)
+✔ native heart-container pickup uses IHart rather than the large-health recording (14.432337ms)
+✔ all eleven authored portal journeys emit the native terminal cue exactly at disappearance and reappearance (485.294304ms)
+✔ portal cue state survives a save between effect and player transition, and ordinary visibility calls or skip do not add it (59.366464ms)
+✖ native cave doorway retains its invisible lock until all three rotating buttons are pressed (82.749681ms)
+✖ saved three-button doorway restores both moving wood and hidden collision before the first frame (37.04686ms)
+✔ collision-only brushes also reappear when explicitly shown (24.029382ms)
+✔ every original authored emitter texture has a portable color/alpha pair (3.037717ms)
+✔ beacon assembles six radial rays then extends seventh to ceiling (1.29553ms)
+✔ corona size uses authored distance/radius bounds (0.248278ms)
+✔ dynamic light animation wraps and interpolates authored a-z functions (0.230889ms)
+✔ Davi-Script enabled beacon retains activation clock and resets only when disabled (9.160209ms)
+✔ turning off a flame stops emission and allows existing particles to expire (5.06079ms)
+✔ finite spout disable and repeated Enable commands reset only visual timers and keep live particles (5.558876ms)
+✖ authored dynamic light follows a moving model and Davi-Script disable (4.074318ms)
+✔ save beacon emits original staged sound and seventh-ray pitch without replaying after load (12.007785ms)
+✔ Brutus is visible while waiting for the intro, but disable does not activate his AI (58.004525ms)
+✔ a camera reference does not remove the forest mirror platform from the world (22.86567ms)
+✖ forest mirror rises with its platform for rendering, collection and save restoration (27.382235ms)
+✔ the last mirror never acts as a fallback level exit without a script host (9.01256ms)
+✖ patrol topology ignores moving doors and remains identical after save/load (2.813398ms)
+✔ collecting a model-bound item leaves its supporting bridge visible and solid (27.034908ms)
+✖ moving models use whole transformed native bounds, retain all materials, and cache unchanged queries (35.864488ms)
+✔ older imported data without model bounds keeps conservative visibility (5.12802ms)
+✔ original graveyard PVS hides both remote fences at the reported gap, but reveals them from their own room (47.707136ms)
+✔ a mixed-room static chunk submits individual PVS faces without rebuilding vertex or index storage (8.886021ms)
+✖ invalid-camera visibility draws conservatively and returning to the same cached PVS restores filtering (5.811514ms)
+✔ PVS render filtering does not remove hidden faces from CPU surface queries (7.273743ms)
+✔ unreferenced faces, moving brushes and depth-only sky retain conservative whole-face coverage (4.937871ms)
+✔ eviction releases filtered geometry and reloading rebuilds indices for the current camera leaf (1.781237ms)
+✔ large packed chunks use 32-bit indices and preserve complete triangle spans (10.787675ms)
+✔ visibility changes before a render preserve the dirty tail needed by a later larger draw (1.831626ms)
+ℹ tests 473
+ℹ suites 0
+ℹ pass 370
+ℹ fail 103
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3021.986837
+
+✖ failing tests:
+
+test at tests/actor-collision.test.mjs:50:1
+✖ a dormant graveyard zombie reuses its triangle collision until its pose or placement changes (164.400951ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" not to be strictly deep-equal to:
+  
+  [
+    {
+      max: [
+        104.80066108703613,
+        11.796038627624512,
+        13.900444984436035
+      ],
+      min: [
+        103.02119088172913,
+        6.6217827796936035,
+        10.815491676330566
+      ],
+      projections: [
+        {
+          max: 104.80066108703613,
+          min: 103.02119088172913,
+          normal: [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          max: 11.796038627624512,
+          min: 6.6217827796936035,
+          normal: [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          max: 13.900444984436035,
+          min: 10.815491676330566,
+          normal: [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          max: -3.592475985355911,
+          min: -3.5924759853559127,
+          normal: [
+            -0.09193636748441825,
+            -0.5059950071629512,
+  ...
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:67:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      ... 278 more items
+    ],
+    expected: [
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      { min: [Array], max: [Array], projections: [Array] }, { min: [Array], max: [Array], projections: [Array] },
+      ... 278 more items
+    ],
+    operator: 'notDeepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/actor-collision.test.mjs:90:1
+✖ Dungeon machine retains original geometry and exposes every turret part to player shots (25.561299ms)
+  TypeError: Cannot set properties of undefined (setting 'recoveryDoors')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:315:30)
+      at dungeonMachine (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:86:15)
+      at async TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:91:30)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/actor-collision.test.mjs:112:1
+✖ Dungeon turret, crate, lid and exposed body all forward pellet damage to Max (9.220028ms)
+  TypeError: Cannot set properties of undefined (setting 'recoveryDoors')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:315:30)
+      at dungeonMachine (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:86:15)
+      at async TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:113:27)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/actor-collision.test.mjs:141:1
+✖ Dungeon ammunition exits its own shields but other enemies still collide, and defeated shields disappear (8.607893ms)
+  TypeError: Cannot set properties of undefined (setting 'recoveryDoors')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:315:30)
+      at dungeonMachine (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:86:15)
+      at async TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-collision.test.mjs:142:27)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/actor-placement.test.mjs:48:1
+✖ attached actor and pickup anchors rotate about the model pivot without accumulating displacement (3.021487ms)
+  TypeError: Cannot assign to read only property 'translation' of object '#<Object>'
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-placement.test.mjs:55:42)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/actor-placement.test.mjs:86:1
+✖ an off-camera actor advances its authored animation clock and resumes the current pose when approached (5.602656ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   0.25
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-placement.test.mjs:93:113)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 0.25 ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/actor-placement.test.mjs:100:1
+✖ moving a model-attached prop refreshes its existing collision surface and Hide disables it (4.629843ms)
+  TypeError: Cannot assign to read only property 'translation' of object '#<Object>'
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-placement.test.mjs:113:44)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/actor-placement.test.mjs:120:1
+✖ the frame queries attached prop collision at the newly advanced support pose without advancing its animation twice (1.793006ms)
+  TypeError: Cannot assign to read only property 'translation' of object '#<Object>'
+      at host.update (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-placement.test.mjs:133:59)
+      at CastleWorld.update (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:1117:12)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/actor-placement.test.mjs:136:11)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/bat-ai.test.mjs:25:1
+✖ green bats pursue through the inherited attack radius and damage only on contact (13.189517ms)
+  AssertionError [ERR_ASSERTION]: contact stops at RedCat hull, not his origin
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/bat-ai.test.mjs:36:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/bat-ai.test.mjs:74:1
+✖ green bat hurt, enemy freeze, and cutscenes pause pursuit and the saved contact cooldown (6.642708ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      0,
+  +   -5.488996370237917,
+  +   65.42240431236755
+  -   -20.1,
+  -   0
+    ]
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/bat-ai.test.mjs:82:36)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 0, -5.488996370237917, 65.42240431236755 ],
+    expected: [ 0, -20.1, 0 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/bat-ai.test.mjs:131:1
+✖ authored active bat spawns fit the stable imported body hull rather than spread wings (68.526883ms)
+  TypeError: Cannot set properties of undefined (setting 'recoveryDoors')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:315:30)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/bat-ai.test.mjs:146:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/beam-contacts.test.mjs:56:1
+✖ lethal beam contact stops before later beams can damage the respawned player (5.961603ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  3 !== 2
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/beam-contacts.test.mjs:59:36)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/boss-phases.test.mjs:30:1
+✖ original castle and cave StandingEnemy enums create their respective bosses (36.175886ms)
+  AssertionError [ERR_ASSERTION]: Values have same structure but are not reference-equal:
+  
+  {
+    AttackRange: 650,
+    AverageShotsPerSalvo: 2,
+    BulletDeviation: 0.01,
+    ChanceToMoveAfterSalvo: 0.9,
+    Damage: 4,
+    DrawMotionPart: 0.5,
+    Health: 8,
+    HitMotionFactor: 1,
+    InvisibleTime: 1,
+    MinPlayerDistance: 100,
+    PlayerScore: 75,
+    RotationPerSec: 9.424778,
+    SenseRange: 100,
+    TimeToRecoverFromHit: 1,
+    TimeToRememberVisual: 4,
+    ViewAngle: 3.141593,
+    VisualRange: 1000,
+    WaitTimeAfterSalvo: 1,
+    WaitTimeBetweenShots: 1
+  }
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/boss-phases.test.mjs:35:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { AverageShotsPerSalvo: 2, BulletDeviation: 0.01, MinPlayerDistance: 100, AttackRange: 650, ChanceToMoveAfterSalvo: 0.9, DrawMotionPart: 0.5, Damage: 4, Health: 8, PlayerScore: 75, SenseRange: 100, TimeToRecoverFromHit: 1, TimeToRememberVisual: 4, VisualRange: 1000, ViewAngle: 3.141593, WaitTimeAfterSalvo: 1, WaitTimeBetweenShots: 1, HitMotionFactor: 1, RotationPerSec: 9.424778, InvisibleTime: 1 },
+    expected: { AttackRange: 650, ChanceToMoveAfterSalvo: 0.9, DrawMotionPart: 0.5, Damage: 4, Health: 8, PlayerScore: 75, SenseRange: 100, TimeToRecoverFromHit: 1, TimeToRememberVisual: 4, VisualRange: 1000, ViewAngle: 3.141593, WaitTimeAfterSalvo: 1, WaitTimeBetweenShots: 1, HitMotionFactor: 1, RotationPerSec: 9.424778, AverageShotsPerSalvo: 2, BulletDeviation: 0.01, MinPlayerDistance: 100, InvisibleTime: 1 },
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/boss-phases.test.mjs:57:1
+✖ Dungeon Max completes native turret salvo, rise, look, lower and second salvo (7.892438ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  57 !== 41
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/boss-phases.test.mjs:62:43)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 57,
+    expected: 41,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/boss-phases.test.mjs:83:1
+✖ Jester follows disappearance, InvisibleTime, reappearance, salvo, protected teleport (4.236927ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/boss-phases.test.mjs:84:86)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/boss-phases.test.mjs:100:1
+✖ Invisible Jester rejects damage without restarting animation or consuming RNG (4.373016ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   damage: 10,
+  +   defeated: true,
+  -   damage: 0,
+  -   defeated: false,
+      reaction: false
+    }
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/boss-phases.test.mjs:102:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { damage: 10, defeated: true, reaction: false },
+    expected: { damage: 0, defeated: false, reaction: false },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/boss-phases.test.mjs:120:1
+✖ A boss hit interrupts its pending shot only when native reaction chooses a new state (4.589494ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/boss-phases.test.mjs:125:54)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/boss-phases.test.mjs:153:1
+✖ Jester actually plays and restarts the original teleport clip for disappearing and reappearing (34.005024ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 8
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/boss-phases.test.mjs:160:60)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 8,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/boss-script-regressions.test.mjs:60:1
+✖ Brutus defeat restores ambient music and raises the mirror through the original ending motion (61.955985ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/boss-script-regressions.test.mjs:70:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/castle-tower-ambience.test.mjs:11:1
+✖ all positioned castle emitters including non-3D bridge/lift sounds fall silent at 25 metres (56.655266ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(gains[i]>0&&gains[i]<gains[i-1])
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/castle-tower-ambience.test.mjs:24:33)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/castle-tower-ambience.test.mjs:28:1
+✖ moving castle emitters use their current position and preserve channel/script/master gains (1.231191ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 0.06210773431391875
+  - 0
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/castle-tower-ambience.test.mjs:33:45)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0.06210773431391875,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/castle-tower-ambience.test.mjs:39:1
+✖ tower torch and cauldron fire retain authored locations, are quieter nearby and silent beyond18m (8.244825ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 0.18445137437501868
+  - 0
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/castle-tower-ambience.test.mjs:46:72)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0.18445137437501868,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/cave-ambience-range.test.mjs:18:1
+✖ all cave environmental loops fade smoothly within their section and are silent at 30 metres (8.199455ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(gains[i]>0&&gains[i]<gains[i-1])
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/cave-ambience-range.test.mjs:27:32)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/cave-ambience-range.test.mjs:34:1
+✖ shorter range preserves script/master volume and leaves unrelated sounds and other levels native (1.027442ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 0.04052582943113148
+  - 0
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/cave-ambience-range.test.mjs:41:47)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0.04052582943113148,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/cave-ambience-range.test.mjs:50:1
+✖ authored cave sound activation and save restoration retain the shorter range (154.022142ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 0.3772472511612421
+  - 0
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/cave-ambience-range.test.mjs:66:76)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0.3772472511612421,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/cheats.test.mjs:93:1
+✖ world flight bypasses platform carry, lower-world recovery and third-person camera clipping (1.514128ms)
+  TypeError: Cannot read properties of undefined (reading 'health')
+      at CastleWorld.update (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:1125:157)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/cheats.test.mjs:99:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/destructible-threshold.test.mjs:67:1
+✖ saving at exact equality preserves an intact prop and its next-hit destruction across actor loading (6.779267ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/destructible-threshold.test.mjs:77:62)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/difficulty.test.mjs:19:1
+✖ difficulty changes real knight health and melee damage using the original per-enemy values (5.542836ms)
+  AssertionError [ERR_ASSERTION]: Easy actual melee strike
+  
+  10 !== 8
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/difficulty.test.mjs:24:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 10,
+    expected: 8,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/difficulty.test.mjs:29:1
+✖ difficulty chooses native projectile damage, speed and real collision damage without scaling player pellets (1.736597ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  10 !== 9
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/difficulty.test.mjs:34:49)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 10,
+    expected: 9,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/door-activation.test.mjs:25:1
+✖ native proximity is an origin-centered X/Z box with unexpanded height and full hull dimensions (3.483953ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/door-activation.test.mjs:28:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/door-activation.test.mjs:54:93
+✖ walking into original doorhallway05_01 opens the knight-room passage at its brush, without E (61.992244ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/door-activation.test.mjs:61:55)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/door-activation.test.mjs:54:93
+✖ walking into original doorhallway05_02 opens the knight-room passage at its brush, without E (40.161515ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/door-activation.test.mjs:61:55)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/door-activation.test.mjs:54:93
+✖ walking into original doorhallway05_03 opens the knight-room passage at its brush, without E (47.779586ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/door-activation.test.mjs:61:55)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/door-activation.test.mjs:54:93
+✖ walking into original secretdoor04 opens the knight-room passage at its brush, without E (30.760518ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/door-activation.test.mjs:61:55)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/enemy-animation.test.mjs:120:1
+✖ jump feedback fires once on a grounded jump, never from a held airborne input or cutscene (2.438871ms)
+  TypeError: Cannot read properties of undefined (reading 'health')
+      at CastleWorld.update (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:1125:157)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/enemy-animation.test.mjs:127:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/enemy-behavior.test.mjs:26:1
+✖ spider variants use original melee damage versus red-spider projectile settings (8.417754ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'walk' !== 'attack'
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/enemy-behavior.test.mjs:30:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'walk',
+    expected: 'attack',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/enemy-behavior.test.mjs:49:1
+✖ red spider shots stop at BSP walls and can be dodged (5.528316ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/enemy-behavior.test.mjs:56:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/enemy-combat-effects.test.mjs:21:1
+✖ defeated boss retires during frozen fairy dialogue while RedCat returns to animated idle (188.020385ms)
+  TypeError: Cannot set properties of undefined (setting 'deferGeometry')
+      at CastleWorld.syncActors (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:830:46)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/enemy-combat-effects.test.mjs:29:33)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+
+test at tests/enemy-death-effects.test.mjs:16:1
+✖ native death motion is followed by five seconds of fade; clocks freeze and saves resume without replay (4.135707ms)
+  TypeError: this.scripts.dispatch is not a function
+      at Gameplay.runEvent (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/gameplay.js:162:41)
+      at Gameplay.updateDyingEnemies (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/gameplay.js:469:14)
+      at Gameplay.update (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/gameplay.js:947:36)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/enemy-death-effects.test.mjs:23:42)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+
+test at tests/enemy-death-effects.test.mjs:88:1
+✖ knight breakup resumes its age after load and does not restart at its expiry (25.380821ms)
+  AssertionError [ERR_ASSERTION]: airborne armour has no invented final fade
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/enemy-death-effects.test.mjs:97:129)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/enemy-touch-hit.test.mjs:22:35
+✖ spider contact cooldown survives hurt and expires while still hurt (7.003255ms)
+  AssertionError [ERR_ASSERTION]: hurt does not disable the independent contact callback
+  
+  9 !== 8
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/enemy-touch-hit.test.mjs:33:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 9,
+    expected: 8,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/enemy-touch-hit.test.mjs:22:35
+✖ bat contact cooldown survives hurt and expires while still hurt (1.326819ms)
+  AssertionError [ERR_ASSERTION]: hurt does not disable the independent contact callback
+  
+  9 !== 8
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/enemy-touch-hit.test.mjs:33:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 9,
+    expected: 8,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/enemy-touch-hit.test.mjs:22:35
+✖ ghost contact cooldown survives hurt and expires while still hurt (0.649305ms)
+  AssertionError [ERR_ASSERTION]: hurt does not disable the independent contact callback
+  
+  9 !== 8
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/enemy-touch-hit.test.mjs:33:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 9,
+    expected: 8,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/enemy-touch-hit.test.mjs:22:35
+✖ zombie contact cooldown survives hurt and expires while still hurt (2.192892ms)
+  AssertionError [ERR_ASSERTION]: hurt does not disable the independent contact callback
+  
+  9 !== 8
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/enemy-touch-hit.test.mjs:33:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 9,
+    expected: 8,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/enemy-touch-hit.test.mjs:22:35
+✖ guardian contact cooldown survives hurt and expires while still hurt (0.771564ms)
+  AssertionError [ERR_ASSERTION]: hurt does not disable the independent contact callback
+  
+  9 !== 8
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/enemy-touch-hit.test.mjs:33:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 9,
+    expected: 8,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/enemy-touch-hit.test.mjs:39:1
+✖ reloading a hurt touching enemy preserves the remaining independent contact cooldown (3.85897ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  9 !== 8
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/enemy-touch-hit.test.mjs:44:29)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 9,
+    expected: 8,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/explosion-cohort-reuse.test.mjs:10:1
+✖ damage and rendering share one exact seeded cohort without adding save fields (13.282396ms)
+  AssertionError [ERR_ASSERTION]: restored cohort starts with original particle states, not cached render fields
+  + actual - expected
+  ... Skipped lines
+  
+    [
+      {
+        birth: 12,
+        diameter: 160,
+        expires: 14.985,
+        green: false,
+  +     lightState: {
+  +       active: true,
+  +       birth: 12,
+  +       lifeEndMs: 1016,
+  +       phaseMs: 400,
+  +       sample: 1,
+  +       tick: 24,
+  +       version: 1
+  +     },
+        position: [
+          102.644,
+          207.1824,
+          302.0286
+        ],
+  ...
+        green: false,
+  +     lightState: {
+  +       active: true,
+  +       birth: 12.183,
+  +       lifeEndMs: 1016,
+  +       phaseMs: 216,
+  +       sample: 1,
+  +       tick: 13,
+  +       version: 1
+  +     },
+        position: [
+          100.8752,
+          199.464,
+          271.023
+        ],
+  ...
+        green: false,
+  +     lightState: {
+  +       active: true,
+  +       birth: 12.359,
+  +       lifeEndMs: 1016,
+  +       phaseMs: 33,
+  +       sample: 0.5999999642372131,
+  +       tick: 2,
+  +       version: 1
+  +     },
+        position: [
+          97.568,
+          199.112,
+          269.6964
+        ],
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/explosion-cohort-reuse.test.mjs:22:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ { birth: 12, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], lightState: [Object], expires: 14.985 }, { birth: 12.183, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], lightState: [Object], expires: 15.019 }, { birth: 12.359, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], lightState: [Object], expires: 15.112 }, { birth: 12.554, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], expires: 15.192 }, { birth: 12.713, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], expires: 15.473999999999998 }, { birth: 12.87, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], expires: 16.024 } ],
+    expected: [ { birth: 12, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], expires: 14.985 }, { birth: 12.183, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], expires: 15.019 }, { birth: 12.359, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], expires: 15.112 }, { birth: 12.554, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], expires: 15.192 }, { birth: 12.713, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], expires: 15.473999999999998 }, { birth: 12.87, position: [Array], diameter: 160, smokeOnly: false, green: false, smoke: [Array], expires: 16.024 } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/explosion-damage.test.mjs:111:1
+✖ player death fires once; noclip immunity and cutscene protection remain intact (2.129023ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  3 !== 2
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/explosion-damage.test.mjs:113:49)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/explosion-damage.test.mjs:136:1
+✖ a synchronous respawn during blast damage discards the old cell iteration immediately (1.427588ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  3 !== 2
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/explosion-damage.test.mjs:145:45)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/fairy-audio-lifecycle.test.mjs:117:1
+✖ BIG BENG charge sound follows its native hold, pause and release lifetime (1.179861ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/fairy-audio-lifecycle.test.mjs:120:51)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/gameplay-audio.test.mjs:31:1
+✖ health loss selects native reaction thresholds from VoiceNL and death replaces the reaction (1.33725ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'rcgen1.wav'
+  - 'rcgen2.wav'
+          ^
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/gameplay-audio.test.mjs:36:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'rcgen1.wav',
+    expected: 'rcgen2.wav',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/gameplay-audio.test.mjs:45:1
+✖ each enemy family uses native alert, attack, hurt and death samples with spatial playback (0.887423ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/gameplay-audio.test.mjs:50:44)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/gameplay-audio.test.mjs:60:1
+✖ enemy vocal position follows its moving actor and old reactions stop (5.349228ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(old.element.volume<.01)
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/gameplay-audio.test.mjs:65:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/gameplay-update-work.test.mjs:70:1
+✖ brush host reuses the accepted final pose while blocked segments wait and resume (3.113826ms)
+  AssertionError [ERR_ASSERTION]: Values have same structure but are not reference-equal:
+  
+  [
+    0,
+    0,
+    0
+  ]
+  
+      at assertSingleFinalPose (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/gameplay-update-work.test.mjs:67:10)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/gameplay-update-work.test.mjs:73:3)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 0, 0, 0 ],
+    expected: [ 0, 0, 0 ],
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/gameplay-update-work.test.mjs:82:1
+✖ brush host uses the final pose after a callback replaces playback (1.380939ms)
+  AssertionError [ERR_ASSERTION]: Values have same structure but are not reference-equal:
+  
+  [
+    7.5,
+    0,
+    0
+  ]
+  
+      at assertSingleFinalPose (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/gameplay-update-work.test.mjs:67:10)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/gameplay-update-work.test.mjs:89:3)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 7.5, 0, 0 ],
+    expected: [ 7.5, 0, 0 ],
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/gameplay.test.mjs:31:1
+✖ enter trigger fires once, leaving runs its own command, max trigger count persists (3.602792ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/gameplay.test.mjs:37:36)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/gameplay.test.mjs:93:1
+✖ damage cooldown, death and checkpoint respawn are deterministic (1.18638ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  4 !== 7
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/gameplay.test.mjs:95:70)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 4,
+    expected: 7,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/gargoyle-blast.test.mjs:73:1
+✖ Gargoyle fires consecutive shoot motions within each native salvo then waits two seconds (23.998892ms)
+  AssertionError [ERR_ASSERTION]: 2.109999999999999 != 1.7520087218284608
+      at close (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/gargoyle-blast.test.mjs:13:36)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/gargoyle-blast.test.mjs:81:3)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/graveyard-maze-respawn.test.mjs:92:1
+✖ the real death clip reaches one respawn and does not retrigger the maze at the old death position (66.555328ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  3 !== 2
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/graveyard-maze-respawn.test.mjs:97:64)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/graveyard-maze-respawn.test.mjs:108:1
+✖ fatal damage cancels an unfinished final button before it can start the maze exit cutscene (68.727591ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/graveyard-maze-respawn.test.mjs:116:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/graveyard-maze-respawn.test.mjs:155:1
+✖ save/load during death or after reset retains reset transforms and permits the original route again (198.114926ms)
+  AssertionError [ERR_ASSERTION]: heg1_trigger_mc can fire again
+  
+  1 !== 0
+  
+      at assertInitialMaze (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/graveyard-maze-respawn.test.mjs:38:12)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/graveyard-maze-respawn.test.mjs:162:5)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/graveyard-maze-respawn.test.mjs:210:1
+✖ loading an older death save cancels its pending final-button callback before timelines advance (98.346748ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/graveyard-maze-respawn.test.mjs:220:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/graveyard-maze-respawn.test.mjs:264:1
+✖ fatal damage before the first button controller check also cancels its queued maze exit (74.804894ms)
+  AssertionError [ERR_ASSERTION]: heg1_trigger_mc can fire again
+  
+  1 !== 0
+  
+      at assertInitialMaze (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/graveyard-maze-respawn.test.mjs:38:12)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/graveyard-maze-respawn.test.mjs:268:52)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/movement-recovery.test.mjs:198:1
+✖ live player physics holding into a wall stays put until the user changes direction (11.923456ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(Math.abs(p.position[0]-8.95)<.001)
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/movement-recovery.test.mjs:201:56)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/movement-recovery.test.mjs:236:1
+✖ a non-overlapping player pinched under a sloped well roof escapes diagonally down and resumes walking (4.759152ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/movement-recovery.test.mjs:252:94)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/movement-recovery.test.mjs:279:1
+✖ normal free fall beside a wall does not trigger the suspended-body recovery (4.406056ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/movement-recovery.test.mjs:283:56)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/movement-recovery.test.mjs:353:1
+✖ higher fall-pocket history cannot bypass a door beyond the local probe (53.50869ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/movement-recovery.test.mjs:376:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/native-visuals.test.mjs:25:1
+✖ native fairy square halo, diagonal pulses, color cycle and departure survive central lifetime (40.031876ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(departing.rays.length>0)
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/native-visuals.test.mjs:32:114)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/painting-spider.test.mjs:72:1
+✖ hanging spider perception uses its ceiling eye, horizontal range and two native sight rays (36.769392ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    [
+      [
+        [
+          1305,
+          -69.85000000000001,
+  ...
+          1804,
+  +       -201.93999999999997,
+  -       -230.89999999999998,
+          -2133
+        ]
+      ],
+      [
+        [
+  ...
+          1804,
+  +       -144.01999999999998,
+  -       -174.89999999999998,
+          -2133
+        ]
+      ]
+    ]
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/painting-spider.test.mjs:80:46)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ [ [Array], [Array] ], [ [Array], [Array] ] ],
+    expected: [ [ [Array], [Array] ], [ [Array], [Array] ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/patrol-boss.test.mjs:74:1
+✖ unaware moving enemies patrol original points, retain progress in saves, and freeze (9.974462ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - false
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/patrol-boss.test.mjs:78:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/patrol-boss.test.mjs:91:1
+✖ view cone and remembered position replace omnidirectional player tracking (1.713527ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - false
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/patrol-boss.test.mjs:93:37)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/patrol-boss.test.mjs:100:1
+✖ Brutus launches original mushrooms, then moves on arena points between salvos (9.554305ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'attack' !== 'walk'
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/patrol-boss.test.mjs:106:38)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'attack',
+    expected: 'walk',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/patrol-boss.test.mjs:119:1
+✖ Bone Brutus charges between bone and skull salvos and restores the charge phase (13.029148ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    [
+      {
+        age: 3.126307934495937,
+        collisionProfile: 'native',
+        damage: 2,
+  ...
+      {
+  +     age: 0.1263079344959429,
+  -     age: 0.02630793449594293,
+        collisionProfile: 'native',
+        damage: 3,
+        enemyFlightDebt: 0,
+        enemyFlightPhase: 0.009641267829276264,
+        gravity: 32,
+  ...
+        position: [
+  +       -3.1688016682097198,
+  +       22.082957428253888,
+  +       50.35522381185704
+  -       -0.6257625884543028,
+  -       24.639648665289663,
+  -       10.499009727342226
+        ],
+        radius: 0.03200000151991844,
+        sourceId: 'guard',
+  +     spriteClockMs: 126.30793449594293,
+  +     spriteDeadlineMs: null,
+  +     spriteFrame: 1,
+  -     spriteClockMs: 26.30793449594293,
+  -     spriteDeadlineMs: 76,
+  -     spriteFrame: 0,
+        spriteScale: 0.5,
+        velocity: [
+  +       -25.087906637500296,
+  +       -25.06518274777655,
+  +       398.6703132531589
+  -       -23.78607824764063,
+  -       -14.035317886935138,
+  -       399.0814911357381
+        ]
+      }
+    ]
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/patrol-boss.test.mjs:134:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { id: 'enemy-projectile-1', sourceId: 'guard', kind: 'bone', position: [Array], velocity: [Array], radius: 0.03200000151991844, collisionProfile: 'native', life: 5.243, damage: 2, gravity: 16, gravityUnits: 'world', enemyFlightPhase: 0.009641267829276264, enemyFlightDebt: 0, age: 3.126307934495937, spriteScale: 0.8, spriteClockMs: 3126.307934495943, spriteFrame: 1, spriteDeadlineMs: null }, { id: 'enemy-projectile-2', sourceId: 'guard', kind: 'skull', position: [Array], velocity: [Array], radius: 0.03200000151991844, collisionProfile: 'native', life: 15, damage: 3, gravity: 32, gravityUnits: 'world', enemyFlightPhase: 0.009641267829276264, enemyFlightDebt: 0, age: 0.1263079344959429, spriteScale: 0.5, spriteClockMs: 126.30793449594293, spriteFrame: 1, spriteDeadlineMs: null } ],
+    expected: [ { id: 'enemy-projectile-1', sourceId: 'guard', kind: 'bone', position: [Array], velocity: [Array], radius: 0.03200000151991844, collisionProfile: 'native', life: 5.243, damage: 2, gravity: 16, gravityUnits: 'world', enemyFlightPhase: 0.009641267829276264, enemyFlightDebt: 0, age: 3.126307934495937, spriteScale: 0.8, spriteClockMs: 3126.307934495943, spriteFrame: 1, spriteDeadlineMs: null }, { id: 'enemy-projectile-2', sourceId: 'guard', kind: 'skull', position: [Array], velocity: [Array], radius: 0.03200000151991844, collisionProfile: 'native', life: 15, damage: 3, gravity: 32, gravityUnits: 'world', enemyFlightPhase: 0.009641267829276264, enemyFlightDebt: 0, age: 0.02630793449594293, spriteScale: 0.5, spriteClockMs: 26.30793449594293, spriteFrame: 0, spriteDeadlineMs: 76 } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/player-abilities.test.mjs:75:1
+✖ SuperSkippie requires its skill and a released/repressed jump within native tap limits (76.071173ms)
+  AssertionError [ERR_ASSERTION]: held input neither boosts nor auto-bounces on landing
+  
+  4 !== 1
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/player-abilities.test.mjs:82:40)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 4,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/player-cheat-progress.test.mjs:20:1
+✖ no-clip ignores normal, continuous and lethal scripted damage, and immediately restores normal damage on exit (6.200382ms)
+  TypeError: Cannot read properties of undefined (reading 'collision')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:424:56)
+      at async setup (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/player-cheat-progress.test.mjs:17:3)
+      at async TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/player-cheat-progress.test.mjs:21:29)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+
+test at tests/player-cheat-progress.test.mjs:31:1
+✖ restored no-clip and blocked no-clip exits retain immunity (1.353649ms)
+  TypeError: Cannot read properties of undefined (reading 'collision')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:424:56)
+      at async setup (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/player-cheat-progress.test.mjs:17:3)
+      at async TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/player-cheat-progress.test.mjs:32:22)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/player-landing.test.mjs:44:1
+✖ fall damage keeps existing no-clip, cutscene, respawn and completed-level protection (1.522508ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  9 !== 10
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/player-landing.test.mjs:48:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 9,
+    expected: 10,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/player-lifecycle.test.mjs:29:1
+✖ death waits for the native clip, respawns once, protects recovery and persists both phases (1.410799ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  3 !== 2
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/player-lifecycle.test.mjs:31:44)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/player-lifecycle.test.mjs:45:1
+✖ last-life game over waits for death and holds its final pose without repeated events (0.748444ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/player-lifecycle.test.mjs:48:28)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/player-projectile-audio.test.mjs:26:3
+✖ superShot: Gameplay emits the native firing and impact recordings only at their actual events (1.32924ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/player-projectile-audio.test.mjs:31:60)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/presentation-renderer.test.mjs:55:1
+✖ all five levels use native textured-point dimensions for their button and fixture coronas (274.20534ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 233
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/presentation-renderer.test.mjs:74:14)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 233,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/presentation-renderer.test.mjs:89:1
+✖ native beacon texture coordinates reach the actual energy buffer and stay read-only on refresh (2.240132ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  6 !== 7
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/presentation-renderer.test.mjs:93:12)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 6,
+    expected: 7,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/presentation.test.mjs:52:1
+✖ Fleurifee has original masked layers, orbit trails plus secondary stars, finite lifetime and radius110 light (117.161681ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      light: null,
+      rays: [],
+  +   sprites: [
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         -400.17980122063193,
+  +         -146.7316639347247,
+  +         -328.46211052326885
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         152.62001535543376,
+  +         12.41633606527554,
+  +         18.505706052797066
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         -236.07598464456632,
+  +         -516.2436639347259,
+  +         191.95370605279723
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         79.84401535543365,
+  +         -23.707663934724543,
+  +         7.3297060527971105
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         -337.099984644566,
+  +         -336.94366393472507,
+  +         -389.9022939472029
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         9.708015355433645,
+  +         -250.21966393472502,
+  +         -216.71829394720308
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         153.85201535543374,
+  +         -707.599663934728,
+  +         -241.18229394720288
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         322.6280737120979,
+  +         8.896336065275573,
+  +         -136.38223559053878
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         -67.56392628790225,
+  +         56.41633606527565,
+  +         -62.7262355905388
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         -157.76392628790228,
+  +         57.868336065275635,
+  +         380.1777644094614
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         -343.53192628790214,
+  +         -547.8796639347263,
+  +         -238.55023559053862
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         380.1800737120981,
+  +         -6.679663934724482,
+  +         21.137764409461145
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         104.2120737120979,
+  +         -308.8276639347251,
+  +         -304.99023559053876
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         498.10007371209855,
+  +         -293.7356639347251,
+  +         35.48176440946112
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         -269.083926287902,
+  +         -381.8676639347252,
+  +         232.8657644094613
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         316.820073712098,
+  +         68.91233606527557,
+  +         221.0737644094612
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         280.1240737120977,
+  +         -107.83566393472465,
+  +         -303.9342355905387
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         372.70007371209783,
+  +         -39.89966393472456,
+  +         355.53776440946154
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         287.42807371209784,
+  +         -567.3716639347265,
+  +         261.4657644094614
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         -266.4439262879021,
+  +         -123.36766393472462,
+  +         -214.08623559053856
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         30.11607371209776,
+  +         -358.5036639347252,
+  +         369.3537644094617
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         -197.27592628790228,
+  +         -256.68766393472504,
+  +         -64.3982355905388
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         102.54007371209772,
+  +         -499.1276639347258,
+  +         -321.53423559053863
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         -215.93192628790223,
+  +         -18.91166393472455,
+  +         246.32976440946126
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         118.29207371209796,
+  +         -63.879663934724555,
+  +         -251.04623559053857
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         131.05207371209772,
+  +         -312.039663934725,
+  +         17.089764409461168
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         178.92407371209765,
+  +         -494.68366393472564,
+  +         -9.92623559053887
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     },
+  +     {
+  +       color: [
+  +         0.0784313725490196,
+  +         1,
+  +         0.6732026143790846
+  +       ],
+  +       height: 6,
+  +       opacity: 0.01568627450980392,
+  +       position: [
+  +         192.03607371209796,
+  +         -174.8476639347248,
+  +         492.99376440946077
+  +       ],
+  +       rotation: 0,
+  +       texture: 'star.bmp|star_a.bmp',
+  +       width: 6
+  +     }
+  +   ]
+  -   sprites: []
+    }
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/presentation.test.mjs:61:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: {
+      sprites: [
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object]
+      ],
+      rays: [],
+      light: null
+    },
+    expected: { sprites: [], rays: [], light: null },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/projectile-hazards-integration.test.mjs:17:1
+✖ lethal projectile impact cannot reintroduce a trail or another projectile after respawn (2.350522ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  3 !== 2
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/projectile-hazards-integration.test.mjs:23:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/projectile-hazards-integration.test.mjs:28:1
+✖ lethal melee respawn stops later liquid triggers from damaging the old player location (4.387605ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  3 !== 2
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/projectile-hazards-integration.test.mjs:36:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/reward-effects.test.mjs:37:1
+✖ every collectible emits the corresponding original score artwork exactly once (5.09634ms)
+  AssertionError [ERR_ASSERTION]: ItemHart 1
+  
+  0 !== 75
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/reward-effects.test.mjs:47:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 75,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/room-streaming.test.mjs:127:1
+✖ a room change during an outstanding texture load cannot activate an obsolete room (2.965237ms)
+  AssertionError [ERR_ASSERTION]: the new room acquires its own texture request
+  
+  1 !== 2
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/room-streaming.test.mjs:135:12)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/script-host.test.mjs:58:1
+✖ graveyard looping motion wraps to the correct first marker within its geometric path endpoint (9.301467ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/script-host.test.mjs:66:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/script-host.test.mjs:210:1
+✖ an original shootable button is selected by the first brush hit (2.299802ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/script-host.test.mjs:216:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/targetable-props.test.mjs:7:1
+✖ only enemies, shootable buttons and explicitly targetable shootable props participate (1.930805ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/targetable-props.test.mjs:9:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/water.test.mjs:157:1
+✖ graveyard moving-platform moat renders its opaque authored damage-trigger water (67.209123ms)
+  AssertionError [ERR_ASSERTION]: 10 differs from 8
+      at close (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/water.test.mjs:17:39)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/water.test.mjs:172:39)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/water.test.mjs:199:1
+✖ trigger damage is continuous and frame-rate independent while leaving stops it immediately (3.183875ms)
+  AssertionError [ERR_ASSERTION]: 8.100000000000007 differs from 8
+      at close (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/water.test.mjs:17:39)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/water.test.mjs:203:5)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/water.test.mjs:211:1
+✖ the real forest trigger applies one health per second only inside the shaped pool (13.314786ms)
+  AssertionError [ERR_ASSERTION]: 9.016666666666618 differs from 9
+      at close (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/water.test.mjs:17:39)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/water.test.mjs:217:3)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/water.test.mjs:223:1
+✖ environmental damage continues during hit immunity and preserves fractional health through save/load (3.324534ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(game.hitCooldown>0)
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/water.test.mjs:226:33)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/water.test.mjs:251:1
+✖ lethal water consumes one life even when death immediately respawns the player (0.748274ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/water.test.mjs:256:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/world-action-sounds.test.mjs:49:1
+✖ stepping onto the original chapel floor button plays its native push cue once; all native button types switch audibly (98.057671ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-action-sounds.test.mjs:56:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/world-brush-state.test.mjs:32:1
+✖ native cave doorway retains its invisible lock until all three rotating buttons are pressed (82.749681ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at press (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-brush-state.test.mjs:27:76)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-brush-state.test.mjs:38:5)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.start (node:internal/test_runner/test:1000:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/world-brush-state.test.mjs:47:1
+✖ saved three-button doorway restores both moving wood and hidden collision before the first frame (37.04686ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at press (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-brush-state.test.mjs:27:76)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-brush-state.test.mjs:48:91)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/world-effects.test.mjs:84:1
+✖ authored dynamic light follows a moving model and Davi-Script disable (4.074318ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      {
+  +     castShadow: false,
+        color: [
+          0,
+          1,
+          0
+        ],
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-effects.test.mjs:87:29)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { position: [Array], color: [Array], radius: 300, castShadow: false } ],
+    expected: [ { position: [Array], color: [Array], radius: 300 } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/world-entities.test.mjs:35:1
+✖ forest mirror rises with its platform for rendering, collection and save restoration (27.382235ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      2340,
+  +   -208,
+  -   -154,
+      -1158
+    ]
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-entities.test.mjs:39:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 2340, -208, -1158 ],
+    expected: [ 2340, -154, -1158 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/world-entities.test.mjs:55:1
+✖ patrol topology ignores moving doors and remains identical after save/load (2.813398ms)
+  TypeError: Cannot set properties of undefined (setting 'recoveryDoors')
+      at CastleWorld.attachGameplay (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/source/world.js:315:30)
+      at graph (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-entities.test.mjs:63:17)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-entities.test.mjs:67:22)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+
+test at tests/world-model-visibility.test.mjs:23:1
+✖ moving models use whole transformed native bounds, retain all materials, and cache unchanged queries (35.864488ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-model-visibility.test.mjs:49:12)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/world-streaming-face-visibility.test.mjs:37:1
+✖ invalid-camera visibility draws conservatively and returning to the same cached PVS restores filtering (5.811514ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/world-streaming-face-visibility.test.mjs:41:38)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

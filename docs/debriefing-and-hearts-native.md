@@ -60,7 +60,9 @@ their separate red `IHealthS/M/L` actors.
 The focused artwork check covers all four authored containers across the castle,
 graveyard, caves and tower. A separate rendered check loaded a copy of the
 2026-09-28 tower autosave beside `ItemHart1`, verified its yellow texture,
-scale/rotation, and pickup from 10 to 12 maximum HP with 75 points. Evidence,
+scale/rotation, and pickup from 10 to 12 maximum HP. The container awards no
+points, although its pickup effect still shows the 75 score card (corrected in
+[the parity review](claude-native-parity-review.md#16)). Evidence,
 before/after images and native findings are retained in
 `temp_work/health-extension-2026-09-28/`; no build was produced.
 

@@ -21,7 +21,7 @@ try {
     const animator=world.redcat.userData.animator;
     const capture=()=>({phase:game.playerReaction?.phase,clip:animator.name,time:animator.time,position:[...world.player.position],health:game.state.health,lives:game.state.lives});
     const advance=seconds=>{while(seconds>1e-8){const dt=Math.min(.02,seconds);world.update(dt,{forward:0,right:0,turn:0,jump:false,attack:false,use:false});seconds-=dt;}};
-    const {PLAYER_REACTIONS}=await import('./source/player-lifecycle.js');
+    const {PLAYER_REACTIONS,PLAYER_DEATH_SECONDS}=await import('./source/player-lifecycle.js');
     world.player.position[1]+=50;world.player.grounded=false;
     game.damage(1);advance(.2);const hurt=capture();
     const hurtFell=world.player.position[1]<origin[1]+50;
@@ -41,13 +41,14 @@ try {
     for(const object of restored.objects)if(['enemy','trigger','fairy'].includes(object.kind))object.enabled=false;
     const tick=seconds=>{while(seconds>1e-8){const dt=Math.min(.02,seconds);app.world.update(dt,{forward:1,right:0,turn:0,attack:true,jump:true,use:false});seconds-=dt;}};
     tick(.2);const beforeCheckpoint={position:[...app.world.player.position],health:restored.state.health};
-    tick(PLAYER_REACTIONS.death.duration-.8+.02);
+    tick(PLAYER_DEATH_SECONDS-.8+.02);
     const respawn={phase:restored.playerReaction?.phase,clip:app.world.redcat.userData.animator.name,position:[...app.world.player.position],health:restored.state.health,lives:restored.state.lives};
     tick(1);const protectedPosition=[...app.world.player.position];restored.damage(999,null,{continuous:true});
     const protectedHealth=restored.state.health;const pausedAge=restored.playerReaction.age;
     await new Promise(resolve=>setTimeout(resolve,120));const pausedEnd=restored.playerReaction.age;
     tick(PLAYER_REACTIONS.respawn.duration);const recovered=!restored.playerReaction;
-    restored.hitCooldown=0;restored.state.lives=1;restored.damage(100);tick(PLAYER_REACTIONS.death.duration+.04);
+    // Skip the rest of the five-second respawn protection; no lives remain.
+    restored.respawnProtection=0;restored.state.lives=0;restored.damage(100);tick(PLAYER_DEATH_SECONDS+.04);
     const lastLife={clip:app.world.redcat.userData.animator.name,finished:app.world.redcat.userData.animator.finished,phase:restored.playerReaction?.phase,health:restored.state.health,lives:restored.state.lives,mode:app.mode};
     document.getElementById('pause').hidden=true;app.world.render();
     await app.resume();app.pause();const restarted={health:app.gameplay.state.health,lives:app.gameplay.state.lives};
@@ -56,9 +57,9 @@ try {
   for(const state of [result.hurt,result.dying,result.beforeCheckpoint,result.respawn])assert.ok(state.position.every(Number.isFinite),'real controller positions must remain finite');
   assert.equal(result.hurt.clip,'hit');assert.equal(result.hurtFell,true,'damage must not freeze gravity');
   assert.ok(Math.abs(result.hurt.time-.3)<1e-6);assert.equal(result.dying.clip,'death');
-  assert.equal(result.restore.phase,'death');assert.equal(result.restore.health,0);assert.equal(result.restore.lives,2);
+  assert.equal(result.restore.phase,'death');assert.equal(result.restore.health,0);assert.equal(result.restore.lives,3,'the life is deducted at respawn');
   assert.deepEqual(result.beforeCheckpoint.position,result.dying.position);assert.equal(result.beforeCheckpoint.health,0);
-  assert.equal(result.respawn.phase,'respawn');assert.equal(result.respawn.clip,'re-spawn');
+  assert.equal(result.respawn.phase,'respawn');assert.equal(result.respawn.clip,'re-spawn');assert.equal(result.respawn.lives,2);
   assert.deepEqual(result.respawn.position,result.origin.map((v,i)=>v+(i===0?20:i===1?1:0)));
   assert.deepEqual(result.protectedPosition,result.respawn.position);assert.equal(result.protectedHealth,10);
   assert.equal(result.pausedAge,result.pausedEnd);assert.equal(result.recovered,true);

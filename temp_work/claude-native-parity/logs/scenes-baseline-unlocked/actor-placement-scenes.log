@@ -1,0 +1,18 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Rolling balls were not rendered: {"level":1,"poses":[{"id":"AdamAnyActor87","name":"ac_kogel01","anchor":[1576,51,662],"position":[1605,-5.999977000000001,201],"expected":[1605,-5.999977000000001,201],"visible":true,"model":75,"spin":[-360,0,0],"quaternion":[-1.224646799147353e-16,0,0,-1]},{"id":"AdamAnyActor88","name":"ac_kogel02","anchor":[1537,-138,12],"position":[1545.8333333333333,23.333333333333343,365.1666666666667],"expected":[1545.8333333333333,23.333333333333343,365.1666666666667],"visible":true,"model":76,"spin":[-360,0,0],"quaternion":[1,0,0,-1.8369701987210297e-16]}],"pixels":0,"error":null}
+    at verifyActorPlacementScenes (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/claude-native-parity/baseline/tests/actor-placement-scenes.mjs:39:12)
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at process.processImmediate (node:internal/timers:472:9)
+    at async file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/claude-native-parity/baseline/tests/actor-placement-scenes.mjs:65:5 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

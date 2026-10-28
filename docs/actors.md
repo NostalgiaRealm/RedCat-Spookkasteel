@@ -10,8 +10,8 @@ Original motion-event dispatch and scripted camera timelines are implemented;
 see [motion playback](motions.md) and [camera recovery](camera-native-status.md).
 Hurt/death/respawn clip rates and completion gates are also connected in
 [player reactions](player-reactions-and-projectile-contact-native.md).
-General cross-clip blending and the full native camera spring solver are not
-implemented; that narrower limit should not be read as missing event playback.
+Bone keys blend (SLERP) across the native 250 ms clip transitions. The
+third-person camera follows the original logic; see [native camera](native-camera.md).
 
 RedCat has 16 clips including idle, walkfw, walkbw, directional movement, jump/fall, shoot, charge, hit, death and respawn. The animation tests sample all clips, verify finite bounded positions and normalized normals, and verify looping and independent instances.
 

@@ -67,8 +67,11 @@ test('Brutus defeat restores ambient music and raises the mirror through the ori
   assert.equal(boss.enabled,true);
   assert.equal(host.musicState.sound,'Endbosses.wav');
   game.destroy(boss);
-  assert.equal(object('csmc12').enabled,true);
   assert.deepEqual(host.musicState,{id:music.id,sound:'Level 1 - The Forest.wav',mode:'ambient'});
+  // AfterDestroyCommand waits for the death motion to end (CRcEnemyDie 0x403b50).
+  assert.equal(object('csmc12').enabled,false);
+  while(game.time<boss.animationUntil)game.update(.02,game.playerPosition||[-10000,0,-10000]);
+  assert.equal(object('csmc12').enabled,true);
   advance(host,24.1);
   const raised=host.modelTransforms.get(mirror.modelIndex);
   assert.ok(raised.translation[1]>before.translation[1]+50);

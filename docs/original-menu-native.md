@@ -257,10 +257,9 @@ renderer for reproducible headless functional checks; `REDCAT_TEST_ANGLE`
 selects another backend when appropriate. Their timings are not hardware
 performance measurements, and these tests do not validate packaged releases.
 
-`tests/new-adventure-warning-scenes.mjs` preserves the old flat-menu
-presentation assertions as historical evidence. Running it normally now fails
-immediately with current-check pointers instead of launching a browser and
-waiting for controls that no longer exist. Its explicit historical opt-in is
-only for an old source snapshot. The `#start` in
+The former `tests/new-adventure-warning-scenes.mjs` held the old flat-menu
+presentation assertions for controls that no longer exist; it was removed on
+28 October 2026. Its run is recorded in
+`temp_work/saved-adventure-menu-2026-10-03/`. The `#start` in
 `tests/pickup-audio-tail-scenes.mjs` is a button in that test's deliberately
 isolated audio fixture and remains valid; it is not the removed game menu.

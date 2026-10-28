@@ -35,11 +35,13 @@ test('a mixed-room static chunk submits individual PVS faces without rebuilding 
 });
 
 test('invalid-camera visibility draws conservatively and returning to the same cached PVS restores filtering',async()=>{
-  const {stream,face,indices}=fixture();
+  const {world,stream,face,indices}=fixture();
   try {
     await stream.settle();const revision=stream.visibility.revision;
-    face(200);stream.update();assert.equal(stream.visibility.active,false);assert.deepEqual(indices(),[0,1,2,3,4,5]);
-    face(0);stream.update();assert.equal(stream.visibility.revision,revision);assert.deepEqual(indices(),[3,4,5]);
+    // Only a scripted remote camera falls back to drawing everything in view;
+    // an ordinary camera keeps the last valid room (room-visibility.js).
+    world.gameplay={scripts:{camera:{mode:2}}};face(200);stream.update();assert.equal(stream.visibility.active,false);assert.deepEqual(indices(),[0,1,2,3,4,5]);
+    world.gameplay=undefined;face(0);stream.update();assert.equal(stream.visibility.revision,revision);assert.deepEqual(indices(),[3,4,5]);
   } finally {stream.dispose();}
 });
 
