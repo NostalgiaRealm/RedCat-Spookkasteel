@@ -6,7 +6,7 @@ The project brings the original levels, artwork, animation, Dutch dialogue and g
 
 **Status:** all five levels and their original scripts are playable. Development focuses on matching the original behavior, fixing regressions and keeping performance practical. Some details still differ; see [current status and remaining work](docs/native-parity-audit.md). Apple Silicon macOS still needs hardware validation. The Android app has signed APK/AAB builds and an offline Android 16 emulator check; physical-device testing and Play Console review remain. Mobile browser touch controls already work.
 
-[Run the game](#run-the-game) · [Work completed](#work-completed) · [Controls](#controls) · [Build guide](docs/building.md) · [Technical documentation](#technical-documentation)
+[Run the game](#run-the-game) · [Original version](#original-game-version) · [Work completed](#work-completed) · [Controls](#controls) · [Build guide](docs/building.md) · [Technical documentation](#technical-documentation)
 
 ## How this port works
 
@@ -15,6 +15,20 @@ The original game used Genesis3D and Direct3D. This project replaces the engine 
 Import tools read the original game files and convert their maps, models, textures, sounds and animation into formats the new engine can use. The original **Davi-Script** programs—the instructions controlling puzzles, dialogue, cutscenes and level events—run through a small interpreter written for this project. Other behavior, such as enemy movement and projectile timing, is reconstructed from the original settings, assets and executable research.
 
 This preserves the original content while allowing a different renderer, operating system and input method. In the technical notes, **native behavior** means behavior of the original Windows game; it does not mean that this project runs the original engine. Recovered behavior and deliberate improvements are documented separately.
+
+## Original game version
+
+This port and the decompilation of the original game in [`RC_ORIGINAL_DECOMPILED/`](RC_ORIGINAL_DECOMPILED/README.md) are both based on the original files of RedCat Spookkasteel from the project owner's own disc, with the Windows 98 fix applied:
+
+**RedCat Spookkasteel v 1.0.1.0, 19 juni 2001**
+
+| Release | Version |
+| --- | --- |
+| Original disc | RedCat Spookkasteel v 1.0.0.20, 2 oktober 2000 |
+| With the patch known on the internet as the **Windows 98 Patch** | RedCat Spookkasteel v 1.0.1.0, 19 juni 2001 |
+| With the patch known on the internet as the **Windows XP Patch** | RedCat Spookkasteel v 1.0.1.0, 19 juni 2001 (the same version number as the Windows 98 Patch) |
+
+All original behavior, addresses and settings referred to in this project's documentation come from this version.
 
 ## Technologies
 
