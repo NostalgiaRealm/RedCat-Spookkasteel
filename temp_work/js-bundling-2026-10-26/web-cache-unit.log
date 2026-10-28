@@ -1,0 +1,48 @@
+✔ dependency scanning ignores comments, strings and regex but handles imports and re-exports (1.479311ms)
+✖ one deterministic version covers entry, CSS, every source module and transitive Three modules (24.44672ms)
+✔ editing a leaf dependency changes every module URL even when the release version is unchanged (15.292516ms)
+✔ addon aliases and their relative imports point directly to the same version (13.445237ms)
+✔ unsafe or incomplete module graphs fail before modifying index.html (9.496432ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 4
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 113.771101
+
+✖ failing tests:
+
+test at tests/web-cache.test.mjs:62:1
+✖ one deterministic version covers entry, CSS, every source module and transitive Three modules (24.44672ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /src="\.\/src\/main\.js\?v=0ab8e6063d3e3d0e5497c707"/. Input:
+  
+  '<!doctype html><html><head>\n' +
+    '<link rel="stylesheet" href="./src/style.css?v=0ab8e6063d3e3d0e5497c707">\n' +
+    '<script type="importmap" id="game-importmap">\n' +
+    '{\n' +
+    '  "imports": {\n' +
+    '    "./node_modules/three/build/three.core.js": "./node_modules/three/build/three.core.js?v=0ab8e6063d3e3d0e5497c707",\n' +
+    '    "./node_modules/three/build/three.module.js": "./node_modules/three/build/three.module.js?v=0ab8e6063d3e3d0e5497c707",\n' +
+    '    "./src/actor-render-residency.js": "./src/actor-render-residency.js?v=0ab8e6063d3e3d0e5497c707",\n' +
+    '    "./src/lazy.mjs": "./src/lazy.mjs?v=0ab8e6063d3e3d0e5497c707",\n' +
+    '    "./src/main.js": "./src/main.js?v=0ab8e6063d3e3d0e5497c707",\n' +
+    '    "./src/world.js": "./src/world.js?v=0ab8e6063d3e3d0e5497c707",\n' +
+    '    "three": "./node_modules/three/build/three.module.js?v=0ab8e6063d3e3d0e5497c707",\n' +
+    '    "three/addons/": "./node_modules/three/examples/jsm/"\n' +
+    '  }\n' +
+    '}\n' +
+    '</script>\n' +
+    '</head><body><script type="module" src="./src/game.bundle.js?v=0ab8e6063d3e3d0e5497c707" data-source="./src/main.js"></script></body></html>'
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/web-cache.test.mjs:66:10)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '<!doctype html><html><head>\n<link rel="stylesheet" href="./src/style.css?v=0ab8e6063d3e3d0e5497c707">\n<script type="importmap" id="game-importmap">\n{\n  "imports": {\n    "./node_modules/three/build/three.core.js": "./node_modules/three/build/three.core.js?v=0ab8e6063d3e3d0e5497c707",\n    "./node_modules/three/build/three.module.js": "./node_modules/three/build/three.module.js?v=0ab8e6063d3e3d0e5497c707",\n    "./src/actor-render-residency.js": "./src/actor-render-residency.js?v=0ab8e6063d3e3d0e5497c707",\n    "./src/lazy.mjs": "./src/lazy.mjs?v=0ab8e6063d3e3d0e5497c707",\n    "./src/main.js": "./src/main.js?v=0ab8e6063d3e3d0e5497c707",\n    "./src/world.js": "./src/world.js?v=0ab8e6063d3e3d0e5497c707",\n    "three": "./node_modules/three/build/three.module.js?v=0ab8e6063d3e3d0e5497c707",\n    "three/addons/": "./node_modules/three/examples/jsm/"\n  }\n}\n</script>\n</head><body><script type="module" src="./src/game.bundle.js?v=0ab8e6063d3e3d0e5497c707" data-source="./src/main.js"></script></body></html>',
+    expected: /src="\.\/src\/main\.js\?v=0ab8e6063d3e3d0e5497c707"/,
+    operator: 'match',
+    diff: 'simple'
+  }

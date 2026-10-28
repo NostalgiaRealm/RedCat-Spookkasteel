@@ -1,0 +1,116 @@
+[
+  {
+    "target": "linux-x64",
+    "command": [
+      "npx",
+      "--no-install",
+      "electron-builder",
+      "--linux",
+      "dir",
+      "--x64",
+      "--publish",
+      "never",
+      "-c.extraMetadata.version=1.0.4",
+      "-c.directories.output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/dist/build-1.0.4"
+    ],
+    "exitCode": 0,
+    "seconds": 3.86
+  },
+  {
+    "target": "windows-x64",
+    "command": [
+      "npx",
+      "--no-install",
+      "electron-builder",
+      "--win",
+      "dir",
+      "--x64",
+      "--publish",
+      "never",
+      "-c.extraMetadata.version=1.0.4",
+      "-c.directories.output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/dist/build-1.0.4"
+    ],
+    "exitCode": 0,
+    "seconds": 5.22
+  },
+  {
+    "target": "linux-arm64",
+    "command": [
+      "npx",
+      "--no-install",
+      "electron-builder",
+      "--linux",
+      "dir",
+      "--arm64",
+      "--publish",
+      "never",
+      "-c.extraMetadata.version=1.0.4",
+      "-c.directories.output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/dist/build-1.0.4"
+    ],
+    "exitCode": 0,
+    "seconds": 3.32
+  },
+  {
+    "target": "windows-arm64",
+    "command": [
+      "npx",
+      "--no-install",
+      "electron-builder",
+      "--win",
+      "dir",
+      "--arm64",
+      "--publish",
+      "never",
+      "-c.extraMetadata.version=1.0.4",
+      "-c.directories.output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/dist/build-1.0.4"
+    ],
+    "exitCode": 0,
+    "seconds": 4.23
+  },
+  {
+    "target": "mac-x64",
+    "command": [
+      "npx",
+      "--no-install",
+      "electron-builder",
+      "--mac",
+      "dir",
+      "--x64",
+      "--publish",
+      "never",
+      "-c.extraMetadata.version=1.0.4",
+      "-c.directories.output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/dist/build-1.0.4",
+      "-c.mac.notarize=false"
+    ],
+    "exitCode": 0,
+    "seconds": 3.64
+  },
+  {
+    "target": "mac-arm64",
+    "command": [
+      "npx",
+      "--no-install",
+      "electron-builder",
+      "--mac",
+      "dir",
+      "--arm64",
+      "--publish",
+      "never",
+      "-c.extraMetadata.version=1.0.4",
+      "-c.directories.output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/dist/build-1.0.4",
+      "-c.mac.notarize=false"
+    ],
+    "exitCode": 0,
+    "seconds": 3.69
+  },
+  {
+    "target": "android-apk-aab",
+    "command": [
+      "npm",
+      "run",
+      "build:android"
+    ],
+    "exitCode": 0,
+    "seconds": 26.58
+  }
+]

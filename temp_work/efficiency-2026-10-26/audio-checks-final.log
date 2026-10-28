@@ -1,0 +1,43 @@
+✔ stationary voices do not resend gains, while settings, motion and fades remain immediate (25.531848ms)
+✔ stereo routing avoids duplicate backend writes even when AudioParam getters round to float32 (0.355268ms)
+✔ all five original portal graphs retain visibility through door motion and material changes (13.345491ms)
+✔ pickup-pending detection sees records added and released without allocating a copy (0.273329ms)
+✔ restores music layers, native fade phase and remembered tracks without changing scheduling (2.448826ms)
+✔ restores overlapping pickup tails, keyed effects and delayed replay countdown without rerandomizing (0.971284ms)
+✔ restored dialogue keeps active offset and FIFO; reconstruction and stale callbacks never duplicate lines (0.580266ms)
+✔ metadata-delayed seeks never play an introduction and respect pause/reset while pending (0.402428ms)
+✔ immediate saves retain a pending seek even when HAVE_NOTHING accepts it but reports zero (0.906004ms)
+✔ a restored replay delay may expire before metadata without seeking errors or an early replay (0.211759ms)
+✔ legacy/cross-level states leave reconstructed playback untouched; malformed entries are bounded (0.431117ms)
+✔ decoded WAV voices restore offsets across decode, pause and cancellation without stale playback (4.380314ms)
+✔ one-shots saved at EOF complete once without replaying the file on either audio backend (0.875685ms)
+✔ matching reconstructed moving emitter binding survives playback restoration (0.296189ms)
+✔ original UFO and forest gains use case-insensitive basenames and leave dialogue at full gain (1.135483ms)
+✔ native logarithmic driver volumes become waveform amplitude before the portable master (0.103949ms)
+✔ native distance model uses 32 units/meter and logarithmic control-to-amplitude conversion (0.137879ms)
+✔ level override controls spatial effects while music and voices remain independent of camera distance (0.778005ms)
+✔ master changes preserve authored, channel, script and spatial gains on every live sound (0.388148ms)
+✔ pause, keyed replacement and reset cannot resurrect a stopped voice or leave duplicate loops (0.272598ms)
+✔ replaying emitters honor authored delays and freeze their countdown while paused (0.211438ms)
+✔ original forest host emits spatial metadata and restores only enabled repeating ambience (21.072546ms)
+✔ native fade ramps control volume at constant rate and clamps overshoot (0.994984ms)
+✔ reversing a partly faded track uses the same native rate (0.135359ms)
+✔ saved fade progress produces the same remaining envelope (0.148549ms)
+✔ music fade is converted with native control gain, not final amplitude (0.363018ms)
+✔ native portal frequency remains .075 with shared decoding and positional stereo gain (3.32302ms)
+✔ slow native sounds preserve sample position across pause/resume and stop pending decodes (1.333412ms)
+✔ native terminal zero frequency uses original rate and ordinary audio keeps its media behavior (0.254268ms)
+✔ slow native one-shot completion releases once and delayed loops restart without duplicate sources (1.037394ms)
+✔ native azimuth and centibel stereo law preserve near speaker and do not pan above/below (0.705686ms)
+✔ blocked BSP path changes effective distance by 1.5 without changing stereo source or dialogue (1.015754ms)
+✔ PVS suppression, shortened ambience and player-centered fairy exception are retained (0.410017ms)
+✔ audio areas track the real door pose and never trace actors (0.541277ms)
+✔ original castle PVS and BSP obstruct spatial emitters independently of renderer visibility (20.24627ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 128.267201

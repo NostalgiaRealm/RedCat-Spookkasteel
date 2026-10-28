@@ -1,0 +1,76 @@
+{
+ "version": "1.0.5",
+ "commit": "6dc8ea24e72856b0ec31b6fe8ae977ae5a7f34cc",
+ "tag": "v1.0.5",
+ "github": {
+  "url": "https://github.com/NostalgiaRealm/RedCat-Spookkasteel/releases/tag/v1.0.5",
+  "draft": false,
+  "prerelease": false,
+  "notesMatch": true,
+  "verification": "All 12 assets downloaded with gh release download and checked with sha256sum --check (github-verify.log)."
+ },
+ "gitlab": {
+  "url": "https://gitlab.com/Nostalgia_Realm/RedCat-Spookkasteel/-/releases/v1.0.5",
+  "notesMatch": true,
+  "method": "glab 1.33 `release create` failed with a rate-limiter error before creating anything; assets were uploaded to the generic package registry (redcat-spookkasteel/1.0.5) and the release created through the API with 12 asset links (gitlab-api-publish.py).",
+  "verification": "All 12 asset links streamed and hashed; the mac-x64 ZIP mismatched on the first pass, GitLab recorded the correct size and SHA-256, and a re-download matched (gitlab-verify.log)."
+ },
+ "assets": [
+  {
+   "name": "RC_ORIGINAL_DECOMPILED-1.0.5.manifest.json",
+   "bytes": 5886326,
+   "sha256": "8b2add89911d54ceeef0731f4b5c22bb231678e91c3c50723767d8f0b2ed7bf4"
+  },
+  {
+   "name": "RC_ORIGINAL_DECOMPILED-1.0.5.sha256",
+   "bytes": 102,
+   "sha256": "dc784667b16f6a67c7366fd982d24fbed52d6993cfe0d62921589a152308b28f"
+  },
+  {
+   "name": "RC_ORIGINAL_DECOMPILED-1.0.5.tar.gz",
+   "bytes": 158304849,
+   "sha256": "b2fad23ec064a3ff511369427781888fd72a507430177a6c346aba528396b61c"
+  },
+  {
+   "name": "RedCat-Spookkasteel-1.0.5-android.aab",
+   "bytes": 110725828,
+   "sha256": "e35b19241a5b80af7a633e1435efdb28c6a3e23340f67baeeaf47b5a408a7514"
+  },
+  {
+   "name": "RedCat-Spookkasteel-1.0.5-android.apk",
+   "bytes": 157834668,
+   "sha256": "f4af98b6841d606098e521ef9c397d8e4f53c13fe566ca618a49bfa1fa03b4e0"
+  },
+  {
+   "name": "RedCat-Spookkasteel-1.0.5-linux-arm64.zip",
+   "bytes": 229423812,
+   "sha256": "7a32381a51c0e4f5a13bda0bd104965bb7d871c4ec7bcd21cccb52dffabd4909"
+  },
+  {
+   "name": "RedCat-Spookkasteel-1.0.5-linux-x64.zip",
+   "bytes": 228254175,
+   "sha256": "d5671d612c5f02806e8a4a0c088d35355bbdb93e5798b3a354eac1396133f334"
+  },
+  {
+   "name": "RedCat-Spookkasteel-1.0.5-mac-arm64.zip",
+   "bytes": 232813044,
+   "sha256": "83bffd44ef6bf4b8992ceb30ee4c54e4313ccfb675abc6b3011e133e617dc3ad"
+  },
+  {
+   "name": "RedCat-Spookkasteel-1.0.5-mac-x64.zip",
+   "bytes": 237145266,
+   "sha256": "ecfefc9782b14c22c15c299406dd29a436cad0947063bba71ee7c3dab708098d"
+  },
+  {
+   "name": "RedCat-Spookkasteel-1.0.5-windows-arm64.zip",
+   "bytes": 261788795,
+   "sha256": "fcb19efcee49e380b72837f27b936627dd13bd97ab9aaac67e8f8013a76857d6"
+  },
+  {
+   "name": "RedCat-Spookkasteel-1.0.5-windows-x64.zip",
+   "bytes": 263632769,
+   "sha256": "d58267b7b85d886b76116e25d360e9548e350c08ea63cb691164e790bfee76bd"
+  }
+ ],
+ "testScope": "Source: npm test 1596/1596 before the commit; browser scenes per docs/claude-native-parity-review.md. Built packages were not launched; version strings checked inside the Linux x64 app.asar and the APK."
+}

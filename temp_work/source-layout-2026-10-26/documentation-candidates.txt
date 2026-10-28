@@ -1,0 +1,252 @@
+RC_COIN_TEST/README.md:53:`src/native/` bevat ongewijzigde kopieën van de benodigde portmodules. `source-snapshot.json` bevat hun SHA-256-controlesommen en die van de gekopieerde assets. De kamer en het opnieuw toewijzen van de modellen staan uitsluitend in `src/room.js` en `src/main.js`. Er wordt geen bestaand level, menu of opgeslagen spel aangepast. De drie ongebruikte muntmodellen gebruiken de nog werkende oorspronkelijke `ItemCoin`-logica; hun precieze gedrag in een oudere ontwikkelversie is niet aangetoond. De originele geldzakmodellen en hun drie texturen per model zijn bytegetrouw gekopieerd. Het snapshot bevat ook de controlesommen van de geselecteerde manifestgegevens.
+RC_COIN_TEST/README.md:55:De koppeling van type 1/2/3 aan `imoneys`/`imoneym`/`imoneyl`, geld 1/5/10 en score 5/25/50 komt uit de gekopieerde `src/native/gameplay.js` en de oorspronkelijke INI-gegevens in `src/native/gameplay-settings.js`. `src/native/gameplay-audio.js` kiest het passende S/M/L-geluid. De eerdere native controle is vastgelegd in `../docs/fairy-dialogue-pickup-lifecycle.md`, bij “Pickup and BIG BENG recordings” (selectie op `0x43c850`).
+ANDROID.md:15:| Native adapter | `src/android-host.js` uses the origin-restricted `RedCatAndroid` message endpoint. It does not impersonate Electron's `window.desktop`. |
+ANDROID.md:28:| JDK | **21**, validation used Temurin **21.0.12.1+1** |
+ANDROID.md:60:curl --fail --location --output OpenJDK21U-jdk_x64_linux_hotspot_21.0.12.1_1.tar.gz \
+ANDROID.md:61:  'https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.12.1%2B1/OpenJDK21U-jdk_x64_linux_hotspot_21.0.12.1_1.tar.gz'
+ANDROID.md:64:  'OpenJDK21U-jdk_x64_linux_hotspot_21.0.12.1_1.tar.gz' | sha256sum --check
+ANDROID.md:65:tar -xzf OpenJDK21U-jdk_x64_linux_hotspot_21.0.12.1_1.tar.gz
+ANDROID.md:69:The downloaded archive and installed JDK are retained locally under `temp_work/android-initial-2026-10-06/toolchain/` and excluded from Git. Original release/checksum metadata is included in `temp_work/android-initial-2026-10-06/`; use the commands above to recreate the toolchain after cloning. Other host architectures need the matching JDK archive. Use the [official Temurin release](https://github.com/adoptium/temurin21-binaries/releases/tag/jdk-21.0.12.1%2B1), not this x86_64 archive on ARM or macOS.
+ANDROID.md:79:export JAVA_HOME="$REDCAT_ROOT/temp_work/android-initial-2026-10-06/toolchain/jdk-21.0.12.1+1"
+ANDROID.md:144:Cloud backup/device transfer are explicitly disabled for this initial app. Uninstalling or clearing app data deletes its saves. Spelerlijst exports and imports one player’s latest save, campaign progress and per-player options through Android’s document picker; see [save backups](docs/save-export.md). Import validates the selected file and requires confirmation before replacing the selected player’s data. An automatic atomic app-private backup is not implemented. The Android document adapters have source checks, but still need a real document-provider/device pass. Do not promise survival of an arbitrary process kill from JavaScript checks alone: validate actual process-death and app-update persistence on Android before release.
+ANDROID.md:175:- Android Kotlin compilation, asset merge and **10 JVM tests passed**. Lint reported **0 errors**; remaining warnings concern pinned dependency versions, newer platform attributes and a leftover empty resource-folder qualifier.
+ANDROID.md:267:## 9. Validation scope and remaining device checks
+ANDROID.md:282:- **10 JVM tests, 16 staging/host source tests, 9 simulated Android-host scenes and 6 desktop/mobile-browser scenes** pass. Lint has **0 errors**; remaining warnings concern newer tools/dependencies, an API-33 attribute and an empty obsolete resource-folder qualifier.
+README.md:7:**Status:** all five levels and their original scripts are playable. Development focuses on matching the original behavior, fixing regressions and keeping performance practical. Some details still differ; see [current status and remaining work](docs/native-parity-audit.md). Apple Silicon macOS still needs hardware validation. The Android app has signed APK/AAB builds and an offline Android 16 emulator check; physical-device testing and Play Console review remain. Mobile browser touch controls already work.
+README.md:64:Browser saves belong to that website's address and browser profile. They are separate from desktop saves. This project uses its own save format; importing original Windows-game saves is not implemented.
+docs/efficiency-review-2026-10-26.md:97:that Android had no APK/AAB and that 1.0.1 was the latest packaged version were
+docs/efficiency-review-2026-10-26.md:152:Historical research is evidence, not a live TODO list. Verification records and
+docs/javascript-bundling.md:5:`src/game.bundle.js`. The HTML loads this single file. This reduces startup
+docs/javascript-bundling.md:39:- The same `src/main.js` entry and initialization order are bundled as ES
+docs/targetable-props-camera.md:110:and restored input, remaining camera time across saves, regional camera pitch,
+docs/explosion-variants-native.md:23:| `0x4b4b30`, `0x4b4cc0`, `0x4b5260` | The shockwave interpolates squared radius, giving `50 * sqrt(0.01 * remaining + 16 * elapsed)`: radius 5 to 200. Alpha falls from 255 to 0. It is an upright camera-facing quad with the submerged portion folded onto the floor. |
+docs/explosion-variants-native.md:113:  retirement, and reported **zero GL errors** and **zero remaining scene
+docs/moving-solid-collision.md:26:`src/moving-solids.js` checks the original motion path before `MotionPlayer`
+docs/death-smoke-native-followup-2026-10-26.md:22:- Radius derived from the particle's stored remaining-life fraction, 20 to 60.
+docs/death-smoke-native-followup-2026-10-26.md:27:`src/enemy-death-effects.js` computes the common upward motion, size and alpha
+docs/death-smoke-native-followup-2026-10-26.md:45:`src/jester-teleport-timing.js` now records both finite fifteen-slot sequences
+docs/native-behavior-followup-2026-10-26.md:5:Both records describe local source changes after release 1.0.2; neither creates
+docs/native-behavior-followup-2026-10-26.md:22:BIG BENG release has about 0.549 seconds remaining from its held pose. Pellet
+docs/native-behavior-followup-2026-10-26.md:145:velocity-before-position rise, remaining-life size and camera-position-facing
+docs/gameplay-reconstruction.md:21:solution. `src/davi-vm.js` implements typed operands, parameters, temporaries,
+docs/gameplay-reconstruction.md:25:`src/script-host.js` binds script names to original entities and groups and routes
+docs/gameplay-reconstruction.md:50:2,346 keyframes. `src/motions.js` supports translation interpolation, quaternion
+docs/gameplay-reconstruction.md:91:TODO lists. The [native follow-up](native-completion-followup.md) connects player
+docs/gameplay-reconstruction.md:127:`boss-script-regressions.md` record the native evidence and remaining limits.
+docs/world-light-shadows-native.md:38:`src/world-light-shadows.js` reuses the imported floor-lighting face metadata,
+docs/world-light-shadows-native.md:100:Before the fix, [`CastleWorld.load()`](../src/world.js) passed these images
+docs/world-light-shadows-native.md:104:[`WebGLTextures.js`](../node_modules/three/src/renderers/webgl/WebGLTextures.js)
+docs/world-light-shadows-native.md:165:[`normalizeSkyboxFaces()`](../src/skybox.js) now runs before cubemap creation.
+docs/original-source-comparison-2026-10-26.md:4:The port baseline is release 1.0.2, commit
+docs/original-source-comparison-2026-10-26.md:24:verification report records actual coverage and remaining recovery limits.
+docs/original-source-comparison-2026-10-26.md:27:functions exported to C, zero remaining C-export failures**. This includes
+docs/original-source-comparison-2026-10-26.md:61:release paths. Implementation: `src/enemy-projectiles.js` and
+docs/original-source-comparison-2026-10-26.md:76:Implementation: `src/enemy-standing-shooter-native.js` with the existing ambush,
+docs/original-source-comparison-2026-10-26.md:89:`src/particle-clock-native.js`, `src/fairy-effects.js`,
+docs/original-source-comparison-2026-10-26.md:90:`src/teleporter-effects.js`. The original fixed visual step, local RNG, sound
+docs/original-source-comparison-2026-10-26.md:117:Implementation: `src/player-landing.js`, `Gameplay.land`, the existing world
+docs/boss-phases-native.md:11:`src/boss-ai.js` supplies specialized machines to `Gameplay.updateEnemy`.
+docs/enemy-combat-effects-native.md:54:Magic ball's override calls the shared tick, then updates its homing velocity (`0x4466a2–0x446737`); it does not emit another effect. The shared tick's remaining work covers lifetime, velocity/gravity, sprite animation, collision and position. This verifies the absence of an independent emitter beyond merely inspecting a null vtable slot.
+docs/presentation-source-parity-2026-10-26.md:17:`src/particle-clock-native.js` now implements the recovered clocks, used by
+docs/presentation-source-parity-2026-10-26.md:18:`src/fairy-effects.js` and `src/teleporter-effects.js`:
+docs/presentation-source-parity-2026-10-26.md:31:  separate double constant and a float32 remaining fraction; its first write
+docs/presentation-source-parity-2026-10-26.md:99:- **Menu actions and voices:** `src/original-menu.js` and `src/menu-audio.js`
+docs/intentional-fixes-and-findings.md:49:| Optional cheats | A settings submenu fills mirror pieces and potions to their limits, adds 9000 points, unlocks all chapters, or enables free flight. Supplies do not collect actual level objects or complete their scripts. | [Cheat implementation](../src/cheats.js), [chapter access](campaign-menu-native.md) |
+docs/intentional-fixes-and-findings.md:82:| Hold-to-skip dialogue | Hold E, the touch skip control or the controller equivalent for two seconds, with an **Overslaan** progress circle. Fast-forward completes the remaining authored callbacks and rewards. Release/pause resets an incomplete hold. | [Skip control](hud-targeting-cutscene-skip.md#requested-new-skip-control), [controller support](controller-support.md) |
+docs/intentional-fixes-and-findings.md:84:| Protected dialogue and completed levels | RedCat is invulnerable during cutscenes and the pending level-completion wait. During dialogue he returns to idle, pending attacks/charges are cancelled, and defeated enemies finish their death/fade/smoke sequence while living combatants stay frozen. This explicitly prevents a post-boss conversation becoming a death trap. | [Cutscene completion](enemy-combat-effects-native.md), [health/completion protection](debriefing-and-hearts-native.md), [damage gate](../src/gameplay.js) |
+docs/intentional-fixes-and-findings.md:105:[ambience-ranges.js](../src/ambience-ranges.js) and
+docs/intentional-fixes-and-findings.md:106:[audio-settings.js](../src/audio-settings.js). The initial 5–30 m Cave range,
+docs/intentional-fixes-and-findings.md:116:| Audible originally silent door panels | Selected visible DoorType-4 panels use original normal/secret door recordings, despite native type 4 selecting `empty.wav`. Invisible area barriers, faceless carriers, hedges and other mechanisms stay excluded. | [Door fallback](world-action-audio.md#buttons-and-doors), [selector](../src/door-audio.js) |
+docs/intentional-fixes-and-findings.md:132:| Camera protection near walls | The third-person camera rises above RedCat when there is too little room behind him, preventing a view inside his body. The reconstructed collision/compensation solver retains this requested behavior. Authored fixed cameras still own their timer and cannot be cancelled by look input. | [Camera implementation](../src/world.js), [camera controls](../src/camera-control.js), [camera boundaries](camera-native-status.md) |
+docs/intentional-fixes-and-findings.md:133:| Full-screen level overview | Stretch the original background to fill any window, including portrait displays, while keeping text/icons proportional. Use **KLIK/TIK hier om verder te gaan** on every device instead of the original shooting prompt. | [Responsive overview](touch-controls.md), [renderer](../src/debriefing.js) |
+docs/intentional-fixes-and-findings.md:134:| Updated menu/help/About | A modern responsive HTML interface hosts display/input settings, cheats, recovery saves and **Over** with project version, donations and website/YouTube links. Requested promotional/development text and the redundant gameplay II overlay/menu Afsluiten button are removed. | [Menu markup](../index.html), [menu source](../src/main.js), [historical UI cleanup](native-parity-audit.md#historical-audit-changes-and-checks-23-september) |
+docs/intentional-fixes-and-findings.md:165:| Display refresh and automatic mobile quality | Render through the display-synchronized browser frame loop. The Linux launcher removes an inherited MangoHud cap unless a launch-specific cap was supplied. The Android wrapper has its own automatic rendering-size budget; explicit resolution selection remains available. | [Refresh investigation](native-refresh-performance.md), [Android adapter](../src/android-host.js), [Android setup](../ANDROID.md) |
+docs/intentional-fixes-and-findings.md:272:notes state the focused checks performed and any remaining validation limits.
+docs/msaa-rendering.md:45:`src/msaa-renderer.js` handles the final world draw. `CastleWorld.render()` still
+docs/msaa-rendering.md:98:1.0.1 package/release verification is recorded separately in
+docs/msaa-rendering.md:99:`temp_work/release-1.0.1-2026-10-20/`.
+docs/graveyard-sky-native.md:23:It does not simply discard the face and render all remaining map geometry
+docs/gargoyle-attacks-native.md:99:`src/gargoyle-blast.js` owns the small saved particle state and native timer
+RC_ORIGINAL_DECOMPILED/README.md:40:Each directory contains individual `functions/<address>_<name>.c` files, combined `full_decompilation.c`, `functions.tsv`, address-linked machine instructions, imports, exports, strings, symbols and memory maps. `linear-disassembly.asm` additionally retains the executable-section byte stream interpreted by GNU objdump; its data-as-instruction passages must not be treated as discovered code. `executable_without_instructions.tsv` and `instructions_outside_functions.tsv` make remaining discovery limits explicit. Debug trailers and raw resource payloads remain in the input copies.
+RC_ORIGINAL_DECOMPILED/README.md:76:`inventory/code-gap-classification.json` and each binary's `unowned-instructions-classified.tsv` / `undecoded-ranges-classified.tsv` distinguish byte-pattern padding from remaining code-or-data uncertainty. The whole original byte stream is retained, including undecoded regions; no unverified bytes were discarded or invented as source code.
+docs/original-menu-native.md:175:  **Meer instellingen**, below Muziek, contains the remaining added settings,
+docs/original-menu-native.md:222:[1.0.1 release verification](../temp_work/release-1.0.1-2026-10-20/release-verification.json)
+docs/native-visuals-2026-09-22.md:139:  particles, so their positions and remaining lifetimes continue normally.
+docs/native-visuals-2026-09-22.md:147:  Skipping stops the idle loop and consumes that cutscene's remaining fairy
+docs/gameplay-sound-native.md:42:remaining health: `RcGen1.wav` below 10, `RcGen2.wav` from 10 to below 40,
+docs/ufo-impact-decal-native.md:50:were unchanged. `src/decal-effects.js` implements surface placement and native
+docs/ufo-impact-decal-native.md:51:quad construction, and `src/world-effects.js` creates and updates those effects.
+docs/asset-formats.md:99:The lightmap coordinate for a corner is derived from `dot(position, vector) / 16`, relative to the floor of the minimum face coordinate, plus the half-texel center and atlas placement. Original lightmap data has a one-byte RGB marker before the samples. This importer exports baked lighting; runtime dynamic lights, including moving lights and authored shadow obstruction, are implemented separately in [world lighting](world-light-falloff-research.md) and [world shadows](world-light-shadows-native.md). All five supplied BSPs use baked light style zero. Arbitrary multi-style BSP animation and mirror-surface reflections are not implemented by this importer.
+docs/native-projectile-animation.md:41:sets its deadline to `-1`, its remaining fraction to `1`, and its active flag
+docs/native-projectile-animation.md:59:not exactly 20 displayed frames per second. `src/projectile-animation.js`
+docs/room-loading-hitches.md:22:- `src/streaming-work.js` provides one shared queue for world textures, actor
+docs/zombie-activation-native.md:66:`src/zombie-grave-rise.js` now owns only the first, explicitly linked rising
+docs/zombie-activation-native.md:94:remaining ascent:
+docs/script-vm-investigation.md:7:`src/davi-vm.js` and `src/script-host.js` execute them. The research below is
+docs/script-vm-investigation.md:9:For current implementation coverage and remaining work, see
+docs/script-vm-investigation.md:126:implemented by `tools/import_scripts.py`, `src/davi-vm.js`, `src/script-host.js`,
+docs/script-vm-investigation.md:127:`tools/import_motions.py` and `src/motions.js`. They are retained to explain the
+docs/script-vm-investigation.md:134:remain separate; the historical plan below is not a fresh TODO list.
+docs/player-profiles-native.md:12:confirmed. The final remaining player cannot be deleted until another is added.
+docs/player-profiles-native.md:63:`src/player-profiles.js` stores a versioned player list and selected ID under
+docs/actors.md:7:`src/animation.js` samples the exported translation and quaternion tracks, composes parent × attachment × sampled motion transforms, and skins each rigid vertex and normal. Animated instances own their posed position/normal buffers and bounds, while immutable clip preparation and UV/index CPU arrays are shared. Source definitions and textures are cached. RedCat selects original clips from movement/jump/attack state. Environment animation clocks advance off-screen, with vertex sampling deferred until nearby; looking away no longer pauses their timeline.
+docs/actors.md:42:- Animated poses use `src/actor-geometry.js`. Their mutable positions/normals
+docs/touch-controls.md:57:`src/touch-controls.js` provides device detection, pointer tracking and input
+docs/touch-controls.md:58:state. `src/main.js` combines that state with the existing keyboard/mouse
+docs/native-asset-loading-and-camera-visibility.md:97:  remaining level initialization
+docs/native-asset-loading-and-camera-visibility.md:127:Final world release destroys remaining actor registrations, lights, entities,
+docs/native-asset-loading-and-camera-visibility.md:189:### Door areas: recovered behavior and remaining boundary
+docs/native-asset-loading-and-camera-visibility.md:201:not yet mapped. This task therefore retains the port's existing conservative
+docs/native-asset-loading-and-camera-visibility.md:287:[World streaming implementation](../src/world-streaming.js):
+docs/target-eligibility-native.md:14:| Button | `ButtonModel.ShootToSwitch=1` | Active shootable button with remaining uses |
+docs/rolling-stones-native.md:24:portion of elapsed time, reset to the path start, and continue with remaining
+docs/spout-effects-native.md:165:`+0x24` (remaining lifetime fraction), then multiplies this half-size.
+docs/spout-effects-native.md:168:remaining = lifetime timer remaining fraction
+docs/spout-effects-native.md:169:size = remaining*SizeStart/100 + (1-remaining)*SizeEnd/100
+docs/spout-effects-native.md:222:Fade alpha is `trunc(2.5500000000000003 * (AlphaStart*remainingFade +
+docs/spout-effects-native.md:223:AlphaEnd*(1-remainingFade)))`. Lifetime is checked before fade/motion; a dead
+docs/spout-effects-native.md:229:`src/spout-effects.js` now owns the 15 reusable slots and their immutable launch,
+docs/spout-effects-native.md:272:  covered only the remaining Caves/Tower fixtures.
+docs/gpu-effect-buffer-residency.md:7:World chunks and actor resources already release inactive GPU geometry/textures with shared-owner protection. The remaining large avoidable reservation was effect buffers: each first-used billboard artwork allocated space for 8,192 particles, approximately 416 KiB, even if its draw contained only one particle. These buffers remained allocated until leaving the level.
+docs/gpu-effect-buffer-residency.md:92:The first snapshot harness attempted to intercept the custom `redcat:` protocol; Electron did not apply that route, so those labelled snapshot runs actually loaded current source. Use the **verified** comparisons above: their retained `before-entry.html` loads `before/src/main.js` explicitly, and reports confirm that the old source has no fragment pool. Earlier runs and the intermediate lighting-regression images remain retained for diagnosis, rather than being used as successful comparison evidence.
+docs/world-light-falloff-research.md:18:| `0x5d3160..0x5d318d` | Add remaining radius times each fixed-point color channel |
+docs/world-light-falloff-research.md:43:`src/world-lighting.js` implements this arithmetic and provides shader helpers.
+docs/nginx-hosting.md:60:`npm run web:refresh` combines the JavaScript runtime into `src/game.bundle.js`
+docs/nginx-hosting.md:211:curl -I https://games.nostalgiarealm.com/redcatspookkasteel/src/main.js
+docs/nginx-hosting.md:265:had retained **0.9.9** `src/actor-render-residency.js` while loading the current
+docs/nginx-hosting.md:266:`src/world.js`. The old module did not implement `settle()`. Fresh responses
+docs/nginx-hosting.md:285:`src/game.bundle.js` request. Old separately cached modules are therefore not
+docs/nginx-hosting.md:306:  https://games.nostalgiarealm.com/redcatspookkasteel/src/actor-render-residency.js
+docs/cave-ambience-range.md:26:`src/ambience-ranges.js` now limits **every spatial effect loop** in the caves
+docs/cpu-spatial-query-performance.md:3:Implemented on 18 October 2026 after a further report of high CPU use in Linux Chromium on a 2019 Core i3. The user confirmed hardware-accelerated WebGL/WebGPU. This extends [the previous browser CPU pass](browser-cpu-performance-followup.md). These changes were subsequently included in the 1.0.0 and 1.0.1 packages; the measurements below remain the original source comparison, not validation on the user's i3.
+docs/source-fixes-2026-09-22.md:16:| New dialogue skip | Initially a three-second E hold, later changed to **two seconds** in `src/cutscene-skip.js`; “Overslaan” progress circle; original remaining callbacks complete and preserve outcomes. Touch/controller skip use the same duration. |
+docs/source-fixes-2026-09-22.md:53:records remaining work and intentional portable differences.
+docs/motions.md:33:`src/motions.js` also supports linear translation, zero-derivative Hermite
+docs/movement-recovery.md:9:`src/movement-recovery.js` is shared by the player and enemy controllers. It:
+docs/native-reference-builds.md:23:[enemy waypoint decisions](enemy-waypoint-movement.md). Their remaining portable
+docs/native-reference-builds.md:25:blanket unimplemented items. Script-event coverage alone still does not validate
+docs/browser-cpu-performance-followup.md:3:Implemented on 18 October 2026, after the 0.9.9 release and a further report of high CPU usage in Linux Chromium on a 2019 Core i3. This extends the [first CPU optimization pass](low-end-cpu-performance.md). These changes were subsequently included in the 1.0.0 and 1.0.1 packages; the measurements below describe the original source comparison, not a new target-hardware benchmark.
+docs/browser-cpu-performance-followup.md:48:The later 1.0.1 release checks cover a separate focused set.
+docs/enemy-gameplay.md:11:`src/gameplay-audio.js` now routes actual gameplay events through the existing
+docs/enemy-gameplay.md:71:A selected reaction cancels the pending shot, remaining salvo and wait;
+docs/graveyard-maze-recovery.md:13:`src/graveyard-maze.js` resets the progression triggers to their authored enabled
+docs/audio.md:7:The portable mixer in `src/audio.js` now reads the original sound gains exported
+docs/audio.md:8:by `tools/import_audio_settings.py` to `src/audio-settings.js`. This importer is
+docs/audio.md:59:`src/ambience-ranges.js`: Castle sources fade between 17.55 and 87.75 meters,
+docs/enemy-death-effects-native.md:10:| `0x403b92`, `0x403aad`, `0x4247a0` | Start a 5000 ms timer, multiply its remaining fraction by 255, and apply actor alpha. |
+docs/enemy-death-effects-native.md:17:The [26 October follow-up](death-smoke-native-followup-2026-10-26.md) replaces the continuous acceleration and fade approximations. Death smoke now samples a small shared 60 Hz table implementing native velocity-before-position integration, independent lifetime/delay/fade timers, integer particle alpha, and remaining-lifetime size. Each billboard faces the camera's **position**, using the native UV corners and extra half-unit XY template quad. Initial alpha is `127/255`; float32 conversion makes the fade interval 6199 ms. Timers arm on their first update and expire strictly after their deadlines.
+docs/enemy-death-effects-native.md:30:final fade for every piece. It now uses `src/knight-debris.js` and the existing
+docs/enemy-death-effects-native.md:31:`src/debris-native.js` implementation.
+docs/player-reactions-and-projectile-contact-native.md:33:with remaining lives resumes that sequence instead of resetting the level.
+docs/difficulty-native.md:7:`src/difficulty.js` exposes the native IDs, canonical values, Dutch labels and validated normalization. `Gameplay` selects the original imported tables when constructing a level. Existing AI and boss phases consume those tables, including health, melee damage, movement and spider descent speeds, perception/memory, shot spread, salvo sizes, attack waits and boss timing. Projectile damage, speed, gravity and lifetime come from the matching `ProjectileEasy.ini`, `ProjectileNormal.ini` or `ProjectileHard.ini`.
+docs/audio-media-lifetime.md:108:has a separate pause-only cleanup path in `src/menu-audio.js`; it was reviewed
+docs/campaign-menu-native.md:71:`src/campaign-progress.js` contains pure helpers, with no DOM or storage writes:
+docs/explosion-damage-native.md:57:`src/explosion-damage.js` creates damage cells once when the source is destroyed.
+docs/explosion-damage-native.md:58:`src/world.js` provides current posed actor bounds, active-state checks and
+docs/explosion-damage-native.md:71:radius and rate. Reloading resumes only its remaining lifetime. Active source explosion records
+docs/explosion-damage-native.md:102:`src/explosion-damage.js` now implements this ordering. A blast first processed
+docs/explosion-damage-native.md:149:Both projectile hits and explosion ticks now use `src/destructible-damage.js`.
+docs/explosion-damage-native.md:164:saves contain only remaining prop health: that remainder becomes the new
+docs/explosion-damage-native.md:165:limit with zero accumulated damage. This preserves the old save's remaining
+docs/campaign-validation-2026-10-18.md:6:this is not a new playthrough of 1.0.1. Useful harnesses, logs and findings remain
+docs/campaign-validation-2026-10-18.md:83:and physically entered/exited the two remaining secret passages (throne and
+docs/campaign-validation-2026-10-18.md:95:the remaining four health points. The actual mirror/debriefing exit entered
+docs/campaign-validation-2026-10-18.md:376:compares 115 source files with the campaign manifest and identifies `src/audio.js`
+docs/campaign-validation-2026-10-18.md:381:## Source release checks and remaining validation
+docs/campaign-validation-2026-10-18.md:392:Subsequent [1.0.1 release verification](../temp_work/release-1.0.1-2026-10-20/release-verification.json)
+docs/campaign-validation-2026-10-18.md:395:[packaged Linux check](../temp_work/release-1.0.1-2026-10-20/smoke-KDiwvP/report.json)
+docs/campaign-validation-2026-10-18.md:398:TODO; they do not extend this campaign's recorded source/hardware scope.
+docs/player-world-light-native.md:43:remaining slots retaining their distance selection. This prevents the small
+docs/fairy-dialogue-pickup-lifecycle.md:54:the remaining countdown for delayed repeating emitters. The previous special
+docs/presentation-native.md:99:mean the particle integrator, pool or color cycle is still unimplemented, and
+docs/actor-model-attachments.md:77:than outstanding attachment work. Their documents record the remaining timing
+docs/release-source-validation-2026-10-15.md:12:source fixes, full outro after a startup retry, and remaining release/hardware
+docs/replayed-level-intros-native.md:160:`src/campaign-progress.js` keeps visited chapter IDs separate from
+docs/replayed-level-intros-native.md:162:its successor; the successor has not yet been played. The unlock-all cheat does
+docs/replayed-level-intros-native.md:164:to load the chapter does not record a visit. `src/main.js` chooses the replay
+docs/vertical-fan-native.md:79:The runtime repair in `src/collision.js` retains the authored trigger values,
+docs/player-protection-progress-and-local-audio.md:59:These are the current `src/ambience-ranges.js` values after the requested
+docs/player-protection-progress-and-local-audio.md:84:  transition; resuming plays the remaining tail before advancing. The minimum
+docs/patrol-boss-native.md:13:`src/enemy-navigation.js` builds a graph from `GrobberPathPoint` entities. Enemies
+docs/patrol-boss-native.md:142:The first blocked trace then discarded the remaining tangential movement.
+docs/patrol-boss-native.md:145:at `0x59c049–0x59c058` and compares that travel with the remaining distance.
+docs/patrol-boss-native.md:225:When there are remaining shots it enters the wait state at `0x40172e`–`0x40173c`;
+docs/patrol-boss-native.md:252:  with their remaining limits in [boss phases](boss-phases-native.md). Guardians
+docs/audio-save-continuity.md:3:Implemented 2026-10-15 in `src/audio.js` and the adventure save/load path in
+docs/audio-save-continuity.md:4:`src/main.js`. This extends the port's saves; it does not claim that the native
+docs/native-refresh-performance.md:33:existing `dist` packages; the published 1.0.0 and 1.0.1 packages include this
+docs/music-fade-native.md:17:restart a full-duration interpolation over the remaining distance.
+docs/music-fade-native.md:33:`src/music-fade.js` implements the constant-rate control ramp. `src/audio.js`
+docs/world-action-audio.md:7:`idlefee1.wav` keeps its existing authored gain and active/deactivated lifetime. Its entire distance curve is expanded by exactly three. After the later requested ambience-range increases, the current castle near/far 17.55/87.75 m becomes 52.65/263.25 m, and cave 17.55/105.3 m becomes 52.65/315.9 m. The other levels multiply the current configured minimum radius by three, also scaling the maximum. `src/ambience-ranges.js` contains these intentional mix adjustments; they are not claims about original native attenuation.
+docs/debris-native-recovery.md:24:| `0x570d22–0x570fa7` | A fragment stops simulating after more than ten contacts when speed falls below 100. Rotating fragments lie flat with a random yaw. If `MustFade` is enabled, settling starts a two-second fade and resets remaining lifetime to two seconds. |
+docs/boss-interruptions-native.md:24:and discards any remaining canceled shots. A sound-only hit still plays its
+docs/boss-interruptions-native.md:88:Saves retain hurt progress, rates, committed releases, remaining salvos and
+docs/bookcase-touch.md:46:including a paused opening; fully open saves retain their remaining wait.
+docs/shooter-wait-native.md:24:native root state, nested child and movement manager is not yet reproduced
+docs/skyboxes-native.md:38:[`nativeSkyboxFaces()`](../src/skybox.js) now supplies native slots
+docs/actor-floor-lighting-native.md:16:Portable safeguards and remaining limits:
+docs/enemy-actor-animations-native.md:171:implemented. Their linked evidence retains the remaining portability limits;
+docs/enemy-lifecycles-native.md:60:`src/enemy-ambush.js` now owns saved dormant/waking/awake/retracting phases for
+docs/skeleton-hit-native.md:57:- `src/enemy-hit-native.js` discards skeleton dormant/wake/retract bookkeeping
+docs/skeleton-hit-native.md:60:- `src/enemy-ambush.js` migrates older snapshots that retain those replaced
+docs/davi-format.md:113:a null `typeClass`; object types reference their class declaration. The remaining
+docs/ghost-transparency-native.md:41:`src/ghost-materials.js` clones material zero for each actual ghost enemy.
+docs/native-enemy-projectile-flight.md:52:The 26 October follow-up corrected a remaining display-rate dependency in the
+docs/native-enemy-projectile-flight.md:73:segments) and saves the remaining flight time as debt, bounded by remaining
+docs/player-projectiles-native.md:36:`src/gameplay-settings.js`; the unrelated generic `WeaponsNormal.ini` is not
+docs/world-streaming.md:39:`src/world-streaming.js` partitions stationary scenery into 768-unit cells,
+docs/world-streaming.md:106:`src/actor-render-residency.js` separately manages actor graphics. Nearby actors
+docs/world-streaming.md:195:The remaining castle loads occurred during initial exploration; repeat laps no
+docs/portal-native-recovery.md:4:`CRTeleporterFx`/`CParticle` state machine in `src/teleporter-effects.js`.
+docs/portal-native-recovery.md:23:| `0x475910–0x475bc9` | The original `blast` floor sprite starts when the front reaches the floor. Its half-size is `50 × (.5 + 1.3 × remainingLifetimeFraction)` and opacity is 100/255. |
+docs/fairy-skip-audio-2026-09-22.md:33:their remaining visual effects, and stops their audio. It does not start a new
+docs/fairy-skip-audio-2026-09-22.md:72:started once, then confirms zero remaining fairy sprites, trails, light or
+docs/native-parity-audit.md:1:# Native implementation status and remaining work
+docs/native-parity-audit.md:6:Gameplay fidelity boundaries and the later 1.0.1 release records were reviewed
+docs/native-parity-audit.md:36:notes describe their own point in time; their TODO lists are not necessarily
+docs/native-parity-audit.md:75:The 20 October [1.0.1 release record](../temp_work/release-1.0.1-2026-10-20/release-verification.json)
+docs/native-parity-audit.md:82:the [1.0.1 notes](../RELEASE_NOTES_1.0.1).
+docs/native-parity-audit.md:84:The remaining work falls into validation, test maintenance, optional additions
+docs/native-parity-audit.md:98:   See [platform validation and remaining checks](portability.md) for the exact
+docs/native-parity-audit.md:118:   [patrol/boss limits](patrol-boss-native.md#remaining-fidelity-limits).
+docs/native-parity-audit.md:179:| Enemy hit responses | Common damage chooses a hit reaction on the native 50% branch; sound-only responses leave the action intact. Selected reactions cancel pending release, remaining salvo and wait, while repeated hits do not restart an active hit motion. Spiders choose a fresh alert from current height after hurt; selected skeleton hits replace dormant/wake/retract with hurt then active alert, without an extra wake; older saves normalize to that order. Dormant knights/gargoyles ignore HP damage but can react; their wake/hurt phases remain vulnerable. Bone Brutus accepts damage on its distinct one-in-three branch, while Mushroom Brutus uses the common receiver. Fractional HP is deliberately retained so small continuous damage ticks accumulate. See [hit evidence and limits](enemy-pursuit-interruptions-native.md). |
+docs/native-parity-audit.md:199:## Recovered features and remaining portability differences
+docs/native-parity-audit.md:219:  [player collider](../src/collision.js) and
+docs/native-parity-audit.md:301:   package/hardware behavior. Compare remaining fidelity questions with native
+docs/native-parity-audit.md:323:14 methods across 444 event handlers). Some unused engine APIs are unimplemented,
+docs/camera-native-status.md:63:replaced. `src/script-camera.js` starts at the first waypoint, visits the points
+docs/camera-native-status.md:103:- Final movement starts with the same 150-unit speed. If the remaining distance
+docs/camera-native-status.md:109:  exactly in `src/script-camera.js`; this is a lookup, not a generic easing curve.
+docs/camera-native-status.md:144:viewed overview resumes with its remaining duration rather than restarting or
+docs/torch-flames.md:25:`src/torch-flames.js` reads the centre of the original `htorch.act` wick cap
+docs/actor-lighting-native.md:156:`src/actor-light-sampling.js` implements this preparation and a CPU vertex-color
+docs/autosave.md:18:with remaining lives resumes that animation and its normal checkpoint respawn.
+docs/graveyard-performance-regression.md:55:unimplemented optimization; the navigation budgets below remain necessary.
+docs/enemy-waypoint-movement.md:42:Mode, remaining time, RNG and current destination survive saves and freezes.
+docs/enemy-waypoint-movement.md:114:## Verification, evidence and remaining adaptations
+docs/audio-native.md:159:## Forest entity evidence and remaining uncertainties
+docs/redcat-animations-native.md:104:A rapid additional switch starts a new transition only when remaining weight
+docs/redcat-animations-native.md:139:## Deliberate differences and remaining limits
+docs/loading-screen-native.md:48:`src/loading-screen.js` prepares all five small illustrations in advance so a
+docs/enemy-pursuit-interruptions-native.md:55:`src/enemy-shooter-native.js` owns the ordinary frog, ranged spider/bat/ghost
+docs/enemy-pursuit-interruptions-native.md:101:The port saves the shooter phase, remaining shots and wait deadline alongside
+docs/enemy-pursuit-interruptions-native.md:103:reaction discards the pending shot, remaining salvo, current wait and relocation
+docs/enemy-pursuit-interruptions-native.md:109:`src/enemy-hit-native.js` separates health damage from the random reaction.
+docs/portability.md:3:The core is ES modules and typed arrays. `src/collision.js`, `src/gameplay.js` and `src/animation.js` are independent of Electron. Asset conversion happens before packaging, producing PNG, float32 geometry, JSON and modern audio/video formats. A new platform does not need to parse legacy PE executables or Direct3D resources.
+docs/portability.md:5:`src/world.js` owns WebGL rendering and camera/player integration. `src/main.js` owns the menu, HTML media, persistent settings, keyboard/mouse/touch/gamepad translation, and the frame loop. Its optional `window.desktop` bridge provides display, quit and save import/export actions, plus platform identification. `electron/main.cjs` implements that bridge with a sandboxed renderer and an application-local secure URL scheme. The browser build works without the bridge. Mobile browser input is implemented. Platform-specific build and runtime evidence is listed below; one platform’s success does not establish another’s compatibility.
+docs/portability.md:11:The existing npm packaging helpers target x64 Linux and x64 Windows. Both include Electron and imported resources. [The build guide](building.md#5-generate-portable-packages-when-ready) also gives direct-CLI recipes for Linux ARM64 and Windows ARM64 using the pinned Electron binaries. All four Linux/Windows targets were built, archived and published for **1.0.3**, as recorded in the [release record](../temp_work/release-1.0.3-2026-10-26/release-record.json). The six desktop archives and their uploaded checksums were verified; **1.0.3 package tests were deliberately not run**. Earlier Linux x64 packaged-runtime coverage, including a 1.0.1 software-rendered startup/save check, does not establish a new 1.0.3 runtime pass. Windows and ARM hardware runtime validation remains outstanding. The helpers still force x64, and the root launchers do not discover the ARM64 output directories; use the explicit build and launch commands in that guide.
+docs/portability.md:23:Unsigned Intel and Apple Silicon bundles were built on Linux and published for **1.0.3**; the [release record](../temp_work/release-1.0.3-2026-10-26/release-record.json) lists successful builds and verified upload hashes. No 1.0.3 package tests were run. Earlier [1.0.1 architecture and archive checks](../temp_work/release-1.0.1-2026-10-20/release-verification.json) retain their historical scope. Neither record establishes native Mac runtime support. Remaining validation and distribution polish:
+docs/world-effects-native.md:3:`src/world-effects.js` renders the original flame/smoke spouts, coronas, beam entities, dynamic lights, activated save beacons and teleport effects. `tools/import_world_effects.py` imports eleven original color/alpha pairs into `assets/effects`; its manifest records SHA-256 hashes and original image dimensions. No replacement art is generated.
+docs/world-effects-native.md:12:- Timer initializers at `0x46a8c0` and `0x46a8e0` set 600 ms and 400 ms. `0x46bd00` begins each ray at 600 ms intervals and extends it over 400 ms. It starts the corona after the sixth joins. `0x46c3b0` expands the corona from 0.8 to 50 over the remaining 200 ms, then settles it to 25. The seven rays remain after assembly.
+docs/world-effects-native.md:30:`src/beam-contacts.js` makes the visible `EffectBeamEntity` line segment damage the player's swept collision box. It uses the same authored/model-transformed endpoints and optional nearest-wall trace as the renderer. It clips the segment against the moving box, rather than treating the entire diagonal segment's enclosing box as a hazard. This avoids empty-corner hits and missed fast crossings.
+docs/world-effects-native.md:56:than remaining generic approximations. The native shadow path itself only
+docs/building.md:62:Skip this section if the project already has complete imported `assets/` and `data/` directories. Importing regenerates those directories and the generated `src/gameplay-settings.js` and `src/audio-settings.js` files from the original installation; it leaves the original installation and CD unchanged. Keep any manually edited generated files separately before reimporting.
+docs/building.md:162:changing the Over dialog to **1.0.1** does not update a previously built **1.0.0**
+docs/building.md:165:checks do not certify a new 1.0.1 release, and Linux browser/Electron checks
+docs/building.md:166:do not certify Windows, macOS or ARM hardware. The 1.0.0 cache-coherence release refresh is recorded in
+docs/building.md:167:`temp_work/release-1.0.0-final-2026-10-20/`. The subsequent 1.0.1 release built
+docs/building.md:169:are in `temp_work/release-1.0.1-2026-10-20/`. Its Linux x64 packaged smoke
+docs/building.md:210:optimized `src/game.bundle.js` runtime and updates the HTML, source-map and
+docs/building.md:311:Use a **Mac** for the signed development recipes and runtime checks below. Unsigned app bundles for both architectures can also be cross-packaged on Linux, as done for 0.9.9 and repeated for 1.0.0. macOS code signing requires macOS; use a Mac or a macOS CI runner for a signed release. See the [cross-platform build restrictions](https://www.electron.build/v26/docs/features/multi-platform-build/).
+docs/building.md:390:## Android and remaining platform work
+docs/building.md:394:The ARM64 recipes above are desktop packages. Electron's desktop wrapper cannot produce an Android APK/AAB. The separate Android shell now implements local content loading and lifecycle/audio integration; physical-device, save-recovery and release validation remain. Browser touch overlays and Gamepad API controls are already implemented. Linux/Windows ARM64, Windows x64 and both macOS architectures still need the native runtime validation described above; published cross-packages must retain that limitation. See [portability.md](portability.md) for the remaining steps.

@@ -1,0 +1,23 @@
+✔ Android staging contains only runtime roots, complete Three package and deterministic hashes (71.941478ms)
+✔ multi-chunk binary assets and empty optional files retain exact bytes and manifest hashes (25.912417ms)
+✔ missing required levels, media and Three modules leave an existing staged runtime intact (65.440209ms)
+✔ re-preparing removes stale files only from the owned staging output (30.141731ms)
+✔ unsafe and unowned output paths are refused without altering source or unrelated files (5.400676ms)
+✔ symlinked input files and output ancestors cannot escape the project (7.483252ms)
+✔ an ownership marker is specific to its source project and output path (15.668502ms)
+✔ CLI accepts a single explicit output and rejects incomplete or unknown options (0.208518ms)
+✔ hidden files and invalid version metadata cannot replace a valid asset snapshot (36.845479ms)
+✔ GET streams original bytes and HEAD returns the same metadata without a body (18.296115ms)
+✔ media seeking returns exact bounded, open and suffix byte ranges (9.018633ms)
+✔ unchanged assets revalidate without a body; changed source is returned immediately (5.508945ms)
+✔ If-Range uses the matching date and otherwise returns the whole current file (3.21931ms)
+✔ missing, hidden, invalid and escaping paths remain unavailable; mutations are rejected (2.994211ms)
+✔ large files stream exactly and an aborted movie does not prevent subsequent requests (14.257481ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 304.312648

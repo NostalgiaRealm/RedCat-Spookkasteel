@@ -1,0 +1,28 @@
+{"out":"/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/efficiency-2026-10-26/browser-1793048262309","passed":false,"errors":[]}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+browserType.launch: Target page, context or browser has been closed
+Browser logs:
+
+<launching> /usr/bin/google-chrome --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument,OptimizationHints --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --use-angle=swiftshader --enable-unsafe-swiftshader --autoplay-policy=no-user-gesture-required --user-data-dir=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/efficiency-2026-10-26/browser-1793048262309/playwright_chromiumdev_profile-q0HPkr --remote-debugging-pipe --no-startup-window
+<launched> pid=376779
+[pid=376779][err] [376779:376779:1026/215742.342054:FATAL:chrome/browser/process_singleton_posix.cc:315] Socket path too long: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/efficiency-2026-10-26/browser-1793048262309/com.google.Chrome.1ZIqya/SingletonSocket.
+[pid=376779] <process did exit: exitCode=null, signal=SIGABRT>
+[pid=376779] starting temporary directories cleanup
+Call log:
+[2m  - <launching> /usr/bin/google-chrome --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument,OptimizationHints --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --use-angle=swiftshader --enable-unsafe-swiftshader --autoplay-policy=no-user-gesture-required --user-data-dir=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/efficiency-2026-10-26/browser-1793048262309/playwright_chromiumdev_profile-q0HPkr --remote-debugging-pipe --no-startup-window[22m
+[2m  - <launched> pid=376779[22m
+[2m  - [pid=376779][err] [376779:376779:1026/215742.342054:FATAL:chrome/browser/process_singleton_posix.cc:315] Socket path too long: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/efficiency-2026-10-26/browser-1793048262309/com.google.Chrome.1ZIqya/SingletonSocket.[22m
+[2m  - [pid=376779] <process did exit: exitCode=null, signal=SIGABRT>[22m
+[2m  - [pid=376779] starting temporary directories cleanup[22m
+[2m  - [pid=376779] <gracefully close start>[22m
+[2m  - [pid=376779] <kill>[22m
+[2m  - [pid=376779] <skipped force kill spawnedProcess.killed=false processClosed=true>[22m
+[2m  - [pid=376779] finished temporary directories cleanup[22m
+[2m  - [pid=376779] <gracefully close end>[22m
+
+    at /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/efficiency-2026-10-26/browser-smoke.mjs:14:25
+
+Node.js v24.13.1

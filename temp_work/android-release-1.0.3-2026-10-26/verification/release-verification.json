@@ -1,0 +1,38 @@
+{
+  "version": "1.0.3",
+  "versionCode": 5,
+  "applicationId": "com.nostalgiarealm.redcatspookkasteel",
+  "minSdk": 29,
+  "targetSdk": 36,
+  "permissions": [
+    "com.nostalgiarealm.redcatspookkasteel.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "debuggable": false,
+  "nativeLibraries": 0,
+  "runtimeFiles": 3086,
+  "runtimeBytes": 196129990,
+  "runtimeContentSha256": "37d6519321ac91aea09d18db0fde78103d1b41d6ab55e40449720e12012529d4",
+  "checks": [
+    "bundle-structure",
+    "aab-signature",
+    "apk-signature",
+    "apk-alignment",
+    "bundle-manifest",
+    "release-manifest-policy",
+    "all-source-staged-aab-apk-runtime-bytes-match"
+  ],
+  "artifacts": [
+    {
+      "file": "RedCat-Spookkasteel-1.0.3-android.aab",
+      "bytes": 109625032,
+      "sha256": "812b6238e3ca23abd515005c9490af557705402c360d00f26cb655fbcb193495"
+    },
+    {
+      "file": "RedCat-Spookkasteel-1.0.3-android.apk",
+      "bytes": 156720185,
+      "sha256": "61cc84f05b3287f826e940b8ab23e051802138fe6485093c8952e432fbd39dfa"
+    }
+  ],
+  "releaseRuntimeTested": false,
+  "scope": "Build structure, signatures, alignment, manifest, and complete packaged current-source byte equality. Runtime validation uses the separate debug APK; no physical-device or Play approval claim."
+}

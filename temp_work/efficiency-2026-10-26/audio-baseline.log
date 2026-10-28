@@ -1,0 +1,112 @@
+✔ original UFO and forest gains use case-insensitive basenames and leave dialogue at full gain (1.112804ms)
+✔ native logarithmic driver volumes become waveform amplitude before the portable master (0.10993ms)
+✔ native distance model uses 32 units/meter and logarithmic control-to-amplitude conversion (0.142929ms)
+✖ level override controls spatial effects while music and voices remain independent of camera distance (1.323282ms)
+✔ master changes preserve authored, channel, script and spatial gains on every live sound (0.578167ms)
+✔ pause, keyed replacement and reset cannot resurrect a stopped voice or leave duplicate loops (0.462297ms)
+✔ replaying emitters honor authored delays and freeze their countdown while paused (0.359558ms)
+✖ original forest host emits spatial metadata and restores only enabled repeating ambience (21.177455ms)
+✔ native azimuth and centibel stereo law preserve near speaker and do not pan above/below (0.737966ms)
+✖ blocked BSP path changes effective distance by 1.5 without changing stereo source or dialogue (0.965504ms)
+✖ PVS suppression, shortened ambience and player-centered fairy exception are retained (0.723306ms)
+✔ audio areas track the real door pose and never trace actors (0.495988ms)
+✔ original castle PVS and BSP obstruct spatial emitters independently of renderer visibility (18.860179ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 9
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 123.985226
+
+✖ failing tests:
+
+test at temp_work/efficiency-2026-10-26/audio-baseline/audio.test.mjs:47:1
+✖ level override controls spatial effects while music and voices remain independent of camera distance (1.323282ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      maxDistanceFactor: 150,
+  +   minDistanceMeters: 175.5
+  -   minDistanceMeters: 50
+    }
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/efficiency-2026-10-26/audio-baseline/audio.test.mjs:49:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { minDistanceMeters: 175.5, maxDistanceFactor: 150 },
+    expected: { minDistanceMeters: 50, maxDistanceFactor: 150 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at temp_work/efficiency-2026-10-26/audio-baseline/audio.test.mjs:93:1
+✖ original forest host emits spatial metadata and restores only enabled repeating ambience (21.177455ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(forest.some(e=>e.volume<.04))
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/efficiency-2026-10-26/audio-baseline/audio.test.mjs:119:84)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at temp_work/efficiency-2026-10-26/audio-baseline/spatial-audio.test.mjs:23:1
+✖ blocked BSP path changes effective distance by 1.5 without changing stereo source or dialogue (0.965504ms)
+  AssertionError [ERR_ASSERTION]: 0.19494544626931798 != 0.01305143109604001
+      at close (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/efficiency-2026-10-26/audio-baseline/spatial-audio.test.mjs:8:27)
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/efficiency-2026-10-26/audio-baseline/spatial-audio.test.mjs:27:3)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at temp_work/efficiency-2026-10-26/audio-baseline/spatial-audio.test.mjs:35:1
+✖ PVS suppression, shortened ambience and player-centered fairy exception are retained (0.723306ms)
+  AssertionError [ERR_ASSERTION]: 30-meter cave boundary still silences ambience
+  + actual - expected
+  
+  + 0.3501313663372912
+  - 0
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/temp_work/efficiency-2026-10-26/audio-baseline/spatial-audio.test.mjs:42:38)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0.3501313663372912,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

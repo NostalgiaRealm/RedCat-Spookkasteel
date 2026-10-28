@@ -1,0 +1,181 @@
+{
+  "version": "1.0.6",
+  "commit": "f0655a55b64371013c2cd5fd36c4e4b26c9bf7be",
+  "builds": [
+    {
+      "target": "linux-x64",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--linux",
+        "dir",
+        "--x64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.6",
+        "-c.directories.output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/dist/build-1.0.6"
+      ],
+      "exitCode": 0,
+      "seconds": 4.36
+    },
+    {
+      "target": "windows-x64",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--win",
+        "dir",
+        "--x64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.6",
+        "-c.directories.output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/dist/build-1.0.6"
+      ],
+      "exitCode": 0,
+      "seconds": 5.08
+    },
+    {
+      "target": "linux-arm64",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--linux",
+        "dir",
+        "--arm64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.6",
+        "-c.directories.output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/dist/build-1.0.6"
+      ],
+      "exitCode": 0,
+      "seconds": 3.73
+    },
+    {
+      "target": "windows-arm64",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--win",
+        "dir",
+        "--arm64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.6",
+        "-c.directories.output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/dist/build-1.0.6"
+      ],
+      "exitCode": 0,
+      "seconds": 5.21
+    },
+    {
+      "target": "mac-x64",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--mac",
+        "dir",
+        "--x64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.6",
+        "-c.directories.output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/dist/build-1.0.6",
+        "-c.mac.notarize=false"
+      ],
+      "exitCode": 0,
+      "seconds": 4.01
+    },
+    {
+      "target": "mac-arm64",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--mac",
+        "dir",
+        "--arm64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.6",
+        "-c.directories.output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/dist/build-1.0.6",
+        "-c.mac.notarize=false"
+      ],
+      "exitCode": 0,
+      "seconds": 3.92
+    },
+    {
+      "target": "android-apk-aab",
+      "command": [
+        "npm",
+        "run",
+        "build:android"
+      ],
+      "exitCode": 0,
+      "seconds": 33.61
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "RC_ORIGINAL_DECOMPILED-1.0.6.manifest.json",
+      "bytes": 5886326,
+      "sha256": "71d144d68982df2503fd65da13d06eb64c5f68f743d7487e06da8d148139c34d"
+    },
+    {
+      "name": "RC_ORIGINAL_DECOMPILED-1.0.6.sha256",
+      "bytes": 102,
+      "sha256": "a8d1654252f9e7d5c639f5c5d373eabc55c2fab9dca508897117bcdf6f0c95db"
+    },
+    {
+      "name": "RC_ORIGINAL_DECOMPILED-1.0.6.tar.gz",
+      "bytes": 158304849,
+      "sha256": "b2fad23ec064a3ff511369427781888fd72a507430177a6c346aba528396b61c"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.6-android.aab",
+      "bytes": 110785152,
+      "sha256": "79102b0ed3ebfa2b60cf598bfe43d5bfcdc51595f1ac4e0fd318174137bb1529"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.6-android.apk",
+      "bytes": 157894495,
+      "sha256": "7b94fc79228bd826ff3c3ab02d9e0e4e86b2827efef87eaf31ab66c28babe7bb"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.6-linux-arm64.zip",
+      "bytes": 229494388,
+      "sha256": "6d5c7151dcebc4bc401e8d725b059b3b8e48112e0295d250c3dc006364fa8c43"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.6-linux-x64.zip",
+      "bytes": 228324751,
+      "sha256": "53bc5cc021a2dc9c511a4598b4949e8ccc474c1495eeed66fd5f2f4b332dbcac"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.6-mac-arm64.zip",
+      "bytes": 232883619,
+      "sha256": "ef469625d516ce52080908ded214c5a81ce3b79bf50ecc391af4d42422bae0ea"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.6-mac-x64.zip",
+      "bytes": 237215841,
+      "sha256": "f1ce8f99596eb813c94b9141fc57d2f4f77a31a2f26c63ed0a4d716357ba4d0e"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.6-windows-arm64.zip",
+      "bytes": 261859372,
+      "sha256": "2a80164134b489b67dfc69f2c376a037c997e124e05281fd58ab3c45a7ad5f06"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.6-windows-x64.zip",
+      "bytes": 263703346,
+      "sha256": "701641840ed4b97b7461e6015e0d826d8dfe0d83256188345989ef9604cbadb8"
+    }
+  ],
+  "testsRun": "Source: npm test 1630/1630 passed before the commit (unit-tests.log); all 111 browser scenes passed (docs/claude-native-parity-review.md, validation).",
+  "buildChecksRun": false,
+  "packagesLaunched": false,
+  "scope": "Build, archive, generate checksums, publish. Package runtime checks are the owner's own."
+}

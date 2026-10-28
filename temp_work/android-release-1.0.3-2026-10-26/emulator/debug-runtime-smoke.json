@@ -1,0 +1,50 @@
+{
+  "kind": "Android 16 API36 x86_64 debug APK on isolated emulator",
+  "webview": "Current WebView Update Service state\n  Current WebView package (name, version): (com.google.android.webview, 133.0.6943.137)\n  Minimum targetSdkVersion: 33\n  Minimum WebView version code: 694313738\n  Number of relros started: 1\n  Number of relros finished: 1\n  WebView package dirty: false\n  Any WebView package installed: true\n  Preferred WebView package (name, version): (com.google.android.webview, 133.0.6943.137)\n  WebView packages:\n    Valid package com.google.android.webview (versionName: 133.0.6943.137, versionCode: 694313738, targetSdkVersion: 34) is  installed/enabled for all users\n    com.google.android.webview.beta is NOT installed.\n    com.google.android.webview.dev is NOT installed.\n    com.google.android.webview.canary is NOT installed.\n    com.google.android.webview.debug is NOT installed.\n    com.android.webview is NOT installed.",
+  "checks": [
+    "Offline local origin and native touch bridge",
+    "Original menu starts Level 1 offline with WebGL and streamed assets",
+    "Home freezes simulation/audio; foreground stays paused",
+    "Native Android Back opens pause menu",
+    "Android local save written through pause menu",
+    "Rotation retains running app/menu"
+  ],
+  "samples": {
+    "offline": "0",
+    "app": {
+      "origin": "https://appassets.androidplatform.net",
+      "bridge": true,
+      "mode": "menu",
+      "touch": true
+    },
+    "level": {
+      "mode": "playing",
+      "position": [
+        -1332,
+        -159.95,
+        2280
+      ],
+      "canvas": {
+        "w": 720,
+        "h": 1168
+      },
+      "audio": "running"
+    },
+    "lifecycle": {
+      "time": 0.11659999999999855,
+      "mode": "paused",
+      "audio": "suspended"
+    },
+    "save": {
+      "bytes": 329090,
+      "players": 1
+    },
+    "landscape": {
+      "w": 640,
+      "h": 304,
+      "mode": "menu"
+    },
+    "players": "Help\nStoppen\nHoofdmenu\n\nHallo Speler 1. Kies hieronder wat je wilt gaan doen: verder met het Avontuur, even snel een Snelspel spelen, of de beste spokenjagers bekijken in de Highscores? Maak je keuze en klik op Volgende om verder te gaan.\n\nSpeler: Speler 1\nAvontuur\nSnelspel\nHighscores\nInstellingen\nSpelerlijst\nVolgende\nHelp\n×\nSpelerlijst\n\nKies hier met wie je wilt spelen. Klik daarna op OK om verder te gaan.\n\nSpeler 1\nHuidige speler\n\nElke speler heeft een eigen opgeslagen avontuur.\n\nNieuw\nVerwijderen\nExporteren\nImporteren\nOK\nAnnuleren"
+  },
+  "events": []
+}

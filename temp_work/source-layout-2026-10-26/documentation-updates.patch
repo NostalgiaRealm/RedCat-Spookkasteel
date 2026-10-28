@@ -1,0 +1,1140 @@
+--- ANDROID.md
++++ ANDROID.md
+@@ -12,7 +12,7 @@
+ | Launcher icon | Original `RcHcGame.dat` icon, enlarged without smoothing and padded for adaptive launcher masks; themed icons use its transparency mask. |
+ | Offline files | `tools/prepare-android.mjs` stages the runtime and records file hashes; Gradle runs it before compilation. |
+ | Local origin | `https://appassets.androidplatform.net/assets/www/index.html`, served from packaged assets with AndroidX WebViewAssetLoader. |
+-| Native adapter | `src/android-host.js` uses the origin-restricted `RedCatAndroid` message endpoint. It does not impersonate Electron's `window.desktop`. |
++| Native adapter | `source/android-host.js` uses the origin-restricted `RedCatAndroid` message endpoint. It does not impersonate Electron's `window.desktop`. |
+ | Display and input | Native fullscreen preference, system-bar/cutout insets, Back-button routing and existing touch/controller UI. |
+ | Interruptions | Activity/window-focus messages suspend gameplay, audio, intro/outro video and background rendering, clear held input, and keep gameplay paused on return. |
+ | Saves | Per-player localStorage latest save and IndexedDB recovery history; Android quit waits for pending recovery capture. Spelerlijst exports a selected player through the document picker. |
+--- docs/player-protection-progress-and-local-audio.md
++++ docs/player-protection-progress-and-local-audio.md
+@@ -56,7 +56,7 @@
+   and is unchanged.
+ - Cave loops fade between 17.55 and 105.3 metres.
+ 
+-These are the current `src/ambience-ranges.js` values after the requested
++These are the current `source/ambience-ranges.js` values after the requested
+ hearing-range increases. They supersede the original local choices of 5–25 m,
+ 3–18 m and 5–30 m respectively. The normal five-level minimum distance is now
+ 175.5 m instead of the native 50 m; its maximum-distance factor remains 150.
+--- docs/explosion-damage-native.md
++++ docs/explosion-damage-native.md
+@@ -54,8 +54,8 @@
+ 
+ ## Port behavior and limits
+ 
+-`src/explosion-damage.js` creates damage cells once when the source is destroyed.
+-`src/world.js` provides current posed actor bounds, active-state checks and
++`source/explosion-damage.js` creates damage cells once when the source is destroyed.
++`source/world.js` provides current posed actor bounds, active-state checks and
+ brush-only LOS. A conservative radius check rejects distant targets before
+ computing their full posed bounds. Enemy damage follows existing hurt/death and
+ score handling; prop damage follows ordinary destruction and its authored
+@@ -99,7 +99,7 @@
+ at `0x4af524` (RedCat) and `0x4afd9d` (actors). It does not clip that delta to
+ the nominal interval or carry an unused remainder into an expired frame.
+ 
+-`src/explosion-damage.js` now implements this ordering. A blast first processed
++`source/explosion-damage.js` now implements this ordering. A blast first processed
+ at 100 ms is eligible at 100, 200, 300, 400 and 500 ms with 100 ms updates, and
+ retires at 600 ms: five full doses. With a 70 ms update, the eligible times are
+ 70 through 420 ms; 490 ms is already beyond the 470 ms deadline and receives
+@@ -146,7 +146,7 @@
+ ordinary receives-damage branch. This is static original-code evidence, not a
+ new observation of the running original game.
+ 
+-Both projectile hits and explosion ticks now use `src/destructible-damage.js`.
++Both projectile hits and explosion ticks now use `source/destructible-damage.js`.
+ For props, `health` retains the positive damage limit while `propDamage`
+ accumulates doses. Thus a crate with limit 1 survives its first 1-point hit,
+ remains visible, collidable and targetable, and breaks on the next positive
+--- docs/campaign-menu-native.md
++++ docs/campaign-menu-native.md
+@@ -68,7 +68,7 @@
+ 
+ ## Portable storage and migration
+ 
+-`src/campaign-progress.js` contains pure helpers, with no DOM or storage writes:
++`source/campaign-progress.js` contains pure helpers, with no DOM or storage writes:
+ 
+ - `readCampaignProgress(stored, legacySave)` returns
+   `{version: 1, highestUnlocked: 0…4}` with optional `earnedSkills` and
+--- docs/difficulty-native.md
++++ docs/difficulty-native.md
+@@ -4,7 +4,7 @@
+ 
+ The original `RcHcGame.dat` difficulty dispatch at `0x4256b4` selects ID **0 → Easy**, **1 → Normal**, **2 → Hard**. Its branches return the section strings at `0x42582a`, `0x4257ef` and `0x4257b0`. The projectile configuration path at `0x44b675` uses the same mapping. The player profile reads `DifficultyLevel` at `0x5232cd`. This is a choice of authored INI sections and projectile files, rather than a universal damage or speed multiplier.
+ 
+-`src/difficulty.js` exposes the native IDs, canonical values, Dutch labels and validated normalization. `Gameplay` selects the original imported tables when constructing a level. Existing AI and boss phases consume those tables, including health, melee damage, movement and spider descent speeds, perception/memory, shot spread, salvo sizes, attack waits and boss timing. Projectile damage, speed, gravity and lifetime come from the matching `ProjectileEasy.ini`, `ProjectileNormal.ini` or `ProjectileHard.ini`.
++`source/difficulty.js` exposes the native IDs, canonical values, Dutch labels and validated normalization. `Gameplay` selects the original imported tables when constructing a level. Existing AI and boss phases consume those tables, including health, melee damage, movement and spider descent speeds, perception/memory, shot spread, salvo sizes, attack waits and boss timing. Projectile damage, speed, gravity and lifetime come from the matching `ProjectileEasy.ini`, `ProjectileNormal.ini` or `ProjectileHard.ini`.
+ 
+ Examples from the original files:
+ 
+--- docs/enemy-death-effects-native.md
++++ docs/enemy-death-effects-native.md
+@@ -27,8 +27,8 @@
+ There is no separate knight-specific gravity or spin law to reproduce. The
+ previous portable path bypassed that shared system, using fixed part heights,
+ a golden-angle burst, gravity 160, constant spin, a 3.5-second expiry and a
+-final fade for every piece. It now uses `src/knight-debris.js` and the existing
+-`src/debris-native.js` implementation.
++final fade for every piece. It now uses `source/knight-debris.js` and the existing
++`source/debris-native.js` implementation.
+ 
+ | Evidence | Reproduced behaviour |
+ | --- | --- |
+--- docs/replayed-level-intros-native.md
++++ docs/replayed-level-intros-native.md
+@@ -157,11 +157,11 @@
+ to the original scripts. The connected World initialization then performs only
+ the ten native tutorial disables listed above. First visits supply zero.
+ 
+-`src/campaign-progress.js` keeps visited chapter IDs separate from
++`source/campaign-progress.js` keeps visited chapter IDs separate from
+ `highestUnlocked`. A completed chapter records itself as played while unlocking
+ its successor; the successor has not yet been played. The unlock-all cheat does
+ not add played IDs. Merely selecting a card, cancelling its warning or failing
+-to load the chapter does not record a visit. `src/main.js` chooses the replay
++to load the chapter does not record a visit. `source/main.js` chooses the replay
+ policy before loading and commits the visit only after successful initialization.
+ 
+ The checkpoint stores `game.scripts.replayLevel`. Continue and recovery saves
+--- docs/graveyard-maze-recovery.md
++++ docs/graveyard-maze-recovery.md
+@@ -10,7 +10,7 @@
+ trigger counts and moved hedges. Returning from the save pillar could therefore
+ trap RedCat in the entrance pocket with both routes closed.
+ 
+-`src/graveyard-maze.js` resets the progression triggers to their authored enabled
++`source/graveyard-maze.js` resets the progression triggers to their authored enabled
+ states, clears their counters/contact flags, and restores the hedge timelines
+ and door pose. It applies the restored pose to the shared rendering/collision
+ transform map immediately. Motion reset uses stop/seek, with no movement events
+--- docs/enemy-gameplay.md
++++ docs/enemy-gameplay.md
+@@ -8,7 +8,7 @@
+ 
+ ## Action sounds
+ 
+-`src/gameplay-audio.js` now routes actual gameplay events through the existing
++`source/gameplay-audio.js` now routes actual gameplay events through the existing
+ portable mixer at their authored gain:
+ 
+ - Shot: `rcshoot1.wav`. Actual enemy/brush impact: `rcshoot4.wav`.
+--- docs/cave-ambience-range.md
++++ docs/cave-ambience-range.md
+@@ -23,7 +23,7 @@
+ 
+ ## Chosen portable range
+ 
+-`src/ambience-ranges.js` now limits **every spatial effect loop** in the caves
++`source/ambience-ranges.js` now limits **every spatial effect loop** in the caves
+ (`lvl03a`), including delayed replay. The initial five-file list missed lava
+ (`LV4snd15`), torches (`torch1`), corridor noises (`Gen6`), energy beams/platforms
+ (`LV4snd21`), moving rocks, the altar machinery and unlock effects (`LV2snd5`).
+--- docs/touch-controls.md
++++ docs/touch-controls.md
+@@ -54,8 +54,8 @@
+ 
+ ## Implementation and focused checks
+ 
+-`src/touch-controls.js` provides device detection, pointer tracking and input
+-state. `src/main.js` combines that state with the existing keyboard/mouse
++`source/touch-controls.js` provides device detection, pointer tracking and input
++state. `source/main.js` combines that state with the existing keyboard/mouse
+ actions; the gameplay and physics systems receive the same inputs. Presentation
+ is in `src/touch-controls.css`; no asset conversion or packaging is required.
+ 
+--- docs/native-projectile-animation.md
++++ docs/native-projectile-animation.md
+@@ -56,7 +56,7 @@
+    That update does not advance another frame, even after a long stall.
+ 
+ Actual native animation rate therefore depends on the update cadence; it is
+-not exactly 20 displayed frames per second. `src/projectile-animation.js`
++not exactly 20 displayed frames per second. `source/projectile-animation.js`
+ preserves the strict deadline, separate rearm update, and single advancement.
+ Gameplay drives this state once for each active projectile update. Rendering
+ reads the resulting index without changing it. Pauses, cutscenes, and enemy
+--- docs/gameplay-reconstruction.md
++++ docs/gameplay-reconstruction.md
+@@ -18,11 +18,11 @@
+ resolves symbol references and validates branches. It produces `data/davi/*.json`:
+ 5,134 instructions, 444 instance event handlers, 76 script functions, and their
+ native API declarations. No event handler is replaced with a hand-written puzzle
+-solution. `src/davi-vm.js` implements typed operands, parameters, temporaries,
++solution. `source/davi-vm.js` implements typed operands, parameters, temporaries,
+ locals/globals, calls, conditional branches, arithmetic, comparisons and returns.
+ Step/depth budgets stop runaway scripts, and errors include instruction context.
+ 
+-`src/script-host.js` binds script names to original entities and groups and routes
++`source/script-host.js` binds script names to original entities and groups and routes
+ native commands back into `Gameplay`. Every native function/method actually called
+ by these five compiled programs has an implementation. Unused original native
+ APIs are not all implemented; unknown calls fail explicitly.
+@@ -47,7 +47,7 @@
+ ## Motions and presentation
+ 
+ `tools/import_motions.py` decodes 437 brush motions, 806 original event labels and
+-2,346 keyframes. `src/motions.js` supports translation interpolation, quaternion
++2,346 keyframes. `source/motions.js` supports translation interpolation, quaternion
+ rotation, once/loop/ping-pong playback, pause/resume and reentrant event callbacks.
+ Five graveyard end markers are authored at 8.01 seconds on 8-second paths. The
+ portable playback interval explicitly extends to the final marker while retaining
+--- docs/moving-solid-collision.md
++++ docs/moving-solid-collision.md
+@@ -23,7 +23,7 @@
+ 
+ ## Portable implementation
+ 
+-`src/moving-solids.js` checks the original motion path before `MotionPlayer`
++`source/moving-solids.js` checks the original motion path before `MotionPlayer`
+ commits each segment. It samples translation and hinge rotation, carries a
+ grounded player with a supporting model, and pushes an intersected player hull
+ out along the brush's collision plane. Every push is swept against the rest of
+--- docs/audio.md
++++ docs/audio.md
+@@ -4,8 +4,8 @@
+ ignoring Volume.ini and Use3DSound. Forest level 1 has 17 simultaneous looping
+ emitters, so distant forest sounds and the nearby UFO overwhelmed the voice.
+ 
+-The portable mixer in `src/audio.js` now reads the original sound gains exported
+-by `tools/import_audio_settings.py` to `src/audio-settings.js`. This importer is
++The portable mixer in `source/audio.js` now reads the original sound gains exported
++by `tools/import_audio_settings.py` to `source/audio-settings.js`. This importer is
+ also part of the full asset import. It resolves filename paths and case, and
+ keeps the first matching INI section/key as the original Windows lookup does.
+ Per-file gains retain the original data and are clamped to 0–1 as the native
+@@ -56,7 +56,7 @@
+ delays and full-length dialogue sequencing.
+ 
+ Preserved user choices include the local ambience ranges in
+-`src/ambience-ranges.js`: Castle sources fade between 17.55 and 87.75 meters,
++`source/ambience-ranges.js`: Castle sources fade between 17.55 and 87.75 meters,
+ Cave loops between 17.55 and 105.3 meters, and Tower fire between 10.53 and
+ 63.18 meters with a 0.65 gain multiplier. These replace the earlier, shorter
+ local ranges. Fleurifee retains her threefold radius and player listener; her
+--- docs/movement-recovery.md
++++ docs/movement-recovery.md
+@@ -6,7 +6,7 @@
+ 
+ ## Behavior
+ 
+-`src/movement-recovery.js` is shared by the player and enemy controllers. It:
++`source/movement-recovery.js` is shared by the player and enemy controllers. It:
+ 
+ - Detects sustained blocked movement or a shallow body overlap. Ordinary player
+   movement against a wall or closed door does not trigger a nudge if another
+--- docs/world-light-falloff-research.md
++++ docs/world-light-falloff-research.md
+@@ -40,7 +40,7 @@
+ zero. Radius gain is absolute, rather than normalized by radius. This BSP path
+ has neither the actor path's normal-dot factor nor spherical Euclidean falloff.
+ 
+-`src/world-lighting.js` implements this arithmetic and provides shader helpers.
++`source/world-lighting.js` implements this arithmetic and provides shader helpers.
+ Normalized RGB inputs are intensity values: applying sRGB decoding to a light
+ color before this computation would change the original channel gains. Baked and
+ dynamic light must be combined and clamped before multiplying the surface
+--- docs/player-profiles-native.md
++++ docs/player-profiles-native.md
+@@ -60,7 +60,7 @@
+ campaign progress and recovery database remain in place; migration never copies
+ or discards them. This is not an importer for original Windows-game saves.
+ 
+-`src/player-profiles.js` stores a versioned player list and selected ID under
++`source/player-profiles.js` stores a versioned player list and selected ID under
+ `redcat.players.v1`. Names are display text; stable generated IDs own the data.
+ 
+ | Data | Ownership |
+--- docs/spout-effects-native.md
++++ docs/spout-effects-native.md
+@@ -226,7 +226,7 @@
+ 
+ ## Portable implementation and verification
+ 
+-`src/spout-effects.js` now owns the 15 reusable slots and their immutable launch,
++`source/spout-effects.js` now owns the 15 reusable slots and their immutable launch,
+ spread, delay and lifetime templates. `WorldEffects.updateSpout` supplies current
+ model/hand-tip positions and renders the pool in the existing artwork batches.
+ No particle meshes, extra lights or collision traces are allocated per birth.
+--- docs/script-vm-investigation.md
++++ docs/script-vm-investigation.md
+@@ -4,7 +4,7 @@
+ **Current status (5 October 2026):** the complete format-27 parser, portable
+ interpreter, original event dispatch and brush motion playback are implemented.
+ `tools/import_scripts.py` consumes all five DSO files into `data/davi/`;
+-`src/davi-vm.js` and `src/script-host.js` execute them. The research below is
++`source/davi-vm.js` and `source/script-host.js` execute them. The research below is
+ retained as provenance, with the earlier plan explicitly labelled historical.
+ For current implementation coverage and remaining work, see
+ [gameplay status](gameplay-reconstruction.md) and the
+@@ -123,8 +123,8 @@
+ ## Historical implementation plan
+ 
+ Items 1–6 below describe the original research plan and were subsequently
+-implemented by `tools/import_scripts.py`, `src/davi-vm.js`, `src/script-host.js`,
+-`tools/import_motions.py` and `src/motions.js`. They are retained to explain the
++implemented by `tools/import_scripts.py`, `source/davi-vm.js`, `source/script-host.js`,
++`tools/import_motions.py` and `source/motions.js`. They are retained to explain the
+ research sequence, not as an outstanding-work checklist. Item 7 subsequently
+ received the [15–18 October earned campaign validation](campaign-validation-2026-10-18.md):
+ all five levels, required puzzles, upgrades, bosses and ending completed through
+--- docs/gargoyle-attacks-native.md
++++ docs/gargoyle-attacks-native.md
+@@ -96,7 +96,7 @@
+ 
+ ## Runtime and verification
+ 
+-`src/gargoyle-blast.js` owns the small saved particle state and native timer
++`source/gargoyle-blast.js` owns the small saved particle state and native timer
+ rules. Gameplay advances it independently of projectile impacts and rendering.
+ Pause/frozen enemies stop it; saves retain particle positions, velocities,
+ ages, slot, random state and emission timer. Respawn clears it. Old saves
+--- docs/boss-phases-native.md
++++ docs/boss-phases-native.md
+@@ -8,7 +8,7 @@
+ 
+ ## Implemented behavior
+ 
+-`src/boss-ai.js` supplies specialized machines to `Gameplay.updateEnemy`.
++`source/boss-ai.js` supplies specialized machines to `Gameplay.updateEnemy`.
+ Elapsed phase time, shot-release state, the turret animation clock, teleport
+ state and chosen flight waypoint are saved. Disabling an enemy, a cutscene, or
+ FreezeEnemies suspends the machine. Terminal hits pass through the existing
+--- docs/motions.md
++++ docs/motions.md
+@@ -30,7 +30,7 @@
+ | Total | 437 | 806 | 2,346 |
+ 
+ Every original brush path uses Hermite translation and quaternion SLERP.
+-`src/motions.js` also supports linear translation, zero-derivative Hermite
++`source/motions.js` also supports linear translation, zero-derivative Hermite
+ easing, normalized linear quaternion interpolation and SQUAD. Hermite tangent
+ weights follow Genesis3D's incoming/outgoing chord calculation. The runtime is
+ plain JavaScript with no Node, browser, Windows or Three.js dependency.
+--- docs/source-fixes-2026-09-22.md
++++ docs/source-fixes-2026-09-22.md
+@@ -13,7 +13,7 @@
+ | Reversed Brutus/knights | Correct native initial heading; combat updates facing during locked attack animation. Rendered actor fronts were checked against the player direction. |
+ | Reversed introductory UFO | Native world-axis rotation composition replaces the incorrect local-axis order. |
+ | Large-fall pose on ordinary jump descent | Normal jumps retain the original full jump clip through descent; long-drop selection uses the recovered floor-gap rule. |
+-| New dialogue skip | Initially a three-second E hold, later changed to **two seconds** in `src/cutscene-skip.js`; “Overslaan” progress circle; original remaining callbacks complete and preserve outcomes. Touch/controller skip use the same duration. |
++| New dialogue skip | Initially a three-second E hold, later changed to **two seconds** in `source/cutscene-skip.js`; “Overslaan” progress circle; original remaining callbacks complete and preserve outcomes. Touch/controller skip use the same duration. |
+ | Enemy targeting and lock | Original front-cone/range selection, visibility, target artwork and animation; firing locks camera and aims from the hand toward the enemy. |
+ | Original HUD | Original icons/digits show health, lives, potions/level total, score and targeted-enemy health; widescreen and 4:3 positioning checked. |
+ | `GRintro3` subtitle | Original empty text stays empty while laughter audio remains. |
+--- docs/actors.md
++++ docs/actors.md
+@@ -4,7 +4,7 @@
+ 
+ `assets/actors/manifest.json` maps lowercase actor names to JSON geometry, materials, counts and settings. Each actor JSON contains bind-pose render vertices, normals, UVs, triangle indices, material groups, source-local vertex/normal coordinates, their bone indices, the bone hierarchy and exported animation tracks. The runtime applies the INI initial rotation and scale; actor geometry itself retains its original coordinates.
+ 
+-`src/animation.js` samples the exported translation and quaternion tracks, composes parent × attachment × sampled motion transforms, and skins each rigid vertex and normal. Animated instances own their posed position/normal buffers and bounds, while immutable clip preparation and UV/index CPU arrays are shared. Source definitions and textures are cached. RedCat selects original clips from movement/jump/attack state. Environment animation clocks advance off-screen, with vertex sampling deferred until nearby; looking away no longer pauses their timeline.
++`source/animation.js` samples the exported translation and quaternion tracks, composes parent × attachment × sampled motion transforms, and skins each rigid vertex and normal. Animated instances own their posed position/normal buffers and bounds, while immutable clip preparation and UV/index CPU arrays are shared. Source definitions and textures are cached. RedCat selects original clips from movement/jump/attack state. Environment animation clocks advance off-screen, with vertex sampling deferred until nearby; looking away no longer pauses their timeline.
+ 
+ Original motion-event dispatch and scripted camera timelines are implemented;
+ see [motion playback](motions.md) and [camera recovery](camera-native-status.md).
+@@ -39,7 +39,7 @@
+   The first matching definition loaded supplies the body; an otherwise-unused
+   canonical actor JSON is not fetched. Image aliases share one decoded image,
+   texture handle and GPU image allocation through the existing room loader.
+-- Animated poses use `src/actor-geometry.js`. Their mutable positions/normals
++- Animated poses use `source/actor-geometry.js`. Their mutable positions/normals
+   and posed bounds stay private. UV/index typed arrays share CPU storage but
+   have **separate BufferAttribute wrappers/GPU handles**. Three removes an
+   entire geometry's attribute handles when it is disposed; sharing the handles
+--- docs/zombie-activation-native.md
++++ docs/zombie-activation-native.md
+@@ -63,7 +63,7 @@
+ Zombie.ini supplies Speed 50 on every difficulty. There is no evidence here
+ for a separate timed rise animation; the normal walk motion continues.
+ 
+-`src/zombie-grave-rise.js` now owns only the first, explicitly linked rising
++`source/zombie-grave-rise.js` now owns only the first, explicitly linked rising
+ edge of an initially disabled zombie with `UnlinkStartPoint`. This selects
+ `zombie1`–`zombie4` and `frogzom1`–`frogzom4`. The two flat plank entrances
+ and initially active mausoleum zombies retain their ordinary movement.
+--- docs/ufo-impact-decal-native.md
++++ docs/ufo-impact-decal-native.md
+@@ -47,8 +47,8 @@
+ 
+ `tools/import_world_effects.py` now includes authored decal color/alpha pairs.
+ Only six new PNGs and the effect manifest changed; existing effect image bytes
+-were unchanged. `src/decal-effects.js` implements surface placement and native
+-quad construction, and `src/world-effects.js` creates and updates those effects.
++were unchanged. `source/decal-effects.js` implements surface placement and native
++quad construction, and `source/world-effects.js` creates and updates those effects.
+ Enable/disable and show/hide remain controlled by the ordinary script objects.
+ 
+ Placement traces use rendered BSP faces, including original water surfaces for
+--- docs/world-light-shadows-native.md
++++ docs/world-light-shadows-native.md
+@@ -35,7 +35,7 @@
+ 
+ ## Implementation and performance
+ 
+-`src/world-light-shadows.js` reuses the imported floor-lighting face metadata,
++`source/world-light-shadows.js` reuses the imported floor-lighting face metadata,
+ native point trace and endpoint helper. It reproduces the existing lightmap
+ atlas packing without changing meshes or importing new assets. Each shadow
+ lamp owns one obstruction bit in a nearest-sampled, single-channel byte atlas.
+--- docs/world-action-audio.md
++++ docs/world-action-audio.md
+@@ -4,7 +4,7 @@
+ 
+ ## Fairy distance
+ 
+-`idlefee1.wav` keeps its existing authored gain and active/deactivated lifetime. Its entire distance curve is expanded by exactly three. After the later requested ambience-range increases, the current castle near/far 17.55/87.75 m becomes 52.65/263.25 m, and cave 17.55/105.3 m becomes 52.65/315.9 m. The other levels multiply the current configured minimum radius by three, also scaling the maximum. `src/ambience-ranges.js` contains these intentional mix adjustments; they are not claims about original native attenuation.
++`idlefee1.wav` keeps its existing authored gain and active/deactivated lifetime. Its entire distance curve is expanded by exactly three. After the later requested ambience-range increases, the current castle near/far 17.55/87.75 m becomes 52.65/263.25 m, and cave 17.55/105.3 m becomes 52.65/315.9 m. The other levels multiply the current configured minimum radius by three, also scaling the maximum. `source/ambience-ranges.js` contains these intentional mix adjustments; they are not claims about original native attenuation.
+ 
+ Only this fairy loop uses RedCat's position as its listener. Scripted camera moves can no longer push its gain down while RedCat remains beside the activated lantern. Other effects keep their existing camera listener and ranges.
+ 
+--- docs/vertical-fan-native.md
++++ docs/vertical-fan-native.md
+@@ -76,7 +76,7 @@
+ Returning from native collision-free movement clears the ballistic vector at
+ `0x4d8b7f..0x4d8b8b`.
+ 
+-The runtime repair in `src/collision.js` retains the authored trigger values,
++The runtime repair in `source/collision.js` retains the authored trigger values,
+ refreshes positive wind launches each tick, retains wind carry after leaving,
+ and uses the native half-gravity displacement integration. Its
+ `launchVelocityXZ` stores only wind launch momentum; ordinary horizontal input
+--- docs/torch-flames.md
++++ docs/torch-flames.md
+@@ -22,7 +22,7 @@
+ 
+ ## Attachment and lifecycle
+ 
+-`src/torch-flames.js` reads the centre of the original `htorch.act` wick cap
++`source/torch-flames.js` reads the centre of the original `htorch.act` wick cap
+ (vertices 51–53, attached to BONE03). The cached bone-local centre is transformed
+ by the current rendered animation pose, actor scale and orientation. Both the
+ flame emitter and light follow this point, with a three-unit vertical lift so
+--- docs/enemy-lifecycles-native.md
++++ docs/enemy-lifecycles-native.md
+@@ -57,7 +57,7 @@
+ 
+ ## Port implementation
+ 
+-`src/enemy-ambush.js` now owns saved dormant/waking/awake/retracting phases for
++`source/enemy-ambush.js` now owns saved dormant/waking/awake/retracting phases for
+ stone enemies and skeletons. Knights wait for their 1.7-speed start motion;
+ after losing memory they retract at −1.7. Skeleton wake speed uses the native
+ `0.8 + (rand() % 10000) * 0.00004` distribution, and the same chosen rate drives
+--- docs/patrol-boss-native.md
++++ docs/patrol-boss-native.md
+@@ -10,7 +10,7 @@
+ 
+ ## Implemented behavior
+ 
+-`src/enemy-navigation.js` builds a graph from `GrobberPathPoint` entities. Enemies
++`source/enemy-navigation.js` builds a graph from `GrobberPathPoint` entities. Enemies
+ start at their authored `StartPoint`, respect `SubSystemId`, follow explicit
+ `WayPoint1`–`WayPoint4` connections and otherwise use nearby walkable points.
+ The graph permits eight connections per point and uses the original defaults
+--- docs/actor-lighting-native.md
++++ docs/actor-lighting-native.md
+@@ -153,7 +153,7 @@
+ lighting does not trace dynamic lights through walls in this path. These values
+ are shared across the actor's vertices; recomputing direction and attenuation
+ from every fragment produces different highlights and oversized bright regions.
+-`src/actor-light-sampling.js` implements this preparation and a CPU vertex-color
++`source/actor-light-sampling.js` implements this preparation and a CPU vertex-color
+ reference. Its incoming light colors are already normalized raw RGB.
+ 
+ ## Vertex colors and texture modulation
+--- docs/player-projectiles-native.md
++++ docs/player-projectiles-native.md
+@@ -33,7 +33,7 @@
+ 
+ `ProjectileEasy.ini`, `ProjectileNormal.ini`, and `ProjectileHard.ini` contain
+ the active per-projectile properties. These are already imported into
+-`src/gameplay-settings.js`; the unrelated generic `WeaponsNormal.ini` is not
++`source/gameplay-settings.js`; the unrelated generic `WeaponsNormal.ini` is not
+ used. Normal difficulty has:
+ 
+ | Kind | Initial speed | Acceleration per second | Maximum speed | Damage | Life | Recharge |
+--- docs/portal-native-recovery.md
++++ docs/portal-native-recovery.md
+@@ -1,7 +1,7 @@
+ # Native portal particle recovery
+ 
+ This replaces the earlier analytic teleport sparkle streams with the recovered
+-`CRTeleporterFx`/`CParticle` state machine in `src/teleporter-effects.js`.
++`CRTeleporterFx`/`CParticle` state machine in `source/teleporter-effects.js`.
+ The source of evidence is the installed `RcHcGame.dat`, SHA-256
+ `e30781fcdc665d1f217c1a3353761c96e1ec3566f1ad472bb1a8a499cb29dba5`.
+ Addresses below are virtual addresses in that executable. No replacement
+--- docs/ghost-transparency-native.md
++++ docs/ghost-transparency-native.md
+@@ -38,7 +38,7 @@
+ 
+ ## Portable implementation
+ 
+-`src/ghost-materials.js` clones material zero for each actual ghost enemy.
++`source/ghost-materials.js` clones material zero for each actual ghost enemy.
+ Other material slots, shared actor templates, ordinary actor props and existing
+ opacity multipliers remain unchanged. The classification uses `enemyType`,
+ because graveyard object names are misleading: `ghost1` is a zombie, while
+--- docs/building.md
++++ docs/building.md
+@@ -59,7 +59,7 @@
+ 
+ ## 3. Import assets, if needed
+ 
+-Skip this section if the project already has complete imported `assets/` and `data/` directories. Importing regenerates those directories and the generated `src/gameplay-settings.js` and `src/audio-settings.js` files from the original installation; it leaves the original installation and CD unchanged. Keep any manually edited generated files separately before reimporting.
++Skip this section if the project already has complete imported `assets/` and `data/` directories. Importing regenerates those directories and the generated `source/gameplay-settings.js` and `source/audio-settings.js` files from the original installation; it leaves the original installation and CD unchanged. Keep any manually edited generated files separately before reimporting.
+ 
+ The original installation needs its `Levels`, `Actors`, `Settings`, `Sounds`, `VoiceNL` and other game data. Mount the CD/ISO for the original videos. No external Davitools installation is necessary: this project's importers include the required IMG handling.
+ 
+--- docs/loading-screen-native.md
++++ docs/loading-screen-native.md
+@@ -45,7 +45,7 @@
+ 
+ ## Runtime and responsive behavior
+ 
+-`src/loading-screen.js` prepares all five small illustrations in advance so a
++`source/loading-screen.js` prepares all five small illustrations in advance so a
+ new load does not briefly display the previous level's artwork.
+ `src/loading-screen.css` reproduces the 4:3 placement and expands the background
+ to cover the window. The logo stays in the window's upper-left corner.
+--- docs/portability.md
++++ docs/portability.md
+@@ -1,8 +1,8 @@
+ # Platform architecture and validation
+ 
+-The core is ES modules and typed arrays. `src/collision.js`, `src/gameplay.js` and `src/animation.js` are independent of Electron. Asset conversion happens before packaging, producing PNG, float32 geometry, JSON and modern audio/video formats. A new platform does not need to parse legacy PE executables or Direct3D resources.
++The core is ES modules and typed arrays. `source/collision.js`, `source/gameplay.js` and `source/animation.js` are independent of Electron. Asset conversion happens before packaging, producing PNG, float32 geometry, JSON and modern audio/video formats. A new platform does not need to parse legacy PE executables or Direct3D resources.
+ 
+-`src/world.js` owns WebGL rendering and camera/player integration. `src/main.js` owns the menu, HTML media, persistent settings, keyboard/mouse/touch/gamepad translation, and the frame loop. Its optional `window.desktop` bridge provides display, quit and save import/export actions, plus platform identification. `electron/main.cjs` implements that bridge with a sandboxed renderer and an application-local secure URL scheme. The browser build works without the bridge. Mobile browser input is implemented. Platform-specific build and runtime evidence is listed below; one platform’s success does not establish another’s compatibility.
++`source/world.js` owns WebGL rendering and camera/player integration. `source/main.js` owns the menu, HTML media, persistent settings, keyboard/mouse/touch/gamepad translation, and the frame loop. Its optional `window.desktop` bridge provides display, quit and save import/export actions, plus platform identification. `electron/main.cjs` implements that bridge with a sandboxed renderer and an application-local secure URL scheme. The browser build works without the bridge. Mobile browser input is implemented. Platform-specific build and runtime evidence is listed below; one platform’s success does not establish another’s compatibility.
+ 
+ This is the central platform-status reference. The [build guide](building.md) contains reproducible commands; the [implementation audit](native-parity-audit.md) covers gameplay fidelity. Status was reconciled with the retained release and Android records on 26 October 2026; this documentation update did not run builds or new platform tests.
+ 
+--- docs/enemy-pursuit-interruptions-native.md
++++ docs/enemy-pursuit-interruptions-native.md
+@@ -52,7 +52,7 @@
+ 
+ ## Shooting and interruption boundaries
+ 
+-`src/enemy-shooter-native.js` owns the ordinary frog, ranged spider/bat/ghost
++`source/enemy-shooter-native.js` owns the ordinary frog, ranged spider/bat/ghost
+ and skeleton parent phases, plus Mushroom Brutus's ordinary shooter and Bone
+ Brutus's charge/ammunition wrapper. Max and Witch retain their own controllers;
+ see the [15 October boss follow-up](boss-interruptions-native.md).
+@@ -106,7 +106,7 @@
+ 
+ ## Damage and reactions
+ 
+-`src/enemy-hit-native.js` separates health damage from the random reaction.
++`source/enemy-hit-native.js` separates health damage from the random reaction.
+ Actor constructors and damage vtable slots establish these policies:
+ 
+ | Receiver | Health and reaction policy |
+--- docs/world-effects-native.md
++++ docs/world-effects-native.md
+@@ -1,6 +1,6 @@
+ # Original world effects
+ 
+-`src/world-effects.js` renders the original flame/smoke spouts, coronas, beam entities, dynamic lights, activated save beacons and teleport effects. `tools/import_world_effects.py` imports eleven original color/alpha pairs into `assets/effects`; its manifest records SHA-256 hashes and original image dimensions. No replacement art is generated.
++`source/world-effects.js` renders the original flame/smoke spouts, coronas, beam entities, dynamic lights, activated save beacons and teleport effects. `tools/import_world_effects.py` imports eleven original color/alpha pairs into `assets/effects`; its manifest records SHA-256 hashes and original image dimensions. No replacement art is generated.
+ 
+ ## Save beacon evidence
+ 
+@@ -27,7 +27,7 @@
+ 
+ ## Beam contact and puzzle gates
+ 
+-`src/beam-contacts.js` makes the visible `EffectBeamEntity` line segment damage the player's swept collision box. It uses the same authored/model-transformed endpoints and optional nearest-wall trace as the renderer. It clips the segment against the moving box, rather than treating the entire diagonal segment's enclosing box as a hazard. This avoids empty-corner hits and missed fast crossings.
++`source/beam-contacts.js` makes the visible `EffectBeamEntity` line segment damage the player's swept collision box. It uses the same authored/model-transformed endpoints and optional nearest-wall trace as the renderer. It clips the segment against the moving box, rather than treating the entire diagonal segment's enclosing box as a hazard. This avoids empty-corner hits and missed fast crossings.
+ 
+ Native `RcHcGame.dat` evidence:
+ 
+--- docs/camera-native-status.md
++++ docs/camera-native-status.md
+@@ -60,7 +60,7 @@
+ case does not affect the supplied campaign.
+ 
+ The earlier Catmull–Rom interpolation distributed over `CamTimeInMode` has been
+-replaced. `src/script-camera.js` starts at the first waypoint, visits the points
++replaced. `source/script-camera.js` starts at the first waypoint, visits the points
+ in order at the recovered speed and returns a position for the player-facing
+ view; `ScriptHost` tracks its separate lifetime. The final-approach lookup is
+ recovered and implemented (see the current-build details below).
+@@ -106,7 +106,7 @@
+ - `0x45a53e..0x45a57a` clamps the result to 150..470. Consequently the effective
+   speed is 150 below distance 59, changes in one-unit bands from 59 through 77,
+   and is 470 at distance 78 or greater. The 19 unclamped float values are kept
+-  exactly in `src/script-camera.js`; this is a lookup, not a generic easing curve.
++  exactly in `source/script-camera.js`; this is a lookup, not a generic easing curve.
+ - Below five units, `0x45a4e4..0x45a4f3` skips the movement overwrite and retains
+   the target position. The remake also snaps this final arrival distance.
+ 
+--- docs/world-streaming.md
++++ docs/world-streaming.md
+@@ -36,7 +36,7 @@
+ 
+ ## Residency and visibility
+ 
+-`src/world-streaming.js` partitions stationary scenery into 768-unit cells,
++`source/world-streaming.js` partitions stationary scenery into 768-unit cells,
+ grouped by authored room ownership and original material. An authored face is never cut into pieces.
+ Each section has independent vertex, UV and lightmap-frame buffers, so evicting
+ it actually frees its GPU allocation. World textures are requested as sections
+@@ -103,7 +103,7 @@
+ retained, independently of static-face PVS. Liquid flags, lightmaps, alpha
+ masks and face winding remain unchanged.
+ 
+-`src/actor-render-residency.js` separately manages actor graphics. Nearby actors
++`source/actor-render-residency.js` separately manages actor graphics. Nearby actors
+ are prepared, while only frustum/PVS-visible actors within the same 2048-unit
+ range are drawn and lit. Whole
+ assemblies use conservative transformed bounds. Room ownership uses the
+--- docs/skeleton-hit-native.md
++++ docs/skeleton-hit-native.md
+@@ -54,10 +54,10 @@
+ 
+ ## Port changes
+ 
+-- `src/enemy-hit-native.js` discards skeleton dormant/wake/retract bookkeeping
++- `source/enemy-hit-native.js` discards skeleton dormant/wake/retract bookkeeping
+   when a selected hit replaces it. The actor keeps the ordinary hurt motion,
+   playback rate, deadline and sound, then uses its active alert behavior.
+-- `src/enemy-ambush.js` migrates older snapshots that retain those replaced
++- `source/enemy-ambush.js` migrates older snapshots that retain those replaced
+   states during hurt. Animation progress and the original hurt deadline stay
+   intact; loading does not add another wake.
+ - Sound-only random responses still apply damage and preserve the existing
+--- docs/music-fade-native.md
++++ docs/music-fade-native.md
+@@ -30,7 +30,7 @@
+ 
+ ## Port implementation
+ 
+-`src/music-fade.js` implements the constant-rate control ramp. `src/audio.js`
++`source/music-fade.js` implements the constant-rate control ramp. `source/audio.js`
+ applies the fade inside the existing native gain conversion. Fades pause with
+ the game; saved envelopes retain their current gain and elapsed progress.
+ 
+--- docs/audio-save-continuity.md
++++ docs/audio-save-continuity.md
+@@ -1,7 +1,7 @@
+ # Audio continuity when restoring an adventure
+ 
+-Implemented 2026-10-15 in `src/audio.js` and the adventure save/load path in
+-`src/main.js`. This extends the port's saves; it does not claim that the native
++Implemented 2026-10-15 in `source/audio.js` and the adventure save/load path in
++`source/main.js`. This extends the port's saves; it does not claim that the native
+ save format preserved every active recording.
+ 
+ ## Saved playback
+--- docs/campaign-validation-2026-10-18.md
++++ docs/campaign-validation-2026-10-18.md
+@@ -373,7 +373,7 @@
+ This small audio change followed the completed campaign and received those
+ focused checks; the campaign was not rerun afterward. The retained
+ [final file/evidence summary](../temp_work/campaign-validation-2026-10-15/final-validation-summary-2026-10-18.json)
+-compares 115 source files with the campaign manifest and identifies `src/audio.js`
++compares 115 source files with the campaign manifest and identifies `source/audio.js`
+ as the sole subsequent source change at that point on 18 October. Later streaming,
+ menu and graphics changes are outside that manifest comparison. No build was
+ created during this campaign pass.
+--- docs/audio-media-lifetime.md
++++ docs/audio-media-lifetime.md
+@@ -105,7 +105,7 @@
+ The change is justified as explicit resource lifecycle cleanup, with native
+ destruction demonstrated above. It is not presented as a proven diagnosis or
+ reproduction-based fix for the original outro failure. Menu voice playback
+-has a separate pause-only cleanup path in `src/menu-audio.js`; it was reviewed
++has a separate pause-only cleanup path in `source/menu-audio.js`; it was reviewed
+ but remains outside this change. The original generic movie error also suggests
+ missing imported media even for this creation failure; that message was not
+ changed here.
+--- docs/room-loading-hitches.md
++++ docs/room-loading-hitches.md
+@@ -19,7 +19,7 @@
+ 
+ ## Preparation policy
+ 
+-- `src/streaming-work.js` provides one shared queue for world textures, actor
++- `source/streaming-work.js` provides one shared queue for world textures, actor
+   textures, world chunk construction and actor buffer preparation. Normal
+   animation frames execute at most **three jobs** with a **1.5 ms time allowance**
+   checked between jobs. A single upload/copy is indivisible and can exceed the
+--- docs/msaa-rendering.md
++++ docs/msaa-rendering.md
+@@ -42,7 +42,7 @@
+ 
+ ## Rendering and resource lifetime
+ 
+-`src/msaa-renderer.js` handles the final world draw. `CastleWorld.render()` still
++`source/msaa-renderer.js` handles the final world draw. `CastleWorld.render()` still
+ waits for visible geometry, actors and textures before calling it. Streaming GPU
+ preparation continues using its independent tiny targets. HTML menus and the HUD
+ remain at window resolution. The existing manual and automatic render-scale
+--- docs/presentation-source-parity-2026-10-26.md
++++ docs/presentation-source-parity-2026-10-26.md
+@@ -14,8 +14,8 @@
+ in the shared native `CParticle` implementation: lifetime, fade delay and fade
+ duration. It also skipped the original integer alpha conversion.
+ 
+-`src/particle-clock-native.js` now implements the recovered clocks, used by
+-`src/fairy-effects.js` and `src/teleporter-effects.js`:
++`source/particle-clock-native.js` now implements the recovered clocks, used by
++`source/fairy-effects.js` and `source/teleporter-effects.js`:
+ 
+ - The first particle update arms lifetime and fade-delay deadlines. Expiration
+   uses `now > deadline`; a particle still lives and moves at exact equality.
+@@ -96,7 +96,7 @@
+ 
+ ## Reviewed areas that did not require changes
+ 
+-- **Menu actions and voices:** `src/original-menu.js` and `src/menu-audio.js`
++- **Menu actions and voices:** `source/original-menu.js` and `source/menu-audio.js`
+   were compared with the retained menu handlers and
+   [menu recovery findings](../temp_work/native-menu-restoration-2026-10-20/behavior/findings.md).
+   Native home choice handlers `0x56114c`, `0x5611a0`, `0x5611f4`, home-show
+--- docs/original-source-comparison-2026-10-26.md
++++ docs/original-source-comparison-2026-10-26.md
+@@ -58,7 +58,7 @@
+ Already flying saved projectiles retain their velocity and lifetime.
+ 
+ Evidence: CRT `0x60a4a0`, lifetime `0x442e30` / `0x4432e0`, moving/standing/turret
+-release paths. Implementation: `src/enemy-projectiles.js` and
++release paths. Implementation: `source/enemy-projectiles.js` and
+ `Gameplay.enemyProjectile`. [Detailed findings](../temp_work/original-source-parity-2026-10-26/gameplay/findings.md#g-1-projectile-random-distribution-corrected).
+ 
+ ### 2. Plant and gargoyle salvo waits
+@@ -73,7 +73,7 @@
+ 
+ Evidence: standing parent `0x40a200`, wait construction `0x403ed0`, first-check
+ and strict-expiry update `0x404020`, plant override `0x406ce0` / `0x406d20`.
+-Implementation: `src/enemy-standing-shooter-native.js` with the existing ambush,
++Implementation: `source/enemy-standing-shooter-native.js` with the existing ambush,
+ hit and gameplay paths. [Detailed findings](../temp_work/original-source-parity-2026-10-26/gameplay/findings.md#g-2-plantgargoyle-post-salvo-controller-corrected).
+ 
+ ### 3. Fleurifee stars and portal particle fades
+@@ -86,8 +86,8 @@
+ 
+ Evidence: shared `CParticle` at `0x47dd60`, Start/Restart at `0x47e710` /
+ `0x47e780`, and the original fairy/portal initializers. Implementation:
+-`src/particle-clock-native.js`, `src/fairy-effects.js`,
+-`src/teleporter-effects.js`. The original fixed visual step, local RNG, sound
++`source/particle-clock-native.js`, `source/fairy-effects.js`,
++`source/teleporter-effects.js`. The original fixed visual step, local RNG, sound
+ scheduling and portal relocation policy remain intact.
+ [Full presentation comparison](presentation-source-parity-2026-10-26.md).
+ 
+@@ -114,7 +114,7 @@
+ damage amount. This confirms an active RedCat path, not merely unused generic
+ engine functionality. The dry resource at `0x6b5708` resolves to `rcland1.wav`.
+ 
+-Implementation: `src/player-landing.js`, `Gameplay.land`, the existing world
++Implementation: `source/player-landing.js`, `Gameplay.land`, the existing world
+ landing transition and locomotion audio. Contact emits once, with no replay on
+ load or movement recovery. Existing no-clip, cutscene, respawn and completed-level
+ protections still apply. Portable collision/impact sampling remains a documented
+--- docs/death-smoke-native-followup-2026-10-26.md
++++ docs/death-smoke-native-followup-2026-10-26.md
+@@ -24,7 +24,7 @@
+   XY template-quad offsets. Each particle faces its vector to the camera;
+   camera roll does not replace that native basis.
+ 
+-`src/enemy-death-effects.js` computes the common upward motion, size and alpha
++`source/enemy-death-effects.js` computes the common upward motion, size and alpha
+ table once. Existing launch anchors/velocities and saved age select a sample.
+ This has constant bounded work and adds no historical replay, per-enemy clock
+ allocation, draw calls or collision queries. Native launch anchors are still
+@@ -42,7 +42,7 @@
+ direction, a radial transition twice as long as the original, immediate alpha
+ interpolation, and emission that bypassed the native timer rearming order.
+ 
+-`src/jester-teleport-timing.js` now records both finite fifteen-slot sequences
++`source/jester-teleport-timing.js` now records both finite fifteen-slot sequences
+ once. The radial timer is **500 ms**, independently of the 1000 ms lifetime.
+ Particles use the native 100 ms delay before their 1000 ms alpha fade; alpha
+ starts at byte 63 for departure and byte 254 for arrival. Emission checks its
+--- docs/javascript-bundling.md
++++ docs/javascript-bundling.md
+@@ -36,7 +36,7 @@
+ 
+ ## Compatibility and caches
+ 
+-- The same `src/main.js` entry and initialization order are bundled as ES
++- The same `source/main.js` entry and initialization order are bundled as ES
+   modules, including the save/profile/export circular dependencies.
+ - Property names and storage keys are never mangled. Original function and
+   class names are retained. Asset URLs remain relative to the same document.
+--- docs/native-parity-audit.md
++++ docs/native-parity-audit.md
+@@ -216,7 +216,7 @@
+   mouse/touch controls, immediate jump2 selection and the BSP hull/step/slide
+   solver remain portable adaptations. Moving-brush side pushes and blocked-move
+   rejection are already implemented. See
+-  [player collider](../src/collision.js) and
++  [player collider](../source/collision.js) and
+   [moving collision limits](moving-solid-collision.md).
+ - **Portal and destruction effects:** recovered portal trajectories, emission,
+   beam/flash geometry and sound frequencies now replace the earlier approximations.
+--- docs/intentional-fixes-and-findings.md
++++ docs/intentional-fixes-and-findings.md
+@@ -46,7 +46,7 @@
+ | Transient-state continuity | New saves retain smoke/flame pools, knight fragment physics, active WAV positions, dialogue queues, loop waits and crossfade progress. Loading continues these states instead of restarting them. This extends the port's save format; it is not a claim about the original RCR format. | [Effect continuity](effects-save-continuity.md), [audio continuity](audio-save-continuity.md) |
+ | Safer adventure replacement | The original **Avontuur → Startinfo** route continues an existing save. **Meer opties → Opnieuw beginnen** retains confirmation; **Snelspel** selects a chapter without replacing the save until **Level Spelen** is confirmed. Replacement occurs only after the new level loads successfully. | [Starting a new adventure](autosave.md#starting-a-new-adventure), [original menu](original-menu-native.md) |
+ | Export and import a player's save | **Spelerlijst → Exporteren** copies the selected player's primary save and permanent progress. **Importeren** validates that JSON backup and asks before replacing the selected player’s save, progress and gameplay options. Other players, shared settings and local recovery points remain. Browser, desktop and Android share the same format; native RCR files are unsupported. | [Save backups](save-export.md) |
+-| Optional cheats | A settings submenu fills mirror pieces and potions to their limits, adds 9000 points, unlocks all chapters, or enables free flight. Supplies do not collect actual level objects or complete their scripts. | [Cheat implementation](../src/cheats.js), [chapter access](campaign-menu-native.md) |
++| Optional cheats | A settings submenu fills mirror pieces and potions to their limits, adds 9000 points, unlocks all chapters, or enables free flight. Supplies do not collect actual level objects or complete their scripts. | [Cheat implementation](../source/cheats.js), [chapter access](campaign-menu-native.md) |
+ | Invulnerable no-clip | Free flight ignores all damage, including enemies, liquids, beams and scripted kills. Exiting inside geometry seeks a safe position; if none is available, flight and protection stay enabled. | [No-clip protection](player-protection-progress-and-local-audio.md#no-clip-protection) |
+ | Campaign ownership | Unlocks and earned abilities are stored separately from individual checkpoints. Earlier chapter replays and recovery loads retain them. A confirmed new adventure resets shooting upgrades, SuperSkippie and played-level history; chapter unlocks and preferences remain. | [Permanent abilities](player-protection-progress-and-local-audio.md#earned-abilities-across-chapter-replays), [replay history](replayed-level-intros-native.md#automatic-replay-policy-in-the-port) |
+ | Accessible final chapter | The original fifth-card handler has an additional, unexplained comparison. The port makes the Tower selectable once legitimately unlocked, without reproducing that restriction. | [Original chapter-menu evidence](campaign-menu-native.md#original-evidence) |
+@@ -81,7 +81,7 @@
+ | Damageable Dungeon Max vehicle | Hits on the bottom, crate and animated lid all damage Max. The original lid disables shot collision; including it is the requested playability change. The assembly retains player collision and ignores Max's own shots. | [Boss fidelity limits](boss-phases-native.md#fidelity-limits), [vehicle hits](enemy-ambush-flight.md) |
+ | Hold-to-skip dialogue | Hold E, the touch skip control or the controller equivalent for two seconds, with an **Overslaan** progress circle. Fast-forward completes the remaining authored callbacks and rewards. Release/pause resets an incomplete hold. | [Skip control](hud-targeting-cutscene-skip.md#requested-new-skip-control), [controller support](controller-support.md) |
+ | Fairy cleanup when skipping | Successful skip removes the participating fairies, particles, trails and audio, including fairies enabled by intervening callbacks. Future encounters remain available. | [Skip lifecycle](fairy-skip-audio-2026-09-22.md) |
+-| Protected dialogue and completed levels | RedCat is invulnerable during cutscenes and the pending level-completion wait. During dialogue he returns to idle, pending attacks/charges are cancelled, and defeated enemies finish their death/fade/smoke sequence while living combatants stay frozen. This explicitly prevents a post-boss conversation becoming a death trap. | [Cutscene completion](enemy-combat-effects-native.md), [health/completion protection](debriefing-and-hearts-native.md), [damage gate](../src/gameplay.js) |
++| Protected dialogue and completed levels | RedCat is invulnerable during cutscenes and the pending level-completion wait. During dialogue he returns to idle, pending attacks/charges are cancelled, and defeated enemies finish their death/fade/smoke sequence while living combatants stay frozen. This explicitly prevents a post-boss conversation becoming a death trap. | [Cutscene completion](enemy-combat-effects-native.md), [health/completion protection](debriefing-and-hearts-native.md), [damage gate](../source/gameplay.js) |
+ | Automatic replay policy | Visiting a previously played chapter selects the original connected quick-play tutorial branches through the existing chapter menu. The restored **Avontuur/Snelspel** menu routes share one campaign/save system rather than independent game modes; visited-level history determines replay behavior. Eight Forest and two Graveyard tutorials are skipped; required rewards, bosses and exits remain. | [Replay branches](replayed-level-intros-native.md) |
+ | Exclusive Fleurifee encounters | Fresh levels keep fairies dormant until an encounter enables them, overriding two originally enabled later-encounter entities. Enabling another fairy retires the previous one. This enforces the requested single active encounter; legacy multiple-fairy saves are resolved using the saved player position. | [Fairy identity and activation](fairy-dialogue-pickup-lifecycle.md#wrong-fairy-identities) |
+ 
+@@ -102,8 +102,8 @@
+ | Active fairy `idlefee1.wav` | Distance curve expanded **3×**; use RedCat as listener and bypass camera-PVS muting. | Keeps the active fairy audible when a cutscene moves the camera away. Castle range becomes **52.65–263.25 m**; Caves becomes **52.65–315.9 m**. Other chapters scale their configured curve. |
+ 
+ Distances use 32 original world units per metre. Current values are checked in
+-[ambience-ranges.js](../src/ambience-ranges.js) and
+-[audio-settings.js](../src/audio-settings.js). The initial 5–30 m Cave range,
++[ambience-ranges.js](../source/ambience-ranges.js) and
++[audio-settings.js](../source/audio-settings.js). The initial 5–30 m Cave range,
+ 5–25 m Castle range and 3–18 m Tower-fire range are historical values, not the
+ present settings. Sources: [Cave ambience](cave-ambience-range.md),
+ [Castle/Tower local audio](player-protection-progress-and-local-audio.md#deliberately-shorter-sound-ranges),
+@@ -113,7 +113,7 @@
+ 
+ | Choice | Current behavior and original evidence | Detail |
+ | --- | --- | --- |
+-| Audible originally silent door panels | Selected visible DoorType-4 panels use original normal/secret door recordings, despite native type 4 selecting `empty.wav`. Invisible area barriers, faceless carriers, hedges and other mechanisms stay excluded. | [Door fallback](world-action-audio.md#buttons-and-doors), [selector](../src/door-audio.js) |
++| Audible originally silent door panels | Selected visible DoorType-4 panels use original normal/secret door recordings, despite native type 4 selecting `empty.wav`. Invisible area barriers, faceless carriers, hedges and other mechanisms stay excluded. | [Door fallback](world-action-audio.md#buttons-and-doors), [selector](../source/door-audio.js) |
+ | Shared secret-door source placement | Castle's shared non-3D secret-door cue is located at the invoking panel for the localized mix. Its editor position is unrelated to some later doors. | [Shared scripted door cues](world-action-audio.md#buttons-and-doors) |
+ | Combat music on accepted attack | A valid targeted enemy contributes to combat music immediately when the attack starts, before the pellet hits. Actual hits separately refresh the recovered native awareness. Native evidence establishes hit memory, but does not establish music onset before impact. | [Knight music timing](knight-attack-music.md#starting-music-when-an-attack-begins) |
+ | User-selected fairy cue | Appearance uses `gri5fx11.wav` once, active idle loops `idlefee1.wav`, and ordinary disappearance uses `magiev12.wav` once. The appearance assignment follows the user's corrected choice; the recordings themselves are original assets. | [Fairy sound selection](fairy-skip-audio-2026-09-22.md) |
+@@ -129,9 +129,9 @@
+ | --- | --- | --- |
+ | Modern display options | Widescreen, ultrawide and HD/4K resolution selection, automatic window sizing and a stored fullscreen preference. Fullscreen defaults on; browsers request it on an eligible user gesture. Original movies keep their 4:3 framing. | [README display overview](../README.md#modern-controls-saving-and-performance), [startup/fullscreen](startup-behavior.md) |
+ | Modern input | Camera-relative keyboard/mouse controls, touch overlays with automatic mobile detection and an off switch, and standard-mapped controllers for gameplay/menus. Touch labels use **Schieten**; redundant Gebruik/Meer save-load controls are removed because contact controls and Menu cover them. | [Movement adaptations](player-movement-native.md#scope), [touch controls](touch-controls.md), [controllers](controller-support.md) |
+-| Camera protection near walls | The third-person camera rises above RedCat when there is too little room behind him, preventing a view inside his body. The reconstructed collision/compensation solver retains this requested behavior. Authored fixed cameras still own their timer and cannot be cancelled by look input. | [Camera implementation](../src/world.js), [camera controls](../src/camera-control.js), [camera boundaries](camera-native-status.md) |
+-| Full-screen level overview | Stretch the original background to fill any window, including portrait displays, while keeping text/icons proportional. Use **KLIK/TIK hier om verder te gaan** on every device instead of the original shooting prompt. | [Responsive overview](touch-controls.md), [renderer](../src/debriefing.js) |
+-| Updated menu/help/About | A modern responsive HTML interface hosts display/input settings, cheats, recovery saves and **Over** with project version, donations and website/YouTube links. Requested promotional/development text and the redundant gameplay II overlay/menu Afsluiten button are removed. | [Menu markup](../index.html), [menu source](../src/main.js), [historical UI cleanup](native-parity-audit.md#historical-audit-changes-and-checks-23-september) |
++| Camera protection near walls | The third-person camera rises above RedCat when there is too little room behind him, preventing a view inside his body. The reconstructed collision/compensation solver retains this requested behavior. Authored fixed cameras still own their timer and cannot be cancelled by look input. | [Camera implementation](../source/world.js), [camera controls](../source/camera-control.js), [camera boundaries](camera-native-status.md) |
++| Full-screen level overview | Stretch the original background to fill any window, including portrait displays, while keeping text/icons proportional. Use **KLIK/TIK hier om verder te gaan** on every device instead of the original shooting prompt. | [Responsive overview](touch-controls.md), [renderer](../source/debriefing.js) |
++| Updated menu/help/About | A modern responsive HTML interface hosts display/input settings, cheats, recovery saves and **Over** with project version, donations and website/YouTube links. Requested promotional/development text and the redundant gameplay II overlay/menu Afsluiten button are removed. | [Menu markup](../index.html), [menu source](../source/main.js), [historical UI cleanup](native-parity-audit.md#historical-audit-changes-and-checks-23-september) |
+ | First-time control hints | Desktop and touch help appear once for ten seconds after the first Forest opening camera/cutscene returns control. Each input hint is remembered independently across restarts; controller use changes the desktop hint text. | [First-time startup help](startup-behavior.md) |
+ | Browser intro fallback | Attempt audible intro autoplay, then muted autoplay with **Geluid inschakelen** if blocked. A playback button remains when the browser blocks both. This accommodates browser policy without restarting the movie to unmute. | [Intro playback](startup-behavior.md) |
+ | Distant projectile readability | Small shots grow toward 24 pixels and ribbons toward 6 pixels at 1080-pixel viewport height, capped at 2.5× native size. Close shots retain native dimensions. Collision, damage, flight and timing do not grow with the artwork. | [Projectile visibility](projectile-visibility.md#deliberate-visibility-improvement) |
+@@ -162,7 +162,7 @@
+ | Stable effect clocks and RNG | Portal/Fleurifee/spout effects, enemy death smoke, Jester teleport swirls and beacon UV movement use fixed visual steps rather than display-dependent updates. Saved/local random streams preserve repeatable effects and enemy choices but do not reproduce the original process-wide random sequence. Ordinary death smoke and Jester teleport swirls now follow recovered native update ordering on that fixed clock; pickup/score envelopes retain their documented continuous approximation. | [Portal timing](portal-native-recovery.md#timing-saves-and-renderer-boundaries), [spout differences](spout-effects-native.md#portable-implementation-and-verification), [beacon clock](presentation-native-recovery.md#save-beacon-texture-movement), [enemy death smoke](enemy-death-effects-native.md) |
+ | Stable projectile flight | Recovered accelerate/cap/gravity-before-motion and post-motion homing run on a canonical 60 Hz flight clock with smooth partial movement. Player acceleration is summed in constant work. Enemy curved flight consumes at most 100 ms / seven segments per update; exceptional larger direct calls retain validated saved time debt. Normal game updates already stay within 100 ms. Straight gravity-free shots retain one sweep. This preserves refresh-independent gameplay and bounded CPU work rather than recreating native variable-frame artifacts. | [Player flight](player-projectiles-native.md), [enemy flight](native-enemy-projectile-flight.md) |
+ | Collision/numerical safeguards | Portable hull/mesh sweeps replace Genesis collision. Debris can escape a shallow initial overlap within a bounded distance; malformed explosion counts are capped. A vertical spout-view basis gets a finite fallback instead of a zero cross product. | [Moving-solid limits](moving-solid-collision.md), [debris boundaries](debris-native-recovery.md#portable-boundaries), [spout differences](spout-effects-native.md#portable-implementation-and-verification) |
+-| Display refresh and automatic mobile quality | Render through the display-synchronized browser frame loop. The Linux launcher removes an inherited MangoHud cap unless a launch-specific cap was supplied. The Android wrapper has its own automatic rendering-size budget; explicit resolution selection remains available. | [Refresh investigation](native-refresh-performance.md), [Android adapter](../src/android-host.js), [Android setup](../ANDROID.md) |
++| Display refresh and automatic mobile quality | Render through the display-synchronized browser frame loop. The Linux launcher removes an inherited MangoHud cap unless a launch-specific cap was supplied. The Android wrapper has its own automatic rendering-size budget; explicit resolution selection remains available. | [Refresh investigation](native-refresh-performance.md), [Android adapter](../source/android-host.js), [Android setup](../ANDROID.md) |
+ 
+ Remaining fidelity gaps are tracked in [the native audit](native-parity-audit.md),
+ rather than promoted to intentional design goals. Portable collision tolerances,
+--- docs/world-light-shadows-native.md
++++ docs/world-light-shadows-native.md
+@@ -97,7 +97,7 @@
+ | +X, -X | `sky00` | [`textures/027.png`](../data/levels/lvl04a/textures/027.png) | 128 x 128 |
+ | +Y, -Y, +Z, -Z | `skyg` | [`textures/028.png`](../data/levels/lvl04a/textures/028.png) | 256 x 256 |
+ 
+-Before the fix, [`CastleWorld.load()`](../src/world.js) passed these images
++Before the fix, [`CastleWorld.load()`](../source/world.js) passed these images
+ directly to `new THREE.CubeTexture(faces)` and assigned it to
+ `scene.background`, without making their dimensions equal. In the installed Three.js implementation,
+ `uploadCubeTexture()` in
+@@ -162,7 +162,7 @@
+ | 4 — De Grotten (`lvl03a`) | No authored skybox; all six indices are -1 | No cubemap to upload |
+ | 5 — De Kasteeltoren (`lvl04a`) | Two 128 x 128 and four 256 x 256 faces, as detailed above | **Yes** |
+ 
+-[`normalizeSkyboxFaces()`](../src/skybox.js) now runs before cubemap creation.
++[`normalizeSkyboxFaces()`](../source/skybox.js) now runs before cubemap creation.
+ It chooses the largest source dimension, capped by the GPU's maximum cubemap
+ size, and makes every face that common square size. For the shipped campaign
+ this is **256 x 256**. Only images that need resizing are copied, with smooth
+--- docs/skyboxes-native.md
++++ docs/skyboxes-native.md
+@@ -35,7 +35,7 @@
+ This put ceiling artwork on a side, side artwork overhead/underfoot, and
+ exchanged front and back.
+ 
+-[`nativeSkyboxFaces()`](../src/skybox.js) now supplies native slots
++[`nativeSkyboxFaces()`](../source/skybox.js) now supplies native slots
+ **`[2, 3, 0, 1, 5, 4]`** to Three, with a **180-degree turn of top and bottom**.
+ The side UVs need no further transformation. Missing faces no longer borrow
+ another face's artwork; they are blank black. Native skips these faces rather
+--- docs/native-asset-loading-and-camera-visibility.md
++++ docs/native-asset-loading-and-camera-visibility.md
+@@ -284,7 +284,7 @@
+ 
+ ## Port changes and deliberately retained adaptations
+ 
+-[World streaming implementation](../src/world-streaming.js):
++[World streaming implementation](../source/world-streaming.js):
+ 
+ - Resident static world chunks now build a compact draw index containing only
+   PVS-accepted faces. The existing chunk test still decides which sections to
+--- README.md
++++ README.md
+@@ -144,7 +144,7 @@
+ - A two-second hold skips dialogue while retaining its script outcomes. Settings also include difficulty, audio, camera, display, touch preferences and cheats.
+ - World and actor graphics stream in sections according to camera visibility, with nearby resources prepared ahead of time. Large visible areas remain complete. Collision, scripts and cached CPU data stay available; this does not unload every part of the level from system memory.
+ - Navigation searches have bounded work budgets, and rendering caches reduce repeated uploads and updates. These changes address graveyard pursuit hitches and pauses when turning or revisiting an area; they do not guarantee a particular frame rate on every device.
+-- Startup uses one generated JavaScript bundle: 141 modules combine into a runtime about 63% smaller before HTTP compression. The editable modules remain available, and existing saves/profiles keep their original format and storage. See [JavaScript bundling](docs/javascript-bundling.md).
++- Startup uses one generated JavaScript bundle: 141 modules combine into a runtime about 63% smaller before HTTP compression. The editable modules are kept separately in `source/`; only the generated bundle runs during ordinary gameplay. Existing saves/profiles keep their original format and storage. See [JavaScript bundling](docs/javascript-bundling.md).
+ 
+ See [autosaves](docs/autosave.md), [world streaming](docs/world-streaming.md), [navigation performance](docs/graveyard-performance-regression.md), [movement recovery](docs/movement-recovery.md) and [torch enhancements](docs/torch-flames.md).
+ 
+@@ -195,7 +195,8 @@
+ 
+ | Path | Contents |
+ | --- | --- |
+-| `src/` | Game systems, renderer, UI, audio, input and portable script interpreter. |
++| `source/` | Editable game modules; input to bundling and focused tests, **not loaded directly by ordinary gameplay**. See [source instructions](source/README.md). |
++| `src/` | Generated `game.bundle.js`, debugging source map and runtime CSS. See [runtime files](src/README.md). |
+ | `electron/` | Desktop application and display/quit bridge. |
+ | `assets/` | Imported artwork, actors, sounds, voices and movies. |
+ | `data/` | Imported levels, scripts and associated structured game data. |
+--- docs/javascript-bundling.md
++++ docs/javascript-bundling.md
+@@ -1,13 +1,15 @@
+ # JavaScript runtime bundle
+ 
+-The editable game remains split into modules in `src/`. Before running or
+-packaging it, the preparation tools combine the browser entry and Three.js into
++The editable game modules are kept separately in [`source/`](../source/README.md).
++They are **not loaded directly by ordinary gameplay**. Before launching from the
++checkout or packaging it, the preparation tools read those modules and combine
++the browser entry and Three.js into
+ `src/game.bundle.js`. The HTML loads this single file. This reduces startup
+ requests and JavaScript transfer size, especially over HTTP and in Android's
+ local WebView. It does not change the game's per-frame rendering or simulation
+ work, and is not a claim of higher gameplay FPS.
+ 
+-The first current-source bundle combines **141 modules** (139 game modules and
++The initial 26 October bundle combined **141 modules** (139 game modules and
+ two Three.js modules): **3,235,163 source bytes → 1,205,774 bundled bytes**, a
+ 62.7% reduction before HTTP compression. Ordinary startup needs one JavaScript
+ request instead of 141. Future edits can change these exact sizes.
+@@ -24,9 +26,19 @@
+ 
+ `npm start`, `npm run serve`, the desktop packaging helpers and Android asset
+ preparation already run the refresh automatically. Copy the matching
+-`index.html` and complete `src/` directory together, including `game.bundle.js`
+-and `game.bundle.js.map`; retain the other existing deployment directories.
+-The bundle is generated output: edit the original modules, not this file.
++`index.html` and complete runtime `src/` directory together, including
++`game.bundle.js`, `game.bundle.js.map` and CSS; retain the other existing
++deployment directories. The separate `source/` directory is needed to edit,
++test or regenerate the bundle, but is excluded from normal desktop/Android
++packages and is not needed on a static webhost. The bundle is generated output:
++edit `source/`, not `src/game.bundle.js`.
++
++`npm start` and `npm run serve` read `source/` during their automatic preparation
++step. That development step is distinct from running the prepared game: the
++browser/WebView/Electron renderer executes the resulting bundle. Tests and
++explicit debugging imports may load individual modules deliberately.
++The independent `RC_ACTOR_TEST`, `RC_COIN_TEST` and `RC_SHOVE_TEST` laboratories
++keep their own source layouts and do not use the main runtime bundle.
+ 
+ esbuild is pinned in the development dependencies and is needed only on the
+ machine preparing the files. The deployed website, Electron app and Android
+@@ -46,7 +58,7 @@
+ - The bundle, source map and HTML use a revision derived from the complete
+   validated source snapshot, stylesheet contents and bundler configuration.
+   Editing a dependency changes the revision even without a version bump.
+-- Source modules remain revisioned in the import map for tools and debugging;
++- `source/` modules remain revisioned in the import map for tools and debugging;
+   ordinary gameplay does not request them separately. Generated files are
+   excluded from source discovery so repeated preparation is deterministic.
+ - The browser fetches the external source map only when debugging. Its URL
+--- docs/building.md
++++ docs/building.md
+@@ -16,7 +16,7 @@
+ 
+ The development machine checked on 5 October 2026 uses Node 24.13.1 and npm 11.8.0. Use `npm ci` to install the exact dependencies in the lockfile. The first install and the first build for another platform need internet access to download tools and Electron. A running game needs WebGL 2 support and working graphics drivers.
+ 
+-Keep `index.html`, `package.json`, `package-lock.json`, `src/`, `electron/`, `tools/`, `tests/`, `docs/`, `assets/` and `data/` together in the project directory. The current `.gitignore` does **not** exclude `assets/` or `data/`. Check that your checkout includes their complete contents; if they were omitted from the distribution, import or copy them from your own prepared project. Do not copy `node_modules` between operating systems; run `npm ci` on each development machine.
++Keep `index.html`, `package.json`, `package-lock.json`, `source/`, `src/`, `electron/`, `tools/`, `tests/`, `docs/`, `assets/` and `data/` together in the project directory. The current `.gitignore` does **not** exclude `assets/` or `data/`. Check that your checkout includes their complete contents; if they were omitted from the distribution, import or copy them from your own prepared project. Do not copy `node_modules` between operating systems; run `npm ci` on each development machine.
+ 
+ ## 2. Install dependencies and run the source
+ 
+@@ -40,7 +40,10 @@
+ npm start
+ ```
+ 
+-These commands run the source without generating packages. Substitute your own checkout path when needed. On Linux, selecting X11/XWayland before Electron starts avoids the blank-window problem seen with mismatched display backends. An explicit `npm start -- --ozone-platform=wayland` is also supported when your desktop/driver combination works with Wayland.
++These commands regenerate `src/game.bundle.js` from the editable modules in
++`source/`, then run that bundle without generating packages. The individual
++modules are not loaded directly by ordinary gameplay. Keep `source/` in a
++development checkout; generated runtime distributions do not need it. Substitute your own checkout path when needed. On Linux, selecting X11/XWayland before Electron starts avoids the blank-window problem seen with mismatched display backends. An explicit `npm start -- --ozone-platform=wayland` is also supported when your desktop/driver combination works with Wayland.
+ 
+ **`Start-RedCat.sh` prefers the existing `dist/linux-unpacked` build.** If that directory exists, the launcher will not show your new source changes. Use the `npm start` command above while developing.
+ 
+@@ -158,11 +161,11 @@
+ Resolve test failures before creating packages. Some original-file comparison tests require the original installation on the development machine and skip when it is absent.
+ 
+ Keep source validation and package validation separate. An existing `dist/`
+-package still contains the source and metadata from when it was generated:
+-changing the Over dialog to **1.0.1** does not update a previously built **1.0.0**
+-package. Record the executable/package version, source revision or file hashes,
+-platform, inputs and checks for each release run. Source tests and older-package
+-checks do not certify a new 1.0.1 release, and Linux browser/Electron checks
++package still contains the prepared runtime and metadata from when it was
++generated; editing the source or changing the Over version does not update it.
++Record the executable/package version, source revision or file hashes, platform,
++inputs and checks for each release run. Source tests and older-package checks
++do not certify a newly generated release, and Linux browser/Electron checks
+ do not certify Windows, macOS or ARM hardware. The 1.0.0 cache-coherence release refresh is recorded in
+ `temp_work/release-1.0.0-final-2026-10-20/`. The subsequent 1.0.1 release built
+ all six targets and verified their archives and uploaded checksums; records
+--- ANDROID.md
++++ ANDROID.md
+@@ -1,6 +1,6 @@
+ # Android app: build and Google Play release
+ 
+-Updated **26 October 2026**; initial implementation **6 October 2026**. The **Kotlin/Android WebView app** bundles the current port source and original runtime assets. It runs the shared JavaScript/Three.js game with bundled assets, targeting **Android 16 / API 36** and allowing installation on **Android 10 / API 29 or newer**.
++Updated **26 October 2026**; initial implementation **6 October 2026**. The **Kotlin/Android WebView app** bundles the prepared game runtime and original assets. It runs the shared JavaScript/Three.js game with bundled assets, targeting **Android 16 / API 36** and allowing installation on **Android 10 / API 29 or newer**.
+ 
+ The latest release work builds version **1.0.3**, Android `versionCode = 5`. The procedures below cover offline asset staging, debug validation, private upload-key signing, and a Google Play AAB plus a directly installable APK. See the final validation section for what was actually checked, and [the Google Play guide](docs/android-google-play-release.md) for owner-account publication steps.
+ 
+@@ -107,17 +107,17 @@
+ ├── .redcat-android-assets.json    # Ownership marker, excluded from Android assets
+ └── www/
+     ├── index.html
+-    ├── src/
++    ├── src/                    # Generated bundle, source map and runtime CSS
+     ├── assets/
+     ├── data/
+     └── node_modules/three/       # Whole installed package, including LICENSE/addons
+ ```
+ 
+-The tool checks all five level metadata files, intro/outro MP4 and WebM files, and required Three.js files before replacing generated output. It preserves relative paths and filename case, rejects symlinks/unsafe output locations, and removes stale generated files only from output it owns. It does not include Electron, development dependencies other than Three.js, tests, original executables, the ISO or `temp_work/`.
++The tool checks all five level metadata files, intro/outro MP4 and WebM files, and required Three.js files before replacing generated output. It preserves relative paths and filename case, rejects symlinks/unsafe output locations, and removes stale generated files only from output it owns. It does not include the editable `source/` modules, Electron, development dependencies other than Three.js, tests, original executables, the ISO or `temp_work/`. Preparation first reads `source/` to regenerate the bundle; the installed app runs `src/game.bundle.js` without individual module requests.
+ 
+ The initial 6 October staging contained **2,993 files / 195,051,239 bytes**, about **186 MiB** before APK compression; these historical measurements are not the size of the current source or a future APK. `asset-manifest.json` records deterministic per-file hashes and the combined content hash. The ownership marker contains local paths and is explicitly excluded by Gradle. Source changes cause Gradle to restage the assets; manual preparation is useful for inspection, but is not a required extra step before each Gradle compile.
+ 
+-Do not edit staged files. Edit the shared source/assets instead. An advanced `--output` option is available for an owned output directory inside the project, but Gradle always uses the default directory above.
++Do not edit staged files or the generated bundle. Edit the shared `source/` modules or assets instead. An advanced `--output` option is available for an owned output directory inside the project, but Gradle always uses the default directory above.
+ 
+ ## 5. Understand native behavior and storage
+ 
+--- docs/nginx-hosting.md
++++ docs/nginx-hosting.md
+@@ -2,7 +2,7 @@
+ 
+ Target address: **https://games.nostalgiarealm.com/redcatspookkasteel/**.
+ 
+-The game runs directly as a static website. Upload its prepared source,
++The game runs directly as a static website. Upload its prepared runtime,
+ imported game data and Three.js dependency. Nginx serves the files; visitors run
+ the game in their browsers. No Electron package, build command, Node server,
+ PHP or database is needed on the webhost. These are instructions for you to
+@@ -20,7 +20,7 @@
+ ```text
+ redcatspookkasteel/
+ ├── index.html
+-├── src/
++├── src/                     # game.bundle.js, source map and runtime CSS
+ ├── assets/
+ ├── data/
+ └── node_modules/
+@@ -53,8 +53,9 @@
+ ```
+ 
+ Continue only if the checks succeed. The current files need approximately
+-180 MB of disk space. This is a file copy, not a desktop build. The published
+-tree does not need the rest of `node_modules`, `electron/`, development tools,
++200 MB of disk space; measure the staged directory for the current total. This is a file copy, not a desktop build. The published
++tree does not need the editable `source/` directory, the rest of `node_modules`,
++`electron/`, development tools,
+ tests, screenshots, logs, original Windows executables or the ISO.
+ 
+ `npm run web:refresh` combines the JavaScript runtime into `src/game.bundle.js`
+@@ -208,7 +209,7 @@
+ ```sh
+ curl -I 'https://games.nostalgiarealm.com/redcatspookkasteel?skipIntro'
+ curl -I https://games.nostalgiarealm.com/redcatspookkasteel/
+-curl -I https://games.nostalgiarealm.com/redcatspookkasteel/src/main.js
++curl -I https://games.nostalgiarealm.com/redcatspookkasteel/src/game.bundle.js
+ curl -I https://games.nostalgiarealm.com/redcatspookkasteel/node_modules/three/build/three.core.js
+ curl -I https://games.nostalgiarealm.com/redcatspookkasteel/data/levels/lvl00a/level.json
+ curl -I https://games.nostalgiarealm.com/redcatspookkasteel/does-not-exist.js
+@@ -283,8 +284,9 @@
+ 
+ Current preparation additionally bundles that graph into one revisioned
+ `src/game.bundle.js` request. Old separately cached modules are therefore not
+-part of ordinary gameplay startup. The individual import-map entries remain
+-available for debugging and tools; users do not need to clear their cache or
++part of ordinary gameplay startup. The individual import-map entries now point into `source/`, which is needed
++only in development checkouts for debugging and tools. A deployed site does
++not need that folder. Users do not need to clear their cache or
+ import their saves when moving to the bundled runtime.
+ 
+ Refresh these keys with `npm run web:refresh` before a manual website upload.
+@@ -303,7 +305,7 @@
+ curl -sS -D - -o /dev/null \
+   https://games.nostalgiarealm.com/redcatspookkasteel/
+ curl -sS -D - -o /dev/null \
+-  https://games.nostalgiarealm.com/redcatspookkasteel/src/actor-render-residency.js
++  https://games.nostalgiarealm.com/redcatspookkasteel/src/game.bundle.js
+ ```
+ 
+ If those responses lack `Cache-Control: no-cache`, check which Nginx location
+--- docs/portability.md
++++ docs/portability.md
+@@ -1,6 +1,8 @@
+ # Platform architecture and validation
+ 
+-The core is ES modules and typed arrays. `source/collision.js`, `source/gameplay.js` and `source/animation.js` are independent of Electron. Asset conversion happens before packaging, producing PNG, float32 geometry, JSON and modern audio/video formats. A new platform does not need to parse legacy PE executables or Direct3D resources.
++The editable core in `source/` uses ES modules and typed arrays. Preparation
++combines it with Three.js into `src/game.bundle.js`; ordinary desktop, browser
++and Android gameplay runs that bundle without loading individual modules. `source/collision.js`, `source/gameplay.js` and `source/animation.js` are independent of Electron. Asset conversion happens before packaging, producing PNG, float32 geometry, JSON and modern audio/video formats. A new platform does not need to parse legacy PE executables or Direct3D resources.
+ 
+ `source/world.js` owns WebGL rendering and camera/player integration. `source/main.js` owns the menu, HTML media, persistent settings, keyboard/mouse/touch/gamepad translation, and the frame loop. Its optional `window.desktop` bridge provides display, quit and save import/export actions, plus platform identification. `electron/main.cjs` implements that bridge with a sandboxed renderer and an application-local secure URL scheme. The browser build works without the bridge. Mobile browser input is implemented. Platform-specific build and runtime evidence is listed below; one platform’s success does not establish another’s compatibility.
+ 
+--- docs/campaign-validation-2026-10-18.md
++++ docs/campaign-validation-2026-10-18.md
+@@ -373,7 +373,7 @@
+ This small audio change followed the completed campaign and received those
+ focused checks; the campaign was not rerun afterward. The retained
+ [final file/evidence summary](../temp_work/campaign-validation-2026-10-15/final-validation-summary-2026-10-18.json)
+-compares 115 source files with the campaign manifest and identifies `source/audio.js`
++compares 115 source files with the campaign manifest and identifies historical `src/audio.js` (now `source/audio.js`)
+ as the sole subsequent source change at that point on 18 October. Later streaming,
+ menu and graphics changes are outside that manifest comparison. No build was
+ created during this campaign pass.
+--- temp_work/README.md
++++ temp_work/README.md
+@@ -6,6 +6,20 @@
+ 
+ See the [cleanup and research index](cleanup-2026-10-22/README.md) for the retained directories, verification and a lookup from removed duplicate files to their canonical copies. Historical references to discarded screenshots and test profiles are expected.
+ 
++## Historical paths and findings
++
++These records describe the checkout and test run at the date they were written.
++They are evidence, not current setup instructions or an outstanding-task list.
++The main game's editable modules moved from `src/` to `source/` on 26 October
++2026; old module paths, source manifests and source hashes in retained records
++refer to that earlier layout and are deliberately preserved. The new `src/`
++contains the generated runtime bundle, source map and CSS. Standalone labs
++retain their independent `src/` trees. Use [the main README](../README.md),
++[build guide](../docs/building.md), [bundling guide](../docs/javascript-bundling.md)
++and [current implementation audit](../docs/native-parity-audit.md) for current
++workflow and status. Retained upstream/license documents keep their original
++wording and provenance.
++
+ ## Repository copies
+ 
+ The GitHub/GitLab archive contains the retained research and diagnostic logs. The installed Android JDK and its downloaded distribution archive remain local; reproduce that installation using [ANDROID.md](../ANDROID.md#optional-reproduce-the-local-jdk-installation). Original release/checksum metadata remains in the research directory.

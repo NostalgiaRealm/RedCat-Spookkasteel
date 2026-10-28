@@ -1,0 +1,225 @@
+[main 940268202] Release 1.0.4
+ 577 files changed, 556422 insertions(+), 1426 deletions(-)
+ create mode 100644 DESCRIPTION.md
+ create mode 100644 INITIAL_IMPORT_SOURCE_GITHUB
+ create mode 100644 LOCAL_LLM_INSTRUCTIONS
+ create mode 100644 RELEASE_NOTES_1.0.4
+ create mode 100644 docs/android-google-play-release.md
+ create mode 100644 docs/android-privacy-policy.md
+ create mode 100644 docs/efficiency-review-2026-10-26.md
+ create mode 100644 docs/javascript-bundling.md
+ create mode 100644 docs/source-layout-and-documentation-review.md
+ create mode 100644 source/README.md
+ rename {src => source}/actor-collision-index.js (100%)
+ rename {src => source}/actor-collision.js (100%)
+ rename {src => source}/actor-floor-lighting.js (100%)
+ rename {src => source}/actor-geometry.js (100%)
+ rename {src => source}/actor-light-sampling.js (100%)
+ rename {src => source}/actor-light-visibility.js (100%)
+ rename {src => source}/actor-lighting.js (100%)
+ rename {src => source}/actor-materials.js (100%)
+ rename {src => source}/actor-placement.js (100%)
+ rename {src => source}/actor-render-residency.js (100%)
+ rename {src => source}/actor-texture-stream.js (100%)
+ rename {src => source}/actor-world-lighting.js (100%)
+ rename {src => source}/ambience-ranges.js (100%)
+ rename {src => source}/android-host.js (100%)
+ rename {src => source}/animation.js (100%)
+ rename {src => source}/audio-settings.js (100%)
+ rename {src => source}/audio.js (97%)
+ rename {src => source}/autosave.js (100%)
+ rename {src => source}/beam-contacts.js (100%)
+ rename {src => source}/boss-ai.js (100%)
+ rename {src => source}/bsp-visibility.js (100%)
+ rename {src => source}/button-controller-native.js (100%)
+ rename {src => source}/camera-control.js (100%)
+ rename {src => source}/campaign-progress.js (100%)
+ rename {src => source}/cheats.js (100%)
+ rename {src => source}/collision.js (100%)
+ rename {src => source}/control-bindings.js (100%)
+ rename {src => source}/cutscene-skip.js (100%)
+ rename {src => source}/davi-vm.js (100%)
+ rename {src => source}/debriefing.js (83%)
+ rename {src => source}/debris-native.js (100%)
+ rename {src => source}/debris-render-pool.js (100%)
+ rename {src => source}/decal-effects.js (100%)
+ rename {src => source}/destructible-damage.js (100%)
+ rename {src => source}/destructible-effects.js (100%)
+ rename {src => source}/difficulty.js (100%)
+ rename {src => source}/door-audio.js (100%)
+ rename {src => source}/electric-explosion-effects.js (100%)
+ rename {src => source}/electric-explosion-native.js (100%)
+ rename {src => source}/enemies.js (100%)
+ rename {src => source}/enemy-ambush.js (100%)
+ rename {src => source}/enemy-animation-rules.js (100%)
+ rename {src => source}/enemy-combat-effects.js (100%)
+ rename {src => source}/enemy-combat-native.js (100%)
+ rename {src => source}/enemy-death-effects.js (100%)
+ rename {src => source}/enemy-flight.js (100%)
+ rename {src => source}/enemy-hit-native.js (100%)
+ rename {src => source}/enemy-navigation.js (100%)
+ rename {src => source}/enemy-projectile-origins.js (100%)
+ rename {src => source}/enemy-projectiles.js (100%)
+ rename {src => source}/enemy-shooter-native.js (100%)
+ rename {src => source}/enemy-standing-shooter-native.js (100%)
+ rename {src => source}/enemy-waypoint-steering.js (100%)
+ rename {src => source}/environment-interactions.js (100%)
+ rename {src => source}/explosion-damage.js (100%)
+ rename {src => source}/explosion-light-native.js (100%)
+ rename {src => source}/explosion-native.js (100%)
+ rename {src => source}/explosion-variants.js (100%)
+ rename {src => source}/fairy-effects.js (100%)
+ rename {src => source}/fullscreen-preference.js (100%)
+ rename {src => source}/gamepad-input.js (100%)
+ rename {src => source}/gamepad-menu.js (88%)
+ rename {src => source}/gameplay-audio.js (100%)
+ rename {src => source}/gameplay-settings.js (100%)
+ rename {src => source}/gameplay.js (100%)
+ rename {src => source}/gargoyle-blast.js (100%)
+ rename {src => source}/ghost-materials.js (100%)
+ rename {src => source}/graveyard-maze.js (100%)
+ rename {src => source}/hud.js (100%)
+ rename {src => source}/intro-playback.js (100%)
+ rename {src => source}/jester-teleport-timing.js (100%)
+ rename {src => source}/key-settings-menu.js (100%)
+ rename {src => source}/knight-debris.js (100%)
+ rename {src => source}/liquids.js (100%)
+ rename {src => source}/loading-screen.js (100%)
+ rename {src => source}/locomotion-audio.js (100%)
+ rename {src => source}/main.js (99%)
+ rename {src => source}/menu-audio.js (100%)
+ rename {src => source}/menu-highscores.js (100%)
+ rename {src => source}/model-controller-target.js (100%)
+ rename {src => source}/model-transforms.js (100%)
+ rename {src => source}/motions.js (100%)
+ rename {src => source}/movement-recovery.js (100%)
+ rename {src => source}/moving-solids.js (100%)
+ rename {src => source}/msaa-renderer.js (100%)
+ rename {src => source}/music-fade.js (100%)
+ rename {src => source}/native-help.js (100%)
+ rename {src => source}/original-menu.js (100%)
+ rename {src => source}/particle-clock-native.js (100%)
+ rename {src => source}/pickup-placement.js (100%)
+ rename {src => source}/player-animation.js (100%)
+ rename {src => source}/player-inventory.js (100%)
+ rename {src => source}/player-landing.js (100%)
+ rename {src => source}/player-lifecycle.js (100%)
+ rename {src => source}/player-menu.js (100%)
+ rename {src => source}/player-movement.js (100%)
+ rename {src => source}/player-profiles.js (100%)
+ rename {src => source}/player-projectiles.js (100%)
+ rename {src => source}/player-shadow.js (100%)
+ rename {src => source}/player-world-light.js (100%)
+ rename {src => source}/presentation-native.js (100%)
+ rename {src => source}/projectile-animation.js (100%)
+ rename {src => source}/projectile-collision.js (100%)
+ rename {src => source}/projectile-hazards.js (100%)
+ rename {src => source}/projectile-impacts.js (100%)
+ rename {src => source}/projectile-lighting.js (100%)
+ rename {src => source}/projectile-visibility.js (100%)
+ rename {src => source}/prop-debris-state.js (100%)
+ rename {src => source}/quit-menu.js (100%)
+ rename {src => source}/recovery-saves.js (100%)
+ rename {src => source}/render-quality.js (100%)
+ rename {src => source}/reward-effects.js (100%)
+ rename {src => source}/room-visibility.js (100%)
+ rename {src => source}/save-export.js (100%)
+ rename {src => source}/save-import-picker.js (100%)
+ rename {src => source}/save-import.js (100%)
+ rename {src => source}/script-camera.js (100%)
+ rename {src => source}/script-host.js (100%)
+ rename {src => source}/shockwave-native.js (100%)
+ rename {src => source}/skybox.js (100%)
+ rename {src => source}/slider-audio.js (100%)
+ rename {src => source}/spatial-audio.js (76%)
+ rename {src => source}/spout-effects.js (100%)
+ rename {src => source}/streaming-gpu-preparation.js (100%)
+ rename {src => source}/streaming-work.js (100%)
+ rename {src => source}/targeting.js (100%)
+ rename {src => source}/teleporter-effects.js (100%)
+ rename {src => source}/third-person-camera.js (100%)
+ rename {src => source}/torch-flames.js (100%)
+ rename {src => source}/touch-controls.js (94%)
+ rename {src => source}/touch-intro-hint.js (100%)
+ rename {src => source}/trigger-contact-native.js (100%)
+ rename {src => source}/world-effects.js (100%)
+ rename {src => source}/world-light-shadows.js (100%)
+ rename {src => source}/world-lighting-material.js (100%)
+ rename {src => source}/world-lighting.js (100%)
+ rename {src => source}/world-streaming.js (100%)
+ rename {src => source}/world.js (100%)
+ rename {src => source}/zombie-grave-rise.js (100%)
+ create mode 100644 src/README.md
+ create mode 100644 src/game.bundle.js
+ create mode 100644 src/game.bundle.js.map
+ create mode 100644 temp_work/efficiency-2026-10-26/android-staging-verification.json
+ create mode 100644 temp_work/efficiency-2026-10-26/audit-document-links.py
+ create mode 100644 temp_work/efficiency-2026-10-26/audit-document-references.py
+ create mode 100644 temp_work/efficiency-2026-10-26/browser-1793048262309/report.json
+ create mode 100644 temp_work/efficiency-2026-10-26/browser-1793048300975/report.json
+ create mode 100644 temp_work/efficiency-2026-10-26/browser-1793048522042/report.json
+ create mode 100644 temp_work/efficiency-2026-10-26/browser-smoke.mjs
+ create mode 100644 temp_work/efficiency-2026-10-26/core-audio-benchmark.json
+ create mode 100644 temp_work/efficiency-2026-10-26/core-audio-benchmark.mjs
+ create mode 100644 temp_work/efficiency-2026-10-26/core-runtime-audit.md
+ create mode 100644 temp_work/efficiency-2026-10-26/document-links.json
+ create mode 100644 temp_work/efficiency-2026-10-26/documentation-reference-review.json
+ create mode 100644 temp_work/efficiency-2026-10-26/documentation-summary.json
+ create mode 100644 temp_work/efficiency-2026-10-26/final-delta-syntax.json
+ create mode 100644 temp_work/efficiency-2026-10-26/lab-documentation-review.json
+ create mode 100644 temp_work/efficiency-2026-10-26/maintained-files.json
+ create mode 100644 temp_work/efficiency-2026-10-26/menu-harness-audit.json
+ create mode 100644 temp_work/efficiency-2026-10-26/prepare-android-before.mjs
+ create mode 100644 temp_work/efficiency-2026-10-26/serve-before.mjs
+ create mode 100644 temp_work/efficiency-2026-10-26/server-assets-probe.mjs
+ create mode 100644 temp_work/efficiency-2026-10-26/server-assets-report.json
+ create mode 100644 temp_work/efficiency-2026-10-26/summarize-docs-menu-audit.py
+ create mode 100644 temp_work/efficiency-2026-10-26/syntax-audit.json
+ create mode 100644 temp_work/efficiency-2026-10-26/ui-runtime-review.md
+ create mode 100644 temp_work/efficiency-2026-10-26/ui-scenes-1793047865036/report.json
+ create mode 100644 temp_work/efficiency-2026-10-26/ui-scenes-1793047889210/report.json
+ create mode 100644 temp_work/efficiency-2026-10-26/ui-scenes-1793047958339/report.json
+ create mode 100644 temp_work/efficiency-2026-10-26/update-documentation.py
+ create mode 100644 temp_work/efficiency-2026-10-26/update-menu-documentation.py
+ create mode 100644 temp_work/efficiency-2026-10-26/update-menu-harnesses.py
+ create mode 100644 temp_work/efficiency-2026-10-26/verification-summary.json
+ create mode 100644 temp_work/js-bundling-2026-10-26/browser-1793046287602/report.json
+ create mode 100644 temp_work/js-bundling-2026-10-26/browser-1793046337375/report.json
+ create mode 100644 temp_work/js-bundling-2026-10-26/browser-1793046424969/report.json
+ create mode 100644 temp_work/js-bundling-2026-10-26/browser-1793050278286/report.json
+ create mode 100644 temp_work/js-bundling-2026-10-26/electron-final/report.json
+ create mode 100644 temp_work/js-bundling-2026-10-26/electron-smoke.mjs
+ create mode 100644 temp_work/js-bundling-2026-10-26/electron/report.json
+ create mode 100644 temp_work/js-bundling-2026-10-26/verification-summary.json
+ create mode 100644 temp_work/source-layout-2026-10-26/android-staging-verification.json
+ create mode 100644 temp_work/source-layout-2026-10-26/audit-documentation.py
+ create mode 100644 temp_work/source-layout-2026-10-26/browser-1793049972136/report.json
+ create mode 100644 temp_work/source-layout-2026-10-26/bundle-code-comparison.json
+ create mode 100644 temp_work/source-layout-2026-10-26/documentation-audit.json
+ create mode 100644 temp_work/source-layout-2026-10-26/documentation-summary.json
+ create mode 100644 temp_work/source-layout-2026-10-26/documentation-updates.json
+ create mode 100644 temp_work/source-layout-2026-10-26/explicit-module-fixture-route-review.json
+ create mode 100644 temp_work/source-layout-2026-10-26/historical-documentation-references.json
+ create mode 100644 temp_work/source-layout-2026-10-26/independent-bundle-layout-review.json
+ create mode 100644 temp_work/source-layout-2026-10-26/markdown-inventory.json
+ create mode 100644 temp_work/source-layout-2026-10-26/moved-source-files.json
+ create mode 100644 temp_work/source-layout-2026-10-26/packaging-review.json
+ create mode 100644 temp_work/source-layout-2026-10-26/publish-instructions-syntax.json
+ create mode 100644 temp_work/source-layout-2026-10-26/root-syntax-verification.json
+ create mode 100644 temp_work/source-layout-2026-10-26/runtime-without-source.mjs
+ create mode 100644 temp_work/source-layout-2026-10-26/source-move-verification.json
+ create mode 100644 temp_work/source-layout-2026-10-26/test-tool-reference-migration.json
+ create mode 100644 temp_work/source-layout-2026-10-26/test-tool-reference-validation.json
+ create mode 100644 temp_work/source-layout-2026-10-26/update-current-guides.py
+ create mode 100644 temp_work/source-layout-2026-10-26/update-documentation.py
+ create mode 100644 temp_work/source-layout-2026-10-26/verification-summary.json
+ create mode 100644 tests/audio-efficiency.test.mjs
+ create mode 100644 tests/debriefing-redraw.test.mjs
+ create mode 100644 tests/runtime-bundle-scenes.mjs
+ create mode 100644 tests/runtime-bundle.test.mjs
+ create mode 100644 tests/scene-menu.mjs
+ create mode 100644 tests/serve.test.mjs
+ create mode 100644 tests/ui-efficiency-scenes.mjs
+ create mode 100644 tools/build-android.mjs
+ create mode 100644 tools/runtime-bundle.mjs
+ create mode 100644 tools/verify-android-release.py

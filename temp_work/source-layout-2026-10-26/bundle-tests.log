@@ -1,0 +1,18 @@
+✔ minified real save/profile cycle retains existing saves, export format and storage namespaces (34.91676ms)
+✔ minification preserves dynamic property access, diagnostic names and module side effects (4.979037ms)
+✔ bundler consumes validated snapshot bytes even if files on disk changed meanwhile (3.736205ms)
+✔ refresh is deterministic, excludes generated output, repairs output and versions dependency changes (12.842125ms)
+✔ invalid edited source leaves the last complete HTML and runtime bundle intact (5.544293ms)
+✔ dependency scanning ignores comments, strings and regex but handles imports and re-exports (1.55295ms)
+✔ one deterministic version covers entry, CSS, every source module and transitive Three modules (31.617222ms)
+✔ editing a leaf dependency changes every module URL even when the release version is unchanged (15.480638ms)
+✔ addon aliases and their relative imports point directly to the same version (15.10962ms)
+✔ unsafe or incomplete module graphs fail before modifying index.html (9.880975ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 118.931946

@@ -1,0 +1,467 @@
+--- LOCAL_LLM_INSTRUCTIONS
++++ LOCAL_LLM_INSTRUCTIONS
+@@ -1,10 +1,13 @@
+-Do not rerun all previous tests each and everytime, only run tests on whatever we have fixed at that time.
+-Fix these things but do not create a new build.
+-Implement these to work just like they are in the original game, unless stated otherwise.
+-DO NO store temporary work and dissasembly files in /tmp/ or other folders, store all in: /home/rick/RCSPOOK_NEW/current_work/ so they won't get cleared when restarting. Fedora clears /tmp/ after a restart. Keep temporary work files in there, name them appropiatelly and do NOT clear them so we can cross reference any of the earlier work. I moved the already ran dissasembly for the native score system
++Run only tests for the behavior changed in the current task, not the entire historical suite.
++Do not create new builds unless the current user request authorizes them.
++Match the original game unless the user deliberately requested different behavior; preserve those changes.
+ 
+-Project source and builds folder has moved from my home folder to: /mnt/Storage/Cloud/Games/RedCat_Spookkasteel_Rebuild_2026/RCSPOOK_NEW/
++Current project and builds folder:
++/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/
+ 
+-Any pictures are inside /home/rick/Pictures/Screenshots/
++Keep temporary work, disassembly, logs and retained investigation evidence in appropriately named subfolders of:
++/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/
++Do not use /tmp/ for project work, and do not remove retained evidence without a user cleanup request.
+ 
+-2026-10-06 current_work renamed to temp_work
++Screenshots supplied by the user are normally in /home/rick/Pictures/Screenshots/.
++Original installations and CD contents are read-only references. Do not modify RCSPOOK_WEBSITE/.
+--- README.md
++++ README.md
+@@ -22,7 +22,7 @@
+ | --- | --- |
+ | Game logic | JavaScript ES modules and typed arrays for gameplay, the Davi-Script interpreter, collision, animation and save state. |
+ | Graphics | Three.js and WebGL 2 for 3D rendering, custom lighting shaders, animated models, particles and graphics-resource streaming. |
+-| Desktop application | Electron supplies the desktop window, Chromium renderer and operating-system display controls. Electron-builder creates Linux and Windows portable directories. |
++| Desktop application | Electron supplies the desktop window, Chromium renderer and operating-system display controls. Electron-builder creates Linux/Windows portable directories and macOS app bundles. |
+ | Menus and input | HTML/CSS, keyboard and pointer events, touch overlays and the browser Gamepad API. |
+ | Sound and movies | Web Audio and HTML media for positional sound, dialogue, looping music and converted intro/outro videos. |
+ | Saving | Browser localStorage for the latest save, settings and campaign progress; IndexedDB for recovery history. |
+--- README.md
++++ README.md
+@@ -23,6 +23,7 @@
+ | Game logic | JavaScript ES modules and typed arrays for gameplay, the Davi-Script interpreter, collision, animation and save state. |
+ | Graphics | Three.js and WebGL 2 for 3D rendering, custom lighting shaders, animated models, particles and graphics-resource streaming. |
+ | Desktop application | Electron supplies the desktop window, Chromium renderer and operating-system display controls. Electron-builder creates Linux/Windows portable directories and macOS app bundles. |
++| Android application | Kotlin and AndroidX WebView package the same game for offline play; Electron is not used on Android. |
+ | Menus and input | HTML/CSS, keyboard and pointer events, touch overlays and the browser Gamepad API. |
+ | Sound and movies | Web Audio and HTML media for positional sound, dialogue, looping music and converted intro/outro videos. |
+ | Saving | Browser localStorage for the latest save, settings and campaign progress; IndexedDB for recovery history. |
+--- README.md
++++ README.md
+@@ -246,7 +246,7 @@
+ 
+ The desktop/browser campaign is feature-complete in practical terms: the current source review found no clearly missing level, puzzle, boss or major original-game system. This does not mean every behavior is identical or every device is validated.
+ 
+-The [15–18 October source validation](docs/campaign-validation-2026-10-18.md) completed a fresh Normal campaign through all five levels, earned upgrades, bosses and the complete ending without cheats. All 13 authored secret routes were also checked across that campaign and separate continuations; this was not a single 100% save. The instrumented run used ordinary saves/recovery, found and fixed a Castle fall-pocket and a dead-save overwrite, and needed a browser reload after one outro startup failure. A subsequent browser-audio cleanup fix passed focused tests. That full campaign predates the later room-streaming, original-menu and MSAA changes. [Version 1.0.1](RELEASE_NOTES_1.0.1) has focused browser/graphics checks and a packaged Linux x64 startup/save check, plus archive and publication verification for all six desktop variants. [Version 1.0.2](RELEASE_NOTES_1.0.2) adds save-backup import with focused source/browser checks. Its release packages were built and archived without package tests, as requested. [Version 1.0.3](RELEASE_NOTES_1.0.3) adds native combat, script/controller and effect corrections with focused original-code comparisons; packages follow the same build-only policy. A fresh complete campaign/long-session media run on the release and actual Windows, macOS, ARM and low-end hardware validation remain separate work.
++The [15–18 October source campaign](docs/campaign-validation-2026-10-18.md) completed all five levels, earned upgrades, required puzzles, bosses and the full ending without cheats. All 13 secret routes were checked across that campaign and separate continuations; this was not a single 100% save. That instrumented run predates later source changes. A new complete campaign and long-session media run on the current release remain useful; focused checks do not replace them. See [current platform validation](docs/portability.md) for the published packages, Android emulator coverage, signing limits and outstanding hardware checks.
+ 
+ Known differences include camera/collision behavior, bounded arbitrary-position enemy pursuit, whole-engine attack-dispatch timing, particle integration and random sequences, and bounded lighting/query budgets. Native animation blending, skeleton/stone-enemy lifecycles and knight-armour particle rules are implemented, with documented portable limits. Spelerlijst exports and imports JSON backups; see [save backups](docs/save-export.md). Original RCR save import is absent and is a separate optional migration feature. The [implementation audit](docs/native-parity-audit.md) distinguishes these from features already completed; historical research notes should not be read as current task lists.
+ 
+--- README.md
++++ README.md
+@@ -250,7 +250,7 @@
+ 
+ Known differences include camera/collision behavior, bounded arbitrary-position enemy pursuit, whole-engine attack-dispatch timing, particle integration and random sequences, and bounded lighting/query budgets. Native animation blending, skeleton/stone-enemy lifecycles and knight-armour particle rules are implemented, with documented portable limits. Spelerlijst exports and imports JSON backups; see [save backups](docs/save-export.md). Original RCR save import is absent and is a separate optional migration feature. The [implementation audit](docs/native-parity-audit.md) distinguishes these from features already completed; historical research notes should not be read as current task lists.
+ 
+-**macOS Intel/Apple Silicon and Linux/Windows ARM64** packages are provided for 1.0.3; native target-hardware testing is still needed. Windows packages are unsigned, and macOS packages are unsigned and not notarized. **Android** uses a separate offline Kotlin/WebView shell targeting Android 16/API 36 with minimum Android 10/API 29. Signed 1.0.3 APK/AAB files can be built with `npm run build:android`; latest runtime source is bundled automatically. The debug app has Android 16 emulator checks; physical-device testing and Google Play review remain. Desktop and ordinary mobile-browser behavior are preserved. Electron does not run on Android. See [Android building and validation](ANDROID.md), [Google Play publication](docs/android-google-play-release.md) and [platform architecture](docs/portability.md).
++Build instructions are separate from validation claims: [desktop packaging](docs/building.md), [Android APK/AAB building](ANDROID.md) and [Google Play publication](docs/android-google-play-release.md). Keep a consistent app identity, origin and signing key when updating so existing saves remain accessible.
+ 
+ ## Technical documentation
+ 
+--- README.md
++++ README.md
+@@ -262,6 +262,6 @@
+ | Script execution | [Davi-Script format](docs/davi-format.md), [VM opcodes](docs/davi-vm-opcodes.md), [motion timelines](docs/motions.md) |
+ | Rendering and effects | [Actor lighting](docs/actor-lighting-native.md), [world-light falloff](docs/world-light-falloff-research.md), [portal effects](docs/portal-native-recovery.md), [destruction debris](docs/debris-native-recovery.md) |
+ | Performance work | [World streaming](docs/world-streaming.md), [enemy navigation](docs/enemy-waypoint-movement.md), [refresh-rate investigation](docs/native-refresh-performance.md) |
+-| Setup and deployment | [Building](docs/building.md), [Nginx hosting](docs/nginx-hosting.md), [Android setup and validation](ANDROID.md), [future platforms](docs/portability.md) |
++| Setup and deployment | [Building](docs/building.md), [Nginx hosting](docs/nginx-hosting.md), [Android setup and validation](ANDROID.md), [platform support and validation](docs/portability.md) |
+ 
+ The format research used the [Genesis3D reference source](https://github.com/RealityFactory/Genesis3D), and menu archive layout was checked against [Davitools](https://github.com/Gymnasiast/Davitools/blob/master/src/RCS/EntryTable.php). The repository's importers and runtime are independent implementations. Research notes record original-file evidence, implementation decisions and focused verification so later work can be checked against the same findings.
+--- docs/portability.md
++++ docs/portability.md
+@@ -1,4 +1,4 @@
+-# Platform architecture and remaining ports
++# Platform architecture and validation
+ 
+ The core is ES modules and typed arrays. `src/collision.js`, `src/gameplay.js` and `src/animation.js` are independent of Electron. Asset conversion happens before packaging, producing PNG, float32 geometry, JSON and modern audio/video formats. A new platform does not need to parse legacy PE executables or Direct3D resources.
+ 
+--- docs/portability.md
++++ docs/portability.md
+@@ -2,7 +2,7 @@
+ 
+ The core is ES modules and typed arrays. `src/collision.js`, `src/gameplay.js` and `src/animation.js` are independent of Electron. Asset conversion happens before packaging, producing PNG, float32 geometry, JSON and modern audio/video formats. A new platform does not need to parse legacy PE executables or Direct3D resources.
+ 
+-`src/world.js` owns WebGL rendering and camera/player integration. `src/main.js` owns the menu, HTML media, persistent settings, keyboard/mouse/touch/gamepad translation, and the frame loop. Its optional `window.desktop` bridge provides display, quit and save-export actions, plus platform identification. `electron/main.cjs` implements that bridge with a sandboxed renderer and an application-local secure URL scheme. The browser build works without the bridge. Mobile browser input is implemented; that does not establish a validated Android application package or Apple Silicon release.
++`src/world.js` owns WebGL rendering and camera/player integration. `src/main.js` owns the menu, HTML media, persistent settings, keyboard/mouse/touch/gamepad translation, and the frame loop. Its optional `window.desktop` bridge provides display, quit and save import/export actions, plus platform identification. `electron/main.cjs` implements that bridge with a sandboxed renderer and an application-local secure URL scheme. The browser build works without the bridge. Mobile browser input is implemented; that does not establish a validated Android application package or Apple Silicon release.
+ 
+ ## Linux and Windows
+ 
+--- docs/portability.md
++++ docs/portability.md
+@@ -2,7 +2,9 @@
+ 
+ The core is ES modules and typed arrays. `src/collision.js`, `src/gameplay.js` and `src/animation.js` are independent of Electron. Asset conversion happens before packaging, producing PNG, float32 geometry, JSON and modern audio/video formats. A new platform does not need to parse legacy PE executables or Direct3D resources.
+ 
+-`src/world.js` owns WebGL rendering and camera/player integration. `src/main.js` owns the menu, HTML media, persistent settings, keyboard/mouse/touch/gamepad translation, and the frame loop. Its optional `window.desktop` bridge provides display, quit and save import/export actions, plus platform identification. `electron/main.cjs` implements that bridge with a sandboxed renderer and an application-local secure URL scheme. The browser build works without the bridge. Mobile browser input is implemented; that does not establish a validated Android application package or Apple Silicon release.
++`src/world.js` owns WebGL rendering and camera/player integration. `src/main.js` owns the menu, HTML media, persistent settings, keyboard/mouse/touch/gamepad translation, and the frame loop. Its optional `window.desktop` bridge provides display, quit and save import/export actions, plus platform identification. `electron/main.cjs` implements that bridge with a sandboxed renderer and an application-local secure URL scheme. The browser build works without the bridge. Mobile browser input is implemented. Platform-specific build and runtime evidence is listed below; one platform’s success does not establish another’s compatibility.
++
++This is the central platform-status reference. The [build guide](building.md) contains reproducible commands; the [implementation audit](native-parity-audit.md) covers gameplay fidelity. Status was reconciled with the retained release and Android records on 26 October 2026; this documentation update did not run builds or new platform tests.
+ 
+ ## Linux and Windows
+ 
+--- docs/portability.md
++++ docs/portability.md
+@@ -8,7 +8,7 @@
+ 
+ ## Linux and Windows
+ 
+-The existing npm packaging helpers target x64 Linux and x64 Windows. Both include Electron and imported resources. [The build guide](building.md#5-generate-portable-packages-when-ready) also gives direct-CLI recipes for Linux ARM64 and Windows ARM64 using the pinned Electron binaries. All four Linux/Windows targets were packaged and published for 1.0.1, with archive contents and uploaded checksums verified. Linux x64 has packaged-runtime coverage; Windows and ARM hardware runtime validation remains outstanding. The helpers still force x64, and the root launchers do not discover the ARM64 output directories; use the explicit build and launch commands in that guide.
++The existing npm packaging helpers target x64 Linux and x64 Windows. Both include Electron and imported resources. [The build guide](building.md#5-generate-portable-packages-when-ready) also gives direct-CLI recipes for Linux ARM64 and Windows ARM64 using the pinned Electron binaries. All four Linux/Windows targets were built, archived and published for **1.0.3**, as recorded in the [release record](../temp_work/release-1.0.3-2026-10-26/release-record.json). The six desktop archives and their uploaded checksums were verified; **1.0.3 package tests were deliberately not run**. Earlier Linux x64 packaged-runtime coverage, including a 1.0.1 software-rendered startup/save check, does not establish a new 1.0.3 runtime pass. Windows and ARM hardware runtime validation remains outstanding. The helpers still force x64, and the root launchers do not discover the ARM64 output directories; use the explicit build and launch commands in that guide.
+ 
+ The Linux launcher selects X11/XWayland before Electron starts, for consistent programmatic resolution/window sizing, and defaults to ANGLE OpenGL. Ozone must never be changed from the main script: Electron may already have selected Wayland, causing a native Wayland surface ID to be misused as an X11 window. The earlier forced Vulkan workaround masked the context failure but left native presentation blank. OpenGL works with the display backend selected at startup. Explicit `--ozone-platform` and `--use-angle` arguments and `REDCAT_GPU` remain available; direct executable launch uses Electron’s native window-system choice. Selected rendering dimensions remain exact when the desktop limits the physical window size. Fullscreen does not change the monitor's operating-system mode; it renders at the selected resolution and fits the image to the screen.
+ 
+--- docs/portability.md
++++ docs/portability.md
+@@ -20,7 +20,7 @@
+ 
+ Use Node.js 22.12+ for the build Mac's architecture, the same imported `assets/` and `data/`, and a fresh `npm ci`. No Intel-only native addon is used by the game's runtime. The Linux graphics overrides are guarded by platform and do not apply on macOS.
+ 
+-Unsigned Intel and Apple Silicon bundles were packaged on Linux and published for 1.0.1. The [release verification](../temp_work/release-1.0.1-2026-10-20/release-verification.json) records their contents, architectures and archive checks. This does not establish native Mac runtime support. Remaining validation and distribution polish:
++Unsigned Intel and Apple Silicon bundles were built on Linux and published for **1.0.3**; the [release record](../temp_work/release-1.0.3-2026-10-26/release-record.json) lists successful builds and verified upload hashes. No 1.0.3 package tests were run. Earlier [1.0.1 architecture and archive checks](../temp_work/release-1.0.1-2026-10-20/release-verification.json) retain their historical scope. Neither record establishes native Mac runtime support. Remaining validation and distribution polish:
+ 
+ 1. Test the published bundles on actual Intel and Apple Silicon hardware; neither has a recorded native runtime pass.
+ 2. Verify WebGL rendering, pointer lock, fullscreen, Retina resolution, media codecs, controls and save restoration.
+--- docs/building.md
++++ docs/building.md
+@@ -186,24 +186,20 @@
+ 
+ As checked on 20 October 2026, the lockfile pins Electron **44.3.0** and electron-builder **26.15.3**. The installed Electron checksum manifest includes Linux, Windows and macOS binaries for both x64 and ARM64. The game's only production npm dependency is Three.js; it has no architecture-specific native game addons. The same imported assets and level data can be packaged for each target. These architectures are also listed in [electron-builder's version 26 documentation](https://www.electron.build/v26/docs/architecture/).
+ 
+-| Target | Build host for the instructions below | Last packaged status (1.0.1) | Output under `dist/` |
+-| --- | --- | --- | --- |
+-| Linux x64 | Linux | 1.0.1 portable package; local packaged-runtime check | `linux-unpacked/` |
+-| Windows x64 | Windows or Linux | Unsigned 1.0.1 cross-package; Windows runtime validation pending | `win-unpacked/` |
+-| Linux ARM64 | Linux, including an x64 build host | 1.0.1 cross-package; ARM hardware runtime validation pending | `linux-arm64-unpacked/` |
+-| Windows ARM64 | Windows or Linux | Unsigned 1.0.1 cross-package; Windows ARM runtime validation pending | `win-arm64-unpacked/` |
+-| macOS Intel (x64) | macOS for signing/testing; Linux for unsigned bundles | Unsigned 1.0.1 bundle; Intel Mac runtime validation pending | `mac/RedCat Spookkasteel.app` |
+-| macOS Apple Silicon (ARM64) | macOS for signing/testing; Linux for unsigned bundles | Unsigned 1.0.1 bundle; Apple Silicon runtime validation pending | `mac-arm64/RedCat Spookkasteel.app` |
+-
+-All six desktop targets were built and published for 1.0.1. The
+-[release record](../temp_work/release-1.0.1-2026-10-20/release-verification.json)
+-records matching source inputs, architecture/metadata inspection, archive
+-integrity and publication checksums. Packaging and inspecting an archive do not
+-establish that graphics, audio, controls and saves work on the corresponding
+-hardware. Only Linux x64 has local packaged-runtime coverage; its 1.0.1 smoke
+-check used software rendering, not a new hardware-performance pass. Other native
+-platforms remain unvalidated. The Windows and Linux portable directories are
+-unsigned, and Mac bundles generated on Linux are unsigned and not notarized.
++| Target | Build host for the instructions below | Output under `dist/` |
++| --- | --- | --- |
++| Linux x64 | Linux | `linux-unpacked/` |
++| Windows x64 | Windows or Linux | `win-unpacked/` |
++| Linux ARM64 | Linux, including an x64 build host | `linux-arm64-unpacked/` |
++| Windows ARM64 | Windows or Linux | `win-arm64-unpacked/` |
++| macOS Intel (x64) | macOS for signing/testing; Linux for unsigned bundles | `mac/RedCat Spookkasteel.app` |
++| macOS Apple Silicon (ARM64) | macOS for signing/testing; Linux for unsigned bundles | `mac-arm64/RedCat Spookkasteel.app` |
++
++All six desktop targets were built and published for **1.0.3**. Package tests
++were deliberately skipped for that release; successful builds and verified
++upload hashes are not runtime validation. See [platform support and validation](portability.md)
++for the release evidence, earlier Linux runtime coverage, unsigned/notarized
++status and outstanding Windows/macOS/ARM hardware checks.
+ 
+ `npm run build:linux` and `npm run build:windows` currently hardcode **x64**, even on an ARM machine. Appending `-- --arm64` to either script does not change that. There is no `build:mac` script. The additional recipes below call the locally installed electron-builder directly, retaining the project's file list and asset packaging configuration. `--publish never` prevents uploading artifacts; `dir` creates an unpacked directory or app bundle, not an installer.
+ 
+--- docs/building.md
++++ docs/building.md
+@@ -198,7 +198,7 @@
+ All six desktop targets were built and published for **1.0.3**. Package tests
+ were deliberately skipped for that release; successful builds and verified
+ upload hashes are not runtime validation. See [platform support and validation](portability.md)
+-for the release evidence, earlier Linux runtime coverage, unsigned/notarized
++for the release evidence, earlier Linux runtime coverage, signing/notarization
+ status and outstanding Windows/macOS/ARM hardware checks.
+ 
+ `npm run build:linux` and `npm run build:windows` currently hardcode **x64**, even on an ARM machine. Appending `-- --arm64` to either script does not change that. There is no `build:mac` script. The additional recipes below call the locally installed electron-builder directly, retaining the project's file list and asset packaging configuration. `--publish never` prevents uploading artifacts; `dir` creates an unpacked directory or app bundle, not an installer.
+--- docs/native-parity-audit.md
++++ docs/native-parity-audit.md
+@@ -5,6 +5,9 @@
+ 15 October, with source-runtime validation status updated 18 October 2026.
+ Gameplay fidelity boundaries and the later 1.0.1 release records were reviewed
+ on 22 October; that review added no tests, builds or new campaign run.
++Platform references were reconciled on 26 October with the 1.0.3 release and
++Android evidence; [portability](portability.md) is the current platform-status
++reference. The earlier verification records below retain their original scope.
+ 
+ On **26 October 2026**, a separate full-binary decompilation and a fresh,
+ scoped native-code comparison corrected projectile sampling, stationary-shooter
+--- docs/native-parity-audit.md
++++ docs/native-parity-audit.md
+@@ -50,7 +50,7 @@
+ game-frame advancement and read-only route planning. It was not deathless and
+ did not use a save import or inventory/health/puzzle-state grants in the earned
+ route. This run predates the later room-streaming, original-menu and MSAA
+-changes; it is evidence of campaign completion, not a fresh 1.0.1 playthrough.
++changes; it is evidence of campaign completion, not a fresh current-release playthrough.
+ 
+ All 13 authored secret objects now have physical ordinary-input route checks
+ across the earned run and explicitly separate continuations/fixtures. Tower's
+--- docs/native-parity-audit.md
++++ docs/native-parity-audit.md
+@@ -89,14 +89,14 @@
+    preceded this small cleanup change. Its successful normal reload retry
+    establishes a working outro asset, but not the cause of the initial error.
+    Keep the failure and separate secret/fixture setup scopes visible.
+-2. **Extend current-release coverage on actual devices.** The six 1.0.1 desktop
+-   archives are already built and published. Check the current release through
+-   a complete campaign and the deployed browser experience, including controls,
++2. **Extend current-release coverage on actual devices.** Six 1.0.3 desktop
++   archives and signed Android APK/AAB files have been produced. Build success,
++   upload verification and the focused Android emulator run do not establish a
++   full current-release campaign on physical hardware. Check controls,
+    fullscreen/resolution, audio/video, persistence and sustained performance.
+-   The earlier Normal campaign and focused release checks do not establish a
+-   single 100% collection run, every difficulty, mobile browser/device behavior
+-   or performance on the user's 2019 i3. Windows/macOS/ARM native runtime checks
+-   remain; existing Linux/source checks should not be described as absent.
++   See [platform validation and remaining checks](portability.md) for the exact
++   desktop, browser and Android boundaries. The earlier Normal campaign does
++   not establish a single 100% collection run or every difficulty.
+ 3. **Optional exact-fidelity investigation.** Remaining boundaries are native
+    global RNG/dispatcher ordering, collision tolerances and a full native-runtime
+    battle comparison. The recovered behavior described next is already
+--- docs/native-parity-audit.md
++++ docs/native-parity-audit.md
+@@ -299,24 +299,16 @@
+    human real-time combat difficulty, exact native animation fidelity or target
+    package/hardware behavior. Compare remaining fidelity questions with native
+    footage and run focused regressions for resulting fixes.
+-2. **Build generation and publication are complete for 1.0.1; hardware QA is
+-   still bounded.** All six desktop variants have archive/version/input checks
+-   and recorded GitHub/GitLab publication verification. The Linux x64 packaged
+-   startup/save smoke is a software-rendered check, separate from the earlier
+-   native Linux and hardware-rendered source checks. Actual Windows/macOS/ARM,
+-   mobile-browser, low-end performance and full current-release campaign/media
+-   checks remain. See [the release record](../temp_work/release-1.0.1-2026-10-20/release-verification.json).
+-3. **Additional platforms still need device validation.** Android now has a
+-   Kotlin/WebView shell, offline asset preparation, lifecycle/audio-focus
+-   integration, Back/fullscreen handling and renderer retry. Compilation,
+-   focused JVM tests and simulated host checks passed, but no APK/AAB or actual
+-   Android device run was performed. The next milestone is offline Level 1 on
+-   hardware with working touch, media and save/resume; then campaign,
+-   interruption/process-death, performance and signed-release validation. See
+-   [Android setup and remaining work](../ANDROID.md). Linux/Windows ARM64 and
+-   Intel/Apple Silicon macOS packages exist. Windows packages are unsigned;
+-   macOS packages are unsigned and not notarized. Signing/notarization are
+-   separate distribution work. See [portability](portability.md).
++2. **Platform validation is tracked in one place.** See
++   [platform support and validation](portability.md) for the six published
++   1.0.3 desktop variants, historical Linux runtime coverage, signed Android
++   APK/AAB and offline Android 16 debug-emulator checks. It distinguishes
++   build/archive inspection from runtime tests, physical-device checks and
++   Play review. No 1.0.3 desktop or Android release artifact was launch-tested.
++3. **Current-source checks do not refresh historical campaign results.**
++   Focused browser/desktop preparation and compatibility checks are recorded
++   with the changed systems. They preserve the earlier campaign’s evidence
++   rather than implying it was rerun after every change.
+ 4. **Original RCR import remains optional migration work.** The remake has its
+    own full-state saves, autosaves and 2/5/10-minute recovery history. Its exported
+    JSON backups can now be restored through Spelerlijst. Original Windows RCR
+--- docs/source-followup-2026-09-22.md
++++ docs/source-followup-2026-09-22.md
+@@ -45,7 +45,7 @@
+ To play this source on Linux before making packages:
+ 
+ ```sh
+-cd /home/rick/RCSPOOK_NEW
++# Run from your project checkout root.
+ npm start -- --ozone-platform=x11
+ ```
+ 
+--- docs/graveyard-and-fairy-corrections.md
++++ docs/graveyard-and-fairy-corrections.md
+@@ -65,7 +65,7 @@
+ To play the updated source on Linux:
+ 
+ ```sh
+-cd /home/rick/RCSPOOK_NEW
++# Run from your project checkout root.
+ npm start -- --ozone-platform=x11
+ ```
+ 
+--- docs/source-followup-2026-09-22.md
++++ docs/source-followup-2026-09-22.md
+@@ -1,9 +1,9 @@
+ # Audio, targeting, camera and presentation follow-up
+ 
+ These changes address the next reported issues after
+-[the earlier source pass](source-fixes-2026-09-22.md). They change source and
+-imported assets only; the existing Linux and Windows packages have not
+-been rebuilt.
++[the earlier source pass](source-fixes-2026-09-22.md). This historical pass changed source and
++imported assets without rebuilding packages. It does not describe the contents
++of packages produced by later releases.
+ 
+ | Report | Change |
+ | --- | --- |
+--- docs/graveyard-and-fairy-corrections.md
++++ docs/graveyard-and-fairy-corrections.md
+@@ -69,5 +69,5 @@
+ npm start -- --ozone-platform=x11
+ ```
+ 
+-`Start-RedCat.sh` prefers the older prepared package. See [building.md](building.md)
++`Start-RedCat.sh` prefers an existing prepared package, which may lag behind source changes. See [building.md](building.md)
+ for source setup and instructions for making your own Linux or Windows packages.
+--- docs/targetable-props-camera.md
++++ docs/targetable-props-camera.md
+@@ -1,8 +1,9 @@
+ # Shootable objects and regional camera recovery
+ 
+-This follow-up updates source only. Existing Linux and Windows packages are
+-unchanged. Run `npm start -- --ozone-platform=x11` on Linux to try the source;
+-the packaged launcher still uses the older executable resources.
++This historical follow-up changed source without rebuilding packages. Run
++`npm start -- --ozone-platform=x11` on Linux to try current source. The launcher
++prefers an existing package, which may lag behind source changes; this note
++does not describe packages produced by later releases.
+ 
+ ## Shootable buttons and crates
+ 
+--- docs/campaign-validation-2026-10-18.md
++++ docs/campaign-validation-2026-10-18.md
+@@ -165,8 +165,11 @@
+ - [Earned Fire roundtrip evidence](../temp_work/caves-fire-input-2026-10-18/earned-fire-completion-2026-10-18.md)
+ - [Earned Caves finale, Tower and every ending/recovery boundary](../temp_work/campaign-finale-2026-10-18/earned-finale-report.md)
+ - [Earned final outro events and completed state](../temp_work/campaign-validation-2026-10-15/playthrough-1792088801065/earned-outro-complete-2026-10-18.json)
+-- [Completed campaign save](../temp_work/campaign-validation-2026-10-15/playthrough-1792088801065/earned-campaign-completed-save-2026-10-18.json)
+-- [Menu after the complete outro](../temp_work/campaign-validation-2026-10-15/playthrough-1792088801065/earned-campaign-menu-2026-10-18.png)
++
++The completed save and post-outro screenshot were generated during that run,
++then intentionally removed in the [22 October cleanup](../temp_work/cleanup-2026-10-22/README.md).
++The retained finale and outro-event reports above preserve the observations;
++they are not loadable substitutes for the deleted save.
+ 
+ ## Graveyard chapter traversal
+ 
+--- docs/enemy-pursuit-interruptions-native.md
++++ docs/enemy-pursuit-interruptions-native.md
+@@ -233,8 +233,9 @@
+ verified rendered `walkbw`, stable animation serial, final-pose holding and
+ freeze continuity. Across 172 frames, update median/p95/maximum were
+ 3.8/5.7/20.5 ms, with no update over 50 ms and no route-search traces.
+-The [rendered pose](../temp_work/enemy-pursuit-interruptions-2026-10-14/skeleton-retreat-1791931788105/skeleton-walkbw.png)
+-was inspected. Both browser checks had no JavaScript, resource or script errors
++The rendered pose was inspected during that run; its screenshot was later
++removed in the [22 October cleanup](../temp_work/cleanup-2026-10-22/README.md).
++The linked report retains the observations. Both browser checks had no JavaScript, resource or script errors
+ and used isolated profiles without altering player saves.
+ 
+ These are targeted whole-update samples on the test machine, not a low-end
+--- docs/explosion-damage-native.md
++++ docs/explosion-damage-native.md
+@@ -239,8 +239,8 @@
+ removal remains intact, and hiding only the explosion sprite changes 1,196
+ rendered pixels. There are no script, browser-console or missing-resource errors.
+ The passing [report](../temp_work/explosion-damage-2026-10-14/scenes-1791930166308/report.json)
+-and [screenshot](../temp_work/explosion-damage-2026-10-14/scenes-1791930166308/crate-explosion.png)
+-are retained. In this isolated fixture, 16 active `world.update` ticks had a
++is retained. The rendered screenshot was removed in the
++[22 October cleanup](../temp_work/cleanup-2026-10-22/README.md). In this isolated fixture, 16 active `world.update` ticks had a
+ 8.80 ms median and 22.9 ms maximum; 12 later ticks had a 4.90 ms median and 6.4 ms
+ maximum. These are whole-update samples, not a general performance benchmark.
+ 
+--- docs/release-source-validation-2026-10-15.md
++++ docs/release-source-validation-2026-10-15.md
+@@ -70,7 +70,7 @@
+ 
+ ## Retained evidence and reproducibility
+ 
+-All harnesses, profiles, captures, source hashes and reports are retained in
++Retained harnesses, source hashes and reports are in
+ [`temp_work/release-housekeeping-2026-10-15`](../temp_work/release-housekeeping-2026-10-15/).
+ The compact [source validation report](../temp_work/release-housekeeping-2026-10-15/source-validation-summary.json)
+ links the results by check and distinguishes their scope. Main captures/reports:
+--- docs/release-source-validation-2026-10-15.md
++++ docs/release-source-validation-2026-10-15.md
+@@ -73,7 +73,9 @@
+ Retained harnesses, source hashes and reports are in
+ [`temp_work/release-housekeeping-2026-10-15`](../temp_work/release-housekeeping-2026-10-15/).
+ The compact [source validation report](../temp_work/release-housekeeping-2026-10-15/source-validation-summary.json)
+-links the results by check and distinguishes their scope. Main captures/reports:
++links the results by check and distinguishes their scope. Disposable profiles
++and captures were removed in the [22 October cleanup](../temp_work/cleanup-2026-10-22/README.md);
++the historical observations remain in these reports:
+ 
+ - [Native desktop/profile run](../temp_work/release-housekeeping-2026-10-15/platform-1792090299506/report.json)
+   and [actual window capture](../temp_work/release-housekeeping-2026-10-15/platform-1792090299506/native-window.png).
+--- docs/release-source-validation-2026-10-15.md
++++ docs/release-source-validation-2026-10-15.md
+@@ -77,8 +77,7 @@
+ and captures were removed in the [22 October cleanup](../temp_work/cleanup-2026-10-22/README.md);
+ the historical observations remain in these reports:
+ 
+-- [Native desktop/profile run](../temp_work/release-housekeeping-2026-10-15/platform-1792090299506/report.json)
+-  and [actual window capture](../temp_work/release-housekeeping-2026-10-15/platform-1792090299506/native-window.png).
++- [Native desktop/profile run](../temp_work/release-housekeeping-2026-10-15/platform-1792090299506/report.json), including the recorded actual-window check.
+ - [Controller run](../temp_work/release-housekeeping-2026-10-15/controller-scenes-1792090080978/report.json).
+ - [Touch-only follow-up](../temp_work/release-housekeeping-2026-10-15/platform-1792090382460/report.json).
+ - [Circling measurements](../temp_work/release-housekeeping-2026-10-15/circling-verification-1792090130094/report.json).
+--- docs/source-followup-2026-09-22.md
++++ docs/source-followup-2026-09-22.md
+@@ -1,8 +1,8 @@
+ # Audio, targeting, camera and presentation follow-up
+ 
+ These changes address the next reported issues after
+-[the earlier source pass](source-fixes-2026-09-22.md). This historical pass changed source and
+-imported assets without rebuilding packages. It does not describe the contents
++[the earlier source pass](source-fixes-2026-09-22.md). This historical pass
++changed source and imported assets without rebuilding packages. It does not describe the contents
+ of packages produced by later releases.
+ 
+ | Report | Change |
+--- docs/graveyard-and-fairy-corrections.md
++++ docs/graveyard-and-fairy-corrections.md
+@@ -69,5 +69,5 @@
+ npm start -- --ozone-platform=x11
+ ```
+ 
+-`Start-RedCat.sh` prefers an existing prepared package, which may lag behind source changes. See [building.md](building.md)
+-for source setup and instructions for making your own Linux or Windows packages.
++`Start-RedCat.sh` prefers an existing prepared package, which may lag behind
++source changes. See [building.md](building.md) for source setup and instructions for making your own Linux or Windows packages.
+--- docs/enemy-pursuit-interruptions-native.md
++++ docs/enemy-pursuit-interruptions-native.md
+@@ -235,8 +235,8 @@
+ 3.8/5.7/20.5 ms, with no update over 50 ms and no route-search traces.
+ The rendered pose was inspected during that run; its screenshot was later
+ removed in the [22 October cleanup](../temp_work/cleanup-2026-10-22/README.md).
+-The linked report retains the observations. Both browser checks had no JavaScript, resource or script errors
+-and used isolated profiles without altering player saves.
++The linked report retains the observations. Both browser checks had no
++JavaScript, resource or script errors and used isolated profiles without altering player saves.
+ 
+ These are targeted whole-update samples on the test machine, not a low-end
+ hardware benchmark or a complete native-runtime playthrough. Older measurements
+--- docs/explosion-damage-native.md
++++ docs/explosion-damage-native.md
+@@ -240,8 +240,8 @@
+ rendered pixels. There are no script, browser-console or missing-resource errors.
+ The passing [report](../temp_work/explosion-damage-2026-10-14/scenes-1791930166308/report.json)
+ is retained. The rendered screenshot was removed in the
+-[22 October cleanup](../temp_work/cleanup-2026-10-22/README.md). In this isolated fixture, 16 active `world.update` ticks had a
+-8.80 ms median and 22.9 ms maximum; 12 later ticks had a 4.90 ms median and 6.4 ms
++[22 October cleanup](../temp_work/cleanup-2026-10-22/README.md). In this isolated
++fixture, 16 active `world.update` ticks had an 8.80 ms median and 22.9 ms maximum; 12 later ticks had a 4.90 ms median and 6.4 ms
+ maximum. These are whole-update samples, not a general performance benchmark.
+ 
+ No package build or broad historical regression suite was run for this change.
+--- docs/native-parity-audit.md
++++ docs/native-parity-audit.md
+@@ -50,7 +50,8 @@
+ game-frame advancement and read-only route planning. It was not deathless and
+ did not use a save import or inventory/health/puzzle-state grants in the earned
+ route. This run predates the later room-streaming, original-menu and MSAA
+-changes; it is evidence of campaign completion, not a fresh current-release playthrough.
++changes; it is evidence of campaign completion, not a fresh current-release
++playthrough.
+ 
+ All 13 authored secret objects now have physical ordinary-input route checks
+ across the earned run and explicitly separate continuations/fixtures. Tower's

@@ -1,0 +1,80 @@
+{
+  "kind": "Current debug APK real Android WebView touch/media checks",
+  "checks": [
+    "Normal touch input remains available after the skipped cutscene",
+    "Two-finger movement and camera look operate simultaneously",
+    "Touch shooting reaches gameplay input",
+    "Touch jump reaches gameplay input",
+    "Offline WebView media range returns206; game audio runs and Android privacy is available"
+  ],
+  "samples": {
+    "multitouch": {
+      "before": {
+        "p": [
+          -1322.0614207388276,
+          -159.95,
+          2547.606515651853
+        ],
+        "yaw": -2.991592653589793
+      },
+      "during": {
+        "input": {
+          "forward": 1,
+          "right": 0,
+          "turn": 0,
+          "jump": false,
+          "descend": false,
+          "walk": false,
+          "attack": false,
+          "use": false
+        },
+        "p": [
+          -1231.055002786444,
+          -159.95,
+          2672.95
+        ],
+        "yaw": -2.721592653589793
+      }
+    },
+    "media": {
+      "status": 206,
+      "range": "bytes 0-31/5823088",
+      "bytes": 32,
+      "mime": "video/webm",
+      "context": "running",
+      "sounds": [
+        {
+          "paused": false,
+          "time": 0.21904166666664793
+        },
+        {
+          "src": "https://appassets.androidplatform.net/assets/www/assets/audio/forest3.wav",
+          "paused": false,
+          "time": 2.54747
+        },
+        {
+          "src": "https://appassets.androidplatform.net/assets/www/assets/audio/forest3.wav",
+          "paused": false,
+          "time": 3.929977
+        },
+        {
+          "src": "https://appassets.androidplatform.net/assets/www/assets/audio/forest3.wav",
+          "paused": false,
+          "time": 2.547372
+        },
+        {
+          "src": "https://appassets.androidplatform.net/assets/www/assets/audio/forest5.wav",
+          "paused": false,
+          "time": 1.742265
+        },
+        {
+          "src": "https://appassets.androidplatform.net/assets/www/assets/audio/forest3.wav",
+          "paused": false,
+          "time": 2.532957
+        }
+      ],
+      "privacy": true
+    }
+  },
+  "exceptions": []
+}

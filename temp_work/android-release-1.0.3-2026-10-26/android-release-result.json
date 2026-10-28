@@ -1,0 +1,114 @@
+{
+  "date": "2026-10-26",
+  "version": "1.0.3",
+  "androidVersionCode": 5,
+  "baseSourceCommit": "1c788dd97764f361e31b9e033d3d118b958d8262",
+  "sourceChanges": [
+    "Restored Android automatic rendering budget detached by later shared display changes",
+    "Removed competing native Activity audio focus request that deadlocked the WebView on its own menu/movie audio",
+    "Preserved native Activity/window/headphone pause signals and media volume buttons",
+    "Added offline Android privacy text and publishing guide",
+    "Added private upload-key release signing, reproducible APK/AAB helper and full payload verification",
+    "Hardened asset staging with version metadata and hidden-file refusal"
+  ],
+  "builds": {
+    "debug": "successful",
+    "releaseApk": "successful",
+    "releaseAab": "successful",
+    "lint": "0 errors",
+    "jvmTestsPassed": 10
+  },
+  "sourceChecks": {
+    "assetAndHostUnits": 16,
+    "simulatedAndroidHostScenes": 9,
+    "desktopAndMobileBrowserScenes": 6
+  },
+  "debugEmulator": {
+    "os": "Android16 API36",
+    "abi": "x86_64",
+    "webview": "133.0.6943.137",
+    "gpu": "host AMD RX6700XT",
+    "network": "Wi-Fi and mobile data disabled during checks",
+    "checks": [
+      "Offline intro and unmuted media continuation",
+      "Original menu and Level1 loading",
+      "Android Back and Home/resume pause/freeze",
+      "Portrait/landscape rotation",
+      "Local save, force-stop and in-place debug APK update persistence",
+      "Native Downloads provider export617687bytes, import cancellation and confirmed import",
+      "Saved cutscene resume and touch hold skip",
+      "Simultaneous touch movement/look, shooting and jump input",
+      "Byte-range206 media response",
+      "Android-only privacy text available"
+    ],
+    "reports": [
+      "emulator/debug-runtime-smoke.json",
+      "emulator/documents-validation.json",
+      "emulator/update-persistence.json",
+      "emulator/touch-and-media.json",
+      "emulator/touch-and-media-final.json"
+    ],
+    "limitations": [
+      "Physical Android10/ARM64 devices not available",
+      "Full Android campaign and sustained phone thermal/performance not tested",
+      "Release APK not launched; runtime checks use debug APK",
+      "Google Play Console not accessed; no Play approval/publication claimed"
+    ],
+    "earlierFailures": "Initial fixture assumed one Next screen; later touch injection began two pointers in one CDP event. Corrected fixtures. Real wrapper audio-focus deadlock and Android pixel-budget regression were fixed; see retained native/assets reports."
+  },
+  "signing": {
+    "certificateSha256": "3f5151f0a41503ef65e27e72eb4d2e90c6384a31d91c05452e8f7f58bf22d22a",
+    "aabAndApkAndPublicCertificateMatch": true,
+    "algorithm": "RSA4096",
+    "alias": "redcat-upload",
+    "privateKeyPackaged": false
+  },
+  "deliverySizeEstimateBytes": {
+    "min": 108196436,
+    "max": 108197556
+  },
+  "packagedSource": {
+    "version": "1.0.3",
+    "versionCode": 5,
+    "applicationId": "com.nostalgiarealm.redcatspookkasteel",
+    "minSdk": 29,
+    "targetSdk": 36,
+    "permissions": [
+      "com.nostalgiarealm.redcatspookkasteel.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+    ],
+    "debuggable": false,
+    "nativeLibraries": 0,
+    "runtimeFiles": 3086,
+    "runtimeBytes": 196129990,
+    "runtimeContentSha256": "37d6519321ac91aea09d18db0fde78103d1b41d6ab55e40449720e12012529d4",
+    "checks": [
+      "bundle-structure",
+      "aab-signature",
+      "apk-signature",
+      "apk-alignment",
+      "bundle-manifest",
+      "release-manifest-policy",
+      "all-source-staged-aab-apk-runtime-bytes-match"
+    ],
+    "artifacts": [
+      {
+        "file": "RedCat-Spookkasteel-1.0.3-android.aab",
+        "bytes": 109625032,
+        "sha256": "812b6238e3ca23abd515005c9490af557705402c360d00f26cb655fbcb193495"
+      },
+      {
+        "file": "RedCat-Spookkasteel-1.0.3-android.apk",
+        "bytes": 156720185,
+        "sha256": "61cc84f05b3287f826e940b8ab23e051802138fe6485093c8952e432fbd39dfa"
+      }
+    ],
+    "releaseRuntimeTested": false,
+    "scope": "Build structure, signatures, alignment, manifest, and complete packaged current-source byte equality. Runtime validation uses the separate debug APK; no physical-device or Play approval claim."
+  },
+  "playOwnerSteps": [
+    "Back up private upload key and confirm existing-app certificate if applicable",
+    "Host supplied privacy policy and complete listing/content/data declarations",
+    "Upload signedAAB to internal testing, review generated size/device/prelaunch results",
+    "Complete account-specific testing and submit production review"
+  ]
+}

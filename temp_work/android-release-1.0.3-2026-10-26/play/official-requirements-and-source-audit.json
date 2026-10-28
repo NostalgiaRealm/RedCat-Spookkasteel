@@ -1,0 +1,95 @@
+{
+  "date": "2026-10-26",
+  "scope": "Current official publication requirements and source privacy audit; no Console access or publishing",
+  "sources": [
+    {
+      "topic": "target-api",
+      "url": "https://developer.android.com/google/play/requirements/target-sdk",
+      "finding": "From 2026-08-31 new apps/updates target API36 or higher; minSDK remains distinct."
+    },
+    {
+      "topic": "app-signing",
+      "url": "https://developer.android.com/studio/publish/app-signing",
+      "finding": "New Play app uses AAB signed by upload key and Play App Signing; distinct delivered-app certificate possible."
+    },
+    {
+      "topic": "privacy",
+      "url": "https://support.google.com/googleplay/android-developer/answer/10144311?hl=en",
+      "finding": "All apps need privacy policy URL in Console plus in-app link or text."
+    },
+    {
+      "topic": "data-safety",
+      "url": "https://support.google.com/googleplay/android-developer/answer/10787469?hl=en",
+      "finding": "Only-on-device processing is not collection; user initiated transfer must be assessed under definitions."
+    },
+    {
+      "topic": "size",
+      "url": "https://support.google.com/googleplay/android-developer/answer/9859372?hl=en",
+      "finding": "Current base module download limit500MB;200MB mobile data warning; PlayConsole download estimate authoritative."
+    },
+    {
+      "topic": "pagesize",
+      "url": "https://developer.android.com/guide/practices/page-sizes",
+      "finding": "Java/Kotlin-only apps compatible with16KB; inspect final artifacts for native libraries and validate runtime."
+    },
+    {
+      "topic": "store-art",
+      "url": "https://support.google.com/googleplay/android-developer/answer/9866151?hl=en",
+      "finding": "512icon,1024x500feature,min2screenshots; accurate screenshot requirements."
+    },
+    {
+      "topic": "content-rating",
+      "url": "https://support.google.com/googleplay/android-developer/answer/9859655?hl=en",
+      "finding": "IARC questionnaire requires actual content."
+    },
+    {
+      "topic": "audience",
+      "url": "https://support.google.com/googleplay/android-developer/answer/9867159?hl=en",
+      "finding": "Target children triggers Families policy; owner must declare intended audience."
+    },
+    {
+      "topic": "payments",
+      "url": "https://support.google.com/googleplay/android-developer/answer/10281818?hl=en",
+      "finding": "Direct contribution exemption conditional on100% to creator and no digital benefits; external account not inspected."
+    },
+    {
+      "topic": "closed-testing",
+      "url": "https://support.google.com/googleplay/android-developer/answer/14151465?hl=en",
+      "finding": "Personal accounts created after2023-11-13 require12opted-in testers14continuousdays before applying production access."
+    },
+    {
+      "topic": "owner-contact",
+      "url": "https://www.nostalgiarealm.com/",
+      "finding": "Public page lists info@nostalgiarealm.com; address not guessed."
+    },
+    {
+      "topic": "content-rights",
+      "url": "https://support.google.com/googleplay/android-developer/answer/9888072?hl=en",
+      "finding": "Publisher must have rights to bundled third-party app/store content; source inspection does not establish ownership."
+    }
+  ],
+  "sourceFilesReviewed": [
+    "android/app/build.gradle.kts",
+    "android/app/src/main/AndroidManifest.xml",
+    "android/app/src/main/java/com/nostalgiarealm/redcatspookkasteel/MainActivity.kt",
+    "android/app/src/main/java/com/nostalgiarealm/redcatspookkasteel/GameUrls.kt",
+    "android/app/src/main/res/xml/data_extraction_rules.xml",
+    "src/player-profiles.js",
+    "src/android-host.js",
+    "src/save-export.js",
+    "src/save-import.js",
+    "package.json",
+    "README.md",
+    "index.html"
+  ],
+  "ownerStepsRemaining": [
+    "Publish public privacy policy URL",
+    "Confirm content distribution rights",
+    "Complete PlayConsole account and truthful app-content/listing declarations",
+    "Upload AAB to test track",
+    "Complete account-specific testing if applicable",
+    "Review on-device and Play pre-launch results",
+    "Submit production release"
+  ],
+  "inAppPrivacy": "Android-only offline About text implemented by android_release_assets agent; provider/browser scope and verified contact included; desktop/browser section hidden."
+}

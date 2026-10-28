@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self'; object-src 'none'">
+<link rel="icon" href="assets/icons/redcat.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<title>RedCat Spookkasteel</title><link rel="stylesheet" href="./src/style.css?v=9e4017aae4c3f723652324aa">
+<link rel="stylesheet" href="./src/touch-controls.css?v=9e4017aae4c3f723652324aa">
+<link rel="stylesheet" href="./src/loading-screen.css?v=9e4017aae4c3f723652324aa">
+<link rel="stylesheet" href="./src/original-menu.css?v=9e4017aae4c3f723652324aa">
+<link rel="stylesheet" href="./src/native-help.css?v=9e4017aae4c3f723652324aa">
+<script type="importmap" id="game-importmap">
+{
+  "imports": {
+    "./node_modules/three/build/three.core.js": "./node_modules/three/build/three.core.js?v=9e4017aae4c3f723652324aa",
+    "./node_modules/three/build/three.module.js": "./node_modules/three/build/three.module.js?v=9e4017aae4c3f723652324aa",
+    "./src/actor-collision-index.js": "./src/actor-collision-index.js?v=9e4017aae4c3f723652324aa",
+    "./src/actor-collision.js": "./src/actor-collision.js?v=9e4017aae4c3f723652324aa",
+    "./src/actor-floor-lighting.js": "./src/actor-floor-lighting.js?v=9e4017aae4c3f723652324aa",
+    "./src/actor-geometry.js": "./src/actor-geometry.js?v=9e4017aae4c3f723652324aa",
+    "./src/actor-light-sampling.js": "./src/actor-light-sampling.js?v=9e4017aae4c3f723652324aa",
+    "./src/actor-light-visibility.js": "./src/actor-light-visibility.js?v=9e4017aae4c3f723652324aa",
+    "./src/actor-lighting.js": "./src/actor-lighting.js?v=9e4017aae4c3f723652324aa",
+    "./src/actor-materials.js": "./src/actor-materials.js?v=9e4017aae4c3f723652324aa",
+    "./src/actor-placement.js": "./src/actor-placement.js?v=9e4017aae4c3f723652324aa",
+    "./src/actor-render-residency.js": "./src/actor-render-residency.js?v=9e4017aae4c3f723652324aa",
+    "./src/actor-texture-stream.js": "./src/actor-texture-stream.js?v=9e4017aae4c3f723652324aa",
+    "./src/actor-world-lighting.js": "./src/actor-world-lighting.js?v=9e4017aae4c3f723652324aa",
+    "./src/ambience-ranges.js": "./src/ambience-ranges.js?v=9e4017aae4c3f723652324aa",
+    "./src/android-host.js": "./src/android-host.js?v=9e4017aae4c3f723652324aa",
+    "./src/animation.js": "./src/animation.js?v=9e4017aae4c3f723652324aa",
+    "./src/audio-settings.js": "./src/audio-settings.js?v=9e4017aae4c3f723652324aa",
+    "./src/audio.js": "./src/audio.js?v=9e4017aae4c3f723652324aa",
+    "./src/autosave.js": "./src/autosave.js?v=9e4017aae4c3f723652324aa",
+    "./src/beam-contacts.js": "./src/beam-contacts.js?v=9e4017aae4c3f723652324aa",
+    "./src/boss-ai.js": "./src/boss-ai.js?v=9e4017aae4c3f723652324aa",
+    "./src/bsp-visibility.js": "./src/bsp-visibility.js?v=9e4017aae4c3f723652324aa",
+    "./src/button-controller-native.js": "./src/button-controller-native.js?v=9e4017aae4c3f723652324aa",
+    "./src/camera-control.js": "./src/camera-control.js?v=9e4017aae4c3f723652324aa",
+    "./src/campaign-progress.js": "./src/campaign-progress.js?v=9e4017aae4c3f723652324aa",
+    "./src/cheats.js": "./src/cheats.js?v=9e4017aae4c3f723652324aa",
+    "./src/collision.js": "./src/collision.js?v=9e4017aae4c3f723652324aa",
+    "./src/control-bindings.js": "./src/control-bindings.js?v=9e4017aae4c3f723652324aa",
+    "./src/cutscene-skip.js": "./src/cutscene-skip.js?v=9e4017aae4c3f723652324aa",
+    "./src/davi-vm.js": "./src/davi-vm.js?v=9e4017aae4c3f723652324aa",
+    "./src/debriefing.js": "./src/debriefing.js?v=9e4017aae4c3f723652324aa",
+    "./src/debris-native.js": "./src/debris-native.js?v=9e4017aae4c3f723652324aa",
+    "./src/debris-render-pool.js": "./src/debris-render-pool.js?v=9e4017aae4c3f723652324aa",
+    "./src/decal-effects.js": "./src/decal-effects.js?v=9e4017aae4c3f723652324aa",
+    "./src/destructible-damage.js": "./src/destructible-damage.js?v=9e4017aae4c3f723652324aa",
+    "./src/destructible-effects.js": "./src/destructible-effects.js?v=9e4017aae4c3f723652324aa",
+    "./src/difficulty.js": "./src/difficulty.js?v=9e4017aae4c3f723652324aa",
+    "./src/door-audio.js": "./src/door-audio.js?v=9e4017aae4c3f723652324aa",
+    "./src/electric-explosion-effects.js": "./src/electric-explosion-effects.js?v=9e4017aae4c3f723652324aa",
+    "./src/electric-explosion-native.js": "./src/electric-explosion-native.js?v=9e4017aae4c3f723652324aa",
+    "./src/enemies.js": "./src/enemies.js?v=9e4017aae4c3f723652324aa",
+    "./src/enemy-ambush.js": "./src/enemy-ambush.js?v=9e4017aae4c3f723652324aa",
+    "./src/enemy-animation-rules.js": "./src/enemy-animation-rules.js?v=9e4017aae4c3f723652324aa",
+    "./src/enemy-combat-effects.js": "./src/enemy-combat-effects.js?v=9e4017aae4c3f723652324aa",
+    "./src/enemy-combat-native.js": "./src/enemy-combat-native.js?v=9e4017aae4c3f723652324aa",
+    "./src/enemy-death-effects.js": "./src/enemy-death-effects.js?v=9e4017aae4c3f723652324aa",
+    "./src/enemy-flight.js": "./src/enemy-flight.js?v=9e4017aae4c3f723652324aa",
+    "./src/enemy-hit-native.js": "./src/enemy-hit-native.js?v=9e4017aae4c3f723652324aa",
+    "./src/enemy-navigation.js": "./src/enemy-navigation.js?v=9e4017aae4c3f723652324aa",
+    "./src/enemy-projectile-origins.js": "./src/enemy-projectile-origins.js?v=9e4017aae4c3f723652324aa",
+    "./src/enemy-projectiles.js": "./src/enemy-projectiles.js?v=9e4017aae4c3f723652324aa",
+    "./src/enemy-shooter-native.js": "./src/enemy-shooter-native.js?v=9e4017aae4c3f723652324aa",
+    "./src/enemy-standing-shooter-native.js": "./src/enemy-standing-shooter-native.js?v=9e4017aae4c3f723652324aa",
+    "./src/enemy-waypoint-steering.js": "./src/enemy-waypoint-steering.js?v=9e4017aae4c3f723652324aa",
+    "./src/environment-interactions.js": "./src/environment-interactions.js?v=9e4017aae4c3f723652324aa",
+    "./src/explosion-damage.js": "./src/explosion-damage.js?v=9e4017aae4c3f723652324aa",
+    "./src/explosion-light-native.js": "./src/explosion-light-native.js?v=9e4017aae4c3f723652324aa",
+    "./src/explosion-native.js": "./src/explosion-native.js?v=9e4017aae4c3f723652324aa",
+    "./src/explosion-variants.js": "./src/explosion-variants.js?v=9e4017aae4c3f723652324aa",
+    "./src/fairy-effects.js": "./src/fairy-effects.js?v=9e4017aae4c3f723652324aa",
+    "./src/fullscreen-preference.js": "./src/fullscreen-preference.js?v=9e4017aae4c3f723652324aa",
+    "./src/gamepad-input.js": "./src/gamepad-input.js?v=9e4017aae4c3f723652324aa",
+    "./src/gamepad-menu.js": "./src/gamepad-menu.js?v=9e4017aae4c3f723652324aa",
+    "./src/gameplay-audio.js": "./src/gameplay-audio.js?v=9e4017aae4c3f723652324aa",
+    "./src/gameplay-settings.js": "./src/gameplay-settings.js?v=9e4017aae4c3f723652324aa",
+    "./src/gameplay.js": "./src/gameplay.js?v=9e4017aae4c3f723652324aa",
+    "./src/gargoyle-blast.js": "./src/gargoyle-blast.js?v=9e4017aae4c3f723652324aa",
+    "./src/ghost-materials.js": "./src/ghost-materials.js?v=9e4017aae4c3f723652324aa",
+    "./src/graveyard-maze.js": "./src/graveyard-maze.js?v=9e4017aae4c3f723652324aa",
+    "./src/hud.js": "./src/hud.js?v=9e4017aae4c3f723652324aa",
+    "./src/intro-playback.js": "./src/intro-playback.js?v=9e4017aae4c3f723652324aa",
+    "./src/jester-teleport-timing.js": "./src/jester-teleport-timing.js?v=9e4017aae4c3f723652324aa",
+    "./src/key-settings-menu.js": "./src/key-settings-menu.js?v=9e4017aae4c3f723652324aa",
+    "./src/knight-debris.js": "./src/knight-debris.js?v=9e4017aae4c3f723652324aa",
+    "./src/liquids.js": "./src/liquids.js?v=9e4017aae4c3f723652324aa",
+    "./src/loading-screen.js": "./src/loading-screen.js?v=9e4017aae4c3f723652324aa",
+    "./src/locomotion-audio.js": "./src/locomotion-audio.js?v=9e4017aae4c3f723652324aa",
+    "./src/main.js": "./src/main.js?v=9e4017aae4c3f723652324aa",
+    "./src/menu-audio.js": "./src/menu-audio.js?v=9e4017aae4c3f723652324aa",
+    "./src/menu-highscores.js": "./src/menu-highscores.js?v=9e4017aae4c3f723652324aa",
+    "./src/model-controller-target.js": "./src/model-controller-target.js?v=9e4017aae4c3f723652324aa",
+    "./src/model-transforms.js": "./src/model-transforms.js?v=9e4017aae4c3f723652324aa",
+    "./src/motions.js": "./src/motions.js?v=9e4017aae4c3f723652324aa",
+    "./src/movement-recovery.js": "./src/movement-recovery.js?v=9e4017aae4c3f723652324aa",
+    "./src/moving-solids.js": "./src/moving-solids.js?v=9e4017aae4c3f723652324aa",
+    "./src/msaa-renderer.js": "./src/msaa-renderer.js?v=9e4017aae4c3f723652324aa",
+    "./src/music-fade.js": "./src/music-fade.js?v=9e4017aae4c3f723652324aa",
+    "./src/native-help.js": "./src/native-help.js?v=9e4017aae4c3f723652324aa",
+    "./src/original-menu.js": "./src/original-menu.js?v=9e4017aae4c3f723652324aa",
+    "./src/particle-clock-native.js": "./src/particle-clock-native.js?v=9e4017aae4c3f723652324aa",
+    "./src/pickup-placement.js": "./src/pickup-placement.js?v=9e4017aae4c3f723652324aa",
+    "./src/player-animation.js": "./src/player-animation.js?v=9e4017aae4c3f723652324aa",
+    "./src/player-inventory.js": "./src/player-inventory.js?v=9e4017aae4c3f723652324aa",
+    "./src/player-landing.js": "./src/player-landing.js?v=9e4017aae4c3f723652324aa",
+    "./src/player-lifecycle.js": "./src/player-lifecycle.js?v=9e4017aae4c3f723652324aa",
+    "./src/player-menu.js": "./src/player-menu.js?v=9e4017aae4c3f723652324aa",
+    "./src/player-movement.js": "./src/player-movement.js?v=9e4017aae4c3f723652324aa",
+    "./src/player-profiles.js": "./src/player-profiles.js?v=9e4017aae4c3f723652324aa",
+    "./src/player-projectiles.js": "./src/player-projectiles.js?v=9e4017aae4c3f723652324aa",
+    "./src/player-shadow.js": "./src/player-shadow.js?v=9e4017aae4c3f723652324aa",
+    "./src/player-world-light.js": "./src/player-world-light.js?v=9e4017aae4c3f723652324aa",
+    "./src/presentation-native.js": "./src/presentation-native.js?v=9e4017aae4c3f723652324aa",
+    "./src/projectile-animation.js": "./src/projectile-animation.js?v=9e4017aae4c3f723652324aa",
+    "./src/projectile-collision.js": "./src/projectile-collision.js?v=9e4017aae4c3f723652324aa",
+    "./src/projectile-hazards.js": "./src/projectile-hazards.js?v=9e4017aae4c3f723652324aa",
+    "./src/projectile-impacts.js": "./src/projectile-impacts.js?v=9e4017aae4c3f723652324aa",
+    "./src/projectile-lighting.js": "./src/projectile-lighting.js?v=9e4017aae4c3f723652324aa",
+    "./src/projectile-visibility.js": "./src/projectile-visibility.js?v=9e4017aae4c3f723652324aa",
+    "./src/prop-debris-state.js": "./src/prop-debris-state.js?v=9e4017aae4c3f723652324aa",
+    "./src/quit-menu.js": "./src/quit-menu.js?v=9e4017aae4c3f723652324aa",
+    "./src/recovery-saves.js": "./src/recovery-saves.js?v=9e4017aae4c3f723652324aa",
+    "./src/render-quality.js": "./src/render-quality.js?v=9e4017aae4c3f723652324aa",
+    "./src/reward-effects.js": "./src/reward-effects.js?v=9e4017aae4c3f723652324aa",
+    "./src/room-visibility.js": "./src/room-visibility.js?v=9e4017aae4c3f723652324aa",
+    "./src/save-export.js": "./src/save-export.js?v=9e4017aae4c3f723652324aa",
+    "./src/save-import-picker.js": "./src/save-import-picker.js?v=9e4017aae4c3f723652324aa",
+    "./src/save-import.js": "./src/save-import.js?v=9e4017aae4c3f723652324aa",
+    "./src/script-camera.js": "./src/script-camera.js?v=9e4017aae4c3f723652324aa",
+    "./src/script-host.js": "./src/script-host.js?v=9e4017aae4c3f723652324aa",
+    "./src/shockwave-native.js": "./src/shockwave-native.js?v=9e4017aae4c3f723652324aa",
+    "./src/skybox.js": "./src/skybox.js?v=9e4017aae4c3f723652324aa",
+    "./src/slider-audio.js": "./src/slider-audio.js?v=9e4017aae4c3f723652324aa",
+    "./src/spatial-audio.js": "./src/spatial-audio.js?v=9e4017aae4c3f723652324aa",
+    "./src/spout-effects.js": "./src/spout-effects.js?v=9e4017aae4c3f723652324aa",
+    "./src/streaming-gpu-preparation.js": "./src/streaming-gpu-preparation.js?v=9e4017aae4c3f723652324aa",
+    "./src/streaming-work.js": "./src/streaming-work.js?v=9e4017aae4c3f723652324aa",
+    "./src/targeting.js": "./src/targeting.js?v=9e4017aae4c3f723652324aa",
+    "./src/teleporter-effects.js": "./src/teleporter-effects.js?v=9e4017aae4c3f723652324aa",
+    "./src/third-person-camera.js": "./src/third-person-camera.js?v=9e4017aae4c3f723652324aa",
+    "./src/torch-flames.js": "./src/torch-flames.js?v=9e4017aae4c3f723652324aa",
+    "./src/touch-controls.js": "./src/touch-controls.js?v=9e4017aae4c3f723652324aa",
+    "./src/touch-intro-hint.js": "./src/touch-intro-hint.js?v=9e4017aae4c3f723652324aa",
+    "./src/trigger-contact-native.js": "./src/trigger-contact-native.js?v=9e4017aae4c3f723652324aa",
+    "./src/world-effects.js": "./src/world-effects.js?v=9e4017aae4c3f723652324aa",
+    "./src/world-light-shadows.js": "./src/world-light-shadows.js?v=9e4017aae4c3f723652324aa",
+    "./src/world-lighting-material.js": "./src/world-lighting-material.js?v=9e4017aae4c3f723652324aa",
+    "./src/world-lighting.js": "./src/world-lighting.js?v=9e4017aae4c3f723652324aa",
+    "./src/world-streaming.js": "./src/world-streaming.js?v=9e4017aae4c3f723652324aa",
+    "./src/world.js": "./src/world.js?v=9e4017aae4c3f723652324aa",
+    "./src/zombie-grave-rise.js": "./src/zombie-grave-rise.js?v=9e4017aae4c3f723652324aa",
+    "three": "./node_modules/three/build/three.module.js?v=9e4017aae4c3f723652324aa",
+    "three/addons/": "./node_modules/three/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<canvas id="game" aria-label="Spelwereld"></canvas>
+<button id="game-menu" type="button" aria-label="Spel pauzeren en menu openen" hidden>Menu</button>
+<div id="menu" class="screen">
+  <main class="native-menu-frame" data-page="home">
+    <header class="native-menu-header">
+      <img class="native-menu-logo" src="assets/menu/menu-logo.png" alt="RedCat Spookkasteel">
+      <button id="native-help" class="original-menu-button original-help" type="button">Help</button>
+      <button id="open-quit" class="original-menu-button original-stop" type="button">Stoppen</button>
+    </header>
+    <h2 id="native-menu-title">Hoofdmenu</h2>
+    <p id="native-menu-description"></p><span id="current-player" class="accessible-hud"></span>
+    <section class="native-menu-page" data-menu-page="home" aria-label="Hoofdmenu">
+      <div class="native-home-choices" role="group" aria-label="Kies wat je wilt doen">
+        <button class="original-menu-button original-generic native-choice" data-menu-choice="adventure" aria-pressed="true" type="button">Avontuur</button>
+        <button class="original-menu-button original-generic native-choice" data-menu-choice="quickplay" aria-pressed="false" type="button">Snelspel</button>
+        <button class="original-menu-button original-generic native-choice" data-menu-choice="highscores" aria-pressed="false" type="button">Highscores</button>
+      </div>
+    </section>
+    <section class="native-menu-page" data-menu-page="difficulty" aria-label="Moeilijkheid" hidden><div id="native-difficulties"></div></section>
+    <section class="native-menu-page" data-menu-page="quickplay" aria-label="Kies een griezelplek" hidden><div id="level-list"></div></section>
+    <section class="native-menu-page" data-menu-page="startinfo" aria-label="Startinfo" hidden>
+      <h3 id="native-start-mode" class="native-start-heading">Avontuur</h3>
+      <h3 id="native-start-control" class="native-start-heading">Besturing</h3>
+      <img id="native-start-picture" src="assets/menu/10000000.png" alt="">
+      <img id="native-start-control-picture" src="assets/menu/11020000.png" alt="Muis en toetsenbord">
+      <p id="native-start-control-label">Muis en toetsenbord</p>
+      <p id="native-start-level"></p>
+      <dl class="native-start-details"><dt>Naam:</dt><dd id="native-start-player"></dd><dt>Score:</dt><dd id="native-start-score">0</dd><dt>Moeilijkheid:</dt><dd id="native-start-difficulty"></dd></dl>
+      <details id="native-start-extras"><summary>Meer opties</summary><div class="native-extra-actions"><button id="start-over" class="text-button" type="button" hidden>Opnieuw beginnen</button><button id="open-recovery" class="text-button" type="button">Eerder opgeslagen avontuur laden</button><button id="play-intro" class="text-button" type="button">Bekijk de originele intro</button></div></details>
+    </section>
+    <section class="native-menu-page" data-menu-page="highscores" aria-label="Highscores" hidden>
+      <table id="native-score-table"><thead><tr><th scope="col">Naam</th><th scope="col">Score</th><th scope="col">Griezelplek</th></tr></thead><tbody></tbody></table>
+    </section>
+    <footer class="native-footer">
+      <div class="native-footer-left"><button id="open-settings" class="original-menu-button original-settings" type="button">Instellingen</button><button id="open-players" class="original-menu-button original-players" type="button">Spelerlijst</button></div>
+      <button id="native-previous" class="original-menu-button original-previous" type="button" hidden>Vorige</button>
+      <button id="native-next" class="original-menu-button original-next" type="button">Volgende</button>
+      <button id="native-start" class="original-menu-button original-next" type="button" hidden>Start!</button>
+      <button id="play-level" class="original-menu-button original-next" type="button" hidden>Level Spelen</button>
+    </footer>
+  </main>
+</div>
+<dialog id="player-list" class="player-screen" aria-labelledby="player-list-title" aria-describedby="player-list-description">
+<header class="player-screen-header"><img src="assets/menu/menu-logo.png" alt="RedCat Spookkasteel"><button id="native-player-help" class="original-menu-button original-help" type="button">Help</button><button id="close-players" class="close" type="button" aria-label="Terug naar het hoofdmenu">×</button></header>
+<h2 id="player-list-title">Spelerlijst</h2>
+<p id="player-list-description">Kies hier met wie je wilt spelen. Klik daarna op OK om verder te gaan.</p>
+<div id="player-choices" aria-label="Spelers"></div>
+<p id="player-list-status" role="status" aria-live="polite"></p>
+<div class="player-list-actions"><button id="player-add" class="original-menu-button original-blank" type="button">Nieuw</button><button id="player-remove" class="original-menu-button original-blank" type="button">Verwijderen</button><button id="player-export" class="original-menu-button original-blank" type="button">Exporteren</button><button id="player-import" class="original-menu-button original-blank" type="button">Importeren</button><button id="player-select" class="original-menu-button original-yes" type="button">OK</button><button id="player-cancel" class="original-menu-button original-no" type="button">Annuleren</button></div>
+</dialog>
+<dialog id="player-name-dialog" class="player-prompt" aria-labelledby="player-name-title">
+<img class="player-prompt-logo" src="assets/menu/menu-logo.png" alt="RedCat Spookkasteel">
+<form id="player-name-form">
+<h2 id="player-name-title">Nieuwe speler</h2>
+<p>Vul hier je naam in en druk op OK om verder te gaan.</p>
+<label for="player-name">Naam</label><input id="player-name" name="player-name" type="text" autocomplete="off" autocapitalize="words" spellcheck="false" required>
+<p id="player-name-status" role="status" aria-live="polite"></p>
+<div class="player-prompt-actions"><button id="player-name-save" class="original-menu-button original-yes" type="submit">OK</button><button id="player-name-cancel" class="original-menu-button original-no" type="button">Annuleren</button></div>
+</form>
+</dialog>
+<dialog id="player-delete-dialog" class="player-prompt" aria-labelledby="player-delete-question">
+<img class="player-prompt-logo" src="assets/menu/menu-logo.png" alt="RedCat Spookkasteel">
+<p id="player-delete-question"></p>
+<p class="player-delete-warning">Het opgeslagen avontuur, de voortgang en de herstelpunten van deze speler worden verwijderd.</p>
+<p id="player-delete-status" role="status" aria-live="polite"></p>
+<div class="player-prompt-actions"><button id="player-delete-yes" class="original-menu-button original-yes" type="button">Ja</button><button id="player-delete-no" class="original-menu-button original-no" type="button" autofocus>Nee</button></div>
+</dialog>
+<dialog id="player-import-dialog" class="player-prompt" aria-labelledby="player-import-question" aria-describedby="player-import-warning">
+<img class="player-prompt-logo" src="assets/menu/menu-logo.png" alt="RedCat Spookkasteel">
+<p id="player-import-question"></p>
+<p id="player-import-warning" class="player-delete-warning">Het opgeslagen avontuur, de voortgang en de spelopties van deze speler worden vervangen. Andere spelers en je eerdere lokale herstelpunten blijven behouden. Kies Nee als je eerst via Nieuw een aparte speler wilt maken.</p>
+<p id="player-import-status" role="status" aria-live="polite"></p>
+<div class="player-prompt-actions"><button id="player-import-yes" class="original-menu-button original-yes" type="button">Ja</button><button id="player-import-no" class="original-menu-button original-no" type="button" autofocus>Nee</button></div>
+</dialog>
+<dialog id="quit-confirmation" aria-labelledby="quit-question">
+<img class="quit-logo" src="assets/menu/menu-logo.png" alt="RedCat Spookkasteel">
+<p id="quit-question">Weet je zeker dat je dit spel wil afsluiten?</p>
+<div class="quit-actions"><button id="quit-yes" class="original-menu-button original-yes" type="button">Ja</button><button id="quit-no" class="original-menu-button original-no" type="button" autofocus>Nee</button></div>
+<p id="quit-status" role="status"></p>
+</dialog>
+<dialog id="native-help-viewer" aria-labelledby="native-help-viewer-title">
+<header class="help-viewer-header"><h2 id="native-help-viewer-title">Help RedCat Spookkasteel</h2><button id="native-help-close" type="button" aria-label="Help sluiten">×</button></header>
+<nav class="help-viewer-toolbar" aria-label="Helpnavigatie"><button id="native-help-contents" type="button">Inhoud</button><button id="native-help-back" type="button" disabled>Terug</button><label>Zoeken <input id="native-help-search" type="search" autocomplete="off"></label></nav>
+<div class="help-viewer-body"><nav id="native-help-topics" aria-label="Helponderwerpen"></nav><article id="native-help-content" data-gamepad-scroll tabindex="0" aria-live="polite"></article></div>
+<p class="help-viewer-note">Originele helptekst uit RedCat Spookkasteel. De extra besturing en instellingen van deze port staan onder Instellingen → Meer instellingen.</p>
+</dialog>
+<dialog id="about" class="panel about-panel" aria-labelledby="about-title">
+<div class="panel-top"><h2 id="about-title">Over</h2><button id="close-about" class="close" type="button" aria-label="Terug naar het hoofdmenu" autofocus>×</button></div>
+<p>RedCat Spookkasteel</p><p>Versie <strong>1.0.3</strong></p>
+<p>Originele versie van <strong>Davilex Games</strong></p>
+<p>Nieuw leven in geblazen door <strong>Rick van den Bergh - Nostalgia Realm</strong></p>
+<section id="android-privacy" class="about-section" aria-labelledby="android-privacy-title" hidden>
+<h3 id="android-privacy-title">Privacybeleid — Android</h3>
+<p>Bijgewerkt op 26 oktober 2026. RedCat Spookkasteel werkt offline. De app verstuurt geen spelersnamen, instellingen of voortgang naar NostalgiaRealm en bevat geen advertenties of analyses.</p>
+<p>Spelersnamen, opgeslagen avonturen en instellingen blijven op dit apparaat. Spelerlijst maakt lokale profielen, geen online accounts. Verwijder een speler via Spelerlijst; maak eerst een andere speler als dit de laatste is. Algemene instellingen blijven daarbij behouden. Alle appgegevens wissen in Android of de app verwijderen verwijdert de lokale gegevens. Back-ups via Android zijn voor deze app uitgeschakeld.</p>
+<p>Exporteren en importeren gebruikt het Android-bestandsvenster: alleen het gekozen bestand wordt gelezen of geschreven. Een door jou gekozen clouddienst kan dat bestand synchroniseren volgens haar eigen privacybeleid. Verwijder zulke kopieën bij die dienst.</p>
+<p>Links naar onze website, GitHub, YouTube en Ko-fi openen in je browser. Die websites hebben hun eigen privacybeleid; je save wordt daarbij niet meegestuurd.</p>
+<p>Privacyvragen: info@nostalgiarealm.com</p>
+</section>
+<section class="about-section" aria-labelledby="about-donations-title">
+<h3 id="about-donations-title">🫰 Doneren</h3>
+<p>Doneer om dit project te ondersteunen via: <a href="https://ko-fi.com/nostalgiarealm" target="_blank" rel="noopener noreferrer">https://ko-fi.com/nostalgiarealm</a></p>
+<p>Of met cryptovaluta:</p>
+<dl class="donation-addresses">
+<dt>Ethereum:</dt><dd>0xd2489447b93d2925ec7bfc8da96130547bac4167</dd>
+<dt>Bitcoin:</dt><dd>1B1XsKaiJzdW4mFtvkpbyTyuTAvc53MTah</dd>
+<dt>Ethereum Classic:</dt><dd>0xbd1bd031e9da5fd509bf1e8b2adaab895dfd606c</dd>
+<dt>Litecoin:</dt><dd>LMMp1yyS2iwhESkh633a6SzmFA3mEHhzXT</dd>
+</dl>
+</section>
+<section class="about-section" aria-labelledby="about-website-title"><h3 id="about-website-title">💾 Website</h3><p><a href="https://www.nostalgiarealm.com/" target="_blank" rel="noopener noreferrer">https://www.nostalgiarealm.com/</a></p></section>
+<section class="about-section" aria-labelledby="about-youtube-title"><h3 id="about-youtube-title">📺 YouTube</h3><p><a href="https://www.youtube.com/@Nostalgia_Realm" target="_blank" rel="noopener noreferrer">https://www.youtube.com/@Nostalgia_Realm</a></p></section>
+<section class="about-section" aria-labelledby="about-github-title"><h3 id="about-github-title">👨‍💻 GitHub Source Code</h3><p><a href="https://github.com/NostalgiaRealm/RedCat-Spookkasteel" target="_blank" rel="noopener noreferrer">https://github.com/NostalgiaRealm/RedCat-Spookkasteel</a></p></section>
+</dialog>
+<dialog id="new-adventure-warning" class="panel new-adventure-warning" aria-labelledby="new-adventure-title" aria-describedby="new-adventure-message">
+<h2 id="new-adventure-title">Opgeslagen avontuur overschrijven?</h2>
+<p id="new-adventure-message">Er is al een opgeslagen avontuur. Als je opnieuw begint, worden je oude opgeslagen avontuur en alle bijbehorende herstelpunten overschreven. Je kunt die voortgang daarna niet meer terughalen. Wil je doorgaan?</p>
+<div class="new-adventure-actions"><button id="cancel-new-adventure" class="secondary" type="button" autofocus>Annuleren</button><button id="confirm-new-adventure" class="primary" type="button">Nieuw avontuur starten</button></div>
+</dialog>
+<dialog id="recovery-saves" class="panel recovery-panel" aria-labelledby="recovery-title" aria-describedby="recovery-description">
+<div class="panel-top"><h2 id="recovery-title">Eerder avontuur laden</h2><button id="close-recovery" class="close" type="button" aria-label="Sluiten">×</button></div>
+<p id="recovery-description">Zit je vast? Ga terug naar ongeveer 2, 5 of 10 minuten speeltijd geleden. Pauzes tellen niet mee. Oudere herstelpunten worden automatisch verwijderd.</p>
+<div id="recovery-options"></div><p id="recovery-status" class="settings-note" role="status"></p>
+</dialog>
+<div id="loading" role="region" aria-labelledby="loading-title" hidden>
+  <img class="loading-logo" src="assets/loading/logo.png" alt="RedCat Spookkasteel">
+<div class="loading-layout">
+  <h2 id="loading-title">Even Wachten</h2><p id="loading-mode">Avontuur</p>
+  <img id="loading-picture" src="assets/loading/level1.png" alt="Het Bos">
+  <p id="loading-detail" role="status" aria-live="polite">Bezig met het laden van Het Bos</p>
+  <div class="loading-progress" role="progressbar" aria-label="Level laden" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
+</div></div>
+<div id="intro" class="screen intro" hidden><video id="intro-video" playsinline preload="none"></video><div class="intro-actions"><button id="intro-play" class="secondary" type="button" hidden>Geluid inschakelen</button><button id="skip-intro" class="secondary" type="button">Overslaan →</button></div></div>
+<section id="debriefing" aria-label="Overzicht van het level" hidden><div class="debriefing-frame"><canvas aria-hidden="true"></canvas><p class="accessible-hud" role="status"></p><button type="button">KLIK/TIK hier om verder te gaan</button></div></section>
+<div id="hud" hidden>
+<canvas id="original-hud" aria-label="Gezondheid, levens, toverdrank, punten en gezondheid van de vijand"></canvas>
+<div class="accessible-hud"><span>Gezondheid <b id="health"></b></span><span>Levens <b id="lives"></b></span><span>Punten <b id="score"></b></span><span>Toverdrank <b id="potions"></b></span><span>Spiegelstukken <b id="mirror"></b></span><span id="level-name"></span><span id="objective"></span><span id="render-info"></span><span id="controls-hint"></span></div>
+<div id="toast" role="status"></div>
+</div>
+<div id="cutscene-skip" role="progressbar" aria-label="Houd E twee seconden ingedrukt om over te slaan" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden>
+<span>Overslaan</span><span class="skip-circle"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="skip-track" cx="22" cy="22" r="19"/><circle id="skip-progress" cx="22" cy="22" r="19" pathLength="100"/></svg><b>E</b></span>
+</div>
+<div id="cinema-top" class="cinema-bar"></div><div id="cinema-bottom" class="cinema-bar"></div><div id="subtitle" role="status" hidden></div><div id="script-flash"></div>
+<div id="pause" class="overlay" hidden><section class="panel pause-panel"><div class="eyebrow">HAAL EVEN ADEM</div><h2>Avontuur gepauzeerd</h2><button id="resume" class="primary">Verder spelen →</button><button id="save" class="secondary">Voortgang opslaan</button><button id="load-save" class="secondary" disabled>Opgeslagen avontuur laden</button><button id="pause-recovery" class="secondary">Eerder opgeslagen avontuur laden</button><button id="pause-settings" class="secondary">Instellingen</button><button id="restart" class="secondary">Level opnieuw starten</button><button id="return-menu" class="text-button">Terug naar het hoofdmenu</button></section></div>
+<div id="settings" class="overlay" hidden><section class="panel settings-panel native-options-frame" aria-labelledby="native-settings-title">
+<img class="native-options-logo" src="assets/menu/menu-logo.png" alt="RedCat Spookkasteel">
+<button id="native-settings-help" class="original-menu-button original-help" type="button">Help</button>
+<h2 id="native-settings-title">Instellingen</h2>
+<div id="native-settings-base">
+<section class="native-option-column native-control-column" aria-labelledby="native-control-title"><h3 id="native-control-title">Besturing</h3>
+<div class="native-option-current"><img id="native-control-icon" src="assets/menu/06010000.png" alt=""><span id="native-control-value">Muis en toetsenbord</span></div>
+<div id="native-control-config" class="native-option-choices" role="group" aria-label="Besturing kiezen">
+<button type="button" class="original-menu-button original-generic" data-control="keyboard" aria-pressed="true">Muis en toetsenbord</button>
+<button type="button" class="original-menu-button original-generic" data-control="gamepad" aria-pressed="false">Gamepad</button>
+<button type="button" class="original-menu-button original-generic" data-control="joystick" aria-pressed="false">Joystick</button>
+</div><button id="open-key-settings" class="original-menu-button original-blank native-option-configure" type="button">Instellen</button></section>
+<section class="native-option-column native-quality-column" aria-labelledby="native-quality-title"><h3 id="native-quality-title">Beeldkwaliteit</h3>
+<div class="native-option-current"><img id="native-quality-icon" src="assets/menu/06180000.png" alt=""><span id="native-quality-value">Hoog</span></div>
+<div id="native-quality" class="native-option-choices" role="group" aria-label="Beeldkwaliteit kiezen">
+<button type="button" class="original-menu-button original-generic" data-quality="low" aria-pressed="false">Laag</button>
+<button type="button" class="original-menu-button original-generic" data-quality="normal" aria-pressed="false">Normaal</button>
+<button type="button" class="original-menu-button original-generic" data-quality="high" aria-pressed="true">Hoog</button>
+</div><button id="open-advanced-settings" aria-controls="native-settings-advanced" aria-expanded="false" class="original-menu-button original-blank native-option-configure" type="button">Geavanceerd</button></section>
+<label class="native-audio-slider native-effects-slider"><span>Geluidseffecten</span><input id="volume-effects" type="range" min="0" max="1" step="0.05" aria-label="Geluidseffecten"></label>
+<label class="native-audio-slider native-music-slider"><span>Muziek</span><input id="volume-music" type="range" min="0" max="1" step="0.05" aria-label="Muziek"></label>
+<button id="open-more-settings" class="original-menu-button original-blank" type="button" aria-controls="native-settings-more" aria-expanded="false">Meer instellingen</button>
+</div>
+<details id="native-settings-advanced" class="native-settings-extra"><summary>Geavanceerd</summary>
+<label class="setting"><span><b>Resolutie</b><small>Basisresolutie voor het 3D-beeld</small></span><select id="resolution"><option value="native">Automatisch · vensterresolutie</option><option value="1280x720">1280 × 720 · HD</option><option value="1920x1080">1920 × 1080 · Full HD</option><option value="2560x1440">2560 × 1440 · QHD</option><option value="3840x2160">3840 × 2160 · 4K UHD</option><option value="2560x1080">2560 × 1080 · Ultrawide</option><option value="3440x1440">3440 × 1440 · Ultrawide</option><option value="1024x768">1024 × 768 · Klassiek 4:3</option></select></label>
+<label class="setting"><span><b>Renderschaal</b><small>100% van de gekozen resolutie. Boven 100% (rood) kan de prestatie afnemen. Bij aanhoudend minder dan 30 FPS daalt de renderschaal in stappen van 25 procentpunt, tot minimaal 25%, en gaat MSAA uit. De aangepaste waarden worden hier getoond en bewaard.</small></span><input id="render-scale" type="range" min="25" max="300" step="5"><output id="render-scale-value">100%</output></label>
+<label class="setting"><span><b>Anti-aliasing (MSAA)</b><small id="msaa-status">Maakt randen van 3D-objecten gladder. Meer samples vragen meer grafisch geheugen en rekenkracht. Na automatisch uitschakelen kun je MSAA hier weer aanzetten.</small></span><select id="msaa" aria-label="Anti-aliasing (MSAA)" aria-describedby="msaa-status"><option value="0">Uit</option><option value="2">2x</option><option value="4">4x</option><option value="8">8x</option></select></label>
+</details>
+<details id="native-settings-more" class="native-settings-extra"><summary>Meer instellingen</summary>
+<label class="setting"><span><b>Aanraakbediening</b><small>Stick en knoppen op het scherm. Automatisch aan op mobiele browsers; je keuze wordt bewaard.</small></span><select id="touch-controls-setting" aria-label="Aanraakbediening"><option value="auto">Automatisch · mobiel</option><option value="on">Aan</option><option value="off">Uit</option></select></label>
+<label class="setting"><span><b>Moeilijkheid</b><small>Geldt bij het starten of herstarten van een level. Verder spelen behoudt de moeilijkheid van je opgeslagen spel.</small></span><select id="difficulty" aria-label="Moeilijkheid"></select></label>
+<label class="setting"><span><b>FPS weergeven</b><small>Toon het aantal beelden per seconde tijdens het spelen</small></span><input id="show-fps" type="checkbox"></label>
+<label class="setting"><span><b>Volledig scherm</b><small>Vult het beeldscherm</small></span><input id="fullscreen" type="checkbox"></label>
+<label class="setting"><span><b>Camera</b><small>Wissel tijdens het spelen met V</small></span><select id="camera-mode"><option value="third">Achter RedCat</option><option value="first">Eerste persoon</option></select></label>
+<label class="setting"><span><b>Gezichtsveld</b><small>Verticale kijkhoek, zonder uitrekken</small></span><input id="fov" type="range" min="45" max="90" step="1"><output id="fov-value"></output></label>
+<label class="setting"><span><b>Kijkgevoeligheid</b><small>Muis, aanraken en rechterstick</small></span><input id="sensitivity" type="range" min="0.2" max="2" step="0.1"></label>
+<label class="setting"><span><b>Geluid</b></span><input id="volume" type="range" min="0" max="1" step="0.05"></label>
+<label class="setting"><span><b>Originele intro bij opstarten</b></span><input id="auto-intro" type="checkbox"></label>
+<p id="controller-status" class="settings-note" role="status">Controller: sluit een controller aan en druk op een knop.</p>
+<p class="settings-note">Controller: A / × bevestigt, B / ○ gaat terug. Kies met de linkerstick of richtingsknoppen; links/rechts wijzigt instellingen. Scroll lange menu’s met de rechterstick. In een browser is soms eerst een klik of tik nodig voor geluid en volledig scherm.</p>
+<button id="open-cheats" class="secondary cheats-link" type="button">Cheats <span>→</span></button>
+<div class="native-settings-links"><button id="open-help" class="original-menu-button original-generic" type="button">Besturing</button><button id="open-about" class="original-menu-button original-generic" type="button">Over</button></div>
+</details>
+<div class="native-options-actions"><button id="apply-settings" class="original-menu-button original-yes" type="button">OK</button><button id="close-settings" class="original-menu-button original-no" type="button">Annuleren</button></div>
+</section></div>
+<div id="cheats" class="overlay" hidden><section class="panel cheats-panel" aria-labelledby="cheats-title"><div class="panel-top"><div><div class="eyebrow">INSTELLINGEN</div><h2 id="cheats-title">Cheats</h2></div><button id="close-cheats" class="close" aria-label="Terug naar instellingen">←</button></div>
+<p id="cheat-supply-description">Vul je spiegelstukken en toverdrank tot het maximum en ontvang 9000 extra punten.</p>
+<button id="cheat-supplies" class="primary">Spiegels, toverdrank & +9000 punten <span>✦</span></button>
+<button id="cheat-unlock-levels" class="secondary cheats-link" aria-describedby="cheat-unlock-description">Alle levels vrijspelen <span>→</span></button>
+<p id="cheat-unlock-description" class="settings-note">Ontgrendel direct alle vijf levels in het hoofdmenu. Dit wordt meteen bewaard.</p>
+<label class="setting"><span><b>Vrij vliegen (no-clip)</b><small>Vlieg door muren en buiten het level. WASD of de stick volgt je kijkrichting; Spatie / Omhoog stijgt, Shift / Omlaag daalt.</small></span><input id="cheat-noclip" type="checkbox"></label>
+<p class="settings-note">Uitschakelen in een muur of buiten het level brengt je terug naar een veilige plek.</p><p id="cheat-status" class="cheat-status" role="status"></p>
+<button id="back-cheats" class="secondary cheats-link">← Terug naar instellingen</button></section></div>
+<div id="help" class="overlay" hidden><section class="panel"><div class="panel-top"><h2>Op avontuur</h2><button id="close-help" class="close" aria-label="Sluiten">×</button></div><p><b>Aanraakbediening:</b> beweeg met de stick links en veeg rechts om rond te kijken. Spring en Schieten werken zolang je ze aanraakt. Houd Overslaan twee seconden vast tijdens een tussenfilmpje. Lopen schakelt rustig lopen in of uit; Camera wisselt de weergave. Menu opent pauze, instellingen en cheats. Bij vrij vliegen zijn Omhoog en Omlaag beschikbaar.</p><h3>Controller</h3><p>Sluit een controller aan en druk op een knop. Gebruik de linkerstick om te bewegen en de rechterstick om rond te kijken. De kijkgevoeligheid is instelbaar.</p><dl class="key-guide"><dt>A / ×</dt><dd>Springen / bevestigen</dd><dt>RT / R2 of RB / R1</dt><dd>Schieten; vasthouden voor BIG BENG</dd><dt>X / □</dt><dd>Gebruiken; twee seconden vasthouden om een scène over te slaan</dd><dt>LB / L1</dt><dd>Rustig lopen</dd><dt>Y / △</dt><dd>Camera wisselen</dd><dt>Start / Options / +</dt><dd>Pauzeren / hervatten</dd><dt>B / ○</dt><dd>Terug in menu’s; dalen bij vrij vliegen</dd><dt>Linkerstick / richtingsknoppen</dt><dd>Menu kiezen; links/rechts wijzigt een instelling</dd></dl><p>Bij vrij vliegen stijg je met A / ×. Opslaan, laden en cheats staan in het pauzemenu. Als de gebruikte controller losraakt, pauzeert het spel. Knopnamen volgen de standaard Xbox- of PlayStation-indeling; op andere controllers tellen de posities.</p><h3>Toetsenbord en muis</h3><dl class="key-guide"><dt>W A S D / pijlen</dt><dd>Bewegen</dd><dt>Muis</dt><dd>Rondkijken</dd><dt>Spatie</dt><dd>Springen</dd><dt>Shift</dt><dd>Rustig lopen</dd><dt>Linkermuisknop / Ctrl</dt><dd>Aanvallen</dd><dt>E</dt><dd>Gebruiken / twee seconden vasthouden om een scène over te slaan</dd><dt>V</dt><dd>Camera wisselen</dd><dt>F5 / F9</dt><dd>Opslaan / laden</dd><dt>Esc</dt><dd>Pauzeren</dd></dl><p>Je avontuur wordt elke minuut automatisch opgeslagen. Je kunt ook zelf opslaan met F5. Zit je vast? Kies in het menu Eerder opgeslagen avontuur laden om ongeveer 2, 5 of 10 minuten speeltijd terug te gaan.</p><p>Verzamel schatten, toverdrank en spiegelstukken. Klik in het spel om met de muis rond te kijken.</p></section></div>
+<dialog id="key-settings" class="panel" aria-labelledby="key-settings-title">
+<div class="panel-top"><h2 id="key-settings-title">Toetsen instellen</h2><button id="close-key-settings" class="close" type="button" aria-label="Annuleren">×</button></div>
+<p>Kies een actie en druk op de toets die je wilt gebruiken.</p>
+<div id="key-bindings"></div><p id="key-binding-status" role="status"></p>
+<div class="native-settings-links"><button id="native-key-help" class="original-menu-button original-help" type="button">Help</button><button id="default-key-settings" class="original-menu-button original-blank" type="button">Standaard</button><button id="apply-key-settings" class="original-menu-button original-yes" type="button">OK</button><button id="cancel-key-settings" class="original-menu-button original-no" type="button">Annuleren</button></div>
+</dialog>
+<div id="fatal" class="overlay" hidden><section class="panel"><h2>Het avontuur kon niet starten</h2><p id="fatal-message"></p><button id="fatal-close" class="primary">Terug naar het menu</button></section></div>
+<script type="module" src="./src/main.js?v=9e4017aae4c3f723652324aa"></script>
+<div id="fps-counter" hidden aria-label="Beelden per seconde"></div>
+</body></html>

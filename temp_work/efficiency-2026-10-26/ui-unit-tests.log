@@ -1,0 +1,24 @@
+✔ debriefing fade and continue delay advance, then 600 neutral frames retain pixels (4.028335ms)
+✔ debriefing notices resize, DPR, target values and restored graphics/fonts (0.789615ms)
+✔ a failed draw retries, and reopening the same summary starts its fade again (0.843775ms)
+✔ original Dutch debriefing text, icon crops, timing and per-level totals are retained (72.284089ms)
+✔ counts level objects, not cumulative inventory, money value or cheated supplies; bonus is awarded once (24.349898ms)
+✔ corrupt debriefing saves are rejected and final bonus obeys original maximum score (11.19551ms)
+✔ completion remains final while pickup/dialogue audio drains, even after lethal damage (7.847231ms)
+✔ touch preference preserves explicit choices and migrates legacy booleans (0.694896ms)
+✔ mobile auto detection uses device capabilities, including iPad desktop UA (0.908445ms)
+✔ joystick is analog with a dead zone and a circular limit (1.951447ms)
+✔ move, look, attack and jump can be held independently with multiple pointer owners (0.587016ms)
+✔ repeated frame context preserves a hold; actual transitions clear it and update controls (1.059164ms)
+✔ skip is available only in cutscenes and clears use when leaving them (0.481257ms)
+✔ cancel, capture loss, blur, visibility, resize, disable, and reset clear every held action (2.818592ms)
+✔ camera and walk respond once per gesture without obsolete use or save/load controls (0.434948ms)
+✔ dispose clears input, removes controls and disconnects their listeners (0.279848ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 204.025116

@@ -1,0 +1,32 @@
+✔ Android staging contains only runtime roots, complete Three package and deterministic hashes (93.590133ms)
+✔ multi-chunk binary assets and empty optional files retain exact bytes and manifest hashes (26.776543ms)
+✔ missing required bundle, styles, levels, media and Three modules leave staged runtime intact (82.593616ms)
+✔ re-preparing removes stale files only from the owned staging output (33.141232ms)
+✔ unsafe and unowned output paths are refused without altering source or unrelated files (6.695136ms)
+✔ symlinked input files and output ancestors cannot escape the project (8.773652ms)
+✔ an ownership marker is specific to its source project and output path (17.519984ms)
+✔ CLI accepts a single explicit output and rejects incomplete or unknown options (0.256198ms)
+✔ hidden files and invalid version metadata cannot replace a valid asset snapshot (38.139329ms)
+✔ ordinary desktop and mobile browser hosts require no native handshake (0.724545ms)
+✔ native lifecycle waits for foreground, deduplicates events and blocks background Back (0.772725ms)
+✔ native display messages release keep-awake while suspended without a per-frame bridge call (0.749135ms)
+✔ Android automatic render size caps pixels without stretching portrait or ultrawide screens (0.229208ms)
+✔ Android save export correlates document picker results and treats cancellation as cancellation (0.659876ms)
+✔ Android save export validates names and byte limits and rejects disposed requests (25.170935ms)
+✔ Android import correlates picker results, supports cancellation and excludes export concurrently (0.481327ms)
+✔ Android import rejects malformed results, native read errors and disposed requests (27.701887ms)
+✔ source and root lockfile agree on the game release version (4.247712ms)
+✔ packaging requires an explicit version before calling the builder (0.498616ms)
+  • electron-builder  version=26.15.3 os=7.2.11-200.fc44.x86_64
+  • loaded configuration  file=package.json ("build" field)
+  • electron-builder  version=26.15.3 os=7.2.11-200.fc44.x86_64
+  • loaded configuration  file=package.json ("build" field)
+✔ builder accepts injected package metadata without building or changing source (349.966044ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 688.414423

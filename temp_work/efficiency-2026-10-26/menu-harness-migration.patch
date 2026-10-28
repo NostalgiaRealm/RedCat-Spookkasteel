@@ -1,0 +1,498 @@
+--- tests/campaign-settings-scenes.mjs
++++ tests/campaign-settings-scenes.mjs
+@@ -1,3 +1,4 @@
++import {startAdventure, showQuickplay, showMoreSettings} from './scene-menu.mjs';
+ import {chromium} from 'playwright';
+ import {spawn} from 'node:child_process';
+ import {mkdir,writeFile} from 'node:fs/promises';
+@@ -8,7 +9,7 @@
+ let browser;
+ try {
+   await mkdir('artifacts',{recursive:true});
+-  browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl']});
++  browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:[`--use-angle=${process.env.REDCAT_TEST_ANGLE || 'swiftshader'}`, '--enable-unsafe-swiftshader']});
+   const page=await browser.newPage({viewport:{width:1280,height:900}}),errors=[];
+   page.on('pageerror',e=>errors.push(e.stack));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
+   await page.addInitScript(()=>{
+@@ -31,12 +32,12 @@
+   assert.equal(await page.evaluate(()=>window.__redcat.world),null);
+   await page.screenshot({path:'artifacts/campaign-menu-locked.png'});
+ 
+-  await page.locator('#open-settings').click();
++  await showMoreSettings(page);
+   assert.deepEqual(await page.locator('#difficulty option').allTextContents(),['Makkelijk','Normaal','Moeilijk']);
+   await page.locator('#difficulty').selectOption('Hard');await page.locator('#apply-settings').click();
+-  await page.locator('#open-settings').click();assert.equal(await page.locator('#difficulty').inputValue(),'Hard');
++  await showMoreSettings(page);assert.equal(await page.locator('#difficulty').inputValue(),'Hard');
+   await page.screenshot({path:'artifacts/difficulty-settings.png'});
+-  await page.locator('#close-settings').click();await page.locator('#start').click();
++  await page.locator('#close-settings').click();await startAdventure(page);
+   await page.waitForFunction(()=>window.__redcat.mode==='playing',null,{polling:100});
+   assert.equal(await page.evaluate(()=>window.__redcat.gameplay.difficulty),'Hard');
+ 
+@@ -53,7 +54,7 @@
+   assert.equal(autosave.saved.game.state.score,1234);assert.equal(autosave.saved.game.difficulty,'Hard');
+   assert.equal(autosave.afterPause,autosave.paused,'paused time makes no periodic writes');
+ 
+-  await page.locator('#pause-settings').click();await page.locator('#difficulty').selectOption('Easy');
++  await showMoreSettings(page,{paused:true});await page.locator('#difficulty').selectOption('Easy');
+   await page.locator('#apply-settings').click();
+   assert.equal(await page.evaluate(()=>window.__redcat.gameplay.difficulty),'Hard','settings do not retune a live encounter');
+   await page.evaluate(async()=>{await window.__redcat.loadSave();window.__redcat.pause();});
+@@ -66,8 +67,8 @@
+   assert.equal(progress.highestUnlocked,1);
+   await page.locator('#return-menu').click();
+   assert.deepEqual(await page.locator('.level-card').evaluateAll(cards=>cards.map(b=>b.disabled)),[false,false,true,true,true]);
+-  await page.locator('[data-level="lvl01a"]').hover();
+-  assert.ok((await page.locator('[data-level="lvl01a"] img').getAttribute('src')).endsWith('04010001.png'));
++  await showQuickplay(page);await page.locator('[data-level="lvl01a"]').hover();
++  assert.ok((await page.locator('[data-level="lvl01a"] img').getAttribute('src')).endsWith('04010000.png'));
+   await page.screenshot({path:'artifacts/campaign-menu-unlocked.png'});
+   // An earlier replay cannot erase the campaign milestone or grant a later one.
+   await page.evaluate(async()=>{const app=window.__redcat;await app.startLevel(0);app.pause();});
+@@ -86,7 +87,7 @@
+   });
+   await page.reload();await ready();
+   assert.deepEqual(await page.locator('.level-card').evaluateAll(cards=>cards.map(b=>b.disabled)),[false,false,false,false,true]);
+-  await page.locator('#continue').click();await page.waitForFunction(()=>window.__redcat.mode==='playing',null,{polling:100});
++  await startAdventure(page);await page.waitForFunction(()=>window.__redcat.mode==='playing',null,{polling:100});
+   assert.equal(await page.evaluate(()=>window.__redcat.world.id),'lvl03a');
+   assert.equal(await page.evaluate(()=>window.__redcat.gameplay.difficulty),'Normal','legacy encounter keeps historical Normal');
+   await page.evaluate(()=>window.__redcat.pause());
+--- tests/cheat-unlock-levels-scenes.mjs
++++ tests/cheat-unlock-levels-scenes.mjs
+@@ -1,3 +1,4 @@
++import {showLevelStart, showMoreSettings} from './scene-menu.mjs';
+ import {chromium} from 'playwright';
+ import {spawn} from 'node:child_process';
+ import {mkdir,writeFile} from 'node:fs/promises';
+@@ -9,7 +10,7 @@
+ const report={},errors=[];
+ try {
+   await mkdir('artifacts',{recursive:true});
+-  browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
++  browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:[`--use-angle=${process.env.REDCAT_TEST_ANGLE || 'swiftshader'}`, '--enable-unsafe-swiftshader','--autoplay-policy=no-user-gesture-required']});
+   async function fresh(name) {
+     const context=await browser.newContext({viewport:{width:1280,height:720}}),page=await context.newPage();
+     page.on('pageerror',e=>errors.push(`${name}: ${e.stack}`));page.on('response',r=>{if(r.status()>=400)errors.push(`${name}: ${r.status()} ${r.url()}`);});
+@@ -19,7 +20,7 @@
+     return {context,page};
+   }
+   async function openCheats(page,paused=false) {
+-    await page.locator(paused?'#pause-settings':'#open-settings').click();await page.locator('#open-cheats').click();
++    await showMoreSettings(page,{paused});await page.locator('#open-cheats').click();
+     assert.match(await page.locator('#cheat-unlock-levels').textContent(),/Alle levels vrijspelen/);
+   }
+   const main=await fresh('main-menu');
+@@ -37,7 +38,7 @@
+   assert.equal(await main.page.locator('.level-card:disabled').count(),0,'all chapter unlocks persist after reload');
+   await openCheats(main.page);assert.equal(await main.page.locator('#cheat-unlock-levels').isDisabled(),true,'already unlocked remains disabled after reload');
+   await main.page.keyboard.press('Escape');await main.page.keyboard.press('Escape');
+-  await main.page.locator('.level-card[data-level="lvl04a"]').click();await main.page.locator('#start').click();
++  await showLevelStart(main.page,'lvl04a');await main.page.locator('#native-start').click();
+   await main.page.waitForFunction(()=>window.__redcat.world?.id==='lvl04a'&&['playing','paused'].includes(window.__redcat.mode),{},{timeout:60000});
+   await main.page.evaluate(()=>window.__redcat.pause());
+   report.tower=await main.page.evaluate(()=>({id:window.__redcat.world.id,mode:window.__redcat.mode,completed:window.__redcat.gameplay.completed,witches:window.__redcat.gameplay.objects.filter(o=>o.enemyType==='witch').length}));
+--- tests/player-menu-scenes.mjs
++++ tests/player-menu-scenes.mjs
+@@ -1,3 +1,4 @@
++import {startAdventure, showAdventureExtras} from './scene-menu.mjs';
+ // Isolated storage only; screenshots/logs are retained in the project workspace.
+ import {chromium} from 'playwright';
+ import {spawn} from 'node:child_process';
+@@ -93,7 +94,7 @@
+   assert.equal(await page.evaluate(() => __redcat.world), null);
+   assert.equal(await page.evaluate(() => __redcat.saveGame(true)), false, 'retired world cannot save into another player');
+   assert.equal(await page.locator('.level-card:disabled').count(), 4);
+-  assert.equal(await page.locator('#continue').isVisible(), false);
++  assert.equal(await page.evaluate(() => __redcat.originalMenu.getState().hasSave), false);
+   assert.deepEqual(await page.evaluate(() => ({difficulty: __redcat.settings.difficulty, noClip: __redcat.settings.noClip,
+     hints: localStorage.getItem(__redcat.profiles.key('redcat.touch-intro-hint.v1')), history: __redcat.recovery.choices().map(c => !!c.save)})),
+   {difficulty: 'Normal', noClip: false, hints: null, history: [false, false, false]});
+@@ -105,7 +106,7 @@
+   assert.equal(await page.evaluate(() => __redcat.settings.difficulty), 'Hard');
+   assert.equal(await page.evaluate(() => __redcat.settings.noClip), true);
+   assert.equal(await page.evaluate(() => __redcat.recovery.choices()[0].save.game.state.score), 111);
+-  await page.locator('#open-recovery').click(); await page.locator('[data-recovery-minutes="2"]').click();
++  await showAdventureExtras(page);await page.locator('#open-recovery').click(); await page.locator('[data-recovery-minutes="2"]').click();
+   await page.waitForFunction(() => ['playing', 'paused'].includes(__redcat.mode), null, {timeout: 90000});
+   await page.evaluate(() => __redcat.pause());
+   assert.equal(await page.evaluate(() => __redcat.gameplay.state.score), 111);
+@@ -113,7 +114,7 @@
+   await backToMenu(); await openPlayers(); await choose(rick);
+   await page.reload(); await page.waitForFunction(() => window.__redcat);
+   assert.equal(await page.evaluate(() => __redcat.profiles.activeId), rick);
+-  await page.locator('#continue').click();
++  await startAdventure(page);
+   await page.waitForFunction(() => ['playing', 'paused'].includes(__redcat.mode), null, {timeout: 90000});
+   await page.evaluate(() => __redcat.pause());
+   assert.equal(await page.evaluate(() => __redcat.gameplay.state.score), 888);
+--- tests/player-menu-lifecycle-scenes.mjs
++++ tests/player-menu-lifecycle-scenes.mjs
+@@ -52,7 +52,7 @@
+   await page.waitForFunction(() => !document.querySelector('#player-delete-dialog').open);
+   assert.equal(await page.evaluate(() => __redcat.profiles.activeId), 'legacy');
+   assert.equal(await page.evaluate(() => __redcat.recovery.state.checkpoints.at(-1).save.game.state.score), 4321);
+-  assert.equal(await page.locator('#continue').isVisible(), true);
++  assert.equal(await page.evaluate(() => __redcat.originalMenu.getState().hasSave), true);
+   const names = await page.evaluate(async () => (await indexedDB.databases()).map(db => db.name));
+   assert(!names.includes(`redcat-recovery-saves-${next.id}`));
+ 
+--- tests/new-adventure-skills-scenes.mjs
++++ tests/new-adventure-skills-scenes.mjs
+@@ -1,3 +1,4 @@
++import {startAdventure, showLevelStart, showAdventureExtras} from './scene-menu.mjs';
+ // Focused regression for learned abilities leaking from a replaced adventure.
+ import {chromium} from 'playwright';
+ import {spawn} from 'node:child_process';
+@@ -5,15 +6,15 @@
+ import {resolve} from 'node:path';
+ import assert from 'node:assert/strict';
+ 
+-process.env.TMPDIR='current_work';
+-const output=resolve(`current_work/new-adventure-skills-2026-10-03/scenes-${Date.now()}`);
++process.env.TMPDIR='temp_work';
++const output=resolve(`temp_work/new-adventure-skills-2026-10-03/scenes-${Date.now()}`);
+ await mkdir(output,{recursive:true});
+ const report={checks:[],errors:[]},check=name=>{report.checks.push(name);console.log(`PASS ${name}`);};
+ const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4341'},stdio:['ignore','pipe','inherit']});
+ await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);});
+ let context,page;
+ try{
+-  context=await chromium.launchPersistentContext(resolve(output,'profile'),{executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl'],viewport:{width:1280,height:800}});
++  context=await chromium.launchPersistentContext(resolve(output,'profile'),{executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:[`--use-angle=${process.env.REDCAT_TEST_ANGLE || 'swiftshader'}`, '--enable-unsafe-swiftshader'],viewport:{width:1280,height:800}});
+   page=await context.newPage();page.on('pageerror',error=>report.errors.push(String(error)));
+   await page.addInitScript(()=>{
+     if(!localStorage.getItem('redcat.settings.v1'))localStorage.setItem('redcat.settings.v1',JSON.stringify({autoIntro:false,fullscreen:false,volume:0,resolution:'1280x720'}));
+@@ -43,10 +44,10 @@
+   assert.equal(await page.evaluate(()=>window.__redcat.startLevel(0)),true);await loaded();await pause();
+   await page.evaluate(async()=>{window.__redcat.saveGame(true);await window.__redcat.recovery.flush();});await preserved();
+   await page.locator('#return-menu').click();
+-  await page.locator('#continue').click();await loaded();await pause();await preserved();
++  await startAdventure(page);await loaded();await pause();await preserved();
+   check('Continue retains learned shot upgrades and SUPERSKIPPIE');
+ 
+-  await page.locator('#return-menu').click();await page.locator('[data-level="lvl00a"]').click();
++  await page.locator('#return-menu').click();await showLevelStart(page,'lvl00a');
+   assert.equal(await page.locator('#new-adventure-warning').evaluate(element=>element.open),false);
+   await page.locator('#play-level').click();
+   await page.locator('#new-adventure-warning').waitFor({state:'visible'});await page.locator('#confirm-new-adventure').click();
+@@ -55,20 +56,20 @@
+ 
+   await page.locator('#return-menu').click();
+   const stored=()=>page.evaluate(()=>({save:localStorage.getItem('redcat.save.v1'),progress:localStorage.getItem('redcat.progress.v1'),history:JSON.stringify(window.__redcat.recovery.state.checkpoints)}));
+-  const before=await stored();await page.locator('#start-over').click();await page.locator('#cancel-new-adventure').click();assert.deepEqual(await stored(),before);
++  const before=await stored();await showAdventureExtras(page);await page.locator('#start-over').click();await page.locator('#cancel-new-adventure').click();assert.deepEqual(await stored(),before);
+   check('cancelling Start opnieuw preserves the save, learned abilities and recovery history');
+ 
+   let releaseLoad,loadingRequested;
+   const held=new Promise(resolve=>{releaseLoad=resolve;}),requested=new Promise(resolve=>{loadingRequested=resolve;});
+   await page.route('**/data/levels/lvl00a/level.json',async route=>{loadingRequested();await held;await route.continue();});
+-  await page.locator('#start-over').click();await page.locator('#confirm-new-adventure').click();await requested;
++  await showAdventureExtras(page);await page.locator('#start-over').click();await page.locator('#confirm-new-adventure').click();await requested;
+   assert.equal(await page.evaluate(()=>window.__redcat.mode),'loading');assert.deepEqual(await stored(),before);
+   releaseLoad();await loaded();await pause();await normal();
+   assert.equal(await page.evaluate(()=>window.__redcat.recovery.state.checkpoints.length),1);
+   check('confirmed new adventure resets shots and jumping only after loading succeeds, while keeping chapter unlocks');
+   await page.screenshot({path:resolve(output,'new-adventure.png')});
+ 
+-  await page.reload();await ready();await page.locator('#continue').click();await loaded();await pause();await normal();
++  await page.reload();await ready();await startAdventure(page);await loaded();await pause();await normal();
+   check('reload and Continue cannot restore the discarded adventure abilities');
+   assert.deepEqual(report.errors,[]);
+ }catch(error){report.failure=String(error.stack||error);await page?.screenshot({path:resolve(output,'failure.png')}).catch(()=>{});throw error;}
+--- tests/replayed-level-intros-scenes.mjs
++++ tests/replayed-level-intros-scenes.mjs
+@@ -1,3 +1,4 @@
++import {startAdventure, showLevelStart, showAdventureExtras, showMoreSettings} from './scene-menu.mjs';
+ // Focused real-menu coverage for first-play versus native chapter replay.
+ // All saves and browser files belong to this isolated, retained test profile.
+ import {chromium} from 'playwright';
+@@ -6,7 +7,7 @@
+ import {resolve} from 'node:path';
+ import assert from 'node:assert/strict';
+ 
+-const scratch='current_work/replayed-level-intros-2026-10-05';
++const scratch='temp_work/replayed-level-intros-2026-10-05';
+ const output=resolve(`${scratch}/scenes-${Date.now()}`),port=4395;
+ process.env.TMPDIR=`${scratch}/t`;
+ await mkdir(process.env.TMPDIR,{recursive:true});await mkdir(output,{recursive:true});
+@@ -18,7 +19,7 @@
+ try {
+   context=await chromium.launchPersistentContext(resolve(output,'profile'),{
+     executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,
+-    viewport:{width:1280,height:800},args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required',`--crash-dumps-dir=${output}`],
++    viewport:{width:1280,height:800},args:[`--use-angle=${process.env.REDCAT_TEST_ANGLE || 'swiftshader'}`, '--enable-unsafe-swiftshader','--autoplay-policy=no-user-gesture-required',`--crash-dumps-dir=${output}`],
+   });
+   page=await context.newPage();page.on('pageerror',error=>report.errors.push(String(error)));
+   await page.addInitScript(()=>{
+@@ -46,7 +47,7 @@
+   };
+   const toMenu=async()=>{await page.locator('#return-menu').click();await page.evaluate(()=>window.__redcat.recovery.flush());};
+   const startChapter=async id=>{
+-    await page.locator(`[data-level="${id}"]`).click();
++    await showLevelStart(page,id);
+     assert.equal(await page.locator('#new-adventure-warning').evaluate(element=>element.open),false);
+     await page.locator('#play-level').click();await page.locator('#new-adventure-warning').waitFor({state:'visible'});
+     await page.locator('#confirm-new-adventure').click();await loaded(id);
+@@ -57,21 +58,21 @@
+       await a.recovery.capture(JSON.parse(localStorage.getItem('redcat.save.v1')),{reset:true});
+       a.recovery.advance(120);a.gameplay.state.score=marker+1;a.saveGame(true);await a.recovery.flush();
+     },marker);
+-    await toMenu();await page.locator('#open-recovery').click();await page.locator('[data-recovery-minutes="2"]').click();await loaded('lvl00a');
++    await toMenu();await showAdventureExtras(page);await page.locator('#open-recovery').click();await page.locator('[data-recovery-minutes="2"]').click();await loaded('lvl00a');
+     const result=await session(`two-minute recovery ${replay?'replay':'first-play'}`);assertMode(result,replay);assert.equal(result.score,marker);assert.equal(result.savedReplay,replay);
+   };
+   await page.goto(`http://127.0.0.1:${port}/?skipIntro`);await ready();
+ 
+-  await page.locator('#open-settings').click();await page.locator('#open-cheats').click();await page.locator('#cheat-unlock-levels').click();
++  await showMoreSettings(page);await page.locator('#open-cheats').click();await page.locator('#cheat-unlock-levels').click();
+   const unlocked=await page.evaluate(()=>JSON.parse(localStorage.getItem('redcat.progress.v1')));
+   assert.equal(unlocked.highestUnlocked,4);assert.deepEqual(unlocked.playedLevels||[],[]);
+   await page.locator('#back-cheats').click();await page.locator('#close-settings').click();
+   check('unlock-all cheat enables chapter access without marking any chapter played');
+ 
+-  await page.locator('#start').click();await loaded('lvl00a');
++  await startAdventure(page);await loaded('lvl00a');
+   let result=await session('first Forest start');assertMode(result,false);assert.equal(result.savedReplay,false);assert.deepEqual(result.progress.playedLevels,['lvl00a']);
+   check('first Forest visit keeps authored tutorial, ability and boss triggers; history is recorded without changing the current first-play session');
+-  await toMenu();await page.locator('#continue').click();await loaded('lvl00a');
++  await toMenu();await startAdventure(page);await loaded('lvl00a');
+   result=await session('first-play Continue');assertMode(result,false);assert.equal(result.savedReplay,false);
+   await recoveryRoundTrip(false,101);
+   check('Continue and two-minute recovery retain first-play mode despite Forest already being recorded as played');
+@@ -82,13 +83,13 @@
+   await toMenu();await startChapter('lvl00a');
+   result=await session('Forest chapter-card replay');assertMode(result,true);assert.equal(result.savedReplay,true);assert.deepEqual(result.progress.playedLevels,['lvl00a','lvl01a']);
+   check('chapter-card replay takes native tutorial skip branch while retaining Forest ability and boss gates');
+-  await toMenu();await page.reload();await ready();await page.locator('#continue').click();await loaded('lvl00a');
++  await toMenu();await page.reload();await ready();await startAdventure(page);await loaded('lvl00a');
+   result=await session('replay Continue after browser reload');assertMode(result,true);assert.equal(result.savedReplay,true);
+   await recoveryRoundTrip(true,202);
+   check('replay mode survives browser reload, Continue and two-minute recovery');
+ 
+   await toMenu();const preserved=await stored();
+-  await page.locator('#start-over').click();await page.locator('#cancel-new-adventure').click();assert.deepEqual(await stored(),preserved);
++  await showAdventureExtras(page);await page.locator('#start-over').click();await page.locator('#cancel-new-adventure').click();assert.deepEqual(await stored(),preserved);
+   check('cancelling Start opnieuw preserves current save, played history and recovery snapshots');
+ 
+   // Fail before a previously unplayed chapter loads. Failed attempts are not
+@@ -101,16 +102,16 @@
+     assert.deepEqual(await stored(),preserved);await page.unroute(pattern);await page.reload();await ready();
+   };
+   await failLoad('lvl03a',async()=>{
+-    await page.locator('[data-level="lvl03a"]').click();await page.locator('#play-level').click();await page.locator('#confirm-new-adventure').click();
++    await showLevelStart(page,'lvl03a');await page.locator('#play-level').click();await page.locator('#confirm-new-adventure').click();
+   });
+   check('failed first Cave load does not record the level as played or replace saves');
+-  await failLoad('lvl00a',async()=>{await page.locator('#start-over').click();await page.locator('#confirm-new-adventure').click();});
++  await failLoad('lvl00a',async()=>{await showAdventureExtras(page);await page.locator('#start-over').click();await page.locator('#confirm-new-adventure').click();});
+   check('failed Start opnieuw does not clear played history or recovery snapshots');
+ 
+   let loadRequested;const requested=new Promise(resolve=>{loadRequested=resolve;});
+   const held=new Promise(resolve=>{releaseHeldLoad=resolve;});
+   await page.route('**/data/levels/lvl00a/level.json',async route=>{loadRequested();await held;await route.continue();});
+-  await page.locator('#start-over').click();await page.locator('#confirm-new-adventure').click();await requested;
++  await showAdventureExtras(page);await page.locator('#start-over').click();await page.locator('#confirm-new-adventure').click();await requested;
+   assert.equal(await page.evaluate(()=>window.__redcat.mode),'loading');assert.deepEqual(await stored(),preserved);
+   releaseHeldLoad();await loaded('lvl00a');
+   result=await session('confirmed new adventure');assertMode(result,false);assert.equal(result.savedReplay,false);
+--- tests/recovery-menu-scenes.mjs
++++ tests/recovery-menu-scenes.mjs
+@@ -1,3 +1,4 @@
++import {showAdventureExtras} from './scene-menu.mjs';
+ import {chromium} from 'playwright';
+ import {spawn} from 'node:child_process';
+ import {mkdir,writeFile} from 'node:fs/promises';
+@@ -10,7 +11,7 @@
+ const report={},errors=[];
+ try {
+   await mkdir('artifacts',{recursive:true});
+-  browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
++  browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:[`--use-angle=${process.env.REDCAT_TEST_ANGLE || 'swiftshader'}`, '--enable-unsafe-swiftshader','--autoplay-policy=no-user-gesture-required']});
+   const context=await browser.newContext({viewport:{width:1280,height:800}});
+   const page=await context.newPage();
+   page.on('pageerror',error=>errors.push(error.stack));
+@@ -18,7 +19,7 @@
+   await page.addInitScript(()=>localStorage.setItem('redcat.settings.v1',JSON.stringify({touchControls:'on',autoIntro:false})));
+   await page.goto(`http://127.0.0.1:${port}/?skipIntro`);
+   await page.waitForFunction(()=>window.__redcat);
+-  await page.locator('#open-recovery').click();
++  await showAdventureExtras(page);await page.locator('#open-recovery').click();
+   await page.waitForFunction(()=>document.querySelectorAll('[data-recovery-minutes]').length===3);
+   assert.deepEqual(await page.locator('[data-recovery-minutes]').evaluateAll(buttons=>buttons.map(button=>({minutes:Number(button.dataset.recoveryMinutes),disabled:button.disabled}))),[{minutes:2,disabled:true},{minutes:5,disabled:true},{minutes:10,disabled:true}]);
+   await page.keyboard.press('Escape');
+@@ -68,7 +69,7 @@
+   await page.reload();await page.waitForFunction(()=>window.__redcat);
+   report.reopened=await page.evaluate(async()=>{await window.__redcat.recovery.ready;return window.__redcat.recovery.choices().map(choice=>({minutes:choice.minutes,score:choice.save?.game.state.score,age:choice.ageSeconds}));});
+   assert.deepEqual(report.reopened,report.seed.choices);
+-  await page.locator('#open-recovery').click();
++  await showAdventureExtras(page);await page.locator('#open-recovery').click();
+   await page.waitForFunction(()=>document.querySelectorAll('[data-recovery-minutes]:enabled').length===3);
+   const desktopRect=await page.locator('#recovery-saves').boundingBox();
+   assert.ok(desktopRect.x>=0&&desktopRect.y>=0&&desktopRect.x+desktopRect.width<=1280&&desktopRect.y+desktopRect.height<=800);
+@@ -84,7 +85,7 @@
+ 
+   report.loads=[];
+   for(const [minutes,score]of [[2,10],[5,7],[10,2]]) {
+-    await page.locator('#open-recovery').click();
++    await showAdventureExtras(page);await page.locator('#open-recovery').click();
+     await page.locator(`[data-recovery-minutes="${minutes}"]`).click();
+     await page.waitForFunction(()=>window.__redcat.world&&['playing','paused'].includes(window.__redcat.mode),{},{timeout:60000});
+     const restored=await page.evaluate(async({buttonId})=>{
+@@ -102,11 +103,11 @@
+ 
+   // A canceled new adventure preserves recovery; a successful confirmed start
+   // begins a fresh timeline, so another adventure cannot leak into its menu.
+-  await page.locator('#start-over').click();
++  await showAdventureExtras(page);await page.locator('#start-over').click();
+   assert.equal(await page.evaluate(()=>document.getElementById('new-adventure-warning').open),true);
+   await page.locator('#cancel-new-adventure').click();
+   assert.deepEqual(await page.evaluate(()=>window.__redcat.recovery.state.checkpoints.map(entry=>entry.save.game.state.score)),report.seed.retained);
+-  await page.locator('#start-over').click();await page.locator('#confirm-new-adventure').click();
++  await showAdventureExtras(page);await page.locator('#start-over').click();await page.locator('#confirm-new-adventure').click();
+   await page.waitForFunction(()=>window.__redcat.world&&['playing','paused'].includes(window.__redcat.mode),{},{timeout:60000});
+   report.reset=await page.evaluate(async()=>{const app=window.__redcat;app.pause();await app.recovery.flush();return {score:app.gameplay.state.score,retained:app.recovery.state.checkpoints.length,choices:app.recovery.choices().map(choice=>!!choice.save)};});
+   assert.deepEqual(report.reset,{score:0,retained:1,choices:[false,false,false]});
+--- tests/web-subpath-scenes.mjs
++++ tests/web-subpath-scenes.mjs
+@@ -1,3 +1,4 @@
++import {startAdventure, showAdventureExtras} from './scene-menu.mjs';
+ import {chromium} from 'playwright';
+ import http from 'node:http';
+ import path from 'node:path';
+@@ -60,18 +61,18 @@
+     const head=await fetch(base+file,{method:'HEAD'});assert.equal(head.status,200);assert.equal(Number(head.headers.get('content-length')),info.size);
+     report.media.push({file,status:response.status,type:response.headers.get('content-type'),range:response.headers.get('content-range'),headSize:info.size});
+   }
+-  browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl','--autoplay-policy=no-user-gesture-required']});
++  browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:[`--use-angle=${process.env.REDCAT_TEST_ANGLE || 'swiftshader'}`, '--enable-unsafe-swiftshader','--autoplay-policy=no-user-gesture-required']});
+   const page=await browser.newPage({viewport:{width:1280,height:720}}),browserRequests=[];
+   page.on('pageerror',e=>errors.push(e.stack));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});page.on('request',r=>browserRequests.push(r.url()));
+   await page.goto(origin+prefix.slice(0,-1)+'?skipIntro&source=subpath-check');await page.waitForFunction(()=>window.__redcat);
+   assert.equal(page.url(),base+'?skipIntro&source=subpath-check');
+-  report.menu=await page.evaluate(()=>({headers:document.querySelectorAll('#menu header').length,cards:document.querySelectorAll('.level-card').length,logo:document.querySelector('.logo').currentSrc,style:document.querySelector('link[rel="stylesheet"]').href,main:document.querySelector('script[type="module"]').src}));
+-  assert.equal(report.menu.headers,0);assert.equal(report.menu.cards,5);for(const field of ['logo','style','main'])assert.ok(report.menu[field].startsWith(base),field);
+-  report.addon=await page.evaluate(async()=>{const {ImprovedNoise}=await import('three/addons/math/ImprovedNoise.js');return new ImprovedNoise().noise(.1,.2,.3);});assert.ok(Number.isFinite(report.addon));
++  report.menu=await page.evaluate(()=>({headers:document.querySelectorAll('#menu header').length,cards:document.querySelectorAll('.level-card').length,logo:document.querySelector('.native-menu-logo').currentSrc,style:document.querySelector('link[rel="stylesheet"]').href,main:document.querySelector('script[type="module"]').src}));
++  assert.equal(report.menu.headers,1);assert.equal(report.menu.cards,5);for(const field of ['logo','style','main'])assert.ok(report.menu[field].startsWith(base),field);
++  report.addon=await page.evaluate(async()=>{const {Vector3}=await import('three');if(new Vector3(1,2,3).lengthSq()!==14)throw new Error('Three core import failed');const {ImprovedNoise}=await import('three/addons/math/ImprovedNoise.js');return new ImprovedNoise().noise(.1,.2,.3);});assert.ok(Number.isFinite(report.addon));
+   await page.screenshot({path:path.join(root,'artifacts/web-subpath-menu.png')});
+-  await page.locator('#play-intro').click();await page.waitForFunction(()=>{const v=document.getElementById('intro-video');return v.readyState>=2&&v.videoWidth>0;},{},{timeout:30000});
++  await showAdventureExtras(page);await page.locator('#play-intro').click();await page.waitForFunction(()=>{const v=document.getElementById('intro-video');return v.readyState>=2&&v.videoWidth>0;},{},{timeout:30000});
+   report.intro=await page.evaluate(()=>{const v=document.getElementById('intro-video');return {src:v.currentSrc,width:v.videoWidth,height:v.videoHeight,readyState:v.readyState};});assert.equal(report.intro.src,base+'assets/media/intronl.webm');
+-  await page.locator('#skip-intro').click();await page.locator('#start').click();
++  await page.locator('#skip-intro').click();await startAdventure(page);
+   await page.waitForFunction(()=>window.__redcat.world?.id==='lvl00a'&&['playing','paused'].includes(window.__redcat.mode),{},{timeout:60000});
+   await page.evaluate(()=>{window.__redcat.pause();document.getElementById('pause').hidden=true;window.__redcat.world.render();});
+   report.forest=await page.evaluate(()=>{const a=window.__redcat,w=a.world;return {id:w.id,actors:w.actorInstances.size,meshGroups:w.modelMeshes.size,scriptVersion:w.scriptProgram.version,scriptError:a.gameplay.scripts.vm.lastError,health:a.gameplay.state.health,redcat:!!w.redcat,mode:a.mode};});
+@@ -90,7 +91,7 @@
+   await page.screenshot({path:path.join(root,'artifacts/web-subpath-forest.png')});
+   const networkPaths=[...new Set(browserRequests.filter(url=>/^https?:/.test(url)))];
+   assert.ok(networkPaths.every(url=>url.startsWith(base)||url===origin+prefix.slice(0,-1)+'?skipIntro&source=subpath-check'),'all application resources stay under the prefix');
+-  for(const required of ['node_modules/three/build/three.module.js','node_modules/three/build/three.core.js','node_modules/three/examples/jsm/math/ImprovedNoise.js','data/levels/lvl00a/level.json','data/levels/lvl00a/mesh.bin','data/davi/lvl00a.json','data/motions/lvl00a.json','data/dialogue/nl.json','assets/actors/manifest.json','assets/effects/manifest.json'])assert.ok(networkPaths.some(url=>new URL(url).pathname===prefix+required),`requested prefixed ${required}`);
++  for(const required of ['src/game.bundle.js','node_modules/three/examples/jsm/math/ImprovedNoise.js','data/levels/lvl00a/level.json','data/levels/lvl00a/mesh.bin','data/davi/lvl00a.json','data/motions/lvl00a.json','data/dialogue/nl.json','assets/actors/manifest.json','assets/effects/manifest.json'])assert.ok(networkPaths.some(url=>new URL(url).pathname===prefix+required),`requested prefixed ${required}`);
+   assert.ok(networkPaths.some(url=>url.startsWith(base+'assets/voices/')),'original dialogue audio stays prefixed');
+   report.network={uniqueRequests:networkPaths.length,outsidePrefix:networkPaths.filter(url=>!url.startsWith(base)&&!url.includes('?skipIntro&source=subpath-check')),paths:networkPaths.map(url=>url.replace(origin,''))};
+   assert.deepEqual(errors,[]);
+--- tests/touch-scenes.mjs
++++ tests/touch-scenes.mjs
+@@ -1,3 +1,4 @@
++import {startAdventure, showAdventureExtras, showMoreSettings, showMainMenu} from './scene-menu.mjs';
+ import {chromium, devices} from 'playwright';
+ import {spawn} from 'node:child_process';
+ import {mkdir, writeFile} from 'node:fs/promises';
+@@ -8,8 +9,8 @@
+ // and the menus needed to operate it without a physical keyboard or mouse.
+ const port = Number(process.env.TOUCH_TEST_PORT || 4197);
+ const origin = `http://127.0.0.1:${port}`;
+-process.env.TMPDIR = 'current_work';
+-const artifacts = resolve(`current_work/touch-scenes-${Date.now()}`);
++process.env.TMPDIR = 'temp_work';
++const artifacts = resolve(`temp_work/touch-scenes-${Date.now()}`);
+ const report = {errors: [], checks: []};
+ const server = spawn(process.execPath, ['tools/serve.mjs'], {
+   env: {...process.env, PORT: String(port)}, stdio: ['ignore', 'pipe', 'inherit'],
+@@ -74,7 +75,7 @@
+ }
+ async function setting(page, value, fromPause = false, touch = true) {
+   const activate = selector => touch ? tap(page, selector) : page.locator(selector).click();
+-  await activate(fromPause ? '#pause-settings' : '#open-settings');
++  await showMoreSettings(page,{paused:fromPause,touch});
+   await page.locator('#touch-controls-setting').selectOption(value);
+   await activate('#apply-settings');
+   await page.locator('#settings').waitFor({state: 'hidden'});
+@@ -126,7 +127,7 @@
+   await mkdir(artifacts, {recursive: true});
+   const profile = await chromium.launchPersistentContext(resolve(artifacts, 'browser-profile'), {
+     executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome', headless: true,
+-    args: ['--use-angle=gl'],
++    args: [`--use-angle=${process.env.REDCAT_TEST_ANGLE || 'swiftshader'}`, '--enable-unsafe-swiftshader'],
+   });
+   browser = profile.browser();
+   const context = await browser.newContext({
+@@ -137,17 +138,17 @@
+   assert.equal(await page.evaluate(() => window.__redcat.touchEnabled), true);
+   assert.equal(await page.evaluate(() => window.__redcat.settings.touchControls), 'auto');
+   await page.screenshot({path: `${artifacts}/touch-menu-portrait.png`});
+-  await tap(page, '#open-help');
++  await showMoreSettings(page,{touch:true});await tap(page, '#open-help');
+   assert.equal(await page.locator('#help').isVisible(), true);
+-  await tap(page, '#close-help');
+-  await tap(page, '#play-intro');
++  await tap(page, '#close-help');await tap(page, '#close-settings');
++  await showAdventureExtras(page,{touch:true});await tap(page, '#play-intro');
+   await page.waitForFunction(() => window.__redcat.mode === 'intro');
+   await page.waitForFunction(() => !document.getElementById('intro-video').paused);
+   await tap(page, '#skip-intro');
+   await page.waitForFunction(() => window.__redcat.mode === 'menu');
+   check('mobile automatically enables touch; help and original intro work by touch');
+ 
+-  await tap(page, '#open-settings');
++  await showMoreSettings(page,{touch:true});
+   const scrollBefore = await page.locator('#settings .panel').evaluate(el => el.scrollTop);
+   await fingers.down(1, {x: 210, y: 680});
+   for(let y = 620; y >= 220; y -= 80)await fingers.move(1, {x: 210, y});
+@@ -166,7 +167,7 @@
+   assert.equal(await page.evaluate(() => window.__redcat.settings.touchControls), 'off');
+   check('settings scroll by touch and the Off override survives reload');
+ 
+-  await tap(page, '#start');
++  await startAdventure(page,{touch:true});
+   await page.waitForFunction(() => window.__redcat.mode === 'playing', {}, {timeout: 90000});
+   assert.equal(await page.locator('#touch-controls').isVisible(), false);
+   assert.equal(await page.locator('#game-menu').isVisible(), true);
+@@ -230,7 +231,7 @@
+   await fingers.release();
+   check('touch jump executes grounded collision movement and emits the normal jump event');
+ 
+-  await tap(page, '#game-menu'); await tap(page, '#pause-settings'); await tap(page, '#open-cheats');
++  await tap(page, '#game-menu'); await showMoreSettings(page,{paused:true,touch:true}); await tap(page, '#open-cheats');
+   await tap(page, '#cheat-noclip');
+   assert.equal(await page.locator('#cheat-noclip').isChecked(), true);
+   const score = await page.evaluate(() => window.__redcat.gameplay.state.score);
+@@ -306,7 +307,7 @@
+   await neutral(page, 'orientation resize clears input'); await fingers.release();
+   await layout(page, 'landscape');
+   await targetMeterScreenshot(page, 'landscape');
+-  await tap(page, '#game-menu'); await tap(page, '#pause-settings');
++  await tap(page, '#game-menu'); await showMoreSettings(page,{paused:true,touch:true});
+   await page.locator('#touch-controls-setting').scrollIntoViewIfNeeded();
+   await page.screenshot({path: `${artifacts}/touch-settings-landscape.png`});
+   await tap(page, '#apply-settings'); await tap(page, '#resume');
+@@ -341,7 +342,7 @@
+   await layout(page, 'small-portrait');
+   await tap(page, '#game-menu');
+   await tap(page, '#return-menu');
+-  await tap(page, '#start-over');
++  await showAdventureExtras(page,{touch:true});await tap(page, '#start-over');
+   assert.equal(await page.locator('#new-adventure-warning').evaluate(element => element.open), true);
+   await tap(page, '#cancel-new-adventure');
+   assert.equal(await page.evaluate(() => window.__redcat.mode), 'menu');
+--- tests/level-selection-menu-scenes.mjs
++++ tests/level-selection-menu-scenes.mjs
+@@ -1,3 +1,4 @@
++import {showAdventureStart, showMainMenu, showQuickplay, finishLevelSelection, showLevelStart, showAdventureExtras} from './scene-menu.mjs';
+ import {chromium} from 'playwright';
+ import {spawn} from 'node:child_process';
+ import {mkdir, writeFile} from 'node:fs/promises';

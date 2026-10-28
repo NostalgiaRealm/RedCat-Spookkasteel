@@ -1,0 +1,21 @@
+✔ Android staging contains only runtime roots, complete Three package and deterministic hashes (58.54717ms)
+✔ missing required levels, media and Three modules leave an existing staged runtime intact (75.951954ms)
+✔ re-preparing removes stale files only from the owned staging output (27.504861ms)
+✔ unsafe and unowned output paths are refused without altering source or unrelated files (5.881654ms)
+✔ symlinked input files and output ancestors cannot escape the project (8.514007ms)
+✔ an ownership marker is specific to its source project and output path (12.062216ms)
+✔ CLI accepts a single explicit output and rejects incomplete or unknown options (0.210518ms)
+✔ hidden files and invalid version metadata cannot replace a valid asset snapshot (31.292918ms)
+✔ dependency scanning ignores comments, strings and regex but handles imports and re-exports (1.556611ms)
+✔ one deterministic version covers entry, CSS, every source module and transitive Three modules (28.330086ms)
+✔ editing a leaf dependency changes every module URL even when the release version is unchanged (14.264662ms)
+✔ addon aliases and their relative imports point directly to the same version (14.183583ms)
+✔ unsafe or incomplete module graphs fail before modifying index.html (8.218959ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 266.164005

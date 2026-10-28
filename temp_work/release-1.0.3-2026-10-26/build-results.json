@@ -1,0 +1,99 @@
+{
+  "commit": "1c788dd97764f361e31b9e033d3d118b958d8262",
+  "version": "1.0.3",
+  "packageTestsRun": false,
+  "builds": [
+    {
+      "platform": "linux-x64",
+      "folder": "linux-unpacked",
+      "command": [
+        "npm",
+        "run",
+        "build:linux"
+      ],
+      "exitCode": 0,
+      "seconds": 4.26
+    },
+    {
+      "platform": "windows-x64",
+      "folder": "win-unpacked",
+      "command": [
+        "npm",
+        "run",
+        "build:windows"
+      ],
+      "exitCode": 0,
+      "seconds": 5.04
+    },
+    {
+      "platform": "linux-arm64",
+      "folder": "linux-arm64-unpacked",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--linux",
+        "dir",
+        "--arm64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.3"
+      ],
+      "exitCode": 0,
+      "seconds": 3.74
+    },
+    {
+      "platform": "windows-arm64",
+      "folder": "win-arm64-unpacked",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--win",
+        "dir",
+        "--arm64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.3"
+      ],
+      "exitCode": 0,
+      "seconds": 5.47
+    },
+    {
+      "platform": "mac-x64",
+      "folder": "mac",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--mac",
+        "dir",
+        "--x64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.3",
+        "-c.mac.notarize=false"
+      ],
+      "exitCode": 0,
+      "seconds": 3.61
+    },
+    {
+      "platform": "mac-arm64",
+      "folder": "mac-arm64",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--mac",
+        "dir",
+        "--arm64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.3",
+        "-c.mac.notarize=false"
+      ],
+      "exitCode": 0,
+      "seconds": 3.71
+    }
+  ]
+}
