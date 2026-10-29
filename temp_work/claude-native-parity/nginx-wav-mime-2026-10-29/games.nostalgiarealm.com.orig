@@ -1,0 +1,99 @@
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name games.nostalgiarealm.com;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+
+    server_name games.nostalgiarealm.com;
+
+    ssl_certificate /etc/letsencrypt/live/games.nostalgiarealm.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/games.nostalgiarealm.com/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+
+    # Browsers must revalidate before reusing a file: deployed games keep
+    # names such as src/main.js between updates. Applies to every location
+    # below, as none of them sets its own add_header.
+    add_header Cache-Control "no-cache" always;
+
+    location = / {
+        return 302 /redcatspookkasteel/;
+    }
+
+    location = /redcatsuperkarts {
+        return 301 /redcatsuperkarts/;
+    }
+
+    location ~ ^/redcatsuperkarts/(?:\.|.*/\.) {
+        return 404;
+    }
+
+    location /redcatsuperkarts/ {
+        root /var/www/games.nostalgiarealm.com;
+        index index.html;
+        autoindex off;
+        try_files $uri $uri/ =404;
+    }
+
+    # Static Kao website.
+    location = /kao {
+        return 301 /kao/;
+    }
+
+    location ~ ^/kao/(?:\.|.*/\.) {
+        return 404;
+    }
+
+    location /kao/ {
+        root /var/www/games.nostalgiarealm.com;
+        index index.html;
+        autoindex off;
+        try_files $uri $uri/ =404;
+    }
+
+    location = /bookwormdutch {
+        return 301 /bookwormdutch/;
+    }
+
+    location ~ ^/bookwormdutch/(?:\.|.*/\.) {
+        return 404;
+    }
+
+    location /bookwormdutch/ {
+        root /var/www/games.nostalgiarealm.com;
+        index index.html;
+        autoindex off;
+    }
+
+    location = /redcatspookkasteel {
+        return 301 /redcatspookkasteel/;
+    }
+
+    # Do not expose dotfiles from the application tree.
+    location ~ ^/redcatspookkasteel/(?:\.|.*/\.) {
+        return 404;
+    }
+
+    location /redcatspookkasteel/ {
+        alias /var/www/games.nostalgiarealm.com/redcatspookkasteel/redcat-website/;
+        index index.html;
+        autoindex off;
+    }
+
+    location / {
+        return 404;
+    }
+}

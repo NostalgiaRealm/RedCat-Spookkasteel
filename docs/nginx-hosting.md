@@ -128,6 +128,7 @@ location ^~ /redcatspookkasteel/ {
     root /var/www/games.nostalgiarealm.com;
     index index.html;
     include /etc/nginx/mime.types;
+    types { audio/wav wav; }
     default_type application/octet-stream;
     try_files $uri $uri/ =404;
     autoindex off;
@@ -138,7 +139,12 @@ location ^~ /redcatspookkasteel/ {
 The first location adds the required slash while preserving a query such as
 `?skipIntro`. `root` includes the URL path when choosing the file. Missing
 resources must return 404, rather than an SPA fallback page. The MIME mapping
-lets browsers recognize JavaScript modules, JSON, images and media. See the
+lets browsers recognize JavaScript modules, JSON, images and media. The
+standard `mime.types` has no `.wav`, so the `types` line adds `audio/wav` for
+the game's sounds; without it Nginx sends them as `application/octet-stream`.
+A second `types` block in the same location adds to the included list, but a
+`types` block on its own replaces every inherited type, so keep both lines
+together if your existing location has no `include`. See the
 official [Nginx root, location, types and try_files documentation](https://nginx.org/en/docs/http/ngx_http_core_module.html).
 
 `expires -1` makes clients revalidate cached content. JavaScript and stylesheet
@@ -212,13 +218,15 @@ curl -I https://games.nostalgiarealm.com/redcatspookkasteel/
 curl -I https://games.nostalgiarealm.com/redcatspookkasteel/src/game.bundle.js
 curl -I https://games.nostalgiarealm.com/redcatspookkasteel/node_modules/three/build/three.core.js
 curl -I https://games.nostalgiarealm.com/redcatspookkasteel/data/levels/lvl00a/level.json
+curl -I https://games.nostalgiarealm.com/redcatspookkasteel/assets/audio/forest3.wav
 curl -I https://games.nostalgiarealm.com/redcatspookkasteel/does-not-exist.js
 curl -sS -D - -o /dev/null -H 'Range: bytes=0-1023' \
   https://games.nostalgiarealm.com/redcatspookkasteel/assets/media/intronl.webm
 ```
 
 Expect a redirect to `/redcatspookkasteel/?skipIntro`, 200 responses for the
-existing files, a JavaScript MIME type for `.js`, 404 for the nonexistent file,
+existing files, a JavaScript MIME type for `.js`, `audio/wav` for the sound,
+404 for the nonexistent file,
 and a 206 byte-range response for the video. Avoid a catch-all rewrite or proxy
 that returns `index.html` for missing `.js`, `.json` or binary files.
 
