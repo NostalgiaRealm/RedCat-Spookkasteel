@@ -184,13 +184,13 @@ validation beyond Linux x64 remains pending.
 
 ## 5. Generate portable packages when ready
 
-**Only run this section when you intend to create new builds.** Close the game first. These commands update the corresponding directories under `dist/`; copy an older build elsewhere first if you want to preserve it. The current source displays **1.0.6** in **Over** and uses **1.0.6** in `package.json` and the root lockfile. The packaging helper still requires an explicit `REDCAT_PACKAGE_VERSION` for each packaging command; use `1.0.6` for this source version. It overrides the generated package metadata without modifying the source, lockfile or displayed version. Use three dot-separated integers chosen for your distribution; the helper has no default. Without this value, the packaging command stops before creating a build.
+**Only run this section when you intend to create new builds.** Close the game first. These commands update the corresponding directories under `dist/`; copy an older build elsewhere first if you want to preserve it. The current source displays **1.0.7** in **Over** and uses **1.0.7** in `package.json` and the root lockfile. The packaging helper still requires an explicit `REDCAT_PACKAGE_VERSION` for each packaging command; use `1.0.7` for this source version. It overrides the generated package metadata without modifying the source, lockfile or displayed version. Use three dot-separated integers chosen for your distribution; the helper has no default. Without this value, the packaging command stops before creating a build.
 
-For **1.0.6** packages, enter **1.0.6** at the version prompts below
-(or set `REDCAT_PACKAGE_VERSION=1.0.6` in Bash / `$env:REDCAT_PACKAGE_VERSION = '1.0.6'`
+For **1.0.7** packages, enter **1.0.7** at the version prompts below
+(or set `REDCAT_PACKAGE_VERSION=1.0.7` in Bash / `$env:REDCAT_PACKAGE_VERSION = '1.0.7'`
 in PowerShell). Use the same version for every desktop architecture. The current
-Over dialog displays **1.0.6**; the separate Android app uses `versionName = "1.0.6"`
-and `versionCode = 8`. No new package is created by updating this documentation
+Over dialog displays **1.0.7**; the separate Android app uses `versionName = "1.0.7"`
+and `versionCode = 9`. No new package is created by updating this documentation
 or the display version.
 
 ### Available targets and current limits

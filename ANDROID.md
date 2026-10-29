@@ -2,7 +2,7 @@
 
 Updated **26 October 2026**; initial implementation **6 October 2026**. The **Kotlin/Android WebView app** bundles the prepared game runtime and original assets. It runs the shared JavaScript/Three.js game with bundled assets, targeting **Android 16 / API 36** and allowing installation on **Android 10 / API 29 or newer**.
 
-The current release configuration builds version **1.0.6**, Android `versionCode = 8`. The 1.0.6 source was checked with the full unit suite and all browser scenes; the device validation below describes the earlier 1.0.3 work. The procedures below cover offline asset staging, debug validation, private upload-key signing, and a Google Play AAB plus a directly installable APK. See the final validation section for what was actually checked, and [the Google Play guide](docs/android-google-play-release.md) for owner-account publication steps.
+The current release configuration builds version **1.0.7**, Android `versionCode = 9`. The 1.0.7 source was checked with the full unit suite and all browser scenes; the device validation below describes the earlier 1.0.3 work. The procedures below cover offline asset staging, debug validation, private upload-key signing, and a Google Play AAB plus a directly installable APK. See the final validation section for what was actually checked, and [the Google Play guide](docs/android-google-play-release.md) for owner-account publication steps.
 
 ## 1. Understand what is implemented
 
@@ -235,9 +235,9 @@ npm run build:android
 `tools/build-android.mjs` checks version agreement, runs `:app:assembleRelease` and `:app:bundleRelease`, and copies the signed outputs plus content manifest/checksums to:
 
 ```text
-dist/android/1.0.6/
-  RedCat-Spookkasteel-1.0.6-android.aab
-  RedCat-Spookkasteel-1.0.6-android.apk
+dist/android/1.0.7/
+  RedCat-Spookkasteel-1.0.7-android.aab
+  RedCat-Spookkasteel-1.0.7-android.apk
   asset-manifest.json
   SHA256SUMS.txt
 ```
