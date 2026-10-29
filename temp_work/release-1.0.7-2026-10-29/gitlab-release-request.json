@@ -1,0 +1,81 @@
+{
+ "tag_name": "v1.0.7",
+ "name": "RedCat Spookkasteel 1.0.7",
+ "description": "Version 1.0.7 makes the touch controls comfortable again after the camera and steering were rebuilt from the original in 1.0.5 and 1.0.6: the touch stick controls speed and direction smoothly, and the **Lopen** button works again. Existing player profiles, saves, recovery history and settings keep working without conversion or manual intervention.\n\n## Touch Controls\n\n- **Analog touch stick:** How far you push the stick now sets RedCat's speed, so a light push walks him slowly instead of running at full speed. He heads in the direction you push, relative to the camera, at any angle, and pulling back makes him back up. A light push also turns him more gently.\n- **Lopen works again:** Tapping **Lopen** switched slow walking on and immediately off again on some touch screens. It now stays on until you tap it again.\n- **Slower in every direction:** With **Lopen** on, RedCat now walks more slowly in every direction, including backing up, at the original's walk-to-run ratio.\n- **A deliberate difference:** The original game only had digital controls. The analog touch stick is recorded as an intentional change in [docs/intentional-fixes-and-findings.md](docs/intentional-fixes-and-findings.md). Keyboard and controllers keep the original steering.\n\n## Project and Documentation\n\n- **Original version:** The README now records which original version the port and the decompilation are based on: the original disc (v 1.0.0.20, 2 oktober 2000) with the Windows 98 patch, v 1.0.1.0, 19 juni 2001.\n- **Cleaner repository:** Old test screenshots and reports (`artifacts/`) were removed from the repository; they remain in the git history. See [docs/project-cleanup-2026-10-29.md](docs/project-cleanup-2026-10-29.md).\n- **Up-to-date documentation:** The status and remaining-work pages now match the current state of the port.\n\n## Tests\n\n- **All tests pass:** All 1632 unit tests and all 111 browser scenes pass. New tests cover the analog touch stick and the **Lopen** tap.\n\n## Save Compatibility\n\n- **Unchanged:** No save data changed in this release. Storage origins, keys, player IDs, export format and recovery history stay the same.\n\n## Release Scope\n\n- **Updated the release version to 1.0.7:** These notes cover changes after the **1.0.6 release commit, `f0655a55b`**.\n- **Included desktop and Android packages:**\n  - **Desktop:** Linux, Windows and macOS downloads cover x64 and ARM64.\n  - **Android:** A signed direct-install APK and a Google Play AAB, with version name 1.0.7 and version code 9.\n  - **Signing:** Windows packages remain unsigned. The macOS bundles built on Linux remain unsigned and not notarized. No Google Play upload or approval is implied.\n- **Original decompilation:** The complete original decompilation archive, its checksum and its file manifest are attached, as with every release.\n",
+ "assets": {
+  "links": [
+   {
+    "name": "RC_ORIGINAL_DECOMPILED-1.0.7.manifest.json",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.7/RC_ORIGINAL_DECOMPILED-1.0.7.manifest.json",
+    "link_type": "package",
+    "direct_asset_path": "/RC_ORIGINAL_DECOMPILED-1.0.7.manifest.json"
+   },
+   {
+    "name": "RC_ORIGINAL_DECOMPILED-1.0.7.sha256",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.7/RC_ORIGINAL_DECOMPILED-1.0.7.sha256",
+    "link_type": "package",
+    "direct_asset_path": "/RC_ORIGINAL_DECOMPILED-1.0.7.sha256"
+   },
+   {
+    "name": "RC_ORIGINAL_DECOMPILED-1.0.7.tar.gz",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.7/RC_ORIGINAL_DECOMPILED-1.0.7.tar.gz",
+    "link_type": "package",
+    "direct_asset_path": "/RC_ORIGINAL_DECOMPILED-1.0.7.tar.gz"
+   },
+   {
+    "name": "RedCat-Spookkasteel-1.0.7-android.aab",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.7/RedCat-Spookkasteel-1.0.7-android.aab",
+    "link_type": "package",
+    "direct_asset_path": "/RedCat-Spookkasteel-1.0.7-android.aab"
+   },
+   {
+    "name": "RedCat-Spookkasteel-1.0.7-android.apk",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.7/RedCat-Spookkasteel-1.0.7-android.apk",
+    "link_type": "package",
+    "direct_asset_path": "/RedCat-Spookkasteel-1.0.7-android.apk"
+   },
+   {
+    "name": "RedCat-Spookkasteel-1.0.7-linux-arm64.zip",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.7/RedCat-Spookkasteel-1.0.7-linux-arm64.zip",
+    "link_type": "package",
+    "direct_asset_path": "/RedCat-Spookkasteel-1.0.7-linux-arm64.zip"
+   },
+   {
+    "name": "RedCat-Spookkasteel-1.0.7-linux-x64.zip",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.7/RedCat-Spookkasteel-1.0.7-linux-x64.zip",
+    "link_type": "package",
+    "direct_asset_path": "/RedCat-Spookkasteel-1.0.7-linux-x64.zip"
+   },
+   {
+    "name": "RedCat-Spookkasteel-1.0.7-mac-arm64.zip",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.7/RedCat-Spookkasteel-1.0.7-mac-arm64.zip",
+    "link_type": "package",
+    "direct_asset_path": "/RedCat-Spookkasteel-1.0.7-mac-arm64.zip"
+   },
+   {
+    "name": "RedCat-Spookkasteel-1.0.7-mac-x64.zip",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.7/RedCat-Spookkasteel-1.0.7-mac-x64.zip",
+    "link_type": "package",
+    "direct_asset_path": "/RedCat-Spookkasteel-1.0.7-mac-x64.zip"
+   },
+   {
+    "name": "RedCat-Spookkasteel-1.0.7-windows-arm64.zip",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.7/RedCat-Spookkasteel-1.0.7-windows-arm64.zip",
+    "link_type": "package",
+    "direct_asset_path": "/RedCat-Spookkasteel-1.0.7-windows-arm64.zip"
+   },
+   {
+    "name": "RedCat-Spookkasteel-1.0.7-windows-x64.zip",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.7/RedCat-Spookkasteel-1.0.7-windows-x64.zip",
+    "link_type": "package",
+    "direct_asset_path": "/RedCat-Spookkasteel-1.0.7-windows-x64.zip"
+   },
+   {
+    "name": "SHA256SUMS.txt",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.7/SHA256SUMS.txt",
+    "link_type": "package",
+    "direct_asset_path": "/SHA256SUMS.txt"
+   }
+  ]
+ }
+}
