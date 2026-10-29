@@ -150,6 +150,13 @@ option and no first-person view.
 - **First person (kept).** The original has no first-person view; the port's
   toggle remains. First person and no-clip flight keep direct mouse turning
   and the previous movement model.
+- **Touch stick (deliberate change, 29 October).** `touchSteer` replaces the
+  native steering for the analog touch stick only: RedCat heads in the stick's
+  camera-relative direction at any angle (pulling back within 45° of straight
+  down backs him up), speed scales with the deflection, and the turn rate with
+  it too, down to 35% of the native 6.1/s. Lopen scales speed by 96/156.8 in
+  every direction, because the original's WalkOtherSpeed (156.8) exceeds its
+  RunOtherSpeed (144). Keyboard and controller sticks keep `nativeSteer`.
 - **Key mapping.** Arrow left/right map to TurnLeft/Right, A/D to the strafe
   keys, and touch and controller sticks steer like the turn keys.
 - **Distance keys (requested 28 October).** The original's Weapon1/2/3 keys

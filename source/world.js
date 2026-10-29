@@ -7,7 +7,7 @@ import { sampleCameraRoute } from './script-camera.js';
 import { PlayerCameraControl } from './camera-control.js';
 import { CameraWallLift } from './third-person-camera.js';
 import { boneScalePoint, knightSegmentFromBone } from './knight-pose-native.js';
-import { NativeFollowCamera, nativeSteer, yawToward, CAMERA_HULL_HALF_SIZE } from './native-camera.js';
+import { NativeFollowCamera, nativeSteer, touchSteer, yawToward, CAMERA_HULL_HALF_SIZE } from './native-camera.js';
 import { PLAYER_HEIGHT, PLAYER_EYE_HEIGHT } from './player-hull.js';
 // The shared look/aim pitch's default; at this value the orbit adds nothing
 // to the native camera pitch.
@@ -1135,7 +1135,10 @@ export class CastleWorld {
       // Callers without the separate fields use `right` as strafe and `turn` (left positive) as steering.
       const controls={forward:input.forward,strafe:input.strafe??input.right,steer:input.steer??-(input.turn||0)};
       const firing=!!input.attack&&!!this.gameplay?.state.skill;
-      const steer=nativeSteer(controls,{heading:this.yaw,cameraYaw:this.followCamera.yaw,dt,lockYaw:lock?yawToward(this.player.position,lock):null,firing});
+      const options={heading:this.yaw,cameraYaw:this.followCamera.yaw,dt,lockYaw:lock?yawToward(this.player.position,lock):null,firing};
+      // The touch stick is analog (deliberate port change, touchSteer); keys and controllers stay native.
+      const stick=Array.isArray(input.stick)&&Math.hypot(input.stick[0],input.stick[1])>0?input.stick:null;
+      const steer=stick?touchSteer(stick,{...options,walk:!!input.walk}):nativeSteer(controls,options);
       this.yaw=steer.heading;moveInput={...input,...steer.move};
       this.cameraInput={hasInput:steer.hasInput,backpedal:steer.backpedal,steering:true,aiming:firing};
     } else {

@@ -18,12 +18,12 @@ always be reopened. Browser settings are local to that browser and origin.
 
 | Control | Action |
 | --- | --- |
-| Left stick | Move forward/backward and strafe; displacement controls speed. |
+| Left stick | RedCat walks toward the stick's direction relative to the camera, at any angle; pulling back backs him up. How far you push sets the speed, and a light push also turns him more gently. A deliberate change from the original's digital steering (29 October 2026); in free flight the stick moves forward/backward and strafes. |
 | Swipe the right-hand look area | Turn and look up/down, using the configured Kijkgevoeligheid. |
 | Spring | Jump; becomes Omhoog with no-clip enabled. |
 | Schieten | Hold to attack, using the existing aiming/target-lock system. |
 | Overslaan · 2 s | Hold for two seconds to skip a cutscene; the existing progress ring shows the hold. Releasing early cancels it. |
-| Lopen | Toggle slow walking. |
+| Lopen | Toggle slow walking: every direction, backing up included, at the original's walk-to-run ratio (0.61). |
 | Camera | Switch first/third-person view. |
 | Menu | Pause; access save/load, settings, cheats, restart and return to the main menu. |
 | Omhoog / Omlaag | Ascend/descend in no-clip mode; the stick follows the view direction. |

@@ -1,0 +1,24 @@
+PASS native ready handshake gates startup; automatic touch, offline privacy policy and Android pixel budget remain active
+PASS native suspension preserves intro position; foreground waits for Verder kijken
+PASS visibility-first intro suspension blocks its resume action until visible
+PASS fullscreen settings reach the native bridge without calling HTML fullscreen
+PASS Level 1 loads and native Back pauses the real game
+Browser integration evidence: /home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/temp_work/scene-output/temp_work/android-scenes/host-scenes-Usn7W1
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert.ok(Object.values(frozen.input).every(value => value === 0 || value === false))
+
+    at file:///home/rick/Documents/Rebuilds/RedCat%20Spookkasteel/RCSPOOK_NEW/tests/android-host-scenes.mjs:206:10 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

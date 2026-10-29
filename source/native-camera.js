@@ -68,6 +68,28 @@ export function nativeSteer(controls,{firing=false,...options}) {
   const result=steerInput(controls,options);
   return firing?{...result,move:{forward:0,right:0}}:result;
 }
+// Touch stick, a deliberate departure: the original's controls are digital,
+// so nativeSteer keeps only the sign of each input and any deflection runs at
+// full speed. The touch stick instead steers toward its own direction relative
+// to the camera, continuously rather than in 45 degree steps, and its
+// deflection sets the speed. Pulling back (within 45 degrees of straight down)
+// backs RedCat up as the original's back input does. A light deflection also
+// turns more gently (at least 35% of the original rate). Lopen scales the speed by
+// the original's walk/run ratio in every direction (WalkOtherSpeed exceeds
+// RunOtherSpeed in Game.ini, so the walk table would back up faster).
+export const TOUCH_WALK_SCALE=96/156.8,TOUCH_MIN_TURN=.35;
+export function touchSteer([x,y],{heading,cameraYaw,dt,lockYaw=null,firing=false,walk=false}) {
+  const magnitude=Math.min(1,Math.hypot(x,y));
+  if(!(magnitude>0))return {heading,move:{forward:0,right:0,walk:false},hasInput:false,backpedal:false};
+  const speed=magnitude*(walk?TOUCH_WALK_SCALE:1),stop=firing?0:1,rate=STEER_MOVE_RATE*Math.max(TOUCH_MIN_TURN,magnitude);
+  // With a locked target the stick moves RedCat in his own frame while he faces it.
+  if(lockYaw!==null)return {heading:steerHeading(heading,lockYaw,rate,dt),
+    move:{forward:y/magnitude*speed*stop,right:x/magnitude*speed*stop,walk:false},hasInput:true,backpedal:y<0};
+  const angle=Math.atan2(x,y),backpedal=Math.abs(angle)>=3*Math.PI/4;
+  const target=backpedal?cameraYaw+Math.sign(angle)*(Math.PI-Math.abs(angle)):cameraYaw-angle;
+  return {heading:steerHeading(heading,target,rate,dt),
+    move:{forward:(backpedal?-speed:speed)*stop,right:0,walk:false},hasInput:true,backpedal};
+}
 function steerInput({forward=0,steer=0,strafe=0}={},{heading,cameraYaw,dt,lockYaw=null}) {
   const z=-sign(forward),x=sign(steer),sx=sign(strafe);
   if(!z&&!x&&!sx)return {heading,move:{forward:0,right:0},hasInput:false,backpedal:false};

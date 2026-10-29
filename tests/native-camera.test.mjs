@@ -126,3 +126,26 @@ test('while RedCat stands to shoot, the follow camera takes the idle row (0x4598
   assert.ok(Math.abs(aiming.distance-CAMERA_PRESETS[0].idle[1]*57.92)<1,`idle distance ${aiming.distance}`);
   assert.ok(Math.abs(walking.distance-CAMERA_PRESETS[0].moving[1]*57.92)<1,`moving distance ${walking.distance}`);
 });
+test('the touch stick is analog: its deflection sets speed and turn rate, and Lopen slows every direction (deliberate change)',async()=>{
+  const {touchSteer,TOUCH_WALK_SCALE,STEER_MOVE_RATE:RATE}=await import('../source/native-camera.js');
+  const {playerInputVelocity}=await import('../source/player-movement.js');
+  const speed=(stick,walk=false)=>Math.hypot(...playerInputVelocity(touchSteer(stick,{heading:0,cameraYaw:0,dt:1/60,walk}).move,0,true));
+  const native=Math.hypot(...playerInputVelocity(nativeSteer({forward:.2},{heading:0,cameraYaw:0,dt:1/60}).move,0,true));
+  assert.ok(Math.abs(native-156.8)<1e-6,'keys and controllers keep the original digital full speed');
+  assert.ok(Math.abs(speed([0,.2])-.2*156.8)<1e-6,'a 20% deflection walks at 20% speed');
+  assert.ok(Math.abs(speed([0,1])-156.8)<1e-6);
+  assert.ok(Math.abs(speed([0,1],true)-96)<1e-6,'Lopen forward: the original walk speed');
+  assert.ok(speed([0,-1],true)<speed([0,-1]),'Lopen also slows backing up');
+  assert.ok(Math.abs(speed([0,-1],true)-144*TOUCH_WALK_SCALE)<1e-6);
+  // Direction is camera-relative and continuous; pulling back backs RedCat up.
+  const right=touchSteer([1,0],{heading:0,cameraYaw:0,dt:10}),back=touchSteer([0,-1],{heading:0,cameraYaw:0,dt:10});
+  assert.ok(Math.abs(right.heading+Math.PI/2)<1e-9);assert.equal(back.backpedal,true);assert.ok(back.move.forward<0);
+  const diagonal=touchSteer([Math.sin(.3),Math.cos(.3)],{heading:0,cameraYaw:0,dt:10});
+  assert.ok(Math.abs(diagonal.heading+.3)<1e-9,'any angle, not only 45 degree steps');
+  // A light deflection turns more gently than a full one.
+  const turn=stick=>Math.abs(touchSteer(stick,{heading:0,cameraYaw:0,dt:1/60}).heading);
+  assert.ok(turn([.2,0])<turn([1,0]));assert.ok(Math.abs(turn([1,0])-Math.PI/2*RATE/60)<1e-9);
+  // Firing still stops movement; a released stick does nothing.
+  assert.deepEqual(touchSteer([0,1],{heading:0,cameraYaw:0,dt:1/60,firing:true}).move,{forward:0,right:0,walk:false});
+  assert.equal(touchSteer([0,0],{heading:0,cameraYaw:0,dt:1/60}).hasInput,false);
+});

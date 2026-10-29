@@ -82,9 +82,13 @@ export class TouchControls {
       button.setAttribute('aria-pressed', 'false');
       this.buttons[name] = button;
       // Keyboard and assistive-technology clicks have no preceding pointer event.
+      // A touch tap can also end in a click with detail 0; skip the click that
+      // follows a pointer press, or Lopen toggles on and straight off again.
       this.listen(button, 'click', event => {
         event.preventDefault();
-        if (event.detail === 0 && this.canUse(name) && !HELD_ACTIONS.has(name)) {
+        const tapped = this.pointerPressed?.name === name && performance.now() - this.pointerPressed.at < 1000;
+        this.pointerPressed = null;
+        if (event.detail === 0 && !tapped && this.canUse(name) && !HELD_ACTIONS.has(name)) {
           this.onGesture();
           this.activate(name);
         }
@@ -169,6 +173,7 @@ export class TouchControls {
     this.onGesture();
     if ((name === 'move' || name === 'look') && [...this.pointers.values()].some(pointer => pointer.name === name)) return;
     const pointer = {name,control,x:event.clientX,y:event.clientY};
+    this.pointerPressed = {name,at:performance.now()};
     if (name === 'move') {
       const bounds = control.getBoundingClientRect();
       pointer.centerX = bounds.left + bounds.width / 2;

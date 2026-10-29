@@ -242,3 +242,16 @@ test('dispose clears input, removes controls and disconnects their listeners', (
   assert.deepEqual(controls.readInput(),idle);
   controls.dispose();
 }));
+
+test('a tap whose click has detail 0 toggles Lopen once; a keyboard click still toggles it', () => {
+  withControls(({controls,element}) => {
+    // Chromium can end a touch tap with a click whose detail is 0.
+    pointer(element('touch-walk'),'pointerdown',1);
+    pointer(element('touch-walk'),'pointerup',1);
+    element('touch-walk').dispatchEvent(Object.assign(new Event('click',{cancelable:true}),{detail:0}));
+    assert.equal(controls.readInput().walk,true,'the click after the tap does not toggle it back');
+    // A keyboard or assistive-technology click has no pointer press before it.
+    element('touch-walk').dispatchEvent(Object.assign(new Event('click',{cancelable:true}),{detail:0}));
+    assert.equal(controls.readInput().walk,false);
+  });
+});

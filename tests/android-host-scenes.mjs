@@ -203,7 +203,7 @@ try {
   assert.equal(frozen.mode, 'paused');
   assert.equal(frozen.audioPaused, true);
   assert.equal(frozen.playingSounds, 0);
-  assert.ok(Object.values(frozen.input).every(value => value === 0 || value === false));
+  assert.ok(Object.values(frozen.input).every(value => value === 0 || value === false || value === null /* released touch stick */));
   assert.equal(await page.evaluate(() => window.__redcat.touchControls.pointers.size), 0);
   assert.equal(JSON.parse(frozen.save).level, 'lvl00a');
   await page.waitForTimeout(350);

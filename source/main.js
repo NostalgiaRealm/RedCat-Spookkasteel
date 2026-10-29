@@ -763,6 +763,8 @@ function readInput(){const keyboard=readKeyboardInput(keys,settings.controlBindi
   // without turning; turn keys and analog sticks steer camera-relative.
   strafe:keyboard.right,
   steer:clamp((touch.right||0)+(pad.right||0)-keyboard.turn),
+  // The analog touch stick [right, forward] for touchSteer; null while released.
+  stick:touch.forward||touch.right?[touch.right||0,touch.forward||0]:null,
   jump:keyboard.jump||!!touch.jump||!!pad.jump,
   descend:keyboard.descend||!!touch.descend||!!pad.descend,
   walk:keyboard.walk||!!touch.walk||!!pad.walk,
