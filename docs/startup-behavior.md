@@ -28,6 +28,16 @@ unmuting and pointer lock run before the fullscreen request. After entering
 fullscreen once, leaving it does not trigger automatic re-entry. Settings can
 always explicitly change the preference where the Fullscreen API is supported.
 
+Leaving browser fullscreen during play opens the pause menu. Browsers use the
+first Escape in fullscreen to leave it and never pass that key to the page, so
+without this the first Escape would only leave fullscreen and a second one
+would pause. Escape and the browser's own controls leave the saved fullscreen
+preference unchanged. Turning fullscreen off in the settings happens while
+the game is already paused, so it adds no extra pause. Losing mouse capture
+already paused the game in the same way. The desktop shell and the Android
+app set fullscreen through their own window, not the browser's Fullscreen
+API, so this does not apply to them.
+
 Browser policy references:
 
 - [Chrome autoplay policy](https://developer.chrome.com/blog/autoplay/)

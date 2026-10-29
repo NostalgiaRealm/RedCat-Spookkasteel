@@ -741,6 +741,9 @@ window.addEventListener('mousemove',e=>{if(mode==='playing'&&document.pointerLoc
 window.addEventListener('mousedown',e=>{if(!touchEnabled&&!e.sourceCapabilities?.firesTouchEvents&&e.button===0&&mode==='playing'&&document.pointerLockElement)mouseAttack=true;});
 window.addEventListener('mouseup',()=>mouseAttack=false);
 document.addEventListener('pointerlockchange',()=>{if(!touchEnabled&&!controllerActive&&!document.pointerLockElement&&mode==='playing')pause();});
+// Browsers use the first Escape in fullscreen to leave it and never pass the
+// key to the page, so leaving fullscreen during play pauses as well.
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&mode==='playing')pause();});
 window.addEventListener('pointerdown',event=>{if(event.isTrusted)setControllerActive(false);if(!androidSuspended())menuAudio.resume();},{capture:true});
 window.addEventListener('keydown',()=>{if(!androidSuspended())menuAudio.resume();},{capture:true});
 window.addEventListener('blur',()=>{clearInputs();pause();menuAudio.pause();});window.addEventListener('focus',()=>{if(!androidSuspended())menuAudio.resume();});document.addEventListener('visibilitychange',()=>{if(document.hidden){clearInputs();pause();menuAudio.pause();}else if(!androidSuspended())menuAudio.resume();});

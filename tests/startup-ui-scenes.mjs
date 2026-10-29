@@ -66,6 +66,31 @@ try {
   check('a new page and restarted adventure do not show the touch hint again');
   await context.close();context=null;
 
+  // Escape in browser fullscreen only leaves fullscreen; the page never sees
+  // the key. Leaving fullscreen during play must therefore pause the game.
+  context=await chromium.launchPersistentContext(resolve(output,'browser-profile-fullscreen'),{
+    executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--use-angle=gl'],viewport:{width:1024,height:768},
+  });
+  const play=context.pages()[0]||await context.newPage();play.on('pageerror',e=>report.errors.push(String(e)));
+  await play.addInitScript(()=>{if(!localStorage.getItem('redcat.settings.v1'))localStorage.setItem('redcat.settings.v1',JSON.stringify({autoIntro:false,volume:0}));});
+  await play.goto(`http://127.0.0.1:${port}/`);await play.waitForFunction(()=>window.__redcat?.mode==='menu');
+  await play.mouse.click(512,700);await play.waitForFunction(()=>!!document.fullscreenElement);
+  await play.evaluate(()=>window.__redcat.startLevel(0));await play.waitForFunction(()=>window.__redcat.mode==='playing'&&!!document.fullscreenElement);
+  await play.evaluate(()=>document.exitFullscreen());
+  await play.waitForFunction(()=>window.__redcat.mode==='paused'&&!document.getElementById('pause').hidden);
+  assert.equal(await play.evaluate(()=>window.__redcat.settings.fullscreen),true,'leaving fullscreen keeps the preference');
+  check('leaving browser fullscreen during play opens the pause menu');
+  const openFullscreenSetting=async()=>{await play.locator('#pause-settings').click();if(!await play.locator('#fullscreen').isVisible())await play.locator('#open-more-settings').click();};
+  await openFullscreenSetting();assert.equal(await play.locator('#fullscreen').isChecked(),true);
+  await play.locator('#apply-settings').click();await play.waitForFunction(()=>!!document.fullscreenElement&&document.getElementById('settings').hidden);
+  await play.locator('#resume').click();await play.waitForFunction(()=>window.__redcat.mode==='playing');
+  await play.evaluate(()=>window.__redcat.pause());await openFullscreenSetting();await play.locator('#fullscreen').uncheck();await play.locator('#apply-settings').click();
+  await play.waitForFunction(()=>!document.fullscreenElement&&window.__redcat.settings.fullscreen===false&&document.getElementById('settings').hidden);
+  await play.locator('#resume').click();await play.waitForFunction(()=>window.__redcat.mode==='playing');
+  await play.waitForTimeout(500);assert.equal(await play.evaluate(()=>window.__redcat.mode),'playing');
+  check('fullscreen turned off in the settings stays off without pausing the resumed game');
+  await context.close();context=null;
+
   // Native shell can enter fullscreen immediately, without browser activation.
   const env={...process.env,TMPDIR:sceneOutput('current_work')};delete env.LD_PRELOAD;delete env.MANGOHUD;
   app=await electron.launch({args:['.','--ozone-platform=x11',`--user-data-dir=${resolve(output,'electron-profile')}`],cwd:process.cwd(),env});

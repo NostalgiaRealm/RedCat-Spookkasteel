@@ -1,0 +1,44 @@
+{
+ "browser": "webkit 26.0",
+ "delay": 2000,
+ "before": {
+  "mode": "playing",
+  "hasFocus": true,
+  "active": "BODY",
+  "openDialogs": [],
+  "fullscreen": true,
+  "locked": false
+ },
+ "after": {
+  "mode": "paused",
+  "hasFocus": true,
+  "active": "BODY",
+  "openDialogs": [],
+  "fullscreen": false,
+  "locked": false
+ },
+ "final": {
+  "mode": "playing",
+  "hasFocus": true,
+  "active": "BODY",
+  "openDialogs": [],
+  "fullscreen": false,
+  "locked": false
+ },
+ "trace": [
+  "276 fullscreenchange locked=false hasFocus=true",
+  "3922 requestPointerLock on #game activation=true",
+  "3922 lock rejected NotAllowedError",
+  "-- playing",
+  "4034 pointerlockerror locked=false hasFocus=true",
+  "-- pressing Escape",
+  "6043 keyup Escape prevented=false mode=playing",
+  "6047 fullscreenchange locked=false hasFocus=true",
+  "-- pressing Escape again",
+  "6846 keydown Escape prevented=false mode=paused",
+  "6858 requestPointerLock on #game activation=true",
+  "6890 keyup Escape prevented=false mode=playing",
+  "6890 lock rejected WrongDocumentError",
+  "6978 pointerlockerror locked=false hasFocus=true"
+ ]
+}
