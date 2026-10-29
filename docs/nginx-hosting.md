@@ -228,6 +228,48 @@ sound, mouse look and pause. Click the page if the browser asks for a gesture to
 start audio/video, mouse capture or fullscreen. Browser window controls differ
 from the Electron desktop app. Mobile browsers automatically enable the [touch overlay](touch-controls.md); visitors can choose Automatisch, Aan or Uit in Instellingen → Aanraakbediening. Upload the updated `index.html` and complete `src/` directory together when adding touch support to an existing deployment.
 
+## Update the website with one command
+
+`tools/deploy-website.sh` replaces the manual routine of stopping Nginx,
+emptying the web folder and copying from a shared folder. Run on Fedora:
+
+```sh
+tools/deploy-website.sh --dry-run   # list what would change on the server
+tools/deploy-website.sh             # refresh, stage, upload and check the live site
+```
+
+It refreshes the bundle, stages exactly the files from step 1 in
+`temp_work/web-deploy/` (ignored), and mirrors them over SSH with rsync:
+- only changed files are sent;
+- they are all put in place at the end;
+- files that no longer exist are removed afterwards, inside the destination
+  folder only.
+
+Nginx keeps running, and the cache keys in `index.html` make browsers load the
+new files. Afterwards it checks that the public address serves the new
+`index.html`. It refuses any destination that is not an absolute path ending in
+`/redcat-website`.
+
+**One-time setup:**
+
+1. Log in with an SSH key so no password is asked: `ssh-copy-id rick@SERVER`.
+2. Let your own account write the web folder, so no `sudo` is needed. Nginx
+   only needs to read it. On the server:
+
+   ```sh
+   sudo chown -R rick:www-data /var/www/games.nostalgiarealm.com/redcatspookkasteel/redcat-website
+   sudo chmod -R u+rwX,g+rX,o+rX /var/www/games.nostalgiarealm.com/redcatspookkasteel/redcat-website
+   ```
+
+3. If the SSH target or folder differ from the defaults (`rick@SERVER`,
+   `/var/www/games.nostalgiarealm.com/redcatspookkasteel/redcat-website`), put
+   them in `~/.config/redcat-spookkasteel/deploy.env`:
+
+   ```sh
+   REDCAT_DEPLOY_HOST=rick@SERVER
+   REDCAT_DEPLOY_PATH=/var/www/games.nostalgiarealm.com/redcatspookkasteel/redcat-website
+   ```
+
 ## Updates, saves and troubleshooting
 
 - For updates, copy matching `index.html`, `src/`, `assets/`, `data/` and Three.js
