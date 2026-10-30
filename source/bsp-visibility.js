@@ -8,7 +8,8 @@ export class BspVisibility {
   }
   findLeaf(point) {
     const {models,nodes,planes}=this.collision,bounds=models[0];
-    if(!point||point.some((v,i)=>!Number.isFinite(v)||v<bounds.min[i]||v>bounds.max[i]))return -1;
+    if(!point)return -1;
+    for(let i=0;i<point.length;i++){const v=point[i];if(!Number.isFinite(v)||v<bounds.min[i]||v>bounds.max[i])return -1;}
     let id=bounds.root;
     while(id>=0){const n=nodes[id];if(!n)return -1;const p=planes[n[2]];id=n[p[0]*point[0]+p[1]*point[1]+p[2]*point[2]>=p[3]?0:1];}
     return -id-1;
@@ -22,8 +23,14 @@ export class BspVisibility {
     if(!this.usable(leaf))leaf=this.lastLeaf;
     if(!this.usable(leaf)){this.active=false;return false;}
     this.active=true;this.lastLeaf=leaf;
-    const {clusters,leaves,areas,areaPortals,leafFaces}=this.metadata,[cluster,area]=leaves[leaf];
-    const open=areaPortals.map(([model])=>portalOpen(model)),key=`${cluster}:${area}:${open.map(v=>v?1:0).join('')}`;
+    const {clusters,leaves,areas,areaPortals,leafFaces}=this.metadata,cluster=leaves[leaf][0],area=leaves[leaf][1];
+    // Called every frame: only build the key when something has changed.
+    const open=this.openPortals??=new Array(areaPortals.length);
+    let unchanged=this.keyCluster===cluster&&this.keyArea===area&&this.keyOwner===this.key;
+    for(let i=0;i<areaPortals.length;i++){const value=!!portalOpen(areaPortals[i][0]);if(open[i]!==value){open[i]=value;unchanged=false;}}
+    if(unchanged)return false;
+    const key=`${cluster}:${area}:${open.map(v=>v?1:0).join('')}`;
+    this.keyCluster=cluster;this.keyArea=area;this.keyOwner=key;
     if(key===this.key)return false;this.key=key;this.revision++;
     const visibleAreas=new Set(),pending=[area];
     while(pending.length) {

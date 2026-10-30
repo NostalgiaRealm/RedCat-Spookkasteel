@@ -26,7 +26,7 @@ class ParkedActors extends THREE.Group {
 // Render residency never owns gameplay visibility, animation clocks, collision,
 // or CPU asset data. A turned camera can immediately upload the retained data.
 export class ActorRenderResidency {
-  constructor({nearDistance=1024,retainDistance=1536,viewDistance=Infinity,releaseDelay=2,scene=null,protectedRoots=[],boundsVisible=()=>true,boundsAllowed=()=>true,boundsRequired=()=>true,boundsCurrent=()=>false,boundsPreload=()=>false,preloadPosition=()=>null,textures=null,preparation=null}={}) {
+  constructor({nearDistance=1024,retainDistance=1536,viewDistance=Infinity,releaseDelay=2,scene=null,protectedRoots=[],boundsVisible=()=>true,boundsAllowed=()=>true,boundsRequired=()=>true,boundsCurrent=()=>false,roomStamp=null,boundsPreload=()=>false,preloadPosition=()=>null,textures=null,preparation=null}={}) {
     this.nearDistance=nearDistance;this.retainDistance=Math.max(nearDistance,retainDistance);
     this.viewDistance=Math.max(nearDistance,viewDistance);
     this.releaseDelay=releaseDelay;this.scene=scene;this.protectedRoots=protectedRoots;this.boundsVisible=boundsVisible;
@@ -36,7 +36,7 @@ export class ActorRenderResidency {
     this.boundsPreload=boundsPreload;
     this.preloadPosition=preloadPosition;
     this.textures=textures;this.preparation=preparation;this.readyForView=true;
-    this.records=new Map();this.meshRecords=new Map();this.resources=new Map();
+    this.records=new Map();this.meshRecords=new Map();this.resources=new Map();this.activeRoots=new Set();this.releaseCandidates=new Set();this.travel=0;this.cameraSeen=false;this.leadSeen=false;this.previousCameraPosition=new THREE.Vector3();this.previousLead=new THREE.Vector3();this.boundsSize=new THREE.Vector3();this.roomStamp=roomStamp;
     this.parking=scene?new ParkedActors():null;if(this.parking)scene.add(this.parking);
     this.frustum=new THREE.Frustum();this.preloadFrustum=new THREE.Frustum();this.projection=new THREE.Matrix4();this.cameraPosition=new THREE.Vector3();
     this.box=new THREE.Box3();
@@ -106,14 +106,21 @@ export class ActorRenderResidency {
     if(!camera)return this.stats;
     this.lastUpdate={roots,camera,time};this.readyForView=true;
     for(const state of this.resources.values())state.priority=0;
-    const activeRoots=new Set(roots);
-    for(const [root,record]of this.records)if(!activeRoots.has(root)) {
+    const roomStamp=this.roomStamp?.()??null;
+    const activeRoots=this.activeRoots;activeRoots.clear();
+    for(let i=0;i<roots.length;i++)activeRoots.add(roots[i]);
+    this.records.forEach((record,root)=>{
+      if(activeRoots.has(root))return;
       this.restoreRoot(root);
       for(const {mesh,layerMask}of record.meshes){mesh.layers.mask=layerMask;this.meshRecords.delete(mesh);}
       for(const resource of record.resources){const state=this.resources.get(resource);state.owners--;state.resident-=Number(record.resident);}
       this.records.delete(root);
-    }
+    });
     camera.updateWorldMatrix(true,false);this.cameraPosition.setFromMatrixPosition(camera.matrixWorld);
+    const lead=this.preloadPosition();
+    if(this.cameraSeen)this.travel+=this.previousCameraPosition.distanceTo(this.cameraPosition)+(lead&&this.leadSeen?this.previousLead.distanceTo(lead):0);
+    this.cameraSeen=true;this.previousCameraPosition.copy(this.cameraPosition);if(lead){this.previousLead.copy(lead);this.leadSeen=true;}else this.leadSeen=false;
+    const travel=this.travel;
     this.projection.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);
     this.frustum.setFromProjectionMatrix(this.projection);
     this.projection.copy(camera.projectionMatrix);this.projection.elements[0]*=.5;this.projection.elements[5]*=.5;
@@ -122,6 +129,14 @@ export class ActorRenderResidency {
     for(const root of activeRoots) {
       if(!root)continue;
       const record=this.records.get(root)||this.register(root);
+      // A parked, unloaded actor that has not moved stays out of range until
+      // the camera covers the excess distance, and out of a closed room until
+      // the room state changes. Nothing below would change for it.
+      const idle=record.idle,pose=root.position;
+      if(idle&&root.parent===this.parking&&idle.x===pose.x&&idle.y===pose.y&&idle.z===pose.z&&
+        (idle.travel>travel||idle.rooms!==null&&idle.rooms===roomStamp)) {
+        stats.actors++;stats.meshes+=record.meshes.length;continue;
+      }
       root.updateWorldMatrix(true,true);
       let changed=record.bounds.isEmpty();
       for(const entry of record.meshes)if(!entry.matrix||!entry.matrix.equals(entry.mesh.matrixWorld)) {
@@ -130,9 +145,10 @@ export class ActorRenderResidency {
         (entry.matrix??=new THREE.Matrix4()).copy(entry.mesh.matrixWorld);changed=true;
       }
       if(changed){record.bounds.makeEmpty();record.roomBounds.makeEmpty();for(const entry of record.meshes){record.bounds.union(entry.worldBounds);record.roomBounds.union(entry.worldRoomBounds);}}
-      const visible=visibleInHierarchy(root,this.parking)&&record.meshes.some(({mesh})=>visibleInHierarchy(mesh,this.parking));
+      let visible=false;
+      if(visibleInHierarchy(root,this.parking))for(let i=0;i<record.meshes.length&&!visible;i++)visible=visibleInHierarchy(record.meshes[i].mesh,this.parking);
       const distance=record.bounds.isEmpty()?Infinity:record.bounds.distanceToPoint(this.cameraPosition);
-      const lead=this.preloadPosition(),prepareDistance=lead?Math.min(distance,record.bounds.distanceToPoint(lead)):distance;
+      const prepareDistance=lead?Math.min(distance,record.bounds.distanceToPoint(lead)):distance;
       const inPrepareRange=prepareDistance<=this.viewDistance;
       // Animation/frustum padding can extend through a ceiling into another
       // floor. Room ownership uses the complete authored artwork bounds;
@@ -174,6 +190,22 @@ export class ActorRenderResidency {
         const parent=rendered?this.scene:this.parking;
         if(root.parent!==parent){parent.add(root);root.matrixWorldNeedsUpdate=true;}
       }
+      record.idle=null;
+      if(!resident&&!wanted&&!rendered&&root.parent===this.parking&&!record.bounds.isEmpty()) {
+        // Bounds of a spinning prop stay within this sphere around its origin,
+        // so rotation cannot end either wait early. A smaller box can only
+        // reach fewer rooms than the enclosing one tested here.
+        const center=this.boundsSize.setFromMatrixPosition(root.matrixWorld),{min,max}=record.bounds;
+        const reach=Math.hypot(Math.max(center.x-min.x,max.x-center.x),Math.max(center.y-min.y,max.y-center.y),Math.max(center.z-min.z,max.z-center.z));
+        const excess=prepareDistance-this.viewDistance-2*reach;
+        let closed=false;
+        if(roomStamp!==null&&!allowed&&!preparedRoom) {
+          const sphere=record.idleSphere??=new THREE.Box3();
+          sphere.min.set(center.x-reach,center.y-reach,center.z-reach);sphere.max.set(center.x+reach,center.y+reach,center.z+reach);
+          closed=!this.boundsAllowed(sphere)&&!this.boundsPreload(sphere);
+        }
+        if(excess>0||closed)record.idle={x:pose.x,y:pose.y,z:pose.z,travel:excess>0?travel+excess:-Infinity,rooms:closed?roomStamp:null};
+      }
       stats.actors++;stats.residentActors+=Number(resident);stats.renderedActors+=Number(rendered);
       for(const entry of record.meshes) {
         // Preserve the owner's original layer selection. Gameplay keeps full
@@ -183,18 +215,18 @@ export class ActorRenderResidency {
         stats.meshes++;stats.residentMeshes+=Number(resident);stats.renderedMeshes+=Number(rendered&&visibleInHierarchy(entry.mesh,this.parking));
       }
     }
-    const candidates=new Set();
-    for(const [resource,state]of this.resources)if(!state.resident&&!state.released&&time>=state.nextReleaseCheck)candidates.add(resource);
-    const protectedSet=candidates.size?this.protectedResources(candidates):new Set();
-    for(const [resource,state]of this.resources) {
-      if(candidates.has(resource)) {
+    const candidates=this.releaseCandidates;candidates.clear();
+    this.resources.forEach((state,resource)=>{if(!state.resident&&!state.released&&time>=state.nextReleaseCheck)candidates.add(resource);});
+    const protectedSet=candidates.size?this.protectedResources(candidates):null;
+    this.resources.forEach((state,resource)=>{
+      if(candidates.size&&candidates.has(resource)) {
         if(protectedSet.has(resource))state.nextReleaseCheck=time+1;
         else {resource.dispose();state.released=true;}
       }
-      if(!state.owners){this.resources.delete(resource);continue;}
-      const kind=resource.isTexture?'Textures':'Geometries';stats[kind.toLowerCase()]++;
-      if(!state.released)stats['resident'+kind]++;
-    }
+      if(!state.owners){this.resources.delete(resource);return;}
+      if(resource.isTexture){stats.textures++;if(!state.released)stats.residentTextures++;}
+      else {stats.geometries++;if(!state.released)stats.residentGeometries++;}
+    });
     this.stats=stats;return stats;
   }
 

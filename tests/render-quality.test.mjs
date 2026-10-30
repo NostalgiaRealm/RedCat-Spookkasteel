@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {RenderQuality,normalizeRenderScale,scaledRenderSize} from '../source/render-quality.js';
+import {FrameLimiter,fastSrgbOutput,RenderQuality,normalizeRenderScale,scaledRenderSize} from '../source/render-quality.js';
 const run=(q,fps,seconds)=>{for(let i=0;i<fps*seconds;i++)q.sample(1/fps,true);};
 test('100% default and proportional dimensions',()=>{
  assert.equal(normalizeRenderScale(undefined),100);
@@ -96,4 +96,20 @@ test('committed manual and supersampling scales use 25 percentage-point steps',(
   assert.equal(changed,true);assert.equal(settings.renderScale,expected);
   assert.equal(q.scale(settings.renderScale),expected/100);
  }
+});
+
+test('frame limiter keeps a 60 Hz display and halves a 120 Hz display',()=>{
+  const run=(hz,count=240)=>{const limiter=new FrameLimiter();let ran=0;for(let i=0;i<count;i++)if(limiter.ready(1000+i*1000/hz))ran++;return ran;};
+  assert.equal(run(60),240);
+  assert.equal(run(120),120);
+  assert.ok(Math.abs(run(90,270)-180)<=2);
+});
+
+test('fast sRGB output stays within about a byte of the exact curve and rejects an unknown chunk',()=>{
+  const exact=x=>x<=.0031308?x*12.92:1.055*x**.41666-.055;
+  const fast=x=>x<=.0031308?x*12.92:Math.max(.585122381*Math.sqrt(x)+.783140355*x**.25-.368262736*x**.125,0);
+  for(let byte=0;byte<=255;byte++){const v=byte/255,x=v<=.04045?v/12.92:((v+.055)/1.055)**2.4;assert.ok(Math.abs(exact(x)-fast(x))*255<1.2,`byte ${byte}`);}
+  const chunk='vec4( mix( pow( value.rgb, vec3( 0.41666 ) ) * 1.055 - vec3( 0.055 ), value.rgb * 12.92, vec3( lessThanEqual( value.rgb, vec3( 0.0031308 ) ) ) ), value.a )';
+  assert.ok(!fastSrgbOutput(chunk).includes('pow('));
+  assert.throws(()=>fastSrgbOutput('vec4 somethingElse;'));
 });

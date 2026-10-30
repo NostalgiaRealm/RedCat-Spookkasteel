@@ -1,0 +1,283 @@
+{
+ "profile": "budget",
+ "throttle": 6,
+ "level": 2,
+ "loadMs": 4235,
+ "load": {
+  "requests": 288,
+  "megabytes": 32.7
+ },
+ "errors": [],
+ "frameMs": {
+  "count": 307,
+  "mean": 27.3,
+  "p50": 25.9,
+  "p95": 38.2,
+  "max": 70.6
+ },
+ "fps": 15.2,
+ "canvas": [
+  1600,
+  720
+ ],
+ "samples": 4,
+ "bufferKiBPerFrame": 7.9,
+ "glDrawsAndUploadsPerFrame": 19,
+ "draws": 37,
+ "triangles": 1459,
+ "programs": 26,
+ "stops": 10,
+ "enemies": 41,
+ "gpuDrainMs": {
+  "count": 123,
+  "mean": 45.18,
+  "p50": 15.7,
+  "p95": 85.9,
+  "max": 90.2
+ },
+ "allocationKiBPerFrame": 1872.1,
+ "topSelf": [
+  {
+   "name": "index source/collision.js:264",
+   "percent": 9.2
+  },
+  {
+   "name": "id source/collision.js:302",
+   "percent": 4.3
+  },
+  {
+   "name": "update source/actor-render-residency.js:105",
+   "percent": 3.5
+  },
+  {
+   "name": "update source/world.js:1104",
+   "percent": 3.4
+  },
+  {
+   "name": "syncActors source/world.js:799",
+   "percent": 2.4
+  },
+  {
+   "name": "id source/room-visibility.js:178",
+   "percent": 2.3
+  },
+  {
+   "name": "updateRenderResidency source/world.js:1249",
+   "percent": 2
+  },
+  {
+   "name": "trace source/collision.js:246",
+   "percent": 2
+  },
+  {
+   "name": "refreshChunkMatrix source/world-streaming.js:357",
+   "percent": 1.9
+  },
+  {
+   "name": "set CSSFunctionDeclarations ",
+   "percent": 1.8
+  },
+  {
+   "name": "update source/world-streaming.js:238",
+   "percent": 1.8
+  },
+  {
+   "name": "equals build/three.core.js:11260",
+   "percent": 1.7
+  },
+  {
+   "name": "update source/world-effects.js:479",
+   "percent": 1.6
+  },
+  {
+   "name": "actorCollisionRecord source/world.js:558",
+   "percent": 1.6
+  },
+  {
+   "name": "transformMotionPoint source/motions.js:126",
+   "percent": 1.6
+  },
+  {
+   "name": "h game.bundle.js",
+   "percent": 1.4
+  },
+  {
+   "name": "toArray build/three.core.js:5980",
+   "percent": 1.4
+  },
+  {
+   "name": "updateMatrix build/three.core.js:13035",
+   "percent": 1.3
+  },
+  {
+   "name": "(garbage collector) ",
+   "percent": 1.3
+  },
+  {
+   "name": "multiplyMatrices build/three.core.js:10570",
+   "percent": 1.3
+  },
+  {
+   "name": "updateWorldMatrix build/three.core.js:13116",
+   "percent": 1.1
+  },
+  {
+   "name": "actorOrientation source/actor-placement.js:13",
+   "percent": 1.1
+  },
+  {
+   "name": "roomBoundsAllowed source/world-streaming.js:383",
+   "percent": 1
+  },
+  {
+   "name": "syncReservations source/enemy-navigation.js:44",
+   "percent": 1
+  },
+  {
+   "name": "distanceToPoint build/three.core.js:16502",
+   "percent": 1
+  },
+  {
+   "name": "syncModelStates source/world.js:708",
+   "percent": 1
+  },
+  {
+   "name": "roomBoundsPreload source/world-streaming.js:404",
+   "percent": 0.9
+  },
+  {
+   "name": "updateMatrixWorld build/three.core.js:13067",
+   "percent": 0.9
+  },
+  {
+   "name": "areasAllowed source/room-visibility.js:163",
+   "percent": 0.9
+  },
+  {
+   "name": "geometry source/fairy-effects.js:258",
+   "percent": 0.8
+  },
+  {
+   "name": "(anonymous) source/collision.js:232",
+   "percent": 0.8
+  },
+  {
+   "name": "update source/gameplay.js:1003",
+   "percent": 0.7
+  },
+  {
+   "name": "thinkEnemy source/gameplay.js:695",
+   "percent": 0.7
+  },
+  {
+   "name": "traceModelIndices source/collision.js:143",
+   "percent": 0.7
+  },
+  {
+   "name": "material source/actor-render-residency.js:81",
+   "percent": 0.6
+  },
+  {
+   "name": "getBoundingClientRect ",
+   "percent": 0.6
+  },
+  {
+   "name": "contains source/gameplay.js:930",
+   "percent": 0.6
+  },
+  {
+   "name": "traverse build/three.core.js:12972",
+   "percent": 0.6
+  },
+  {
+   "name": "boundsAllowed source/room-visibility.js:175",
+   "percent": 0.6
+  },
+  {
+   "name": "update source/actor-collision-index.js:28",
+   "percent": 0.6
+  }
+ ],
+ "topAllocators": [
+  {
+   "name": "index source/collision.js:264",
+   "kibPerFrame": 186.8
+  },
+  {
+   "name": "trace source/collision.js:246",
+   "kibPerFrame": 117.7
+  },
+  {
+   "name": "add <- index source/collision.js:264",
+   "kibPerFrame": 107.9
+  },
+  {
+   "name": "roomBoundsAllowed source/world-streaming.js:383",
+   "kibPerFrame": 91.6
+  },
+  {
+   "name": "roomBoundsPreload source/world-streaming.js:404",
+   "kibPerFrame": 76.3
+  },
+  {
+   "name": "transformMotionPoint source/motions.js:126",
+   "kibPerFrame": 66.3
+  },
+  {
+   "name": "(anonymous) source/fairy-effects.js:277",
+   "kibPerFrame": 53.4
+  },
+  {
+   "name": "update source/actor-render-residency.js:105",
+   "kibPerFrame": 49.5
+  },
+  {
+   "name": "next <- transformMotionPoint source/motions.js:126",
+   "kibPerFrame": 44.8
+  },
+  {
+   "name": "syncActors source/world.js:799",
+   "kibPerFrame": 42.9
+  },
+  {
+   "name": "toArray build/three.core.js:5980",
+   "kibPerFrame": 29.8
+  },
+  {
+   "name": "some <- index source/collision.js:264",
+   "kibPerFrame": 29.1
+  },
+  {
+   "name": "update source/bsp-visibility.js:17",
+   "kibPerFrame": 25.5
+  },
+  {
+   "name": "actorCollisionRecord source/world.js:558",
+   "kibPerFrame": 25.4
+  },
+  {
+   "name": "batSeparationTarget source/enemy-flight.js:87",
+   "kibPerFrame": 23.6
+  },
+  {
+   "name": "next <- batSeparationTarget source/enemy-flight.js:87",
+   "kibPerFrame": 23.2
+  },
+  {
+   "name": "map <- transformMotionPoint source/motions.js:126",
+   "kibPerFrame": 23
+  },
+  {
+   "name": "contains source/gameplay.js:930",
+   "kibPerFrame": 20.8
+  },
+  {
+   "name": "distanceToPoint build/three.core.js:16502",
+   "kibPerFrame": 20.5
+  },
+  {
+   "name": "compose source/animation.js:148",
+   "kibPerFrame": 20.2
+  }
+ ]
+}

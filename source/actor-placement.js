@@ -23,7 +23,7 @@ export function actorOrientation(object,settings,modelPose,out=new Quaternion())
     old={x,y,z,rx:rotation[0],ry:rotation[1],rz:rotation[2],scripted:!!object.rotation,quaternion:q};orientations.set(object,old);
   }
   out.copy(old.quaternion);
-  out.premultiply(spin.setFromEuler(angles.set(speed[0]*radians*age,speed[1]*radians*age,speed[2]*radians*age,'ZYX')));
+  if(speed[0]||speed[1]||speed[2])out.premultiply(spin.setFromEuler(angles.set(speed[0]*radians*age,speed[1]*radians*age,speed[2]*radians*age,'ZYX')));
   if(modelPose)out.premultiply(spin.fromArray(modelPose.rotation));
   return out;
 }

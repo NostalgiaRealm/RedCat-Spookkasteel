@@ -1,0 +1,27 @@
+// Short real-input run on Het Kerkhof at the phone profile: touch stick, a shot, pause and resume.
+import {chromium} from 'playwright';
+import {spawn} from 'node:child_process';
+const server=spawn(process.execPath,['tools/serve.mjs'],{env:{...process.env,PORT:'4539'},stdio:['ignore','pipe','inherit']});
+await new Promise(r=>server.stdout.once('data',r));
+const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true,args:['--enable-unsafe-swiftshader','--autoplay-policy=no-user-gesture-required']});
+const context=await browser.newContext({viewport:{width:800,height:360},deviceScaleFactor:2,isMobile:true,hasTouch:true});
+const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
+await page.addInitScript(()=>{localStorage.setItem('redcat.progress.v1',JSON.stringify({version:1,highestUnlocked:4}));localStorage.setItem('redcat.settings.v1',JSON.stringify({autoIntro:false,fullscreen:false}));});
+await page.goto('http://127.0.0.1:4539/?skipIntro');await page.waitForFunction(()=>window.__redcat?.originalMenu);
+await page.evaluate(()=>window.__redcat.startLevel(2));await page.waitForFunction(()=>window.__redcat.mode==='playing',null,{timeout:120000});
+await page.waitForFunction(()=>window.__redcat.gameplay.scripts.cutscene,null,{timeout:20000}).catch(()=>{});
+await page.keyboard.down('KeyE');await page.waitForFunction(()=>!window.__redcat.gameplay.scripts.cutscene,null,{timeout:30000});await page.keyboard.up('KeyE');
+const client=await context.newCDPSession(page);
+const start=await page.evaluate(()=>[...window.__redcat.world.player.position]);
+const box=await page.locator('#touch-move').boundingBox(),cx=box.x+box.width/2,cy=box.y+box.height/2;
+const touch=(type,points)=>client.send('Input.dispatchTouchEvent',{type,touchPoints:points.map(p=>({id:1,...p,radiusX:5,radiusY:5,force:1}))});
+await touch('touchStart',[{x:cx,y:cy}]);await touch('touchMove',[{x:cx,y:cy-box.height/2}]);
+await page.waitForTimeout(6000);
+await page.screenshot({path:'temp_work/scene-output/kerkhof-walk.png'});
+await touch('touchEnd',[{x:cx,y:cy}]);
+const end=await page.evaluate(()=>[...window.__redcat.world.player.position]);
+await page.evaluate(()=>window.__redcat.pause());await page.waitForTimeout(500);const paused=await page.evaluate(()=>window.__redcat.mode);
+await page.locator('#resume').tap();await page.waitForTimeout(800);
+const state=await page.evaluate(()=>{const a=window.__redcat,r=a.world.renderer.info;return {mode:a.mode,health:a.gameplay.state.health,audio:a.audio.context?.state,sounds:a.audio.sounds.size,residentActors:a.world.actorResidency.stats.residentActors,renderedActors:a.world.actorResidency.stats.renderedActors,actors:a.world.actorResidency.stats.actors,draws:r.render.calls};});
+console.log(JSON.stringify({moved:+Math.hypot(end[0]-start[0],end[2]-start[2]).toFixed(1),paused,...state,errors}));
+await browser.close();server.kill();

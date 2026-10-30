@@ -34,7 +34,7 @@ import { TouchIntroHint, OpeningHint, TOUCH_INTRO_HINT_KEY, DESKTOP_INTRO_HINT_K
 import { FullscreenPreference, normalizeFullscreenPreference } from './fullscreen-preference.js';
 import { GamepadInput } from './gamepad-input.js';
 import { GamepadMenu } from './gamepad-menu.js';
-import { RenderQuality, normalizeRenderScale, scaledRenderSize } from './render-quality.js';
+import { FrameLimiter, RenderQuality, fastSrgbOutput, normalizeRenderScale, renderProfile, scaledRenderSize } from './render-quality.js';
 import { MsaaRenderer, normalizeMsaa, effectiveMsaa } from './msaa-renderer.js';
 import { AndroidHost, androidRenderSize } from './android-host.js';
 import { OriginalLoadingScreen } from './loading-screen.js';
@@ -76,6 +76,16 @@ settings.difficulty=normalizeDifficulty(settings.difficulty);
 settings.touchControls=normalizeTouchPreference(settings.touchControls);
 const touchEnvironment={navigator,matchMedia:window.matchMedia.bind(window),desktop:!!window.desktop};
 const mobileWeb=isMobileWeb(touchEnvironment);
+// Phones and tablets: 4x MSAA adds a resolve and a full-screen copy per frame.
+// Applied once, so a sample count chosen afterwards in the settings is kept.
+const phoneRendering=mobileWeb||androidHost.enabled;
+if(phoneRendering&&!settings.phoneMsaaChecked){if(settings.msaa===4)settings.msaa=0;settings.phoneMsaaChecked=true;}
+if(!phoneRendering)$('resolution').querySelector('[value="full"]').remove();
+// A 960x540 pixel budget: about 1.7 times the original's 640x480. Reaches 30 FPS on
+// the budget benchmark profile (docs/mobile-performance.md); 600 is borderline.
+const PHONE_SHORT_EDGE=540;
+const frameLimiter=phoneRendering?new FrameLimiter():null;
+if(phoneRendering){renderProfile.anisotropy=2;renderProfile.coronaRaysPerFrame=2;THREE.ShaderChunk.colorspace_pars_fragment=fastSrgbOutput(THREE.ShaderChunk.colorspace_pars_fragment);}
 $('difficulty').replaceChildren(...DIFFICULTIES.map(({value,label})=>new Option(label,value)));
 if(![...$('resolution').options].some(o=>o.value===settings.resolution))settings.resolution='native';
 let selected=0,world=null,gameplay=null,mode='menu',pausedFromSettings=false,toastTimer,lastFrame=performance.now(),chapterTransition=null;
@@ -257,7 +267,7 @@ function scriptedSound(event){
 }
 function stopAudio(){chapterTransition=null;audio.reset();}
 function startMusic(){const object=gameplay.objects.find(o=>o.enabled&&o.entity.classname==='EffectMusic'&&o.entity.MusicAmbient);if(object){if(gameplay.scripts){if(!gameplay.scripts.musicState)gameplay.scripts.selectMusic(object,'ambient');}else audio.play({key:'music',sourceId:object.id,channel:'music',sound:object.entity.MusicAmbient,volume:object.volume??1,loop:true});}}
-function resolutionSize(){if(settings.resolution==='native')return androidHost.enabled?androidRenderSize(innerWidth,innerHeight,devicePixelRatio):[Math.min(7680,Math.round(innerWidth*devicePixelRatio)),Math.min(4320,Math.round(innerHeight*devicePixelRatio))];return settings.resolution.split('x').map(Number);}
+function resolutionSize(){if(settings.resolution==='native'&&phoneRendering)return androidRenderSize(innerWidth,innerHeight,devicePixelRatio,PHONE_SHORT_EDGE);if(settings.resolution==='native'||settings.resolution==='full')return [Math.min(7680,Math.round(innerWidth*devicePixelRatio)),Math.min(4320,Math.round(innerHeight*devicePixelRatio))];return settings.resolution.split('x').map(Number);}
 function resize(){if(!renderer)return;worldRenderDirty=true;const [baseW,baseH]=resolutionSize();const [w,h]=scaledRenderSize(baseW,baseH,renderQuality.scale(settings.renderScale));renderer.setSize(w,h,false);msaaRenderer?.setSize(renderer.domElement.width,renderer.domElement.height);if(world){world.camera.aspect=baseW/baseH;world.camera.fov=settings.fov;world.camera.updateProjectionMatrix();}$('render-info').textContent=`${w} × ${h} · ${settings.camera==='third'?'Derde persoon':'Eerste persoon'}`;}
 function renderChapters(){
   if(!canStartCampaignLevel(campaign,selected)){selected=0;levelReplaySelected=false;}
@@ -309,7 +319,7 @@ function confirmAdventureStart(){
 }
 
 function clearInputs(){keys.clear();mouseAttack=false;touchControls?.reset();gamepad.reset();controllerFrame=null;skipHold.reset();updateSkipIndicator();}
-function syncTouchUI(){touchControls?.setContext({playing:mode==='playing'&&!controllerActive,cutscene:!!gameplay?.scripts?.cutscene,noClip:!!world?.player.noClip});$('game-menu').hidden=mode!=='playing'||controllerActive||!touchEnabled;}
+function syncTouchUI(){touchControls?.setContext({playing:mode==='playing'&&!controllerActive,cutscene:!!gameplay?.scripts?.cutscene,noClip:!!world?.player.noClip});const menuHidden=mode!=='playing'||controllerActive||!touchEnabled;if($('game-menu').hidden!==menuHidden)$('game-menu').hidden=menuHidden;}
 function syncSkipLabel(){
   const keyLabel=controlBindingLabel(settings.controlBindings,'use');
   $('cutscene-skip').setAttribute('aria-label',controllerActive?'Houd X of vierkant twee seconden ingedrukt om over te slaan':touchEnabled?'Houd Overslaan twee seconden ingedrukt':`Houd ${keyLabel} twee seconden ingedrukt om over te slaan`);
@@ -566,8 +576,12 @@ function renderHud(){
   }
   originalHud.render(state,gameplay.totalPotions,world.targeting?.locked?world.targeting.target:null,$('game').width,$('game').height,{bottomInset:touchEnabled&&!controllerActive?200:0});
 }
+let skipIndicatorIdle=false;
 function updateSkipIndicator(){
   const active=mode==='playing'&&!!gameplay?.scripts?.cutscene;
+  // Most frames have no cutscene; leave the DOM untouched during play.
+  if(!active&&!skipHold.progress&&skipIndicatorIdle)return;
+  skipIndicatorIdle=!active&&!skipHold.progress;
   $('cutscene-skip').hidden=!active;
   $('skip-progress').style.strokeDashoffset=100*(1-skipHold.progress);
   $('cutscene-skip').setAttribute('aria-valuenow',String(Math.round(skipHold.progress*100)));
@@ -849,13 +863,13 @@ function waitForWorldView(now){
 let frameRequest=0;
 function androidSuspended(){return androidHost.enabled&&(!androidHost.active||document.hidden);}
 function scheduleFrame(){if(!frameRequest&&!androidSuspended())frameRequest=requestAnimationFrame(frame);}
-function frame(now){frameRequest=0;if(androidSuspended())return;scheduleFrame();androidHost.setKeepAwake(mode==='playing'||mode==='intro');const realDt=Math.max(0,(now-lastFrame)/1000),dt=Math.min(realDt,0.05);lastFrame=now;if(!document.hidden)world?.streamingWork?.pump(now);pollController(dt);syncTouchUI();const waiting=waitForWorldView(now);const rendering=!!world&&mode==='playing'&&!waiting&&!document.hidden;
+function frame(now){frameRequest=0;if(androidSuspended())return;scheduleFrame();if(frameLimiter&&!frameLimiter.ready(now))return;androidHost.setKeepAwake(mode==='playing'||mode==='intro');const realDt=Math.max(0,(now-lastFrame)/1000),dt=Math.min(realDt,0.05);lastFrame=now;if(!document.hidden)world?.streamingWork?.pump(now);pollController(dt);syncTouchUI();const waiting=waitForWorldView(now);const rendering=!!world&&mode==='playing'&&!waiting&&!document.hidden;
 if(renderQuality.updateSettings(realDt,rendering,settings)){
   msaaRenderer?.setSamples(settings.msaa);
   store(SETTINGS_KEY,settings);
   resize();
 }
-$('fps-counter').hidden=!settings.showFps||!rendering;
+const fpsHidden=!settings.showFps||!rendering;if($('fps-counter').hidden!==fpsHidden)$('fps-counter').hidden=fpsHidden;
 if(settings.showFps&&rendering){const label=renderQuality.fps===null?'FPS: …':`${Math.round(renderQuality.fps)} FPS`;if($('fps-counter').textContent!==label)$('fps-counter').textContent=label;}
 if(waiting)return;if(world&&mode==='playing'){
   recovery.advance(realDt);
@@ -873,7 +887,7 @@ if(mode==='retry'){const input=readInput();retryScreen.input({x:(input.right||0)
 if(world&&!document.hidden&&(mode==='playing'||mode==='paused'&&(worldRenderDirty||lastRenderedWorld!==world||world.geometryStream?.readyForView===false||world.actorResidency?.readyForView===false||world.actorTextures?.readyForView===false))){world.render(msaaRenderer?.render);lastRenderedWorld=world;worldRenderDirty=false;}}
 touchControls=new TouchControls({onLook:(dx,dy)=>{if(mode==='playing')world?.look(dx,dy);},onGesture:()=>{if(mode==='playing'&&!streamingWait)audio.resume();},onAction:action=>{if(mode!=='playing')return;if(action==='camera')toggleCamera();}});
 syncTouchSettings();
-window.__redcat={get world(){return world;},get retryScreen(){return retryScreen;},get gameplay(){return gameplay;},get mode(){return mode;},get settings(){return settings;},get audio(){return audio;},get touchEnabled(){return touchEnabled;},get controllerActive(){return controllerActive;},get recovery(){return recovery;},profiles,playerMenu,originalMenu,keySettings,menuAudio,gamepad,touchControls,readInput,startLevel,pause,resume,saveGame,loadSave,resize,renderHud};
+window.__redcat={get world(){return world;},get retryScreen(){return retryScreen;},get gameplay(){return gameplay;},get mode(){return mode;},get settings(){return settings;},get audio(){return audio;},get touchEnabled(){return touchEnabled;},get controllerActive(){return controllerActive;},get recovery(){return recovery;},profiles,playerMenu,originalMenu,keySettings,menuAudio,gamepad,touchControls,renderQuality,readInput,startLevel,pause,resume,saveGame,loadSave,resize,renderHud};
 store(PROGRESS_KEY,campaign);store(PLAYER_OPTIONS_KEY,{difficulty:settings.difficulty,noClip:settings.noClip});refreshPlayerName();renderChapters();refreshContinue();resize();scheduleFrame();
 if(window.desktop){
   const [width,height]=settings.resolution==='native'?[Math.max(800,Math.round(screen.width*.85)),Math.max(600,Math.round(screen.height*.85))]:resolutionSize();

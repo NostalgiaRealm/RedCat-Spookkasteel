@@ -1,3 +1,4 @@
+import {renderProfile} from './render-quality.js';
 import * as THREE from 'three';
 import { projectileLight } from './projectile-lighting.js';
 import { transformMotionPoint } from './motions.js';
@@ -418,7 +419,7 @@ export class WorldEffects {
     this.world=world;this.gameplay=gameplay;this.manifest=manifest;this.entries=new Map();this.batches=new Map();this.beamBatches=new Map();this.beams=[];this.lights=[];
     this.spriteFrustum=new THREE.Frustum();this.spriteProjection=new THREE.Matrix4();
     this.playerLight=new PlayerWorldLight(world);
-    this.coronaVisibility=new CoronaVisibilityCache();this.cameraForward=new THREE.Vector3();
+    this.coronaVisibility=new CoronaVisibilityCache({budget:renderProfile.coronaRaysPerFrame});this.cameraForward=new THREE.Vector3();
     for(const object of gameplay.objects)if(EFFECT_CLASSES.has(object.entity.classname)) {
       const state={object,active:false,age:Math.max(0,object.effectAge||0),particles:[],nextSpawn:0,serial:0,opacity:0};
       if(object.entity.classname==='Fairy') {
@@ -473,12 +474,13 @@ export class WorldEffects {
         previous.call(material,shader,renderer);
         patchWorldLightShader(shader,this.lightUniforms);
       };
-      material.customProgramCacheKey=()=>cacheKey.call(material)+'-original-bsp-lightmaps-v3'+(this.worldShadows?'-shadows':'');material.needsUpdate=true;
+      material.customProgramCacheKey=()=>cacheKey.call(material)+'-original-bsp-lightmaps-v5'+(this.worldShadows?'-shadows':'');material.needsUpdate=true;
     }
   }
   update(dt) {
     dt=Math.max(0,Math.min(.25,dt));this.beams=[];this.lights=[];
-    for(const batch of [...this.batches.values(),...this.beamBatches.values()])batch.count=0;
+    for(const batch of this.batches.values())batch.count=0;
+    for(const batch of this.beamBatches.values())batch.count=0;
     if(this.coronaBatch)this.coronaBatch.count=0;
     const eye=this.world.camera.position.toArray(),direction=(this.world.camera.getWorldDirection?.(this.cameraForward)||this.cameraForward.set(0,0,-1)).toArray(),coronas=[];
     const cullSprites=this.world.camera.projectionMatrix&&this.world.camera.matrixWorldInverse;
@@ -498,8 +500,9 @@ export class WorldEffects {
     }
     for(const state of this.entries.values())if(state.object.entity.classname==='EffectCoronaEntity') {
       const {object}=state,origin=this.position(object);
+      // A halo in a room that cannot be drawn needs no long visibility ray.
       coronas.push({id:object.id,origin,enabled:object.enabled!==false&&object.visible!==false,
-        inFront:origin.reduce((sum,value,i)=>sum+(value-eye[i])*direction[i],0)>=0});
+        inFront:(origin[0]-eye[0])*direction[0]+(origin[1]-eye[1])*direction[1]+(origin[2]-eye[2])*direction[2]>=0&&this.world.geometryStream?.rooms?.originAllowed(origin)!==false});
     }
     this.coronaVisibility.update(dt,coronas,candidate=>
       this.world.collider.trace(eye,candidate.origin,[0,0,0],[0,0,0],this.world.physicalModels,null).fraction>=1);
@@ -518,7 +521,7 @@ export class WorldEffects {
       const origin=this.position(object);
       if(e.classname==='EffectSpoutEntity')this.updateSpout(state,origin,dt);
       else if(e.classname==='EffectCoronaEntity') {
-        if(dt>0)state.radius=nativeCoronaRadius(state.radius||0,e,Math.hypot(...origin.map((value,i)=>value-eye[i])),
+        if(dt>0)state.radius=nativeCoronaRadius(state.radius||0,e,Math.hypot(origin[0]-eye[0],origin[1]-eye[1],origin[2]-eye[2]),
           enabled&&this.coronaVisibility.visible(object.id),dt);
         const radius=state.radius||0;
         // 0x57add3 submits radius * .25 as a Genesis textured-point SCALE.

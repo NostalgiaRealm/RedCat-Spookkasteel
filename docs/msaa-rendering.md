@@ -10,7 +10,8 @@ setting, not a recovered original DirectDraw option.
 Annuleren leaves the previous setting intact. The preference is stored with
 resolution/render scale in `redcat.settings.v1`.
 
-The default request is 4x. Previously the canvas requested `antialias: true`,
+The default request is 4x, except on phones and tablets, which start with Uit
+([mobile performance](mobile-performance.md)). Previously the canvas requested `antialias: true`,
 which let the browser choose its own sample count. The new explicit target
 supports changing the actual sample count without destroying the WebGL context
 and reloading every game asset.

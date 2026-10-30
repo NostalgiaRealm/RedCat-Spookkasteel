@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {renderProfile} from './render-quality.js';
 import { BspCollider, PlayerController } from './collision.js';
 import { moveSolidPlayer } from './moving-solids.js';
 import { ActorAnimator, ActorStateAnimator } from './animation.js';
@@ -96,7 +97,7 @@ export class CastleWorld {
       work:this.streamingWork,upload:texture=>renderer.initTexture?.(texture),
       release:texture=>{texture.dispose();this.resources.delete(texture);},configure:texture=>{
         texture.flipY=true;texture.colorSpace=THREE.SRGBColorSpace;texture.wrapS=texture.wrapT=THREE.RepeatWrapping;
-        texture.magFilter=THREE.LinearFilter;texture.anisotropy=Math.min(8,this.renderer.capabilities.getMaxAnisotropy());
+        texture.magFilter=THREE.LinearFilter;texture.anisotropy=Math.min(renderProfile.anisotropy,this.renderer.capabilities.getMaxAnisotropy());
       }});
     this.targeting=new EnemyTargeting();this.cameraControl=new PlayerCameraControl();this.followCamera=new NativeFollowCamera();this.wallLift=new CameraWallLift();this.cameraMode=null;this.cameraInput={hasInput:false,backpedal:false,steering:true};
     this.hazardMeshes=new Map();this.bossMachines=new Map();this.spiderWebs=new Map();
@@ -108,7 +109,7 @@ export class CastleWorld {
     if(t.image?.decode)await t.image.decode();
     t.colorSpace=linear?THREE.NoColorSpace:THREE.SRGBColorSpace;
     t.wrapS=t.wrapT=THREE.RepeatWrapping;t.magFilter=THREE.LinearFilter;
-    t.anisotropy=Math.min(8,this.renderer.capabilities.getMaxAnisotropy());return t;
+    t.anisotropy=Math.min(renderProfile.anisotropy,this.renderer.capabilities.getMaxAnisotropy());return t;
   }
   lazyActorTexture(url){
     const prefix='assets/actors/';
@@ -459,7 +460,7 @@ export class CastleWorld {
     this.collider.traceModelIndices?.(this.physicalModels,[0,0,0],[0,0,0]);
     this.actorResidency=new ActorRenderResidency({scene:this.scene,protectedRoots:[this.redcat],
       nearDistance:WORLD_STREAMING.preloadRadius,retainDistance:WORLD_STREAMING.retainRadius,viewDistance:WORLD_STREAMING.viewRadius,
-      boundsVisible:box=>this.geometryStream.boundsVisible(box),boundsAllowed:box=>this.geometryStream.roomBoundsAllowed(box),boundsRequired:box=>this.geometryStream.roomBoundsRequired(box),boundsPreload:box=>this.geometryStream.roomBoundsPreload(box),preloadPosition:()=>this.geometryStream.preloadPosition,textures:this.actorTextures,preparation:this.streamingGpu});
+      boundsVisible:box=>this.geometryStream.boundsVisible(box),boundsAllowed:box=>this.geometryStream.roomBoundsAllowed(box),boundsRequired:box=>this.geometryStream.roomBoundsRequired(box),boundsPreload:box=>this.geometryStream.roomBoundsPreload(box),roomStamp:()=>{const rooms=this.geometryStream.rooms;return rooms?.active?rooms.revision*1048576+rooms.preloadRevision:null;},preloadPosition:()=>this.geometryStream.preloadPosition,textures:this.actorTextures,preparation:this.streamingGpu});
     this.updateRenderResidency();
   }
   configureDestructible(object,actor) {
@@ -556,8 +557,8 @@ export class CastleWorld {
     return record;
   }
   actorCollisionRecord(object,actor,overrideFlags={}) {
-    const flags={...actor.userData.template?.data.settings,...overrideFlags};
-    if(!flags.blocksPlayer&&!flags.canBeShot&&!flags.blocksLOS)return;
+    const settings=actor.userData.template?.data.settings;
+    if(!('blocksPlayer' in overrideFlags?overrideFlags.blocksPlayer:settings?.blocksPlayer)&&!('canBeShot' in overrideFlags?overrideFlags.canBeShot:settings?.canBeShot)&&!('blocksLOS' in overrideFlags?overrideFlags.blocksLOS:settings?.blocksLOS))return;
     const animator=actor.userData.animator;
     // Off-screen props keep exact animation clocks, but need no bone/vertex
     // sampling until a matching nearby collision query reaches their record.
@@ -628,7 +629,7 @@ export class CastleWorld {
       if(!geometry.boundingBox)geometry.computeBoundingBox();
       bounds=new THREE.Box3().copy(geometry.boundingBox).applyMatrix4(mesh.matrixWorld);
     }
-    Object.assign(record,{id:object.id,supportModelIndex:object.kind==='actor'?object.modelIndex:undefined,...flags,matrix:[...matrix],positionVersion:positions.version,
+    Object.assign(record,{id:object.id,supportModelIndex:object.kind==='actor'?object.modelIndex:undefined,...settings,...overrideFlags,matrix:[...matrix],positionVersion:positions.version,
       broadphaseMin:bounds.min.toArray(),broadphaseMax:bounds.max.toArray(),dirty:true,
       deferredClip:deferred?animator.sampledClip:null,deferredTime:deferred?animator.sampledTime:NaN,
       deferredTransition:deferred?animator.sampledTransition:null,deferredWeight:deferred?animator.sampledWeight:0,
@@ -709,8 +710,10 @@ export class CastleWorld {
     if(!this.gameplay?.modelState)return;
     // Native brushes can have collision but zero render faces (for example
     // the rotating cave doorway's hidden lock). Their state still applies.
-    const indices=new Set([...this.physicalModels,...this.modelMeshes.keys()]);
-    for(const index of indices) {
+    if(this.modelStateMeshCount!==this.modelMeshes.size){this.modelStateMeshCount=this.modelMeshes.size;this.modelStateIndices=[...new Set([...this.physicalModels,...this.modelMeshes.keys()])];}
+    const indices=this.modelStateIndices;
+    for(let i=0;i<indices.length;i++) {
+      const index=indices[i];
       if(index===0)continue;
       const state=this.gameplay.modelState(index);if(!state)continue;
       for(const mesh of this.modelMeshes.get(index)||[])mesh.visible=state.visible;
@@ -800,11 +803,12 @@ export class CastleWorld {
     const game=this.gameplay;if(!game)return;
     const frozen=!!(game.scripts?.enemiesFrozen||game.scripts?.cutscene);
     const actors=this.actorObjectPairs||game.objects.map(object=>[object,this.actorInstances.get(object.id)]);
-    for(const [obj,actor] of actors) {
+    for(let pairIndex=0;pairIndex<actors.length;pairIndex++) {
+      const pair=actors[pairIndex],obj=pair[0],actor=pair[1];
       if(!actor)continue;
       const corpse=obj.kind==='enemy'&&obj.health===0&&obj.animationState==='death'&&game.time<(obj.corpseUntil??((obj.animationUntil||0)+2));
       actor.visible=actorVisible(obj,game.time);
-      if(obj.kind==='enemy')applyEnemyDeathOpacity(actor,enemyDeathOpacity(obj,game.time),material=>this.track(material));
+      if(obj.kind==='enemy')applyEnemyDeathOpacity(actor,enemyDeathOpacity(obj,game.time),this.trackMaterial??=material=>this.track(material));
       actor.position.fromArray(game.objectPosition?.(obj)||obj.position);
       if(obj.kind==='actor'||obj.kind==='pickup') {
         obj.actorAge=(obj.actorAge||0)+(obj.enabled?dt:0);

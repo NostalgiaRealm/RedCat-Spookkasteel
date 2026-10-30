@@ -114,6 +114,18 @@ class StreamTextures {
   }
 }
 
+// Moving actors change their boxes every frame. Reuse the cache entry and the
+// query arrays; the room queries only read them.
+const queryMin=[0,0,0],queryMax=[0,0,0];
+function cachedBoxAnswer(cache,box,stamp,rooms,query) {
+  const {min,max}=box;let entry=cache.get(box);
+  if(entry&&entry.stamp===stamp&&entry.minX===min.x&&entry.minY===min.y&&entry.minZ===min.z&&entry.maxX===max.x&&entry.maxY===max.y&&entry.maxZ===max.z)return entry.answer;
+  queryMin[0]=min.x;queryMin[1]=min.y;queryMin[2]=min.z;queryMax[0]=max.x;queryMax[1]=max.y;queryMax[2]=max.z;
+  const answer=rooms[query](queryMin,queryMax);
+  if(!entry)cache.set(box,entry={stamp:0,minX:0,minY:0,minZ:0,maxX:0,maxY:0,maxZ:0,answer:false});
+  entry.stamp=stamp;entry.minX=min.x;entry.minY=min.y;entry.minZ=min.z;entry.maxX=max.x;entry.maxY=max.y;entry.maxZ=max.z;entry.answer=answer;
+  return answer;
+}
 export class WorldGeometryStream {
   constructor(world,{vertices,uv,frames,visibility,pvs,groups,materialFor,textureFor,viewRadius=WORLD_STREAMING.viewRadius}) {
     this.world=world;this.source={vertices,uv,frames};this.disposed=false;this.error=null;
@@ -247,6 +259,9 @@ export class WorldGeometryStream {
     const elapsed=this.previousCameraAt===null?0:now-this.previousCameraAt;
     this.cameraStep.subVectors(camera.position,this.previousCamera);const step=this.cameraStep.length();
     if(elapsed>0&&elapsed<.2&&step>0&&step<128)this.preloadPosition.addScaledVector(this.cameraStep,Math.min(.4/Math.max(elapsed,1/240),192/step));
+    // Nearest distances change at most by how far their reference point moved.
+    this.cameraTravel=(this.cameraTravel||0)+step+(this.previousPreload?this.previousPreload.distanceTo(this.preloadPosition):0);
+    (this.previousPreload??=new THREE.Vector3()).copy(this.preloadPosition);
     this.previousCamera.copy(camera.position);this.previousCameraAt=now;
     const parentChanged=this.refreshSceneMatrices();this.matrixFrame++;
     this.frustum.setFromProjectionMatrix(this.projection.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse));
@@ -277,7 +292,11 @@ export class WorldGeometryStream {
       model.pvsVisible=this.boundsVisible(model.bounds);
     }
     const wanted=[],departed=[];
+    const travel=this.cameraTravel;
     for(const chunk of this.chunks) {
+      // A static chunk beyond the view radius with nothing loaded makes no
+      // decision until the camera has travelled that excess distance.
+      if(chunk.idleUntil>travel&&!chunk.request&&!parentChanged)continue;
       this.refreshChunkMatrix(chunk.mesh,parentChanged);
       if(!chunk.boundsMatrix||!chunk.boundsMatrix.equals(chunk.mesh.matrixWorld)) {
         chunk.bounds.copy(chunk.empty.boundingBox).applyMatrix4(chunk.mesh.matrixWorld);
@@ -286,6 +305,7 @@ export class WorldGeometryStream {
       }
       const distance=chunk.bounds.distanceToPoint(camera.position);
       const prepareDistance=Math.min(distance,chunk.bounds.distanceToPoint(this.preloadPosition));
+      chunk.idleUntil=chunk.group.model===0&&!chunk.request&&prepareDistance>this.viewRadius?travel+prepareDistance-this.viewRadius:0;
       const roomAllowed=chunk.group.model===0?this.rooms.areasAllowed(chunk.areas):this.roomBoundsAllowed(chunk.bounds);
       if(chunk.visibilityRevision!==this.visibility.revision) {
         chunk.pvsVisible=chunk.spans.some(([face])=>!this.referencedFaces[face]||this.visibility.faces[face]);
@@ -338,6 +358,8 @@ export class WorldGeometryStream {
     });
     this.readyForView=true;
     for(const chunk of this.chunks) {
+      if(chunk.idleSettled&&chunk.idleUntil>travel&&!chunk.request&&!parentChanged)continue;
+      chunk.idleSettled=chunk.idleUntil>travel;
       const drawable=chunk.resident&&chunk.inView;
       if(drawable)this.syncFaceVisibility(chunk);
       chunk.mesh.layers.set(drawable?0:1);this.attachChunk(chunk,drawable);
@@ -382,31 +404,19 @@ export class WorldGeometryStream {
   }
   roomBoundsAllowed(box) {
     if(!this.rooms.active)return true;
-    const {min,max}=box,old=this.roomBoundVisibility?.get(box),revision=this.rooms.revision;
-    if(old&&old.revision===revision&&old.minX===min.x&&old.minY===min.y&&old.minZ===min.z&&old.maxX===max.x&&old.maxY===max.y&&old.maxZ===max.z)return old.allowed;
-    const allowed=this.rooms.boundsAllowed(min.toArray(),max.toArray());
-    (this.roomBoundVisibility??=new WeakMap()).set(box,{revision,minX:min.x,minY:min.y,minZ:min.z,maxX:max.x,maxY:max.y,maxZ:max.z,allowed});return allowed;
+    return cachedBoxAnswer(this.roomBoundVisibility??=new WeakMap(),box,this.rooms.revision,this.rooms,'boundsAllowed');
   }
   roomBoundsRequired(box) {
     if(!this.rooms.active)return true;
-    const {min,max}=box,old=this.roomViewVisibility?.get(box),revision=this.rooms.viewRevision;
-    if(old&&old.revision===revision&&old.minX===min.x&&old.minY===min.y&&old.minZ===min.z&&old.maxX===max.x&&old.maxY===max.y&&old.maxZ===max.z)return old.required;
-    const required=this.rooms.boundsRequired(min.toArray(),max.toArray());
-    (this.roomViewVisibility??=new WeakMap()).set(box,{revision,minX:min.x,minY:min.y,minZ:min.z,maxX:max.x,maxY:max.y,maxZ:max.z,required});return required;
+    return cachedBoxAnswer(this.roomViewVisibility??=new WeakMap(),box,this.rooms.viewRevision,this.rooms,'boundsRequired');
   }
   roomBoundsCurrent(box) {
     if(!this.rooms.active)return false;
-    const {min,max}=box,old=this.roomCurrentVisibility?.get(box),area=this.rooms.area;
-    if(old&&old.area===area&&old.minX===min.x&&old.minY===min.y&&old.minZ===min.z&&old.maxX===max.x&&old.maxY===max.y&&old.maxZ===max.z)return old.current;
-    const current=this.rooms.boundsCurrent(min.toArray(),max.toArray());
-    (this.roomCurrentVisibility??=new WeakMap()).set(box,{area,minX:min.x,minY:min.y,minZ:min.z,maxX:max.x,maxY:max.y,maxZ:max.z,current});return current;
+    return cachedBoxAnswer(this.roomCurrentVisibility??=new WeakMap(),box,this.rooms.area,this.rooms,'boundsCurrent');
   }
   roomBoundsPreload(box) {
     if(!this.rooms.active)return false;
-    const {min,max}=box,old=this.roomPreloadVisibility?.get(box),revision=this.rooms.preloadRevision;
-    if(old&&old.revision===revision&&old.minX===min.x&&old.minY===min.y&&old.minZ===min.z&&old.maxX===max.x&&old.maxY===max.y&&old.maxZ===max.z)return old.preload;
-    const preload=this.rooms.boundsPreload(min.toArray(),max.toArray());
-    (this.roomPreloadVisibility??=new WeakMap()).set(box,{revision,minX:min.x,minY:min.y,minZ:min.z,maxX:max.x,maxY:max.y,maxZ:max.z,preload});return preload;
+    return cachedBoxAnswer(this.roomPreloadVisibility??=new WeakMap(),box,this.rooms.preloadRevision,this.rooms,'boundsPreload');
   }
   traceSurface(start,end) {
     this.refreshSceneMatrices();

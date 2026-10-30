@@ -138,12 +138,69 @@ const boundsOverlap = (min,max,queryMin,queryMax) =>
   !(min[0]>queryMax[0]+1e-7||max[0]<queryMin[0]-1e-7||
     min[1]>queryMax[1]+1e-7||max[1]<queryMin[1]-1e-7||
     min[2]>queryMax[2]+1e-7||max[2]<queryMin[2]-1e-7);
+// One sweep's state. A trace makes no callbacks during its BSP walk, so these
+// functions can share it instead of allocating closures, boxes and a Set for
+// each of the hundreds of traces per frame.
+const sweep={boxMin:[0,0,0],boxMax:[0,0,0],result:null,start:null,end:null,mins:null,maxs:null,contentsMask:0,planes:null,nodes:null,leaves:null,leafSides:null,
+  cx:0,cy:0,cz:0,ex:0,ey:0,ez:0,seen:null,stamp:0,transform:null,modelIndex:0};
+function sweepLeaf(index) {
+  const {seen,stamp}=sweep;
+  if(seen[index]===stamp)return;seen[index]=stamp;
+  const leaf=sweep.leaves[index],{contentsMask,transform,planes,leafSides,start,end,mins,maxs,result}=sweep;
+  if(!leaf||!(leaf.contents&contentsMask)||!leaf.numSides)return;
+  if(leaf.min&&leaf.max) {
+    let min=leaf.min,max=leaf.max;
+    if(transform){const box=transform.bounds(min,max);min=box[0];max=box[1];}
+    const {boxMin,boxMax}=sweep;
+    if(min[0]>boxMax[0]||max[0]<boxMin[0]||min[1]>boxMax[1]||max[1]<boxMin[1]||min[2]>boxMax[2]||max[2]<boxMin[2])return;
+  }
+  let enter=-Infinity,leave=1,normalPlane=null,normalSign=1,outside=false,endOutside=false,nearest=-Infinity,exitPlane=null,exitSign=1;
+  for(let j=0;j<leaf.numSides;j++) {
+    const side=leafSides[leaf.firstSide+j],source=planes[side[0]],p=transform?transform.plane(source):source,sign=side[1]?-1:1;
+    const nx=p[0]*sign,ny=p[1]*sign,nz=p[2]*sign;
+    // Keep reduce's original leading zero and left-to-right additions.
+    // Only a selected hit/penetration needs an allocated normal vector.
+    const offset=((0+nx*(nx>0?mins[0]:maxs[0]))+ny*(ny>0?mins[1]:maxs[1]))+nz*(nz>0?mins[2]:maxs[2]);
+    const d=p[3]*sign-offset;
+    const ds=(nx*start[0]+ny*start[1]+nz*start[2])-d,de=(nx*end[0]+ny*end[1]+nz*end[2])-d;
+    if(ds>nearest){nearest=ds;exitPlane=p;exitSign=sign;}
+    if(ds>0) outside=true; if(de>0) endOutside=true;
+    if(ds>0 && de>=ds) return;
+    if(ds<=0 && de<=0) continue;
+    if(ds>de) { const t=(ds-0.05)/(ds-de); if(t>enter) { enter=t; normalPlane=p;normalSign=sign; } }
+    else leave=Math.min(leave,(ds+0.05)/(ds-de));
+  }
+  const modelIndex=sweep.modelIndex;
+  if(!outside) {
+    result.startSolid=true;
+    // Moving brushes need the shortest outward displacement from each
+    // intersected convex leaf, not the default floor normal of a trace
+    // whose starting hull is already inside the newly moved solid.
+    (result.penetrations??=[]).push({normal:exitPlane?[exitPlane[0]*exitSign,exitPlane[1]*exitSign,exitPlane[2]*exitSign]:null,distance:Math.max(0,-nearest)+.08,modelIndex});
+    if(!endOutside) { result.fraction=0; result.modelIndex=modelIndex; }
+    else if(result.fraction===1) result.modelIndex=modelIndex;
+    return;
+  }
+  if(enter<leave && enter>-Infinity && enter<result.fraction) {
+    result.fraction=Math.max(0,enter); result.normal=[normalPlane[0]*normalSign,normalPlane[1]*normalSign,normalPlane[2]*normalSign]; result.modelIndex=modelIndex;
+  }
+}
+function sweepNode(id) {
+  if(id<0){sweepLeaf(-id-1);return;}
+  const node=sweep.nodes[id];if(!node)return;
+  const source=sweep.planes[node[2]],p=sweep.transform?sweep.transform.plane(source):source;
+  const d=(p[0]*sweep.cx+p[1]*sweep.cy+p[2]*sweep.cz)-p[3];
+  const r=Math.abs(p[0])*sweep.ex+Math.abs(p[1])*sweep.ey+Math.abs(p[2])*sweep.ez;
+  if(d+r>=0)sweepNode(node[0]);if(d-r<=0)sweepNode(node[1]);
+}
+const ascending=(a,b)=>a-b;
+const allFinite=box=>Number.isFinite(box[0])&&Number.isFinite(box[1])&&Number.isFinite(box[2]);
 export class BspCollider {
-  constructor(data) { this.data = data; this.disabledModels = new Set(); this.modelTransforms = new Map(); this.actors=[];this.modelBounds=collisionModelBounds(data);this.modelTransformCache=new Map();this.modelQueryPlans=new WeakMap(); }
+  constructor(data) { this.data = data; this.disabledModels = new Set(); this.modelTransforms = new Map(); this.actors=[];this.modelBounds=collisionModelBounds(data);this.modelTransformCache=new Map();this.modelQueryPlans=new WeakMap();this.leafStamps=null;this.leafStamp=0; }
   traceModelIndices(indices,min,max) {
     // Tiny, mutable and non-finite queries retain the full original scan. In
     // particular, never let a NaN query disappear through spatial rejection.
-    if(indices.length<16||!Object.isFrozen(indices)||!min.every(Number.isFinite)||!max.every(Number.isFinite)||min.some((v,i)=>v>max[i]))return indices;
+    if(indices.length<16||!Object.isFrozen(indices)||min.length!==3||max.length!==3||!allFinite(min)||!allFinite(max)||min[0]>max[0]||min[1]>max[1]||min[2]>max[2])return indices;
     const transforms=this.modelTransforms,tracked=transforms instanceof ModelTransformMap;
     // Ordinary Maps may contain mutable vectors. With many transformed models
     // their full scan is cheaper and keeps that public contract unchanged.
@@ -190,8 +247,9 @@ export class BspCollider {
     }
     // Strict nearest-hit comparisons and start-solid penetration lists depend
     // on caller order, including duplicate model IDs. Restore it exactly.
-    orders.sort((a,b)=>a-b);
-    return orders.map(order=>indices[order]);
+    orders.sort(ascending);
+    for(let i=0;i<orders.length;i++)orders[i]=indices[orders[i]];
+    return orders;
   }
   transformForModel(index) {
     // Motion samples replace their objects frequently; moving-solid traces
@@ -234,8 +292,8 @@ export class BspCollider {
         const node=nodes[id];if(!node)return;
         const plane=transform?transform.plane(planes[node[2]]):planes[node[2]];
         if(isPoint){visit(node[dot(plane,low)>=plane[3]?0:1],null);return;}
-        const distances=faces.flat().map(p=>dot(plane,p)-plane[3]);
-        const minimum=Math.min(...distances),maximum=Math.max(...distances);
+        let minimum=Infinity,maximum=-Infinity;
+        for(let f=0;f<faces.length;f++){const face=faces[f];for(let k=0;k<face.length;k++){const distance=dot(plane,face[k])-plane[3];if(distance<minimum)minimum=distance;if(distance>maximum)maximum=distance;}}
         if(maximum>=-1e-7){const front=minimum>=-1e-7?faces:clipFaces(faces,plane,1);if(front.length)visit(node[0],front);}
         if(minimum< -1e-7){const back=maximum<=1e-7?faces:clipFaces(faces,plane,-1);if(back.length)visit(node[1],back);}
       };
@@ -245,77 +303,41 @@ export class BspCollider {
   }
   trace(start, end, mins = [0,0,0], maxs = [0,0,0], modelIndices = [0], actorMask='blocksPlayer', contentsMask=67) {
     const { planes, nodes, leaves, leafSides, models } = this.data;
-    const result = { fraction:1, end:[...end], normal:[0,1,0], startSolid:false, modelIndex:null };
-    const boxMin = start.map((v,i)=>Math.min(v,end[i])+mins[i]);
-    const boxMax = start.map((v,i)=>Math.max(v,end[i])+maxs[i]);
-    const center = boxMin.map((v,i)=>(v+boxMax[i])*0.5), extent = boxMin.map((v,i)=>(boxMax[i]-v)*0.5);
+    const result = { fraction:1, end:null, normal:[0,1,0], startSolid:false, modelIndex:null };
+    const boxMin=sweep.boxMin,boxMax=sweep.boxMax;
+    for(let i=0;i<3;i++){boxMin[i]=Math.min(start[i],end[i])+mins[i];boxMax[i]=Math.max(start[i],end[i])+maxs[i];}
+    sweep.result=result;sweep.start=start;sweep.end=end;sweep.mins=mins;sweep.maxs=maxs;sweep.contentsMask=contentsMask;
+    sweep.planes=planes;sweep.nodes=nodes;sweep.leaves=leaves;sweep.leafSides=leafSides;
+    sweep.cx=(boxMin[0]+boxMax[0])*0.5;sweep.cy=(boxMin[1]+boxMax[1])*0.5;sweep.cz=(boxMin[2]+boxMax[2])*0.5;
+    sweep.ex=(boxMax[0]-boxMin[0])*0.5;sweep.ey=(boxMax[1]-boxMin[1])*0.5;sweep.ez=(boxMax[2]-boxMin[2])*0.5;
+    const seen=this.leafStamps??=new Uint32Array(leaves.length);
+    sweep.seen=seen;
     for(const modelIndex of this.traceModelIndices(modelIndices,boxMin,boxMax)) {
       if(!models[modelIndex] || this.disabledModels.has(modelIndex)) continue;
       // Model zero is the stationary world, even if a caller supplies a transform.
       const transform=this.transformForModel(modelIndex);
       const bounds=this.modelBounds[modelIndex];
       if(bounds) {
-        const [min,max]=transform?transform.bounds(...bounds):bounds;
+        const box=transform?transform.bounds(bounds[0],bounds[1]):bounds,min=box[0],max=box[1];
         // Include touching boxes and roundoff at rotated corners.
-        if(min.some((v,i)=>v>boxMax[i]+1e-7||max[i]<boxMin[i]-1e-7))continue;
+        if(min[0]>boxMax[0]+1e-7||max[0]<boxMin[0]-1e-7||min[1]>boxMax[1]+1e-7||max[1]<boxMin[1]-1e-7||min[2]>boxMax[2]+1e-7||max[2]<boxMin[2]-1e-7)continue;
       }
-      const visited = new Set();
-      const plane = index => transform?transform.plane(planes[index]):planes[index];
-      const checkLeaf = index => {
-        if (visited.has(index)) return; visited.add(index);
-        const leaf=leaves[index];
-        if (!leaf || !(leaf.contents & contentsMask) || !leaf.numSides) return;
-        if(leaf.min && leaf.max) {
-          const [min,max]=transform?transform.bounds(leaf.min,leaf.max):[leaf.min,leaf.max];
-          if(min.some((v,i)=>v>boxMax[i] || max[i]<boxMin[i])) return;
-        }
-        let enter=-Infinity, leave=1, normalPlane=null,normalSign=1, outside=false, endOutside=false, nearest=-Infinity, exitPlane=null,exitSign=1;
-        for(let j=0;j<leaf.numSides;j++) {
-          const side=leafSides[leaf.firstSide+j], p=plane(side[0]), sign=side[1] ? -1 : 1;
-          const nx=p[0]*sign,ny=p[1]*sign,nz=p[2]*sign;
-          // Keep reduce's original leading zero and left-to-right additions.
-          // Only a selected hit/penetration needs an allocated normal vector.
-          const offset=((0+nx*(nx>0?mins[0]:maxs[0]))+ny*(ny>0?mins[1]:maxs[1]))+nz*(nz>0?mins[2]:maxs[2]);
-          const d=p[3]*sign-offset;
-          const ds=(nx*start[0]+ny*start[1]+nz*start[2])-d,de=(nx*end[0]+ny*end[1]+nz*end[2])-d;
-          if(ds>nearest){nearest=ds;exitPlane=p;exitSign=sign;}
-          if(ds>0) outside=true; if(de>0) endOutside=true;
-          if(ds>0 && de>=ds) return;
-          if(ds<=0 && de<=0) continue;
-          if(ds>de) { const t=(ds-0.05)/(ds-de); if(t>enter) { enter=t; normalPlane=p;normalSign=sign; } }
-          else leave=Math.min(leave,(ds+0.05)/(ds-de));
-        }
-        if(!outside) {
-          result.startSolid=true;
-          // Moving brushes need the shortest outward displacement from each
-          // intersected convex leaf, not the default floor normal of a trace
-          // whose starting hull is already inside the newly moved solid.
-          (result.penetrations??=[]).push({normal:exitPlane?[exitPlane[0]*exitSign,exitPlane[1]*exitSign,exitPlane[2]*exitSign]:null,distance:Math.max(0,-nearest)+.08,modelIndex});
-          if(!endOutside) { result.fraction=0; result.modelIndex=modelIndex; }
-          else if(result.fraction===1) result.modelIndex=modelIndex;
-          return;
-        }
-        if(enter<leave && enter>-Infinity && enter<result.fraction) {
-          result.fraction=Math.max(0,enter); result.normal=[normalPlane[0]*normalSign,normalPlane[1]*normalSign,normalPlane[2]*normalSign]; result.modelIndex=modelIndex;
-        }
-      };
-      const visit = id => {
-        if(id<0) { checkLeaf(-id-1); return; }
-        const node=nodes[id]; if(!node) return;
-        const p=plane(node[2]), d=dot(p,center)-p[3];
-        const r=Math.abs(p[0])*extent[0]+Math.abs(p[1])*extent[1]+Math.abs(p[2])*extent[2];
-        if(d+r>=0) visit(node[0]); if(d-r<=0) visit(node[1]);
-      };
-      visit(models[modelIndex].root);
+      // A leaf is tested once per model, as stamps instead of a new Set.
+      if(++this.leafStamp===0xffffffff){seen.fill(0);this.leafStamp=1;}
+      sweep.stamp=this.leafStamp;sweep.transform=transform;sweep.modelIndex=modelIndex;
+      sweepNode(models[modelIndex].root);
     }
+    sweep.result=null;
     if(actorMask)traceActors(this.actors,start,end,mins,maxs,result,actorMask);
-    result.end=lerp(start,end,result.fraction); return result;
+    const t=result.fraction;
+    result.end=[start[0]+(end[0]-start[0])*t,start[1]+(end[1]-start[1])*t,start[2]+(end[2]-start[2])*t];
+    return result;
   }
   slide(position, delta, mins, maxs, modelIndices) {
     let pos=[...position], remaining=[...delta],startSolid=false; const hits=[],models=new Set();
     for(let i=0;i<4;i++) {
-      if(Math.hypot(...remaining)<0.001) break;
-      const hit=this.trace(pos,pos.map((v,j)=>v+remaining[j]),mins,maxs,modelIndices);
+      if(Math.hypot(remaining[0],remaining[1],remaining[2])<0.001) break;
+      const hit=this.trace(pos,[pos[0]+remaining[0],pos[1]+remaining[1],pos[2]+remaining[2]],mins,maxs,modelIndices);
       startSolid||=hit.startSolid;
       pos=hit.end;
       if(hit.fraction===1) break;

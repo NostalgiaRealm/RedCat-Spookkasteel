@@ -912,7 +912,7 @@ export class Gameplay {
   objectPosition(object) {
     // Preserve authored attachment anchors in saves and apply the brush pose
     // for both models and pickups, without accumulating transforms.
-    const pose=['pickup','actor'].includes(object.kind)&&this.scripts?.modelTransforms.get(object.modelIndex);
+    const pose=(object.kind==='pickup'||object.kind==='actor')&&this.scripts?.modelTransforms.get(object.modelIndex);
     const position=pickupPosition(object);
     return pose?transformMotionPoint(position,pose.origin,pose):position;
   }
@@ -935,11 +935,11 @@ export class Gameplay {
     if(pose) {
       min=[Infinity,Infinity,Infinity];max=[-Infinity,-Infinity,-Infinity];
       for(let mask=0;mask<8;mask++){
-        const p=transformMotionPoint(model.min.map((v,i)=>mask&(1<<i)?model.max[i]:v),pose.origin,pose);
+        const p=transformMotionPoint([mask&1?model.max[0]:model.min[0],mask&2?model.max[1]:model.min[1],mask&4?model.max[2]:model.min[2]],pose.origin,pose);
         for(let i=0;i<3;i++){min[i]=Math.min(min[i],p[i]);max[i]=Math.max(max[i],p[i]);}
       }
     }
-    if(!min.every((v,i)=>position[i]+PLAYER_MAXS[i]+padding>=v&&position[i]+PLAYER_MINS[i]-padding<=max[i]))return false;
+    for(let i=0;i<min.length;i++)if(!(position[i]+PLAYER_MAXS[i]+padding>=min[i]&&position[i]+PLAYER_MINS[i]-padding<=max[i]))return false;
     if(!this.volumeCollider)return true;
     this.volumeCollider.modelTransforms=this.scripts?.modelTransforms||new Map();
     return this.volumeCollider.contents(position,PLAYER_MINS.map(v=>v-padding),PLAYER_MAXS.map(v=>v+padding),[object.modelIndex])!==0;

@@ -174,19 +174,20 @@ export class RoomVisibility {
   }
   boundsAllowed(min,max,mask=this.allowed,unknownAllowed=true) {
     if(!this.active)return true;
-    const {nodes,planes,models}=this.world.level.collision;let found=false;
-    const visit=id=>{
-      if(id<0) {
-        const leaf=this.metadata.leaves[-id-1];if(!leaf||leaf[0]<0)return false;
-        found=true;return Boolean(mask[leaf[1]]);
-      }
-      const node=nodes[id],p=planes[node[2]];let near=-p[3],far=-p[3];
-      for(let i=0;i<3;i++){near+=p[i]*(p[i]>=0?min[i]:max[i]);far+=p[i]*(p[i]>=0?max[i]:min[i]);}
-      return far>=0&&visit(node[0])||near<0&&visit(node[1]);
-    };
+    const {nodes,planes,models}=this.world.level.collision;
+    this.boundsLeafFound=false;
     // A fully buried decorative fixture must not vanish because its origin
     // lies in solid space. Missing ownership remains conservative.
-    return visit(models[0].root)||unknownAllowed&&!found;
+    return this.visitBounds(models[0].root,nodes,planes,min,max,mask)||unknownAllowed&&!this.boundsLeafFound;
+  }
+  visitBounds(id,nodes,planes,min,max,mask) {
+    if(id<0) {
+      const leaf=this.metadata.leaves[-id-1];if(!leaf||leaf[0]<0)return false;
+      this.boundsLeafFound=true;return Boolean(mask[leaf[1]]);
+    }
+    const node=nodes[id],p=planes[node[2]];let near=-p[3],far=-p[3];
+    for(let i=0;i<3;i++){near+=p[i]*(p[i]>=0?min[i]:max[i]);far+=p[i]*(p[i]>=0?max[i]:min[i]);}
+    return far>=0&&this.visitBounds(node[0],nodes,planes,min,max,mask)||near<0&&this.visitBounds(node[1],nodes,planes,min,max,mask);
   }
   sphereAllowed(center,radius) {
     if(!this.active)return true;

@@ -4,8 +4,9 @@ Settings now include a 25–300% render-scale slider (default 100%) and an
 optional FPS counter (default off). Both choices persist in local settings.
 The scale applies to each dimension of the selected resolution, or the window's
 physical pixel resolution when Automatic is selected. HTML overlays stay sharp.
-Android Automatic now uses this same policy instead of the earlier fixed 720p
-budget. Camera aspect ratio and desktop window size use the unscaled resolution.
+On phones and tablets (Android app and mobile browsers) Automatisch stops at the
+960×540 pixel budget; **Volle schermresolutie** uses every screen pixel. See
+[mobile performance](mobile-performance.md). Camera aspect ratio and desktop window size use the unscaled resolution.
 
 During active, visible gameplay, the monitor measures one-second frame windows.
 After a two-second warmup, at least three consecutive seconds below 30 FPS

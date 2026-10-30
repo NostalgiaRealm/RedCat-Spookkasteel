@@ -96,9 +96,9 @@ export class AndroidHost {
 
 // Automatic Android resolution is a pixel budget, not a device-resolution
 // promise. Preserve aspect ratio on portrait screens and ultrawide phones.
-export function androidRenderSize(width, height, pixelRatio = 1) {
+export function androidRenderSize(width, height, pixelRatio = 1, shortEdge = 720) {
   const safe = value => Number.isFinite(value) && value > 0 ? value : 1;
   const w = safe(width) * safe(pixelRatio), h = safe(height) * safe(pixelRatio);
-  const scale = Math.min(1, 720 / Math.min(w,h), Math.sqrt((1280 * 720) / (w * h)));
+  const scale = Math.min(1, shortEdge / Math.min(w,h), Math.sqrt((shortEdge * 16 / 9 * shortEdge) / (w * h)));
   return [Math.max(1,Math.floor(w*scale)),Math.max(1,Math.floor(h*scale))];
 }

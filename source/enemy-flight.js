@@ -89,14 +89,15 @@ export function batSeparationTarget(game,object) {
   const push=[0,0,0];let overlap=false;
   for(const other of game.objects) {
     if(other===object||other.enemyType!=='bat'||!other.enabled||other.health<=0)continue;
-    const delta=object.position.map((v,i)=>v-other.position[i]),length=Math.hypot(...delta);
+    let dx=object.position[0]-other.position[0],dz=object.position[2]-other.position[2];
+    const dy=object.position[1]-other.position[1],length=Math.hypot(dx,dy,dz);
     const radius=Math.max(16,(object.collisionMaxs?.[0]||10)+(other.collisionMaxs?.[0]||10)+6);
     if(length>=radius)continue;
     overlap=true;
     // A deterministic opposite direction also separates coincident spawns.
-    if(length<.001){delta[0]=object.id<other.id?1:-1;delta[2]=.35;}
-    const norm=Math.hypot(...delta)||1;
-    for(let i=0;i<3;i++)push[i]+=delta[i]/norm*(radius-length+4);
+    if(length<.001){dx=object.id<other.id?1:-1;dz=.35;}
+    const norm=Math.hypot(dx,dy,dz)||1;
+    push[0]+=dx/norm*(radius-length+4);push[1]+=dy/norm*(radius-length+4);push[2]+=dz/norm*(radius-length+4);
   }
   return overlap?object.position.map((v,i)=>v+push[i]):null;
 }

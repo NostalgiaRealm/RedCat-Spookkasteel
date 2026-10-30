@@ -27,7 +27,7 @@ export class ActorCollisionIndex {
   }
   update(record,order=null) {
     const range=this.range(record),old=this.entries.get(record);
-    if(old&&range.every((value,i)=>value===old.range[i]))return;
+    if(old&&range[0]===old.range[0]&&range[1]===old.range[1]&&range[2]===old.range[2]&&range[3]===old.range[3]&&range[4]===old.range[4]&&range[5]===old.range[5])return;
     if(old) {
       for(const key of old.keys){const cell=this.cells.get(key);cell.delete(old);if(!cell.size)this.cells.delete(key);}
       this.wide.delete(old);

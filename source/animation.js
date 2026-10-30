@@ -146,8 +146,8 @@ function rotation(out, channel, time) {
 }
 
 function compose(out, p, q) {
-  const [x,y,z,w]=q,xx=2*x*x,yy=2*y*y,zz=2*z*z,xy=2*x*y,xz=2*x*z,yz=2*y*z,wx=2*w*x,wy=2*w*y,wz=2*w*z;
-  out.set([1-yy-zz,xy-wz,xz+wy,xy+wz,1-xx-zz,yz-wx,xz-wy,yz+wx,1-xx-yy,p[0],p[1],p[2]]);
+  const x=q[0],y=q[1],z=q[2],w=q[3],xx=2*x*x,yy=2*y*y,zz=2*z*z,xy=2*x*y,xz=2*x*z,yz=2*y*z,wx=2*w*x,wy=2*w*y,wz=2*w*z;
+  out[0]=1-yy-zz;out[1]=xy-wz;out[2]=xz+wy;out[3]=xy+wz;out[4]=1-xx-zz;out[5]=yz-wx;out[6]=xz-wy;out[7]=yz+wx;out[8]=1-xx-yy;out[9]=p[0];out[10]=p[1];out[11]=p[2];
 }
 
 // Blend local bone keys, not skinned vertices: bone lengths and normals must

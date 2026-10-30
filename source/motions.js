@@ -124,10 +124,10 @@ export function samplePath(path, time) {
 
 /** Transform an original world-space brush point about its imported model pivot. */
 export function transformMotionPoint(point, origin, pose) {
-  const [x, y, z] = point.map((v, i) => v - origin[i]), [qx, qy, qz, qw] = pose.rotation;
+  const x = point[0] - origin[0], y = point[1] - origin[1], z = point[2] - origin[2], q = pose.rotation, t = pose.translation;
+  const qx = q[0], qy = q[1], qz = q[2], qw = q[3];
   const tx = 2 * (qy * z - qz * y), ty = 2 * (qz * x - qx * z), tz = 2 * (qx * y - qy * x);
-  return [x + qw * tx + qy * tz - qz * ty, y + qw * ty + qz * tx - qx * tz, z + qw * tz + qx * ty - qy * tx]
-    .map((v, i) => v + origin[i] + pose.translation[i]);
+  return [x + qw * tx + qy * tz - qz * ty + origin[0] + t[0], y + qw * ty + qz * tx - qx * tz + origin[1] + t[1], z + qw * tz + qx * ty - qy * tx + origin[2] + t[2]];
 }
 
 /** A bounded original motion, including script event callbacks during playback.
