@@ -1,0 +1,181 @@
+{
+  "version": "1.0.8",
+  "commit": "74e3759f918a8fde6885f5bbfeb466c1c808da1b",
+  "builds": [
+    {
+      "target": "linux-x64",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--linux",
+        "dir",
+        "--x64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.8",
+        "-c.directories.output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/dist/build-1.0.8"
+      ],
+      "exitCode": 0,
+      "seconds": 5.52
+    },
+    {
+      "target": "windows-x64",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--win",
+        "dir",
+        "--x64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.8",
+        "-c.directories.output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/dist/build-1.0.8"
+      ],
+      "exitCode": 0,
+      "seconds": 6.36
+    },
+    {
+      "target": "linux-arm64",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--linux",
+        "dir",
+        "--arm64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.8",
+        "-c.directories.output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/dist/build-1.0.8"
+      ],
+      "exitCode": 0,
+      "seconds": 5.78
+    },
+    {
+      "target": "windows-arm64",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--win",
+        "dir",
+        "--arm64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.8",
+        "-c.directories.output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/dist/build-1.0.8"
+      ],
+      "exitCode": 0,
+      "seconds": 10.89
+    },
+    {
+      "target": "mac-x64",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--mac",
+        "dir",
+        "--x64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.8",
+        "-c.directories.output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/dist/build-1.0.8",
+        "-c.mac.notarize=false"
+      ],
+      "exitCode": 0,
+      "seconds": 5.39
+    },
+    {
+      "target": "mac-arm64",
+      "command": [
+        "npx",
+        "--no-install",
+        "electron-builder",
+        "--mac",
+        "dir",
+        "--arm64",
+        "--publish",
+        "never",
+        "-c.extraMetadata.version=1.0.8",
+        "-c.directories.output=/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/dist/build-1.0.8",
+        "-c.mac.notarize=false"
+      ],
+      "exitCode": 0,
+      "seconds": 5.22
+    },
+    {
+      "target": "android-apk-aab",
+      "command": [
+        "npm",
+        "run",
+        "build:android"
+      ],
+      "exitCode": 0,
+      "seconds": 25.98
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "RC_ORIGINAL_DECOMPILED-1.0.8.manifest.json",
+      "bytes": 5886326,
+      "sha256": "f1bf9d3054533c8f3ff627e8fee387d4e00ef9fa3b9dd4a84b8ae04dd4ac2e5a"
+    },
+    {
+      "name": "RC_ORIGINAL_DECOMPILED-1.0.8.sha256",
+      "bytes": 102,
+      "sha256": "878113aec59f5eedd70b464306d6b98c8745a366744b97e9a1c9d0d55eb2f318"
+    },
+    {
+      "name": "RC_ORIGINAL_DECOMPILED-1.0.8.tar.gz",
+      "bytes": 158304849,
+      "sha256": "b2fad23ec064a3ff511369427781888fd72a507430177a6c346aba528396b61c"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.8-android.aab",
+      "bytes": 110795507,
+      "sha256": "760fba013cdf638b91fbdafd75ca5f65c509476964c24196fddebfa9bfb2acfc"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.8-android.apk",
+      "bytes": 157904839,
+      "sha256": "e894596a6cda09bc027242a1e861e7ae6b1e187eee3b35910f7115bf12d31090"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.8-linux-arm64.zip",
+      "bytes": 229504324,
+      "sha256": "6152ff59d3d263268340d6db5224b0a529e9dfde134c635dea5646af61b4d11e"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.8-linux-x64.zip",
+      "bytes": 228334687,
+      "sha256": "8a141fd7d775560b2bae4e6ff20a0d48ad3b09c23db6a07426a0fd745d163d0e"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.8-mac-arm64.zip",
+      "bytes": 232893561,
+      "sha256": "3df90d902b535d42799076590e096bd064819ff0e885e2950c0e0060f1cc9f21"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.8-mac-x64.zip",
+      "bytes": 237225783,
+      "sha256": "88848475f223ce31574b36d78f31922fc8ade3556e06e27b68395be924e5d1d1"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.8-windows-arm64.zip",
+      "bytes": 261869306,
+      "sha256": "d853299a12394b2515a4093b94ab38c3b81a2eea9b5ec9a3cdf0cc9c1a5cd2cf"
+    },
+    {
+      "name": "RedCat-Spookkasteel-1.0.8-windows-x64.zip",
+      "bytes": 263713281,
+      "sha256": "eec66cd44e4f9f6a572c4407564b2cd6bb09ba2b70e6bee174a8cf99fb929b3d"
+    }
+  ],
+  "testsRun": "Source: npm test 1634/1634 passed before the commit (unit-tests.log), plus focused Het Kerkhof checks (temp_work/mobile-performance-2026-10-30). The 111 browser scenes were not rerun; they last passed in full for 1.0.7.",
+  "buildChecksRun": false,
+  "packagesLaunched": false,
+  "scope": "Build, archive, generate checksums, publish. Package runtime checks are the owner's own."
+}

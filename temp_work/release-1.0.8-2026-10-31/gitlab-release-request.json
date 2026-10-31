@@ -1,0 +1,81 @@
+{
+ "tag_name": "v1.0.8",
+ "name": "RedCat Spookkasteel 1.0.8",
+ "description": "Version 1.0.8 makes the game much lighter on phones and tablets: on an emulated budget phone, Het Kerkhof went from about 15 to 34\u201339 frames per second. Existing player profiles, saves, recovery history and settings keep working without conversion or manual intervention.\n\n## Phones and Tablets\n\nThese changes apply to mobile browsers and the Android app. Computers keep their current picture settings.\n\n- **Lower automatic resolution:** **Automatisch** now stops at about 960\u00d7540, so the picture is softer than before. The new **Volle schermresolutie** option uses every screen pixel, and the other resolutions and the render scale still work.\n- **Anti-aliasing starts off:** MSAA now starts at **Uit**. If your saved setting is 4x, it switches to **Uit** once, even if you chose 4x yourself. You can turn it back on in the settings, and your choice is then kept.\n- **At most 60 frames per second:** Phones with a 90 or 120 Hz screen no longer draw the game up to twice as often, which saves battery and heat.\n- **Slightly softer textures:** Surfaces seen at a sharp angle use lighter filtering.\n- **Halos:** A glow behind an obstacle can react slightly later.\n- **Colors:** A faster colour calculation stays within one color step of the exact one.\n\n## All Devices\n\n- **Faster lighting:** World lighting does far less work per pixel. In test frames on Het Kerkhof, the picture differs by at most one color step.\n- **Less work per frame:** Collision checks create far less temporary data, and distant scenery, distant props and hidden halos no longer use time they don't need. Game decisions stay the same.\n- **Pausing from fullscreen in a browser:** Leaving fullscreen during play now opens the pause menu. Browsers keep the first Escape press to themselves, so it used to only leave fullscreen.\n\n## Website Hosting\n\n- **One-command updates:** `tools/deploy-website.sh` refreshes the build, uploads only changed files and checks the live site. Nginx keeps running. See [docs/nginx-hosting.md](docs/nginx-hosting.md).\n- **Sound file type:** The Nginx guide now serves the game's sounds as `audio/wav`.\n\n## Measurements and Tests\n\n- **Measured:** [docs/mobile-performance.md](docs/mobile-performance.md) has the numbers and `tools/mobile-performance.mjs` repeats them. They come from emulated phones with a software graphics processor, only on Het Kerkhof, so they don't predict a real phone's frame rate.\n- **Tests:** All 1634 unit tests pass. Touch play, settings and screenshots were checked on Het Kerkhof.\n- **Not run for this release:** The full set of 111 browser scenes last ran for 1.0.7. Other chapters, real phones and real Safari were not tested after these changes.\n\n## Save Compatibility\n\n- **Unchanged:** Storage origins, keys, player IDs, export format and recovery history stay the same.\n- **New setting detail:** Settings gain one optional detail, which records the one-time MSAA switch. Older settings work without it.\n\n## Release Scope\n\n- **Updated the release version to 1.0.8:** These notes cover changes after the **1.0.7 release commit, `e935fe2f1`**.\n- **Included desktop and Android packages:**\n  - **Desktop:** Linux, Windows and macOS downloads cover x64 and ARM64.\n  - **Android:** A signed direct-install APK and a Google Play AAB, with version name 1.0.8 and version code 10.\n  - **Signing:** Windows packages remain unsigned. The macOS bundles built on Linux remain unsigned and not notarized. No Google Play upload or approval is implied.\n- **Original decompilation:** The complete original decompilation archive, its checksum and its file manifest are attached, as with every release.\n",
+ "assets": {
+  "links": [
+   {
+    "name": "RC_ORIGINAL_DECOMPILED-1.0.8.manifest.json",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.8/RC_ORIGINAL_DECOMPILED-1.0.8.manifest.json",
+    "link_type": "package",
+    "direct_asset_path": "/RC_ORIGINAL_DECOMPILED-1.0.8.manifest.json"
+   },
+   {
+    "name": "RC_ORIGINAL_DECOMPILED-1.0.8.sha256",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.8/RC_ORIGINAL_DECOMPILED-1.0.8.sha256",
+    "link_type": "package",
+    "direct_asset_path": "/RC_ORIGINAL_DECOMPILED-1.0.8.sha256"
+   },
+   {
+    "name": "RC_ORIGINAL_DECOMPILED-1.0.8.tar.gz",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.8/RC_ORIGINAL_DECOMPILED-1.0.8.tar.gz",
+    "link_type": "package",
+    "direct_asset_path": "/RC_ORIGINAL_DECOMPILED-1.0.8.tar.gz"
+   },
+   {
+    "name": "RedCat-Spookkasteel-1.0.8-android.aab",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.8/RedCat-Spookkasteel-1.0.8-android.aab",
+    "link_type": "package",
+    "direct_asset_path": "/RedCat-Spookkasteel-1.0.8-android.aab"
+   },
+   {
+    "name": "RedCat-Spookkasteel-1.0.8-android.apk",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.8/RedCat-Spookkasteel-1.0.8-android.apk",
+    "link_type": "package",
+    "direct_asset_path": "/RedCat-Spookkasteel-1.0.8-android.apk"
+   },
+   {
+    "name": "RedCat-Spookkasteel-1.0.8-linux-arm64.zip",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.8/RedCat-Spookkasteel-1.0.8-linux-arm64.zip",
+    "link_type": "package",
+    "direct_asset_path": "/RedCat-Spookkasteel-1.0.8-linux-arm64.zip"
+   },
+   {
+    "name": "RedCat-Spookkasteel-1.0.8-linux-x64.zip",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.8/RedCat-Spookkasteel-1.0.8-linux-x64.zip",
+    "link_type": "package",
+    "direct_asset_path": "/RedCat-Spookkasteel-1.0.8-linux-x64.zip"
+   },
+   {
+    "name": "RedCat-Spookkasteel-1.0.8-mac-arm64.zip",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.8/RedCat-Spookkasteel-1.0.8-mac-arm64.zip",
+    "link_type": "package",
+    "direct_asset_path": "/RedCat-Spookkasteel-1.0.8-mac-arm64.zip"
+   },
+   {
+    "name": "RedCat-Spookkasteel-1.0.8-mac-x64.zip",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.8/RedCat-Spookkasteel-1.0.8-mac-x64.zip",
+    "link_type": "package",
+    "direct_asset_path": "/RedCat-Spookkasteel-1.0.8-mac-x64.zip"
+   },
+   {
+    "name": "RedCat-Spookkasteel-1.0.8-windows-arm64.zip",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.8/RedCat-Spookkasteel-1.0.8-windows-arm64.zip",
+    "link_type": "package",
+    "direct_asset_path": "/RedCat-Spookkasteel-1.0.8-windows-arm64.zip"
+   },
+   {
+    "name": "RedCat-Spookkasteel-1.0.8-windows-x64.zip",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.8/RedCat-Spookkasteel-1.0.8-windows-x64.zip",
+    "link_type": "package",
+    "direct_asset_path": "/RedCat-Spookkasteel-1.0.8-windows-x64.zip"
+   },
+   {
+    "name": "SHA256SUMS.txt",
+    "url": "https://gitlab.com/api/v4/projects/Nostalgia_Realm%2FRedCat-Spookkasteel/packages/generic/redcat-spookkasteel/1.0.8/SHA256SUMS.txt",
+    "link_type": "package",
+    "direct_asset_path": "/SHA256SUMS.txt"
+   }
+  ]
+ }
+}
