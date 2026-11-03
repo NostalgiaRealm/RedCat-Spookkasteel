@@ -25,25 +25,14 @@ Use `git add -f` because the global `*.log` exclusion must not omit research log
 
 Commit this complete folder together with that release's source **before**
 creating the release tag. Push the same commit and tag to GitHub and GitLab.
-Their generated source archives will then include the folder automatically.
-Also attach these three files to the release on **both** hosts:
-
-```text
-dist/original-decompiled/RC_ORIGINAL_DECOMPILED-VERSION.tar.gz
-dist/original-decompiled/RC_ORIGINAL_DECOMPILED-VERSION.sha256
-dist/original-decompiled/RC_ORIGINAL_DECOMPILED-VERSION.manifest.json
-```
-
-For GitHub use `gh release upload vVERSION` with the three paths. For GitLab,
-upload them to the project's generic package registry and add each URL to the
-release's asset links, following the existing build publication procedure.
-Verify uploaded sizes and SHA-256 hashes independently on both hosts.
+Their generated source archives then include the folder automatically, and that
+is how it is published. Do **not** attach the helper's archive, checksum or
+manifest to releases: from 3 November 2026 they were removed from every release
+on both hosts (1.0.3 to 1.0.8) as a waste of space, at the project owner's request.
 
 This research is a source/release supplement. Desktop, browser and Android
 runtime packages keep their existing runtime-only file lists; they do not need
 to load these analysis databases or recovered code.
 
-For the already published 1.0.3 release, this folder was added after the original
-release commit. Its separate attached archive contains the complete research;
-the existing 1.0.3 tag and desktop binaries remain at their original commit.
-Subsequent release tags must contain the tracked folder too.
+The 1.0.3 tag predates the folder, so its source archive does not contain it;
+the folder is in every later tag and on the main branch.

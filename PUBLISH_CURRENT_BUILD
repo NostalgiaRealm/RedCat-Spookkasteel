@@ -40,9 +40,11 @@ artifacts. Confirm origin is GitHub NostalgiaRealm/RedCat-Spookkasteel and gitla
 is GitLab Nostalgia_Realm/RedCat-Spookkasteel. Use the same source commit on both.
 
 MANDATORY FOR EVERY RELEASE: retain the entire original decompilation, including
-original inputs, saved Ghidra projects, logs and every recovered file. See
-docs/original-decompiled-publication.md. This helper copies the complete research
-and generates its archive, checksum and file manifest; inspect its result.
+original inputs, saved Ghidra projects, logs and every recovered file, in the
+release's source commit. See docs/original-decompiled-publication.md. This helper
+copies the complete research into RC_ORIGINAL_DECOMPILED/; inspect its result.
+Its archive, checksum and manifest are NOT release assets: the tagged source
+archives on both hosts already contain the folder.
 
 ```bash
 python3 tools/prepare-original-decompiled.py --version "$REDCAT_RELEASE_VERSION"
@@ -94,13 +96,9 @@ mkdir "$REDCAT_ARCHIVE_DIR"
   zip -r "$REDCAT_ARCHIVE_DIR/RedCat-Spookkasteel-${REDCAT_RELEASE_VERSION}-mac-x64.zip" mac/
   zip -r "$REDCAT_ARCHIVE_DIR/RedCat-Spookkasteel-${REDCAT_RELEASE_VERSION}-mac-arm64.zip" mac-arm64/
 )
-cp "dist/original-decompiled/RC_ORIGINAL_DECOMPILED-${REDCAT_RELEASE_VERSION}.tar.gz" \
-   "dist/original-decompiled/RC_ORIGINAL_DECOMPILED-${REDCAT_RELEASE_VERSION}.sha256" \
-   "dist/original-decompiled/RC_ORIGINAL_DECOMPILED-${REDCAT_RELEASE_VERSION}.manifest.json" \
-   "$REDCAT_ARCHIVE_DIR/"
 (
   cd "$REDCAT_ARCHIVE_DIR"
-  sha256sum -- *.zip *.tar.gz *.sha256 *.manifest.json > SHA256SUMS.txt
+  sha256sum -- *.zip > SHA256SUMS.txt
   sha256sum --check SHA256SUMS.txt
 )
 git diff --exit-code
@@ -130,8 +128,9 @@ the already published tag; it is not permission to replace it.
 ## 4. Publish every artifact on GitHub and GitLab
 
 Authenticate gh/glab to the correct accounts first. The complete directory from
-step 2 contains six desktop ZIPs, the three mandatory original-decompilation
-files and SHA256SUMS.txt. Use the hand-written versioned release notes.
+step 2 contains six desktop ZIPs and SHA256SUMS.txt (Android APK/AAB per ANDROID.md).
+Never attach the original-decompilation archive, checksum or manifest: it is a
+waste of release space, because the source archives already contain the folder. Use the hand-written versioned release notes.
 
 ```bash
 gh release create "$REDCAT_RELEASE_TAG" "$REDCAT_ARCHIVE_DIR/"* \
@@ -179,5 +178,5 @@ glab release download "$REDCAT_RELEASE_TAG" \
 
 Retain a consolidated verification record with both public release URLs,
 source commit, exact assets/hashes and build/test boundaries. The full
-RC_ORIGINAL_DECOMPILED folder must remain in every future source release and
-its complete archive/manifest/checksum must be attached on BOTH hosts.
+RC_ORIGINAL_DECOMPILED folder must remain in every future source release; it is
+not attached separately.
