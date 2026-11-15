@@ -53,10 +53,30 @@ export function setIniValues(vfs, path, entries) {
 }
 
 /**
+ * The cameras' FieldOfView (AdamWin.Ini) for a game screen of W x H. It is the engine's own measure,
+ * not an angle: geCamera_SetAttributes 0x5C9070 sets XScale = width / Fov and YScale = height / Fov
+ * and keeps the larger of the two as Scale (camera + 0x24, the compare at 0x5C9139; read back in a run: see docs/intentional-differences.md). The
+ * shipped 1.36 at 640 x 480 is a tangent of 0.51 for half the height: 54 degrees from top to bottom.
+ * The port keeps that angle from top to bottom at every shape, as the JavaScript port did (its
+ * camera had a fixed vertical angle and the window's aspect: main.js resize()):
+ *   - a screen wider than it is high: Scale = W / Fov, so Fov = W * tan / (H / 2), which grows with
+ *     the width: the sides are added;
+ *   - a screen higher than it is wide: Scale = H / Fov, so Fov = 2 * tan whatever the height: the
+ *     sides are cut off.
+ * degrees, when set, is the wanted angle from top to bottom. (For any value but 1.36 the game logs
+ * that the setting is ignored; it is not.)
+ */
+export function fieldOfView(W, H, degrees) {
+  const tanHalf = degrees > 0 ? Math.tan(Math.min(100, Math.max(30, degrees)) * Math.PI / 360) : 1.36 * 240 / 640;
+  if (H === 480 && W >= H) return W * tanHalf / 240;          // the arithmetic of the wide modes as it always was
+  return Math.max(W, H) * tanHalf / (H / 2);
+}
+
+/**
  * Writes what the original menu and launcher leave for the game before starting it with "-game"
  * (docs/research/startup-and-loop.md, 2.6): which player, which world, and the switches that keep
  * the start-up dialogs away.
- *   launch: { player: 1..10, world: 1..5, difficulty: 0..2, adventure: bool, screenWidth: game screen width (640 = original) }
+ *   launch: { player: 1..10, world: 1..5, difficulty: 0..2, adventure: bool, screenWidth, screenHeight: the game's screen (640 x 480 = original) }
  */
 export function applyLaunch(vfs, dir, launch = {}) {
   const player = launch.player || 1, world = launch.world || 1;
@@ -79,16 +99,7 @@ export function applyLaunch(vfs, dir, launch = {}) {
   general.push(['Display', 'Mode', 2]);
   setIniValues(vfs, playerFile, general);
   setIniValues(vfs, p('COMPUTER.INI'), [['Display', 'AutoSelectDriver', 1], ['Display', 'ForceSelectWindowedMode', 0], ['Install', 'Minimal', 0], ['Sound', 'Allowed', 1]]);
-  // The cameras' FieldOfView (AdamWin.Ini) is the engine's own measure, not an angle:
-  // geCamera_SetAttributes 0x5C9070 sets Scale = width / Fov, so Fov is twice the tangent of half
-  // the horizontal angle, and for a picture W wide and 480 high Fov = W * tan(half the vertical
-  // angle) / 240. The shipped 1.36 at 640 x 480 is a tangent of 0.51: 54 degrees from top to bottom.
-  // A wider screen keeps that and adds to the sides, so Fov grows in proportion to the width.
-  // launch.fov, when set, is the wanted vertical angle in degrees. (For any value but 1.36 the
-  // game logs that the setting is ignored; it is not: the cameras' Scale was read back.)
-  const W = launch.screenWidth || 640;
-  const tanHalf = launch.fov > 0 ? Math.tan(Math.min(100, Math.max(30, launch.fov)) * Math.PI / 360) : 1.36 * 240 / 640;
-  const fov = W * tanHalf / 240;
+  const fov = fieldOfView(launch.screenWidth || 640, launch.screenHeight || 480, launch.fov);
   setIniValues(vfs, (dir + '\\ADAMWIN.INI').toUpperCase(), [['Camera-PlayerCamera', 'FieldOfView', fov.toFixed(6)], ['Camera-LevelCamera', 'FieldOfView', fov.toFixed(6)]]);
   // crash guard of the original: a run that was cut off would disable the driver or the sound next time
   const guard = [];

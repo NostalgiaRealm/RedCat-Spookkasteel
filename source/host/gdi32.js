@@ -23,8 +23,18 @@ export function installGdi32(m, host) {
 
   m.api(G + 'GetStockObject', 1, (n) => STOCK + n);
   m.api(G + 'CreateFontA', 14, (height, width, esc, orient, weight, italic, underline, strike, charset, outPrec, clipPrec, quality, pitch, pFace) => {
-    const hgt = (height | 0) === 0 ? 16 : Math.abs(height | 0);
-    return add({ kind: 'font', height: hgt, cellHeight: (height | 0) > 0, weight: weight | 0, italic: italic & 0xFF, face: pFace ? m.cstr(pFace) : '' });
+    let hgt = (height | 0) === 0 ? 16 : Math.abs(height | 0);
+    const face = pFace ? m.cstr(pFace) : '';
+    // A screen higher than 4:3 (source/host/shape.js; the original has no such mode): the game sizes its own fonts, all
+    // Comic Sans MS, by the mode's HEIGHT, each screen when it is made (CAdamFont 0x4B09F0 with ftol(height * factor), the
+    // height from CAdamEngine + 0x44: the loading screen 0x486872, the retry screen 0x489442, the results 0x48C6AA, the
+    // game's start 0x527C20; run: -12, -24, -49, -23, -30 at 480 lines and -35, -71, -148, -68, -88 at 1422), while the
+    // screen is no wider than 640: "Opnieuw proberen?" was three times as large and cut off at both sides. There such a
+    // font gets the size it has at 480 lines. The engine's Verdana (-17 at every size) and Arial (by the width) are not
+    // sized by the height and stay. Nothing changes at 4:3 or wider.
+    const sc = host.screen;
+    if (sc && sc.height * 640 > sc.width * 480 && /^comic sans ms$/i.test(face)) hgt = Math.max(1, Math.round(hgt * (sc.width / 640) / (sc.height / 480)));
+    return add({ kind: 'font', height: hgt, cellHeight: (height | 0) > 0, weight: weight | 0, italic: italic & 0xFF, face });
   });
   m.api(G + 'CreatePalette', 1, (p) => {
     const n = u16[(p + 2) >> 1];

@@ -28,6 +28,17 @@
    offset in vh put the button half off a 390 pixel wide screen. */
 .touch-menu { top: max(8px, env(safe-area-inset-top)); left: calc(50% + min(21.7vh, 16.275vw)); left: calc(50% + min(21.7dvh, 16.275vw)); transform: translateX(-50%); }
 .touch-camera { top: calc(var(--hud-end, 21%) + 56px); right: max(6px, env(safe-area-inset-right)); }
+/* A picture higher than 4:3 (a phone held upright; <html class="pic-tall">, game.js layout()): the HUD's two groups meet
+   in the middle of the top, so Menu goes under them, in the middle, as in the JavaScript port. */
+html.pic-tall .touch-menu { top: calc(var(--hud-end, 21%) + 4px); left: 50%; }
+/* ... and in the game's own screens there (its menu, pause, the retry and results screens: the game lays them out over
+   the whole height, with its text in the original's size) at the left edge in the gear's row: their titles are in the
+   middle right under the top band (412 x 915, 2026-11-15: "RedCat Menu" 56 to 70 down and 171 to 241 across, "Opnieuw
+   proberen?" 120 to 290 across), the logo of the retry and results screens ends 27 down, the entries begin 170 down. */
+html.pic-tall .touch-own-loop .touch-menu { left: max(6px, env(safe-area-inset-left)); transform: none; }
+/* The retry screen there: Ja and Nee keep their size, their middle 0.943 of the height down in the right half; Spring and
+   the arrows above it stay over them. */
+html.pic-tall .touch-retry { --jb: max(18px, env(safe-area-inset-bottom), 0.06 * var(--pic-h) + 0.06 * var(--pic-u) + 8px); }
 /* Omlaag (free flight, touch.js) stands where Lopen does */
 .touch-walk, .touch-descend { right: max(18px, env(safe-area-inset-right)); bottom: calc(max(18px, env(safe-area-inset-bottom)) + var(--tb) + 12px); }
 .touch-stick[hidden], .touch-look[hidden], .touch-button[hidden] { display: none; }
@@ -65,6 +76,6 @@
    that the arrows above them begin 8 pixels under the picture (18 + 1.5 x --tb + 12 + --tn + 8 within --pic-top,
    public/index.html); a phone has the room (390 x 844: 276) and keeps its sizes. */
 @media (max-aspect-ratio: 4/5) {
-  .touch-own-loop { --tb: min(clamp(72px, 20vmin, 108px), max(44px, (var(--pic-top) - var(--tn) - 38px) / 1.5)); }
+  html:not(.pic-tall) .touch-own-loop { --tb: min(clamp(72px, 20vmin, 108px), max(44px, (var(--pic-top) - var(--tn) - 38px) / 1.5)); }
 }
 .touch-results .touch-fire { right: max(18px, env(safe-area-inset-right)); bottom: var(--jb); }

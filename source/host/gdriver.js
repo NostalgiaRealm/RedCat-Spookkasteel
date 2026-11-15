@@ -20,7 +20,7 @@
 // And, each behind a flag of source/host/fixes.js that is on by default (off = the original's picture):
 // the 4-bit channels of a 4444 texture are smoothed on their way to the renderer (smoothSprites,
 // smooth.js) and the sky box is drawn behind the world (skyBackdrop, below at BeginWorld).
-// And the game's 2D bitmaps keep their 4:3 width on a screen of another shape (hudShape, at RenderMiscTexturePoly).
+// And the game's 2D bitmaps keep their 4:3 shape on a screen of another shape, wider or higher (hudShape, at RenderMiscTexturePoly).
 //
 // Texture pixels stay in game memory, where the engine writes them through THandle_Lock. After a
 // save state is restored everything the renderer needs can be rebuilt from game memory and the
@@ -677,35 +677,46 @@ export function installGDriver(m, host) {
   // depends on what it is (docs/research/genesis-driver.md 11b). A quad of DrawBitmap is known by the return addresses
   // the game's own calls left on its stack: [esp] in geEngine_RenderPoly 0x5BBA8B, [esp+20] in DrawBitmap 0x562267,
   // [esp+316] in DrawBitmap's caller. Only the queue's copy of the vertices is changed; game memory is read.
-  // x' = round(P s) + (x / s - P) k, with s = width / 640, k = height / 480 and P the fixed point in 640 units.
-  let sliderPivot = 403.5;        // the menu's slider bar is at 340..467 (0x5392ED); its knob keeps its place on it
+  // x' = round(P s) + (x / s - P) u, with s = width / 640, k = height / 480, u the smaller of the two (1 in this port's
+  // modes) and P the fixed point in 640 units; on a screen higher than 4:3 the same for y: y' = round(Q k) + (y / k - Q) u
+  // with Q in 480 units. An axis whose factor is u is not touched (the wide modes' y, the high modes' x: bit for bit as before).
+  let sliderPivot = 403.5, sliderPivotY = 240, sliderLine = -1;        // the menu's slider bar is at 340..467 (0x5392ED); its knob keeps its place on it
+  let decalMid = -1;              // the middle line of the last DrawDecal: the letters of the entry a slider belongs to are drawn just before it
   drv.bitmaps = null;             // for tools/hud-check.mjs: an array here gets every DrawBitmap quad as it goes to the renderer
-  drv.reshaped = 0;               // for the checks: bitmaps drawn with another width than the game gave them
+  drv.reshaped = 0;               // for the checks: bitmaps drawn with another shape than the game gave them
   drv.bitmapsSeen = 0;            // quads of DrawBitmap, any shape of screen
   drv.strangers = 0;              // flat screen quads that did not come through DrawBitmap (none seen; they are left as they are)
+  drv.hudLift = 0;                // lines of the game's screen the HUD's bottom group is lifted on a high screen (the page's touch controls lie there)
   const reshape = (ra, v, off) => {
-    const s = drv.width / 640, k = drv.height / 480;
-    let x0 = v[off], x1 = x0;
-    for (let j = 1; j < 4; j++) { const x = v[off + j * 9]; if (x < x0) x0 = x; if (x > x1) x1 = x; }
-    const a = x0 / s, b = x1 / s;
-    let P;
+    const s = drv.width / 640, k = drv.height / 480, u = s < k ? s : k;
+    let x0 = v[off], x1 = x0, y0 = v[off + 1], y1 = y0;
+    for (let j = 1; j < 4; j++) { const x = v[off + j * 9], y = v[off + j * 9 + 1]; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+    const a = x0 / s, b = x1 / s, c = y0 / k, d = y1 / k;
+    let P, Q, lift = 0;
     switch (ra) {
-      case 0x454151: P = a < 500 ? 0 : 640; break;                              // HUD icons (HUDIcon.ini: x 5..65 and 510..596): the left group, the right group
-      case 0x487FE4: case 0x48E4DB: case 0x48AB73: P = 0; break;                // the logo of the loading, results and retry screens: its corner
-      case 0x488037: case 0x4880BA: P = 320; break;                             // loading: the picture and the progress bar under it
-      case 0x48F94B: case 0x48AC21: case 0x48ACCE: P = (a + b) / 2; break;      // the results' row icons, Ja and Nee: where they are, since the text on and next to them is placed with the real width
-      case 0x5392ED: P = sliderPivot = (a + b) / 2; break;                      // the menu's slider bar
-      case 0x5393CC: P = sliderPivot; break;                                    // and its knob
+      // HUD icons (HUDIcon.ini: x 5..65 and 510..596): the left group, the right group; the enemy's portrait and hearts (y 435) at the bottom, the rest at the top (the JavaScript port's hud.js: x >= 500, y >= 400)
+      case 0x454151: P = a < 500 ? 0 : 640; if (c < 400) Q = 0; else { Q = 480; lift = drv.hudLift; } break;
+      case 0x487FE4: case 0x48E4DB: case 0x48AB73: P = 0; Q = c < 240 ? 0 : 480; break;      // the logo of the loading, results and retry screens: its corner
+      case 0x488037: case 0x4880BA: P = 320; Q = 240; break;                    // loading: the picture and the progress bar under it
+      case 0x48F94B: case 0x48AC21: case 0x48ACCE: P = (a + b) / 2; Q = (c + d) / 2; break;      // the results' row icons, Ja and Nee: where they are, since the text on and next to them is placed with the real width and height
+      // The menu's slider bar, and its knob. On a high screen the game puts the entry's letters and the bar at different
+      // heights (letters from 111 down and the bar's middle at 121.5 at 480 lines; 252 and 223.7 at 1422: run), so there the
+      // bar goes on the middle line of the letters drawn just before it.
+      case 0x5392ED: P = sliderPivot = (a + b) / 2; Q = sliderPivotY = (c + d) / 2; sliderLine = k !== u && decalMid >= 0 ? decalMid : -1; break;
+      case 0x5393CC: P = sliderPivot; Q = sliderPivotY; break;
       // the three tiles of the menu's header and of its footer span the screen: DrawBitmap cuts a tile's width to whole
       // pixels (ftol) and not its place, which leaves a column open between two tiles (281 wide, the next at 281.73 in a mode of 854)
       case 0x53ADA8: case 0x53AE03: case 0x53AE5E: case 0x53AEDA: case 0x53AF35: case 0x53AF90:
-        for (let j = 0; j < 4; j++) if (v[off + j * 9] === x1) v[off + j * 9] = x1 + 1;
+        if (s !== 1) for (let j = 0; j < 4; j++) if (v[off + j * 9] === x1) v[off + j * 9] = x1 + 1;
+        // on a high screen they keep their height, the header at the top and the footer at the bottom
+        if (k !== u) { const q = c < 240 ? 0 : 480, base = Math.round(q * k); for (let j = 0; j < 4; j++) v[off + j * 9 + 1] = base + (v[off + j * 9 + 1] / k - q) * u; }
         drv.reshaped++;
         return;
-      default: return;            // bars, backgrounds, fades and dims fill the screen; a scene's line of text and what was never seen stay as the game draws them
+      case 0x4EF942: if (k === u) return; P = 0; Q = (c + d) / 2; break;         // a letter of a scene's line: as high as the game draws it at 4:3, where its line is
+      default: return;            // bars, backgrounds, fades and dims fill the screen; what was never seen stays as the game draws it
     }
-    const base = Math.round(P * s);
-    for (let j = 0; j < 4; j++) v[off + j * 9] = base + (v[off + j * 9] / s - P) * k;
+    if (s !== u) { const base = Math.round(P * s); for (let j = 0; j < 4; j++) v[off + j * 9] = base + (v[off + j * 9] / s - P) * u; }
+    if (k !== u) { const base = ((ra === 0x5392ED || ra === 0x5393CC) && sliderLine >= 0 ? sliderLine : Math.round(Q * k)) - lift; for (let j = 0; j < 4; j++) v[off + j * 9 + 1] = base + (v[off + j * 9 + 1] / k - Q) * u; }
     drv.reshaped++;
   };
   I.RenderMiscTexturePoly = (esp, pnts, n) => {
@@ -726,7 +737,7 @@ export function installGDriver(m, host) {
         const ra = u32[(esp + 316) >> 2], v = misc.cur.v;
         drv.bitmapsSeen++;
         if (drv.width * 480 !== drv.height * 640 && host.fixes && host.fixes.flags.hudShape) reshape(ra, v, p.off);
-        if (drv.bitmaps) { let x0 = v[p.off], x1 = x0, y0 = v[p.off + 1], y1 = y0; for (let j = 1; j < 4; j++) { const x = v[p.off + j * 9], y = v[p.off + j * 9 + 1]; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; } let g0 = f32[pnts >> 2], g1 = g0; for (let j = 1; j < 4; j++) { const x = f32[(pnts + j * 36) >> 2]; if (x < g0) g0 = x; if (x > g1) g1 = x; } drv.bitmaps.push({ ra, x0, y0, x1, y1, gx0: g0, gx1: g1 }); }
+        if (drv.bitmaps) { let x0 = v[p.off], x1 = x0, y0 = v[p.off + 1], y1 = y0; for (let j = 1; j < 4; j++) { const x = v[p.off + j * 9], y = v[p.off + j * 9 + 1]; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; } let g0 = f32[pnts >> 2], g1 = g0, h0 = f32[(pnts + 4) >> 2], h1 = h0; for (let j = 1; j < 4; j++) { const x = f32[(pnts + j * 36) >> 2], y = f32[(pnts + j * 36 + 4) >> 2]; if (x < g0) g0 = x; if (x > g1) g1 = x; if (y < h0) h0 = y; if (y > h1) h1 = y; } drv.bitmaps.push({ ra, x0, y0, x1, y1, gx0: g0, gx1: g1, gy0: h0, gy1: h1 }); }
       } else if (!drv.strangers++ && !drv.bitmapsSeen) console.warn('gdriver: the first screen quad has no return address of DrawBitmap 0x5614E0 on the stack (a build made with --no-ret-store?): the 2D bitmaps are drawn as the game gives them');
     }
     if (flags & DRV_RENDER_FLUSH) flushMisc();
@@ -743,6 +754,7 @@ export function installGDriver(m, host) {
       left = i32[srcRect >> 2]; top = i32[(srcRect + 4) >> 2]; right = i32[(srcRect + 8) >> 2]; bottom = i32[(srcRect + 12) >> 2];
       w = right - left + 1; h = bottom - top + 1;
     }
+    decalMid = y + h / 2;
     const W = drv.width, H = drv.height;
     if (x + w <= 0 || y + h <= 0 || x >= W || y >= H) return 1;
     if (x + w >= W - 1) right -= (x + w) - (W - 1);

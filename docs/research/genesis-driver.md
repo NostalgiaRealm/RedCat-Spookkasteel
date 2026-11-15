@@ -768,7 +768,22 @@ For the port's flag `hudShape` (`gdriver.js`, `RenderMiscTexturePoly` / `reshape
 | `0051a8a1`, `0051cdc4`, `0053ad2e` | fade, the pause's dim, the menu's dim | full screen | unchanged |
 | `004ef942` | a scene's line of text | not wider | unchanged |
 
-The port's rule, on the driver's copy of the four corners only: x' = round(P s) + (x / s - P) k, with k = height / 480 (1 in this port's modes). Nothing is done when width * 480 = height * 640.
+The port's rule, on the driver's copy of the four corners only: x' = round(P s) + (x / s - P) u, with u the smaller of s and k = height / 480 (1 in this port's modes). Nothing is done when width * 480 = height * 640.
+
+**A mode higher than 4:3** (2026-11-15: 640 wide, 480 to 1706 high, a phone held upright; runs at 640 x 1422 and 640 x 640, `tools/hud-check.mjs` shapes `portrait` and `square`). `DrawBitmap` multiplies y by height / 480 as it does x by width / 640, so there every bitmap was k times higher and no wider. The same rule the other way, y' = round(Q k) + (y / k - Q) u, with the fixed line Q in 480 units; x is not touched there (s = u), as y is not in a wide mode:
+
+| Caller | Q |
+|---|---|
+| `00454151` HUD | 0 when its upper edge is above 400, else 480 (the enemy's portrait and hearts, y 435), and then lifted by `drv.hudLift` lines: the page's touch controls lie there (the JavaScript port's `hud.js`: y >= 400 at the bottom, `bottomInset`) |
+| the three logos | 0 (they are in the top corner) |
+| loading picture and bar | 240 |
+| results' row icons, Ja, Nee | its own middle |
+| menu slider's bar and knob | the middle line of the letters drawn just before the bar (the driver's last `DrawDecal`): the game puts the entry's letters and the bar at different heights there (letters from 111 down and the bar's middle at 121.5 at 480 lines; 252 and 223.7 at 1422) |
+| Esc menu's header and footer tiles | 0 for the header, 480 for the footer: they keep their height; their x is the game's own (640 wide) |
+| `004ef942` a scene's line of text | its own middle: a letter was k times higher |
+| bars, backgrounds, fades, dims | unchanged: they fill the screen (a scene's bars are fractions of the height, so k times as thick) |
+
+**Text in such a mode** (confirmed by runs of `CreateFontA`): the game sizes its own fonts, all Comic Sans MS, by the mode's height, each screen when it is made (`CAdamFont` `004b09f0` called with `ftol(height * factor)`, the height from `CAdamEngine + 0x44`: `00486872` loading, `00489442` retry, `0048c6aa` results, `00527c20` four at the game's start; `004b80dc`, `004efcb0`, `00510c04`, `0051b4d1` also call it and were not read): -12, -24, -49, -23, -30 at 480 lines, -35, -71, -148, -68, -88 at 1422. On a screen 640 wide such letters do not fit ("Opnieuw proberen?" was cut off at both sides). `gdi32.js` `CreateFontA` gives a Comic Sans MS font the size it has at 480 lines when the screen is higher than 4:3. The engine's Verdana (-17 at every size) and its Arial (-13 at a width of 640, -18 at 854: by the width) are not changed. Where the game then puts its text is its own arithmetic with the real height: titles under the top band, the menu's entries from 0.18 of the height down, the results' rows spread over the height (pictures in `tools/out/hud/portrait-*.png`).
 
 **Inferred**
 
@@ -782,6 +797,25 @@ The port's rule, on the driver's copy of the four corners only: x' = round(P s) 
 - The enemy portrait and hearts (y = 435) and the lock-on mark were not put on screen in a run.
 - The mip level is still chosen from the game's wider corners.
 - Only world 1's screens were looked at; other worlds' loading pictures and the end of the game were not.
+
+## 11c. Another size of the screen in a running game (added 2026-11-15)
+
+For `source/host/shape.js` (a phone that is turned, a window that is reshaped, a save state continued in another shape). The original never changes its mode while a game runs: its menu is another program.
+
+**Confirmed (runs in the Node runner)**
+
+- Where the mode's size is kept in everything a save state holds: found by running world 1 at 1046 x 1754 and looking for those numbers (as integers, floats, minus one, halves) 40 seconds in. `CAdamEngine` (global `006c8de0`) `+0x40`, `+0x44` (written at `0055b5f0` from the mode, `005c96a0`); its mode record at `+0x118`, `+0x204` / `+0x208`; its cameras at `+0xDC`, `+0xE0`, `+0xE4` (two `CAdamCamera` objects, vtable `0064f828`, made once at `0055b7d0` through `00563e50` and `CAdamCamera::Init` `00555a20`): `+0xAC`, `+0xB0` width and height, `+0x18C` the rectangle (made by `00556150` from width, height and the percentage at `+0x114`), `+0x19C` / `+0x1AC` the rectangle put aside and the flag of a half-screen mode (`00556400`; never seen on), `+0x30` the geCamera, all of whose numbers `geCamera_SetAttributes` `005c9070` writes; the window object (`app + 0x58`) `+0x64`, `+0x68` (the middle the mouse is put back to, `005aa270`) and `+0x78`, `+0x80` (the rectangle the mouse is kept in, `005aa450`). The other places with those numbers (`GInfo` `00722860`, the frustum at `0070f8b0`, `00722f4c`…) are made anew from the camera every frame.
+- `geCamera_SetAttributes` keeps the larger of width / Fov and height / Fov as the camera's Scale (`+0x24`; the compare at `005c9139`). Read back: 470.59 at 640 x 480 and at 854 x 480 (Fov 1.36 and 1.8147), 1394.12 at 640 x 1422 with Fov 1.02. So in a mode higher than it is wide Fov = 2 x tan(half the vertical angle) whatever the height.
+- `CAdamCamera::Init` puts the camera's own copy of the field of view (`+0xA0`) back to 1.36 after it made the geCamera with the INI's value (the "FieldOfView is ignored" line): the geCamera keeps the INI's value until something calls the camera's setters with another one (`00555f60` from the script interface `004c5ab8`, `004c5d78`; `00556220`, `00556400`), which would then give it the camera's 1.36. No run reached that.
+- After `host.shape.request(w, h)` (the numbers above written, each camera's rectangle made by `00556150` and its projection by `005c9070` with the new shape's field of view): engine, mode record, window and both cameras hold exactly what a game started at that size holds, and the old numbers are nowhere in the state's memory (1046 x 1754 to 700 x 1100).
+- What the driver hands the renderer afterwards is what a game started at that size hands it: from 640 x 480 to 854 x 480 fifteen seconds of world 1 (893 frames) are the same calls byte for byte; to and from 640 x 1422, and after four changes in a row, the same vertices and decals frame by frame in another order within the misc queue (a game started at 640 x 1422 has made another number of texture handles by then, and that queue is sorted by handle slot).
+
+**Not established**
+
+- The game's memory is not the memory of a game that never changed: a second in another mode leaves other bytes (what was in view differs), as two games at different widths differ anyway.
+- A change while the half-screen flag `+0x1AC` is set, and a camera whose field of view a script changed, are written for but were never run.
+- The engine's Arial font is sized by the width when it is made and keeps that size after a change.
+- Fonts a screen made in one mode keep their size in another; they are the original's size in every mode (11b), so nothing shows.
 
 ## 12. Not established
 

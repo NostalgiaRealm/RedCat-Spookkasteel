@@ -178,6 +178,7 @@ async function start(init) {
   let skip = null;           // host.skip: skipping a scene
   let subtitles = null;      // host.subtitles: the readable subtitle box
   let volume = null;         // host.volume: Muziek and Geluidseffecten while the game runs
+  let shape = null;          // host.shape: another size of the game's screen while the game runs
   let lastTick = Atomics.load(ctrl, CTRL.TICK);
   let frames = 0, lastReport = 0, idle = 0;
   // The save state the page asked for last (CTRL.SAVE counts the requests), and the frames a pause
@@ -207,7 +208,7 @@ async function start(init) {
           else if (type === 5) out.push({ type: 'keyup', vk: ring[o + 1] });
           else if (type === 6) out.push({ type: 'activate', active: ring[o + 1] });
           else if (type === 7) out.push({ type: 'wheel', dz: ring[o + 1] });
-          else if (type === EV.SETTING) { if (ring[o + 1] === SET.SIZE) render.configure(ring[o + 2], ring[o + 3], undefined); else if (ring[o + 1] === SET.MSAA) render.configure(undefined, undefined, ring[o + 2]); else if (ring[o + 1] === SET.FIX) { if (fixes) fixes.set(FIX_NAMES[ring[o + 2]], !!ring[o + 3]); } else if (ring[o + 1] === SET.FIRST_PERSON) { if (look) look.setFirstPerson(!!ring[o + 2]); } else if (ring[o + 1] === SET.WALK) { if (move) move.walk(!!ring[o + 2]); } else if (ring[o + 1] === SET.SUBTITLES) { if (subtitles) subtitles.set(!!ring[o + 2]); } else if (ring[o + 1] === SET.VOLUME) { if (volume) { if (ring[o + 2] === 0) volume.request(ring[o + 3], null); else if (ring[o + 2] === 1) volume.request(null, ring[o + 3]); else volume.keep(); } } }
+          else if (type === EV.SETTING) { if (ring[o + 1] === SET.SIZE) render.configure(ring[o + 2], ring[o + 3], undefined); else if (ring[o + 1] === SET.MSAA) render.configure(undefined, undefined, ring[o + 2]); else if (ring[o + 1] === SET.FIX) { if (fixes) fixes.set(FIX_NAMES[ring[o + 2]], !!ring[o + 3]); } else if (ring[o + 1] === SET.FIRST_PERSON) { if (look) look.setFirstPerson(!!ring[o + 2]); } else if (ring[o + 1] === SET.WALK) { if (move) move.walk(!!ring[o + 2]); } else if (ring[o + 1] === SET.SUBTITLES) { if (subtitles) subtitles.set(!!ring[o + 2]); } else if (ring[o + 1] === SET.SHAPE) { if (shape) shape.request(ring[o + 2], ring[o + 3]); } else if (ring[o + 1] === SET.HUD_LIFT) { if (shape) game.host.gdriver.hudLift = Math.max(0, ring[o + 2] | 0); } else if (ring[o + 1] === SET.VOLUME) { if (volume) { if (ring[o + 2] === 0) volume.request(ring[o + 3], null); else if (ring[o + 2] === 1) volume.request(null, ring[o + 3]); else volume.keep(); } } }
           else if (type === EV.SKIP) { if (skip) { if (ring[o + 1] === 1) skip.request(); else if (ring[o + 1] === 2) skip.withdraw(); else skip.cancel(); } }
           else if (type === EV.STICK) { if (move) move.stick(ring[o + 1] / 1e4, ring[o + 2] / 1e4); }
           else if (type === EV.LOOK) { if (look) look.turn(ring[o + 1] / 1e6, ring[o + 2] / 1e6); }       // to the right, downwards
@@ -252,6 +253,7 @@ async function start(init) {
       } else if (skipClock !== null) { t0 = performance.now() - pausedTotal - skipClock; skipClock = null; render.thin = false; skipSlow = false; }
       if (skip) { const own = game.host.mainLoop && game.host.mainLoop.frames >= 2; Atomics.store(ctrl, CTRL.SCENE, skip.scene() | (skip.active ? 4 : 0) | (own ? 8 | (ownLoop(game.m, game.host.mainLoop) << 4) : 0) | (skipSlow && skip.active ? 64 : 0));      // 8: a second frame in one pass, the game is in a loop of its own (its menu, its pause; mainloop.js)
         Atomics.store(ctrl, CTRL.GSTATE, skip.gameState()); }
+      if (shape) { const size = shape.size(); Atomics.store(ctrl, CTRL.MODE_W, size[0]); Atomics.store(ctrl, CTRL.MODE_H, size[1]); }
       const t1 = performance.now();
       render.pace();
       const t2 = performance.now();
@@ -287,7 +289,7 @@ async function start(init) {
       return Atomics.load(ctrl, CTRL.ANSWER);
     },
   };
-  const game = await createGame({ wasm, meta, codeMap: new Uint8Array(codeMap), platform, files, options: { commandLine: '"' + GAME_DIR + '\\RcHcGame.dat" -game', launch: { ...init.launch, screenWidth: W }, fixes: init.fixes, subtitleBox: !!init.subtitleBox } });
+  const game = await createGame({ wasm, meta, codeMap: new Uint8Array(codeMap), platform, files, options: { commandLine: '"' + GAME_DIR + '\\RcHcGame.dat" -game', launch: { ...init.launch, screenWidth: W, screenHeight: H }, fixes: init.fixes, subtitleBox: !!init.subtitleBox } });
   fixes = game.host.fixes || null;
   skip = game.host.skip || null;
   // (frame: the number CTRL.FRAMES has when the first picture after the skip is drawn; this pass's own, without a scene, is already sent)
@@ -295,6 +297,7 @@ async function start(init) {
   if (skip) skip.onStart = () => { render.thin = true; };
   subtitles = game.host.subtitles || null;
   volume = game.host.volume || null;
+  shape = game.host.shape || null;
   if (subtitles) subtitles.onText = (text) => post({ t: 'subtitle', text });
   if (game.host.unbound.length) log('unbound imports: ' + game.host.unbound.join(' '));
   game.host.traceDebug = !!init.debugLog;
@@ -340,7 +343,7 @@ async function start(init) {
       // handed over, not copied again, and never put together into one array here.
       let pieces = null;
       try { pieces = game.host.snap.pieces(game.host.snap.save(esp)); } catch (e) { post({ t: 'state-failed', message: String(e && e.message ? e.message : e) }); return; }
-      post({ t: 'state', pieces, changed }, pieces.map((b) => b.buffer));
+      post({ t: 'state', pieces, changed, screen: game.host.shape ? game.host.shape.size() : [W, H] }, pieces.map((b) => b.buffer));
     };
     if (init.restore) {
       // A state that cannot be used is found here, before the game runs and before anything of it

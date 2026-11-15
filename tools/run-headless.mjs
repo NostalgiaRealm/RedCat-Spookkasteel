@@ -180,7 +180,7 @@ const walk = (dir, rel) => {
 walk(ORIGINALS, '');
 if (!fresh && fs.existsSync(savedDir)) for (const f of fs.readdirSync(savedDir)) files.push({ path: decodeURIComponent(f), data: new Uint8Array(fs.readFileSync(path.join(savedDir, f))), persist: true });
 
-const game = await createGame({ wasm, meta, codeMap, platform, files, options: { commandLine: opt('cmd', '"' + GAME_DIR + '\\RcHcGame.dat" -game'), fixes: opt('fixes', undefined), subtitleBox: has('subtitle-box'), launch: has('no-launch') ? null : { player: Number(opt('player', 1)), world: Number(opt('world', 1)), difficulty: Number(opt('difficulty', 1)), adventure: !has('quick'), screenWidth: W } } });
+const game = await createGame({ wasm, meta, codeMap, platform, files, options: { commandLine: opt('cmd', '"' + GAME_DIR + '\\RcHcGame.dat" -game'), fixes: opt('fixes', undefined), subtitleBox: has('subtitle-box'), launch: has('no-launch') ? null : { player: Number(opt('player', 1)), world: Number(opt('world', 1)), difficulty: Number(opt('difficulty', 1)), adventure: !has('quick'), screenWidth: W, screenHeight: H, ...(opt('fov', null) ? { fov: Number(opt('fov')) } : {}) } } });
 const { m, host } = game;
 // --ini "Settings\Player1.ini|Player|Skill|1;file|section|key|value": values set after the launch settings
 // and before the game starts, e.g. a player who can already shoot.

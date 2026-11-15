@@ -12,7 +12,11 @@
        narrower than 4:3 and then a band in its middle): its height, where it begins, and where the game's own HUD
        rows end in it (20 percent down; 21 with a margin). Whatever the page puts at the right edge under the HUD
        (the gear, Camera, the frame counter) and the first-time hint are placed by these, not by the window. */
-    --pic-h: min(100vh, 75vw); --pic-top: max(0px, 50vh - 37.5vw); --hud-end: calc(var(--pic-top) + 0.21 * var(--pic-h)); }
+    --pic-h: min(100vh, 75vw); --pic-top: max(0px, 50vh - 37.5vw); --pic-u: var(--pic-h); --hud-end: calc(var(--pic-top) + 0.21 * var(--pic-u)); }
+  /* (--pic-u: the height the game's 480 lines have in the picture. A picture higher than 4:3, a phone held upright,
+     fills the window and is more than 480 lines high: the page then sets --pic-top, --pic-h and --pic-u itself and puts
+     the class pic-tall on <html>, source/web/game.js layout(). The rules below for a screen held upright whose picture
+     is a band in its middle (the setting Breedbeeld off) therefore say :not(.pic-tall).) */
   @supports (height: 1dvh) { :root { --pic-h: min(100dvh, 75vw); --pic-top: max(0px, 50dvh - 37.5vw); } }
   html, body { height: 100%; margin: 0; overflow: hidden; background: var(--bg); color: var(--ink); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
   #stage { position: fixed; inset: 0; display: grid; place-items: center; background: #000; }
@@ -27,10 +31,15 @@
   html.game-own-loop #game-notice.hint { visibility: hidden; }        /* the game's own menu or pause is on screen: the hint lay over its entries (source/web/skip.js sets the class) */
   /* a screen held upright with the touch controls: the gear and Camera are at the right edge under the HUD
      (port.css, touch.css) and the hint is nearly as wide as the screen, so it goes above the picture, under Menu */
-  @media (max-aspect-ratio: 4/5) { html.touch-shown #game-notice.hint { top: calc(max(8px, env(safe-area-inset-top)) + 50px); font-size: 15px; padding: 8px 12px; } }
+  @media (max-aspect-ratio: 4/5) { html.touch-shown:not(.pic-tall) #game-notice.hint { top: calc(max(8px, env(safe-area-inset-top)) + 50px); font-size: 15px; padding: 8px 12px; } }
   /* ... and so does a notice of the port there: at the top it lay over Menu and over the frame counter in the top left
      corner (390 x 844, "Opslaan lukt nu niet. …": the notice 16 to 374 across and 14 to 82 down, the counter 8 to 71 and 14 to 42) */
-  @media (max-aspect-ratio: 4/5) { html.touch-shown #game-notice { top: calc(max(8px, env(safe-area-inset-top)) + 50px); } }
+  @media (max-aspect-ratio: 4/5) { html.touch-shown:not(.pic-tall) #game-notice { top: calc(max(8px, env(safe-area-inset-top)) + 50px); } }
+  /* A picture higher than 4:3 (it fills the screen): the HUD's rows are at its top over the full width, the gear and
+     Camera at the right edge under them, and Menu in the middle under them (touch.css). A notice and the hint go under
+     the HUD between the two edges' columns, with the touch controls under Menu. */
+  html.pic-tall #game-notice, html.pic-tall #game-notice.hint { top: calc(var(--hud-end) + 8px); max-width: calc(100vw - 2 * (max(6px, env(safe-area-inset-right)) + 90px)); font-size: 15px; padding: 8px 12px; }
+  html.pic-tall.touch-shown #game-notice, html.pic-tall.touch-shown #game-notice.hint { top: calc(var(--hud-end) + 54px); }
   /* a phone on its side with the touch controls: the hint ends left of the gear and of Camera under it (the right edge's
      column, 87 pixels with its margin; at 667 x 375 the hint ran under the gear), and is smaller in a low window so that
      it still fits on one line from 720 pixels of width */
@@ -56,7 +65,9 @@
      its right edge half way down, over the score column of the results screen. Outside the picture the top left
      corner of the window is free in every screen (Menu is right of the middle, the hint under it, the subtitle box
      stands on the picture's upper edge). */
-  @media (max-aspect-ratio: 4/5) { html.touch-shown #stats { top: calc(max(8px, env(safe-area-inset-top)) + 6px); right: auto; left: max(8px, env(safe-area-inset-left)); } }
+  @media (max-aspect-ratio: 4/5) { html.touch-shown:not(.pic-tall) #stats { top: calc(max(8px, env(safe-area-inset-top)) + 6px); right: auto; left: max(8px, env(safe-area-inset-left)); } }
+  /* A picture higher than 4:3: under Camera in play and in Camera's place in the game's own screens, as on a phone on its side. */
+  html.pic-tall.touch-shown[data-game-screen] #stats { top: calc(var(--hud-end) + 52px); }
   #stats { position: fixed; right: max(8px, env(safe-area-inset-right)); top: calc(var(--hud-end) + 56px); z-index: 29; padding: 5px 8px; border-radius: 4px; background: rgba(0, 0, 0, .7); color: #fff; font: 13px ui-monospace, monospace; font-variant-numeric: tabular-nums; pointer-events: none; }
   #stats:empty { display: none; }
 </style>
@@ -234,7 +245,7 @@
 <label class="setting"><span><b>Renderschaal</b><small>100% van de gekozen resolutie. Boven 100% (rood) kan de prestatie afnemen. Bij aanhoudend minder dan 30 FPS daalt de renderschaal in stappen van 25 procentpunt, tot minimaal 25%, en gaat MSAA uit. De aangepaste waarden worden hier getoond en bewaard.</small></span><input id="render-scale" type="range" min="25" max="200" step="5" aria-label="Renderschaal"><output id="render-scale-value" for="render-scale">100%</output></label>
 <label class="setting"><span><b>Anti-aliasing (MSAA)</b><small id="msaa-status">Maakt randen van 3D-objecten gladder. Meer samples vragen meer grafisch geheugen en rekenkracht. Na automatisch uitschakelen kun je MSAA hier weer aanzetten.</small></span><select id="msaa" aria-label="Anti-aliasing (MSAA)" aria-describedby="msaa-status"><option value="0">Uit</option><option value="2">2x</option><option value="4">4x</option><option value="8">8x</option></select></label>
 <label class="setting"><span><b>Gezichtsveld</b><small>Hoeveel je van boven tot onder ziet. 54° is het origineel. Geldt vanaf de volgende start van een spel.</small></span><input id="fov" type="range" min="45" max="90" step="1" aria-label="Gezichtsveld"><output id="fov-value" for="fov">54°</output></label>
-<label class="setting"><span><b>Breedbeeld</b><small>Aan: het spel vult een breed scherm en laat links en rechts meer zien. Uit: altijd 4:3, zoals het origineel. Geldt vanaf de volgende start van een spel.</small></span><input id="widescreen" type="checkbox" aria-label="Breedbeeld"></label>
+<label class="setting"><span><b>Breedbeeld</b><small>Aan: het spel vult het scherm, ook een breed scherm (links en rechts meer te zien) of een telefoon rechtop. Uit: altijd 4:3, zoals het origineel.</small></span><input id="widescreen" type="checkbox" aria-label="Breedbeeld"></label>
 </div>
 <div class="settings-extra-actions"><button class="original-menu-button original-previous" data-settings-action="back" type="button">Vorige</button><button class="original-menu-button original-yes" data-settings-action="ok" type="button">OK</button><button class="original-menu-button original-no" data-settings-action="cancel" type="button">Annuleren</button></div>
 </section>

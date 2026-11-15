@@ -96,7 +96,8 @@ if (part(hasPhone, 'phone landscape and portrait: the drawing budget (needs a de
 rows = await run(PHONE, undefined, 5);
 check(last(rows).size === '1073x483x0' && last(rows).css === '915x412' && last(rows).touch, 'phone landscape, auto: the budget, the picture fills the window, touch controls shown', JSON.stringify(last(rows)));
 rows = await run(PORTRAIT, undefined, 5);
-check(last(rows).size === '720x540x0', 'phone portrait, auto: 540 lines', JSON.stringify(last(rows)));
+// held upright the picture fills the screen (the game's screen is 640 x 1422): the same budget, 960x540 pixels in all, the short side within 540 (until 2026-11-15 a 4:3 band, 720x540)
+check(last(rows).size === '483x1073x0', 'phone portrait, auto: the picture fills the screen within the budget of 960x540 pixels (483x1073)', JSON.stringify(last(rows)));
 }
 rows = await run(PHONE, { resolution: '1280x720', phoneMsaaChecked: true, msaa: 2 }, 5);
 check(last(rows).size === '1280x720x2', 'phone, a chosen resolution and sample count are taken as given', JSON.stringify(last(rows)));

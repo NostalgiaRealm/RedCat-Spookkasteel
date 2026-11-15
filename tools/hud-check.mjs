@@ -1,17 +1,22 @@
 // The game's own 2D bitmaps on a screen that is not 4:3 (source/host/gdriver.js, flag hudShape;
 // docs/research/genesis-driver.md 11b), in headless Chromium or Firefox (--browser firefox; not tried in WebKit):
 //
-//   node tools/hud-check.mjs [--url http://127.0.0.1:4221/] [--gpu] [--shapes 4x3,16x9,21x9,phone] [--browser firefox]
+//   node tools/hud-check.mjs [--url http://127.0.0.1:4221/] [--gpu] [--shapes 4x3,16x9,21x9,phone,portrait,square] [--browser firefox]
 //                            [--out folder]             the screenshots (tools/out/hud)
 //                            [--fixes hudShape=0]      the original's picture: the check must FAIL with it
 //
-// At 4:3, 16:9, 21:9 and a phone on its side the same eight screens are put up (loading, the opening
+// At 4:3, 16:9, 21:9, a phone on its side, a phone held upright (412 x 915: a mode of 640 x 1422) and a square
+// window (800 x 800: 640 x 640) the same eight screens are put up (loading, the opening
 // scene with its bars, play, the Esc menu, its page Geluid with the sliders, the pause, the retry
 // screen, the results screen). The driver writes down every quad of CAdamEngine::DrawBitmap 0x5614E0
 // as it goes to the renderer (drv.bitmaps: its caller's return address and its corners after the
 // driver's change), which comes to this check through the game thread's log. Per screen and shape:
 //   - at 4:3 every quad is the game's own, bit for bit (x as the game gave it);
-//   - every bitmap is as wide and as high as at 4:3, within a pixel, and at the same height;
+//   - every bitmap is as wide and as high as at 4:3, within a pixel, and at the same height; in a mode higher than
+//     4:3 the same the other way: the HUD's rows and the logos as far from the top as at 4:3 (the HUD's bottom group
+//     at least as far from the bottom), the loading picture and its bar around the middle line, the results' icons, Ja,
+//     Nee and the slider where the game put their middle, the menu's header at the top and its footer at the bottom
+//     with the height they have at 4:3, a letter of a scene's line no higher than at 4:3;
 //   - where it is: the HUD's left group as far from the left edge as at 4:3 and its right group as
 //     far from the right edge; the logos in their corner; the loading picture and its bar around the
 //     middle; the results' icons, Ja, Nee and the menu's slider where the game put their middle (the
@@ -44,6 +49,8 @@ const SHAPES = {
   '16x9': { viewport: { width: 1280, height: 720 } },
   '21x9': { viewport: { width: 1680, height: 720 } },
   'phone': { viewport: { width: 915, height: 412 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true },
+  'portrait': { viewport: { width: 412, height: 915 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true },
+  'square': { viewport: { width: 800, height: 800 } },
 };
 const shapes = opt('shapes', Object.keys(SHAPES).join(',')).split(',');
 if (!shapes.includes('4x3')) shapes.unshift('4x3');
@@ -177,11 +184,11 @@ for (const shape of shapes) {
   for (const name of NAMES) {
     const f = got[shape][name], g = ref[name];
     if (!f || !g) { check(false, `${shape}, ${name}: the screen was seen here and at 4:3`); continue; }
-    const W = f.W, s = W / 640, bad = [], note = [];
+    const W = f.W, H = f.H, s = W / 640, k = H / 480, tall = H > 480, bad = [], note = [];
     const say = (b, what) => { if (bad.length < 6) bad.push(`${hex(b.ra)} ${what}: ${r1(b.x0)},${r1(b.y0)}..${r1(b.x1)},${r1(b.y1)}`); else if (bad.length === 6) bad.push('…'); };
-    if (!(W > 640 && f.H === 480)) bad.push(`mode ${W} x ${f.H}`);
+    if (!((W > 640 && H === 480) || (W === 640 && tall))) bad.push(`mode ${W} x ${H}`);
     const mine = byRa(f), theirs = byRa(g);
-    let sliderAt = null, sliderRef = null, n = 0;
+    let sliderAt = null, sliderRef = null, sliderY = null, sliderRefY = null, n = 0;
     for (const [ra, list] of mine) {
       const rule = RULE.get(ra), was = theirs.get(ra) || [];
       if (!rule) { bad.push(`${hex(ra)} has no rule`); continue; }
@@ -193,10 +200,21 @@ for (const shape of shapes) {
         n++;
         const o = paired ? was[i] : was[0], w = b.x1 - b.x0, h = b.y1 - b.y0;
         if (rule === 'full') { if (b.x0 > 0.5 || b.x1 < W - 0.5) say(b, 'does not fill the width'); return; }
-        if (rule === 'glyph') { if (w > 11 || b.x0 < 0 || b.x1 > W) say(b, 'a letter wider than at 4:3, or cut off'); return; }
+        if (rule === 'glyph') { if (w > 11 || b.x0 < 0 || b.x1 > W || (o && h > o.y1 - o.y0 + 1) || h > 24) say(b, 'a letter wider or higher than at 4:3, or cut off'); return; }
         if (!o) { say(b, 'not at 4:3'); return; }
         const ow = o.x1 - o.x0, oh = o.y1 - o.y0;
-        if (Math.abs(b.y0 - o.y0) > 0.01 || Math.abs(h - oh) > 0.01) say(b, `height or line differs from 4:3 (${r1(o.y0)}..${r1(o.y1)})`);
+        if (!tall) { if (Math.abs(b.y0 - o.y0) > 0.01 || Math.abs(h - oh) > 0.01) say(b, `height or line differs from 4:3 (${r1(o.y0)}..${r1(o.y1)})`); }
+        else {
+          if (ra !== BAR && Math.abs(h - oh) > 1) say(b, `${r1(h)} high, ${r1(oh)} at 4:3`);
+          if (b.y0 < -0.5 || b.y1 > H + 0.5) say(b, 'cut off by the picture\'s upper or lower edge');
+          const v = rule === 'hud' ? (o.y0 < 400 ? 'top' : 'bottom') : rule === 'left' ? (o.y0 < 240 ? 'top' : 'bottom') : ra === SLIDER ? 'slider' : rule;
+          if (v === 'top' && Math.abs(b.y0 - o.y0) > 1) say(b, `not ${r1(o.y0)} from the top`);
+          if (v === 'bottom' && (H - b.y1) < (480 - o.y1) - 1) say(b, `nearer the bottom than ${r1(480 - o.y1)}`);          // the HUD's bottom group may be lifted over the touch controls
+          if (v === 'middle' && Math.abs((b.y0 - H / 2) - (o.y0 - 240)) > 1) say(b, `not ${r1(o.y0 - 240)} from the middle line`);
+          if (v === 'place' && Math.abs((b.y0 + b.y1) / 2 - (o.y0 + o.y1) / 2 * k) > 3)          /* (the game cuts a bitmap's height to whole lines, not its place: its middle is up to k lines off) */ say(b, `its middle is not ${r1((o.y0 + o.y1) / 2 * k)} down`);
+          if (ra === SLIDER) { sliderY = (b.y0 + b.y1) / 2; sliderRefY = (o.y0 + o.y1) / 2; }          // (where the bar is: on the middle line of its entry's letters, which this check does not see; look at the picture)
+          if (v === 'knob' && (sliderY === null || Math.abs(((b.y0 + b.y1) / 2 - sliderY) - ((o.y0 + o.y1) / 2 - sliderRefY)) > 1)) say(b, 'the knob is not at its height on the bar');
+        }
         if (ra !== BAR && Math.abs(w - ow) > 1) say(b, `${r1(w)} wide, ${r1(ow)} at 4:3`);
         if (b.x0 < -0.5 || b.x1 > W + 0.5) say(b, 'cut off by the picture\'s edge');
         const group = rule === 'hud' ? (o.x0 < 500 ? 'left' : 'right') : rule;
@@ -214,7 +232,9 @@ for (const shape of shapes) {
       if (!t[0]) continue;
       n += 3;
       if (!t[1] || !t[2]) { bad.push('a row of the menu without its three tiles'); continue; }
-      if (t[0].x0 > 0.5 || open(t[0].x1, t[1].x0) || open(t[1].x1, t[2].x0) || t[2].x1 <= W - 0.5) say(t[1], `a column between the tiles or at the edge is left open (${t.map((b) => r1(b.x0) + '..' + r1(b.x1)).join(' ')})`);
+      if (W !== 640 && (t[0].x0 > 0.5 || open(t[0].x1, t[1].x0) || open(t[1].x1, t[2].x0) || t[2].x1 <= W - 0.5)) say(t[1], `a column between the tiles or at the edge is left open (${t.map((b) => r1(b.x0) + '..' + r1(b.x1)).join(' ')})`);
+      // in a mode higher than 4:3: as high as at 4:3, the header at the top and the footer at the bottom
+      if (tall) row.forEach((ra, i) => { const o = (theirs.get(ra) || [])[0], b = t[i]; if (!o) return; if (Math.abs((b.y1 - b.y0) - (o.y1 - o.y0)) > 1) say(b, `${r1(b.y1 - b.y0)} high, ${r1(o.y1 - o.y0)} at 4:3`); else if (o.y0 < 240 ? Math.abs(b.y0 - o.y0) > 1 : Math.abs((H - b.y1) - (480 - o.y1)) > 1) say(b, 'not at its edge of the screen'); });
     }
     // the page's own controls over the HUD's bitmaps, in the page's pixels
     const lay = f.layout;
@@ -224,9 +244,9 @@ for (const shape of shapes) {
       note.push(`controls ${shown.map(([q]) => q.replace(/^[.#](touch-)?/, '')).join(' ')}`);
       for (const b of mine.get(HUD) || []) { const r = [px + b.x0 * kx, py + b.y0 * ky, px + b.x1 * kx, py + b.y1 * ky]; for (const [q, c] of shown) if (over(r, c)) say(b, `under the page's ${q}`); }
       if (name === 'play' && !lay.controls['#stats']) bad.push('the frame counter is not on screen');
-      if (name === 'play' && shape === 'phone' && !lay.controls['.touch-stick']) bad.push('the touch controls are not on screen');
+      if (name === 'play' && (shape === 'phone' || shape === 'portrait') && !lay.controls['.touch-stick']) bad.push('the touch controls are not on screen');
     }
-    check(bad.length === 0 && n > 0, `${shape} (${W} x ${f.H}), ${name}: ${n} bitmaps with the size they have at 4:3, each at its place`, [...bad, ...note].join(' | '));
+    check(bad.length === 0 && n > 0, `${shape} (${W} x ${H}), ${name}: ${n} bitmaps with the size they have at 4:3, each at its place`, [...bad, ...note].join(' | '));
   }
 }
 notRunSummary();

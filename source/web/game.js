@@ -41,14 +41,13 @@ const stage = document.getElementById('stage');
 const baseUrl = new URL('.', document.baseURI).href;
 // the recompiled game module and its lists: next to the scripts, wherever these are served from
 const gameUrl = new URL('../../game/', import.meta.url).href;
-const LOGICAL_H = 480;
 
 let ctrl = null, ring = null, worker = null, audio = null, tickHandle = 0;
 // The render worker (render-worker.js) draws on the canvas. A canvas can be handed to a worker only
 // once, so the worker is kept for all games of this page; should it fail, the next game gets a new
 // canvas element and a new worker.
 let painter = null, canvasGiven = false;
-let logicalW = 640;
+let logicalW = 640, logicalH = 480;          // the game's screen in use (the game thread reports it: CTRL.MODE_W, MODE_H)
 let starting = false;       // between game.start() and the game thread existing, and while a game is started anew
 // What an error in the running game leads to: set per game in begin() (a continued game that fails starts the world instead).
 let crashed = (d) => { window.__crash = d; end('crash', d); };
@@ -75,31 +74,61 @@ const push = (type, a = 0, b = 0, c = 0, d = 0) => {
 };
 
 // --- picture size -----------------------------------------------------------------------
-// The game works in a screen 480 lines high. Its width follows the shape of the picture
-// (640 for 4:3, 854 for 16:9) and is fixed when the game starts. The drawing resolution is a
-// separate matter: the renderer scales the game's coordinates to whatever size is asked.
+// The game works in a screen of the picture's shape: 480 lines high and 640 to 1280 wide for a
+// picture of 4:3 or wider (854 for 16:9), 640 wide and 480 to 1706 high for one that is higher (a
+// phone held upright, 412 x 915: 640 x 1422). The short side is always the original's, so the
+// game's own 2D keeps the original's size on it (gdriver.js hudShape) and the view from top to
+// bottom keeps the original's angle (ini.js fieldOfView): the JavaScript port's two rules (its
+// hud.js hudViewport, its main.js resize()). Shapes beyond 8:3 and 3:8 get the nearest of these and
+// bars. The drawing resolution is a separate matter: the renderer scales the game's coordinates to
+// whatever size is asked. The size is chosen when a game starts and follows the window while it
+// runs (source/host/shape.js: between two passes of the game's main loop).
+const MODE_SHORT_W = 640, MODE_SHORT_H = 480, MODE_MAX_W = 1280, MODE_MAX_H = 1706;
+// What the browser keeps free of the picture's box on a screen held upright (the notch, the home bar): env() can only be read through an element.
+let safeProbe = null;
+const safeInsets = () => {
+  if (!safeProbe) {
+    safeProbe = document.createElement('div');
+    safeProbe.style.cssText = 'position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';
+    document.documentElement.appendChild(safeProbe);
+  }
+  const c = getComputedStyle(safeProbe), n = (v) => Math.max(0, parseFloat(v) || 0);
+  return [n(c.paddingTop), n(c.paddingRight), n(c.paddingBottom), n(c.paddingLeft)];
+};
+/**
+ * The part of the stage the picture may take, in CSS pixels: [width, height, top, left]. All of it
+ * for a stage of 4:3 or wider (as it always was); a higher one leaves the safe-area insets free, so
+ * that the game's HUD, which is drawn into the picture's top, is not under a notch.
+ */
+const pictureBox = () => {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  if (!w || !h || w * 3 >= h * 4) return [w, h, 0, 0];
+  const [t, r, b, l] = safeInsets();
+  return [Math.max(1, w - l - r), Math.max(1, h - t - b), t, l];
+};
 const outputSize = () => {
   const r = settings.get('resolution');
   const m = /^(\d+)x(\d+)$/.exec(r || '');
-  const dpr = window.devicePixelRatio || 1;
-  let w = m ? Number(m[1]) : Math.round(stage.clientWidth * dpr), h = m ? Number(m[2]) : Math.round(stage.clientHeight * dpr);
+  const dpr = window.devicePixelRatio || 1, box = pictureBox();
+  let w = m ? Number(m[1]) : Math.round(box[0] * dpr), h = m ? Number(m[2]) : Math.round(box[1] * dpr);
   if (!w || !h) { w = 1280; h = 960; }
   return [w, h];
 };
-const chooseLogicalWidth = () => {
-  if (!settings.get('widescreen')) return 640;
-  const [w, h] = outputSize();
-  const lw = Math.round(LOGICAL_H * w / h / 2) * 2;
-  return Math.max(640, Math.min(1280, lw));      // from 4:3 up to 8:3
+/** The game's screen for a picture of w x h. */
+export const modeFor = (w, h, wide = true) => {
+  if (!wide || !(w > 0) || !(h > 0)) return [MODE_SHORT_W, MODE_SHORT_H];
+  if (w * 3 >= h * 4) return [Math.max(MODE_SHORT_W, Math.min(MODE_MAX_W, Math.round(MODE_SHORT_H * w / h / 2) * 2)), MODE_SHORT_H];      // from 4:3 up to 8:3
+  return [MODE_SHORT_W, Math.max(MODE_SHORT_H, Math.min(MODE_MAX_H, Math.round(MODE_SHORT_W * h / w / 2) * 2))];                          // down to 3:8
 };
+const chooseMode = () => modeFor(...outputSize(), !!settings.get('widescreen'));
 /**
- * The picture inside w x h: the game's shape, as large as fits. The game's width is a whole even
+ * The picture inside w x h: the game's shape, as large as fits. The game's long side is a whole even
  * number (854 for 16:9), so its shape can be a fraction off the window's; the picture then fills
  * the window instead of leaving a line of it open (1920x1079 in a 1920x1080 window).
  */
 const fitInto = (w, h) => {
-  const kw = w / logicalW, kh = h / LOGICAL_H, k = Math.min(kw, kh);
-  return Math.abs(kw - kh) <= 0.004 * k ? [w, h] : [logicalW * k, LOGICAL_H * k];
+  const kw = w / logicalW, kh = h / logicalH, k = Math.min(kw, kh);
+  return Math.abs(kw - kh) <= 0.004 * k ? [w, h] : [logicalW * k, logicalH * k];
 };
 // The JavaScript port's budget for phones (its androidRenderSize with a short edge of 540): the
 // automatic resolution draws at most 540 lines and at most 960x540 pixels, about 1.7 times the
@@ -108,8 +137,8 @@ const fitInto = (w, h) => {
 const PHONE_SHORT_EDGE = 540;
 /**
  * The size of the drawing in pixels. This, and nothing else, is where a budget may be applied:
- * outputSize() also decides the width of the game's screen (chooseLogicalWidth), which is part of
- * a save state.
+ * outputSize() also decides the shape of the game's screen (chooseMode). The budget of a phone
+ * counts the short side and the number of pixels, so it is the same for a picture held upright.
  */
 const drawSize = () => {
   let [w, h] = fitInto(...outputSize());
@@ -127,9 +156,61 @@ const drawSize = () => {
   return [Math.max(1, Math.round(w * k)), Math.max(1, Math.round(h * k))];
 };
 const layout = () => {
-  const [w, h] = fitInto(stage.clientWidth, stage.clientHeight);
-  canvas.style.width = Math.floor(w) + 'px';
-  canvas.style.height = Math.floor(h) + 'px';
+  const [bw, bh, top, left] = pictureBox();
+  let [w, h] = fitInto(bw, bh);
+  w = Math.floor(w); h = Math.floor(h);
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  // A picture higher than 4:3: what the page lays over it is placed by where the picture really is
+  // and by the size the game's 480 lines have in it (public/index.html --pic-top, --pic-h, --pic-u;
+  // the style sheets' own values are for a picture of 4:3 or wider). The insets move it off the stage's middle.
+  const root = document.documentElement, tall = onStage && logicalH > MODE_SHORT_H;
+  const y = top + (bh - h) / 2, x = left + (bw - w) / 2;
+  canvas.style.transform = tall && (top || left || stage.clientWidth !== bw || stage.clientHeight !== bh) ? `translate(${x - (stage.clientWidth - w) / 2}px, ${y - (stage.clientHeight - h) / 2}px)` : '';
+  root.classList.toggle('pic-tall', tall);
+  for (const [name, v] of [['--pic-top', y], ['--pic-h', h], ['--pic-u', h * MODE_SHORT_H / logicalH]]) { if (tall) root.style.setProperty(name, v.toFixed(2) + 'px'); else root.style.removeProperty(name); }
+  sendHudLift();
+};
+// On a high screen the HUD's bottom group (the enemy's portrait and hearts) is lifted over the touch
+// controls, as the JavaScript port did (its hud.js bottomInset): the page says how many of the game's lines.
+let liftSent = -1, onStage = false;          // onStage: a game has the canvas, from its start (the loading screen is the game's own) to its end
+const sendHudLift = () => {
+  if (!game.running) return;
+  let lines = 0;
+  if (logicalH > MODE_SHORT_H && document.documentElement.classList.contains('touch-shown')) {
+    // the stick's upper edge (touch.css: its size, 18 pixels or the safe area from the bottom), 10 pixels of air, in lines of the game's screen above the picture's bottom
+    const c = canvas.getBoundingClientRect(), vmin = Math.min(window.innerWidth, window.innerHeight);
+    const stickTop = stage.clientHeight - Math.max(18, safeInsets()[2]) - Math.max(120, Math.min(190, 0.34 * vmin)) - 10;
+    if (c.height) lines = Math.round((c.bottom - stickTop) * logicalH / c.height);
+    lines = Math.max(0, Math.min(logicalH - 300, lines));
+  }
+  if (lines === liftSent) return;
+  liftSent = lines;
+  push(EV.SETTING, SET.HUD_LIFT, lines);
+};
+// The game's screen follows the picture's shape while a game runs: asked of the game thread, which
+// changes it between two passes (source/host/shape.js) and reports the size in use; the page lays the
+// picture out by what is in use, so until then the old shape is shown whole, with bars, never stretched.
+let shapeTimer = 0, shapeSent = 0;
+const sendShape = () => {
+  clearTimeout(shapeTimer);
+  if (!game.running) return;
+  const [w, h] = chooseMode(), size = w * 65536 + h;
+  if (size === shapeSent) return;
+  shapeSent = size;
+  push(EV.SETTING, SET.SHAPE, w, h);
+};
+const sendShapeSoon = () => { clearTimeout(shapeTimer); shapeTimer = setTimeout(sendShape, 250); };
+/** Every display tick: has the game thread another screen than the page lays out? */
+let touchSeen = false;
+const followMode = () => {
+  const w = Atomics.load(ctrl, CTRL.MODE_W), h = Atomics.load(ctrl, CTRL.MODE_H);
+  const touch = document.documentElement.classList.contains('touch-shown');
+  if (touch !== touchSeen) { touchSeen = touch; sendHudLift(); }          // the touch controls came or went (touch.js)
+  if (!w || !h || (w === logicalW && h === logicalH)) return;
+  logicalW = w; logicalH = h;
+  layout(); sendScale();
+  window.dispatchEvent(new CustomEvent('recomp-mode', { detail: { width: w, height: h } }));
 };
 // The drawing size follows the window. Every change of it makes the renderer build its buffers
 // anew (tens of megabytes), so a size that did not change is not sent again, and while a window is
@@ -143,10 +224,11 @@ const sendScale = () => {
   push(EV.SETTING, SET.SIZE, w, h);
 };
 const sendScaleSoon = () => { clearTimeout(scaleTimer); scaleTimer = setTimeout(sendScale, 150); };
-window.addEventListener('resize', () => { layout(); sendScaleSoon(); });
+window.addEventListener('resize', () => { layout(); sendScaleSoon(); sendShapeSoon(); });
 settings.onChange((key, value) => {
   if (key === 'resolution' || key === 'renderScale' || key === 'msaa') quality.reset();
   if (key === 'resolution' || key === 'renderScale') sendScale();
+  if (key === 'resolution' || key === 'widescreen') sendShapeSoon();
   else if (key === 'msaa') push(EV.SETTING, SET.MSAA, value);
   else if (key === 'volume' && audio) audio.setMasterVolume(value / 100);
   else if (key === 'showFps') push(EV.SETTING, SET.STATS, value ? 1 : 0);
@@ -199,7 +281,7 @@ const fullscreenGesture = (e) => {
 window.addEventListener('click', fullscreenGesture);
 window.addEventListener('keydown', fullscreenGesture);
 document.addEventListener('fullscreenchange', () => {
-  layout(); sendScaleSoon();
+  layout(); sendScaleSoon(); sendShapeSoon();
   if (document.fullscreenElement) { mouseBack(); return; }
   const own = performance.now() - fsOwnExit < 1000;
   if (game.running && settings.get('fullscreen') && !own) fsLeft = true;
@@ -355,9 +437,9 @@ const lostText = (kind, world) => (kind === 'version' ? 'Je opgeslagen plek past
 // goes when it ends, so that a Snelspel never costs the place in the adventure; 'player<n>.r1',
 // '.r2', '.r3' older places of the adventure (recovery points, recovery.js), when the setting
 // `recovery` is on.
-// A record: { v: RECORD, build, savedAt, size, launch, logicalW, data }: the gzip of what
-// snapshot.js packs, its length before packing, the launch and screen width of the game that
-// saved it, and the build that game ran on. data is a Blob: the state arrives from the game thread
+// A record: { v: RECORD, build, savedAt, size, launch, logicalW, logicalH, data }: the gzip of what
+// snapshot.js packs, its length before packing, the launch and screen size of the game that
+// saved it (logicalH only when it is not 480: a record of before 2026-11-15 has none), and the build that game ran on. data is a Blob: the state arrives from the game thread
 // in pieces, is compressed as a stream and kept by the browser, so that neither the 45 MB nor
 // their gzip are ever one array in the page's memory (a phone has little to spare, and saves just
 // when the page is hidden). Where a Blob cannot be stored (WebKit in a private window), and in
@@ -489,7 +571,8 @@ const faultOf = (rec, player, build) => {
     || (l.fov !== undefined && !(Number.isFinite(l.fov) && l.fov >= 0 && l.fov <= 180))) return ['damaged', 'a launch the game cannot start with'];
   const data = blobOf(rec.data);
   if (!data || !data.size || !int(rec.size) || rec.size < 8 || rec.size > MAX_STATE) return ['damaged', 'no data in it'];
-  if (!Number.isFinite(rec.savedAt) || !int(rec.logicalW) || rec.logicalW < 640 || rec.logicalW > 1280) return ['damaged', 'no time or screen width in it'];
+  if (!Number.isFinite(rec.savedAt) || !int(rec.logicalW) || rec.logicalW < MODE_SHORT_W || rec.logicalW > MODE_MAX_W
+    || (rec.logicalH !== undefined && !(int(rec.logicalH) && rec.logicalH >= MODE_SHORT_H && rec.logicalH <= MODE_MAX_H))) return ['damaged', 'no time or screen size in it'];
   // Not for the record the game that runs was continued from: its try is counted until that game has run for
   // PROVEN_MS, and F9, the settings over the game or the list of older places asked within those seconds of a
   // second try would otherwise take a state that is plainly good for one that failed twice, and delete it.
@@ -599,7 +682,7 @@ settings.onChange((key, value) => {
 });
 
 /** pieces: the state as the game thread hands it over, byte arrays that follow each other (snapshot.js pieces()). */
-const storeState = (pieces, launch, width, changed = false) => inTurn(async () => {
+const storeState = (pieces, launch, screen, changed = false) => inTurn(async () => {
   if (!canPack) throw new Error('this browser has no CompressionStream');
   const build = await buildId();
   if (!build) throw new Error('the build is not known');          // a state nobody could ever check is not kept
@@ -609,7 +692,8 @@ const storeState = (pieces, launch, width, changed = false) => inTurn(async () =
   const packed = await new Response(whole.stream().pipeThrough(new CompressionStream('gzip'))).blob();
   const savedAt = Date.now(), which = kindOf(launch), key = slot(launch.player, which);
   const play = clock.player === launch.player ? Math.round(clock.seconds) : 0;
-  const rec = { v: RECORD, build, savedAt, size, launch, logicalW: width, play, data: packed };
+  const rec = { v: RECORD, build, savedAt, size, launch, logicalW: screen[0], play, data: packed };
+  if (screen[1] !== MODE_SHORT_H) rec.logicalH = screen[1];
   if (!which) await rotateRecovery(launch.player, build, play);
   const put = async () => {
     try { await dbPut(key, rec); } catch (e) {
@@ -682,6 +766,7 @@ const teardown = () => {
   if (audio) audio.reset();
   if (document.pointerLockElement) { ownExit = performance.now(); document.exitPointerLock(); }
   document.documentElement.classList.remove('game-running');
+  onStage = false; layout();
 };
 const end = (how, info) => {
   teardown();
@@ -785,14 +870,14 @@ async function begin(fresh, resume, note) {
   // a state of this player was thrown away (just now, or when the menu looked): he is told as his adventure starts
   if (!saved && !note && fresh.adventure && lost.has(player)) note = lostText(lost.get(player), fresh.world);
   if (saved || fresh.adventure) lost.delete(player);
-  // A continued game is booted as the game that saved it (its world's files, its screen width),
-  // then replaced by the state. Everything else about a state that fails comes from `fresh`.
+  // A continued game is booted as the game that saved it (its world's files, its screen size),
+  // then replaced by the state; the screen then follows the window as in any game (sendShape below). Everything else about a state that fails comes from `fresh`.
   let launch = saved ? saved.launch : fresh;
   loadBinds(player);
   await startClock(player);
-  const freshW = chooseLogicalWidth();
-  logicalW = saved ? saved.logicalW : freshW;
-  const width = logicalW;
+  const freshMode = chooseMode();
+  [logicalW, logicalH] = saved ? [saved.logicalW, saved.logicalH || MODE_SHORT_H] : freshMode;
+  shapeSent = logicalW * 65536 + logicalH; liftSent = -1; onStage = true;          // (a game continued in the shape it was saved in gets the window's own from its first pass on: sendShape at 'running')
   fsLeft = false;
   if (settings.get('fullscreen')) applyFullscreen();
   layout();
@@ -849,7 +934,7 @@ async function begin(fresh, resume, note) {
       case 'running':
         if (resumed) resumed.ran = true;
         worldSeen = false; clearTimeout(worldTimer); worldTimer = setTimeout(() => { if (worker === mine && !worldSeen) { worldSeen = true; armNotice(); } }, WORLD_WAIT_MS);
-        game.running = true; quality.reset(); saveDue = performance.now() + SAVE_EVERY; warm(d.later, worker); if (game.onStatus) game.onStatus(''); push(EV.ACTIVATE, 1); sendScale(); push(EV.SETTING, SET.MSAA, settings.get('msaa')); document.documentElement.classList.add('game-running'); armNotice(); if (game.onRunning) game.onRunning(); window.dispatchEvent(new CustomEvent('recomp-running', { detail: { world: launch.world, adventure: launch.adventure !== false, resumed: !!restore } }));
+        game.running = true; quality.reset(); saveDue = performance.now() + SAVE_EVERY; warm(d.later, worker); if (game.onStatus) game.onStatus(''); push(EV.ACTIVATE, 1); sendScale(); sendShape(); sendHudLift(); push(EV.SETTING, SET.MSAA, settings.get('msaa')); document.documentElement.classList.add('game-running'); armNotice(); if (game.onRunning) game.onRunning(); window.dispatchEvent(new CustomEvent('recomp-running', { detail: { world: launch.world, adventure: launch.adventure !== false, resumed: !!restore } }));
         break;
       case 'stats':
         if (resumed && resumed.at && performance.now() - resumed.at > PROVEN_MS) { tries.clear(player); resumed = null; }
@@ -869,7 +954,7 @@ async function begin(fresh, resume, note) {
         // the player's file is at the new world now: whoever keeps what a player reached notes it at once
         // (the menu's open Griezelplekken; an older place loaded afterwards puts the file back)
         if (d.changed) window.dispatchEvent(new CustomEvent('recomp-world', { detail: { player, world: at ? at.world : launch.world, adventure: !which } }));
-        storeState(d.pieces, launch, width, !!d.changed);
+        storeState(d.pieces, launch, d.screen || [logicalW, logicalH], !!d.changed);
         break;
       }
       case 'state-failed': manualSave = false; saveFailed(new Error(d.message)); break;
@@ -929,14 +1014,14 @@ async function begin(fresh, resume, note) {
   worker.onerror = (e) => crashed({ message: e.message || 'De spelthread is gestopt', stack: '' });
   worker.postMessage({
     t: 'start', ctrl: ctrl.buffer, ring: ring.buffer, baseUrl, gameUrl,
-    width: logicalW, height: LOGICAL_H, port: frames.port1,
+    width: logicalW, height: logicalH, port: frames.port1,
     debugLog: new URLSearchParams(location.search).has('log'), saved: gameFiles.entries(), launch, restore, firstPerson: settings.get('camera') === 'first',
     // for a state that turns out unusable: is the booted game the one the caller asked for, and does he fly
-    sameStart: !!saved && sameLaunch(launch, fresh) && logicalW === freshW, flight: fresh.flight,
+    sameStart: !!saved && sameLaunch(launch, fresh), flight: fresh.flight,
     fixes: fixesNow(), subtitleBox: settings.get('subtitleBox') !== false,
   }, restore ? [restore, frames.port1] : [frames.port1]);
   startPainter(frames.port2);
-  const tick = (now) => { if (!limiter || limiter.ready(now)) { Atomics.add(ctrl, CTRL.TICK, 1); Atomics.notify(ctrl, CTRL.TICK); } tickHandle = requestAnimationFrame(tick); };
+  const tick = (now) => { followMode(); if (!limiter || limiter.ready(now)) { Atomics.add(ctrl, CTRL.TICK, 1); Atomics.notify(ctrl, CTRL.TICK); } tickHandle = requestAnimationFrame(tick); };
   tickHandle = requestAnimationFrame(tick);
 }
 
@@ -998,7 +1083,9 @@ export const game = {
   supported: () => unsupportedReason() === null,
   /** Why not: 'isolation' | 'canvas' | 'webgl2', or null when a game can start. unsupportedDetail(): a sentence about it for the console. */
   unsupportedReason, unsupportedDetail,
-  logicalSize: () => [logicalW, LOGICAL_H],
+  logicalSize: () => [logicalW, logicalH],
+  /** The game's screen the picture's shape asks for now (the one in use follows it between two passes of the game). */
+  wantedSize: () => chooseMode(),
 
   /**
    * Starts the game. player 1..8 (its Player<N>.ini must exist: players.create), world 1..5,

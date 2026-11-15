@@ -23,6 +23,7 @@ import { installSkip } from './skip.js';
 import { installSubtitles } from './subtitles.js';
 import { installFixes, applyFixFiles, fixFlags } from './fixes.js';
 import { installVolume } from './volume.js';
+import { installShape } from './shape.js';
 import { installTorches } from './torches.js';
 import { setIniValues } from './ini.js';
 
@@ -99,6 +100,7 @@ export async function createGame({ wasm, meta, codeMap, platform, files, options
   installSkip(m, host);           // a late hook (RenderScene), no low memory, no part of a state
   installSubtitles(m, host);      // a late hook, as those of move.js
   installVolume(m, host, vfs, GAME_DIR);      // no thunk, no low memory, no part of a state
+  installShape(m, host);          // another screen size in a running game: no thunk, no low memory, no part of a state
   installFixes(m, host);          // last: it wraps a guard that eh.js made, and takes no low memory
   installTorches(m, host);        // flag handTorches of fixes.js: no thunk, no low memory, one part of a state
   // every thunk, interface and low-memory structure of the host exists now: the build's identity for save states

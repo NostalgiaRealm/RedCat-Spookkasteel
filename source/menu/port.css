@@ -85,7 +85,7 @@ html.game-running #menu-gear { display: grid; }
 @media (pointer: coarse) { #menu-gear { width: 44px; height: 44px; } }
 /* a screen held upright, the game's own menu on screen: the gear lay over the end of Spelbesturing's second column
    ("Spatie,MuisknopRechts"); above the picture there is room (--pic-top: public/index.html) */
-@media (max-aspect-ratio: 4/5) { html.game-own-loop #menu-gear { top: max(6px, calc(var(--pic-top) - 50px)); } }
+@media (max-aspect-ratio: 4/5) { html.game-own-loop:not(.pic-tall) #menu-gear { top: max(6px, calc(var(--pic-top) - 50px)); } }
 
 /* Portrait windows: the forms keep their size and reflow, as in the old project. */
 @media (max-aspect-ratio: 4/5) {
@@ -181,8 +181,11 @@ html.touch-shown #subtitle {
    and the buttons are below it, on a small phone right under it. The box stands on the picture's upper edge, over
    the full width, and grows upwards. */
 @media (max-aspect-ratio: 4/5) {
-  html.touch-shown #subtitle { left: 10px; right: 10px; bottom: calc(50% + 37.5vw + 8px); font-size: 15px; }
+  html.touch-shown:not(.pic-tall) #subtitle { left: 10px; right: 10px; bottom: calc(50% + 37.5vw + 8px); font-size: 15px; }
 }
+/* A picture higher than 4:3 fills the screen and the buttons lie over its bottom: the box stands above them (Lopen's
+   upper edge: 18 + Spring + 12 + 40, touch.css), over the full width, and grows upwards. */
+html.pic-tall.touch-shown #subtitle { left: 10px; right: 10px; bottom: calc(max(18px, env(safe-area-inset-bottom)) + clamp(72px, 20vmin, 108px) + 62px); font-size: 15px; }
 /* Overslaan (source/web/skip.js) */
 #cutscene-skip { position: fixed; right: max(24px, env(safe-area-inset-right)); bottom: max(20px, env(safe-area-inset-bottom)); z-index: 35; display: flex; align-items: center; gap: 12px; color: #fff; font: 18px system-ui, sans-serif; text-shadow: 0 1px 5px #000; pointer-events: none; user-select: none; -webkit-user-select: none; touch-action: none; }
 #cutscene-skip[hidden] { display: none; }

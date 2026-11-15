@@ -731,7 +731,7 @@ if (wants('overlaps')) {
         const g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(bmp, 0, 0);
         const k = bmp.width / innerWidth;
         const isText = (R, G, B) => { const lo = Math.min(R, G, B), hi = Math.max(R, G, B); return (lo >= 140 && hi - lo <= 10) || (R >= 200 && G >= 90 && G <= 175 && B <= 70); };
-        const [px, py, pw, ph] = pic, y0 = Math.round((py + 0.01 * ph) * k), y1 = Math.round((py + 0.105 * ph) * k), x0 = Math.round((px + 0.32 * ph) * k), x1 = Math.round((px + pw) * k);
+        const [px, py, pw, ph] = pic, u = Math.min(ph, 0.75 * pw), y0 = Math.round((py + 0.01 * ph) * k), y1 = Math.round((py + 0.105 * ph) * k), x0 = Math.round((px + 0.32 * u) * k), x1 = Math.round((px + pw) * k);          // u: the height the game's 480 lines have (a picture higher than 4:3, a phone held upright, is more lines high; its text has the original's size)
         const d = g.getImageData(0, y0, bmp.width, y1 - y0).data; let lo = 1e9, hi = -1, top = 1e9, bottom = -1;
         for (let y = 0; y < y1 - y0; y++) for (let x = x0; x < x1; x++) { const i = (y * bmp.width + x) * 4; if (isText(d[i], d[i + 1], d[i + 2])) { if (x < lo) lo = x; if (x > hi) hi = x; if (y < top) top = y; if (y > bottom) bottom = y; } }
         const under = {};
@@ -742,7 +742,7 @@ if (wants('overlaps')) {
           for (let i = 0; i < p.length; i += 4) if (isText(p[i], p[i + 1], p[i + 2])) n++;
           under[q] = +(1000 * n / (w * hh)).toFixed(1);
         }
-        return { title: hi < 0 ? null : [lo / k, (y0 + top) / k, (hi + 1) / k, (y0 + bottom + 1) / k].map((v) => Math.round(v)), reach: hi < 0 ? null : +(Math.max(px + pw / 2 - lo / k, (hi + 1) / k - px - pw / 2) / ph).toFixed(3), under };
+        return { title: hi < 0 ? null : [lo / k, (y0 + top) / k, (hi + 1) / k, (y0 + bottom + 1) / k].map((v) => Math.round(v)), reach: hi < 0 ? null : +(Math.max(px + pw / 2 - lo / k, (hi + 1) / k - px - pw / 2) / u).toFixed(3), under };
       }, [raw.toString('base64'), lay.picture, lay.boxes]);
     };
     const crossing = (a, b, gap = 0) => a[0] < b[2] + gap && b[0] < a[2] + gap && a[1] < b[3] + gap && b[1] < a[3] + gap;
