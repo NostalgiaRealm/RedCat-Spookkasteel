@@ -1,0 +1,18 @@
+Version 2.0.1 makes the game fill the screen at every shape. Players, settings and saved places from 2.0.0 are kept.
+
+## Any Screen Shape
+
+- **Phones held upright:** the game now fills the whole screen. Until now a window taller than 4:3 showed a 4:3 picture with black bands above and below.
+- **The view:** the vertical view stays the same at every shape, as in the JavaScript port; a tall screen sees less to the sides. Shapes more extreme than 3:8 or 8:3 get bars; nothing is stretched.
+- **HUD and text:** icons and the game's own text keep their size and shape on a tall screen, with the top rows at the top and the enemy portrait and hearts at the bottom.
+- **Rotating while you play:** turning the phone or reshaping the window changes the game's screen at once. Inside the game's own menu, pause or retry screen the change waits until you leave it. A saved place can be continued in either position.
+- **Touch controls upright:** over the picture at the bottom, with Menu under the HUD strip.
+
+## Website
+
+- **One-command updates:** `tools/deploy-site.sh` builds, uploads and checks the live site. See [docs/hosting.md](docs/hosting.md).
+
+## Tested and Not Tested
+
+- **Tested:** the HUD, phone, portrait-menu, render and save-state checks pass in headless Chromium, and the picture at 4:3 and wide shapes is unchanged. On the public site a world was started in a phone-shaped upright window.
+- **Not tested:** a real phone or tablet (notch areas, browser bars, real rotation), worlds 2 to 5 on a tall screen, a shape change during a scene that sets its own field of view, and, as for 2.0.0, real Safari, a release Firefox and five of the six desktop packages. The Android app was started on an emulator only.
