@@ -286,27 +286,28 @@ used by it.
 ## A later build
 
 ```bash
-npm run package && npm run package:check
+tools/deploy-site.sh --dry-run
 ```
 
 ```bash
-rsync -a --chmod=D755,F644 --info=progress2 --exclude index.html --exclude index.html.gz --exclude build.json dist/site/ SERVER:/var/www/games.nostalgiarealm.com/redcatspookkasteel/redcat-recomp/
+tools/deploy-site.sh
 ```
 
-```bash
-rsync -a --chmod=D755,F644 dist/site/index.html dist/site/index.html.gz dist/site/build.json SERVER:/var/www/games.nostalgiarealm.com/redcatspookkasteel/redcat-recomp/
-```
+One command builds the site, checks the package, uploads and checks the public address
+(`tools/deploy-site.sh`; settings in `~/.config/redcat-spookkasteel/deploy-site.env` if the
+server's name or folder ever differ). It needs no `sudo`: the folder `redcat-recomp/` on the
+server belongs to your account.
 
-```bash
-npm run site:check -- --url https://games.nostalgiarealm.com/redcatspookkasteel/ --classic
-```
-
-The first `rsync` adds the new `app/<revision>/` beside the one in use and sends only what
-changed in `assets/` and `data/`; the second is the switch. `index.html` and `index.html.gz` must
-go together: nginx sends the `.gz` copy without comparing it with the file.
-
-- **No `--delete`**: it would remove the revision that open pages are using. Old revisions can be
-  removed by hand later: everything under `app/` except the folder that `build.json` names.
+- The new `app/<revision>/` is uploaded beside the one in use, and of `assets/` and `data/` only
+  files whose content changed are sent. Then `index.html`, `index.html.gz` and `build.json` go
+  together: that is the switch. nginx sends the `.gz` copy without comparing it with the file, so
+  those two must never be uploaded apart.
+- Nothing is deleted on the server. `tools/deploy-site.sh --prune` removes the revisions under
+  `app/` that the live page no longer names; leave a day between an update and a prune, so pages
+  that are still open keep finding their files.
+- The old version in `redcat-website/` (served at `classic/`) is never touched by it. The
+  JavaScript port's own `tools/deploy-website.sh` still updates only that folder.
+- A change of the nginx files themselves still needs `sudo` on the server, as at the first time.
 
 ## Checked
 
