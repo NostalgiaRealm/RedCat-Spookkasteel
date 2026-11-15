@@ -1,0 +1,634 @@
+/* The original 800 × 600 menu composition, from ../RCSPOOK_NEW/src/original-menu.css. The first
+   part (the Hoofdmenu frame and its pages) and the portrait part at the end are that file's
+   rules with only the artwork paths changed; the settings form in between was adapted to the
+   dialog and pages this port uses (see docs/menu.md). */
+/* Original 800 × 600 menu composition. Portrait layouts retain the same
+   imported artwork but reflow controls instead of shrinking touch targets. */
+#menu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: auto;
+  background: #071f43;
+}
+#menu::before { display: none; }
+.native-menu-frame {
+  position: relative;
+  width: min(100%, 133.333333dvh);
+  aspect-ratio: 4 / 3;
+  flex: none;
+  container-type: inline-size;
+  color: white;
+  font-family: "Comic Sans MS", "Comic Neue", cursive;
+  background: #103577 url("../../assets/menu/mainscre.png") center / 100% 100% no-repeat;
+  isolation: isolate;
+}
+.native-menu-frame[data-page="adventure"] { background-image: url("../../assets/menu/adventur.png"); }
+.native-menu-frame[data-page="difficulty"] { background-image: url("../../assets/menu/difficul.png"); }
+.native-menu-frame[data-page="quickplay"] { background-image: url("../../assets/menu/quickpla.png"); }
+.native-menu-frame[data-page="startinfo"] { background-image: url("../../assets/menu/startgam.png"); }
+.native-menu-frame[data-page="highscores"] { background-image: url("../../assets/menu/highscor.png"); }
+.native-menu-frame p,
+.native-menu-frame h2 { font-family: inherit; color: white; font-weight: normal; }
+.native-menu-frame .original-menu-button {
+  width: 21.875cqw;
+  height: 8.375cqw;
+  min-height: 0;
+  padding: 0 1.5cqw 0 7.5cqw;
+  font: normal 2.125cqw / 1.15 "Comic Sans MS", "Comic Neue", cursive;
+  text-align: left;
+  text-shadow: none;
+}
+.native-menu-frame button:focus-visible {
+  outline: 2px solid #fff695;
+  outline-offset: -3px;
+}
+.original-help {
+  --paw-idle: url("../../assets/menu/02220000.png");
+  --paw-hover: url("../../assets/menu/02220001.png");
+  --paw-pressed: url("../../assets/menu/02220002.png");
+}
+.original-next {
+  --paw-idle: url("../../assets/menu/02120000.png");
+  --paw-hover: url("../../assets/menu/02120001.png");
+  --paw-pressed: url("../../assets/menu/02120002.png");
+}
+.original-previous {
+  --paw-idle: url("../../assets/menu/02130000.png");
+  --paw-hover: url("../../assets/menu/02130001.png");
+  --paw-pressed: url("../../assets/menu/02130002.png");
+}
+.native-choice[aria-pressed="true"],
+.native-choice[aria-checked="true"] {
+  background-image: url("../../assets/menu/00060002.png");
+}
+.native-menu-logo {
+  position: absolute;
+  top: 1.166667%;
+  left: 1%;
+  width: 16%;
+  height: auto;
+}
+#native-help,
+.native-menu-frame #open-quit {
+  position: absolute;
+  top: 0;
+  z-index: 2;
+}
+#native-help { left: 56%; }
+.native-menu-frame #open-quit { left: 78%; right: auto; }
+#native-menu-title {
+  position: absolute;
+  left: 1%;
+  top: 12%;
+  margin: 0;
+  color: #ffff00;
+  font-size: 2.5cqw;
+  line-height: 1.4;
+}
+#native-menu-description {
+  position: absolute;
+  left: 12.5%;
+  top: 16.666667%;
+  width: 75%;
+  margin: 0;
+  font-size: 2.125cqw;
+  line-height: 1.38;
+}
+.native-menu-page {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.native-menu-page button,
+.native-menu-page a,
+.native-menu-page input,
+.native-menu-page summary,
+.native-menu-page table { pointer-events: auto; }
+.native-home-choices,
+.native-adventure-choices {
+  position: absolute;
+  top: 37.166667%;
+  left: 38.125%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+#native-start-extras {
+  position: absolute;
+  left: 2.5%;
+  bottom: 1.5%;
+  width: 50%;
+  z-index: 3;
+  font-size: 1.875cqw;
+}
+#native-start-extras summary {
+  width: fit-content;
+  padding: 1.5cqw 1cqw;
+  cursor: pointer;
+  color: white;
+}
+.native-extra-actions {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background: #092756;
+  border: 1px solid #c6e9ff;
+  box-shadow: 0 4px 18px #0008;
+}
+.native-menu-frame .text-button {
+  padding: 1cqw;
+  color: white;
+  text-align: center;
+  text-decoration: underline;
+  font-size: 1.875cqw;
+}
+.native-menu-frame .text-button:hover { color: #ffff00; }
+.native-footer {
+  position: absolute;
+  inset: auto 0 0;
+  height: 11.166667%;
+  padding: 0;
+  margin: 0;
+  max-width: none;
+  border: none;
+  display: block;
+}
+.native-footer-left {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  gap: 0;
+}
+.native-footer #native-previous { position: absolute; left: 56%; bottom: 0; }
+.native-footer #native-next,
+.native-footer #native-start,
+.native-footer #play-level { position: absolute; right: 0; bottom: 0; }
+#native-difficulties {
+  position: absolute;
+  left: 11.25%;
+  right: 11.25%;
+  top: 33.333333%;
+  display: flex;
+  justify-content: space-between;
+}
+.native-difficulty {
+  position: relative;
+  width: 22.5cqw;
+  height: 30.625cqw;
+  padding: 0;
+  border: none;
+  background: none;
+  color: white;
+}
+.native-difficulty img { display: block; width: 100%; height: 100%; }
+.native-difficulty span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2.25cqw;
+  font-size: 2.25cqw;
+}
+.native-menu-frame #level-list {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 35%;
+  display: grid;
+  grid-template-columns: repeat(5, 18.75cqw);
+  justify-content: space-around;
+  gap: 0;
+}
+.native-menu-frame .level-card,
+.native-menu-frame .level-card.selected {
+  position: relative;
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  width: 18.75cqw;
+  height: 21.375cqw;
+  overflow: visible;
+  background: none;
+  box-shadow: none;
+  text-align: center;
+}
+.native-menu-frame .level-card img {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  margin: 0;
+}
+.native-menu-frame .level-card .card-info {
+  position: absolute;
+  bottom: 1.25cqw;
+  left: 1cqw;
+  right: 1cqw;
+  display: block;
+  padding: 0 !important;
+  color: white;
+}
+.native-menu-frame .level-card .card-info b {
+  font-size: 1.875cqw;
+  line-height: 1.1;
+  font-weight: normal;
+  color: white;
+}
+.native-menu-frame .card-info small,
+.native-menu-frame .level-card .selected-mark { display: none; }
+.native-menu-frame .level-card:disabled { cursor: default; }
+.native-start-details {
+  position: absolute;
+  left: 21.25%;
+  top: 73.666667%;
+  width: 50%;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 26% 74%;
+  gap: 0;
+  font-size: 2cqw;
+  line-height: 3cqw;
+}
+.native-start-details dt { color: white; }
+.native-start-details dd { margin: 0; overflow-wrap: anywhere; }
+.native-start-heading {
+  position: absolute;
+  top: 27%;
+  margin: 0;
+  font-size: 2.333333cqw;
+  font-weight: normal;
+}
+#native-start-mode { left: 22.25%; }
+#native-start-control { left: 61.25%; }
+#native-start-picture,
+#native-start-control-picture {
+  position: absolute;
+  top: 32%;
+  width: 25%;
+  height: auto;
+}
+#native-start-picture { left: 21%; }
+#native-start-control-picture { left: 61%; }
+#native-start-control-label {
+  position: absolute;
+  top: 67%;
+  left: 61%;
+  width: 29%;
+  margin: 0;
+  font-size: 2cqw;
+  line-height: 1.4;
+}
+#native-start-level {
+  position: absolute;
+  top: 67%;
+  left: 21.25%;
+  margin: 0;
+  font-size: 2.333333cqw;
+}
+#native-score-table {
+  position: absolute;
+  left: 19.875%;
+  top: 22.833333%;
+  width: 60.625%;
+  height: auto;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 2.125cqw;
+  text-align: left;
+}
+#native-score-table th,
+#native-score-table td { padding: .7cqw 1.5cqw; font-weight: normal; }
+#native-score-table thead { height: 5.25cqw; color: #ffff00; }
+#native-score-table tbody tr { height: 4cqw; }
+#native-score-table th:nth-child(1) { width: 36.5%; }
+#native-score-table th:nth-child(2) { width: 35.9%; }
+#native-score-table th:nth-child(3) { width: 27.6%; }
+#native-score-table td { vertical-align: top; overflow-wrap: anywhere; }
+
+/* --- Instellingen ------------------------------------------------------------------------
+   The original options form is 765 × 574. Its tall option panel and the audio-control surround
+   are separate imported resources, not CSS replicas. The form is one page of the settings
+   dialog; the port's own pages (Geavanceerd, Meer instellingen, Cheats) are plain scrolling
+   panels on the same background. */
+#settings { padding: 0; border: 0; background: transparent; color: white; overflow: visible; max-width: none; max-height: none; font-family: "Comic Sans MS", "Comic Neue", cursive; }
+#settings::backdrop { background: #061841d9; }
+#settings h2 { color: #ffff00; font-family: inherit; font-weight: normal; }
+#settings .original-menu-button, .player-screen .original-menu-button, .player-prompt .original-menu-button, #quit-confirmation .original-menu-button { font-family: "Comic Sans MS", "Comic Neue", cursive; font-weight: normal; }
+.player-screen .close { color: #aa48b4; border: 2px solid white !important; background: #addef5; border-radius: 50%; width: 32px; height: 32px; font-size: 25px; line-height: 25px; padding: 0; }
+.native-options-frame {
+  position: relative;
+  width: 765px;
+  height: 574px;
+  border: 1px solid #c6e9ff;
+  background: #103577 url("../../assets/menu/editbgnd.png") center / 100% 100% no-repeat;
+}
+.native-options-logo { position: absolute; left: 8px; top: 7px; width: 128px; height: auto; }
+#native-settings-help { position: absolute; top: 0; right: 0; }
+#settings #native-settings-title { position: absolute; left: 8px; top: 72px; margin: 0; font-size: 19px; }
+#native-settings-base { position: absolute; left: 0; top: 104px; right: 0; height: 401px; }
+.native-option-column {
+  position: absolute;
+  top: 0;
+  width: 204px;
+  height: 401px;
+  background: url("../../assets/menu/06150000.png") center / 100% 100% no-repeat;
+}
+.native-quality-column { left: 172px; }
+.native-option-column h3 { margin: 10px 0 0; text-align: center; font-size: 16px; font-weight: normal; }
+.native-option-current {
+  position: absolute;
+  top: 46px;
+  left: calc(50% - 24.5px);
+  width: 49px;
+  height: 49px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+}
+.native-option-current img { width: 49px; height: 47px; flex: none; }
+.native-option-current span { display: none; }
+.native-option-choices {
+  position: absolute;
+  left: 16px;
+  width: 175px;
+  top: 113px;
+  bottom: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.native-option-choices .original-menu-button {
+  width: 175px;
+  height: 67px;
+  min-height: 0;
+  padding: 0 5px 0 60px;
+  font-size: 16px;
+  text-align: left;
+}
+.native-option-choices button[aria-pressed="true"] { background-image: url("../../assets/menu/00060002.png"); }
+.native-option-column .native-option-configure {
+  position: absolute;
+  top: 317px;
+  left: 16px;
+  width: 175px;
+  height: 67px;
+  padding: 0 4px 0 60px;
+  font-size: 16px;
+  text-align: left;
+}
+.native-option-configure:hover { color: #ffff00; }
+/* The two sliders of the original form: Panel3 at 512,104 and Panel4 at 512,232 of the form
+   resource. 00120000 is the 234 × 99 panel; the slider itself (0x120000, 206 × 60) lies in it at
+   14,29. The needle's own artwork was not recovered: a bar as in the old project, in a box of
+   the needle's 37 pixels so that the travel is the original's 169. */
+.native-audio-slider {
+  position: absolute;
+  left: 512px;
+  width: 234px;
+  height: 99px;
+  background: url("../../assets/menu/00120000.png") center / 100% 100% no-repeat;
+}
+.native-effects-slider { top: 0; }
+.native-music-slider { top: 128px; }
+/* The port's own buttons of this form. Their labels are longer than the original's ("Opgeslagen plek laden"), and in
+   the 175 pixel paw button they wrapped to two lines that touched its edges. So the button is as wide as its
+   longest label needs on one line: the same artwork (175 x 67) in three pieces: the paw (its first 62 pixels) and the
+   round end (its last 24: the white rim begins at 152) at their own size in ::before and ::after, and the 89 pixels of
+   bar between them (a plain left-to-right gradient) stretched over the rest as the button's own background. No
+   border-image: Firefox does not scale one with the form's `zoom` (it drew the artwork at its natural size in the
+   zoomed box: paw too large, the bar past the panel's edge). The transparent borders are the room of the two ends. */
+#open-more-settings, #open-cheats, #settings-stop-game, #settings-load-save, #settings-recovery {
+  position: absolute;
+  left: 495px;                /* 260 wide, ending where the 252 ones did: "Eerder avontuur laden" ends before the round end */
+  box-sizing: border-box;
+  width: 260px;
+  height: 67px;
+  padding: 0 0 0 2px;
+  border-style: solid;
+  border-color: transparent;
+  border-width: 0 24px 0 62px;
+  --paw-now: var(--paw-idle);
+  /* in the padding box of width M the picture is 175/89 of M wide, placed so that its pixels 62 to 151 fill M */
+  background: var(--paw-now) 72.093% 0 / 196.6292% 100% no-repeat padding-box padding-box;
+  font-size: 16px;
+  line-height: 1.2;
+  text-align: left;
+  white-space: nowrap;
+}
+#open-more-settings::before, #open-cheats::before, #settings-stop-game::before, #settings-load-save::before, #settings-recovery::before, #open-more-settings::after, #open-cheats::after, #settings-stop-game::after, #settings-load-save::after, #settings-recovery::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: 67px;
+  pointer-events: none;
+  background: var(--paw-now) 0 0 / 175px 67px no-repeat;
+}
+#open-more-settings::before, #open-cheats::before, #settings-stop-game::before, #settings-load-save::before, #settings-recovery::before { left: -62px; width: 62px; }
+#open-more-settings::after, #open-cheats::after, #settings-stop-game::after, #settings-load-save::after, #settings-recovery::after { right: -24px; width: 24px; background-position: 100% 0; }
+#open-more-settings:hover, #open-cheats:hover, #settings-stop-game:hover, #settings-load-save:hover, #settings-recovery:hover,
+#open-more-settings:focus-visible, #open-cheats:focus-visible, #settings-stop-game:focus-visible, #settings-load-save:focus-visible, #settings-recovery:focus-visible,
+#open-more-settings.gamepad-focus, #open-cheats.gamepad-focus, #settings-stop-game.gamepad-focus, #settings-load-save.gamepad-focus, #settings-recovery.gamepad-focus { --paw-now: var(--paw-hover); background-image: var(--paw-now); }
+#open-more-settings:active, #open-cheats:active, #settings-stop-game:active, #settings-load-save:active, #settings-recovery:active { --paw-now: var(--paw-pressed); background-image: var(--paw-now); }
+#open-more-settings { top: 245px; }
+#open-cheats { top: 317px; }
+#settings-stop-game { top: 317px; }
+/* over a running game: the saved place and the older ones (docs/menu.md) */
+#settings-load-save { top: 168px; }
+#settings-recovery { top: 240px; }
+/* over a running game the sliders are not there */
+.native-options-frame.in-game #open-more-settings { top: 24px; }
+.native-options-frame.in-game #open-cheats { top: 96px; }
+.native-audio-slider > span { position: absolute; top: 6px; left: 0; right: 0; text-align: center; font-size: 17px; }
+.native-audio-slider input[type="range"], .gdi-slider-hit {
+  position: absolute;
+  left: 14px;
+  top: 29px;
+  width: 206px;
+  height: 60px;
+  margin: 0;
+}
+.native-audio-slider input[type="range"] {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  pointer-events: none;          /* the pointer is handled on .gdi-slider-hit (gdi-slider.js) */
+}
+.gdi-slider-hit { cursor: pointer; touch-action: none; }
+.native-audio-slider input::-webkit-slider-runnable-track { height: 36px; background: transparent; }
+.native-audio-slider input::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 37px;
+  height: 36px;
+  border: 0;
+  background: linear-gradient(to right, transparent 14px, #ffffce 14px, #ffffce 15px, #f2ed55 15px, #f2ed55 22px, #ffffce 22px, #ffffce 23px, transparent 23px);
+}
+.native-audio-slider input::-moz-range-track { height: 36px; background: transparent; }
+.native-audio-slider input::-moz-range-thumb { width: 37px; height: 36px; border: 0; border-radius: 0; background: linear-gradient(to right, transparent 14px, #ffffce 14px, #ffffce 15px, #f2ed55 15px, #f2ed55 22px, #ffffce 22px, #ffffce 23px, transparent 23px); }
+.rc-menu .native-audio-slider input:focus-visible { outline: 2px solid #fff695; outline-offset: -2px; }
+.native-options-actions { position: absolute; right: 0; bottom: 0; display: flex; justify-content: flex-end; gap: 0; }
+.native-options-actions .original-menu-button { font-size: 17px; padding-left: 53px; padding-right: 4px; }
+
+/* The port's own pages. */
+.settings-extra-page {
+  width: 765px;
+  max-height: 574px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #c6e9ff;
+  /* the picture keeps its 574 lines whatever the page's height, so that its wavy line (its lower edge is 66 lines
+     down) is where the title's block ends: the list scrolls away under that line, not over it */
+  background: #103577 url("../../assets/menu/editbgnd.png") center top / 100% 574px no-repeat;
+}
+.settings-extra-page > h2 { flex: none; box-sizing: border-box; min-height: 68px; margin: 0; padding: 14px 24px 8px; font-size: 22px; }
+.settings-extra-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 24px 8px; }
+#settings .setting span, #settings .setting small, #settings .settings-note, #settings .settings-extra-body p { color: white; }
+#settings .setting { padding: 9px 0; min-height: 52px; }
+#settings .setting span { font-size: 15px; }
+#settings .setting small { font-size: 12px; line-height: 1.35; }
+#settings .setting select { background: #062c6d; color: white; border-color: #a7d6ff; font-size: 14px; }
+#settings .setting input { accent-color: #e969ed; }
+#settings .setting input[type=range] { width: 190px; }
+#settings .setting output { font-size: 14px; width: 48px; }
+#settings .settings-note { font-size: 13px; }
+#settings .cheat-status { color: #fff3a7; font-size: 14px; }
+.settings-extra-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 0; background: #143375ec; }
+.settings-extra-actions .original-menu-button { font-size: 17px; padding-left: 53px; padding-right: 4px; }
+.settings-extra-actions .original-previous { margin-right: auto; }
+.cheat-action { width: 100%; margin: 6px 0 2px; padding: 12px 16px; border: 1px solid #b3d7ff !important; background: #12396f; color: white; font-size: 15px; text-align: left; min-height: 44px; }
+.cheat-action:hover:not(:disabled) { background: #416aa1; }
+.cheat-action:disabled { opacity: .5; }
+
+/* A portrait phone cannot fit five cards at usable touch sizes in a 4:3
+   letterbox. Keep the same page/flow/art, but let content scroll vertically. */
+@media (max-aspect-ratio: 4/5) {
+  #menu { align-items: flex-start; }
+  .native-menu-frame {
+    width: 100%;
+    min-height: 100dvh;
+    aspect-ratio: auto;
+    padding: calc(85px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));
+    background-size: auto 100%;
+    container-type: normal;
+    display: flex;
+    flex-direction: column;
+  }
+  .native-menu-logo {
+    top: calc(7px + env(safe-area-inset-top));
+    left: max(8px, env(safe-area-inset-left));
+    width: 96px;
+  }
+  .native-menu-frame .original-menu-button {
+    width: 155px;
+    height: 60px;
+    min-height: 44px;
+    padding: 0 8px 0 52px;
+    font-size: 15px;
+  }
+  #native-help, .native-menu-frame #open-quit { top: calc(2px + env(safe-area-inset-top)); }
+  #native-help { left: auto; right: 145px; width: 102px; padding-left: 35px; font-size: 13px; background-size: 100% 75%; }
+  .native-menu-frame #open-quit { left: auto; right: 0; width: 145px; padding-left: 51px; font-size: 15px; }
+  #native-menu-title, #native-menu-description {
+    position: static;
+    width: auto;
+    margin: 0;
+  }
+  #native-menu-title { font-size: 22px; }
+  #native-menu-description { margin: 10px 0 20px; font-size: 16px; }
+  .native-menu-page { position: static; flex: 1; }
+  .native-home-choices, .native-adventure-choices {
+    position: static;
+    align-items: center;
+    margin: 20px 0;
+  }
+  #native-start-extras { position: relative; left: auto; bottom: auto; width: 100%; margin-top: 18px; font-size: 16px; }
+  #native-start-extras summary { padding: 12px 8px; }
+  .native-extra-actions { position: static; margin: 0 0 24px; gap: 8px; }
+  .native-menu-frame .text-button { padding: 12px 8px; font-size: 15px; min-height: 44px; }
+  .native-footer {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+    min-height: 60px;
+    margin-top: 20px;
+  }
+  .native-footer-left { position: static; width: 100%; justify-content: space-between; }
+  .native-footer #native-previous, .native-footer #native-next,
+  .native-footer #native-start, .native-footer #play-level { position: static; }
+  .native-footer #native-next, .native-footer #native-start,
+  .native-footer #play-level { margin-left: auto; }
+  #native-difficulties {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 12px 0;
+  }
+  .native-difficulty { width: 135px; height: 184px; }
+  .native-difficulty span { bottom: 12px; font-size: 17px; }
+  .native-menu-frame #level-list {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 150px));
+    justify-content: center;
+    gap: 14px 8px;
+    margin: 12px 0;
+  }
+  .native-menu-frame .level-card, .native-menu-frame .level-card.selected {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 150 / 171;
+  }
+  .native-menu-frame .level-card .card-info { left: 8px; right: 8px; bottom: 10px; }
+  .native-menu-frame .level-card .card-info b { font-size: 15px; }
+  .native-start-details {
+    position: static;
+    width: auto;
+    font-size: 16px;
+    grid-template-columns: 42% 58%;
+    line-height: 1.5;
+    gap: 12px 0;
+    margin: 18px 0 26px;
+  }
+  [data-menu-page="startinfo"] { display: flex; flex-direction: column; }
+  .native-start-heading { position: static; font-size: 19px; text-align: center; margin: 15px 0 10px; }
+  #native-start-mode { order: 0; }
+  #native-start-picture { order: 1; }
+  #native-start-level { position: static; order: 2; font-size: 19px; text-align: center; margin-top: 10px; }
+  .native-start-details { order: 3; }
+  #native-start-control { order: 4; }
+  #native-start-control-picture { order: 5; }
+  #native-start-control-label { position: static; order: 6; width: auto; font-size: 17px; text-align: center; margin: 10px 0 16px; }
+  #native-start-extras { order: 7; }
+  #native-start-picture, #native-start-control-picture { position: static; display: block; width: 200px; max-width: 75%; margin: 0 auto; }
+  .native-menu-frame[data-page="highscores"] { background-image: url("../../assets/menu/mainscre.png"); }
+  #native-score-table {
+    position: static;
+    width: 100%;
+    height: auto;
+    font-size: 15px;
+    margin: 15px 0;
+    background: #7196c875;
+  }
+  #native-score-table thead { height: 44px; }
+  #native-score-table tbody tr { height: 40px; }
+  #native-score-table th, #native-score-table td { padding: 10px 8px; border: 1px solid #c5dcff77; }
+}
+@media (max-width: 359px) and (max-aspect-ratio: 4/5) {
+  .native-menu-frame { padding-left: 8px; padding-right: 8px; }
+  .native-menu-logo { width: 80px; }
+  #native-help { right: 130px; width: 100px; }
+  .native-menu-frame #open-quit { width: 130px; padding-left: 45px; }
+  .native-footer-left .original-menu-button { width: 150px; font-size: 14px; }
+}

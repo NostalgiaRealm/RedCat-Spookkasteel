@@ -1,282 +1,164 @@
-# RedCat Spookkasteel — cross-platform reconstruction
+# RedCat Spookkasteel, recompiled
 
-A modern reconstruction of **RedCat Spookkasteel**, Davilex's 2000 Windows game. Explore five haunted worlds as RedCat, solve puzzles, collect potions and mirror pieces, and face the original enemies and bosses.
+The original game module of Davilex's *RedCat Spookkasteel* (2000), `RcHcGame.dat`, recompiled from x86 to WebAssembly and running in the browser. The game logic, the Genesis3D engine, the Davi-Script runtime, collision, AI, cutscenes and the in-game menu are the original code. What is new is the layer underneath: Windows calls, input, sound output and a WebGL render driver.
 
-The project brings the original levels, artwork, animation, Dutch dialogue and game scripts to **Linux, Windows and web browsers**, with widescreen resolutions, modern controls and improved saving. It uses a new JavaScript game engine built with **Three.js/WebGL 2**, packaged for desktop with **Electron**.
+This is a separate project next to the JavaScript reconstruction in `../RCSPOOK_NEW` and the Nintendo DS version in `../RCSPOOK_DS`. It was started on 2026-11-12 and is at an early stage: see [`PLAN.md`](PLAN.md) for what works and what is missing.
 
-**Status:** all five levels and their original scripts are playable. Development focuses on matching the original behavior, fixing regressions and keeping performance practical. Some details still differ; see [current status and remaining work](docs/native-parity-audit.md). Release 1.0.8 provides desktop packages for Linux, Windows and macOS (x64 and ARM64) and signed Android APK/AAB builds; mobile browser touch controls work too.
+## Status in short
 
-[Run the game](#run-the-game) · [Original version](#original-game-version) · [Work completed](#work-completed) · [Controls](#controls) · [Build guide](docs/building.md) · [Technical documentation](#technical-documentation)
+- The page opens on the original main menu (Hoofdmenu, Spelerlijst, Avontuur, Snelspel, Highscores, Instellingen, Help), brought over from the JavaScript port, and starts the recompiled game from it.
+- All five worlds boot, render and run in headless Chromium, with software WebGL (36 to 60 frames per second there) and on a real graphics card.
+- Walking, jumping, shooting and the original in-game menu were exercised with scripted keys in world 1.
+- Save states work: one slot per player, taken with F5, every minute (every three on a phone) and when the page is hidden (the game finishes the frame it is in and saves before it pauses; from inside the game's own menu it cannot), continued from the menu. In the Node runner a restored game continues bit for bit like the run it was saved from; that was checked for states of worlds 1 and 3. A state belongs to the build that made it: one that cannot be used (another build, a damaged record) is deleted and the player starts the world his adventure is at, with a line that says so, never an error.
+- Controller and touch controls (with gradual stick movement), keys that can be set in the main menu, a free choice of resolution with render scale and MSAA, widescreen, and cheats are in. Controller and touch were only simulated so far.
+- Phones and tablets get the JavaScript port's profile: a pixel budget for the automatic resolution, MSAA off to begin with, at most 60 frames per second, a lower render scale when the graphics chip cannot keep up. Measured in headless Chromium with a phone-shaped window only, not on a phone.
+- The Davilex leader and the intro play at every start of the page, the outro after a finished adventure, by the original menu's rules.
+- A scene of the game can be skipped by holding E (X on a controller, "Overslaan" on a touch screen) for two seconds: the original code plays the scene to its end in passes of half a second of game time without drawing it, the scene's last picture stays on screen meanwhile, and the game after the scene is there within about a tenth of a second for a talk with the fairy in Chromium on a desktop (a quarter of a second for the longest scene; a slower browser shows a turning circle over the held picture). What is left is a state the original reaches by playing the scene ([`docs/research/cutscenes.md`](docs/research/cutscenes.md) 2). What is said in a scene is shown in a readable box (a setting; off is the original's drawing). Full screen is on by default and entered at the first click, tap or key press.
+- Sound: the game's DirectSound calls and the level of the mix were compared with the original running under Wine, for the first 40 seconds of each world and for five scripted scenarios with input (shots, pickups, doors, a ghost, the guards); they match (see [`docs/research/sound.md`](docs/research/sound.md)). The sound of a real browser was not recorded or listened to.
+- Opened at the address where the JavaScript port was, it takes over that port's settings, players, progress and saved games from the visitor's browser without changing them ([`docs/legacy-saves.md`](docs/legacy-saves.md)). A game saved inside a world continues at the start of that world; the exact place stays playable in the old version when that is kept at `classic/`.
+- The package for a web server is made and checked behind a stand-in server ([`docs/hosting.md`](docs/hosting.md)); it is not on the public site yet. Nothing was tried on a real phone or in another browser than Chromium, and no world was played to its end.
 
-## How this port works
+## Where things are
 
-The original game used Genesis3D and Direct3D. This project replaces the engine code that draws the world, moves characters, handles collisions and plays effects. It runs independently of the old Windows executables, Direct3D DLLs and Wine.
+In the published repository the original game files and the decompilation (`RC_ORIGINAL_DECOMPILED/`) and the menu's assets (`assets/`) lie in the repository itself. In a checkout where this port is a folder of its own they are read from the JavaScript port's folder beside it, `../RCSPOOK_NEW`, which is what the notes mean when they name that folder (`tools/inputs.mjs`). The JavaScript port (versions up to 1.0.8) is on the branch `javascript-port`; the checks that run it as `classic/` expect a checkout of it beside this folder, or `RC_CLASSIC`.
 
-Import tools read the original game files and convert their maps, models, textures, sounds and animation into formats the new engine can use. The original **Davi-Script** programs—the instructions controlling puzzles, dialogue, cutscenes and level events—run through a small interpreter written for this project. Other behavior, such as enemy movement and projectile timing, is reconstructed from the original settings, assets and executable research.
+## Requirements
 
-This preserves the original content while allowing a different renderer, operating system and input method. In the technical notes, **native behavior** means behavior of the original Windows game; it does not mean that this project runs the original engine. Recovered behavior and deliberate improvements are documented separately.
+- Node.js 24
+- Python 3 with `capstone` for the recompiler (here: `~/.local/share/reverse-engineering/python-analysis/bin/python`)
+- The main repository checked out next to this folder: the original files and Ghidra's function lists are read from `../RCSPOOK_NEW/RC_ORIGINAL_DECOMPILED/`. Nothing there is ever written.
+- For the browser check only: Playwright, taken from `../../A2 Racer 4/node_modules` or `PLAYWRIGHT_DIR`
 
-## Original game version
+## Build
 
-This port and the decompilation of the original game in [`RC_ORIGINAL_DECOMPILED/`](RC_ORIGINAL_DECOMPILED/README.md) are both based on the original files of RedCat Spookkasteel from the project owner's own disc, with the Windows 98 fix applied:
-
-**RedCat Spookkasteel v 1.0.1.0, 19 juni 2001**
-
-| Release | Version |
-| --- | --- |
-| Original disc | RedCat Spookkasteel v 1.0.0.20, 2 oktober 2000 |
-| With the patch known on the internet as the **Windows 98 Patch** | RedCat Spookkasteel v 1.0.1.0, 19 juni 2001 |
-| With the patch known on the internet as the **Windows XP Patch** | RedCat Spookkasteel v 1.0.1.0, 19 juni 2001 (the same version number as the Windows 98 Patch) |
-
-All original behavior, addresses and settings referred to in this project's documentation come from this version.
-
-## Technologies
-
-| Part | Technology and purpose |
-| --- | --- |
-| Game logic | JavaScript ES modules and typed arrays for gameplay, the Davi-Script interpreter, collision, animation and save state. |
-| Graphics | Three.js and WebGL 2 for 3D rendering, custom lighting shaders, animated models, particles and graphics-resource streaming. |
-| Desktop application | Electron supplies the desktop window, Chromium renderer and operating-system display controls. Electron-builder creates Linux/Windows portable directories and macOS app bundles. |
-| Android application | Kotlin and AndroidX WebView package the same game for offline play; Electron is not used on Android. |
-| Menus and input | HTML/CSS, keyboard and pointer events, touch overlays and the browser Gamepad API. |
-| Sound and movies | Web Audio and HTML media for positional sound, dialogue, looping music and converted intro/outro videos. |
-| Saving | Browser localStorage for the latest save, settings and campaign progress; IndexedDB for recovery history. |
-| Asset conversion | Python 3 importers, Pillow for image conversion, and FFmpeg for movie conversion. |
-| Development and checks | Node.js/npm, Node and Python tests, and Playwright/Chromium scene checks. Exact dependency versions are pinned in [package.json](package.json) and [package-lock.json](package-lock.json). |
-
-The shared game code does not depend on Windows APIs. The desktop bridge is isolated in `electron/`, so the browser and desktop versions use the same gameplay implementation.
-
-## Run the game
-
-### From source
-
-Install **Node.js 22.12 or newer**, including npm. Open a terminal in the downloaded or cloned project directory. You need the complete `assets/` and `data/` directories as well as the source; see [importing game data](#importing-game-data) if they are absent.
-
-```sh
-npm ci
-npm start
+```bash
+npm run recompile
 ```
 
-On Linux, the recommended launch uses X11/XWayland:
+writes `public/game/spook.wasm`, `spook.meta.json` and `spook.codemap.bin` (about 20 seconds; see [`docs/recompiler.md`](docs/recompiler.md)).
 
-```sh
-npm start -- --ozone-platform=x11
+```bash
+node tools/build-manifest.mjs
 ```
 
-Wayland is also available with `npm start -- --ozone-platform=wayland` when supported by your desktop and graphics driver. Running the source does not generate a package.
+writes `public/game/files.json`, the list of original files the game can read.
 
-### In a browser
-
-After `npm ci`, start the local web server:
-
-```sh
-npm run serve
+```bash
+npm run preload
 ```
 
-Open **http://127.0.0.1:4173**. Use the server rather than opening `index.html` directly. A WebGL 2-capable browser and graphics driver are required. Once dependencies and game data are present, local play does not need an internet connection.
+writes `public/game/preload.json`: for each world the original files it reads when it starts, measured in the Node runner (15 seconds). The page fetches these together before the game thread starts.
 
-Browser saves belong to that website's address and browser profile. They are separate from desktop saves. This project uses its own save format; importing original Windows-game saves is not implemented.
+## Run
 
-To keep a copy of a player's current progress, open **Spelerlijst**, select the
-player and choose **Exporteren**. This downloads a JSON backup, or opens the
-system file picker in the desktop/Android app. Exporting does not change the
-active player or overwrite their save. To restore a backup, select its destination
-player, choose **Importeren**, pick the JSON file and confirm. Create a player
-with **Nieuw** first if you want to keep the restored adventure separate.
-Only that player’s save, progress and gameplay options are replaced; global
-settings and existing local recovery points remain. See [save backups](docs/save-export.md)
-for details.
-
-### From a prepared desktop package
-
-If you have a prepared package, it includes Electron and the imported resources; Node.js, Python, the CD and Wine are not needed to play.
-
-| Platform | Launch |
-| --- | --- |
-| Linux x64 | From the project folder, run `./Start-RedCat.sh`. For a standalone copy of `dist/linux-unpacked/`, run `./redcat-spookkasteel --ozone-platform=x11` inside it. Preserve executable permissions when copying. |
-| Windows x64 | Run `Start-RedCat.bat` from the project folder, or open `RedCat Spookkasteel.exe` inside `dist/win-unpacked/`. Copy the **whole directory**, not just the EXE. Current Windows packages are unsigned. |
-
-**The launcher scripts prefer an existing package in `dist/`.** That package may be older than the source. Use `npm start` to try source changes; consult the [build guide](docs/building.md) to regenerate packages.
-
-## Work completed
-
-### Original menu and portable help
-
-The original **Hoofdmenu → Avontuur / Snelspel / Highscores** flow uses the
-imported page backgrounds, button states, chapter and difficulty artwork, music
-and spoken button responses. Spelerlijst keeps separate player progress.
-Instellingen groups resolution, render scale and MSAA (Off/2x/4x/8x) under
-**Geavanceerd** and the
-other added options under **Meer instellingen**, below the music slider. Keyboard
-bindings can be changed. Gameplay touch controls and the touch Menu
-button remain available.
-
-The original Dutch help has been converted from Windows WinHelp into a local,
-searchable viewer with context-sensitive topics and navigation. See
-[menu reconstruction](docs/original-menu-native.md) for original evidence and
-the adaptations needed for modern platforms.
-
-### Original worlds, scripts and puzzles
-
-All five worlds are imported: **Het Bos**, **Het Kasteel**, **Het Kerkhof**, **De Grotten** and **De Kasteeltoren**. The world importer reads Genesis3D BSP v15 maps—the original format containing level geometry and collision data—and preserves textures, baked lighting and object placements.
-
-- The Davi-Script interpreter executes **5,134 imported instructions and 444 event handlers**, including puzzle conditions, enemy activation, skill rewards and persistent script variables.
-- **437 original model motions** drive doors, moving platforms, rotating bookcases, rolling obstacles, camera sequences and their timed callbacks. Rendering and collision follow the same moving objects.
-- Touch-activated buttons and doors, shootable controls, secrets, exploding props, fans, spring boxes and damaging water follow their authored rules. Level-ending mirrors, boss handoffs and the final tower mirror sequence are connected.
-- Chapter unlocking, difficulty settings, end-of-level scoreboards and replay tutorial skipping are implemented. Replaying a chapter uses the existing menu and skips the original applicable tutorials while preserving required rewards and story events.
-
-See [gameplay reconstruction](docs/gameplay-reconstruction.md), [motion playback](docs/motions.md), [campaign progression](docs/campaign-menu-native.md) and [replay behavior](docs/replayed-level-intros-native.md).
-
-### Characters, combat and animation
-
-All **165 original actor files** are imported. Here, an *actor* can be a character or a modeled world object. RedCat has **16 original animation clips**, including movement, jumping, shooting, being hurt, death and respawn.
-
-- Movement, aiming, attack timing and projectile release use recovered original rules. Shots originate at animated attachment points, including RedCat's hand and Max's turret barrels; impacts use the original artwork and sound.
-- Enemies use authored waypoint networks, perception ranges, remembered targets and attack sequences. Recovery work covers knight strikes, gargoyle flame salvos, zombie grave emergence, spiders descending on webs, dormant skeletons and bat steering.
-- Brutus, Jester Max, Dungeon Max and the Witch have their own phase controllers, projectiles and defeat sequences. Defeated enemies fade with the original purple smoke; their visual state can continue during dialogue.
-- **SuperSkippie** adds a timed second jump, and **BIG BENG** enables charged shots. Earned abilities persist across chapter progression and replay; starting a new adventure resets them.
-- Original HUD artwork shows health, lives, potions and score, with a target ring and enemy health where applicable. Pickup effects and floating score rewards are restored.
-
-See [enemy behavior](docs/enemy-gameplay.md), [waypoint movement](docs/enemy-waypoint-movement.md), [boss phases](docs/boss-phases-native.md), [projectile origins](docs/enemy-projectile-origins-native.md), [player abilities](docs/player-abilities-native.md) and [pickup effects](docs/pickup-score-native.md).
-
-### Lighting, effects and audio
-
-Work includes original world and character lighting, RedCat's ground shadow and subtle nearby light, authored dynamic-light obstruction, translucent water and ghosts, and corrected model placement. Examples include wall-mounted castle portraits, the UFO's dirt patch, readable corner trees and moving hand torches.
-
-Fleurifee's movement and particles, portal sequences, flames, smoke, explosions, debris, save-point beams and animated projectiles use imported artwork and recovered timing. New saves preserve Fleurifee's full effect state. Some effects retain documented simulation differences.
-
-Original Dutch voices, movies, footsteps, weapon sounds, enemy voices, door sounds and combat music are connected. Dialogue plays through a queue, audio pauses and resumes with the game, and level music loops. Positional effects use directional stereo and obstruction by world geometry. Selected ambience ranges and volumes are intentionally adjusted for clarity.
-
-See [actor lighting](docs/actor-lighting-native.md), [world-light shadows](docs/world-light-shadows-native.md), [world effects](docs/world-effects-native.md), [smoke/flame emitters](docs/spout-effects-native.md), [fairy saves](docs/fairy-save-restoration.md) and [audio](docs/audio.md).
-
-### Modern controls, saving and performance
-
-- Widescreen and selectable resolutions include automatic sizing, 720p, 1080p, 1440p, 4K, ultrawide formats and classic 1024×768. Camera proportions are preserved; original movies retain their 4:3 framing.
-- Keyboard/mouse, standard-mapped controllers and mobile touch overlays share gameplay actions. Menus and the level scoreboard adapt to the window size, including portrait displays.
-- Manual saves and autosaves every minute of active play are supplemented by recovery points from roughly **2, 5 and 10 minutes ago**. When a save exists, **Verder spelen** (Continue) is the main action; **Start opnieuw** (Start over) asks before replacing the adventure.
-- **Spelerlijst** (Player list), beside Settings, supports up to eight players with separate adventures, unlocks, abilities and recovery saves. It uses the original menu artwork and voices. Existing port progress is kept under **Speler 1**; see [player profiles](docs/player-profiles-native.md).
-- A two-second hold skips dialogue while retaining its script outcomes. Settings also include difficulty, audio, camera, display, touch preferences and cheats.
-- World and actor graphics stream in sections according to camera visibility, with nearby resources prepared ahead of time. Large visible areas remain complete. Collision, scripts and cached CPU data stay available; this does not unload every part of the level from system memory.
-- Navigation searches have bounded work budgets, and rendering caches reduce repeated uploads and updates. These changes address graveyard pursuit hitches and pauses when turning or revisiting an area; they do not guarantee a particular frame rate on every device.
-- Startup uses one generated JavaScript bundle: 141 modules combine into a runtime about 63% smaller before HTTP compression. The editable modules are kept separately in `source/`; only the generated bundle runs during ordinary gameplay. Existing saves/profiles keep their original format and storage. See [JavaScript bundling](docs/javascript-bundling.md).
-
-See [autosaves](docs/autosave.md), [world streaming](docs/world-streaming.md), [navigation performance](docs/graveyard-performance-regression.md), [movement recovery](docs/movement-recovery.md) and [torch enhancements](docs/torch-flames.md).
-
-## Intentional changes from the original game
-
-The port retains several deliberate improvements and adaptations:
-
-- One-minute autosaves, recent recovery saves, overwrite warnings and optional cheats with invulnerable no-clip.
-- Stuck-character recovery, maze reset after death, corrected BIG BENG rewards and damageable Max turret parts.
-- Two-second cutscene skipping, protected dialogue and automatic tutorial skipping on chapter replay.
-- Adjusted ambience and fairy hearing, quieter Tower fire, selected door sound fallbacks and uninterrupted audio playback.
-- Lit moving hand torches, reliable floor-light sampling, readable distant projectiles and camera protection near walls.
-- Widescreen, touch/controller controls, responsive menus/scoreboards and bounded rendering/navigation work.
-
-See [intentional fixes and original-game findings](docs/intentional-fixes-and-findings.md) for the full catalog, current settings, reasons and evidence—including the unused power-move finding. It distinguishes requested changes from original-content corrections and technical fidelity limits.
-
-## Controls
-
-The interface and original dialogue are in Dutch. **Instellingen** means Settings, **Besturing** means Controls, **Over** means About, and **Overslaan** means Skip.
-
-| Keyboard / mouse | Action |
-| --- | --- |
-| W / S or Up / Down | Move forward / backward |
-| A / D | Strafe |
-| Left / Right | Turn |
-| Mouse | Look after clicking the game |
-| Space | Jump |
-| Shift | Walk slowly |
-| Left click / Ctrl | Shoot; hold to charge once BIG BENG is earned |
-| E | Use; hold for two seconds during dialogue to skip |
-| V | Switch first/third-person camera |
-| Escape / P | Pause |
-| F5 / F9 | Save / load |
-
-Doors and buttons authored for contact activate when RedCat reaches them. Fixed scripted cameras keep control until their timer expires or the script changes the view.
-
-**Controller:** left/right sticks move/look; A / × jumps; RT / R2 or RB / R1 shoots; X / □ uses or skips when held for two seconds; LB / L1 walks; Y / △ changes camera; Start / Options pauses. A / × confirms and B / ○ returns in menus. See [controller support](docs/controller-support.md) for mappings and browser/device requirements.
-
-**Touch:** mobile browsers automatically enable the overlay. Change **Instellingen → Aanraakbediening** to automatic, on or off. Move with the left stick, swipe the right side to look, and use **Spring** (Jump), **Schieten** (Shoot) and **Overslaan** (Skip). **Menu** provides pause, saving, loading and settings. See [touch controls](docs/touch-controls.md).
-
-**Cheats:** Settings → Cheats can unlock chapters, fill inventory to 5 mirror pieces and 100 potions, add 9000 points, or enable **Vrij vliegen (no-clip)**. In no-clip, RedCat is invulnerable and can fly through geometry; Space rises and Shift descends. Exiting inside an obstacle attempts to return him to a safe position. Inventory cheats do not complete levels: collect the actual exit mirror to advance.
-
-## Development and packaging
-
-The [build guide](docs/building.md) covers prerequisites, Linux/Windows instructions, imports, troubleshooting and portable packaging. Dependencies are locked; use `npm ci` rather than upgrading them as part of ordinary setup.
-
-### Project layout
-
-| Path | Contents |
-| --- | --- |
-| `source/` | Editable game modules; input to bundling and focused tests, **not loaded directly by ordinary gameplay**. See [source instructions](source/README.md). |
-| `src/` | Generated `game.bundle.js`, debugging source map and runtime CSS. See [runtime files](src/README.md). |
-| `electron/` | Desktop application and display/quit bridge. |
-| `assets/` | Imported artwork, actors, sounds, voices and movies. |
-| `data/` | Imported levels, scripts and associated structured game data. |
-| `tools/` | Asset importers, local web server and packaging helper. |
-| `tests/` | Unit, importer, browser-scene and desktop checks. |
-| `docs/` | Build/hosting guides, implementation notes and original-game research. |
-| `temp_work/` | Retained investigation files, disassembly, screenshots and diagnostics. |
-| `dist/` | Generated desktop packages; these may lag behind source changes. |
-
-### Focused checks
-
-Run tests for the system you changed. For example, a change to motion playback can be checked with:
-
-```sh
-node --test tests/motions.test.mjs
+```bash
+node tools/serve.mjs
 ```
 
-Feature documents list the relevant unit and scene checks. `npm test` runs the broader JavaScript unit suite; importer and release validation are described in the [build guide](docs/building.md). Browser checks use Chromium/Playwright; many accept `CHROME_PATH` for an installed browser. Desktop presentation checks require a graphical session.
+then open <http://127.0.0.1:4221/> in a browser with WebGL 2 (the port is `DEV_PORT` in `tools/dev-port.mjs`; until 2026-11-14 it was 4190, which Firefox and Safari refuse to open, and what a browser of your own stored under that address stays there: `node tools/serve.mjs --port 4190` in Chromium shows it). Make a player in the Spelerlijst, choose Avontuur or Snelspel and press **Start!**. The server sends the cross-origin isolation headers the page needs (shared memory between the page and the game thread) and serves the original game files and the menu's artwork read-only from the main repository (`../RCSPOOK_NEW`). The page does not run from `file://`.
 
-Keep temporary profiles, research and diagnostic output in a named `temp_work/` subfolder. Use isolated profiles rather than the player's normal saves. Retain useful research, measurements and unique source evidence; disposable profiles, copied saves, screenshots and duplicates were removed in the [22 October cleanup](temp_work/cleanup-2026-10-22/README.md). Its index identifies retained evidence and canonical copies.
+`http://127.0.0.1:4221/?autostart=1&world=3` skips the menu and starts a world directly (used by the checks).
 
-### Creating desktop packages
+Controls:
 
-Packaging bundles this implementation and its resources with Electron; it does not compile the original Genesis3D game. The npm helpers create Linux x64 and Windows x64 portable directories. The build guide also covers direct-CLI packaging for Linux/Windows ARM64 and macOS x64/ARM64; version 1.0.4 provides all six desktop variants, plus signed Android APK/AAB downloads.
+| | Keyboard and mouse | Controller | Touch |
+|---|---|---|---|
+| Walk and turn | Arrow keys; W and S forward and back | Left stick (gradual: direction and speed follow the stick) or d-pad | Stick, bottom left (gradual) |
+| Step sideways | Alt + arrow; A and D | | |
+| Walk slowly | Shift | LB | Lopen (tap on, tap off) |
+| Look around | Mouse (click in the picture first) | Right stick | Drag anywhere else |
+| Jump, confirm | Space, Enter | A | Spring |
+| Shoot | Ctrl; the left mouse button while the mouse is caught | X, B, RT or RB | Schieten |
+| First person / original camera | V | Y | Camera |
+| Camera near, further, high (the original's) | 1, 2, 3 | | |
+| Free-flight cheat: fly along the view, sideways | the keys for forward, back, left and right | left stick | stick |
+| Free-flight cheat: up, down | the keys of Springen and Rustig lopen (Space, Shift); Home, End | A; B, LB or LT | Omhoog, Omlaag |
+| Skip a scene (hold two seconds) | E | X | Overslaan, bottom left |
+| Game menu | Esc | Start | Menu |
+| Pause | P | Back / View | |
+| Scores | Tab | L3 | |
+| Save state | F5 (also every minute, every three on a phone, when the adventure goes to its next world, and when the page is hidden) | | |
+| Load the saved place | F9, or Opgeslagen plek laden in the settings of the port | | Gear button |
+| Settings of the port | F10 | R3 | Gear button |
 
-The packaging helper requires **`REDCAT_PACKAGE_VERSION`** containing three dot-separated integers. This is generated-package metadata, separate from the game's About display. Follow the [packaging instructions](docs/building.md#5-generate-portable-packages-when-ready) when running `npm run build:linux` or `npm run build:windows`. A Windows package can be generated on Linux, but that does not replace testing it on Windows.
+The keys of walking, turning, jumping, shooting, walking slowly and the camera can be changed per player: Instellingen → Meer instellingen → Toetsen, or in the game Esc → Spelbesturing (the same keys: they are the game's own `[KeyBinds]`). Controller and touch buttons press whatever keys the player has. See [`docs/intentional-differences.md`](docs/intentional-differences.md) and [`docs/research/input.md`](docs/research/input.md).
 
-### Importing game data
+Settings of the port (in the menu under Instellingen, and in the game with F10): resolution (the window's, or a fixed size; on a phone the automatic one draws within 960×540 pixels and "Volle schermresolutie" uses every pixel), render scale 25 to 200 percent, MSAA off/2x/4x/8x, widescreen, touch controls auto/on/off, full screen (on unless switched off), the readable subtitle box, the frame counter, a master volume, the intro on or off, field of view, look speed, the camera (the original's, or first person: key V), cheats. W, S, A, D and Shift work next to the game's own keys; the mouse, the right stick and a finger on the right of a touch screen look around as in the JavaScript port: sideways turns RedCat, up and down tilts the view. With his back against a wall the camera rises over him instead of ending up inside his head. The original's own two volumes, Geluidseffecten and Muziek, are on the first Instellingen page and are kept per player in the player file, where the game reads them.
 
-Skip importing if `assets/` and `data/` are already complete. Both directories are included in this checkout's Git tracking and are needed to run and package the game. Their original content belongs to the original game's rights holders.
+Saved places: the port keeps one per player's adventure, and with the setting Herstelpunten (on for a desktop, off for a phone) three older ones of about 2, 5 and 10 minutes of playing time ago; Startinfo → Meer opties and the settings over a game load them, and Meer opties can also start the world again from its beginning. No state is taken while RedCat has no health. The Spelerlijst can export a player to a small file and import one, also a file exported by the JavaScript port. What all of that changes against the original is in [`docs/intentional-differences.md`](docs/intentional-differences.md); the screens are in [`docs/menu.md`](docs/menu.md).
 
-To regenerate them, use your original installation and mounted or extracted CD/ISO. Python 3 and Pillow handle the data/image imports; FFmpeg converts the movies. The [import guide](docs/building.md#3-import-assets-if-needed) includes virtual-environment setup for Linux and Windows. Once that environment is active and Pillow/FFmpeg are installed, the main command is:
+Without a browser, on a virtual clock:
 
-```sh
-python tools/import_assets.py \
-  --installation '/path/to/RedCat Spookkasteel' \
-  --cd '/path/to/mounted/RedCat' \
-  --album-dir '/path/to/cover-scans'
+```bash
+node tools/run-headless.mjs --seconds 30 --fresh --world 1
 ```
 
-`--album-dir` is optional; `--skip-media` omits movie conversion. Importing regenerates project assets and generated settings files, so preserve any local edits before reimporting. The original installation, CD files and saves are read without modification. The project includes its own IMG archive reader; Davitools is not a runtime dependency.
+## Host
 
-### Hosting the browser version
+```bash
+npm run package
+```
 
-The browser game is served as static files and does not require an Electron package or a game server. The [Nginx hosting guide](docs/nginx-hosting.md) includes the files to upload, HTTPS setup, media handling and an example for **games.nostalgiarealm.com/redcatspookkasteel/**. Its [example configuration](docs/nginx-redcatspookkasteel.conf) supports hosting beneath a subdirectory.
+```bash
+npm run package:check
+```
 
-## Current limits and future platforms
+The first writes `dist/site/`, the folder a web server needs (page, scripts and game module under a per-build folder name, the menu's assets, the original game files, `.gz` copies), and the server configuration next to it. The second serves it below `/redcatspookkasteel/` and uses it in headless Chromium. The steps for the public site are in [`docs/hosting.md`](docs/hosting.md). Nothing is uploaded by either.
 
-The desktop/browser campaign is feature-complete in practical terms: the current source review found no clearly missing level, puzzle, boss or major original-game system. This does not mean every behavior is identical or every device is validated.
+```bash
+npm run site:check -- --url https://games.nostalgiarealm.com/redcatspookkasteel/ --classic
+```
 
-The [15–18 October source campaign](docs/campaign-validation-2026-10-18.md) completed all five levels, earned upgrades, required puzzles, bosses and the full ending without cheats. All 13 secret routes were checked across that campaign and separate continuations; this was not a single 100% save. That instrumented run predates later source changes. For release 1.0.8 the full unit suite (1634 tests) passes and Het Kerkhof was checked; all 111 browser scenes last passed in full for 1.0.7. See [current platform validation](docs/portability.md) for the published packages, Android emulator coverage and signing limits.
+asks a real server for every file of the package and compares status, size, headers and, for the scripts and the game module, bytes. It only reads.
 
-The follow camera, steering and RedCat's collision box follow the original since 1.0.5, with the requested wall lift, direct look and first person added; see [native camera](docs/native-camera.md). Known differences include small collision tolerances, bounded arbitrary-position enemy pursuit, whole-engine attack-dispatch timing, particle integration and random sequences, and bounded lighting/query budgets. Native animation blending, skeleton/stone-enemy lifecycles and knight-armour particle rules are implemented, with documented portable limits. Spelerlijst exports and imports JSON backups; see [save backups](docs/save-export.md). Original RCR save import is absent and is a separate optional migration feature. The [implementation audit](docs/native-parity-audit.md) distinguishes these from features already completed; historical research notes should not be read as current task lists.
+## Checks
 
-Build instructions are separate from validation claims: [desktop packaging](docs/building.md), [Android APK/AAB building](ANDROID.md) and [Google Play publication](docs/android-google-play-release.md). Keep a consistent app identity, origin and signing key when updating so existing saves remain accessible.
+The checks that open a browser use the development server's address by default (`--url` for another) and headless Chromium; `--browser firefox` or `--browser webkit` runs the same check in Playwright's Firefox or in its Linux build of WebKit (Safari's engine, not Safari), through the one launcher `tools/browsers.mjs`. What such a browser cannot do (touch through Chromium's debugging interface, Chromium's GL flags, a phone in Firefox) is left out with a line `not run in <engine>: …`. Only the Chromium runs are the reference: see `docs/LLM_GUIDE.md`, "Other browsers".
 
-## Technical documentation
+| Command | What it does |
+|---|---|
+| `node tools/run-headless.mjs --seconds 30 --fresh --world N` | Boots world N in Node and runs it for 30 virtual seconds without drawing. Prints frame, polygon and draw-call counts, and writes the game's own run logs to `tools/out/logs/` |
+| `node tools/run-headless.mjs --fresh --save-at 900 --hash-after 300` then `node tools/run-headless.mjs --fresh --world 5 --restore tools/out/state.bin --hash-after 300` | Save-state check: the two printed hashes of the game memory, 300 passes after the save and 300 passes after the restore, must be equal (`8f54e89b` on 2026-11-14; `307574ef` with `--fixes off`, the original game). The hash is of everything a state holds between two passes but the stack: the host's low memory, the image, the heap and the pages at the top of memory, where the game's own heap is (the player, every object of a world; until 2026-11-14 it was image and heap only and could not see them). The runner draws the scenes' lines as the original does (the page's subtitle box is `--subtitle-box`, and leaves the same memory). Run it for a state of world 3 as well (`--world 3 --save-at 900 --state tools/out/st3.bin`, then `--world 1 --restore tools/out/st3.bin`): world 1 does not read the stack below the stack pointer, world 3 does. `tools/savestate-check.mjs` runs both |
+| `node tools/input-check.mjs` | The controls the port adds (`docs/research/input.md`). In the Node runner: the original's Walk action does nothing; a stick straight forward or back is the key pass by pass; half deflection is half the speed; any angle; the turn rate; walking slowly; nothing held gives the original game's memory (`307574ef` with the fixes off); a continued state gets the keys the file has now; Alt is not watched as "walk slowly" in a file with the original's own lines, and what such a file gets at adoption. In headless Chromium (server needed, `--gpu` for the graphics card): the form Toetsen instellen and the player's file, a controller played to the page (dead zone, LB, Y, R3, the controller that disappears), the starting keys for a player of before, with and without stored settings; the left mouse button with the mouse caught; a phone with touches (stick, Lopen, Camera, the gear and the buttons clear of the HUD), and a phone held either way (Menu on the screen, the subtitle box clear of "Overslaan" and the buttons, the hint and the frame counter clear of the buttons and the HUD); the first-time hints, the controller's too. Screenshots in `tools/out/input-check/` |
+| `node tools/fixes-check.mjs` | The fixes of faults of the original (`source/host/fixes.js`, `docs/research/original-fixes.md`): each scenario in the Node runner with the fix off (the original must show the fault) and on; all fixes off must give the original game's memory (`307574ef`), and the hash must tell off from on; the original's cheat page while the host protects a flying RedCat (the game's own menu opened, its entry set through its own setter); the subtitle box on and off must leave the same memory. The two picture-only flags (`skyBackdrop`, `smoothSprites`) on and off must leave the same memory too (`--only picture`). So must `hudShape`, in a mode of 854 x 480, where it changes what is drawn. `node tools/run-headless.mjs --fixes off` runs the original game |
+| `node tools/torches-check.mjs [--browser chromium\|firefox\|webkit] [--phone]` | Pictures of the hand torches (`source/host/torches.js`, flag `handTorches`) in a browser: the Castle's hall of hands and the Graveyard's entrance with the flag off and on, three screenshots each in `tools/out/torches/pictures/`. RedCat is put in place by the tool (the game thread's script is changed on its way to the browser; the port's files are not). Passes when the picture from the same place is lighter around the hands with the flag on and the game thread reports hands, lights and flame polygons; look at the pictures as well. It also reads eight seconds of frame rate, game-thread wait and chip load at each place, flag off and on (`--phone`: in a phone-shaped window, since `phone-check` stands where no hand is in reach; still a desktop's chip). The placing is `tools/torch-place.mjs`. The Node side is `node tools/fixes-check.mjs --only handTorches` |
+| `node tools/effects-check.mjs [--only node,browser] [--browser chromium\|firefox\|webkit]` (to look: `--scenes castle,graveyard,caves,tower,shot1..shot5,boom2,boom3 [--mode 1]`; `boom`: a shot that flies and ends at a near wall) | The fairy's effects, which the original leaves out on a "Low End PC" (`docs/research/effects-low-end.md`; the port starts every game with `[Display] Mode=2`, `source/host/ini.js`). In the Node runner, with a new player made from `PlayerDef.ini` as the page makes one: `IsLowEndPC` is "0", in her first lesson her five orbiters and her ribbon are on, over 150 polygons with flags 9 go to the driver in one frame and the game has dynamic lights; with Mode 1 none of it; the opening scenes of the Castle, the Graveyard and the Caves have them too. In a browser (server needed): the same read from the game thread, the triangles that reach the renderer, and seven screenshots of the lesson against those of the same scene with Mode 1, each asked for by the game thread at the same value of the game's clock and taken with the game paused: the lesson must have light where the control has none within 32 pixels (her own wandering moves her by tens of pixels between two runs), in at least five of the seven. Her close-up (`effects-low-end.md` 7, the driver's flags `skyBackdrop` and `smoothSprites`): in the Node runner every scene of the lesson begins with the sky box as a backdrop, her halo lies on it and its texture reaches the renderer with a smooth outer slope, and with both flags off none of that (the original's picture: sixteen levels, steps of 17); in the browser's close-ups (four extra pictures, each taken in a frame in which the game draws her halo, which it leaves out for about a third of the lesson's frames; plus those of the seven that have it; at least three) hardly a pixel around her halo is black and its edge has no step (median over the close-ups; `--fixes skyBackdrop=0,smoothSprites=0` or `--patch host/gdriver.js=<the file of before>` must fail both). Look at the sheets in `tools/out/effects/pictures/` as well |
+| `node tools/savestate-check.mjs` | Save states that cannot be used. In Node: some twenty states that must be refused with the game's memory untouched (cut off, other bytes, another build's identity with the same number of thunks, a missing part, ranges elsewhere), a state refused where the main loop stands, one whose loading fails; and a restore with other players' files changed, a player deleted and one made since the save; the two volumes changed in the menu since the save, and changed while the game runs (`tools/volume-plugin.mjs`: every playing sound at the level of a game started with them). In headless Chromium: a real state is saved, its stored record is changed in fourteen ways and continued from: every time a game must run in the world that was asked for, without the error dialog, with the line for the player on screen and the record gone; the menu must not offer a state it drops; a valid state must still continue; a save that the browser refuses must leave the game running. Also: leaving or hiding the page while a continued game loads counts no failed try; the state of a page that is hidden is stored while it is hidden, ten times out of ten, and a game inside its own menu pauses all the same; a game that ended with its player file further than the state loses the state; a record the page cannot judge because the game's lists do not arrive is asked about again and no game is started over it. Needs the server running for the browser part (`--only node` without) Since 2026-11-14 also when a state is taken at all (`--only dead`, `world-change`, `reload`, `snelspel`, `recovery`; the game is made to die, lose its last life and finish a world with its own functions, through three test keys put into the game thread's script on its way to the browser): none of a RedCat without health or of a game that is ending, the last state of a living RedCat still the saved place after "Nee" on the retry screen; one by itself when the adventure goes to its next world, continued in that world; F9, which may be pressed any number of times without the state being taken for a bad one; a Snelspel's state apart from the adventure's; F9 within ten seconds of a second try to continue; a world reached noted as open at once; the recovery points with their ladder (simulated in Node for a state every minute, every three, every five seconds), their dialogs on Startinfo and over the game, and their storage budget on a phone |
+| `node tools/run-headless.mjs --seconds 40 --fresh --world N --check-sound` | Sound check: at every `Play` the page mixer's volume, pan and rate for that buffer must equal the game's DirectSound state. Exit code 1 when not |
+| `node tools/run-headless.mjs --seconds 45 --fresh --world N --sound-log tools/out/sound-wN.json --sound-wav tools/out/sound-wN.wav`, then `node tools/sound-summary.mjs`, `tools/sound-compare.mjs`, `tools/sound-levels.mjs` | Sound trace, a rendering of the mix as a WAV file, and the comparison with the reference of the original under Wine (`evidence/reference-wine/`, made by `tools/reference-wine/`). Commands in `docs/research/sound.md` |
+| `node tools/sound-scenarios.mjs` | Five scripted scenarios with input (shots, a potion and coins, doors, a ghost, the guards): runs each in the Node runner and compares sounds, levels and the player's route with the reference of the original under Wine. The port runs with the fixes of `source/host/fixes.js` off, as the reference is the original (`--fixes on`: as players get it). The scripts are in `tools/sound-scenarios.txt`; `tools/reference-wine/scenarios.sh` makes the reference |
+| `node tools/skip-check.mjs` (`--fixes off`, `--sweep`, case names, `--ranges`) | Skipping a scene (`source/host/skip.js`, `docs/research/cutscenes.md` 2), in the Node runner. Twelve scenes (the opening scene of every world, one that moves RedCat, three that give a skill, a scene skipped in its first pass and one a second before its end, the scene that ends the Castle), 25 more with `--sweep` (every other scene the levels' scripts name a trigger or a motion for). Per scene: watched at 60, 50 and 40 frames a second; skipped with the engine's `RenderScene` kept; played with that skip's clock steps without the skip (two passes a second); skipped as the player gets it; skipped with a recording sink. (1) The skip that draws must leave the memory of the paced run, byte for byte. (2) The skip without the draw must leave every object's state as the one with it, with differences only in the renderer's working tables and in where allocations land. (3) RedCat, what he has, the camera and every word of the script's objects that the watched runs agree on must be the same after the skip, but for the kinds the check lists by name, each with a run of the original that shows it depends on the frame rate. Also: nothing of the scene left or heard, a request with nothing to skip, one that reaches its limit. 183 checks, 556 with `--sweep`; run it with `--fixes off` as well |
+| `node tools/screens-check.mjs` (`--gpu`, `--only skip,touch,pad,subtitle,fps,fullscreen,pause,msaa,intro,help,results,gamemenu,layout`, `--browser firefox`) | What the page puts over and around the picture, in headless Chromium (server needed): the skip with key, finger and controller (while it runs the scene's last picture stays, never black, under the full circle, which turns only when the skip takes long), the subtitle box, the frame counter (under the game's HUD), "Overslaan" gone inside the game's own pause, full screen at the first click, the Esc a browser keeps, a window that is not in front, anti-aliasing the device does not have, "Bekijk de originele intro", the port's help pages, the results screen (left within ten seconds of a click or tap; it ends by itself after 90); `gamemenu`: the touch controls and the gear over the game's own screens, counted in the picture's pixels (no control over the text of its Esc menu and Spelbesturing at 915 x 412, 560 x 420 and 412 x 915, no arrows in its pause, the retry screen with nothing over its title, Ja or Nee); `layout`: the menu's own pages at three sizes (the Help viewer's footer, the list of Toetsen instellen, and the five wide paw buttons of Instellingen, whose artwork is looked for in a screenshot: run it with `--browser firefox` too, the fault it is there for was Firefox's). Screenshots in `tools/out/screens-check/` |
+| `node tools/hud-check.mjs` (`--gpu`, `--shapes 4x3,16x9,21x9,phone`, `--browser firefox`, `--out folder`) | The game's own 2D on a screen that is not 4:3 (the driver's flag `hudShape`, `docs/research/genesis-driver.md` 11b), in headless Chromium or Firefox (server needed; not tried in WebKit): loading, the opening scene, play, the Esc menu, its page Geluid, the pause, the retry screen and the results screen at 4:3, 16:9, 21:9 and a phone on its side. Reads the corners of every bitmap as the driver hands it to the renderer: at 4:3 each is the game's own, bit for bit; elsewhere each is as wide and high as at 4:3 within a pixel, the HUD's left group at the left edge and its right group at the right edge, the loading picture in the middle, full-screen things still full, no open column between the menu's tiles, nothing cut off, and no HUD bitmap under the page's gear, frame counter or touch buttons. A caller of the game's bitmap routine it does not know is a failure. `--fixes hudShape=0` is the picture before 2026-11-15 and must fail. Screenshots in `tools/out/hud/` |
+| `node tools/walllift-check.mjs` | The camera lift at walls (`source/host/walllift.js`): side by side with the JavaScript port's own lift code on that port's test cases, then in the game, pass by pass |
+| `node tools/look-check.mjs` | Looking around and the first-person view (`source/host/look.js`) in the Node runner: turns, the camera at the eye point, RedCat out of the draw calls, the other cameras and cutscenes untouched, save states |
+| `node tools/legacy-check.mjs` | The take-over from the JavaScript port: six storage dumps (one per generation of its storage), special cases (unreadable save, full storage, full player list), and the old port itself, which the server offers under `/classic/` on the same origin. Checks what was taken over, that the old data is byte for byte unchanged, and that the old port still loads its own save afterwards. Also the export files of the Spelerlijst (`--only export`, Node only): files made by the old port's own export code become what the take-over makes of the same save, this port's own file goes out and comes back, files with values the game never writes are refused. Needs the server running |
+| `node tools/menu-check.mjs` | Walks the whole menu in headless Chromium on a desktop, a phone and a portrait phone (and `--only tabs`: two tabs of one browser, where a tab that was open earlier must not write its old copy of the players' files over the other's): players, Avontuur and Snelspel up to a running game, the settings over the game, cheats, continuing from a save state, a world begun again from Meer opties, the Griezelplekken that stay open after a new adventure, Exporteren and Importeren of a player with a downloaded and a picked file. Screenshots in `tools/out/menu/`. Needs the server running |
+| `npm run package:check` | The packaged site (`dist/site`): the folder's content, the answers of a stand-in for the web server, and headless Chromium starting every world with a delay before each answer. `node tools/serve-site.mjs` serves the package by hand at <http://127.0.0.1:4195/redcatspookkasteel/> |
+| `node tools/gpu-memory-check.mjs --world 1 --seconds 60 --angle gl` (also `--angle swiftshader`, `--size 915x412 --dpr 3 --mobile`, `--pause`; `--torch castle\|yard [--fixes handTorches=0]` puts RedCat among the hand torches first, where their lights and flames are: a world's start has none in reach in the Castle) | Memory of the picture's way to the screen (no growth, and no passing peak of video memory far above the resting level): starts a world in headless Chromium and prints, per second, the GPU process's video memory (the kernel's per-process DRM counters, with a real GPU) and its ordinary memory, the page's memory, the frame rate and the frames drawn; `--pause` pauses the game and hides the page for five seconds each. Fails when memory keeps growing, when frames stop, or when the canvas at the end does not show the game or does not change when RedCat is turned (frames are counted where they are replayed, whatever they drew). Screenshots and series in `tools/out/gpu-memory/`. Needs the server running |
+| `node tools/render-check.mjs` (also `--angle gl`, `--only lost,blind`) | The picture's way to the screen when something changes or fails, in headless Chromium, one page per scenario: settings changed together and a resized window; the WebGL context lost and back (the game goes on, the picture is whole again, nothing is drawn without its textures in between), also under a paused game; a context that does not come back (the game ends as an error after five seconds, the next gets a new canvas); three games in a row; save and continue; a failing game thread; a failing and a hanging render worker. The failures are made by changing a script on its way to the browser. Screenshots in `tools/out/render-check/`. Needs the server running |
+| `node tools/phone-check.mjs` | The phone profile and what the port lets go of, in headless Chromium with software WebGL: settings on a phone-shaped browser and on a desktop; the step-down of the render scale under 30 frames per second on both (MSAA off once on a phone, a chosen value kept, what is taken over from the JavaScript port), drawing sizes (the phone budget in landscape and portrait, a chosen resolution, the desktop window filled to its last line), the step-down of the render scale when drawing is too slow (none on a desktop, and none when only the display gives few ticks), the limit of 60 frames per second on a 120 Hz display (a desktop draws all), the save state by itself every three minutes on a phone and every minute on a desktop (run with both divided by twenty), a browser without full screen with the full-screen setting on, original files let go and read again with the same bytes, duplicated sounds sharing their samples. Needs the server running |
+| `node tools/browser-check.mjs --world N --steps "wait:15000;shot:name;state"` | Opens the page in headless Chromium, starts world N, saves screenshots to `tools/out/browser/`. Needs the server running. Steps: `wait`, `shot`, `key:Code,holdMs`, `touch:x,y,holdMs` (with `--mobile`), `eval`, `goto`, `state` |
 
-| Topic | Start here |
-| --- | --- |
-| What is implemented and what remains | [Native implementation audit](docs/native-parity-audit.md), [gameplay reconstruction](docs/gameplay-reconstruction.md) |
-| Deliberate differences and research findings | [Intentional fixes and original-game findings](docs/intentional-fixes-and-findings.md) |
-| Original file formats | [BSP world data](docs/asset-formats.md), [actor models](docs/actors.md), [menu/media archives](docs/menu-media.md) |
-| Script execution | [Davi-Script format](docs/davi-format.md), [VM opcodes](docs/davi-vm-opcodes.md), [motion timelines](docs/motions.md) |
-| Rendering and effects | [Actor lighting](docs/actor-lighting-native.md), [world-light falloff](docs/world-light-falloff-research.md), [portal effects](docs/portal-native-recovery.md), [destruction debris](docs/debris-native-recovery.md) |
-| Performance work | [World streaming](docs/world-streaming.md), [enemy navigation](docs/enemy-waypoint-movement.md), [refresh-rate investigation](docs/native-refresh-performance.md), [code and documentation efficiency review](docs/efficiency-review-2026-10-26.md), [source layout and documentation audit](docs/source-layout-and-documentation-review.md) |
-| Setup and deployment | [Building](docs/building.md), [Nginx hosting](docs/nginx-hosting.md), [Android setup and validation](ANDROID.md), [platform support and validation](docs/portability.md), [project cleanup record](docs/project-cleanup-2026-10-29.md) |
+`--trace debug` prints the game's own trace lines; `--trace driver`, `sound`, `files`, `win`, `msg`, `eh`, `count` show the host side.
 
-The format research used the [Genesis3D reference source](https://github.com/RealityFactory/Genesis3D), and menu archive layout was checked against [Davitools](https://github.com/Gymnasiast/Davitools/blob/master/src/RCS/EntryTable.php). The repository's importers and runtime are independent implementations. Research notes record original-file evidence, implementation decisions and focused verification so later work can be checked against the same findings.
+## Folders
+
+| Folder | Content |
+|---|---|
+| `tools/recomp/` | The recompiler (Python). From the Maisy's Playhouse project, which took it from A2 Racer 4 |
+| `source/host/` | The host layer shared by browser and Node: Win32 (`kernel32*.js`, `user32.js`, `gdi32.js`, `winmm.js`), DirectInput, DirectSound, C++ exceptions (`eh.js`), the Genesis3D render driver (`gdriver.js`), the main loop (`mainloop.js`), save states and their build identity (`snapshot.js`), launch settings (`ini.js`) |
+| `source/render/` | Behind the driver: the recorder that writes down the game thread's render calls and their replay (`remote.js`), and the WebGL 2 renderer (`webgl.js`) |
+| `source/web/` | The page: game API (`game.js`), players and settings (`players.js`, `settings.js`, `files.js`), the test for a phone or tablet (`device.js`), controller and touch input (`gamepad.js`, `touch.js`), the game thread (`worker.js`), the render thread that draws on the page's canvas (`render-worker.js`), text rasteriser and audio output |
+| `source/menu/` | The original main menu, brought over from the JavaScript port ([`docs/menu.md`](docs/menu.md)) |
+| `public/` | `index.html`; `public/game/` is generated |
+| `dist/` | The packaged site and its server configuration (`npm run package`). Not in git |
+| `docs/` | [`recompiler.md`](docs/recompiler.md), [`LLM_GUIDE.md`](docs/LLM_GUIDE.md), [`intentional-differences.md`](docs/intentional-differences.md), [`legacy-saves.md`](docs/legacy-saves.md), [`hosting.md`](docs/hosting.md), and the research notes in `docs/research/`: [`genesis-driver.md`](docs/research/genesis-driver.md), [`startup-and-loop.md`](docs/research/startup-and-loop.md), [`cheats-and-player.md`](docs/research/cheats-and-player.md), [`sound.md`](docs/research/sound.md), [`menu-audio.md`](docs/research/menu-audio.md), [`legacy-storage.md`](docs/research/legacy-storage.md), [`camera-and-look.md`](docs/research/camera-and-look.md), [`input.md`](docs/research/input.md), [`original-fixes.md`](docs/research/original-fixes.md), [`cutscenes.md`](docs/research/cutscenes.md) |
+| `tests/fixtures/legacy/` | Storage dumps of the JavaScript port, one per generation, for `tools/legacy-check.mjs` |
+| `evidence/reference-wine/` | DirectSound traces of the original game under Wine, one per world, with their summary |
+| `tools/reference-wine/` | Scripts that start the original under Wine in a throwaway prefix and make those traces |
+| `tools/out/` | Scratch output of the tools. Not in git |
+
+## Rights
+
+The game, its code and its media retain their owners' rights. This project is not affiliated with Davilex. `spook.wasm` is a translation of the original executable and is generated locally, not stored here. This project's own code carries no licence grant.

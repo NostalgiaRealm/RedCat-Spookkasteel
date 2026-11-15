@@ -1,30 +1,19 @@
 package com.nostalgiarealm.redcatspookkasteel
 
-import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Color
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.Message
-import android.provider.OpenableColumns
+import android.os.SystemClock
 import android.view.Gravity
+import android.view.KeyCharacterMap
+import android.view.KeyEvent
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.webkit.RenderProcessGoneDetail
-import android.webkit.WebChromeClient
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
-import android.webkit.WebResourceResponse
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
@@ -32,456 +21,285 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.webkit.WebViewCompat
-import androidx.webkit.WebViewFeature
-import org.json.JSONObject
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.nio.ByteBuffer
-import java.nio.charset.CodingErrorAction
-import java.util.concurrent.Executors
+import org.mozilla.geckoview.AllowOrDeny
+import org.mozilla.geckoview.ContentBlocking
+import org.mozilla.geckoview.ExperimentalGeckoViewApi
+import org.mozilla.geckoview.GeckoPreferenceController
+import org.mozilla.geckoview.GeckoResult
+import org.mozilla.geckoview.GeckoRuntime
+import org.mozilla.geckoview.GeckoRuntimeSettings
+import org.mozilla.geckoview.GeckoSession
+import org.mozilla.geckoview.GeckoSessionSettings
+import org.mozilla.geckoview.GeckoView
+import org.mozilla.geckoview.WebRequestError
+import java.io.IOException
+import java.security.SecureRandom
+import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.TimeUnit
 
+/**
+ * One full-screen GeckoView that shows the packaged site of the recompiled port, served from the
+ * app's own files by LocalServer. The page is the one a browser gets; what Android adds is in
+ * HostPages (Back, quit) and LegacyExport (the saved games of the JavaScript port's app).
+ * Conventions follow that app (../RCSPOOK_NEW/android): application id, name, icon, immersive
+ * display, Back, and the engine as the only owner of Android's audio focus.
+ */
 class MainActivity : ComponentActivity() {
     private companion object {
-        const val MAX_EXPORT_BYTES = 32 * 1024 * 1024
-        // JSON.stringify escapes the file text a second time for the message.
-        const val MAX_EXPORT_MESSAGE_CHARS = MAX_EXPORT_BYTES * 2 + 4096
+        // one engine per process, kept when the activity is made again
+        var runtime: GeckoRuntime? = null
+        val externalLinks = setOf(
+            "https://ko-fi.com/nostalgiarealm",
+            "https://www.nostalgiarealm.com/",
+            "https://github.com/NostalgiaRealm/RedCat-Spookkasteel",
+            "https://www.youtube.com/@Nostalgia_Realm",
+        )
     }
-    private data class PendingExport(val id: String, val view: WebView, val generation: Int, val bytes: ByteArray)
-    private data class PendingImport(val id: String, val view: WebView, val generation: Int)
-    private val exportWriter = Executors.newSingleThreadExecutor()
-    private var pendingExport: PendingExport? = null
-    private var pendingImport: PendingImport? = null
-    private var exportPickerOpen = false
-    private var importPickerOpen = false
-    private var pageGeneration = 0
-    private val exportDocument = registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
-        val request = pendingExport
-        exportPickerOpen = false
-        if (request != null && currentDocumentPage(request.view, request.generation)) {
-            if (uri == null) {
-                pendingExport = null
-                exportResult(request.id, request.view, canceled = true)
-            }
-            else exportWriter.execute {
-                val error = runCatching {
-                    contentResolver.openOutputStream(uri, "wt")?.use { it.write(request.bytes) }
-                        ?: throw java.io.IOException("De gekozen locatie kan niet worden beschreven.")
-                }.exceptionOrNull()
-                handler.post {
-                    if (pendingExport === request) pendingExport = null
-                    if (currentDocumentPage(request.view, request.generation)) {
-                        exportResult(request.id, request.view,
-                            error = if (error == null) null else "Het avontuur kon niet worden opgeslagen op de gekozen locatie.")
-                    }
-                }
-            }
-        } else pendingExport = null
-    }
-    private val importDocument = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        val request = pendingImport
-        importPickerOpen = false
-        if (request != null && currentDocumentPage(request.view, request.generation)) {
-            if (uri == null) {
-                pendingImport = null
-                importResult(request, canceled = true)
-            } else exportWriter.execute {
-                val result = runCatching { readImportDocument(uri) }
-                handler.post {
-                    if (pendingImport === request) pendingImport = null
-                    if (currentDocumentPage(request.view, request.generation)) {
-                        result.fold(
-                            onSuccess = { (filename, text) -> importResult(request, filename = filename, text = text) },
-                            onFailure = { importResult(request, error = it.message ?: "Het avontuur kon niet worden geïmporteerd.") }
-                        )
-                    }
-                }
-            }
-        } else pendingImport = null
-    }
+
     private lateinit var root: FrameLayout
     private val handler = Handler(Looper.getMainLooper())
-    private var webView: WebView? = null
-    private val popups = mutableSetOf<WebView>()
-    private var foreground = false
-    private var windowFocused = false
+    private val token = ByteArray(16).also { SecureRandom().nextBytes(it) }.joinToString("") { "%02x".format(it) }
+    private lateinit var legacy: LegacyExport
+    private var server: LocalServer? = null
+    private var session: GeckoSession? = null
+    private var gameView: GeckoView? = null
     private var pageReady = false
-    private var fullscreen = true
-    private var keepAwakeRequested = false
-    private var noisyReceiverRegistered = false
+    private var foreground = false
+    private var generation = 0
+    // debug builds: scripts for the page (tools/android-check.mjs), and their results
+    private val debugJobs = LinkedBlockingQueue<Pair<String, String>>()
+    private val debugResults = java.util.concurrent.ConcurrentHashMap<String, LinkedBlockingQueue<ByteArray>>()
 
-    private val noisyReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action != AudioManager.ACTION_AUDIO_BECOMING_NOISY || !foreground) return
-            // Pause on headphone removal. Restoring availability never resumes
-            // gameplay automatically: the web adapter waits for the player's action.
-            sendEvent(JSONObject().put("type", "lifecycle").put("active", false))
-            handler.post { publishLifecycle() }
+    private val routes = object : LocalServer.Routes {
+        override fun pageHead(): String = HostPages.hostScript(token, BuildConfig.DEBUG)
+
+        override fun handle(method: String, path: String, query: String, body: ByteArray): LocalServer.Answer? {
+            if (BuildConfig.DEBUG && path.startsWith("debug/")) return debug(path.removePrefix("debug/"), query, body)
+            if (query != "t=$token") return null
+            return when (path) {
+                "ready" -> { handler.post { pageReady = true }; ok() }
+                // the page has saved before it shows that screen (source/menu/quit-menu.js)
+                "quit" -> { handler.post { finish() }; ok() }
+                "legacy.html" -> LocalServer.Answer(200, "text/html; charset=utf-8", HostPages.legacyPage(token).toByteArray())
+                "legacy-data" -> legacy.pending()?.let { LocalServer.Answer(200, "application/json; charset=utf-8", it) }
+                "legacy-done" -> { legacy.settle(String(body, Charsets.UTF_8).take(4000)); ok() }
+                else -> null
+            }
+        }
+
+        private fun ok() = LocalServer.Answer(200, "text/plain; charset=utf-8", byteArrayOf())
+
+        private fun debug(path: String, query: String, body: ByteArray): LocalServer.Answer? = when (path) {
+            // from the development computer: run this in the page and wait for what it returns
+            "eval" -> {
+                val id = java.lang.Long.toHexString(SecureRandom().nextLong())
+                val box = LinkedBlockingQueue<ByteArray>()
+                debugResults[id] = box
+                debugJobs.put(id to String(body, Charsets.UTF_8))
+                val result = box.poll(120, TimeUnit.SECONDS)
+                debugResults.remove(id)
+                LocalServer.Answer(if (result == null) 504 else 200, "application/json; charset=utf-8", result ?: "{\"error\":\"no answer from the page\"}".toByteArray())
+            }
+            // from the page: the next script, or nothing after a while
+            "next" -> {
+                val job = debugJobs.poll(25, TimeUnit.SECONDS)
+                val text = if (job == null) "{}" else org.json.JSONObject().put("id", job.first).put("code", job.second).toString()
+                LocalServer.Answer(200, "application/json; charset=utf-8", text.toByteArray())
+            }
+            "result" -> { debugResults[query.removePrefix("id=")]?.put(body); ok() }
+            else -> null
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        root = FrameLayout(this).apply { setBackgroundColor(Color.rgb(16, 28, 34)) }
+        legacy = LegacyExport(applicationContext)
+        root = FrameLayout(this).apply { setBackgroundColor(Color.BLACK) }
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        setContentView(root)
-        ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
-            // The WebView's actual viewport excludes system bars, cutouts and
-            // mandatory gesture edges. CSS safe-area padding remains an extra safeguard.
-            val safe = insets.getInsets(WindowInsetsCompat.Type.systemBars() or
-                WindowInsetsCompat.Type.displayCutout() or WindowInsetsCompat.Type.mandatorySystemGestures())
-            view.setPadding(safe.left, safe.top, safe.right, safe.bottom)
-            insets
+        // the page draws to the edges of the screen and keeps its controls clear of a cutout itself (env(safe-area-inset-*))
+        window.attributes = window.attributes.apply {
+            layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         }
-        // WebView owns the actual media players and their Android audio focus.
-        // A second Activity focus request competes with that same-app owner:
-        // menu WAVs can duck it and longer movies can permanently replace it,
-        // which used to pause the game while it was starting its own sound.
-        ContextCompat.registerReceiver(this, noisyReceiver,
-            IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY), ContextCompat.RECEIVER_NOT_EXPORTED)
-        noisyReceiverRegistered = true
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        setContentView(root)
+        // The engine owns the media players and Android's audio focus, as the WebView did in the
+        // JavaScript port's app: a second request by the activity competed with it there.
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (pageReady && webView != null) sendEvent(JSONObject().put("type", "back"))
-                else finish()
+                val view = gameView
+                if (pageReady && view != null) pressEscape(view) else finish()
             }
         })
-        createGameView()
         applyDisplay()
+        // first what the old app left here (once, a second at most), then the game
+        val mine = ++generation
+        legacy.run { if (mine == generation && !isDestroyed) createGameView() }
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
+    private fun pressEscape(view: GeckoView) {
+        val now = SystemClock.uptimeMillis()
+        view.requestFocus()
+        // with the keyboard's scan code of Esc (1): the engine makes the event's `code` from it, and the page reads `code`
+        // Held for a moment: the game looks at the keyboard once per frame, and a key that goes down and up
+        // within one frame is not seen (the page's own made-up Esc is held 100 ms too, source/web/game.js).
+        fun key(action: Int) = KeyEvent(now, SystemClock.uptimeMillis(), action, KeyEvent.KEYCODE_ESCAPE, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD, 1)
+        view.dispatchKeyEvent(key(KeyEvent.ACTION_DOWN))
+        handler.postDelayed({ if (view === gameView) view.dispatchKeyEvent(key(KeyEvent.ACTION_UP)) }, 120)
+    }
+
     private fun createGameView() {
         disposeGameView()
         root.removeAllViews()
-        val supported = runCatching { WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER) }.getOrDefault(false)
-        if (!supported) {
-            showFailure(R.string.old_webview)
-            return
+        if (server == null) {
+            val made = LocalServer(assets, routes)
+            try { made.start() } catch (_: IOException) { showFailure(R.string.port_taken); return }
+            server = made
         }
-        val view = try {
-            WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG)
-            WebView(this)
-        } catch (_: RuntimeException) {
-            showFailure(R.string.old_webview)
-            return
+        val engine = try {
+            runtime ?: GeckoRuntime.create(applicationContext, GeckoRuntimeSettings.Builder()
+                .consoleOutput(BuildConfig.DEBUG)
+                .remoteDebuggingEnabled(BuildConfig.DEBUG)
+                .aboutConfigEnabled(false)
+                .contentBlocking(ContentBlocking.Settings.Builder()
+                    .safeBrowsing(ContentBlocking.SafeBrowsing.NONE)
+                    .antiTracking(ContentBlocking.AntiTracking.NONE)
+                    .build())
+                .build()).also { runtime = it; keepEngineOffTheNetwork() }
+        } catch (_: RuntimeException) { showFailure(R.string.startup_failed); return }
+        val made = GeckoSession(GeckoSessionSettings.Builder()
+            .usePrivateMode(false)
+            .allowJavascript(true)
+            .suspendMediaWhenInactive(true)
+            .build())
+        made.navigationDelegate = object : GeckoSession.NavigationDelegate {
+            // the page stays on the app's own server; the About links go to a browser
+            override fun onLoadRequest(session: GeckoSession, request: GeckoSession.NavigationDelegate.LoadRequest): GeckoResult<AllowOrDeny> {
+                if (request.uri.startsWith(LocalServer.ORIGIN + "/")) return GeckoResult.allow()
+                if (request.uri in externalLinks) openExternal(Uri.parse(request.uri))
+                return GeckoResult.deny()
+            }
+
+            override fun onNewSession(session: GeckoSession, uri: String): GeckoResult<GeckoSession>? {
+                if (uri in externalLinks) openExternal(Uri.parse(uri))
+                return null
+            }
+
+            override fun onLoadError(session: GeckoSession, uri: String?, error: WebRequestError): GeckoResult<String>? {
+                if (session === this@MainActivity.session) handler.post { showFailure(R.string.load_failed) }
+                return null
+            }
         }
-        webView = view
+        made.progressDelegate = object : GeckoSession.ProgressDelegate {
+            override fun onPageStart(session: GeckoSession, url: String) { if (session === this@MainActivity.session) pageReady = false }
+            override fun onPageStop(session: GeckoSession, success: Boolean) {
+                if (session === this@MainActivity.session && session.let { true }) watchStartup(session)
+            }
+        }
+        made.contentDelegate = object : GeckoSession.ContentDelegate {
+            override fun onCrash(session: GeckoSession) = stopped(session)
+            override fun onKill(session: GeckoSession) = stopped(session)
+            private fun stopped(session: GeckoSession) {
+                if (session === this@MainActivity.session) handler.post { showFailure(R.string.renderer_stopped) }
+            }
+        }
+        made.permissionDelegate = object : GeckoSession.PermissionDelegate {
+            // the page asks the engine to keep its storage (navigator.storage.persist()): yes, it is the app's own
+            override fun onContentPermissionRequest(session: GeckoSession, perm: GeckoSession.PermissionDelegate.ContentPermission): GeckoResult<Int> =
+                GeckoResult.fromValue(
+                    if (perm.permission == GeckoSession.PermissionDelegate.PERMISSION_PERSISTENT_STORAGE && perm.uri.startsWith(LocalServer.ORIGIN + "/"))
+                        GeckoSession.PermissionDelegate.ContentPermission.VALUE_ALLOW
+                    else GeckoSession.PermissionDelegate.ContentPermission.VALUE_DENY)
+        }
+        made.open(engine)
+        val view = GeckoView(this)
+        view.coverUntilFirstPaint(Color.BLACK)
+        view.setSession(made)
+        session = made
+        gameView = view
         pageReady = false
-        view.setBackgroundColor(Color.rgb(16, 28, 34))
-        view.settings.apply {
-            javaScriptEnabled = true
-            domStorageEnabled = true
-            allowFileAccess = false
-            allowContentAccess = false
-            mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
-            mediaPlaybackRequiresUserGesture = true
-            javaScriptCanOpenWindowsAutomatically = false
-            setSupportMultipleWindows(true)
-            setSupportZoom(false)
-        }
-        val gameAssets = GameAssets(applicationContext)
-        view.webViewClient = object : WebViewClient() {
-            override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? =
-                gameAssets.intercept(request)
-
-            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-                if (request.isForMainFrame && GameUrls.isGamePage(request.url.toString())) return false
-                if (request.isForMainFrame && request.hasGesture()) openExternal(request.url)
-                return true
-            }
-
-            override fun onPageStarted(view: WebView, url: String, favicon: android.graphics.Bitmap?) {
-                if (view === webView) {
-                    pageReady = false
-                    pageGeneration++
-                    pendingExport = null
-                    pendingImport = null
-                }
-            }
-
-            override fun onPageFinished(view: WebView, url: String) {
-                if (view === webView) watchStartup(view)
-            }
-
-            override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
-                if (view === webView && request.isForMainFrame) showFailure(R.string.load_failed)
-            }
-
-            override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, response: WebResourceResponse) {
-                if (view === webView && request.isForMainFrame) showFailure(R.string.load_failed)
-            }
-
-            override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
-                if (view === webView) {
-                    disposeGameView(rendererGone = true)
-                    showFailure(R.string.renderer_stopped)
-                }
-                return true
-            }
-        }
-        view.webChromeClient = object : WebChromeClient() {
-            override fun onCreateWindow(view: WebView, isDialog: Boolean, isUserGesture: Boolean, resultMsg: Message): Boolean {
-                if (!isUserGesture) return false
-                val transport = resultMsg.obj as? WebView.WebViewTransport ?: return false
-                // About links use target=_blank. This temporary view has no JS,
-                // bridge or network access; it only hands approved URLs to a browser.
-                val popup = WebView(this@MainActivity)
-                popups.add(popup)
-                popup.settings.allowFileAccess = false
-                popup.settings.allowContentAccess = false
-                popup.webViewClient = object : WebViewClient() {
-                    override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-                        if (request.isForMainFrame) openExternal(request.url)
-                        closePopup(view)
-                        return true
-                    }
-                    override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest) =
-                        WebResourceResponse("text/plain", "UTF-8", 403, "Forbidden", emptyMap(), ByteArrayInputStream(byteArrayOf()))
-                    override fun onPageStarted(view: WebView, url: String, favicon: android.graphics.Bitmap?) {
-                        if (url != "about:blank") { openExternal(url.toUri()); closePopup(view) }
-                    }
-                    override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
-                        closePopup(view)
-                        return true
-                    }
-                }
-                transport.webView = popup
-                resultMsg.sendToTarget()
-                handler.postDelayed({ closePopup(popup) }, 5_000)
-                return true
-            }
-        }
-        if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) {
-            WebViewCompat.addWebMessageListener(view, "RedCatAndroid", setOf(GameUrls.ORIGIN)) {
-                    sender, message, sourceOrigin, isMainFrame, _ ->
-                if (sender === webView && isMainFrame && GameUrls.isGameOrigin(sourceOrigin.toString())) {
-                    val data = runCatching { message.data }.getOrNull()
-                    // Only this explicit, bounded operation may exceed the
-                    // ordinary 4 KiB bridge-message limit.
-                    if (data != null && (data.length <= 4096 ||
-                            (data.length <= MAX_EXPORT_MESSAGE_CHARS && data.startsWith("{\"type\":\"export-save\",")))) {
-                        receiveMessage(data)
-                    }
-                }
-            }
-        } else {
-            showFailure(R.string.old_webview)
-            return
-        }
         root.addView(view, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-        if (!foreground) view.onPause()
-        view.loadUrl(GameUrls.ENTRY)
+        made.setActive(foreground)
+        view.requestFocus()
+        // debug builds: `am start … -e query "autostart=1&world=1"` opens the page with that query (tools/android-check.mjs)
+        val query = if (BuildConfig.DEBUG) intent?.getStringExtra("query")?.takeIf { Regex("[A-Za-z0-9=&._-]{1,200}").matches(it) } else null
+        made.loadUri(when {
+            legacy.pending() != null -> "${LocalServer.ORIGIN}/__android/legacy.html?t=$token"
+            query != null -> "${LocalServer.ENTRY}?$query"
+            else -> LocalServer.ENTRY
+        })
     }
 
-    private fun receiveMessage(data: String) {
-        val message = runCatching { JSONObject(data) }.getOrNull() ?: return
-        if (data.length > 4096 && message.optString("type") != "export-save") return
-        when (message.optString("type")) {
-            "ready" -> { pageReady = true; publishLifecycle() }
-            "fullscreen" -> if (message.opt("enabled") is Boolean) {
-                fullscreen = message.getBoolean("enabled")
-                applyDisplay()
-            }
-            "keep-awake" -> if (message.opt("enabled") is Boolean) {
-                keepAwakeRequested = message.getBoolean("enabled")
-                updateKeepAwake()
-            }
-            // The web adapter completes its normal save before sending quit.
-            "quit" -> finish()
-            "export-save" -> exportSave(message)
-            "import-save" -> importSave(message)
-        }
-    }
-
-    private fun exportSave(message: JSONObject) {
-        val view = webView ?: return
-        val id = message.optString("id")
-        if (!Regex("[A-Za-z0-9_-]{1,80}").matches(id)) return
-        if (documentPickerBusy()) {
-            exportResult(id, view, error = "Er is al een bestandsvenster geopend.")
-            return
-        }
-        val filename = message.optString("filename")
-        val text = message.optString("text")
-        if (!Regex("RedCat-Spookkasteel-[A-Za-z0-9_-]{1,100}\\.json").matches(filename) ||
-                text.isEmpty() || text.length > MAX_EXPORT_BYTES) {
-            exportResult(id, view, error = "Het exportbestand is ongeldig of te groot (maximaal 32 MiB).")
-            return
-        }
-        val bytes = text.toByteArray(Charsets.UTF_8)
-        val bundle = runCatching { JSONObject(text) }.getOrNull()
-        val save = bundle?.optJSONObject("save")
-        if (bytes.size > MAX_EXPORT_BYTES || bundle?.optString("format") != "redcat-spookkasteel-save" ||
-                bundle.optInt("formatVersion") != 1 || save?.optInt("version") != 1 ||
-                save.optJSONObject("game") == null || save.optJSONArray("position")?.length() != 3 ||
-                bundle.optJSONObject("player")?.opt("name") !is String) {
-            exportResult(id, view, error = "Het bestand is geen geldig opgeslagen RedCat-avontuur.")
-            return
-        }
-        pendingExport = PendingExport(id, view, pageGeneration, bytes)
-        exportPickerOpen = true
-        try { exportDocument.launch(filename) }
-        catch (_: RuntimeException) {
-            pendingExport = null
-            exportPickerOpen = false
-            exportResult(id, view, error = "Het Android-bestandsvenster kon niet worden geopend.")
+    /**
+     * The game is complete inside the app and asks nothing of the internet, but a browser engine does
+     * by itself (lists of settings and of unsafe sites, connectivity checks: 25 MB in the first minutes
+     * on the emulator, before this was added). The JavaScript port's app could not reach the internet
+     * at all. The loopback server needs the INTERNET permission, so the engine is told instead: every
+     * address except this device itself goes to a proxy that does not exist. Kept in the engine's
+     * profile, so from the second start on it holds from the first moment.
+     */
+    @OptIn(ExperimentalGeckoViewApi::class)
+    private fun keepEngineOffTheNetwork() {
+        val user = GeckoPreferenceController.PREF_BRANCH_USER
+        val nowhere = "127.0.0.1"
+        for ((name, value) in listOf<Pair<String, Any>>(
+            "network.proxy.type" to 1,
+            "network.proxy.http" to nowhere, "network.proxy.http_port" to 9,
+            "network.proxy.ssl" to nowhere, "network.proxy.ssl_port" to 9,
+            "network.proxy.no_proxies_on" to "127.0.0.1",
+            "network.proxy.allow_hijacking_localhost" to false,
+            "network.proxy.failover_direct" to false,
+            "network.trr.mode" to 5,
+            "network.dns.disablePrefetch" to true,
+            "network.prefetch-next" to false,
+            "network.captive-portal-service.enabled" to false,
+            "network.connectivity-service.enabled" to false,
+        )) when (value) {
+            is Int -> GeckoPreferenceController.setGeckoPref(name, value, user)
+            is Boolean -> GeckoPreferenceController.setGeckoPref(name, value, user)
+            else -> GeckoPreferenceController.setGeckoPref(name, value.toString(), user)
         }
     }
 
-    private fun exportResult(id: String, view: WebView, canceled: Boolean = false, error: String? = null) {
-        if (view !== webView) return
-        sendEvent(JSONObject().put("type", "export-result").put("id", id)
-            .put("ok", !canceled && error == null).put("canceled", canceled).put("error", error))
-    }
-
-    private fun currentDocumentPage(view: WebView, generation: Int): Boolean =
-        view === webView && generation == pageGeneration && pageReady && GameUrls.isGamePage(view.url ?: "")
-
-    private fun documentPickerBusy(): Boolean =
-        exportPickerOpen || importPickerOpen || pendingExport != null || pendingImport != null
-
-    private fun importSave(message: JSONObject) {
-        val view = webView ?: return
-        val id = message.optString("id")
-        if (!Regex("[A-Za-z0-9_-]{1,80}").matches(id)) return
-        val request = PendingImport(id, view, pageGeneration)
-        if (documentPickerBusy()) {
-            importResult(request, error = "Er is al een bestandsvenster geopend.")
-            return
-        }
-        pendingImport = request
-        importPickerOpen = true
-        try { importDocument.launch(arrayOf("application/json", "text/json", "text/plain", "application/octet-stream")) }
-        catch (_: RuntimeException) {
-            pendingImport = null
-            importPickerOpen = false
-            importResult(request, error = "Het Android-bestandsvenster kon niet worden geopend.")
-        }
-    }
-
-    // A document provider supplies an opaque URI, never a filesystem path.
-    // Metadata is only an early rejection: bound bytes read from the stream too.
-    private fun readImportDocument(uri: Uri): Pair<String, String> {
-        var filename = ""
-        contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE), null, null, null)?.use { cursor ->
-            if (cursor.moveToFirst()) {
-                val nameColumn = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                if (nameColumn >= 0) filename = cursor.getString(nameColumn) ?: ""
-                val sizeColumn = cursor.getColumnIndex(OpenableColumns.SIZE)
-                if (sizeColumn >= 0 && !cursor.isNull(sizeColumn) && cursor.getLong(sizeColumn) > MAX_EXPORT_BYTES) {
-                    throw java.io.IOException("Het importbestand is te groot (maximaal 32 MiB).")
-                }
-            }
-        }
-        if (filename.length !in 6..255 || !filename.endsWith(".json", ignoreCase = true) ||
-            filename.any { it == '/' || it == '\\' || it.code < 32 }) {
-            throw java.io.IOException("Kies een opgeslagen RedCat-avontuur als JSON-bestand.")
-        }
-        val bytes = contentResolver.openInputStream(uri)?.use { stream ->
-            val output = ByteArrayOutputStream()
-            val buffer = ByteArray(64 * 1024)
-            while (true) {
-                val count = stream.read(buffer, 0, minOf(buffer.size, MAX_EXPORT_BYTES + 1 - output.size()))
-                if (count == -1) break
-                if (count == 0) throw java.io.IOException("Het importbestand kon niet worden gelezen.")
-                if (output.size() + count > MAX_EXPORT_BYTES) {
-                    throw java.io.IOException("Het importbestand is te groot (maximaal 32 MiB).")
-                }
-                output.write(buffer, 0, count)
-            }
-            output.toByteArray()
-        } ?: throw java.io.IOException("Het gekozen bestand kon niet worden geopend.")
-        if (bytes.isEmpty()) throw java.io.IOException("Het importbestand is leeg.")
-        val text = try {
-            Charsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
-                .onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(bytes)).toString()
-        } catch (_: java.nio.charset.CharacterCodingException) {
-            throw java.io.IOException("Het importbestand bevat geen geldige UTF-8-tekst.")
-        }
-        return filename to text.removePrefix("\uFEFF")
-    }
-
-    private fun importResult(request: PendingImport, canceled: Boolean = false, error: String? = null,
-                             filename: String? = null, text: String? = null) {
-        if (!currentDocumentPage(request.view, request.generation)) return
-        sendEvent(JSONObject().put("type", "import-result").put("id", request.id)
-            .put("ok", !canceled && error == null).put("canceled", canceled).put("error", error)
-            .put("filename", filename).put("text", text))
-    }
-
-    private fun watchStartup(view: WebView) {
+    private fun watchStartup(watched: GeckoSession) {
         handler.postDelayed({
-            if (view === webView && !pageReady) {
-                if (foreground) showFailure(R.string.startup_failed) else watchStartup(view)
+            if (watched === session && !pageReady) {
+                if (foreground) showFailure(R.string.startup_failed) else watchStartup(watched)
             }
         }, 20_000)
     }
 
-    private fun sendEvent(event: JSONObject) {
-        if (!pageReady) return
-        webView?.evaluateJavascript("window.dispatchEvent(new CustomEvent('redcat:android',{detail:$event}));", null)
-    }
-
-    private fun publishLifecycle() {
-        sendEvent(JSONObject().put("type", "lifecycle").put("active", foreground && windowFocused))
-        updateKeepAwake()
-    }
-
-    private fun updateKeepAwake() {
-        if (foreground && windowFocused && pageReady && keepAwakeRequested) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        } else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-    }
-
+    /** Always immersive, as the JavaScript port's app was with its full-screen setting on (its default). */
     private fun applyDisplay() {
         WindowInsetsControllerCompat(window, root).apply {
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-            if (fullscreen) hide(WindowInsetsCompat.Type.systemBars()) else show(WindowInsetsCompat.Type.systemBars())
+            hide(WindowInsetsCompat.Type.systemBars())
         }
         ViewCompat.requestApplyInsets(root)
     }
 
     private fun openExternal(uri: Uri) {
-        if (!GameUrls.isExternalLink(uri.toString())) return
         try { startActivity(Intent(Intent.ACTION_VIEW, uri).addCategory(Intent.CATEGORY_BROWSABLE)) }
         catch (_: ActivityNotFoundException) { Toast.makeText(this, R.string.browser_missing, Toast.LENGTH_LONG).show() }
     }
 
-    private fun closePopup(popup: WebView) {
-        if (popups.remove(popup)) popup.destroy()
-    }
-
-    private fun disposeGameView(rendererGone: Boolean = false) {
-        val old = webView
-        webView = null
-        pendingExport = null
-        pendingImport = null
-        pageGeneration++
+    private fun disposeGameView() {
+        val old = session
+        session = null
         pageReady = false
-        keepAwakeRequested = false
-        updateKeepAwake()
-        if (old != null) {
-            (old.parent as? ViewGroup)?.removeView(old)
-            if (!rendererGone) {
-                old.stopLoading()
-                if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) {
-                    WebViewCompat.removeWebMessageListener(old, "RedCatAndroid")
-                }
-            }
-            old.destroy()
+        gameView?.let { view ->
+            (view.parent as? ViewGroup)?.removeView(view)
+            view.releaseSession()
         }
-        popups.toList().forEach(::closePopup)
+        gameView = null
+        old?.close()
     }
 
     private fun showFailure(message: Int) {
+        generation++
         disposeGameView()
         root.removeAllViews()
         val padding = (24 * resources.displayMetrics.density).toInt()
@@ -508,37 +326,31 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Volume keys should still control game audio while a level is paused
-        // or the menu is temporarily silent.
         volumeControlStream = AudioManager.STREAM_MUSIC
         foreground = true
-        webView?.onResume()
-        windowFocused = window.decorView.hasWindowFocus()
-        publishLifecycle()
+        // an inactive session is a hidden page: the page itself then stops the game, saves and
+        // silences its sound (source/web/game.js, source/menu/menu.js)
+        session?.setActive(true)
         applyDisplay()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        windowFocused = hasFocus
-        // Calls, system panels and external activities must still suspend the
-        // game independently of WebView's own media-focus implementation.
-        if (::root.isInitialized) publishLifecycle()
+        if (hasFocus && ::root.isInitialized) applyDisplay()
     }
 
     override fun onPause() {
         foreground = false
-        windowFocused = false
-        publishLifecycle()
-        webView?.onPause()
+        session?.setActive(false)
         super.onPause()
     }
 
     override fun onDestroy() {
+        generation++
         handler.removeCallbacksAndMessages(null)
-        if (noisyReceiverRegistered) unregisterReceiver(noisyReceiver)
         disposeGameView()
-        exportWriter.shutdown()
+        server?.stop()
+        server = null
         super.onDestroy()
     }
 }

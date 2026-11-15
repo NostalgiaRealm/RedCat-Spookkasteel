@@ -1,0 +1,38 @@
+Version 2.0.0 is a new port. Until now RedCat Spookkasteel was a reconstruction written by hand in JavaScript; this version runs the game's own original code, recompiled from the 2001 Windows program to WebAssembly, with a JavaScript layer that gives it a screen, sound, files and input. What the game does is therefore what the original does, apart from the differences listed in [docs/intentional-differences.md](docs/intentional-differences.md). Existing players, settings and saved adventures are taken over.
+
+The JavaScript port stays available: its releases up to 1.0.8 are unchanged, its source is on the branch `javascript-port`, and on the website it stays reachable at `classic/`.
+
+## Your Players and Saves
+
+- **Website and desktop app:** players, settings, progress and highscores are taken over at the first start. The old data is only read and stays as it was.
+- **Android:** installing 2.0.0 over the old app takes players and progress over the same way.
+- **A game saved inside a world starts that world again**, with your points, lives, health, mirror parts and abilities. The exact place cannot be carried into the original code. On the website the old version at `classic/` still continues it at the exact place.
+- **Export files of the old port** can be imported in the Spelerlijst.
+
+## What Is New Compared With the Original Game
+
+Each of these can be read about, and most switched off, in [docs/intentional-differences.md](docs/intentional-differences.md).
+
+- **Saving anywhere:** the game saves every minute, at every world change and with F5; F9 loads the saved place. A dead RedCat is never saved. Optional recovery points from a few minutes back.
+- **Skipping a scene:** hold E (controller X, or the button on a touch screen) for two seconds.
+- **Looking around:** mouse, right stick or a finger; a first-person view; field of view and look speed settings; the camera lifts over RedCat at a wall.
+- **Controls:** keyboard remapping in the main menu, controller and touch controls with analog movement, first-time hints, a help page.
+- **Picture:** widescreen with a HUD that keeps its shape, resolution and anti-aliasing settings, a phone profile, a readable subtitle box, all 32 hand torches lit, smoother sprite edges, sky behind scenes that showed black.
+- **Fixes of original faults:** the Graveyard maze resets after death, the Caves fairy gives the right ability, no damage during scenes, fractional damage to enemies, silent door panels made audible.
+- **Cheats:** supplies, free flight with the old port's keys, immortality, the original's hidden cheat page.
+
+## Packages
+
+- **Desktop:** Linux, Windows and macOS, each for x64 and ARM64, as ZIP files. Unsigned, as before.
+- **Android:** an APK and an AAB for 64-bit ARM phones. The app is larger than before (about 325 MB) because Android's built-in browser component cannot run this port; the app carries Firefox's engine instead. 32-bit phones are no longer supported.
+- **Website:** see [docs/hosting.md](docs/hosting.md).
+
+## Browsers
+
+Chrome, Edge and other Chromium browsers from version 92, Firefox from 114, Safari from 17 (iPhone and iPad from iOS 17). A browser that cannot run this port is offered the old version on the website.
+
+## Tested and Not Tested
+
+- **Tested:** the checks listed in [README.md](README.md) pass in headless Chromium, and the main ones in Playwright's Firefox. The packaged site was checked behind a stand-in web server. The Linux x64 desktop package and the Android app (on an emulator) start a world and draw it. The take-over of old data was checked for the website, the desktop app and the Android app.
+- **Not tested:** real Safari on a Mac or iPhone, a release build of Firefox, a real phone or tablet, the five other desktop packages, a play-through of any world to its end. In the Linux build of Safari's engine the browser process stopped at random; whether real Safari does is not known.
+- **Known:** saved places made by an earlier build of this port are dropped once, with a notice.

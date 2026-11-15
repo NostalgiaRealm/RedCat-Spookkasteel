@@ -1,0 +1,244 @@
+// RcHcMenu's TfrmPlayer, TfrmPlayerName and delete confirmation, from
+// ../RCSPOOK_NEW/source/player-menu.js, with its Exporteren and Importeren (what a file holds here
+// is in save-export.js). New: the list may be empty (a first visit), and then Nieuw is the only way
+// forward.
+// Profile data stays outside the UI: `profiles` is { list(): [{id, name}], activeId, max,
+// nameMax, create(name): {id, name} (throws an Error with a Dutch message) }.
+// exportPlayer(id) -> { status: 'downloaded' | 'cancelled', note }; readImport() -> { canceled } or
+// { bundle } (bundle.name: the player in the file, bundle.note: a line for the question);
+// importPlayer(id, bundle) writes it. All three may throw an Error with a Dutch message.
+export class PlayerMenu {
+  constructor({profiles, audio, selectPlayer, removePlayer, exportPlayer = null, readImport = null, importPlayer = null, canOpen = () => true, document = globalThis.document}) {
+    Object.assign(this, {profiles, audio, selectPlayer, removePlayer, exportPlayer, readImport, importPlayer, canOpen, document});
+    this.$ = id => document.getElementById(id);
+    this.dialog = this.$('player-list');
+    this.nameDialog = this.$('player-name-dialog');
+    this.deleteDialog = this.$('player-delete-dialog');
+    this.importDialog = this.$('player-import-dialog');
+    this.pendingImport = null;
+    this.busy = false; this.pending = false; this.generation = 0; this.selected = 0;
+    this.$('player-name').maxLength = profiles.nameMax;
+    const bind = (id, action) => this.$(id).addEventListener('click', action);
+    bind('open-players', () => this.open());
+    bind('close-players', () => this.cancel());
+    bind('player-cancel', () => this.cancel());
+    bind('player-add', () => this.openName());
+    bind('player-remove', () => this.openDelete());
+    bind('player-export', () => this.exportSelected());
+    bind('player-import', () => this.importSelected());
+    bind('player-import-yes', () => this.confirmImport());
+    bind('player-import-no', () => this.cancelImport());
+    bind('player-select', () => this.confirm());
+    bind('player-name-cancel', () => this.cancelName());
+    bind('player-delete-yes', () => this.confirmDelete());
+    bind('player-delete-no', () => this.cancelDelete());
+    this.$('player-name-form').addEventListener('submit', event => {event.preventDefault(); this.create();});
+    for (const dialog of [this.dialog, this.nameDialog, this.deleteDialog, this.importDialog]) {
+      dialog.addEventListener('cancel', event => {event.preventDefault(); this.back(dialog.id);});
+    }
+  }
+
+  get openDialog() { return this.importDialog.open || this.deleteDialog.open || this.nameDialog.open || this.dialog.open; }
+
+  /** Opens the list. With no player at all it goes on to the name prompt, as a first visit should. */
+  open() {
+    if (this.openDialog || this.busy || !this.canOpen()) return;
+    this.selected = this.profiles.activeId;
+    this.render(); this.dialog.showModal();
+    this.focusSelected();
+    if (this.profiles.list().length) this.audio.say(['rcmn13.wav']);
+    else this.openName();
+  }
+
+  render(message = '') {
+    const players = this.profiles.list();
+    if (!players.some(player => player.id === this.selected)) this.selected = this.profiles.activeId || players[0]?.id || 0;
+    this.$('player-choices').replaceChildren(...players.map(player => {
+      const button = this.document.createElement('button'); button.type = 'button';
+      button.className = 'player-choice'; button.dataset.playerId = player.id;
+      button.setAttribute('aria-pressed', String(player.id === this.selected));
+      const name = this.document.createElement('span'); name.textContent = player.name;
+      const current = this.document.createElement('small'); current.textContent = player.id === this.profiles.activeId ? 'Huidige speler' : '';
+      button.append(name, current);
+      button.addEventListener('click', () => {
+        if (this.busy || this.pending) return;
+        this.selected = player.id; this.render(); this.focusSelected();
+      });
+      return button;
+    }));
+    this.$('player-list-status').textContent = message ||
+      (!players.length ? 'Er is nog geen speler. Klik op Nieuw en vul je naam in.' :
+        players.length >= this.profiles.max ? 'De Spelerlijst is vol: maximaal acht spelers.' : 'Elke speler heeft een eigen opgeslagen avontuur.');
+    this.updateControls();
+  }
+
+  updateControls() {
+    for (const dialog of [this.dialog, this.nameDialog, this.deleteDialog, this.importDialog]) {
+      for (const element of dialog.querySelectorAll('button,input')) element.disabled = this.busy;
+    }
+    const players = this.profiles.list();
+    const chosen = players.some(player => player.id === this.selected);
+    this.$('player-export').disabled = this.busy || this.pending || !chosen || !this.exportPlayer;
+    this.$('player-import').disabled = this.busy || this.pending || !chosen || !this.readImport || !this.importPlayer;
+    this.$('player-add').disabled = this.busy || this.pending || players.length >= this.profiles.max;
+    this.$('player-remove').disabled = this.busy || this.pending || players.length <= 1;
+    this.$('player-select').disabled = this.busy || this.pending || !players.some(player => player.id === this.selected);
+    for (const button of this.$('player-choices').children) button.disabled = this.busy || this.pending;
+  }
+
+  focusSelected() {
+    const button = [...this.$('player-choices').children].find(button => Number(button.dataset.playerId) === this.selected);
+    (button || this.$('player-add')).focus();
+  }
+
+  back(id) {
+    if (id === 'player-name-dialog') this.cancelName();
+    else if (id === 'player-delete-dialog') this.cancelDelete();
+    else if (id === 'player-import-dialog') this.cancelImport();
+    else this.cancel();
+  }
+
+  cancel() {
+    if (this.busy || !this.dialog.open || this.nameDialog.open || this.deleteDialog.open || this.importDialog.open) return;
+    this.generation++; this.pending = false;
+    this.audio.say(['rcmn2.wav']); this.dialog.close(); this.$('open-players').focus();
+  }
+
+  async prompt(intro, show) {
+    if (this.busy || this.pending || !this.dialog.open) return;
+    this.pending = true; const generation = ++this.generation; this.updateControls();
+    // The original waits for the button announcement before opening its prompt.
+    // A canceled menu invalidates the continuation, including after audio denial.
+    await this.audio.say([intro]);
+    if (generation !== this.generation || !this.dialog.open) return;
+    this.pending = false; this.updateControls(); show();
+  }
+
+  openName() {
+    if (this.profiles.list().length >= this.profiles.max) return;
+    return this.prompt('mn_red26.wav', () => {
+      this.$('player-name').value = ''; this.$('player-name-status').textContent = '';
+      this.nameDialog.showModal(); this.$('player-name').focus(); this.audio.say(['rcmn7.wav']);
+    });
+  }
+
+  cancelName() {
+    if (this.busy || !this.nameDialog.open) return;
+    this.audio.say(['rcmn2.wav']); this.nameDialog.close(); this.$('player-add').focus();
+  }
+
+  create() {
+    if (this.busy || !this.nameDialog.open) return;
+    try {
+      const player = this.profiles.create(this.$('player-name').value);
+      this.selected = player.id; this.nameDialog.close(); this.render(); this.focusSelected();
+      this.audio.say(['rcmn1.wav']);
+    } catch (error) {this.$('player-name-status').textContent = error.message; this.$('player-name').focus();}
+  }
+
+  openDelete() {
+    const player = this.profiles.list().find(player => player.id === this.selected);
+    if (!player || this.profiles.list().length <= 1) return;
+    return this.prompt('mn_red27.wav', () => {
+      this.deleting = player.id;
+      this.$('player-delete-question').textContent = `Weet je zeker dat je speler ${player.name} uit de Spelerlijst wilt verwijderen?`;
+      this.$('player-delete-status').textContent = '';
+      this.deleteDialog.showModal(); this.$('player-delete-no').focus(); this.audio.say(['rcmn8.wav']);
+    });
+  }
+
+  cancelDelete() {
+    if (this.busy || !this.deleteDialog.open) return;
+    this.audio.say(['rcmn4.wav']); this.deleteDialog.close(); this.$('player-remove').focus();
+  }
+
+  async confirmDelete() {
+    if (this.busy || !this.deleteDialog.open) return;
+    this.busy = true; this.updateControls(); this.audio.say(['rcmn3.wav']);
+    try {
+      const message = await this.removePlayer(this.deleting);
+      this.deleteDialog.close(); this.render(typeof message === 'string' ? message : 'Speler verwijderd.');
+    } catch (error) {this.$('player-delete-status').textContent = error.message;}
+    finally {this.busy = false; this.updateControls(); if (!this.deleteDialog.open) this.focusSelected();}
+  }
+
+  async confirm() {
+    if (this.busy || this.pending || !this.dialog.open) return;
+    this.busy = true; this.updateControls(); this.$('player-list-status').textContent = 'Speler laden…';
+    try {
+      await this.selectPlayer(this.selected);
+      this.audio.say(['rcmn1.wav']); this.dialog.close(); this.$('open-players').focus();
+    } catch (error) {this.render(error.message);}
+    finally {this.busy = false; this.updateControls();}
+  }
+
+  // Export and import, as in the old project. The selected player is the one exported, and the one
+  // an imported adventure is for; neither changes who the current player is.
+  async exportSelected() {
+    if (this.busy || this.pending || !this.dialog.open || !this.exportPlayer ||
+        !this.profiles.list().some(player => player.id === this.selected)) return;
+    const selected = this.selected;
+    this.busy = true; this.updateControls();
+    this.$('player-list-status').textContent = 'Opgeslagen avontuur exporteren…';
+    try {
+      const result = await this.exportPlayer(selected);
+      this.$('player-list-status').textContent = result?.status === 'cancelled' || result === false ?
+        'Exporteren geannuleerd.' : 'Het exportbestand is aan je browserdownloads toegevoegd.' + (result?.note ? ' ' + result.note : '');
+    } catch (error) {
+      this.$('player-list-status').textContent = error.message || 'Het opgeslagen avontuur kon niet worden geëxporteerd.';
+    } finally {
+      this.busy = false; this.updateControls(); this.$('player-export').focus();
+    }
+  }
+
+  async importSelected() {
+    if (this.busy || this.pending || this.importDialog.open || !this.dialog.open || !this.readImport || !this.importPlayer) return;
+    const player = this.profiles.list().find(player => player.id === this.selected);
+    if (!player) return;
+    this.busy = true; this.updateControls();
+    this.$('player-list-status').textContent = 'Kies een geëxporteerd avontuur…';
+    try {
+      const result = await this.readImport();
+      if (!result || result.canceled || result.cancelled) {
+        this.$('player-list-status').textContent = 'Importeren geannuleerd.';
+      } else {
+        // Nothing is written until this separate question is answered with Ja.
+        this.pendingImport = {id: player.id, bundle: result.bundle};
+        this.$('player-import-question').textContent = `Wil je het avontuur van ${result.bundle.name} importeren voor speler ${player.name}?`;
+        this.$('player-import-note').textContent = result.bundle.note || '';
+        this.$('player-import-status').textContent = '';
+        this.importDialog.showModal();
+      }
+    } catch (error) {
+      this.$('player-list-status').textContent = error.message || 'Het importbestand kon niet worden gelezen.';
+    } finally {
+      this.busy = false; this.updateControls();
+      this.$(this.importDialog.open ? 'player-import-no' : 'player-import').focus();
+    }
+  }
+
+  cancelImport() {
+    if (this.busy || !this.importDialog.open) return;
+    this.pendingImport = null; this.importDialog.close();
+    this.$('player-list-status').textContent = 'Importeren geannuleerd.';
+    this.audio.say(['rcmn4.wav']); this.$('player-import').focus();
+  }
+
+  async confirmImport() {
+    if (this.busy || !this.importDialog.open || !this.pendingImport) return;
+    const {id, bundle} = this.pendingImport;
+    this.busy = true; this.updateControls();
+    this.$('player-import-status').textContent = 'Avontuur importeren…';
+    try {
+      await this.importPlayer(id, bundle);
+      this.pendingImport = null; this.importDialog.close();
+      this.audio.say(['rcmn3.wav']);
+      this.render('Het avontuur is geïmporteerd. Kies OK en start daarna het avontuur om verder te spelen.');
+    } catch (error) {
+      this.$('player-import-status').textContent = error.message || 'Het avontuur kon niet worden geïmporteerd.';
+    } finally {
+      this.busy = false; this.updateControls();
+      this.$(this.importDialog.open ? 'player-import-no' : 'player-import').focus();
+    }
+  }
+}

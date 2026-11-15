@@ -1,0 +1,70 @@
+/* Touch controls overlay (source/web/touch.js). Sits on top of the game picture inside #stage. */
+/* --tb: the size of Spring and Schieten; --jb: how far Spring is from the bottom (both change in the game's own screens, below) */
+.touch-controls { --tb: clamp(72px, 20vmin, 108px); --jb: max(18px, env(safe-area-inset-bottom)); position: absolute; inset: 0; z-index: 5; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.touch-controls[hidden] { display: none; }
+.touch-look { position: absolute; inset: 0; }
+.touch-stick {
+  position: absolute; left: max(18px, env(safe-area-inset-left)); bottom: max(18px, env(safe-area-inset-bottom));
+  width: clamp(120px, 34vmin, 190px); aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, .10) 0 58%, rgba(255, 255, 255, .22) 60% 100%);
+  border: 2px solid rgba(255, 255, 255, .45); display: grid; place-items: center;
+}
+.touch-knob { width: 42%; aspect-ratio: 1; border-radius: 50%; background: rgba(255, 255, 255, .55); border: 2px solid rgba(0, 0, 0, .35); pointer-events: none; }
+.touch-button {
+  position: absolute; font: 600 min(clamp(13px, 3.4vmin, 18px), 0.2 * var(--tb))/1 system-ui, sans-serif; color: #fff; text-shadow: 0 1px 2px #000;
+  background: rgba(20, 24, 36, .45); border: 2px solid rgba(255, 255, 255, .5); border-radius: 50%;
+  width: var(--tb); aspect-ratio: 1; padding: 0; touch-action: none;
+}
+.touch-button.held { background: rgba(224, 73, 47, .7); }
+.touch-jump { right: max(18px, env(safe-area-inset-right)); bottom: var(--jb); }
+.touch-fire { right: calc(max(18px, env(safe-area-inset-right)) + var(--tb) + 14px); bottom: calc(max(18px, env(safe-area-inset-bottom)) + 0.5 * var(--tb)); }
+/* The game draws its own HUD into the picture, 480 lines high whatever the window: at the top left the hearts
+   reach 0.88 of the picture's height from the left edge, at the top right the potion count begins 0.45 of the
+   height from the right edge, and both rows end 20 percent down. Menu sits in the middle of what is free
+   between them; Camera at the right edge under the gear (port.css), Lopen above Spring. */
+.touch-pill { width: auto; aspect-ratio: auto; border-radius: 999px; padding: 9px 14px; min-height: 40px; min-width: 76px; }
+/* 0.217 of the PICTURE's height right of the middle. The picture is as high as the window only while the window is
+   4:3 or wider; on a screen held upright it is three quarters of the width (16.275vw = 0.217 x 75vw), and an
+   offset in vh put the button half off a 390 pixel wide screen. */
+.touch-menu { top: max(8px, env(safe-area-inset-top)); left: calc(50% + min(21.7vh, 16.275vw)); left: calc(50% + min(21.7dvh, 16.275vw)); transform: translateX(-50%); }
+.touch-camera { top: calc(var(--hud-end, 21%) + 56px); right: max(6px, env(safe-area-inset-right)); }
+/* Omlaag (free flight, touch.js) stands where Lopen does */
+.touch-walk, .touch-descend { right: max(18px, env(safe-area-inset-right)); bottom: calc(max(18px, env(safe-area-inset-bottom)) + var(--tb) + 12px); }
+.touch-stick[hidden], .touch-look[hidden], .touch-button[hidden] { display: none; }
+/* The game inside a loop of its own (its Esc menu and that menu's pages, pause, the retry screen, the results screen; touch.js): the
+   game writes over the whole picture then. Measured on its pages (2026-11-14, tools/out/uifairy/shots): a title in
+   the middle of the top band, at most 0.16 of the picture's height to either side ("Spelbesturing"); entries from
+   0.1 of the picture's width, in Spelbesturing a second column that ends at 0.71 of it and "Volgende…" in the
+   bottom band at the left. So Menu goes right of the title, ▲ ▼ are narrow and at the left edge, left of the
+   entries, and ◀ ▶ sit at the right above Schieten, where Lopen and Camera are in play. On a screen held upright
+   the picture is a band in the middle and all of these are above or below it.
+   Measured again at 915 x 412, 844 x 390, 412 x 915 and 1280 x 960 (2026-11-15, tools/out/overlaps): the titles reach
+   0.07 (Geluid), 0.115 (Weergave), 0.15 (RedCat Menu), 0.16 (Spelbesturing), 0.145 (Overzicht, the results screen),
+   0.28 (the retry screen, its own rule below) and 0.205 ("Even Wachten", the loading screen) of the picture's height
+   from the middle. The loading screen has no touch controls at all (touch.js), so Menu need not clear its title. */
+/* ▲ ▼ never reach the entries, which begin at 0.1 of the picture's width (a window near 4:3 and 560 wide: 56 pixels;
+   --tn is made smaller for it below, in a window that is not upright) */
+.touch-controls { --tn: clamp(44px, 11vmin, 60px); }
+.touch-nav { width: var(--tn); font-size: clamp(15px, 3.8vmin, 20px); }
+.touch-nav-down { left: max(4px, env(safe-area-inset-left)); bottom: max(18px, env(safe-area-inset-bottom)); }
+.touch-nav-up { left: max(4px, env(safe-area-inset-left)); bottom: calc(max(18px, env(safe-area-inset-bottom)) + var(--tn) + 10px); }
+.touch-nav-right { right: max(18px, env(safe-area-inset-right)); bottom: calc(var(--jb) + 1.5 * var(--tb) + 12px); }
+.touch-nav-left { right: calc(max(18px, env(safe-area-inset-right)) + var(--tn) + 10px); bottom: calc(var(--jb) + 1.5 * var(--tb) + 12px); }
+@media (min-aspect-ratio: 4/5) {
+  .touch-own-loop .touch-menu { left: calc(50% + min(16vh, 12vw) + 54px); left: calc(50% + min(16dvh, 12vw) + 54px); }
+  /* Spring and Schieten stay right of 0.73 of the width, where Spelbesturing's second column has ended (0.71): in a
+     window near 4:3 they are smaller for it (18 + 14 + two buttons within 0.27 of the width) */
+  .touch-own-loop { --tb: min(clamp(72px, 20vmin, 108px), max(44px, 13.5vw - 16px)); --tn: min(clamp(44px, 11vmin, 60px), max(36px, 8vw - 4px)); }
+  /* The retry screen (2026-11-14, 915 x 412 to 1024 x 768): the title "Opnieuw proberen?" reaches 0.28 of the
+     picture's height to either side of the middle, and Ja and Nee lie in the bottom band, the lowest 0.11 of it. */
+  .touch-retry .touch-menu { left: calc(50% + min(30vh, 22.5vw) + 54px); left: calc(50% + min(30dvh, 22.5vw) + 54px); }
+  .touch-retry { --jb: max(18px, env(safe-area-inset-bottom), 12vh); }
+}
+/* A screen held upright where the band under the picture is low (a tablet, 768 x 1024: 224 pixels): ◀ ▶ stood on the
+   picture's bottom edge, over its wavy band and right under Ja / Nee. Spring and Schieten are made smaller there, so
+   that the arrows above them begin 8 pixels under the picture (18 + 1.5 x --tb + 12 + --tn + 8 within --pic-top,
+   public/index.html); a phone has the room (390 x 844: 276) and keeps its sizes. */
+@media (max-aspect-ratio: 4/5) {
+  .touch-own-loop { --tb: min(clamp(72px, 20vmin, 108px), max(44px, (var(--pic-top) - var(--tn) - 38px) / 1.5)); }
+}
+.touch-results .touch-fire { right: max(18px, env(safe-area-inset-right)); bottom: var(--jb); }

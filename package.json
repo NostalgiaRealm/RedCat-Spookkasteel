@@ -1,81 +1,21 @@
 {
-  "name": "redcat-spookkasteel-port",
-  "version": "1.0.8",
-  "description": "An independent portable reconstruction using the original RedCat Spookkasteel assets",
+  "name": "redcat-spookkasteel-recompiled",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
+  "description": "RedCat Spookkasteel in the browser: the original game module RcHcGame.dat recompiled from x86 to WebAssembly.",
   "main": "electron/main.cjs",
-  "author": "RedCat portable reconstruction contributors",
   "scripts": {
-    "prestart": "node tools/refresh-web-cache.mjs",
-    "start": "electron .",
-    "serve": "node tools/serve.mjs",
-    "web:refresh": "node tools/refresh-web-cache.mjs",
-    "android:prepare": "node tools/prepare-android.mjs",
-    "test": "node --test tests/*.test.mjs",
-    "test:smoke": "node tests/smoke.mjs",
-    "test:scripts": "node tests/script-scenes.mjs",
-    "test:audio": "node tests/audio-scenes.mjs",
-    "test:gameplay-audio": "node tests/gameplay-audio-scenes.mjs",
-    "test:enemies": "node tests/enemy-scenes.mjs",
-    "test:bosses": "node tests/boss-scenes.mjs",
-    "test:boss-phases": "node tests/boss-phase-scenes.mjs",
-    "test:environment": "node tests/environment-scenes.mjs",
-    "test:graveyard": "node tests/graveyard-scenes.mjs",
-    "test:bats": "node tests/bat-scenes.mjs",
-    "test:effects": "node tests/effects-scenes.mjs",
-    "test:cheats": "node tests/cheat-scenes.mjs",
-    "test:doors": "node tests/door-scenes.mjs",
-    "test:actor-placement": "node tests/actor-placement-scenes.mjs",
-    "test:portals": "node tests/portal-beam-scenes.mjs",
-    "test:desktop": "node tests/desktop.mjs",
-    "test:web-cache": "node tests/web-cache-scenes.mjs",
-    "build:linux": "node tools/package.mjs linux",
-    "build:windows": "node tools/package.mjs windows",
-    "build:android": "node tools/build-android.mjs"
-  },
-  "dependencies": {
-    "three": "0.186.0"
-  },
-  "devDependencies": {
-    "electron": "44.3.0",
-    "electron-builder": "26.15.3",
-    "esbuild": "0.28.2",
-    "playwright": "1.58.2"
-  },
-  "build": {
-    "appId": "local.redcat.spookkasteel",
-    "productName": "RedCat Spookkasteel",
-    "asar": true,
-    "directories": {
-      "output": "dist"
-    },
-    "files": [
-      "index.html",
-      "src/game.bundle.js",
-      "src/game.bundle.js.map",
-      "src/*.css",
-      "electron/**/*",
-      "assets/**/*",
-      "data/**/*",
-      "node_modules/three/**/*",
-      "package.json",
-      "README.md",
-      "docs/**/*"
-    ],
-    "linux": {
-      "target": "dir",
-      "category": "Game",
-      "executableName": "redcat-spookkasteel",
-      "icon": "assets/icons/redcat.png"
-    },
-    "win": {
-      "target": "dir",
-      "signExecutable": false,
-      "icon": "assets/icons/redcat.ico"
-    },
-    "mac": {
-      "icon": "assets/icons/redcat.icns"
-    }
+    "recompile": "$HOME/.local/share/reverse-engineering/python-analysis/bin/python -I tools/recomp/build.py --out public/game",
+    "preload": "node tools/build-preload.mjs",
+    "package": "node tools/package.mjs",
+    "package:check": "node tools/package-check.mjs",
+    "site:check": "node tools/site-check.mjs",
+    "headless": "node tools/run-headless.mjs",
+    "build:desktop": "node tools/package-desktop.mjs",
+    "desktop:check": "node tools/desktop-check.mjs",
+    "build:android": "node tools/build-android.mjs",
+    "build:android:debug": "node tools/build-android.mjs --debug",
+    "android:check": "node tools/android-check.mjs"
   }
 }

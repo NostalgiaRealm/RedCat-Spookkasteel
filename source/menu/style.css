@@ -1,0 +1,91 @@
+/* Menu base styles: the part of ../RCSPOOK_NEW/src/style.css the menu uses, with every rule
+   scoped to the menu's own elements (class rc-menu) so nothing leaks into the game stage or the
+   touch controls. Artwork comes from assets/menu (see docs/menu.md). */
+.rc-menu, .rc-menu * { box-sizing: border-box; }
+.rc-menu { font-family: 'Trebuchet MS', system-ui, sans-serif; color: #f1f0e8; }
+.rc-menu button, .rc-menu select, .rc-menu input { font: inherit; }
+.rc-menu button { cursor: pointer; color: inherit; border: 0; }
+.rc-menu button:active { transform: translateY(1px); }
+.rc-menu button:focus-visible, .rc-menu select:focus-visible, .rc-menu input:focus-visible { outline: 3px solid #ffe0a2; outline-offset: 5px; }
+.rc-menu[hidden], .rc-menu [hidden] { display: none !important; }
+.rc-menu p { color: #b2c0bd; font-size: 14px; line-height: 1.7; }
+.rc-menu .text-button { background: none; padding: 15px 0; color: #bac9be; font-size: 12px; text-align: left; }
+.rc-menu .text-button:hover { color: #e7c589; }
+.rc-menu .accessible-hud { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Rows of the port's own settings pages. */
+.rc-menu .setting { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 0; border-top: 1px solid #fff1; min-height: 58px; }
+.rc-menu .setting span { flex: 1; font-size: 13px; }
+.rc-menu .setting small { display: block; color: #8ca49a; margin-top: 4px; font-size: 10px; }
+.rc-menu .setting select { max-width: 55%; flex-shrink: 0; background: #233b3d; color: #e7e9d9; border: 1px solid #768b6c77; border-radius: 5px; padding: 8px; font-size: 12px; }
+.rc-menu .setting input[type=range] { width: 150px; accent-color: #e9bc77; }
+.rc-menu .setting input[type=checkbox] { accent-color: #e9bc77; width: 19px; height: 19px; }
+.rc-menu .setting output { font-size: 12px; width: 40px; text-align: right; }
+.rc-menu .settings-note { font-size: 11px; margin: 15px 0 0; color: #92a89c; }
+.rc-menu .cheat-status { min-height: 24px; color: #e9c88f; font-size: 13px; }
+.rc-menu button:disabled { cursor: default; }
+@media (pointer: coarse) {
+  .rc-menu .setting select { min-height: 44px; }
+  .rc-menu .setting input[type=checkbox] { width: 24px; height: 24px; }
+  .rc-menu .setting input[type=range] { min-height: 44px; }
+}
+
+/* Imported original paw buttons, including authored hover/pressed artwork. */
+.original-menu-button { width: 175px; height: 67px; min-height: 44px; padding: 0 12px 0 51px; background: transparent var(--paw-idle) center/100% 100% no-repeat; color: #fff; font: bold 19px 'Trebuchet MS', sans-serif; text-shadow: 1px 1px 2px #002e6e; transition: none; flex-shrink: 0; }
+.original-menu-button:hover, .original-menu-button:focus-visible, .original-menu-button.gamepad-focus { background-image: var(--paw-hover); color: #fff; }
+.rc-menu .original-menu-button:active { background-image: var(--paw-pressed); transform: none; }
+.original-menu-button:disabled { opacity: .5; }
+.original-generic { --paw-idle: url('../../assets/menu/00060000.png'); --paw-hover: url('../../assets/menu/00060001.png'); --paw-pressed: url('../../assets/menu/00060002.png'); }
+.original-blank { --paw-idle: url('../../assets/menu/00040000.png'); --paw-hover: url('../../assets/menu/00040001.png'); --paw-pressed: url('../../assets/menu/00040002.png'); }
+.original-yes { --paw-idle: url('../../assets/menu/02170000.png'); --paw-hover: url('../../assets/menu/02170001.png'); --paw-pressed: url('../../assets/menu/02170002.png'); }
+.original-stop, .original-no { --paw-idle: url('../../assets/menu/02160000.png'); --paw-hover: url('../../assets/menu/02160001.png'); --paw-pressed: url('../../assets/menu/02160002.png'); }
+.original-stop { padding-left: 60px; text-align: left; font-size: 17px; font-weight: normal; }
+.original-settings { --paw-idle: url('../../assets/menu/02190000.png'); --paw-hover: url('../../assets/menu/02190001.png'); --paw-pressed: url('../../assets/menu/02190002.png'); }
+.original-players { --paw-idle: url('../../assets/menu/02230000.png'); --paw-hover: url('../../assets/menu/02230001.png'); --paw-pressed: url('../../assets/menu/02230002.png'); }
+
+/* Stoppen: the original 440×330 prompt, 175×67 buttons at x=90/265 along the bottom. */
+#quit-confirmation { width: min(440px, calc(100vw - 24px)); height: auto; aspect-ratio: 4/3; padding: 0; border: 0; border-radius: 0; background: #103577 url('../../assets/menu/messbgnd.png') center/100% 100% no-repeat; color: white; overflow: hidden; container-type: inline-size; }
+#quit-confirmation::backdrop { background: #0008; }
+.quit-logo { position: absolute; left: 2.273%; top: 3.03%; width: 29.091%; height: auto; }
+#quit-question { position: absolute; left: 9.091%; right: 9.091%; top: 26.667%; color: white; text-align: left; font: clamp(13px, 3.864cqw, 17px)/1.4 'Trebuchet MS', sans-serif; margin: 0; }
+.quit-actions { position: absolute; right: 0; bottom: 0; width: 79.545%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; }
+.quit-actions button { width: 100%; height: auto; aspect-ratio: 175/67; padding: 0 6.857% 0 34.286%; text-align: left; font-size: clamp(13px, 3.864cqw, 17px); font-weight: normal; }
+#quit-status { position: absolute; left: 9.091%; right: 9.091%; top: 53%; color: white; text-align: center; font-size: clamp(12px, 3.409cqw, 15px); line-height: 1.3; margin: 0; }
+
+/* Player names and actions remain HTML for keyboard, touch and controller use. */
+.player-screen, .player-prompt { color: #fff; border: 0; border-radius: 0; overflow: auto; }
+.player-screen::backdrop, .player-prompt::backdrop { background: #0009; }
+.player-screen { width: 765px; min-height: 574px; padding: 8px 24px 12px; background: #152d71 url('../../assets/menu/editbgnd.png') center/100% 100% no-repeat; }
+.player-screen-header { display: flex; justify-content: space-between; align-items: flex-start; min-height: 60px; }
+.player-screen-header img { width: 128px; height: auto; }
+.player-screen h2 { font-size: 22px; color: #ffed31; font-weight: normal; margin: 10px 0; }
+.player-screen p, .player-prompt p { color: white; line-height: 1.45; font-size: 16px; }
+#player-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; gap: 7px; max-height: 250px; min-height: 250px; overflow: auto; padding: 8px; margin: 18px 0 8px; border: 1px solid #b7cdf6; background: #061842a6; }
+.player-choice { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 44px; padding: 10px 14px; text-align: left; background: #14549b; color: white; border: 2px solid transparent !important; border-radius: 4px; overflow-wrap: anywhere; }
+.player-choice[aria-pressed=true] { border-color: #ffb9fd !important; background: #235fbd; box-shadow: 0 0 5px #d15cf0; }
+.player-choice small { font-size: 12px; flex-shrink: 0; color: #f4e399; }
+.player-choice:hover { background: #2c6cca; }
+#player-list-status, #player-name-status, #player-delete-status { min-height: 24px; margin: 8px 0; color: #fff3a7; }
+.player-list-actions, .player-prompt-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 0; }
+.player-list-actions .original-menu-button, .player-prompt-actions .original-menu-button { font-size: 17px; font-weight: normal; padding-left: 53px; padding-right: 8px; }
+.player-list-actions .original-blank { font-size: 16px; padding-left: 40px; }
+.player-screen button:disabled, .player-prompt button:disabled { opacity: .5; cursor: default; }
+.player-prompt { width: 440px; min-height: 330px; padding: 10px 18px 8px; background: #103577 url('../../assets/menu/messbgnd.png') center/100% 100% no-repeat; }
+.player-prompt-logo { width: 128px; height: auto; display: block; margin: 0 0 18px; }
+.player-prompt h2 { font-size: 19px; font-weight: normal; margin: 8px 0; color: #ffed31; }
+.player-prompt label { display: block; margin-bottom: 5px; }
+#player-name { width: 100%; background: #071c50; color: white; border: 1px solid #c3dbff; border-radius: 2px; padding: 10px; font-size: 18px; }
+.player-prompt-actions { margin-top: 24px; }
+.player-prompt-actions .original-menu-button { width: 50%; max-width: 175px; height: auto; aspect-ratio: 175/67; }
+.player-delete-warning { font-size: 14px !important; color: #ffedb0 !important; }
+
+/* Keep controller focus visible even when the browser last received a mouse click. */
+.controller-input .gamepad-focus { outline: 3px solid #ffe0a2; outline-offset: 3px; }
+
+/* 100% lies (100 - 25) / (200 - 25) along the render-scale slider. */
+#render-scale { appearance: none; -webkit-appearance: none; background: transparent; height: 24px; --scale-track: linear-gradient(to right, #eebc73 0%, #eebc73 42.857143%, #e45e60 42.857143%, #e45e60 100%); }
+#render-scale::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: var(--scale-track); }
+#render-scale::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; margin-top: -6px; border: 2px solid #17272c; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px #fff8; }
+#render-scale::-moz-range-track { height: 6px; border-radius: 3px; background: var(--scale-track); }
+#render-scale::-moz-range-progress { background: transparent; }
+#render-scale::-moz-range-thumb { width: 14px; height: 14px; border: 2px solid #17272c; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px #fff8; }

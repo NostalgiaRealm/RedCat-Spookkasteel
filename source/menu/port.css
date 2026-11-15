@@ -1,0 +1,207 @@
+/* What this port adds around the original menu: page layers, scaling of the fixed-size forms,
+   the loading and closing states, the in-game gear button. Not from the old project. */
+
+/* Layers: the game stage is below; the menu covers it; dialogs live in the top layer. */
+#menu { position: fixed; inset: 0; z-index: 20; }
+#status, #stats { z-index: 30; }
+
+/* The original forms are fixed-size bitmaps (765 × 574, 440 × 330). In a landscape window they
+   are scaled with the window like the 800 × 600 Hoofdmenu; menu.js sets --form-zoom. In a
+   portrait window they keep their size and reflow (rules below). */
+#settings .native-options-frame, .player-screen, .player-prompt, #quit-confirmation { zoom: var(--form-zoom, 1); }
+/* the Spelerlijst has two rows of buttons since Exporteren and Importeren came back: the list gives up the room (it scrolls from the seventh player on) */
+#player-choices { min-height: 186px; max-height: 186px; margin-top: 12px; }
+/* The port's own settings pages are text and standard controls: they grow with a large window
+   but are never made smaller than their natural size (--panel-zoom is at least 1); on a small
+   screen they fill it and scroll. */
+#settings .settings-extra-page { zoom: var(--panel-zoom, 1); max-width: calc(100vw - 16px); max-height: min(574px, calc(100dvh - 16px)); }
+@media (max-height: 520px) and (min-aspect-ratio: 4/5) {
+  /* a low window: the picture 400 lines high, its wavy line ends 46 down */
+  #settings .settings-extra-page { background-size: 100% 400px; }
+  .settings-extra-page > h2 { min-height: 47px; padding: 8px 24px 4px; font-size: 19px; }
+  .settings-extra-actions .original-menu-button { width: 136px; height: 52px; min-height: 44px; padding-left: 42px; font-size: 14px; }
+}
+.rc-menu, .rc-menu button, .rc-menu label, .rc-menu summary, #menu-gear { -webkit-tap-highlight-color: transparent; }
+
+/* Notice in the header of the menu, between the logo and Help (the page is not cross-origin
+   isolated, or the menu could not start). */
+#menu-notice {
+  position: absolute; left: 18%; top: 0.8%; width: 37.5%; z-index: 2; margin: 0; padding: .5cqw .8cqw;
+  border: 1px solid #ffd27a; background: #5a1420f2; color: #fff; text-align: left;
+  font-size: max(10px, 1.45cqw); line-height: 1.25;
+}
+
+/* The movies. The original shows them in a borderless 800 × 600 form with the picture stretched
+   over all of it (the screen is in 800 × 600 then): here as large as the Hoofdmenu, black around
+   it. The original parks the mouse pointer in a corner; here it is hidden. While the browser
+   waits for a click before it allows sound, the screen stays black with one line of text. */
+#menu-movie {
+  position: fixed; inset: 0; z-index: 50; display: grid; place-items: center;
+  background: #000; cursor: none; touch-action: none; user-select: none; -webkit-user-select: none;
+}
+#menu-movie.waiting { cursor: default; }
+#menu-movie video { display: block; width: min(100vw, 133.333333dvh); height: auto; aspect-ratio: 4 / 3; object-fit: fill; background: #000; pointer-events: none; }
+#menu-movie.waiting video { visibility: hidden; }
+#menu-movie-hint { position: absolute; left: 16px; right: 16px; bottom: 14%; margin: 0; text-align: center; color: #c6e9ff; font: clamp(18px, 3.2vmin, 30px)/1.4 "Comic Sans MS", "Comic Neue", cursive; }
+
+/* Between Start and the first picture of the game. */
+#menu-loading {
+  position: fixed; inset: 0; z-index: 15; display: grid; place-content: center; justify-items: center; gap: 6px;
+  padding: 16px; background: #000; color: #fff; text-align: center; pointer-events: none;
+  font-family: "Comic Sans MS", "Comic Neue", cursive;
+}
+#menu-loading img { width: min(256px, 50vw); height: auto; margin-bottom: 12px; }
+#menu-loading h2 { margin: 0; color: #ffff00; font-size: 26px; font-weight: normal; }
+#menu-loading p { margin: 0; color: #fff; font-size: 18px; line-height: 1.4; }
+
+/* After Stoppen → Ja: a web page cannot close itself. */
+#menu-quit-done {
+  position: fixed; inset: 0; z-index: 40; display: grid; place-content: center; justify-items: center; gap: 18px;
+  padding: 16px; background: #071f43; text-align: center; font-family: "Comic Sans MS", "Comic Neue", cursive;
+}
+#menu-quit-done img { width: min(256px, 60vw); height: auto; }
+#menu-quit-done p { margin: 0; color: #fff; font-size: 20px; }
+#menu-quit-done button { background: none; font-size: 16px; text-decoration: underline; color: #c6e9ff; padding: 12px; min-height: 44px; }
+
+/* Confirmation before a started adventure is thrown away, and the crash message. */
+.menu-prompt h2 { color: #ffed31; }
+.menu-prompt p { overflow-wrap: anywhere; }
+#menu-notice a { color: #ffe9a8; font-weight: bold; }
+#menu-fatal-message { max-height: 120px; overflow: auto; font-size: 13px !important; color: #ffedb0 !important; }
+
+/* The gear at the right edge of the stage, above the touch controls (z-index 5). Below the game's own HUD: that
+   is drawn by the game into the picture, 480 lines high whatever the window, and its two rows at the top right
+   (potions "0 / 15", treasure) end 20 percent down and reach to 20 pixels from the edge on a phone, so a gear in
+   the corner covered the last digit of the potion count. */
+#menu-gear {
+  position: absolute; top: calc(var(--hud-end, 21%) + 4px); right: max(6px, env(safe-area-inset-right)); z-index: 6;      /* --hud-end: public/index.html */
+  width: 40px; height: 40px; padding: 0; display: none; place-items: center;
+  border: 1px solid rgba(255, 255, 255, .45); border-radius: 50%; background: rgba(20, 24, 36, .45); color: #fff;
+  opacity: .5; cursor: pointer; touch-action: manipulation;
+}
+#menu-gear svg { width: 22px; height: 22px; display: block; }
+#menu-gear:hover, #menu-gear:focus-visible { opacity: 1; }
+html.game-running #menu-gear { display: grid; }
+@media (pointer: coarse) { #menu-gear { width: 44px; height: 44px; } }
+/* a screen held upright, the game's own menu on screen: the gear lay over the end of Spelbesturing's second column
+   ("Spatie,MuisknopRechts"); above the picture there is room (--pic-top: public/index.html) */
+@media (max-aspect-ratio: 4/5) { html.game-own-loop #menu-gear { top: max(6px, calc(var(--pic-top) - 50px)); } }
+
+/* Portrait windows: the forms keep their size and reflow, as in the old project. */
+@media (max-aspect-ratio: 4/5) {
+  #settings { max-width: calc(100vw - 16px); max-height: calc(100dvh - 16px); overflow: auto; }
+  .native-options-frame { width: min(765px, calc(100vw - 16px)); height: auto; padding: 100px 12px 0; }
+  #native-settings-base { position: relative; top: 0; height: auto; display: grid; grid-template-columns: minmax(0, 260px); justify-content: center; justify-items: center; gap: 14px; }
+  .native-option-column { position: relative; left: auto; }
+  .native-audio-slider { position: relative; left: auto; top: auto; }
+  #open-more-settings, #open-cheats, #settings-stop-game, #settings-load-save, #settings-recovery { position: relative; left: auto; top: auto; width: min(260px, 100%); }
+  .native-options-frame.in-game #open-more-settings, .native-options-frame.in-game #open-cheats { top: auto; }
+  .native-options-actions { position: relative; margin-top: 18px; right: auto; bottom: auto; }
+  .settings-extra-page { width: min(765px, calc(100vw - 16px)); max-height: calc(100dvh - 16px); }
+  .settings-extra-page > h2 { padding: 12px 14px 6px; }
+  .settings-extra-body { padding: 0 14px 8px; }
+  #settings .setting { flex-wrap: wrap; }
+  #settings .setting span { flex-basis: 100%; }
+  #settings .setting select { max-width: 100%; }
+  .settings-extra-actions .original-menu-button { width: 33.333%; max-width: 175px; height: auto; aspect-ratio: 175 / 67; padding-left: 12%; padding-right: 2px; font-size: 13px; }
+  .player-screen, .player-prompt { max-width: calc(100vw - 16px); max-height: calc(100dvh - 16px); }
+  .player-screen { min-height: 0; padding: 8px 16px 12px; }
+  .player-prompt { min-height: 0; }
+  #player-choices { grid-template-columns: 1fr; max-height: 210px; min-height: 120px; }
+  .player-list-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .player-list-actions .original-menu-button { width: 100%; height: auto; aspect-ratio: 175/67; }
+  .player-list-actions .original-menu-button, .player-prompt-actions .original-menu-button { font-size: 14px; padding-left: 29%; padding-right: 4px; }
+  .player-list-actions .original-blank { font-size: 14px; padding-left: 24%; }
+  .player-screen-header { align-items: center; gap: 6px; }
+  .player-screen-header img { width: min(96px, 24vw); flex: none; }
+  .player-screen #native-player-help { width: 145px; height: 56px; padding-left: 50px; margin: 0 0 0 auto; font-size: 15px; }
+  .player-screen-header .close { flex: none; width: 36px; min-width: 36px; height: 36px; min-height: 36px; }
+}
+
+/* Small additions to the pages of the Hoofdmenu. */
+.native-menu-frame .level-card img { object-fit: contain; }
+#native-start-note { position: absolute; left: 61%; top: 74%; width: 36%; margin: 0; color: #fff3a7; font-size: 1.75cqw; line-height: 1.35; }
+.native-menu-frame #native-start:disabled, .native-menu-frame #native-next:disabled { opacity: .5; cursor: default; }
+@media (max-aspect-ratio: 4/5) {
+  #menu-notice { position: static; width: auto; margin: 0 0 12px; padding: 8px 10px; font-size: 14px; line-height: 1.35; }
+  #native-start-note { position: static; order: 7; width: auto; font-size: 15px; text-align: center; margin: 0 0 12px; }
+  #native-start-extras { order: 8; }
+}
+
+/* Paw buttons show focus in their own artwork; a thin line inside is enough on top of that. */
+.rc-menu .original-menu-button:focus-visible { outline: 2px solid #fff695; outline-offset: -3px; }
+/* Ten score rows of exactly 4% of the width, as the table in highscor.png is drawn. */
+@media not (max-aspect-ratio: 4/5) {
+  #native-score-table th, #native-score-table td { line-height: 2.6cqw; }
+}
+
+/* The notice after players of the JavaScript port were taken over (source/web/legacy-import.js). */
+#menu-legacy { width: 520px; }
+#menu-legacy-message { max-height: 46vh; overflow: auto; }
+#menu-legacy-message p { margin: 0 0 8px; font-size: 15px; line-height: 1.4; }
+#menu-legacy-classic, #menu-fatal-classic { display: inline-flex; align-items: center; text-decoration: none; color: #fff; box-sizing: border-box; }
+#menu-legacy-classic[hidden], #menu-fatal-classic[hidden] { display: none; }
+
+/* recovery points: the choices of the dialog "Eerder avontuur laden" (wording and shape of the old project's) */
+#recovery-saves h2 { margin: 6px 0; color: #ffed31; font-size: 22px; font-weight: normal; }
+#recovery-options { display: grid; gap: 8px; margin: 12px 0 8px; }
+.rc-menu .recovery-choice { display: flex; flex-direction: column; gap: 4px; width: 100%; min-height: 56px; padding: 9px 14px; text-align: left; color: #fff; background: #2260be; border: 2px solid #b7cdf6; border-radius: 4px; font: inherit; font-size: 17px; cursor: pointer; }
+.rc-menu .recovery-choice small { color: #d5e3ff; font-size: 13px; }
+.rc-menu .recovery-choice:hover, .rc-menu .recovery-choice:focus-visible { border-color: #ff8cf4; outline: none; }
+.rc-menu .recovery-choice:disabled { opacity: .5; cursor: default; }
+#recovery-status, #player-import-status { min-height: 24px; margin: 8px 0; color: #fff3a7; }
+#player-import-note:empty { display: none; }
+
+/* Toetsen instellen (key-menu.js): a row per action, the key on a button; what the form says stays in view above the rows */
+#key-binding-status { position: sticky; top: 0; z-index: 1; min-height: 22px; margin: 0; padding: 4px 8px; background: #143375; color: #ffe9a8 !important; font-size: 14px; }
+#key-binding-status:empty { background: none; }
+/* the list is longer than the page on most screens: a scrollbar that shows, and rows that come to rest clear of the status line */
+#key-settings .settings-extra-body { scrollbar-width: thin; scrollbar-color: #a7d6ff rgba(0, 0, 0, .3); scrollbar-gutter: stable; }
+.key-binding-button { scroll-margin: 44px 0 10px; }
+#settings .key-binding-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 4px 0; }
+.key-binding-button { min-width: 150px; min-height: 36px; padding: 4px 12px; border: 1px solid #a7d6ff; border-radius: 6px; background: #062c6d; color: #fff; font: inherit; font-size: 15px; cursor: pointer; }
+.key-binding-button[aria-pressed="true"] { background: #e969ed; color: #1b0b3a; }
+#settings .setting > .original-menu-button { flex: none; }
+/* the lost controller's prompt and the first-time hint */
+#controller-lost h2 { margin: 0 0 8px; }
+
+/* --- carried over from the JavaScript port (2026-11-14): subtitle box, Overslaan, results prompt --- */
+/* the readable subtitle box (source/web/game.js setSubtitle; the JavaScript port's #subtitle) */
+#subtitle { position: fixed; z-index: 6; bottom: 11vh; bottom: 11dvh; left: 50%; transform: translateX(-50%); box-sizing: border-box; width: min(900px, 82vw); margin: 0; padding: 16px 24px; border-radius: 12px; background: rgba(10, 7, 19, .88); color: #fff; font-size: clamp(18px, 1.5vw, 25px); line-height: 1.5; text-align: center; text-shadow: 0 2px 4px #000; pointer-events: none; }
+#subtitle[hidden] { display: none; }
+html.game-own-loop #subtitle { visibility: hidden; }        /* the game's own menu or pause is on screen (source/web/skip.js) */
+@media (max-height: 520px) { #subtitle { bottom: 9vh; padding: 8px 16px; font-size: 16px; line-height: 1.35; } }
+/* With the touch controls on screen the bottom row is theirs: "Overslaan" at the left (where the stick is in
+   play) and Schieten, Spring and Lopen at the right (touch.css). The box keeps between them. */
+html.touch-shown #subtitle {
+  left: calc(max(18px, env(safe-area-inset-left)) + 196px); right: calc(max(18px, env(safe-area-inset-right)) + 2 * clamp(72px, 20vmin, 108px) + 26px);
+  width: auto; transform: none; bottom: max(14px, env(safe-area-inset-bottom)); padding: 8px 14px; font-size: 16px; line-height: 1.35;
+}
+/* A screen held upright: the picture is a band in the middle (as wide as the screen, three quarters of that high)
+   and the buttons are below it, on a small phone right under it. The box stands on the picture's upper edge, over
+   the full width, and grows upwards. */
+@media (max-aspect-ratio: 4/5) {
+  html.touch-shown #subtitle { left: 10px; right: 10px; bottom: calc(50% + 37.5vw + 8px); font-size: 15px; }
+}
+/* Overslaan (source/web/skip.js) */
+#cutscene-skip { position: fixed; right: max(24px, env(safe-area-inset-right)); bottom: max(20px, env(safe-area-inset-bottom)); z-index: 35; display: flex; align-items: center; gap: 12px; color: #fff; font: 18px system-ui, sans-serif; text-shadow: 0 1px 5px #000; pointer-events: none; user-select: none; -webkit-user-select: none; touch-action: none; }
+#cutscene-skip[hidden] { display: none; }
+/* on a touch screen the line itself is the button: hold it for two seconds */
+/* ... at the bottom left, where the stick is in play (it is taken away during a scene, touch.js): Spring and Schieten are at the right */
+#cutscene-skip.touch { pointer-events: auto; right: auto; left: max(18px, env(safe-area-inset-left)); bottom: max(18px, env(safe-area-inset-bottom)); padding: 10px 12px 10px 18px; border: 2px solid rgba(255, 255, 255, .5); border-radius: 34px; background: rgba(20, 24, 36, .55); }
+/* a skip that takes long on this device: the full circle becomes an arc that turns (source/web/skip.js) */
+#cutscene-skip.busy .skip-circle svg { animation: skip-busy .9s linear infinite; }
+#cutscene-skip.busy #skip-progress { stroke-dasharray: 68 32; stroke-dashoffset: 0 !important; }
+@keyframes skip-busy { from { transform: rotate(-90deg); } to { transform: rotate(270deg); } }
+.skip-circle { position: relative; width: 44px; height: 44px; display: grid; place-items: center; }
+.skip-circle svg { position: absolute; inset: 0; transform: rotate(-90deg); fill: none; stroke-width: 3; }
+.skip-track { stroke: #ffffff40; }
+#skip-progress { stroke: #fff; stroke-dasharray: 100; stroke-dashoffset: 100; stroke-linecap: round; }
+.skip-circle b { font-size: 16px; }
+#cutscene-skip.controller .skip-circle b { font-size: 12px; display: inline-flex; align-items: center; gap: 3px; line-height: 1; }
+#cutscene-skip .controller-square { display: inline-block; width: 10px; height: 10px; border: 1.5px solid currentColor; flex: 0 0 auto; }
+/* the results screen: the game's own picture is the overview; this is the line that can be clicked or tapped */
+#results-continue { position: fixed; left: 50%; bottom: max(14px, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 34; padding: 10px 22px; border: 1px solid rgba(255, 255, 255, .45); border-radius: 24px; background: rgba(6, 28, 80, .82); color: #fff; font: 600 16px system-ui, sans-serif; letter-spacing: .02em; cursor: pointer; touch-action: manipulation; }
+#results-continue[hidden] { display: none; }
+/* a low window (a phone on its side): smaller, so that it stays under the game's own line */
+@media (max-height: 520px) { #results-continue { bottom: max(3px, env(safe-area-inset-bottom)); padding: 5px 16px; font-size: 13px; } }

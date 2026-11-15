@@ -1,8 +1,9 @@
+// What the page may ask of the desktop shell (electron/main.cjs). The name and the shape are the
+// JavaScript port's (window.desktop); this port needs only the two below: exporting and importing
+// a player go through the page's own download and file input, full screen through the page's own
+// request, which the shell answers with a full-screen window.
 const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('desktop', Object.freeze({
-  applyDisplay: options => ipcRenderer.invoke('display:apply', options),
-  exportSave: payload => ipcRenderer.invoke('save:export', payload),
-  importSave: () => ipcRenderer.invoke('save:import'),
   quit: () => ipcRenderer.invoke('app:quit'),
-  platform: process.platform
+  platform: process.platform,
 }));

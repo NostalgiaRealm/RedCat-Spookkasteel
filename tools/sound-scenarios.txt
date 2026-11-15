@@ -1,0 +1,18 @@
+# Scripted scenarios with input, shared by the port (tools/sound-scenarios.mjs) and the reference of
+# the original under Wine (tools/reference-wine/scenarios.sh).
+# One scenario per line: name | world | seconds after the first game frame | step script.
+# The step language is described in tools/run-headless.mjs (--script). Places are world coordinates
+# of items and doors, from the levels' entity lists. Every scenario runs with a player who can
+# already shoot (the skill the fairy gives later in the adventure): Settings\Player1.ini [Player] Skill=1.
+#
+# World 1: shots from the starting place, a few steps back.
+w1|1|30|wait:13;tap:Control_L;wait:15;tap:Control_L;wait:17;hold:Down,for=2;tap:Control_L
+# World 2: walk on from the start: a push button, a door, the fall into the moat and the new start.
+w2|2|70|wait:45;hold:Up,for=7;tap:Control_L;wait:60;tap:Control_L
+# World 3: a potion, a coin, through the mausoleum doors, a second coin; shots in between.
+w3|3|64|wait:38;goto:1421,3239;tap:Control_L;goto:1506,3042,r=12,max=6;hold:Down,for=0.8;goto:1616,3020;goto:1616,2700;tap:Control_L;goto:1797,2335,r=12,max=10;tap:Control_L
+# World 4: to the first ghost; it gets the player, who starts again. No shots while the ghost holds the
+# player: whether a short press fires then depends on the moment within the animation, in the port as well.
+w4|4|80|wait:48;goto:-712,2760,max=6;goto:-573,2548,max=6;tap:Control_L;goto:-80,2386,max=14
+# World 5: into the guards.
+w5|5|40|wait:8;hold:Up,for=4;wait:20;tap:Control_L
