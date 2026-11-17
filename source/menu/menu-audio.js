@@ -105,12 +105,18 @@ export class MenuAudio {
         const finish = (result) => { clip.onended = null; clip.onerror = null; clip.pause(); if (this.voice === clip) { this.voice = null; this.cancelVoice = null; } resolve(result); };
         this.cancelVoice = () => finish(false); clip.onended = () => finish(true); clip.onerror = () => finish(false);
         // Autoplay denial must not leave a start operation waiting forever.
+        // A start can also be interrupted from outside the page: Firefox with the Plasma Integration
+        // add-on rejects the first play() of a clip with AbortError (seen in the Kao port, PD156 there).
+        // The clip is then still wanted and stands paused: it is started once more. A second
+        // interruption gives the clip up, as before.
+        let interrupted = false;
         this.playVoice = () => {
           try {
             const p = clip.play();
             if (p && p.catch) p.catch((error) => {
               if (error && error.name === 'AbortError' && this.paused) return;
               if (error && error.name === 'NotAllowedError' && retryOnGesture) return;
+              if (error && error.name === 'AbortError' && !interrupted && this.voice === clip && generation === this.generation && clip.paused) { interrupted = true; this.playVoice(); return; }
               finish(false);
             });
           } catch (e) { finish(false); }

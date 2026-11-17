@@ -72,6 +72,8 @@ export class MoviePlayer {
       if (serial !== this.serial) return;
       if (error && error.name === 'NotAllowedError') { cur.state = 'waiting'; this.hint.hidden = false; this.overlay.classList.add('waiting'); }
       else if (!error || error.name !== 'AbortError') cur.done();
+      // interrupted from outside the page (as menu-audio.js describes): once more, when the movie still stands
+      else if (!cur.interrupted && this.video.paused) { cur.interrupted = true; this.start(); }
     });
   }
   /**
