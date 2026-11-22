@@ -270,7 +270,7 @@ async function launch({ kind }) {
   // the game reads the two volumes from the player's file when it starts (the original menu
   // writes them at this point, 0x566768)
   setSoundVolumes(players, n, soundVolumes(n));
-  lastGame = { player: n, adventure: opts.adventure };
+  lastGame = { player: n, adventure: opts.adventure, world: opts.world };
   mode = 'starting';
   $('menu').inert = true;               // the original's handler lets nothing else happen until the game starts
   // a browser only enters full screen from the click itself; ../web/game.js asks again at start
@@ -458,18 +458,35 @@ async function backToMenu(how, info) {
   // the frame counter and the last status line of the game that ended
   if ($('stats')) $('stats').textContent = '';
   if (statusEl) statusEl.textContent = '';
+  // A Snelspel on the Tower that was won (the game wrote [SubLevel1_5] Completed before its results
+  // screen): read before the adventure's own sections are put back. See below for what follows.
+  const wonTower = !!last && !last.adventure && last.world === LEVELS.length && (() => { const q = players.get(last.player); return !!q && q.completed[LEVELS.length - 1]; })();
   restoreAfterSnelspel();
   if (last) noteUnlocked(last.player);
   await refreshSaves();
   // The original (0x565214 with 0x564EEC, player file read by 0x567694): back from a game that the
   // menu started as an adventure (PREVSTATE 2), with [General] GameType 0 and
   // [SubLevel1_5] Completed set in the player's file: the outro, and the adventure is closed.
-  const p = last && last.adventure && how !== 'crash' ? players.get(last.player) : null;
+  // The game sets that key when the Tower's last scene gives the command "nextsave" (0x4FED00 from
+  // ChangeToSubLevel 0x496D60), before its results screen, and then quits. How the game ended is
+  // not asked: the launcher starts the menu again after every game and never looks at the exit code
+  // (RedCat.exe 0x401250), so a game that died after it wrote the key (out of memory on the results
+  // screen, say) gets its outro too; the message about the crash comes after it. Until 2026-11-22
+  // a crash was left out here, and the next Avontuur then began a new adventure without outro,
+  // HAUNTED or highscore. After a Snelspel nothing is looked at, the Tower included (case 1 of
+  // 0x565214 does not call 0x564EEC; docs/menu.md).
+  const p = last && last.adventure ? players.get(last.player) : null;
   if (p && p.gameType === 0 && p.completed[4]) {
     audio.stop();
     await movies.play(['outronl']);
     await closeAdventure(p);
   }
+  // Not the original's: it shows no outro after a Snelspel, the Tower included. But there the
+  // Tower's card only opens after a finished adventure, so whoever beats the witch in a Snelspel
+  // has seen the end. Here the port's own cheat opens the card for anybody, and a player could
+  // beat the witch without ever seeing how the story ends (reported on 2026-11-22). So: the film,
+  // and nothing else - no HAUNTED, no highscore, the adventure stays where it was.
+  else if (wonTower) { audio.stop(); await movies.play(['outronl']); }
   if (mode !== 'movie') return;         // a game was started meanwhile, without the menu
   mode = 'menu';
   adoptPlayer();

@@ -27,7 +27,7 @@ const fx = async (name, a, fixes) => { const log = await node(['--plugin', 'tool
 const pair = (name, flag, a) => Promise.all([fx(name, a, flag + '=0'), fx(name, a, 'on')]);
 const J = JSON.stringify;
 
-check(FIX_NAMES.length === 14 && FIX_NAMES.every((k) => fixFlags('off')[k] === false && fixFlags('')[k] === true) && fixFlags('doorSound=0').doorSound === false && fixFlags({ towerFire: false }).towerFire === false, 'fourteen flags, all on by default, each can be switched off alone', FIX_NAMES.join(' '));
+check(FIX_NAMES.length === 15 && FIX_NAMES.every((k) => fixFlags('off')[k] === false && fixFlags('')[k] === true) && fixFlags('doorSound=0').doorSound === false && fixFlags({ towerFire: false }).towerFire === false, 'fifteen flags, all on by default, each can be switched off alone', FIX_NAMES.join(' '));
 
 const jobs = [];
 if (wants('bigBeng')) jobs.push(pair('bigbeng', 'bigBeng', ['--world', '4', '--seconds', '200']).then(([off, on]) => {
@@ -130,6 +130,13 @@ if (wants('handTorches') || wants('state')) jobs.push((async () => {
   const [c2, y2, yOff] = await Promise.all([run(['--world', '1', '--restore', sc]), run(['--world', '5', '--restore', sy]), run(['--world', '3', '--at', '1616,65,3410', '--save-at', '900', '--state', path.join(OUT, 'torch-yard-off.bin'), '--fixes', 'handTorches=0'])]);
   check(!!c1 && c1 === c2 && !!y1 && y1 === y2 && !!yOff && yOff !== y1, 'hand torches in view (Castle: the host\'s flames; Graveyard: moved flames and lights): the restored game equals the game that went on, and the flag shows in the memory', `Castle ${c1} ${c2}; Graveyard ${y1} ${y2}, flag off ${yOff}`);
 })());
+if (wants('soundRelease')) jobs.push(pair('sounds', 'soundRelease', ['--world', '1', '--seconds', '200']).then(([off, on]) => {
+  const MB = 1048576;
+  check(off && off.before.loose === 0 && off.after.loose > 5 && off.after.looseBytes > 2 * MB && off.after.music.some(([use, playing]) => use === 1 && !playing) && off.later.heap > off.before.heap + 15 * MB && off.stats.sounds === 0,
+    'original: after the change from the Forest to the Castle the sound manager holds channels no definition refers to, the Forest\'s music is still in the music list with nothing else referring to it, and the heap is over 15 MB larger', J(off));
+  check(on && on.after.loose === 0 && on.after.channels === on.after.defs && on.after.count === on.after.channels && on.after.music.every(([use, playing]) => use > 1 || playing) && on.stats.music >= 1 && on.stats.sounds === off.after.loose + on.stats.music && on.later.heap < off.later.heap - 10 * MB && on.later.heap < on.before.heap + 10 * MB,
+    'fix: every channel has its definition, the music list holds only what is referred to or playing, and the heap is over 10 MB smaller than the original\'s', J(on));
+}));
 if (wants('state')) jobs.push((async () => {
   const st = path.join(OUT, 'pair.bin'), hash = (log) => (/hash 300 passes later: (\w+)/.exec(log) || [])[1];
   // The hash is of all the memory a state holds (run-headless.mjs memHash: low memory, image, heap and the pages with the

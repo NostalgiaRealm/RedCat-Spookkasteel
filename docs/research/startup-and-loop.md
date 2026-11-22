@@ -883,6 +883,25 @@ the game's own functions called between two passes: `CRCPlayer::Kill` (`0x004DD1
 | The command `nextsave` in a Snelspel (`GameType 1`) | The same pass sets the quit flag (`app+0x3E`) and returns; the game ends at the top of the next pass. The file then has `CurrentSubLevel=SubLevel1_2`, `[Level1] Completed=1`, and `[SubLevel1_1] Completed` still 0 |
 | A save state taken after the pass that changed the world | 68.3 MB (world 2); restored into a game booted in world 1 and into one booted in world 2, the memory 300 passes later is the same as in the run that saved (`192190a0` three times under the hash of that day, image and heap; `3676de45` since 2026-11-14, when the hash began to cover the pages with the game's own heap) |
 
+### The end of the last world: run on 2026-11-22
+
+`tools/out/outro/end-plugin.mjs` (commands at `game+0x68`, one after another; fire key for the results screens).
+
+| Start | Commands | `Player1.ini` at exit |
+|---|---|---|
+| Adventure, world 5 | `nextsave` | `GameType=0`, `CurrentSubLevel=SubLevel1_5`, `[Level1] Completed=1`, **`[SubLevel1_5] Completed=1`**; quit flag 1 after the pass, exit code 0 |
+| Adventure, world 1 | `next` × 4, `nextsave` (the cheat page's "volgende level") | the same; `[SubLevel1_1..4] Completed` stay 0 (`next` does not set them) |
+| Adventure, world 1 | `lvl04a.bsp`, `nextsave` (the cheat page's level choice) | the same; after the first command `CurrentSubLevel=SubLevel1_5` |
+| Adventure, world 5 | `next` | quits, `[SubLevel1_5] Completed` stays 0 |
+| Snelspel, world 5 | `nextsave` | `GameType=1`, `CurrentSubLevel=SubLevel1_5`, `[SubLevel1_5] Completed=1` (written after the pass that set the quit flag, before the exit) |
+| Snelspel, world 5 | `next` | quits, `[SubLevel1_5] Completed` 0 |
+
+Who gives the command in the Tower (CONFIRMED in the data, not played): entity `Trigger24` of `lvl04a`
+(`DaviName=nextsave`, `TargetSubLevel=nextsave`), triggered by the level script's motion handler when the
+moment is named `nextsave` (`recovered-scripts/listings/lvl04a.davi`, `IF NOT "nextsave" == a_Description`
+→ `Trigger`); the name is in the level's motions (`24-motions.bin`). This settles section 7, item 7, and
+item 6 for the Tower.
+
 ### INFERRED
 
 - That the real end of a world uses `nextsave` (and so sets `[SubLevel1_N] Completed`): the

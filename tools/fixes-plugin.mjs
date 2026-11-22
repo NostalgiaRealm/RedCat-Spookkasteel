@@ -365,6 +365,32 @@ export default function ({ m, host, opt, stop, time }) {
     },
   };
 
+  // soundRelease: the adventure goes from the Forest to the Castle with the game's own command "nextsave" (as the
+  // savestate check does it; the fire key answers the results screen), then: what the sound manager still holds
+  scenarios.sounds = function* () {
+    let [k, esp] = yield;
+    for (let n = 0; n < 200; n++) [k, esp] = yield;
+    const sound = () => {
+      const sys = u32[(u32[ENGINE >> 2] + 0xFC) >> 2], sm = u32[(u32[(sys + 0x50) >> 2] + 4) >> 2];
+      const held = new Set(); let defs = 0;
+      for (let p = u32[(sys + 0x34) >> 2]; p && p < u32[(sys + 0x38) >> 2]; p += 4) { held.add(u32[(u32[p >> 2] + 0x1C) >> 2]); defs++; }
+      let channels = 0, loose = 0, looseBytes = 0;
+      for (let c = u32[(sm + 0xC) >> 2]; c; c = u32[(c + 0x1C) >> 2]) { channels++; if (!held.has(u32[(c + 4) >> 2])) { loose++; const b = m.objects.get(u32[c >> 2]); looseBytes += (b ? b.size : 0) + (u32[(c + 0x18) >> 2] ? host.heap.sizeOf(u32[(c + 0x18) >> 2]) : 0); } }
+      const music = []; for (let p = u32[(sys + 0x74) >> 2]; p && p < u32[(sys + 0x78) >> 2]; p += 4) { const o = u32[p >> 2]; music.push([i32[(o + 0x14) >> 2], u8[o + 0x38]]); }
+      return { channels, count: u32[sm >> 2], defs, loose, looseBytes, music, buffers: host.dsound.buffers.size, heap: host.heap.bytesInUse };
+    };
+    const r = { before: sound() };
+    const at = host.mainLoop.passes;
+    m.call(0x4040F0, [0x694A68, 8], k.g + 0x68);                 // m_Command = "nextsave"
+    const poll = host.input.poll; let lastKey = 0;
+    host.input.poll = () => { const now = time(); if (host.mainLoop.passes === at && now - lastKey > 1000) { lastKey = now; return [Math.floor(now / 1000) % 2 === 0 ? { type: 'keydown', vk: 17, ch: 0 } : { type: 'keyup', vk: 17 }]; } return poll(); };
+    [k, esp] = yield;
+    r.after = sound();
+    for (let n = 0; n < 200; n++) [k, esp] = yield;
+    r.later = sound(); r.stats = { music: fx.stats.musicReleased, sounds: fx.stats.soundsReleased, bytes: fx.stats.soundBytesReleased };
+    out(r);
+  };
+
   // skyBackdrop, smoothSprites, hudShape (picture only): a renderer that takes everything and keeps nothing, so that the driver
   // converts its textures as it does in the browser; the run goes on to its end and then says what the driver did
   scenarios.looker = function* () { for (;;) yield; };

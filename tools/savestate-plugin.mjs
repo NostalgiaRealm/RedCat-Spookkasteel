@@ -9,10 +9,13 @@
 //                       while RedCat dies with lives left (the game's own Kill 0x4DD1A0), dies with none left and
 //                       the retry screen is answered with Nee or Ja, and while the adventure goes to its next
 //                       world (the game's own command "nextsave"); and whether the loop said the world changed
+//   --ss-mode capture   at pass --ss-at (600): the state as the browser's game thread and save worker make it
+//                       (snap.capture() and packCapture(), also into memory handed in, full of other bytes)
+//                       against snap.pack(snap.save()) of the same moment: the same bytes, and usable
 //   --ss-out file       where the report goes
 import fs from 'node:fs';
 import { setIniValues, readIni, latin1Decode } from '../source/host/ini.js';
-import { StateUnusable } from '../source/host/snapshot.js';
+import { StateUnusable, packCapture } from '../source/host/snapshot.js';
 
 const DIR = 'C:\\REDCAT\\SETTINGS\\';
 const file = (n) => `${DIR}PLAYER${n}.INI`;
@@ -125,6 +128,29 @@ export default function ({ m, host, game, opt, stop, time }) {
     process.on('exit', () => write());
     const prevLoad = host.snap.load;
     host.snap.load = (s, esp) => { try { prevLoad(s, esp); } catch (e) { report.load = { answer: e.message, unusable: e instanceof StateUnusable, written: !!e.written }; write(); throw e; } };
+  }
+  if (mode === 'capture') {
+    const at = Number(opt('ss-at', 600)), prev = host.mainLoop.onPass;
+    const join = (pieces) => { let n = 0, o = 0; for (const b of pieces) n += b.length; const out = new Uint8Array(n); for (const b of pieces) { out.set(b, o); o += b.length; } return out; };
+    // header and body apart; the clock value is read once per state and may differ between two states of one moment
+    const split = (bytes) => { const n = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength).getUint32(4, true); const head = JSON.parse(new TextDecoder().decode(bytes.subarray(8, 8 + n))); const time = head.time; head.time = 0; return { head: JSON.stringify(head), time, body: Buffer.from(bytes.buffer, bytes.byteOffset + 8 + n, bytes.length - 8 - n) }; };
+    host.mainLoop.onPass = (esp) => {
+      if (prev) prev(esp);
+      if (host.mainLoop.passes !== at) return;
+      const before = memHash();
+      const a = split(host.snap.pack(host.snap.save(esp)));
+      const size = host.snap.captureSize(esp), into = new Uint8Array(size + 0x123000).fill(0xA5);
+      const c1 = host.snap.capture(esp), c2 = host.snap.capture(esp, into), c3 = host.snap.capture(esp, new Uint8Array(16));
+      const packed = [c1, c2, c3].map((c) => join(packCapture(c)));
+      const b = packed.map(split);
+      let usable = true;
+      try { for (const bytes of packed) host.snap.check(host.snap.unpack(bytes), esp); } catch (e) { usable = e.message; }
+      const spans = c1.spans.reduce((n, r) => n + r[1], 0);
+      report.capture = { pass: at, bytes: a.body.length, spans, leftOut: spans - a.body.length, heads: b.map((x) => x.head === a.head), bodies: b.map((x) => x.body.equals(a.body)), times: b.map((x) => Math.abs(x.time - a.time) < 1),
+        intoUsed: c2.bytes === into, own: c1.bytes.length === size && c3.bytes.length === size, usable, untouched: memHash() === before };
+      write();
+      stop();
+    };
   }
   if (mode === 'guard') {
     const what = opt('ss-guard', 'death'), at = 700;

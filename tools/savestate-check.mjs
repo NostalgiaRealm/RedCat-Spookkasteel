@@ -101,6 +101,14 @@ if (wants('node')) {
   const load = c.report.load || {};
   check(load.unusable && load.written && /loading failed/.test(load.answer || '') && /StateUnusable/.test(c.text), 'a state whose loading fails ends as StateUnusable (written), not as another error', JSON.stringify(load));
 
+  // --- the state as the browser takes it (snapshot.js capture() on the game thread, packCapture() in the save worker) ---
+  for (const world of ['1', '3']) {
+    const k = run('capture', ['--world', world, '--ss-at', world === '3' ? '900' : '600']).report.capture || {};
+    const all = (list) => Array.isArray(list) && list.length === 3 && list.every(Boolean);
+    check(all(k.heads) && all(k.bodies) && all(k.times) && k.leftOut > 0 && k.intoUsed && k.own && k.usable === true && k.untouched,
+      `world ${world}: capture() + packCapture() give the bytes of pack(save()) at the same pass (into its own memory, into memory handed in, with memory too small handed in), and check() takes them`, JSON.stringify(k));
+  }
+
   // --- no state of a dead RedCat or of a game that is ending; a state when the world changes ---
   // (source/host/mainloop.js saveBlocked and `changed`, source/web/worker.js onPass)
   const guard = (what, extra = []) => run('guard', ['--world', '1', '--ss-guard', what, ...extra]).report;

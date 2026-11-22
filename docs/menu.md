@@ -114,10 +114,15 @@ CONFIRMED by reading the code unless marked.
 | When does the outro play? | When the menu comes back from a game that it started as an adventure and the player's file says the last world is finished. `PREVSTATE` in `menu.ini` is the choice of the Hoofdmenu at the start of the game (1 Snelspel, 2 Avontuur); with 2, `StartUp` loads the player and calls the outro check. The player loader reads `[SubLevel1_5] Completed`, and reads it only when `[General] GameType` is 0 | `0x5517F4` (writes `PREVSTATE`), `0x56114C` / `0x5611A0` (set the choice); `0x565214` case 2 → `0x564EEC`; loader `0x567694` |
 | What else happens then? | After the outro, watched or not: `HAUNTED = 1` in `menu.ini`, the player's `TotalScore` is inserted into the highscore table and the table saved, and the player's adventure is reset (world 1, 3 lives, score 0, not completed). With `HAUNTED` every Griezelplek card of Snelspel is free. Because of the reset the outro plays once per finished adventure | `0x564EEC`; `0x551A9C`, `0x5516DC`; `0x567B84` → `0x565570`; `0x55E1EA` |
 | After a game without outro | No movie. The Hoofdmenu comes back with the choice of the game that was played | `0x565214` cases 1 and 2; `0x560978` |
+| After a Snelspel on the last world | No outro, whatever the game wrote. With `PREVSTATE` 1 `StartUp` loads the player and starts the music; it does not call the outro check. The game itself writes `[SubLevel1_5] Completed=1` at the end of a Snelspel on the Tower too (run 2026-11-22), and nothing reads it | `0x565214` case 1 (`0x569170`, `0x54F644`, no `0x564EEC`) |
+| Does the way the game ended matter? | No. The launcher runs the menu again with `/Default` after every game and does not look at the game's exit code, and the menu has only `PREVSTATE` and the player's file. A game that died after it wrote the key gets the outro like any other | `RedCat.exe` `0x401250`; `0x565214`, `0x567694` |
+| Who writes `[SubLevel1_5] Completed`? | The game, when the Tower ends. The Tower's entity `Trigger24` (`DaviName` and `TargetSubLevel` `nextsave`) is triggered by the level's script at the moment `nextsave` of the witch's last scene; the command `nextsave` sets the world's `Completed` (`0x4FED00`), shows the results screen, and, there being no next world, quits. Run in the Node runner and in the page with the command given by the host: adventure started in the Tower, adventure brought there with the cheat page's `next` (four times) and with its level choice (`lvl04a.bsp`), all end with `GameType=0`, `CurrentSubLevel=SubLevel1_5`, `[SubLevel1_5] Completed=1`, exit code 0. The cheat page's own `next` in the Tower quits without the key (no outro in the original either). Not run: the fight with the witch up to that moment | `lvl04a` entities and script (`MotionCommand`, `"nextsave"` → `Trigger`); `ChangeToSubLevel` `0x496D60`; `tools/out/outro/*.json` |
 
 Not established: whether the game clears `[SubLevel1_5] Completed` when a new adventure starts
-(the menu's own writer `0x567344` does not write that key), and what the game shows at the very
-end of the last world before it quits.
+(the menu's own writer `0x567344` does not write that key). At the very end of the last world the
+game shows its results screen like after every world and then quits (`ChangeToSubLevel`, the
+"no more sublevels" branch at `0x49803C`); it has no screen of its own for a finished adventure:
+that is the menu's outro.
 
 ### What the port does
 
@@ -129,7 +134,8 @@ end of the last world before it quits.
 | No sound allowed yet | A browser refuses sound before the first click or key press on a page. The movie is then not started muted: the black first screen stays, with the line "Klik of druk op een toets om te beginnen", and the first click, tap or key press starts the leader with sound. That press does not end it |
 | Skipping | Any key, any mouse button, a tap, any button of a controller: one press ends one movie. Keys that belong to the browser (F-keys, combinations with Ctrl, Alt, Meta) still do their own thing as well |
 | Missing or unplayable file | Passed over, with a warning in the console |
-| Outro | On `recomp-exit`, when the game was started by the menu as an adventure, did not crash, and `players.get(n)` has `gameType === 0` and `completed[4]` (`[SubLevel1_5] Completed`): the outro, then `haunted`, the score into the stored table, `players.restartAdventure(n)` and `game.deleteSave(n)`. Once, for the same reason as in the original |
+| Outro | On `recomp-exit`, when the game was started by the menu as an adventure and `players.get(n)` has `gameType === 0` and `completed[4]` (`[SubLevel1_5] Completed`): the outro, then `haunted`, the score into the stored table, `players.restartAdventure(n)` and `game.deleteSave(n)`. Once, for the same reason as in the original. A crash does not change this (the original cannot tell either): the outro first, then the menu with the message. Until 2026-11-22 a crash was left out, and a game that died after its last world (out of memory on the way out) lost its outro, `HAUNTED` and highscore for good |
+| Snelspel on the Tower | No outro, as in the original. Different from the original is how a player can get there: the cheat "Alle griezelplekken ontgrendelen" opens the Tower's card for somebody who never came near it (it opens cards only; the adventure stays where it is), so here the witch can be beaten without the outro ever having been seen. Left as the original has it; see the note under this table |
 | Snelspel | A Snelspel must not leave `[SubLevel1_5] Completed`, progress or scores behind for the adventure. The original has that for free (its menu keeps the adventure itself and reads the file only after an adventure). Here `player-file.js` notes the sections `[Level1]`, `[SubLevel1_1..5]` and `[Player]` and the difficulty before a Snelspel and puts them back when it ends, or at the next load of the page when it was cut off |
 
 Differences from the original: a reload of the page shows the leader and the intro again
@@ -138,6 +144,16 @@ the pointer is hidden, not parked; controller and touch can skip; the movies are
 files, not MPEG-1 through MCI; `HAUNTED` and the table live in the browser's storage, not in
 `menu.ini`. As in the original, a finished adventure whose outro was not reached (the page was
 closed first) gets no outro at the next start.
+
+Report of 2026-11 ("the end movie is missing", after a new game brought to the last level "with
+the cheat"): every way to finish the Tower in an adventure was run and shows the outro (started
+there, continued from a save state, brought there with the original's cheat page), in Chromium
+and in Playwright's Firefox. The one way that shows none is a Snelspel on the Tower, which the
+port's cheat opens: the original's rule, in a place the original's player could reach only with
+an adventure that was itself at the Tower. Whether the port should show the outro there (once,
+only the movie, without `HAUNTED`, highscore or reset, when the card was open by the cheat alone)
+is the owner's choice; it is not done. `node tools/menu-check.mjs --only tower` runs the three
+ends (Snelspel, Avontuur, Avontuur with a crash after the last world).
 
 ## What the menu remembers itself
 

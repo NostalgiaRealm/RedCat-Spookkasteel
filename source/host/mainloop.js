@@ -34,7 +34,9 @@ export function installMainLoop(m, host) {
   // frames: the frames presented in the pass that runs (or, between two passes, in the last one). A pass of play presents one;
   //   a second frame means the game is inside one of its own loops (its menu 0x52EC30, pause 0x534D00, results, retry, a
   //   fade, loading): onNested functions run at that second frame, inside game code, so they may only read and write memory
-  const loop = host.mainLoop = { passes: 0, restored: false, pendingRestore: null, onPass: null, beforePass: [], changed: false, saveBlocked: () => '', frames: 0, onNested: [] };
+  // afterChange: functions run inside the pass that changed the sublevel, right after ChangeToSubLevel returned and before the
+  //   pass counts (so before a state of that pass is taken); no game code is executing then (fixes.js: the sounds of the world that was left)
+  const loop = host.mainLoop = { passes: 0, restored: false, pendingRestore: null, onPass: null, beforePass: [], changed: false, afterChange: [], saveBlocked: () => '', frames: 0, onNested: [] };
   /**
    * Why the game as it stands between two passes must not become a save state, or ''.
    *  'quit'  the quit flag app+0x3E is set (SetQuit 0x4C4440: "Nee" on the retry screen, "Spel verlaten", the end of a
@@ -77,6 +79,7 @@ export function installMainLoop(m, host) {
           m.call(u32[(u32[game >> 2] + 0x1C) >> 2], [game + 0x68], game);            // vtbl[7]: ChangeToSubLevel
           m.call(A.stringAssign, [empty, 0, u32[A.npos >> 2]], game + 0x68);        // m_Command = ""
           loop.changed = true;
+          for (let k = 0; k < loop.afterChange.length; k++) { m.esp = esp; loop.afterChange[k](esp); }
         }
       }
       return true;

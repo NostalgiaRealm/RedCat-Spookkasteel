@@ -9,7 +9,7 @@
 // suite: it prints what it checked and the screenshots are meant to be looked at. The server
 // must be running:
 //   node tools/serve.mjs
-//   node tools/menu-check.mjs [--url http://127.0.0.1:4221/] [--browser chromium|firefox|webkit] [--out tools/out/menu] [--only desktop,phone,portrait,isolation,gesture,tabs] [--game-wait 15000] [--gpu]
+//   node tools/menu-check.mjs [--url http://127.0.0.1:4221/] [--browser chromium|firefox|webkit] [--out tools/out/menu] [--only desktop,phone,portrait,isolation,gesture,tabs | tower] [--game-wait 15000] [--gpu]
 // Needs Playwright, taken from PLAYWRIGHT_DIR (default: the A2 Racer 4 project's node_modules).
 import fs from 'node:fs';
 import path from 'node:path';
@@ -532,6 +532,112 @@ if (only.includes('desktop')) {
   const voices = ['rcmn9.wav', 'rcmn10.wav', 'rcmn11.wav', 'rcmn12.wav', 'rcmn5.wav', 'rcmn6.wav', 'rcmn30.wav', 'mn_red02.wav', 'rcmn32.wav', 'rcmn13.wav', 'mn_red24.wav', 'mn_in01.wav', 'mn_red21.wav', 'mn_red23.wav', 'rcmn35.wav', 'menumuz.wav', 'davilex.webm', 'intronl.webm', 'outronl.webm'];
   const missing = voices.filter((v) => !t.requested.has(v));
   check(missing.length === 0, 'the music, the voices and the movies of the walk were requested', missing.join(' '));
+  t.report();
+  await t.context.close();
+  await towerEnd();
+} else if (only.includes('tower')) await towerEnd();      // --only tower: that last part of the desktop walk alone
+
+/**
+ * The end of the game as the game itself makes it: the Tower is finished with the game's own command
+ * "nextsave" (game+0x68; what the Tower's entity Trigger24, TargetSubLevel "nextsave", gives when the
+ * witch's last scene reaches its moment "nextsave": lvl04a entities and script), and the page has to do
+ * the rest from what the game wrote. The game thread gets two test keys for that, put into worker.js
+ * as the page fetches it (as tools/savestate-check.mjs does): virtual key 0xEA gives the command, 0xEB
+ * gives it and lets the game thread fail at the top of its next pass, after the game wrote the player's
+ * file. Nothing of it is in the port.
+ *   Snelspel on the Tower (opened by the cheat):  the outro and nothing else (the original shows none: RcHcMenu.dat 0x565214 case 1)
+ *   Avontuur at the Tower:                        the outro, HAUNTED, the adventure closed
+ *   Avontuur, the game dies after the last world: the outro all the same, then the message (failed until 2026-11-22)
+ */
+async function towerEnd() {
+  console.log('desktop 1280x960: the game finishes the Tower');
+  const t = await open('desktop-einde', { viewport: { width: 1280, height: 960 } });
+  const AT = "  post({ t: 'running', later });\n";
+  await t.context.route('**/source/web/worker.js', async (route) => {
+    const r = await route.fetch(); const body = await r.text();
+    if (!body.includes(AT)) check(false, 'the test keys find their place in worker.js');
+    await route.fulfill({ response: r, body: body.replace(AT, `  { const tm = game.m, raw = platform.input.poll; let ask = 0, die = false;
+    platform.input.poll = () => { const ev = raw(); if (!ev) return ev; return ev.filter((e) => { const mine = (e.type === 'keydown' || e.type === 'keyup') && (e.vk === 0xEA || e.vk === 0xEB); if (mine && e.type === 'keydown') ask = e.vk; return !mine; }); };
+    game.host.mainLoop.beforePass.push(() => { if (die) throw new Error('Proef van tools/menu-check.mjs: het spel valt uit na de laatste wereld'); if (!ask) return; const what = ask; ask = 0; const u32 = tm.u32, app = u32[0x6B915C >> 2], g = app ? u32[(app + 0x3A4) >> 2] : 0; if (!g) return;
+      tm.call(0x4040F0, [0x694A68, 8], g + 0x68); if (what === 0xEB) die = true; }); }\n` + AT) });
+  });
+  await t.page.goto(url + '?skipintro');
+  await createPlayer(t, 'Rick');
+  const key = (vk, ms = 150) => t.page.evaluate(async ([v, d]) => { const g = window.RecompGame; g.input.key(v, true); await new Promise((r) => setTimeout(r, d)); g.input.key(v, false); }, [vk, ms]);
+  const playing = async () => { await t.page.waitForFunction(() => window.RecompGame.running && window.RecompGame.framesDrawn > 120, null, { timeout: 180000 }); await t.page.waitForTimeout(1500); };
+  /** Gives the command, answers the results screen with the fire key, and returns what the page was told and what the game left in the file at that moment. */
+  const finish = async (vk) => {
+    await t.page.evaluate(() => { const g = window.RecompGame; window.__end = null; g.onExit = (how) => { g.onExit = null; const p = g.players.get(g.players.current); window.__end = { how, gameType: p.gameType, world: p.world, completed5: p.completed[4] }; }; });
+    await key(vk);
+    for (let k = 0; k < 80 && await t.page.evaluate(() => window.RecompGame.running); k++) { await key(17, 200); await t.page.waitForTimeout(500); }
+    await t.page.waitForFunction(() => window.__end, null, { timeout: 30000 }).catch(() => {});
+    return t.page.evaluate(() => window.__end);
+  };
+  const state = () => t.page.evaluate(async () => { const g = window.RecompGame, n = g.players.current, p = g.players.get(n), m = window.__menu; return { mode: m.mode, movie: m.movies.name, haunted: !!m.memo.haunted, gameType: p.gameType, world: p.world, completed5: p.completed[4], save: await g.saveInfo(n), fatal: document.getElementById('menu-fatal').open }; });
+  const toTower = () => t.page.evaluate(() => { const g = window.RecompGame; g.players.set(g.players.current, [['Level1', 'CurrentSubLevel', 'SubLevel1_5'], ['Level1', 'Completed', 1]]); });
+
+  // Snelspel: a new player has one Griezelplek; the cheat opens the cards and leaves the adventure where it is
+  await choose(t, 'quickplay');
+  let cards = await t.page.$$eval('#level-list .level-card', (c) => c.map((x) => !x.disabled));
+  await t.page.evaluate(() => window.RecompGame.settings.set('unlockAll', true));
+  await t.page.waitForFunction(() => [...document.querySelectorAll('#level-list .level-card')].every((x) => !x.disabled), null, { timeout: 5000 }).catch(() => {});
+  const open5 = await t.page.$$eval('#level-list .level-card', (c) => c.map((x) => !x.disabled));
+  check(cards.join() === 'true,false,false,false,false' && open5.every(Boolean) && (await state()).world === 1, 'the cheat "alle griezelplekken" opens the five cards of Snelspel; the adventure stays at its first world', `${cards.join(' ')} -> ${open5.join(' ')}`);
+  await t.act('#level-list .level-card:nth-child(5)');
+  await t.act('#native-next');
+  if (await t.pageName() !== 'startinfo') await t.act('#native-next');
+  await t.act('#native-start');
+  await playing();
+  let end = await finish(0xEA);
+  check(!!end && end.how === 'exit' && end.gameType === 1, 'Snelspel on the Tower: the game ends by itself when its last world is finished', JSON.stringify(end));
+  // Not the original's (it looks only after an adventure): here the port's cheat opens the Tower's
+  // card for anybody, so the film is shown, and nothing else.
+  await t.moviePlaying('outronl').catch(() => {});
+  let mq = await t.movie();
+  check(mq.name === 'outronl' && mq.state === 'playing' && mq.menuHidden, 'after a won Snelspel on the Tower the outro plays (the port\'s own rule: its cheat opens that card)', JSON.stringify(mq));
+  await t.page.keyboard.press('Escape');
+  await t.page.waitForFunction(() => window.__menu.mode === 'menu' && !document.getElementById('menu').hidden, null, { timeout: 30000 }).catch(() => {});
+  let s = await state();
+  check(s.mode === 'menu' && !s.haunted && s.world === 1 && !s.completed5, 'and nothing else follows: the adventure as it was, no HAUNTED', JSON.stringify(s));
+  check(await t.page.evaluate(() => document.querySelector('[data-menu-choice="quickplay"]').getAttribute('aria-pressed')) === 'true', 'and the Hoofdmenu comes back with Snelspel chosen');
+  await t.page.evaluate(() => window.RecompGame.settings.set('unlockAll', false));
+
+  // Avontuur at the Tower: the game writes [SubLevel1_5] Completed and quits; the page shows the outro
+  await toTower();
+  await choose(t, 'adventure');
+  check(await t.pageName() === 'startinfo', 'an adventure at the Tower goes on from Startinfo');
+  await t.act('#native-start');
+  await playing();
+  end = await finish(0xEA);
+  check(!!end && end.how === 'exit' && end.gameType === 0 && end.completed5 === true && end.world === 5, 'Avontuur, the Tower finished: the game itself leaves [SubLevel1_5] Completed in the player\'s file and ends', JSON.stringify(end));
+  await t.moviePlaying('outronl').catch(() => {});
+  let m = await t.movie();
+  check(m.name === 'outronl' && m.state === 'playing' && m.menuHidden && !m.muted, 'and the outro plays, with sound, before the menu', JSON.stringify(m));
+  await t.shot('03-outro-na-de-toren');
+  await t.page.keyboard.press('Escape');
+  await t.page.waitForFunction(() => window.__menu.mode === 'menu', null, { timeout: 10000 }).catch(() => {});
+  s = await state();
+  check(s.mode === 'menu' && s.haunted && s.world === 1 && !s.completed5 && s.save === null && !s.fatal, 'after it: HAUNTED, the adventure back at its beginning, no save state (the table: the desktop walk above, with a score)', JSON.stringify(s));
+
+  // The same, but the game dies right after its last world (as when memory runs out on the way out):
+  // the original's menu does not know how the game ended, only what is in the file
+  await toTower();
+  await choose(t, 'adventure');
+  await t.act('#native-start');
+  await playing();
+  const errorsBefore = t.problems.length;
+  end = await finish(0xEB);
+  check(!!end && end.how === 'crash' && end.gameType === 0 && end.completed5 === true, 'Avontuur, the game fails after it finished the Tower: the file has [SubLevel1_5] Completed, the page is told of a crash', JSON.stringify(end));
+  await t.moviePlaying('outronl').catch(() => {});
+  m = await t.movie();
+  check(m.name === 'outronl' && m.state === 'playing' && m.menuHidden, 'the outro plays all the same', JSON.stringify(m));
+  await t.page.keyboard.press('Escape');
+  await t.page.waitForFunction(() => window.__menu.mode === 'menu', null, { timeout: 10000 }).catch(() => {});
+  s = await state();
+  check(s.mode === 'menu' && s.fatal && s.world === 1 && !s.completed5, 'then the menu with the message about the crash; the adventure is closed', JSON.stringify(s));
+  if (s.fatal) await t.act('#menu-fatal-close');
+  // (the crash that was asked for is in the console: not a fault of the page)
+  t.problems.splice(errorsBefore, t.problems.length - errorsBefore, ...t.problems.slice(errorsBefore).filter((x) => !/Proef van tools\/menu-check\.mjs/.test(x)));
   t.report();
   await t.context.close();
 }

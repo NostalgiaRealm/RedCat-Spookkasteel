@@ -184,6 +184,11 @@ async function start(init) {
   // The save state the page asked for last (CTRL.SAVE counts the requests), and the frames a pause
   // was put off for one: see frame().
   let saveSeen = Atomics.load(ctrl, CTRL.SAVE), deferred = 0, skipTold = saveSeen;
+  let dropCopy = () => {};        // lets go of the memory made for a state that is not taken yet (onPass below)
+  // The copy of a state is made in the time a frame would wait for the display: the frame before it does not wait in
+  // frame() (holdWait), the pass ends, the state is copied, and the wait comes after that (owed, paid in onPass). A
+  // game with time to spare per frame, any that reaches the display's rate, then shows every frame when it would have.
+  let holdWait = false, owed = false, idleOwed = 0;
 
   const platform = {
     log,
@@ -264,13 +269,18 @@ async function start(init) {
       // wait for the display either (a hidden page gives no ticks). At most three frames: a loop
       // inside a pass (the game's own menu) has no such moment and must pause all the same.
       const saving = Atomics.load(ctrl, CTRL.PAUSED) !== 0 && Atomics.load(ctrl, CTRL.SAVE) !== saveSeen && ++deferred <= 3;
-      if (!saving) { deferred = 0; checkPause(); }
+      if (!saving) { deferred = 0; if (Atomics.load(ctrl, CTRL.PAUSED)) dropCopy(); checkPause(); }          // (a game that waits holds no memory for a state it cannot take now)
       const t3 = performance.now();
       // (a skip that was asked for is taken before the next pass: that pass does not wait for the display either)
-      if (!saving && !(step > 0) && !(skip && skip.asked) && Atomics.load(ctrl, CTRL.TICK) === lastTick) Atomics.wait(ctrl, CTRL.TICK, lastTick, 100);
-      lastTick = Atomics.load(ctrl, CTRL.TICK);
+      // (and a frame after which a state will be copied waits for the display after that copy, onPass below: owed)
+      const waits = !saving && !(step > 0) && !(skip && skip.asked);
+      if (waits && holdWait && !owed) owed = true;
+      else {
+        if (waits && Atomics.load(ctrl, CTRL.TICK) === lastTick) Atomics.wait(ctrl, CTRL.TICK, lastTick, 100);
+        lastTick = Atomics.load(ctrl, CTRL.TICK);
+      }
       const t = performance.now();
-      idle += t2 - t1 + t - t3;
+      idle += t2 - t1 + t - t3 + idleOwed; idleOwed = 0;
       // idle: the share of the time, in percent, this thread stood waiting for the render worker and
       // the display. Few frames with little of it: the game itself is busy. Few frames with much of
       // it says nothing about the reason: a graphics chip that cannot keep up and a display that
@@ -315,7 +325,34 @@ async function start(init) {
   // handed over at start replaces the freshly booted game at its first pass.
   if (game.host.mainLoop) {
     let passes = 0;
+    // the state that is asked for and not taken yet: its copy's memory (buf), how far that is written to (at), what that took
+    let pend = null;
+    dropCopy = () => { if (pend) { pend.buf = null; pend.at = 0; pend.ready = false; } };
+    const TOUCH_MS = 1, SLACK = 0x100000;
+    /** Makes the memory for the copy and writes to it once, TOUCH_MS per pass. true: ready (also when there is no room for it now: capture() then tries itself). */
+    const prepare = (p, esp) => {
+      const t = performance.now();
+      p.passes++;
+      if (!p.buf) { try { p.buf = new Uint8Array((game.host.snap.captureSize(esp) + SLACK + 0xFFFF) & ~0xFFFF); p.at = 0; } catch (e) { return true; } }
+      const b = p.buf, n = b.length;
+      let k = p.at;
+      do { for (const e = Math.min(k + 0x100000, n); k < e; k += 4096) b[k] = 0; } while (k < n && performance.now() - t < TOUCH_MS);
+      p.at = k;
+      p.ms += performance.now() - t;
+      return k >= n;
+    };
     game.host.mainLoop.onPass = (esp) => {
+      between(esp);
+      if (!owed) return;
+      // the wait for the display that this pass's frame left out
+      owed = false;
+      const t = performance.now();
+      if (Atomics.load(ctrl, CTRL.TICK) === lastTick) Atomics.wait(ctrl, CTRL.TICK, lastTick, 100);
+      lastTick = Atomics.load(ctrl, CTRL.TICK);
+      idleOwed += performance.now() - t;
+    };
+    const between = (esp) => {
+      holdWait = false;
       if ((++passes & 255) === 0) sweep();          // every four seconds or so
       const loop = game.host.mainLoop;
       // A pass that changed the sublevel (the next world of an adventure, or the same world again
@@ -324,7 +361,7 @@ async function start(init) {
       const changed = loop.changed;
       loop.changed = false;
       const want = Atomics.load(ctrl, CTRL.SAVE);
-      if (want === saveSeen && !changed) return;
+      if (want === saveSeen && !changed && !pend) return;
       // Never the state of a game that is ending or of a RedCat without health (mainloop.js
       // saveBlocked): continuing from the first ends at once, from the second leads straight to
       // the retry screen, and either would replace the last state of a living RedCat. A game
@@ -334,16 +371,41 @@ async function start(init) {
       const why = loop.saveBlocked();
       if (why) {
         if (want !== skipTold) { skipTold = want; post({ t: 'state-skipped', why }); }
-        if (why === 'quit') saveSeen = want;
+        if (why === 'quit') { saveSeen = want; pend = null; }
         return;
       }
+      // A state is a copy of some 50 MB of game memory, and the game stands still while it is made.
+      // What the game thread does of it is the least that must happen between two passes: one copy
+      // of the memory and the parts' text (snapshot.js capture()). Everything else, finding the pages
+      // of zeros, the stored form, compression, is the save worker's (save-worker.js): the page gets
+      // the copy handed over and hands it on at once. (Through the page and not on a channel of its
+      // own to that worker: Firefox copies what is handed over on a MessagePort, 15 to 30 ms for a
+      // state, and hands over to and from a worker's own page in 0.1 ms; measured in Firefox 146.)
+      // Copying into memory that was never written to takes three times as long as copying into
+      // memory that was (the system hands out a page at its first write: 11 ms against 4 for 50 MB,
+      // measured), so the copy's memory is made when the request comes and written to once in the
+      // passes before the copy, a millisecond per pass (prepare(), some ten passes). It is handed
+      // over with the state: nothing of a save stays in this thread. A page that is hidden gets
+      // its state at once (frame() holds the pause for it, and nobody sees that frame).
+      if (!pend) pend = { changed: false, buf: null, at: 0, ms: 0, passes: 0, ready: false };
+      if (changed) pend.changed = true;
+      if (Atomics.load(ctrl, CTRL.PAUSED) === 0) {
+        if (!prepare(pend, esp)) return;
+        // ready: the copy comes after the next pass, whose frame leaves its wait for the display to after it
+        if (!pend.ready) { pend.ready = true; holdWait = true; return; }
+      }
       saveSeen = want;
-      // A state is a copy of some 45 MB of game memory; a device that has no room for it keeps
-      // its game. The copy goes to the page as it was made, piece by piece (snapshot.js pieces()):
-      // handed over, not copied again, and never put together into one array here.
-      let pieces = null;
-      try { pieces = game.host.snap.pieces(game.host.snap.save(esp)); } catch (e) { post({ t: 'state-failed', message: String(e && e.message ? e.message : e) }); return; }
-      post({ t: 'state', pieces, changed, screen: game.host.shape ? game.host.shape.size() : [W, H] }, pieces.map((b) => b.buffer));
+      const taken = pend, t0 = performance.now();
+      pend = null;
+      let c = null;
+      try { c = game.host.snap.capture(esp, taken.buf); } catch (e) { post({ t: 'state-failed', message: String(e && e.message ? e.message : e) }); return; }
+      const prepared = c.bytes === taken.buf, took = c.took;
+      c.took = undefined;
+      // stop: how long the game stood still for this state (tools/save-hitch-check.mjs holds it to a bound); post: what handing it over took of that
+      const t1 = performance.now();
+      post({ t: 'state', c, changed: taken.changed, screen: game.host.shape ? game.host.shape.size() : [W, H], ms: { stop: 0, copy: took[0], parts: took[1], text: took[2], prepare: taken.ms, passes: taken.passes, prepared, inWait: owed } }, [c.bytes.buffer]);
+      const t2 = performance.now();
+      post({ t: 'state-took', stop: t2 - t0, post: t2 - t1 });
     };
     if (init.restore) {
       // A state that cannot be used is found here, before the game runs and before anything of it

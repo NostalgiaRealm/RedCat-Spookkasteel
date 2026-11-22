@@ -778,8 +778,10 @@ export function installGDriver(m, host) {
   };
 
   // Save states: the handle list. Pixels are in game memory; the renderer gets everything again.
-  const HFIELDS = ['addr', 'slot', 'id', 'kind', 'w', 'h', 'mips', 'format', 'flags', 'bpp', 'data', 'size', 'stride'];
-  if (host.snap) host.snap.add('gdriver', () => ({ nextId: drv.nextId, width: drv.width, height: drv.height, hwnd: drv.hwnd, active: drv.active, fog: drv.fog, handles: [...drv.handles.values()].map((t) => Object.fromEntries(HFIELDS.map((k) => [k, t[k]]))) }), (st) => {
+  // (written out, in this order: some 5,600 handles, and Object.fromEntries over a list of names took 4 to 6 ms of
+  // every save, during which the game stands still; this takes 0.1 ms and gives the same value)
+  const handleList = () => { const out = []; for (const t of drv.handles.values()) out.push({ addr: t.addr, slot: t.slot, id: t.id, kind: t.kind, w: t.w, h: t.h, mips: t.mips, format: t.format, flags: t.flags, bpp: t.bpp, data: t.data, size: t.size, stride: t.stride }); return out; };
+  if (host.snap) host.snap.add('gdriver', () => ({ nextId: drv.nextId, width: drv.width, height: drv.height, hwnd: drv.hwnd, active: drv.active, fog: drv.fog, handles: handleList() }), (st) => {
     if (render()) render().forget();
     drv.handles.clear(); drv.slots.length = 0;
     Object.assign(drv, { nextId: st.nextId, width: st.width, height: st.height, hwnd: st.hwnd, active: st.active, fog: st.fog });

@@ -65,6 +65,43 @@ function digest(text) {
   return (h2 >>> 0).toString(16).padStart(8, '0') + (h1 >>> 0).toString(16).padStart(8, '0');
 }
 
+/**
+ * The stored form of a capture (snap.capture() below): the same byte arrays snap.pieces(snap.save())
+ * gives for the same moment, made from the one copy the game thread took. Needs nothing of the game:
+ * the browser runs it in the save worker (source/web/save-worker.js), so that the game thread only
+ * copies. Leaves out the 4 KiB pages of zeros in the spans load() clears, as livePages() does, and
+ * copies nothing: the arrays after the first are views into c.bytes.
+ */
+export function packCapture(c) {
+  const bytes = c.bytes, u32 = new Uint32Array(bytes.buffer, bytes.byteOffset, bytes.byteLength >> 2);
+  const ranges = [];
+  let o = 0;
+  for (const [lo, n, cleared] of c.spans) {
+    if (!cleared || (lo & 3)) ranges.push([lo, bytes.subarray(o, o + n)]);
+    else {
+      let from = -1;
+      for (let p = 0; p < n; p += PAGE) {
+        const stop = Math.min(p + PAGE, n);
+        let zero = true;
+        for (let k = (o + p) >> 2, e = (o + stop) >> 2; k < e; k++) if (u32[k] !== 0) { zero = false; break; }
+        for (let k = o + (stop & ~3); zero && k < o + stop; k++) if (bytes[k] !== 0) zero = false;
+        if (!zero) { if (from < 0) from = p; } else if (from >= 0) { ranges.push([lo + from, bytes.subarray(o + from, o + p)]); from = -1; }
+      }
+      if (from >= 0) ranges.push([lo + from, bytes.subarray(o + from, o + n)]);
+    }
+    o += (n + 7) & ~7;
+  }
+  // the header as pieces() writes it; the parts are JSON text already (made while the game stood still)
+  const J = JSON.stringify;
+  const head = new TextEncoder().encode(`{"v":${J(c.v)},"abi":${J(c.abi)},"screen":${J(c.screen)},"time":${J(c.time)},"esp":${J(c.esp)},"cw":${J(c.cw)},"parts":${c.parts},"spans":${J(c.spans.map(([lo, n]) => [lo, n]))},"ranges":${J(ranges.map(([a, b]) => [a, b.length]))}}`);
+  const first = new Uint8Array(8 + head.length);
+  const dv = new DataView(first.buffer);
+  dv.setUint32(0, MAGIC, true);
+  dv.setUint32(4, head.length, true);
+  first.set(head, 8);
+  return [first, ...ranges.map(([, b]) => b)];
+}
+
 export function installSnapshot(m, host) {
   const parts = [];
   const L = m.layout, MEM_END = L.MEM_PAGES * 65536;
@@ -179,6 +216,38 @@ export function installSnapshot(m, host) {
       const state = {};
       for (const p of parts) state[p.name] = p.save();
       return { v: VERSION, abi: snap.abi || snap.seal(), screen: screen(), time: host.nowMs(), esp, cw: m.exports.g_cw.value, parts: state, spans: spans.map(([lo, n]) => [lo, n]), ranges };
+    },
+    /** The bytes capture() needs now for its copy of the memory (it grows with the game's heap). */
+    captureSize(esp) {
+      let size = 0;
+      for (const [, n] of rangesOf(m.lowBump, esp, host.heap.highWater, host.heap.pageBump)) size += (n + 7) & ~7;
+      return size;
+    },
+    /**
+     * The whole game as save() takes it, for a caller that must stand still as short as possible
+     * (the browser's game thread, source/web/worker.js): the spans are copied whole, one after the
+     * other (each begins at a multiple of 8), into `into` when that is long enough (memory the
+     * caller already wrote to: copying into fresh memory takes three times as long) or else into a
+     * new array, and the parts are JSON text. Finding the pages of zeros and the stored form are
+     * packCapture()'s work, which can be done anywhere. packCapture(capture(esp)) holds the bytes of
+     * pieces(save(esp)) at the same moment (tools/savestate-check.mjs).
+     * -> { v, abi, screen, time, esp, cw, parts: text, spans: [[address, length, cleared 0|1], ...], bytes, took }
+     */
+    capture(esp, into) {
+      const heap = host.heap, u8 = m.u8;
+      const spans = rangesOf(m.lowBump, esp, heap.highWater, heap.pageBump);
+      let size = 0;
+      for (const [, n] of spans) size += (n + 7) & ~7;
+      const bytes = into && into.length >= size ? into : new Uint8Array(size);
+      const t0 = performance.now();
+      let o = 0;
+      for (const [lo, n] of spans) { bytes.set(u8.subarray(lo, lo + n), o); o += (n + 7) & ~7; }
+      const t1 = performance.now();
+      const state = {};
+      for (const p of parts) state[p.name] = p.save();
+      const t2 = performance.now(), text = JSON.stringify(state);
+      // took: the milliseconds of the copy, of the parts and of their text
+      return { v: VERSION, abi: snap.abi || snap.seal(), screen: screen(), time: host.nowMs(), esp, cw: m.exports.g_cw.value, parts: text, spans: spans.map(([lo, n, cleared]) => [lo, n, cleared ? 1 : 0]), bytes, took: [t1 - t0, t2 - t1, performance.now() - t2] };
     },
     /**
      * Throws StateUnusable unless s can replace the booted game. Writes nothing. esp: the stack

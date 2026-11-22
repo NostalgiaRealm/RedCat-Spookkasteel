@@ -21,6 +21,10 @@
 //                     an addition of the JavaScript port, not a fault of the original
 //   skyBackdrop       the render driver only (gdriver.js, BeginWorld); it reads game memory and never writes it
 //   smoothSprites     the render driver only (gdriver.js pixels(), smooth.js): the bytes on their way to the renderer
+//   soundRelease      between two passes, after a pass that changed the sublevel (and after a restore): the game's own
+//                     list erase and its own "remove unused sound definitions" for the music list it never empties, then
+//                     what Genesis3D's geSound_FreeSoundDef does for every sound nothing refers to any more (that function
+//                     is not in the module: the game never frees a sound before it ends)
 //   hudShape          the render driver only (gdriver.js, RenderMiscTexturePoly): its own copy of a 2D bitmap's corners
 //
 // With every flag off the host calls the original bodies and nothing else: the README save-state
@@ -42,6 +46,7 @@ export const FIX_DEFAULTS = {
   skyBackdrop: true,        // picture only: the sky box is drawn behind the world, so a view past the level's faces shows sky instead of black
   smoothSprites: true,      // picture only: the sixteen levels of a 4444 texture's channels are smoothed (the fairy's halo has no stepped edge)
   hudShape: true,           // picture only: on a screen that is not 4:3 the HUD and the other 2D bitmaps keep their 4:3 width (left group left, right group right)
+  soundRelease: true,       // memory: the sounds and the music of a world that was left are freed (the original keeps every one until the game ends)
 };
 export const FIX_NAMES = Object.keys(FIX_DEFAULTS);
 
@@ -96,7 +101,7 @@ export function installFixes(m, host) {
       flags[name] = !!on;
       if (name === 'smoothSprites' && host.gdriver) host.gdriver.reupload();          // the renderer's textures were made the other way
     },
-    stats: { doses: 0, kept: 0, doors: 0, fire: 0, mazeResets: 0, protectedPasses: 0, pageShown: 0 },
+    stats: { doses: 0, kept: 0, doors: 0, fire: 0, mazeResets: 0, protectedPasses: 0, pageShown: 0, musicReleased: 0, soundsReleased: 0, soundBytesReleased: 0 },
     remainders: new Map(),          // fractionalDamage: target object -> [what is still owed, virtual time of the last dose]
   };
   const chain = () => {
@@ -307,7 +312,83 @@ export function installFixes(m, host) {
     api.stats.mazeResets++;
   };
 
-  if (host.mainLoop) host.mainLoop.beforePass.push((esp) => { protect(); maze(esp); });
+  // -- soundRelease ----------------------------------------------------------------------------------
+  // The original never frees a sound before the game ends (docs/research/original-fixes.md 11):
+  //  - Genesis3D's geSound_FreeSoundDef is not in the module. Its sound manager's channels (the file's bytes and a
+  //    DirectSound buffer each) are freed only by geSound_DestroySoundSystem 0x5C7ED0, at shutdown (0x54E060).
+  //  - CAdamSoundSystem keeps two lists of sounds: effects (system+0x54) and music (system+0x70). RemoveUnusedSounds
+  //    0x550330 drops the effects nothing else refers to (use count 1, and with its argument 1 only those not playing) and
+  //    then the definitions nothing refers to (RemoveUnusedSoundDefs 0x5525D0, on the list at system+0x30); it never walks
+  //    the music list, so every music ever started keeps its sound object, and that its definition.
+  // So every world leaves its music and its sounds behind: 15 to 18 MB of game memory per change of world (and per
+  // "Ja" on the retry screen), which ended a long session with "out of game memory" in a 192 MB address space.
+  // In the pass that changed the sublevel, when ChangeToSubLevel has returned (mainloop.js afterChange), this does:
+  //  1. the music list by the rule the game has for its effects: an entry only the list refers to and that is not playing
+  //     (the game's own test 0x5530E0) is erased with the list's own erase 0x553FD0, which destructs the sound object;
+  //  2. the game's own RemoveUnusedSoundDefs 0x5525D0, when 1 erased something;
+  //  3. for every channel of the sound manager whose number no definition holds (definition+0x1C; the only two callers
+  //     of geSound_LoadSoundDef 0x5C7F00 store it there, 0x5520E5 and 0x55254F): what geSound_FreeSoundDef does in
+  //     Genesis3D's SoundSystem.c: stop and free its duplicates (the module's own 0x5C8980 and 0x5C89A0), Stop and Release
+  //     of its DirectSound buffer, geRam_Free 0x5CF400 of the file's bytes and of the channel, out of the list.
+  // Inside a world nothing is released, so a music that stopped keeps its buffer as in the original (musicContinuity
+  // counts on that), and neither at the start nor after a restore: a restored game must go on exactly as the one
+  // that was saved, and a state of the pass that changed the world is taken after this ran. The one exception is need:
+  // with less than SOUND_NEED of the heap left it is done before every pass (a state of a build before this fix that
+  // carries many worlds' sounds; a session of very many worlds). The need is read from the heap's two cursors, which
+  // are part of a state, and what there is to do from the game's memory: nothing is kept here.
+  const SND = { vtSound: 0x0064F820, vtDef: 0x0064F818, isPlaying: 0x005530E0, erase: 0x00553FD0, removeDefs: 0x005525D0, stopDups: 0x005C8980, clearDups: 0x005C89A0, ramFree: 0x005CF400, ramMark: 0x007203C0 };
+  const SOUND_NEED = 32 << 20;
+  const held = new Set();
+  const ramFree = (p) => { m.call(SND.ramFree, [p]); u32[SND.ramMark >> 2] = 0; };
+  const releaseSounds = (esp) => {
+    if (!flags.soundRelease) return;
+    const engine = u32[ENGINE >> 2], sys = engine ? u32[(engine + 0xFC) >> 2] : 0;
+    if (!sys || !u8[sys + 0x8C]) return;                                   // m_Initialized
+    const ge = u32[(sys + 0x50) >> 2], sm = ge ? u32[(ge + 4) >> 2] : 0;
+    if (!sm) return;
+    m.esp = esp;
+    // 1. the music list (begin system+0x74, end +0x78; its "locked" byte +0x88, as the lists the game erases from check theirs)
+    let erased = 0;
+    if (!u8[sys + 0x88]) {
+      for (let k = ((u32[(sys + 0x78) >> 2] - u32[(sys + 0x74) >> 2]) >> 2) - 1; k >= 0; k--) {
+        const at4 = u32[(sys + 0x74) >> 2] + k * 4, o = u32[at4 >> 2];
+        if (!o || u32[o >> 2] !== SND.vtSound || i32[(o + 0x14) >> 2] !== 1) continue;
+        if (m.call(SND.isPlaying, [], o) & 0xFF) continue;
+        m.call(SND.erase, [at4], sys + 0x70);
+        erased++;
+      }
+    }
+    // 2. the definitions nothing refers to now (the game's own; it logs to its debug log as always)
+    if (erased && !u8[sys + 0x48]) m.call(SND.removeDefs, [], sys + 0x14);
+    api.stats.musicReleased += erased;
+    // 3. the channels no definition holds
+    held.clear();
+    for (let p = u32[(sys + 0x34) >> 2], e = u32[(sys + 0x38) >> 2]; p && p < e; p += 4) { const d = u32[p >> 2]; if (d && u32[d >> 2] === SND.vtDef) held.add(u32[(d + 0x1C) >> 2]); }
+    if (!held.size) return;                                                // no definition at all: not a state of the game this knows
+    for (let prev = 0, ch = u32[(sm + 0xC) >> 2]; ch;) {
+      const next = u32[(ch + 0x1C) >> 2];
+      if (held.has(u32[(ch + 4) >> 2])) { prev = ch; ch = next; continue; }
+      const buf = u32[ch >> 2], vt = u32[buf >> 2], data = u32[(ch + 0x18) >> 2];
+      const before = host.heap.bytesInUse;
+      m.call(SND.stopDups, [ch]);
+      m.call(SND.clearDups, [ch]);
+      m.call(u32[(vt + 0x48) >> 2], [buf]);                                // IDirectSoundBuffer::Stop
+      m.call(u32[(vt + 8) >> 2], [buf]);                                   // ::Release
+      if (data) ramFree(data);
+      if (prev) u32[(prev + 0x1C) >> 2] = next; else u32[(sm + 0xC) >> 2] = next;
+      ramFree(ch);
+      u32[sm >> 2]--;                                                      // the manager's count of channels
+      api.stats.soundsReleased++;
+      api.stats.soundBytesReleased += before - host.heap.bytesInUse;
+      ch = next;
+    }
+  };
+  api.releaseSounds = releaseSounds;
+
+  if (host.mainLoop) {
+    host.mainLoop.beforePass.push((esp) => { protect(); maze(esp); if (host.heap.pageBump - host.heap.bump < SOUND_NEED) releaseSounds(esp); });
+    host.mainLoop.afterChange.push(releaseSounds);
+  }
 
   // -- doorSound -----------------------------------------------------------------------------------
   // CAdamDoorModel picks its sound by DoorType (this+0x18C): 1 OpenDoorNormal.wav, 2 OpenDoorKey.wav,

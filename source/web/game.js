@@ -681,25 +681,67 @@ settings.onChange((key, value) => {
   if (key === 'recovery' && !value) inTurn(async () => { for (const k of await dbKeys()) if (typeof k === 'string' && /^player\d+\.r\d$/.test(k)) await dbDel(k); }).catch(() => {});
 });
 
-/** pieces: the state as the game thread hands it over, byte arrays that follow each other (snapshot.js pieces()). */
-const storeState = (pieces, launch, screen, changed = false) => inTurn(async () => {
-  if (!canPack) throw new Error('this browser has no CompressionStream');
-  const build = await buildId();
-  if (!build) throw new Error('the build is not known');          // a state nobody could ever check is not kept
-  const size = pieces.reduce((n, b) => n + b.length, 0);
-  const whole = new Blob(pieces);
-  pieces = null;          // the Blob has them now: the page's own copy can go
-  const packed = await new Response(whole.stream().pipeThrough(new CompressionStream('gzip'))).blob();
+// --- the save worker (save-worker.js) ----------------------------------------------------------
+// The page hands the copy the game thread took on to that worker as it arrives ('state'), untouched,
+// and the worker answers with the compressed state. storeState() takes its place in the line of
+// writes when the state arrives, as it always did, and waits there for the worker: the order of
+// writes and deletes is the order in which the game thread spoke. Nothing of a state is done on
+// the page's own thread, whose display tick paces the game. One worker for the page's lifetime;
+// made again after it failed.
+let saver = null, packed = 0;
+const packs = new Map();       // id -> { promise, resolve, reject, timer }: the compressed state of that id, awaited or arrived
+const PACK_WAIT = 120000;      // (compressing a state took 0.8 s on a desktop; a state nobody asks for, of a game that was ended meanwhile, goes after this)
+const packOf = (id) => {
+  let p = packs.get(id);
+  if (!p) {
+    p = {};
+    p.promise = new Promise((res, rej) => { p.resolve = res; p.reject = rej; });
+    p.promise.catch(() => {});
+    p.timer = setTimeout(() => { packs.delete(id); p.reject(new Error('the save worker did not answer')); }, PACK_WAIT);
+    packs.set(id, p);
+  }
+  return p;
+};
+const startSaver = () => {
+  if (saver) return saver;
+  const mine = saver = new Worker(new URL('./save-worker.js', import.meta.url), { type: 'module' });
+  mine.onmessage = (e) => {
+    const d = e.data;
+    if (d.t === 'packed') packOf(d.id).resolve(d);
+    else if (d.t === 'failed') { const err = new Error(d.message); err.name = d.name || 'Error'; packOf(d.id).reject(err); }
+  };
+  mine.onerror = (e) => {
+    if (saver !== mine) return;
+    saver = null; mine.terminate();
+    for (const p of packs.values()) { clearTimeout(p.timer); p.reject(new Error('the save worker stopped' + (e && e.message ? ': ' + e.message : ''))); }
+    packs.clear();
+  };
+  return mine;
+};
+
+/** c: the state as the game thread hands it over (snapshot.js capture()). taken: what the game thread measured (worker.js onPass; its `stop` is filled in when it has said so). */
+const storeState = (c, launch, screen, changed = false, taken = null) => {
+  const id = ++packed, pack = packOf(id);
+  try { startSaver().postMessage({ t: 'state', id, c }, [c.bytes.buffer]); } catch (e) { pack.reject(e); }
+  c = null;
+  return inTurn(async () => {
+  let got = null;
+  try {
+    if (!canPack) throw new Error('this browser has no CompressionStream');
+    if (!await buildId()) throw new Error('the build is not known');          // a state nobody could ever check is not kept
+    got = await pack.promise;
+  } finally { clearTimeout(pack.timer); packs.delete(id); }
+  const build = await buildId(), size = got.size, data = got.data, t0 = performance.now();
   const savedAt = Date.now(), which = kindOf(launch), key = slot(launch.player, which);
   const play = clock.player === launch.player ? Math.round(clock.seconds) : 0;
-  const rec = { v: RECORD, build, savedAt, size, launch, logicalW: screen[0], play, data: packed };
+  const rec = { v: RECORD, build, savedAt, size, launch, logicalW: screen[0], play, data };
   if (screen[1] !== MODE_SHORT_H) rec.logicalH = screen[1];
   if (!which) await rotateRecovery(launch.player, build, play);
   const put = async () => {
     try { await dbPut(key, rec); } catch (e) {
       if (e && e.name === 'QuotaExceededError') throw e;
       // a browser that cannot keep a Blob in IndexedDB: the bytes themselves, then
-      rec.data = new Uint8Array(await packed.arrayBuffer());
+      rec.data = new Uint8Array(await data.arrayBuffer());
       await dbPut(key, rec);
       bytesOnly = true;
     }
@@ -711,11 +753,13 @@ const storeState = (pieces, launch, screen, changed = false) => inTurn(async () 
     await put();
   }
   if (!which) lost.delete(launch.player);          // (a Snelspel's state is nobody's saved adventure)
-  game.lastSave = { raw: size, packed: packed.size, savedAt, player: launch.player, adventure: !which, play, changed };      // changed: taken because a pass changed the world (worker.js)
+  // timing, in milliseconds: stop the game stood still for the copy (copy, parts, text: its shares), prepare what the passes before it gave, scan/blob/gzip the save worker's, store the page's
+  game.lastSave = { raw: size, packed: data.size, savedAt, player: launch.player, adventure: !which, play, changed, timing: { ...(taken || {}), ...(got.ms || {}), store: performance.now() - t0 } };      // changed: taken because a pass changed the world (worker.js)
   if (game.onSaved) game.onSaved(game.lastSave);
   window.dispatchEvent(new CustomEvent('recomp-saved', { detail: game.lastSave }));
-  if (game.onStatus) game.onStatus(`Opgeslagen (${(packed.size / 1048576).toFixed(1)} MB)`, true);
-}).catch(saveFailed);
+  if (game.onStatus) game.onStatus(`Opgeslagen (${(data.size / 1048576).toFixed(1)} MB)`, true);
+  }).catch(saveFailed);
+};
 
 // --- the player's keys --------------------------------------------------------------------
 // The keys of the game that runs, from its player's file (keybinds.js): read when the game starts
@@ -892,6 +936,8 @@ async function begin(fresh, resume, note) {
   // the game thread's frames go straight to the render worker, through a channel of their own
   const frames = new MessageChannel();
   scaleSent = 0;
+  try { startSaver(); } catch (e) { console.warn('[opslag] de opslagthread start niet', e); }          // (now, not at the first state: then it is there; without it a state fails and the game runs)
+  let taking = null;          // the measurements of the state that arrived last, until the game thread has said how long it stood still
   const mine = worker = new Worker(new URL('./worker.js', import.meta.url), { type: 'module' });
   // resumed: this game is to continue from a state. ran: the game thread got as far as booting for it; at: when it said the state was loaded.
   let resumed = saved ? { savedAt: saved.savedAt, ran: false, at: 0 } : null, over = false;
@@ -954,9 +1000,10 @@ async function begin(fresh, resume, note) {
         // the player's file is at the new world now: whoever keeps what a player reached notes it at once
         // (the menu's open Griezelplekken; an older place loaded afterwards puts the file back)
         if (d.changed) window.dispatchEvent(new CustomEvent('recomp-world', { detail: { player, world: at ? at.world : launch.world, adventure: !which } }));
-        storeState(d.pieces, launch, d.screen || [logicalW, logicalH], !!d.changed);
+        storeState(d.c, launch, d.screen || [logicalW, logicalH], !!d.changed, taking = d.ms);
         break;
       }
+      case 'state-took': if (taking) { taking.stop = d.stop; taking.post = d.post; taking = null; } break;          // (said right after the state: how long the game stood still for it)
       case 'state-failed': manualSave = false; saveFailed(new Error(d.message)); break;
       case 'state-skipped':
         // No state of a RedCat without health or of a game that is ending (worker.js onPass): the

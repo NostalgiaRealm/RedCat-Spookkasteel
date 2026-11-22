@@ -28,6 +28,7 @@ in all five worlds: equal. In world 1 off and on differ by one byte after the op
 | The host guard that is already in front of a function with a `try` block (`meta.hooks.eh_…`) | fractionalDamage (0x503FC0) | no |
 | A host hook (`GAME_HOOKS` in `tools/recomp/build.py`, `late`) | doorSound (0x4CC140), towerFire (0x54E750) | yes: two hooks |
 | The host's DirectSound | musicContinuity | no |
+| In the pass that changed the sublevel, after `ChangeToSubLevel` returned (`mainLoop.afterChange`), with the game's own functions and data | soundRelease | no |
 | The render driver | wallTrim; skyBackdrop and smoothSprites (not faults: the original's picture made better, `effects-low-end.md` 7); hudShape (not a fault: the port's wide modes, `genesis-driver.md` 11b) | no |
 
 The two new hooks are `late`: their thunks are numbered from the top of the thunk table, so the
@@ -369,3 +370,122 @@ Unresolved: the cost on a real phone (see above: every number is a desktop's); a
 world renders (the flames are added at the first only); what the
 game's own lights need at worst (a busy slot is skipped, so a torch then goes without light);
 nothing was played to: no hand was reached on foot, none was shot in a browser.
+
+## 11. The sounds of a world that was left (soundRelease, 2026-11-22)
+
+Not a fault a player of 2000 saw: the original never frees a sound before the game ends, and a
+Windows process had 2 GB of address space for it. The game thread here has 192 MB (159 MB of heap),
+and a player who went through all five worlds in one sitting got "out of game memory (heap 158 MB
+in use)" at the witch's door, where a game started in the Tower with the cheat came through.
+
+### The original
+
+Confirmed, original code:
+
+- Genesis3D's sound manager (`SoundSystem.c`, the module's 0x5C7E10 to 0x5C9000) keeps a channel
+  per loaded sound: the file's bytes (`channel+0x18`, kept for the case that
+  `DuplicateSoundBuffer` fails, 0x5C8BA0) and a DirectSound buffer (`channel+0`), its number
+  (`+4`), the next channel (`+0x1C`) and its duplicates (`+0x20`). The manager: count `+0`, next
+  number `+4`, first channel `+0xC`.
+- `geSound_FreeSoundDef` is not in the module. Channels are freed only by the loop of 0x5C8CB0,
+  reached only from `geSound_DestroySoundSystem` 0x5C7ED0, which only `CAdamSoundSystem`'s
+  shutdown 0x54E060 calls (`calls.tsv`: no other caller of any of the three).
+- `geSound_LoadSoundDef` 0x5C7F00 has two callers, both in `CAdamSoundDefMgr::CreateSoundDef`
+  (0x551DE0, 0x552310); both store the channel's number in the definition object at `+0x1C`
+  (0x5520E5, 0x55254F). A definition (vtable 0x64F818, use count `+0x14`, file name `+0x24`) lives
+  in the manager's list (`system+0x30`: begin `+0x34`, end `+0x38`).
+- `CAdamSoundSystem::RemoveUnusedSounds` 0x550330 walks the list of effects (`system+0x54`: begin
+  `+0x58`), erases every sound only the list refers to (use count under 2; with its argument 1
+  only those not playing, 0x5530E0) with the list's erase 0x553FD0, and then calls
+  `CAdamSoundDefMgr::RemoveUnusedSoundDefs` 0x5525D0, which does the same for definitions. The
+  definition's destructor (0x552E20) calls nothing of the engine: the channel stays.
+- A second list holds music (`system+0x70`: begin `+0x74`, end `+0x78`; filled by 0x54F910, walked
+  by the music volume setter 0x54E5F0). `RemoveUnusedSounds` does not walk it, and no other code
+  erases from it before the shutdown 0x54CEB0. So every music that was ever started keeps its sound
+  object (vtable 0x64F820) with use count 1, that object its definition, the definition its channel.
+
+Confirmed, runs of the Node runner (`tools/memory-check.mjs`, `tools/memory-plugin.mjs`; every
+block of the heap followed from its allocation, by the world it was made in; worlds ended with the
+game's own `nextsave`, 300 passes of play in each):
+
+| after | heap in use, original | with the fix | a game started there |
+|---|---|---|---|
+| Forest, played | 36.7 MB | 36.7 | 36.7 |
+| Castle, played | 57.9 | 44.6 | |
+| Graveyard, played | 81.9 | 53.6 | |
+| Caves, played | 94.5 | 50.8 | |
+| Tower, played | 108.4 | 46.7 | 39.4 |
+| Tower, at the witch (`trigger_witchmodel`) | 109.2 | 47.5 | 40.2 |
+| highest during the run | 109.2 | 68.1 | 40.2 |
+
+- What a change of world leaves in the original (blocks of the world before that are still
+  allocated one world later): 16.4 MB after the Castle, 16.9 after the Graveyard, 18.6 after the
+  Caves. Of the Castle's 16.4: the music twice (5.0 MB of file bytes, 5.0 MB of buffer), the
+  other sounds twice (2.3 + 2.4 MB), 1.5 MB of other blocks.
+- After the first change (Forest to Castle) the original's sound manager has 190 channels for 177
+  definitions; the 13 without a definition hold 3.1 MB. The Forest's music is in the music list
+  with use count 1, not playing; the only words in the game's memory that point at its sound
+  object are that list's element and the object's own list link.
+- The Tower started again with the game's `restart` ("Ja" on the retry screen): 5.9 MB more each
+  time in the original, 0.8 with the fix.
+- The witch's door and the witch need 0.8 MB. The heap's free lists were never the problem: at the
+  Tower the original has 0.25 MB free inside the heap, in 6,700 blocks.
+
+Inferred: the 158 MB of the report are the five worlds (108 MB after a few seconds in each; a
+played world loads more sounds than that) and some deaths with "Ja". Not reproduced to the
+megabyte: nobody played the five worlds through here.
+
+### The fix
+
+`releaseSounds` in `source/host/fixes.js`, run from `mainLoop.afterChange`: inside the pass that
+changed the sublevel, when `ChangeToSubLevel` has returned, so that the state the game thread
+takes of that pass is taken after it.
+
+1. The music list by the rule the game has for its effects: an element only the list refers to
+   (use count 1) that is not playing (the game's own 0x5530E0) is erased with the list's own
+   0x553FD0, which destructs the sound object and lets go of its definition.
+2. The game's own `RemoveUnusedSoundDefs` 0x5525D0, when 1 erased something.
+3. Every channel whose number no definition holds: what `geSound_FreeSoundDef` does in Genesis3D:
+   the module's own "stop the duplicates" 0x5C8980 and "free the duplicates" 0x5C89A0, `Stop` and
+   `Release` of the buffer through its vtable, `geRam_Free` 0x5CF400 of the file's bytes and of the
+   channel, the channel out of the list, the count one less.
+
+Inside a world nothing is released: a music that stopped keeps its channel and its buffer, as in
+the original (musicContinuity keeps the place of the level's music on that buffer), and a sound
+the game asks for again is not read from its file a second time. Nothing is released at the start
+or after a restore either, so a restored game goes on exactly as the one that was saved. One
+exception, for need: with less than 32 MB of the heap left (`SOUND_NEED`; read from the heap's two
+cursors, which are part of a state) the same is done before every pass. That is what relieves a
+state made by a build before this fix: one that carried five worlds and five restarts (137.7 MB)
+went on with 50.5 MB.
+
+No thunk, no low memory, no part of a state, no change to the game module: states of the build
+before this fix stay usable. With the flag off the host does nothing (`307574ef`); the README pair
+with the fixes on still prints `8f54e89b`, because a game that never changes its world never gets
+here.
+
+### Left as the original has it
+
+- 0.6 to 1.5 MB per change of world, 0.8 MB per restart of the Tower: three bitmaps of the Adam
+  layer (`CAdamBitmap`, allocated under 0x50C300) and three of the engine (under 0x5C1140) per
+  load, with the driver's texture for each (`THandle_Create`). Who should have freed them was not
+  looked for. At that rate the heap's 159 MB hold over fifty more loads after a whole adventure.
+- The address space stays 192 MB (`MEM_PAGES` in `tools/recomp/recompile.py`): the module declares
+  its memory with that size as its maximum, so it cannot grow while a game runs, and another size
+  is another module, which no stored state fits (`host.snap.abi`). With the fix a whole adventure
+  peaks at 68 MB of the heap's 159. When the module is next rebuilt for another reason, 4096 pages
+  (256 MB) would cost only address space; the VirtualAlloc pages are counted down from the end of
+  memory, so every state is lost by it anyway.
+- Every DirectSound buffer object takes 16 bytes of the host's low area (0x20000 to 0xF0000, of
+  which the handle table has 512 KB) and that is never given back: about 42 objects per load of a
+  world (measured) and one per sound that is played while it still plays (read from `dsound.js`,
+  not counted in play). 320 KB were left after five worlds (20,000 objects); the game ends with
+  "low area full" when they are gone. Not changed here: giving
+  the 16 bytes back changes where every later object lands, and so both hashes of the README pair.
+
+Unresolved: a whole adventure played by hand (every number above is 300 passes per world); the
+browser (nothing here was run in one: the fix is in the host, which the Node runner shares with
+the game thread); whether a level script exists that starts a music again through a sound object
+it no longer holds (none can: the list's element is the only pointer, see above, but only the
+Forest's music was looked at that way).
+

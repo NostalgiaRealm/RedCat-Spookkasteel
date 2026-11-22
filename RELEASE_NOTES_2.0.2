@@ -1,0 +1,14 @@
+Version 2.0.2 fixes three things players ran into. Players, settings and saved places from 2.0.0 and 2.0.1 are kept.
+
+## Fixes
+
+- **"Out of game memory" late in a long adventure:** playing through to the Tower in one session could end with this message just before the witch. The original game never frees a world's sounds and music before it quits, which cost 16 to 19 MB per world change and about 6 MB per "Ja" on the retry screen; on a 2001 PC that fitted, in this port's 159 MB it did not. The port now releases them at every world change. A five-world session peaks at about 68 MB instead of running full. A saved place from an earlier version that was already nearly full is relieved when it is continued.
+- **Hitch when the game saves:** compressing the save ran on the page's own thread, which held up the picture for up to a second. The game now only copies its memory (it stops 6 to 10 ms instead of 22 to 28 ms) and a separate worker does the rest.
+- **The end film:** if the game stopped with an error after the last world was finished, the film was skipped and the next adventure silently began anew; it now plays. The film also plays after the witch is beaten in a Snelspel on the Tower. The original shows it only after an adventure, but there the Tower's card opens only once an adventure is finished; here a cheat can open it for anybody.
+- **Menu voices in Firefox with the Plasma Integration add-on:** a voice whose start the add-on interrupted stayed silent; it is now started once more. This was already on the website.
+
+## Tested and Not Tested
+
+- **Tested:** memory over a chain of all five worlds in the Node runner; the save hitch in headless Chromium and Playwright's Firefox; the end film after the game itself finishes the Tower, in an adventure, in a Snelspel and with an error after the last world. The save-state checks pass in both browsers.
+- **Not tested:** an adventure played by hand to the witch; a real phone (the save's stop will be longer there than the 6 to 10 ms measured on a desktop); real Safari; a release Firefox, where one 33 ms frame per save was still seen in Playwright's build; five of the six desktop packages; the Android app beyond a start on an emulator in 2.0.0.
+- **Known:** with the frame counter switched on, it overlaps the top strip by a few pixels on a phone held upright. A small leak of the original remains (about 1 MB per world change), with room for more than fifty world changes in one session.
